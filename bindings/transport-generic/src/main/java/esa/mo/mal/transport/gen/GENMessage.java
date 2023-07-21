@@ -135,7 +135,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
         if (readHeader) {
             MALEncodingContext ctx = new MALEncodingContext(header, null, 0);
-            this.header = (GENMessageHeader) enc.readElement(header, ctx);
+            this.header = (GENMessageHeader) enc.readHeader(header, ctx);
         } else {
             this.header = header;
         }
@@ -168,7 +168,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
         if (readHeader) {
             MALEncodingContext ctx = new MALEncodingContext(header, null, 0);
-            this.header = (GENMessageHeader) enc.readElement(header, ctx);
+            this.header = (GENMessageHeader) enc.readHeader(header, ctx);
         } else {
             this.header = header;
         }
@@ -215,7 +215,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
             // if we have a header encode it
             if (writeHeader && (header != null)) {
-                enc.writeElement(header, ctx);
+                enc.writeHeader(header, ctx);
             }
 
             // now encode the body

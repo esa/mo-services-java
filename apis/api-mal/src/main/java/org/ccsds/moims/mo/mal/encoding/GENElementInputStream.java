@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Extends the MALElementInputStream interface to enable aware transport access
@@ -51,10 +52,16 @@ public abstract class GENElementInputStream implements MALElementInputStream {
     }
 
     @Override
+    public MALMessageHeader readHeader(final Object header, final MALEncodingContext ctx)
+            throws IllegalArgumentException, MALException {
+        return (MALMessageHeader) dec.decodeElement((Element) header);
+    }
+
+    @Override
     public Object readElement(final Object element, final MALEncodingContext ctx)
             throws IllegalArgumentException, MALException {
         if (element == ctx.getHeader()) {
-            return dec.decodeElement((Element) element);
+            throw new MALException("The header is no longer read here! Use: readHeader()");
         }
 
         if (ctx.getHeader().getIsErrorMessage()) {

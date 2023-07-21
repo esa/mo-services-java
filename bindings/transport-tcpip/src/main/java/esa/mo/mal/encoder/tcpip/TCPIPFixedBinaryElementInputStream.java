@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Manage the decoding of an incoming TCPIP Message. Separate decoders are used
@@ -56,16 +57,18 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
         super(new TCPIPFixedBinaryDecoder(src, offset, timeHandler));
     }
 
-    /**
-     * Read an element
-     */
+    @Override
+    public MALMessageHeader readHeader(final Object header, final MALEncodingContext ctx)
+            throws IllegalArgumentException, MALException {
+        // header is decoded using custom tcpip decoder
+        return decodeHeader(header);
+    }
+
     @Override
     public Object readElement(final Object element, final MALEncodingContext ctx)
             throws IllegalArgumentException, MALException {
-
         if (element == ctx.getHeader()) {
-            // header is decoded using custom tcpip decoder
-            return decodeHeader(element);
+            throw new MALException("The header is no longer read here! Use: readHeader()");
         } else {
             // body is not decoded
             return null;
@@ -79,7 +82,7 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
      * @return The decoded header
      * @throws MALException
      */
-    private Object decodeHeader(final Object element) throws MALException {
+    private TCPIPMessageHeader decodeHeader(final Object element) throws MALException {
         if (!(element instanceof TCPIPMessageHeader)) {
             throw new MALException("Wrong header element supplied. "
                     + "Must be instance of TCPIPMessageHeader");

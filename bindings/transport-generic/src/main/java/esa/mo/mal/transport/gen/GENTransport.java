@@ -691,21 +691,21 @@ public abstract class GENTransport<I, O> implements MALTransport {
                 if ((null == ep) && (!endpointMalMap.isEmpty())) {
                     GENEndpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
 
-                    final GENMessage retMsg
-                            = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
-                                    srcHdr.getFromURI(),
-                                    Time.now(),
-                                    srcHdr.getInteractionType(),
-                                    new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
-                                    srcHdr.getTransactionId(),
-                                    srcHdr.getServiceArea(),
-                                    srcHdr.getService(),
-                                    srcHdr.getOperation(),
-                                    srcHdr.getServiceVersion(),
-                                    true,
-                                    srcHdr.getSupplements(),
-                                    oriMsg.getQoSProperties(),
-                                    errorNumber, new Union(errorMsg));
+                    final GENMessage retMsg = (GENMessage) endpoint.createMessage(
+                            srcHdr.getAuthenticationId(),
+                            srcHdr.getFromURI(),
+                            Time.now(),
+                            srcHdr.getInteractionType(),
+                            new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
+                            srcHdr.getTransactionId(),
+                            srcHdr.getServiceArea(),
+                            srcHdr.getService(),
+                            srcHdr.getOperation(),
+                            srcHdr.getServiceVersion(),
+                            true,
+                            srcHdr.getSupplements(),
+                            oriMsg.getQoSProperties(),
+                            errorNumber, new Union(errorMsg));
 
                     retMsg.getHeader().setFrom(srcHdr.getTo());
 
@@ -733,9 +733,9 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @return The local name to use.
      */
     protected String getLocalName(String localName, final java.util.Map properties) {
-        if ((null == localName) || (0 == localName.length())) {
+        if (localName == null || localName.isEmpty()) {
             // This sets the "sign bit" as zero, to avoid having negative numbers:
-            localName = String.valueOf(RANDOM_NAME.nextInt() & Integer.MAX_VALUE);
+            return String.valueOf(RANDOM_NAME.nextInt() & Integer.MAX_VALUE);
         }
 
         return localName;

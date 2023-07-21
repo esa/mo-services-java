@@ -45,11 +45,28 @@ public class LineElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
+    public void writeHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        final LineEncoder enc = new LineEncoder();
+
+        if (header instanceof MALMessageHeader) {
+            enc.encodeTopLevelElement("Header", (Element) header);
+        } else {
+            throw new MALException("The body must be written with: writeElement()");
+        }
+
+        try {
+            dos.write(enc.toString().getBytes(LineDecoder.UTF8_CHARSET));
+        } catch (Exception ex) {
+            throw new MALException(ex.getLocalizedMessage(), ex);
+        }
+    }
+
+    @Override
     public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
         final LineEncoder enc = new LineEncoder();
 
         if (element instanceof MALMessageHeader) {
-            enc.encodeTopLevelElement("Header", (Element) element);
+            throw new MALException("The header is no longer read here! Use: readHeader()");
         } else {
             enc.encodeTopLevelElement("Body", (Element) element);
         }

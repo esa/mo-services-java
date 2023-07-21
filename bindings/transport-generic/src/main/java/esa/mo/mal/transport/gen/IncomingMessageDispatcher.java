@@ -86,14 +86,14 @@ public class IncomingMessageDispatcher implements Runnable {
             msg = malMsgs.poll();
         }
 
-        while (null != msg) {
+        while (msg != null) {
             // send message for further processing and routing
             transport.dispatchMessage(msg.malMsg, msg.smsg);
 
             synchronized (this) {
                 msg = malMsgs.poll();
 
-                if (null == msg) {
+                if (msg == null) {
                     finished = true;
                 }
             }

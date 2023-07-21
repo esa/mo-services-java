@@ -48,14 +48,22 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
+    public void writeHeader(final Object header, final MALEncodingContext ctx) throws MALException {
+        if (enc == null) {
+            this.enc = createEncoder(dos);
+        }
+
+        ((Element) header).encode(enc);
+    }
+
+    @Override
     public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
         if (enc == null) {
             this.enc = createEncoder(dos);
         }
 
         if (element == ctx.getHeader()) {
-            ((Element) element).encode(enc);
-            return;
+            throw new MALException("The header is no longer read here! Use: writeHeader()");
         }
 
         if (ctx.getHeader().getIsErrorMessage()) {
