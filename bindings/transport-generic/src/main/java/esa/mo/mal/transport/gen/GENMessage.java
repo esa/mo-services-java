@@ -133,13 +133,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 
-        if (readHeader) {
-            MALEncodingContext ctx = new MALEncodingContext(header, null, 0);
-            this.header = (GENMessageHeader) enc.readHeader(header);
-        } else {
-            this.header = header;
-        }
-
+        this.header = readHeader ? (GENMessageHeader) enc.readHeader(header) : header;
         this.body = createMessageBody(encFactory, bais, enc);
     }
 
@@ -166,13 +160,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
         final MALElementInputStream enc = encFactory.createInputStream(ios);
 
-        if (readHeader) {
-            MALEncodingContext ctx = new MALEncodingContext(header, null, 0);
-            this.header = (GENMessageHeader) enc.readHeader(header);
-        } else {
-            this.header = header;
-        }
-
+        this.header = readHeader ? (GENMessageHeader) enc.readHeader(header) : header;
         this.body = createMessageBody(encFactory, null, enc);
     }
 
