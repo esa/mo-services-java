@@ -30,14 +30,13 @@ public interface MALElementInputStream {
     /**
      * The method reads the header from the input stream.
      *
-     * @param header Header to decode, may be null.
-     * @param ctx MALEncodingContext to be used in order to decode an Element
-     * @return The decoded element.
-     * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL
+     * @param header The header to decode.
+     * @return The decoded header.
+     * @throws java.lang.IllegalArgumentException If there is something wrong
+     * with the provided header.
      * @throws MALException If the MALElementInputStream is closed
      */
-    Object readHeader(Object header, MALEncodingContext ctx)
-            throws java.lang.IllegalArgumentException, MALException;
+    Object readHeader(Object header) throws java.lang.IllegalArgumentException, MALException;
 
     /**
      * The method reads an Element from the stream.

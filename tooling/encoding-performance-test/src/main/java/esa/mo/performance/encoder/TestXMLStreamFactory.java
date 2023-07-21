@@ -72,7 +72,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public void writeHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public void writeHeader(Object header) throws IllegalArgumentException, MALException {
             try {
                 String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
                 String schemaEle = "report";
@@ -125,7 +125,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public Object readHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public Object readHeader(Object header) throws IllegalArgumentException, MALException {
             try {
                 JAXBContext jc = JAXBContext.newInstance(header.getClass().getPackage().getName());
                 Unmarshaller unmarshaller = jc.createUnmarshaller();

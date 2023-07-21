@@ -24,7 +24,6 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -41,18 +40,16 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
  */
 public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
-    public TCPIPFixedBinaryEncoder(final OutputStream os,
-            final BinaryTimeHandler timeHandler) {
+    private static final long MAX_STRING_LENGTH = 2 * (long) Integer.MAX_VALUE + 1;
+
+    public TCPIPFixedBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler) {
         super(new TCPIPStreamHolder(os), timeHandler);
     }
 
     @Override
-    public MALListEncoder createListEncoder(List list)
-            throws IllegalArgumentException, MALException {
-
+    public MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException {
         // encode number of elements
         encodeUInteger(new UInteger(list.size()));
-
         return this;
     }
 
@@ -67,8 +64,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeString(String val) throws MALException {
-
-        long MAX_STRING_LENGTH = 2 * (long) Integer.MAX_VALUE + 1;
         byte[] output = val.getBytes(UTF8_CHARSET);
 
         if (output.length > MAX_STRING_LENGTH) {
@@ -90,8 +85,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      * @param value The value to be encoded.
      * @throws MALException if it cannot be encoded.
      */
-    public void encodeMALLong(Long value) throws MALException {
-
+    public void encodeLong(Long value) throws MALException {
         try {
             outputStream.writeSignedLong(value);
         } catch (IOException ex) {

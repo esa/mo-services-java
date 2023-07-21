@@ -30,12 +30,12 @@ public interface MALElementOutputStream {
     /**
      * The method writes the header to the output stream.
      *
-     * @param header Header to encode, may be null.
-     * @param ctx MALEncodingContext to be used in order to encode an Element
-     * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL
+     * @param header The header to encode.
+     * @throws java.lang.IllegalArgumentException If there is something wrong
+     * with the provided header.
      * @throws MALException If the MALElementOutputStream is closed
      */
-    void writeHeader(Object header, MALEncodingContext ctx) throws IllegalArgumentException, MALException;
+    void writeHeader(Object header) throws IllegalArgumentException, MALException;
 
     /**
      * The method writes an element to the output stream.
