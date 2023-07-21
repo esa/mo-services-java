@@ -27,6 +27,7 @@ import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -58,14 +59,13 @@ public class TCPIPFixedBinaryElementInputStream extends FixedBinaryElementInputS
     }
 
     @Override
-    public MALMessageHeader readHeader(final Object header)
-            throws IllegalArgumentException, MALException {
+    public MALMessageHeader readHeader(final Object header) throws MALException {
         // header is decoded using custom tcpip decoder
         return decodeHeader(header);
     }
 
     @Override
-    public Object readElement(final Object element, final MALEncodingContext ctx)
+    public Element readElement(final Element element, final MALEncodingContext ctx)
             throws IllegalArgumentException, MALException {
         if (element == ctx.getHeader()) {
             throw new MALException("The header is no longer read here! Use: readHeader()");

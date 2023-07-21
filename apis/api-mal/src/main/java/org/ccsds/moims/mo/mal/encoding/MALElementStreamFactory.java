@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * The MALElementStreamFactory class creates and configures
@@ -179,6 +180,6 @@ public abstract class MALElementStreamFactory {
      * @throws java.lang.IllegalArgumentException if the arguments are null.
      * @throws MALException If an encoding error occurs
      */
-    public abstract Blob encode(Object[] elements, MALEncodingContext ctx)
+    public abstract Blob encode(Element[] elements, MALEncodingContext ctx)
             throws java.lang.IllegalArgumentException, MALException;
 }

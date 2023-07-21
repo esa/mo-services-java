@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 
 /**
@@ -68,7 +69,7 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
     }
 
     @Override
-    public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
+    public void writeElement(final Element element, final MALEncodingContext ctx) throws MALException {
         if (enc == null) {
             enc = createEncoder(this.dos);
         }

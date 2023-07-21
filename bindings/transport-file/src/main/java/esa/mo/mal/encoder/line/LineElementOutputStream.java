@@ -62,7 +62,7 @@ public class LineElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
-    public void writeElement(final Object element, final MALEncodingContext ctx) throws MALException {
+    public void writeElement(final Element element, final MALEncodingContext ctx) throws MALException {
         final LineEncoder enc = new LineEncoder();
 
         if (element instanceof MALMessageHeader) {

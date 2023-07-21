@@ -58,7 +58,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
     }
 
     @Override
-    public Object readElement(final Object element, final MALEncodingContext ctx)
+    public Element readElement(final Element element, final MALEncodingContext ctx)
             throws IllegalArgumentException, MALException {
         if (element == ctx.getHeader()) {
             throw new MALException("The header is no longer read here! Use: readHeader()");
@@ -120,7 +120,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         }
     }
 
-    private Object decodePublishNotifyMessages(final MALEncodingContext ctx) throws MALException {
+    private Element decodePublishNotifyMessages(final MALEncodingContext ctx) throws MALException {
         UOctet stage = ctx.getHeader().getInteractionStage();
         MALOperationStage op = ctx.getOperation().getOperationStage(stage);
         Object sf = op.getElementShortForms()[ctx.getBodyElementIndex()];
@@ -161,7 +161,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         // Nothing to do for this decoder
     }
 
-    protected Object decodeAbstractSubElement() throws MALException {
+    protected Element decodeAbstractSubElement() throws MALException {
         Long shortForm = dec.decodeAbstractElementSFP(true);
 
         if (shortForm == null) {
