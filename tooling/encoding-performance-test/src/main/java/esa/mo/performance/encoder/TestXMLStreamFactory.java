@@ -36,6 +36,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Element;
 
 public class TestXMLStreamFactory extends MALElementStreamFactory {
 
@@ -59,7 +60,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
     }
 
     @Override
-    public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+    public Blob encode(Element[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -85,7 +86,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public void writeElement(Object o, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public void writeElement(Element o, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
             try {
                 String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
                 String schemaEle = "report";
@@ -137,12 +138,12 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public Object readElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public Element readElement(Element element, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
             try {
                 JAXBContext jc = JAXBContext.newInstance(element.getClass().getPackage().getName());
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
                 JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-                return rootElement.getValue();
+                return (Element) rootElement.getValue();
             } catch (JAXBException ex) {
                 throw new MALException("XML Decoding error", ex);
             }

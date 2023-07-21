@@ -40,8 +40,7 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
     protected boolean shortLengthField = false;
 
     @Override
-    protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-            MALException {
+    protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException {
         super.init(protocol, properties);
         if (null != properties) {
             if (properties.containsKey(SHORT_LENGTH_FIELD)
@@ -57,20 +56,17 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
     }
 
     @Override
-    public MALElementInputStream createInputStream(final byte[] bytes, final int offset)
-            throws MALException {
+    public MALElementInputStream createInputStream(final byte[] bytes, final int offset) throws MALException {
         return new FixedBinaryElementInputStream(bytes, offset, timeHandler, shortLengthField);
     }
 
     @Override
-    public MALElementInputStream createInputStream(final java.io.InputStream is)
-            throws MALException {
+    public MALElementInputStream createInputStream(final java.io.InputStream is) throws MALException {
         return new FixedBinaryElementInputStream(is, timeHandler, shortLengthField);
     }
 
     @Override
-    public MALElementOutputStream createOutputStream(final java.io.OutputStream os)
-            throws MALException {
+    public MALElementOutputStream createOutputStream(final java.io.OutputStream os) throws MALException {
         return new FixedBinaryElementOutputStream(os, timeHandler, shortLengthField);
     }
 }

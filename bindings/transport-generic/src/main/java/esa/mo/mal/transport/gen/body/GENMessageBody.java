@@ -482,7 +482,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                     + "JAXB elements is no longer supported!");
         }
 
-        Object element = null;
+        Element element = null;
 
         // It is not an abstract element:
         if (sf != null) {

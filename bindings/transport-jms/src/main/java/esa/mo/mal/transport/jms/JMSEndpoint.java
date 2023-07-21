@@ -379,7 +379,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     public static void writeListElement(int index, List srcList,
             MALElementOutputStream enc) throws MALException {
         Object e = srcList.get(index);
-        List l = (List) ((Element) srcList).createElement();
+        ElementList l = (ElementList) ((Element) srcList).createElement();
         l.add(e);
         enc.writeElement(l, null);
     }
