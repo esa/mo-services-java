@@ -85,7 +85,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      * @param value The value to be encoded.
      * @throws MALException if it cannot be encoded.
      */
-    public void encodeLong(Long value) throws MALException {
+    public void encodeMALLong(Long value) throws MALException {
         try {
             outputStream.writeSignedLong(value);
         } catch (IOException ex) {

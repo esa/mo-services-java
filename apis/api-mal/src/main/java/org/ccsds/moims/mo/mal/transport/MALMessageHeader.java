@@ -20,6 +20,9 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
@@ -355,4 +358,39 @@ public class MALMessageHeader {
 
         return null;
     }
+
+    public void encode(final MALEncoder encoder) throws MALException {
+        encoder.encodeNullableIdentifier(from);
+        encoder.encodeNullableBlob(authenticationId);
+        encoder.encodeNullableIdentifier(to);
+        encoder.encodeNullableTime(timestamp);
+        encoder.encodeNullableElement(interactionType);
+        encoder.encodeNullableUOctet(interactionStage);
+        encoder.encodeNullableLong(transactionId);
+        encoder.encodeNullableUShort(serviceArea);
+        encoder.encodeNullableUShort(service);
+        encoder.encodeNullableUShort(operation);
+        encoder.encodeNullableUOctet(serviceVersion);
+        encoder.encodeNullableBoolean(isErrorMessage);
+        encoder.encodeNullableElement(supplements);
+    }
+
+    public MALMessageHeader decode(final MALDecoder decoder) throws MALException {
+        from = decoder.decodeNullableIdentifier();
+        authenticationId = decoder.decodeNullableBlob();
+        to = decoder.decodeNullableIdentifier();
+        timestamp = decoder.decodeNullableTime();
+        interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
+        interactionStage = decoder.decodeNullableUOctet();
+        transactionId = decoder.decodeNullableLong();
+        serviceArea = decoder.decodeNullableUShort();
+        service = decoder.decodeNullableUShort();
+        operation = decoder.decodeNullableUShort();
+        serviceVersion = decoder.decodeNullableUOctet();
+        isErrorMessage = decoder.decodeNullableBoolean();
+        supplements = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
+
+        return this;
+    }
+
 }

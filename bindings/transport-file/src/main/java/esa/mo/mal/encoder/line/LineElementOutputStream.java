@@ -45,7 +45,7 @@ public class LineElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
-    public void writeHeader(Object header) throws IllegalArgumentException, MALException {
+    public void writeHeader(MALMessageHeader header) throws IllegalArgumentException, MALException {
         final LineEncoder enc = new LineEncoder();
 
         if (header instanceof MALMessageHeader) {

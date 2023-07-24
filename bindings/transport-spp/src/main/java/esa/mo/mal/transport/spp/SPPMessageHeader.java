@@ -122,12 +122,6 @@ public class SPPMessageHeader extends GENMessageHeader {
     }
 
     @Override
-    public Element createElement() {
-        return new SPPMessageHeader(null, configuration, forceTC, primaryApidQualifier,
-                uriRepresentation, ssCounter);
-    }
-
-    @Override
     public void encode(final MALEncoder encoder) throws MALException {
         short pktType = getPacketType();
         short primaryApid;
@@ -221,7 +215,7 @@ public class SPPMessageHeader extends GENMessageHeader {
     }
 
     @Override
-    public Element decode(final MALDecoder decoder) throws MALException {
+    public SPPMessageHeader decode(final MALDecoder decoder) throws MALException {
         // CCSDS packet header
         final int ccsdsHdrPt1 = decoder.decodeUShort().getValue();
         final int ccsdsHdrPt2 = decoder.decodeUShort().getValue();

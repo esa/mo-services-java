@@ -74,7 +74,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public void writeHeader(Object header) throws IllegalArgumentException, MALException {
+        public void writeHeader(MALMessageHeader header) throws IllegalArgumentException, MALException {
             try {
                 String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
                 String schemaEle = "report";

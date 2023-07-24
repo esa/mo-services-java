@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.encoder.line;
 
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
@@ -46,7 +45,7 @@ public class LineElementInputStream implements MALElementInputStream {
 
     @Override
     public MALMessageHeader readHeader(MALMessageHeader header) throws MALException {
-        return (GENMessageHeader) dec.decodeNullableElement((GENMessageHeader) header);
+        return header.decode(dec);
     }
 
     @Override

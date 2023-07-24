@@ -134,11 +134,6 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     }
 
     @Override
-    public Element createElement() {
-        return new ZMTPMessageHeader(configuration, null);
-    }
-
-    @Override
     public void encode(final MALEncoder hdrEncoder) throws MALException {
         if (!(hdrEncoder instanceof ZMTPHeaderEncoder)) {
             throw new MALException("Expected ZMTPHeaderEncoder as an encoder");
@@ -183,7 +178,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     }
 
     @Override
-    public Element decode(final MALDecoder hdrDecoder) throws MALException {
+    public ZMTPMessageHeader decode(final MALDecoder hdrDecoder) throws MALException {
         if (!(hdrDecoder instanceof ZMTPHeaderDecoder)) {
             throw new MALException("Expected ZMTPHeaderDecoder as a decoder");
         }
