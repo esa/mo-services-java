@@ -52,8 +52,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
     }
 
     @Override
-    public MALMessageHeader readHeader(final Object header)
-            throws IllegalArgumentException, MALException {
+    public MALMessageHeader readHeader(final MALMessageHeader header) throws MALException {
         return (MALMessageHeader) dec.decodeElement((Element) header);
     }
 

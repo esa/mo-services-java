@@ -60,7 +60,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
      */
     protected MALElementStreamFactory encFactory;
     /**
-     * Input stream that holds the encoded message body parts.
+     * Input ByteArray that holds the encoded message body parts.
      */
     protected ByteArrayInputStream encBodyBytes;
     /**

@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 public class TestXMLStreamFactory extends MALElementStreamFactory {
 
@@ -126,12 +127,12 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public Object readHeader(Object header) throws IllegalArgumentException, MALException {
+        public MALMessageHeader readHeader(MALMessageHeader header) throws IllegalArgumentException, MALException {
             try {
                 JAXBContext jc = JAXBContext.newInstance(header.getClass().getPackage().getName());
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
                 JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-                return rootElement.getValue();
+                return (MALMessageHeader) rootElement.getValue();
             } catch (JAXBException ex) {
                 throw new MALException("XML Decoding error", ex);
             }
