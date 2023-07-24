@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The MALElementInputStream interface is used to decode Elements.
@@ -37,7 +38,7 @@ public interface MALElementInputStream {
      * with the provided header.
      * @throws MALException If the MALElementInputStream is closed
      */
-    Object readHeader(Object header) throws java.lang.IllegalArgumentException, MALException;
+    MALMessageHeader readHeader(MALMessageHeader header) throws MALException;
 
     /**
      * The method reads an Element from the stream.

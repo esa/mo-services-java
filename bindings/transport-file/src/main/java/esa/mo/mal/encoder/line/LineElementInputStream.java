@@ -20,11 +20,13 @@
  */
 package esa.mo.mal.encoder.line;
 
+import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implements the MALElementInputStream interface for the line encodings.
@@ -43,8 +45,8 @@ public class LineElementInputStream implements MALElementInputStream {
     }
 
     @Override
-    public Object readHeader(Object header) throws IllegalArgumentException, MALException {
-        return dec.decodeNullableElement((Element) header);
+    public MALMessageHeader readHeader(MALMessageHeader header) throws MALException {
+        return (GENMessageHeader) dec.decodeNullableElement((GENMessageHeader) header);
     }
 
     @Override
