@@ -20,16 +20,19 @@
  */
 package esa.mo.mal.transport.gen;
 
-import org.ccsds.moims.mo.mal.MALDecoder;
-import org.ccsds.moims.mo.mal.MALEncoder;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * A generic implementation of the message header interface.
  */
-public class GENMessageHeader extends MALMessageHeader implements Composite {
+public class GENMessageHeader extends MALMessageHeader {
 
     protected static final long serialVersionUID = 111111111111111L;
 
@@ -73,71 +76,5 @@ public class GENMessageHeader extends MALMessageHeader implements Composite {
         super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea, service, operation,
                 serviceVersion, isErrorMessage, supplements);
-    }
-
-    @Override
-    public Element createElement() {
-        return new GENMessageHeader();
-    }
-
-    @Override
-    public void encode(final MALEncoder encoder) throws MALException {
-        encoder.encodeNullableIdentifier(from);
-        encoder.encodeNullableBlob(authenticationId);
-        encoder.encodeNullableIdentifier(to);
-        encoder.encodeNullableTime(timestamp);
-        encoder.encodeNullableElement(interactionType);
-        encoder.encodeNullableUOctet(interactionStage);
-        encoder.encodeNullableLong(transactionId);
-        encoder.encodeNullableUShort(serviceArea);
-        encoder.encodeNullableUShort(service);
-        encoder.encodeNullableUShort(operation);
-        encoder.encodeNullableUOctet(serviceVersion);
-        encoder.encodeNullableBoolean(isErrorMessage);
-        encoder.encodeNullableElement(supplements);
-    }
-
-    @Override
-    public Element decode(final MALDecoder decoder) throws MALException {
-        from = decoder.decodeNullableIdentifier();
-        authenticationId = decoder.decodeNullableBlob();
-        to = decoder.decodeNullableIdentifier();
-        timestamp = decoder.decodeNullableTime();
-        interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
-        interactionStage = decoder.decodeNullableUOctet();
-        transactionId = decoder.decodeNullableLong();
-        serviceArea = decoder.decodeNullableUShort();
-        service = decoder.decodeNullableUShort();
-        operation = decoder.decodeNullableUShort();
-        serviceVersion = decoder.decodeNullableUOctet();
-        isErrorMessage = decoder.decodeNullableBoolean();
-        supplements = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
-
-        return this;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return new UShort(0);
-    }
-
-    @Override
-    public UOctet getAreaVersion() {
-        return new UOctet(0);
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return new UShort(0);
-    }
-
-    @Override
-    public Long getShortForm() {
-        return 0L;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return 0;
     }
 }

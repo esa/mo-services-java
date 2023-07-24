@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Extends the MALElementOutputStream interface to enable aware transport access
@@ -48,12 +49,12 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
-    public void writeHeader(final Object header) throws MALException {
+    public void writeHeader(final MALMessageHeader header) throws MALException {
         if (enc == null) {
             this.enc = createEncoder(dos);
         }
 
-        ((Element) header).encode(enc);
+        header.encode(enc);
     }
 
     @Override

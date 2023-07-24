@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryEncoder;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import java.util.logging.Level;
@@ -32,7 +33,6 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
@@ -68,8 +68,8 @@ public class TCPIPMessageHeader extends GENMessageHeader {
 
     public TCPIPMessageHeader(Identifier uriFrom, String serviceFrom,
             Blob authenticationId, Identifier uriTo, String serviceTo, Time timestamp,
-            InteractionType interactionType, UOctet interactionStage, 
-            Long transactionId, UShort serviceArea, UShort service, 
+            InteractionType interactionType, UOctet interactionStage,
+            Long transactionId, UShort serviceArea, UShort service,
             UShort operation, UOctet serviceVersion,
             Boolean isErrorMessage, NamedValueList supplements) {
         super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
@@ -120,12 +120,119 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     }
 
     @Override
-    public Element decode(final MALDecoder decoder) throws MALException {
+    public TCPIPMessageHeader decode(final MALDecoder decoder) throws MALException {
         return this;
     }
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
+        // version number & sdu type
+        TCPIPFixedBinaryEncoder enc = (TCPIPFixedBinaryEncoder) encoder;
+        byte versionAndSDU = (byte) (this.versionNumber << 5 | this.getSDUType());
+
+        UOctet test = new UOctet(versionAndSDU);
+        enc.encodeUOctet(test);
+        enc.encodeShort((short) this.getServiceArea().getValue());
+        enc.encodeShort((short) this.getService().getValue());
+        enc.encodeShort((short) this.getOperation().getValue());
+        enc.encodeUOctet(this.getServiceVersion());
+
+        /*
+        short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
+                | (header.getQoSlevel().getOrdinal() << 4)
+                | header.getSession().getOrdinal());
+         */
+        short parts = (short) (((this.getIsErrorMessage() ? 0x1 : 0x0) << 7)
+                | (1 << 4)
+                | 1);
+
+        enc.encodeUOctet(new UOctet(parts));
+        ((TCPIPFixedBinaryEncoder) enc).encodeMALLong(this.getTransactionId());
+
+        // set flags
+        enc.encodeUOctet(getFlags(this));
+        // set encoding id
+        enc.encodeUOctet(new UOctet(this.getEncodingId()));
+
+        // preset body length. Allocate four bytes.
+        enc.encodeInteger(0);
+
+        // encode rest of header
+        if (!this.getServiceFrom().isEmpty()) {
+            enc.encodeString(this.getFrom().toString());
+        }
+        if (!this.getServiceTo().isEmpty()) {
+            enc.encodeString(this.getTo().toString());
+        }
+        /*
+        if (header.getPriority() != null) {
+            enc.encodeUInteger(header.getPriority());
+        }
+         */
+        if (this.getTimestamp() != null) {
+            enc.encodeTime(this.getTimestamp());
+        }
+        /*
+        if (header.getNetworkZone() != null) {
+            enc.encodeIdentifier(header.getNetworkZone());
+        }
+        if (header.getSessionName() != null) {
+            enc.encodeIdentifier(header.getSessionName());
+        }
+        if (header.getDomain() != null && header.getDomain().size() > 0) {
+            header.getDomain().encode(enc);
+        }
+         */
+        if (this.getAuthenticationId() != null && this.getAuthenticationId().getLength() > 0) {
+            enc.encodeBlob(this.getAuthenticationId());
+        }
+        /*
+        if (header.getSupplements() != null) {
+            header.getSupplements().encode(enc);
+        }
+         */
+    }
+
+    /**
+     * Set a byte which flags the optional fields that are set in the header.
+     *
+     * @param header
+     * @return
+     */
+    private UOctet getFlags(TCPIPMessageHeader header) {
+
+        short result = 0;
+        if (!header.getServiceFrom().isEmpty()) {
+            result |= (0x1 << 7);
+        }
+        if (!header.getServiceTo().isEmpty()) {
+            result |= (0x1 << 6);
+        }
+        /*
+        if (header.getPriority() != null) {
+            result |= (0x1 << 5);
+        }
+         */
+        if (header.getTimestamp() != null) {
+            result |= (0x1 << 4);
+        }
+        /*
+        if (header.getNetworkZone() != null) {
+            result |= (0x1 << 3);
+        }
+        if (header.getSessionName() != null) {
+            result |= (0x1 << 2);
+        }
+        if (header.getDomain() != null && header.getDomain().size() > 0) {
+            result |= (0x1 << 1);
+        }
+         */
+
+        if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
+            result |= 0x1;
+        }
+
+        return new UOctet(result);
     }
 
     public short getSDUType() {
@@ -193,7 +300,6 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     }
 
     protected InteractionType getInteractionType(short sduType) {
-
         switch (sduType) {
             case 0:
                 return InteractionType.SEND;
@@ -282,41 +388,23 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     @Override
     public String toString() {
         final StringBuilder str = new StringBuilder("TCPIPMessageHeader{");
-
-        str.append("BodyLength=");
-        str.append(bodyLength);
-        str.append(", VersionNumber=");
-        str.append(versionNumber);
-        str.append(", SDUType=");
-        str.append(", serviceArea=");
-        str.append(serviceArea);
-        str.append(", service=");
-        str.append(service);
-        str.append(", operation=");
-        str.append(operation);
-        str.append(", serviceVersion=");
-        str.append(serviceVersion);
-        str.append(", isErrorMessage=");
-        str.append(isErrorMessage);
-        str.append(", transactionId=");
-        str.append(transactionId);
-        str.append(", timestamp=");
-        str.append(timestamp);
-        str.append(", authenticationId=");
-        str.append(authenticationId);
-        str.append(", URIFrom=");
-        str.append(from);
-        str.append(", URITo=");
-        str.append(to);
-        str.append(", interactionType=");
-        str.append(interactionType);
-        str.append(", interactionStage=");
-        str.append(interactionStage);
-        str.append(", supplements=");
-        str.append(supplements);
+        str.append("BodyLength=").append(bodyLength);
+        str.append(", VersionNumber=").append(versionNumber);
+        str.append(", SDUType=").append(getSDUType());
+        str.append(", serviceArea=").append(serviceArea);
+        str.append(", service=").append(service);
+        str.append(", operation=").append(operation);
+        str.append(", serviceVersion=").append(serviceVersion);
+        str.append(", isErrorMessage=").append(isErrorMessage);
+        str.append(", transactionId=").append(transactionId);
+        str.append(", timestamp=").append(timestamp);
+        str.append(", authenticationId=").append(authenticationId);
+        str.append(", URIFrom=").append(from);
+        str.append(", URITo=").append(to);
+        str.append(", interactionType=").append(interactionType);
+        str.append(", interactionStage=").append(interactionStage);
+        str.append(", supplements=").append(supplements);
         str.append('}');
-
         return str.toString();
     }
-
 }

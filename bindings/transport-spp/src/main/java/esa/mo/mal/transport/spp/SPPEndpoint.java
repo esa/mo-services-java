@@ -310,7 +310,7 @@ public class SPPEndpoint extends GENEndpoint {
             this.uriTo = hdr.getTo();
             this.interactionType = hdr.getInteractionType();
             this.transactionId = hdr.getTransactionId();
-            this.serviceArea = hdr.getAreaNumber();
+            this.serviceArea = hdr.getServiceArea();
             this.service = hdr.getService();
             this.operation = hdr.getOperation();
         }

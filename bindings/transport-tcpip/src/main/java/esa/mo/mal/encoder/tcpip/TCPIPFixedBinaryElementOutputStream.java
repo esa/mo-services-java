@@ -25,11 +25,11 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import esa.mo.mal.transport.tcpip.TCPIPMessageHeader;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.encoding.Encoder;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.Encoder;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Encode a TCPIP Message
@@ -50,22 +50,19 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
         super(os, timeHandler, false);
     }
 
-    /**
-     * Create a split binary encoder for the body
-     */
     @Override
     protected Encoder createEncoder(OutputStream os) {
         return new TCPIPFixedBinaryEncoder(os, timeHandler);
     }
 
     @Override
-    public void writeHeader(final Object header) throws MALException {
+    public void writeHeader(final MALMessageHeader header) throws MALException {
         if (enc == null) {
             enc = createEncoder(this.dos);
         }
 
         // header is encoded using tcpip custom encoder
-        encodeHeader(header);
+        ((TCPIPMessageHeader) header).encode(enc);
     }
 
     @Override
@@ -80,127 +77,4 @@ public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutpu
 
         // body is not encoded
     }
-
-    /**
-     * Encode the header
-     *
-     * @param element
-     * @throws MALException
-     */
-    private void encodeHeader(final Object element) throws MALException {
-        if (!(element instanceof TCPIPMessageHeader)) {
-            throw new MALException("Wrong header element supplied. "
-                    + "Must be instance of TCPIPMessageHeader");
-        }
-
-        TCPIPMessageHeader header = (TCPIPMessageHeader) element;
-
-        // version number & sdu type
-        byte versionAndSDU = (byte) (header.versionNumber << 5 | header.getSDUType());
-
-        UOctet test = new UOctet(versionAndSDU);
-        enc.encodeUOctet(test);
-        enc.encodeShort((short) header.getServiceArea().getValue());
-        enc.encodeShort((short) header.getService().getValue());
-        enc.encodeShort((short) header.getOperation().getValue());
-        enc.encodeUOctet(header.getServiceVersion());
-
-        /*
-        short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
-                | (header.getQoSlevel().getOrdinal() << 4)
-                | header.getSession().getOrdinal());
-         */
-        short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
-                | (1 << 4)
-                | 1);
-
-        enc.encodeUOctet(new UOctet(parts));
-        ((TCPIPFixedBinaryEncoder) enc).encodeLong(header.getTransactionId());
-
-        // set flags
-        enc.encodeUOctet(getFlags(header));
-        // set encoding id
-        enc.encodeUOctet(new UOctet(header.getEncodingId()));
-
-        // preset body length. Allocate four bytes.
-        enc.encodeInteger(0);
-
-        // encode rest of header
-        if (!header.getServiceFrom().isEmpty()) {
-            enc.encodeString(header.getFrom().toString());
-        }
-        if (!header.getServiceTo().isEmpty()) {
-            enc.encodeString(header.getTo().toString());
-        }
-        /*
-        if (header.getPriority() != null) {
-            enc.encodeUInteger(header.getPriority());
-        }
-         */
-        if (header.getTimestamp() != null) {
-            enc.encodeTime(header.getTimestamp());
-        }
-        /*
-        if (header.getNetworkZone() != null) {
-            enc.encodeIdentifier(header.getNetworkZone());
-        }
-        if (header.getSessionName() != null) {
-            enc.encodeIdentifier(header.getSessionName());
-        }
-        if (header.getDomain() != null && header.getDomain().size() > 0) {
-            header.getDomain().encode(enc);
-        }
-         */
-        if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
-            enc.encodeBlob(header.getAuthenticationId());
-        }
-        /*
-        if (header.getSupplements() != null) {
-            header.getSupplements().encode(enc);
-        }
-         */
-    }
-
-    /**
-     * Set a byte which flags the optional fields that are set in the header.
-     *
-     * @param header
-     * @return
-     */
-    private UOctet getFlags(TCPIPMessageHeader header) {
-
-        short result = 0;
-        if (!header.getServiceFrom().isEmpty()) {
-            result |= (0x1 << 7);
-        }
-        if (!header.getServiceTo().isEmpty()) {
-            result |= (0x1 << 6);
-        }
-        /*
-        if (header.getPriority() != null) {
-            result |= (0x1 << 5);
-        }
-         */
-        if (header.getTimestamp() != null) {
-            result |= (0x1 << 4);
-        }
-        /*
-        if (header.getNetworkZone() != null) {
-            result |= (0x1 << 3);
-        }
-        if (header.getSessionName() != null) {
-            result |= (0x1 << 2);
-        }
-        if (header.getDomain() != null && header.getDomain().size() > 0) {
-            result |= (0x1 << 1);
-        }
-         */
-
-        if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
-            result |= 0x1;
-        }
-
-        return new UOctet(result);
-    }
-
 }

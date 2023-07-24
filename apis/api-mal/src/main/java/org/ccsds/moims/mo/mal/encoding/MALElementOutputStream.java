@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The MALElementOutputStream interface is used to encode Elements.
@@ -36,7 +37,7 @@ public interface MALElementOutputStream {
      * with the provided header.
      * @throws MALException If the MALElementOutputStream is closed
      */
-    void writeHeader(Object header) throws IllegalArgumentException, MALException;
+    void writeHeader(MALMessageHeader header) throws IllegalArgumentException, MALException;
 
     /**
      * The method writes an element to the output stream.

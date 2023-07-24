@@ -70,6 +70,7 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
         return sourceBuffer.readSignedLong();
     }
 
+    @Override
     public UInteger decodeUInteger() throws MALException {
         return new UInteger(((TCPIPBufferHolder) sourceBuffer).getUnsignedIntValue());
     }
