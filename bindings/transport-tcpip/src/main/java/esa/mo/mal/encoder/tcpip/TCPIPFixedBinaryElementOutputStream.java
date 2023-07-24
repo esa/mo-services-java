@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * @author Rian van Gijlswijk
  *
  */
+@Deprecated
 public class TCPIPFixedBinaryElementOutputStream extends FixedBinaryElementOutputStream {
 
     /**

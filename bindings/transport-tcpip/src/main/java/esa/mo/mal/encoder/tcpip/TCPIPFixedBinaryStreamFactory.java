@@ -30,6 +30,7 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
  * @author Rian van Gijlswijk
  *
  */
+@Deprecated
 public class TCPIPFixedBinaryStreamFactory extends BaseBinaryStreamFactory {
 
     public TCPIPFixedBinaryStreamFactory() {

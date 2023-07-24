@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
 import esa.mo.mal.transport.gen.*;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
@@ -564,20 +564,18 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         // msg with decoded header and empty body
         byte[] packetData = packetInfo.getPacketData();
 
-        // Header must be always Fixed Binary
-        TCPIPMessage msg = new TCPIPMessage(wrapBodyParts, header,
-                qosProperties, packetData, new TCPIPFixedBinaryStreamFactory());
+        // Header must be always decoded with TCP-IP Fixed Binary
+        header = header.decode(new TCPIPFixedBinaryDecoder(packetData, 0));
 
-        int decodedHeaderBytes = ((TCPIPMessageHeader) msg.getHeader()).decodedHeaderBytes;
-        int bodySize = ((TCPIPMessageHeader) msg.getHeader()).getBodyLength() + 23 - decodedHeaderBytes;
+        int decodedHeaderBytes = header.decodedHeaderBytes;
+        int bodySize = header.getBodyLength() + 23 - decodedHeaderBytes;
 
         // copy body to separate packet
         byte[] bodyPacketData = new byte[bodySize];
         System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
         // decode the body
-        return new TCPIPMessage(wrapBodyParts,
-                (TCPIPMessageHeader) msg.getHeader(), qosProperties,
+        return new TCPIPMessage(wrapBodyParts, header, qosProperties,
                 bodyPacketData, getStreamFactory());
     }
 

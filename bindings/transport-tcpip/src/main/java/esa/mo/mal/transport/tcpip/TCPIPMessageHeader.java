@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryEncoder;
 import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
@@ -120,8 +121,97 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     }
 
     @Override
-    public TCPIPMessageHeader decode(final MALDecoder decoder) throws MALException {
-        return this;
+    public TCPIPMessageHeader decode(final MALDecoder dec) throws MALException {
+        short versionAndSDU = dec.decodeUOctet().getValue();
+        short sduType = (short) (versionAndSDU & 0x1f);
+
+        UShort serviceArea = new UShort(dec.decodeShort());
+        UShort service = new UShort(dec.decodeShort());
+        UShort operation = new UShort(dec.decodeShort());
+        UOctet serviceVersion = dec.decodeUOctet();
+
+        short parts = dec.decodeUOctet().getValue();
+        Boolean isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
+        //QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
+        //SessionType session = SessionType.fromOrdinal(parts & 0xF);
+        Long transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
+
+        short flags = dec.decodeUOctet().getValue(); // flags
+        boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
+        boolean destinationIdFlag = (((flags & 0x40) >> 6) == 0x1);
+        //boolean priorityFlag = (((flags & 0x20) >> 5) == 0x1);
+        boolean timestampFlag = (((flags & 0x10) >> 4) == 0x1);
+        //boolean networkZoneFlag = (((flags & 0x8) >> 3) == 0x1);
+        //boolean sessionNameFlag = (((flags & 0x4) >> 2) == 0x1);
+        //boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
+        boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
+
+        short encodingId = dec.decodeUOctet().getValue();
+        int bodyLength = (int) dec.decodeInteger();
+        Identifier uriFrom = this.getFrom();
+        Identifier uriTo = this.getTo();
+
+        if (sourceIdFlag) {
+            String sourceId = dec.decodeString();
+            if (isURI(sourceId)) {
+                uriFrom = new Identifier(sourceId);
+            } else {
+                String from = this.getFrom() + sourceId;
+                uriFrom = new Identifier(from);
+            }
+        }
+        if (destinationIdFlag) {
+            String destinationId = dec.decodeString();
+            if (isURI(destinationId)) {
+                uriTo = new Identifier(destinationId);
+            } else {
+                String to = this.getTo() + destinationId;
+                uriTo = new Identifier(to);
+            }
+        }
+
+        //UInteger priority = (priorityFlag) ? dec.decodeUInteger() : null;
+        Time timestamp = (timestampFlag) ? dec.decodeTime() : this.getTimestamp();
+        //Identifier networkZone = (networkZoneFlag) ? dec.decodeIdentifier() : null;
+        //Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : null;
+        //IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : null;
+        Blob authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
+        //NamedValueList supplements = (NamedValueList) dec.decodeNullableElement(new NamedValueList());
+
+        TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, this.getServiceFrom(),
+                authenticationId, uriTo, this.getServiceTo(), timestamp,
+                null, null, transactionId, serviceArea,
+                service, operation, serviceVersion, isErrorMessage, new NamedValueList());
+
+        header.setInteractionType(sduType);
+        header.setInteractionStage(sduType);
+        header.setEncodingId(encodingId);
+        header.setBodyLength(bodyLength);
+
+        header.decodedHeaderBytes = ((TCPIPFixedBinaryDecoder) dec).getBufferOffset();
+        header.versionNumber = (versionAndSDU >> 0x5);
+
+        // debug information
+        /*
+		RLOGGER.log(Level.FINEST, "Decoded header:");
+		RLOGGER.log(Level.FINEST, "----------------------------------");
+		RLOGGER.log(Level.FINEST, element.toString());
+		RLOGGER.log(Level.FINEST, "Decoded header bytes:");
+		RLOGGER.log(Level.FINEST, header.decodedHeaderBytes + "");
+		RLOGGER.log(Level.FINEST, "----------------------------------");
+         */
+        return header;
+        // return this;
+    }
+
+    /**
+     * Is @param a URI?
+     *
+     * @param uri
+     * @return
+     */
+    private boolean isURI(String uri) {
+        return uri.startsWith("maltcp://");
     }
 
     @Override

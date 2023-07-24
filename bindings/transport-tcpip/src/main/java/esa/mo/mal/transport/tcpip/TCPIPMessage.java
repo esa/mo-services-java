@@ -23,7 +23,6 @@ package esa.mo.mal.transport.tcpip;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -47,14 +46,14 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 public class TCPIPMessage extends GENMessage {
 
     public TCPIPMessage(boolean wrapBodyParts,
-            GENMessageHeader header, Map qosProperties, byte[] packet,
+            TCPIPMessageHeader header, Map qosProperties, byte[] packet,
             MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, true, header, qosProperties, packet, encFactory);
+        super(wrapBodyParts, false, header, qosProperties, packet, encFactory);
     }
 
-    public TCPIPMessage(boolean wrapBodyParts, GENMessageHeader header, Map qosProperties,
-            MALOperation operation,
-            MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
+    public TCPIPMessage(boolean wrapBodyParts, TCPIPMessageHeader header, Map qosProperties,
+            MALOperation operation, MALElementStreamFactory encFactory,
+            Object... body) throws MALInteractionException {
         super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
     }
 
@@ -98,7 +97,7 @@ public class TCPIPMessage extends GENMessage {
                 lowLevelOutputStream.write(bodyBaos.toByteArray());
             }
         } catch (IOException e) {
-            RLOGGER.log(Level.WARNING, 
+            RLOGGER.log(Level.WARNING,
                     "An IOException was thrown during message encoding!", e);
             throw new MALException(e.getMessage());
         }

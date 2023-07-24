@@ -61,7 +61,7 @@ public class TCPIPEndpoint extends GENEndpoint {
                 service, operation, serviceVersion,
                 isErrorMessage, supplements, qosProperties);
         try {
-            return new TCPIPMessage(false, hdr, qosProperties,
+            return new TCPIPMessage(false, (TCPIPMessageHeader) hdr, qosProperties,
                     null, transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);
@@ -110,7 +110,7 @@ public class TCPIPEndpoint extends GENEndpoint {
                 op.getService().getServiceVersion(),
                 isErrorMessage, supplements, qosProperties);
         try {
-            return new TCPIPMessage(false, hdr, qosProperties,
+            return new TCPIPMessage(false, (TCPIPMessageHeader) hdr, qosProperties,
                     op, transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);
