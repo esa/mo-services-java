@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.zmtp;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * ZMTP message class.
@@ -58,7 +57,7 @@ public class ZMTPMessage extends GENMessage {
      * is unknown.
      */
     public ZMTPMessage(final MALElementStreamFactory hdrStreamFactory, boolean wrapBodyParts,
-            GENMessageHeader header, Map qosProperties, MALOperation operation,
+            MALMessageHeader header, Map qosProperties, MALOperation operation,
             MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
         super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
 
@@ -80,7 +79,7 @@ public class ZMTPMessage extends GENMessage {
      * @throws MALException On decoding error.
      */
     public ZMTPMessage(final MALElementStreamFactory hdrStreamFactory, boolean wrapBodyParts,
-            boolean readHeader, GENMessageHeader header, Map qosProperties, byte[] packet,
+            boolean readHeader, MALMessageHeader header, Map qosProperties, byte[] packet,
             MALElementStreamFactory encFactory) throws MALException {
         super(wrapBodyParts, readHeader, header, qosProperties, packet, encFactory);
 
@@ -102,7 +101,7 @@ public class ZMTPMessage extends GENMessage {
      * @throws MALException On decoding error.
      */
     public ZMTPMessage(final MALElementStreamFactory hdrStreamFactory, final boolean wrapBodyParts,
-            final boolean readHeader, final GENMessageHeader header, final Map qosProperties,
+            final boolean readHeader, final MALMessageHeader header, final Map qosProperties,
             final InputStream ios, final MALElementStreamFactory encFactory) throws MALException {
         super(wrapBodyParts, readHeader, header, qosProperties, ios, encFactory);
 

@@ -23,7 +23,6 @@ package esa.mo.mal.transport.zmtp;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
@@ -50,6 +49,7 @@ import java.net.URISyntaxException;
 import java.util.Random;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The ZMTP MAL Transport implementation.
@@ -379,7 +379,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
         // now full message including body
         try {
             return new ZMTPMessage(hdrStreamFactory, wrapBodyParts, false,
-                    (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
+                    (MALMessageHeader) dummyMessage.getHeader(), qosProperties,
                     dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
                     getBodyEncodingSelector().getDecoderStreamFactory(header));
         } catch (MALException ex) {

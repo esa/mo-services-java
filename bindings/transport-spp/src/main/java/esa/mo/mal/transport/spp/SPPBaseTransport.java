@@ -22,7 +22,6 @@ package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
 import java.nio.ByteBuffer;
@@ -42,6 +41,7 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffer>> {
@@ -268,7 +268,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
             // now full message including body
             try {
                 return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
-                        (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
+                        (MALMessageHeader) dummyMessage.getHeader(), qosProperties,
                         dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
                         localBodyStreamFactory);
             } catch (MALException ex) {

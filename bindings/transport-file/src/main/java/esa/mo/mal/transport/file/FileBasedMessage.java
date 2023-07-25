@@ -21,12 +21,12 @@
 package esa.mo.mal.transport.file;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Extension of the GEN message class for incoming file messages. Closes the
@@ -46,7 +46,7 @@ public class FileBasedMessage extends GENMessage {
      */
     public FileBasedMessage(Map qosProperties, InputStream ios, 
             MALElementStreamFactory encFactory) throws MALException {
-        super(false, true, new GENMessageHeader(), qosProperties, ios, encFactory);
+        super(false, true, new MALMessageHeader(), qosProperties, ios, encFactory);
 
         is = ios;
     }

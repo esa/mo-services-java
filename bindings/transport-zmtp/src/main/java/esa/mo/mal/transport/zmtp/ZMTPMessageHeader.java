@@ -22,7 +22,6 @@ package esa.mo.mal.transport.zmtp;
 
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderDecoder;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderEncoder;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -36,19 +35,19 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
  * @author Dominik Marszk
  */
-public class ZMTPMessageHeader extends GENMessageHeader {
+public class ZMTPMessageHeader extends MALMessageHeader {
 
     /**
      * Logger.

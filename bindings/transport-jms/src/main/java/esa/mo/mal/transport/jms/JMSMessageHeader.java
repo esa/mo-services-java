@@ -20,13 +20,12 @@
  */
 package esa.mo.mal.transport.jms;
 
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
  */
-public class JMSMessageHeader extends GENMessageHeader {
+public class JMSMessageHeader extends MALMessageHeader {
 
     public JMSMessageHeader(MALMessageHeader srcHeader, JMSUpdate update) {
         super(srcHeader.getFrom(), srcHeader.getAuthenticationId(),

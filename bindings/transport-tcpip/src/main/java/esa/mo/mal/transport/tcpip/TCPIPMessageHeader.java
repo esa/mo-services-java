@@ -22,7 +22,6 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryEncoder;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALDecoder;
@@ -40,8 +39,9 @@ import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
-public class TCPIPMessageHeader extends GENMessageHeader {
+public class TCPIPMessageHeader extends MALMessageHeader {
 
     private static final long serialVersionUID = 1L;
 

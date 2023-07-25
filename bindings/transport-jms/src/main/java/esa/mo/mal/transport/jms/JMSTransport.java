@@ -33,7 +33,6 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
@@ -42,6 +41,7 @@ import javax.naming.NameNotFoundException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
 /**
@@ -183,20 +183,21 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
 
     @Override
     public GENMessage createMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new GENMessageHeader(), qosProperties, packet, getStreamFactory());
+        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
+                qosProperties, packet, getStreamFactory());
     }
 
     @Override
-    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI, 
-            String destinationURI, Object multiSendHandle, boolean lastForHandle, 
+    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
+            String destinationURI, Object multiSendHandle, boolean lastForHandle,
             String targetURI, GENMessage msg) throws Exception {
         return new GENOutgoingMessageHolder<byte[]>(10,
-            destinationRootURI,
-            destinationURI,
-            multiSendHandle,
-            lastForHandle,
-            msg,
-            internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
+                destinationRootURI,
+                destinationURI,
+                multiSendHandle,
+                lastForHandle,
+                msg,
+                internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
     }
 
     private class JMSMessageSender implements GENMessageSender<byte[]> {

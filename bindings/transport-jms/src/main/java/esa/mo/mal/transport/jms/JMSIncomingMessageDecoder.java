@@ -21,12 +21,12 @@
 package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
 import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Responsible for decoding newly arrived MAL Messages.
@@ -49,9 +49,9 @@ final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder {
 
     @Override
     public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
-        GENMessage malMsg = new GENMessage(false, true, new GENMessageHeader(), 
+        GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
                 new HashMap(), jmsUpdate.getDat(), transport.getStreamFactory());
-        return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), 
+        return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(),
                 malMsg, new PacketToString(null));
     }
 }

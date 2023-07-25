@@ -24,7 +24,6 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 import esa.mo.mal.encoder.binary.variable.VariableBinaryDecoder;
 import esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.util.Date;
 import java.util.logging.Level;
@@ -38,11 +37,12 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * An implementation of the message header interface for SPP.
  */
-public class SPPMessageHeader extends GENMessageHeader {
+public class SPPMessageHeader extends MALMessageHeader {
 
     private final Boolean forceTC;
     private final int primaryApidQualifier;

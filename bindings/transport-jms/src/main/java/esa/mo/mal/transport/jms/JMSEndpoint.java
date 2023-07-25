@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 
 /**
  *
@@ -384,14 +383,14 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         enc.writeElement(l, null);
     }
 
-    static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError) {
+    static MALMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError) {
         return createReturnHeader(sourceMessage, isError,
                 (short) (sourceMessage.getHeader().getInteractionStage().getValue() + 1));
     }
 
-    static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
+    static MALMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
         MALMessageHeader srcHdr = sourceMessage.getHeader();
-        return new GENMessageHeader(
+        return new MALMessageHeader(
                 srcHdr.getTo(),
                 new Blob(JMSTransport.authId),
                 srcHdr.getFrom(),
