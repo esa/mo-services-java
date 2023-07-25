@@ -54,13 +54,12 @@ public class TCPIPMessageDecoderFactory<O> implements GENIncomingMessageDecoderF
         }
 
         @Override
-        public GENIncomingMessageHolder decodeAndCreateMessage()
-                throws MALException {
-            PacketToString smsg = new PacketToString(null);
+        public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
             GENMessage msg = transport.createMessage(packetInfo);
             packetInfo.setPacketData(null);
 
             if (msg != null) {
+                PacketToString smsg = new PacketToString(null);
                 return new GENIncomingMessageHolder(msg.getHeader().getTransactionId(), msg, smsg);
             }
 
