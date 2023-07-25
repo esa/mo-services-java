@@ -20,10 +20,9 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import java.util.Map;
-
 import esa.mo.mal.transport.gen.GENEndpoint;
 import esa.mo.mal.transport.gen.GENTransport;
+import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALOperation;

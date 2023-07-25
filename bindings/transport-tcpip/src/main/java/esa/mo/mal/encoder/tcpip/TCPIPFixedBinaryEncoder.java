@@ -106,7 +106,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeUInteger(final UInteger value) throws MALException {
-
         try {
             ((TCPIPStreamHolder) outputStream).addUnsignedVarint4((int) value.getValue());
         } catch (IOException ex) {
@@ -122,7 +121,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeNullableIdentifier(final Identifier value) throws MALException {
-
         if (value != null) {
             // encode presence flag
             encodeBoolean(true);
@@ -142,7 +140,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeIdentifier(final Identifier value) throws MALException {
-
         encodeString(value.getValue());
     }
 
@@ -154,9 +151,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeBlob(final Blob value) throws MALException {
-
         byte[] byteValue = value.getValue();
-
         encodeUInteger(new UInteger(byteValue.length));
 
         if (value.getLength() > 0) {

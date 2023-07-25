@@ -125,16 +125,16 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         short versionAndSDU = dec.decodeUOctet().getValue();
         short sduType = (short) (versionAndSDU & 0x1f);
 
-        UShort serviceArea = new UShort(dec.decodeShort());
-        UShort service = new UShort(dec.decodeShort());
-        UShort operation = new UShort(dec.decodeShort());
-        UOctet serviceVersion = dec.decodeUOctet();
+        this.serviceArea = new UShort(dec.decodeShort());
+        this.service = new UShort(dec.decodeShort());
+        this.operation = new UShort(dec.decodeShort());
+        this.serviceVersion = dec.decodeUOctet();
 
         short parts = dec.decodeUOctet().getValue();
-        Boolean isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
+        this.isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
         //QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
         //SessionType session = SessionType.fromOrdinal(parts & 0xF);
-        Long transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
+        this.transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
 
         short flags = dec.decodeUOctet().getValue(); // flags
         boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
@@ -146,8 +146,8 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         //boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
         boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
 
-        short encodingId = dec.decodeUOctet().getValue();
-        int bodyLength = (int) dec.decodeInteger();
+        this.encodingId = dec.decodeUOctet().getValue();
+        this.bodyLength = (int) dec.decodeInteger();
         Identifier uriFrom = this.getFrom();
         Identifier uriTo = this.getTo();
 
@@ -156,8 +156,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
             if (isURI(sourceId)) {
                 uriFrom = new Identifier(sourceId);
             } else {
-                String from = this.getFrom() + sourceId;
-                uriFrom = new Identifier(from);
+                uriFrom = new Identifier(this.getFrom() + sourceId);
             }
         }
         if (destinationIdFlag) {
@@ -165,17 +164,16 @@ public class TCPIPMessageHeader extends MALMessageHeader {
             if (isURI(destinationId)) {
                 uriTo = new Identifier(destinationId);
             } else {
-                String to = this.getTo() + destinationId;
-                uriTo = new Identifier(to);
+                uriTo = new Identifier(this.getTo() + destinationId);
             }
         }
 
         //UInteger priority = (priorityFlag) ? dec.decodeUInteger() : null;
-        Time timestamp = (timestampFlag) ? dec.decodeTime() : this.getTimestamp();
+        this.timestamp = (timestampFlag) ? dec.decodeTime() : this.getTimestamp();
         //Identifier networkZone = (networkZoneFlag) ? dec.decodeIdentifier() : null;
         //Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : null;
         //IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : null;
-        Blob authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
+        this.authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
         //NamedValueList supplements = (NamedValueList) dec.decodeNullableElement(new NamedValueList());
 
         TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, this.getServiceFrom(),
@@ -195,7 +193,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         /*
 		RLOGGER.log(Level.FINEST, "Decoded header:");
 		RLOGGER.log(Level.FINEST, "----------------------------------");
-		RLOGGER.log(Level.FINEST, element.toString());
+		RLOGGER.log(Level.FINEST, header.toString());
 		RLOGGER.log(Level.FINEST, "Decoded header bytes:");
 		RLOGGER.log(Level.FINEST, header.decodedHeaderBytes + "");
 		RLOGGER.log(Level.FINEST, "----------------------------------");
@@ -220,8 +218,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         TCPIPFixedBinaryEncoder enc = (TCPIPFixedBinaryEncoder) encoder;
         byte versionAndSDU = (byte) (this.versionNumber << 5 | this.getSDUType());
 
-        UOctet test = new UOctet(versionAndSDU);
-        enc.encodeUOctet(test);
+        enc.encodeUOctet(new UOctet(versionAndSDU));
         enc.encodeShort((short) this.getServiceArea().getValue());
         enc.encodeShort((short) this.getService().getValue());
         enc.encodeShort((short) this.getOperation().getValue());
@@ -237,7 +234,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
                 | 1);
 
         enc.encodeUOctet(new UOctet(parts));
-        ((TCPIPFixedBinaryEncoder) enc).encodeMALLong(this.getTransactionId());
+        enc.encodeMALLong(this.getTransactionId());
 
         // set flags
         enc.encodeUOctet(getFlags(this));

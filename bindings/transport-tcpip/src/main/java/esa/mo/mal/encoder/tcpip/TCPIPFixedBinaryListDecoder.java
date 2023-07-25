@@ -21,13 +21,13 @@
 package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import java.util.List;
+import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 
 /**
- * Decode a list of elements
+ * Decodes a list of elements
  *
  * @author Rian van Gijlswijk
  *
