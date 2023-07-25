@@ -23,7 +23,6 @@ package esa.mo.mal.transport.tcpip;
 import java.util.Map;
 
 import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -31,6 +30,7 @@ import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * TCPIP Transport binding MAL endpoint implementation. Creates messages and
@@ -55,7 +55,8 @@ public class TCPIPEndpoint extends GENEndpoint {
             final UShort operation, final UOctet serviceVersion,
             final Boolean isErrorMessage, final NamedValueList supplements,
             final Map qosProperties, final Object... body) throws MALException {
-        GENMessageHeader hdr = createMessageHeader(getURI(), authenticationId,
+        TCPIPMessageHeader hdr = (TCPIPMessageHeader) createMessageHeader(
+                getURI(), authenticationId,
                 uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea,
                 service, operation, serviceVersion,
@@ -101,7 +102,8 @@ public class TCPIPEndpoint extends GENEndpoint {
             final Boolean isErrorMessage, final NamedValueList supplements,
             final MALOperation op, final UOctet interactionStage,
             final Map qosProperties, final Object... body) throws MALException {
-        GENMessageHeader hdr = createMessageHeader(getURI(), authenticationId,
+        TCPIPMessageHeader hdr = (TCPIPMessageHeader) createMessageHeader(
+                getURI(), authenticationId,
                 uriTo, timestamp, op.getInteractionType(),
                 interactionStage, transactionId,
                 op.getService().getAreaNumber(),
@@ -110,7 +112,7 @@ public class TCPIPEndpoint extends GENEndpoint {
                 op.getService().getServiceVersion(),
                 isErrorMessage, supplements, qosProperties);
         try {
-            return new TCPIPMessage(false, (TCPIPMessageHeader) hdr, qosProperties,
+            return new TCPIPMessage(false, hdr, qosProperties,
                     op, transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);
@@ -125,7 +127,7 @@ public class TCPIPEndpoint extends GENEndpoint {
      * maltcp://host:port/routingpart
      */
     @Override
-    public GENMessageHeader createMessageHeader(final URI uriFrom,
+    public MALMessageHeader createMessageHeader(final URI uriFrom,
             Blob authenticationId, final URI uriTo, final Time timestamp,
             final InteractionType interactionType, final UOctet interactionStage,
             final Long transactionId, final UShort serviceArea, final UShort service,

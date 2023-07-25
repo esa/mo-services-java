@@ -390,7 +390,7 @@ public class GENEndpoint implements MALEndpoint {
      * @param qosProperties QoS properties of the message, may be null.
      * @return the new message header.
      */
-    public GENMessageHeader createMessageHeader(final URI uriFrom,
+    public MALMessageHeader createMessageHeader(final URI uriFrom,
             final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
@@ -404,7 +404,7 @@ public class GENEndpoint implements MALEndpoint {
             final Boolean isErrorMessage,
             final NamedValueList supplements,
             final Map qosProperties) {
-        return new GENMessageHeader(new Identifier(uriFrom.getValue()),
+        return new MALMessageHeader(new Identifier(uriFrom.getValue()),
                 authenticationId,
                 new Identifier(uriTo.getValue()),
                 timestamp,

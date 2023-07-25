@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport;
 
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
@@ -35,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageListener;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
@@ -152,7 +152,7 @@ public class FastEndpoint implements MALEndpoint {
     public void close() throws MALException {
     }
 
-    public GENMessageHeader createMessageHeader(final URI uriFrom,
+    public MALMessageHeader createMessageHeader(final URI uriFrom,
             final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
@@ -165,7 +165,7 @@ public class FastEndpoint implements MALEndpoint {
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
             final NamedValueList supplements) {
-        return new GENMessageHeader(new Identifier(uriFrom.getValue()),
+        return new MALMessageHeader(new Identifier(uriFrom.getValue()),
                 authenticationId,
                 new Identifier(uriTo.getValue()),
                 timestamp,

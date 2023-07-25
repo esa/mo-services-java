@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.zmtp;
 
 import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
@@ -41,6 +40,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
@@ -213,7 +213,7 @@ public class ZMTPEndpoint extends GENEndpoint {
     }
 
     @Override
-    public GENMessageHeader createMessageHeader(URI uriFrom,
+    public MALMessageHeader createMessageHeader(URI uriFrom,
             Blob authenticationId,
             URI uriTo,
             Time timestamp,

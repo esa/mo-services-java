@@ -51,6 +51,7 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
@@ -526,7 +527,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     @Override
     public GENMessage createMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new GENMessageHeader(),
+        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
                 qosProperties, packet, getStreamFactory());
     }
 

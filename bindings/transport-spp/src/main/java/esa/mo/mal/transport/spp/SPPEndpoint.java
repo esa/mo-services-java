@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.GENTransport;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.APID_QUALIFIER_PROPERTY;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.IS_TC_PACKET_PROPERTY;
@@ -40,6 +39,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
@@ -249,7 +249,7 @@ public class SPPEndpoint extends GENEndpoint {
     }
 
     @Override
-    public GENMessageHeader createMessageHeader(URI uriFrom,
+    public MALMessageHeader createMessageHeader(URI uriFrom,
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
@@ -282,7 +282,7 @@ public class SPPEndpoint extends GENEndpoint {
                 supplements);
     }
 
-    private SPPSegmentCounter getMessageSegmentCounter(GENMessageHeader hdr) {
+    private SPPSegmentCounter getMessageSegmentCounter(MALMessageHeader hdr) {
         SegmentIndex idx = new SegmentIndex(hdr);
 
         SPPSegmentCounter cnt = segmentCounterMap.get(idx);
@@ -305,7 +305,7 @@ public class SPPEndpoint extends GENEndpoint {
         private final UShort service;
         private final UShort operation;
 
-        public SegmentIndex(GENMessageHeader hdr) {
+        public SegmentIndex(MALMessageHeader hdr) {
             this.uriFrom = hdr.getFrom();
             this.uriTo = hdr.getTo();
             this.interactionType = hdr.getInteractionType();

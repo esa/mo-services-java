@@ -54,7 +54,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class GENMessage implements MALMessage, java.io.Serializable {
 
     private static final long serialVersionUID = 222222222222222L;
-    protected final GENMessageHeader header;
+    protected final MALMessageHeader header;
     protected final GENMessageBody body;
     protected final Map qosProperties;
     protected final boolean wrapBodyParts;
@@ -75,7 +75,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      * is unknown.
      */
     public GENMessage(final boolean wrapBodyParts,
-            final GENMessageHeader header,
+            final MALMessageHeader header,
             final Map qosProperties,
             final MALOperation operation,
             final MALElementStreamFactory encFactory,
@@ -123,7 +123,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      */
     public GENMessage(final boolean wrapBodyParts,
             final boolean readHeader,
-            final GENMessageHeader header,
+            final MALMessageHeader header,
             final Map qosProperties,
             final byte[] packet,
             final MALElementStreamFactory encFactory) throws MALException {
@@ -133,7 +133,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 
-        this.header = readHeader ? (GENMessageHeader) enc.readHeader(header) : header;
+        this.header = readHeader ? (MALMessageHeader) enc.readHeader(header) : header;
         this.body = createMessageBody(encFactory, bais, enc);
     }
 
@@ -151,7 +151,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      */
     public GENMessage(final boolean wrapBodyParts,
             final boolean readHeader,
-            final GENMessageHeader header,
+            final MALMessageHeader header,
             final Map qosProperties,
             final java.io.InputStream ios,
             final MALElementStreamFactory encFactory) throws MALException {
@@ -160,7 +160,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
         final MALElementInputStream enc = encFactory.createInputStream(ios);
 
-        this.header = readHeader ? (GENMessageHeader) enc.readHeader(header) : header;
+        this.header = readHeader ? (MALMessageHeader) enc.readHeader(header) : header;
         this.body = createMessageBody(encFactory, null, enc);
     }
 

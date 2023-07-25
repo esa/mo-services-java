@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
@@ -40,6 +39,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Responsible for decoding newly arrived PS MAL Messages.
@@ -69,7 +69,7 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
     @Override
     public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
         // build header
-        GENMessageHeader hdr = new GENMessageHeader(
+        MALMessageHeader hdr = new MALMessageHeader(
                 new Identifier(URIFrom.getValue()),
                 new Blob(JMSTransport.authId),
                 new Identifier(uri.getValue()),

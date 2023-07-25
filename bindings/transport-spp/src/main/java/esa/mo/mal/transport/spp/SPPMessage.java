@@ -22,7 +22,6 @@ package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,7 +37,7 @@ import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * SPP message class.
@@ -68,7 +67,7 @@ public class SPPMessage extends GENMessage {
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
             final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
-            boolean wrapBodyParts, GENMessageHeader header, Map qosProperties,
+            boolean wrapBodyParts, MALMessageHeader header, Map qosProperties,
             MALOperation operation, MALElementStreamFactory encFactory,
             Object... body) throws MALInteractionException {
         super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
@@ -96,7 +95,7 @@ public class SPPMessage extends GENMessage {
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
             final SPPConfiguration configuration,
             final SPPSegmentCounter segmentCounter, boolean wrapBodyParts,
-            boolean readHeader, GENMessageHeader header, Map qosProperties,
+            boolean readHeader, MALMessageHeader header, Map qosProperties,
             byte[] packet, MALElementStreamFactory encFactory) throws MALException {
         super(wrapBodyParts, readHeader, header, qosProperties, packet, encFactory);
 
@@ -123,7 +122,7 @@ public class SPPMessage extends GENMessage {
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
             final SPPConfiguration configuration,
             final SPPSegmentCounter segmentCounter, boolean wrapBodyParts,
-            boolean readHeader, GENMessageHeader header, Map qosProperties,
+            boolean readHeader, MALMessageHeader header, Map qosProperties,
             InputStream ios, MALElementStreamFactory encFactory) throws MALException {
         super(wrapBodyParts, readHeader, header, qosProperties, ios, encFactory);
 
