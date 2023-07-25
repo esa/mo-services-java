@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.body.GENPublishBody;
+import esa.mo.mal.transport.gen.body.PublishBody;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import esa.mo.mal.transport.jms.JMSEndpoint.PublishEntry;
 
@@ -57,7 +57,7 @@ public class JMSPublishHandler {
 
         // decompose update list into separate updates
         MALMessageHeader hdr = msg.getHeader();
-        GENPublishBody body = (GENPublishBody) msg.getBody();
+        PublishBody body = (PublishBody) msg.getBody();
         UpdateHeader header = body.getUpdateHeader();
 
         try {

@@ -20,13 +20,13 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.body.GENDeregisterBody;
-import esa.mo.mal.transport.gen.body.GENErrorBody;
-import esa.mo.mal.transport.gen.body.GENMessageBody;
-import esa.mo.mal.transport.gen.body.GENNotifyBody;
-import esa.mo.mal.transport.gen.body.GENPublishBody;
-import esa.mo.mal.transport.gen.body.GENPublishRegisterBody;
-import esa.mo.mal.transport.gen.body.GENRegisterBody;
+import esa.mo.mal.transport.gen.body.DeregisterBody;
+import esa.mo.mal.transport.gen.body.ErrorBody;
+import esa.mo.mal.transport.gen.body.MessageBody;
+import esa.mo.mal.transport.gen.body.NotifyBody;
+import esa.mo.mal.transport.gen.body.PublishBody;
+import esa.mo.mal.transport.gen.body.PublishRegisterBody;
+import esa.mo.mal.transport.gen.body.RegisterBody;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
     private static final long serialVersionUID = 222222222222222L;
     protected final MALMessageHeader header;
-    protected final GENMessageBody body;
+    protected final MessageBody body;
     protected final Map qosProperties;
     protected final boolean wrapBodyParts;
     protected MALOperation operation = null;
@@ -217,12 +217,12 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory,
+    private MessageBody createMessageBody(final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
 
         if (header.getIsErrorMessage()) {
-            return new GENErrorBody(ctx, wrapBodyParts,
+            return new ErrorBody(ctx, wrapBodyParts,
                     encFactory, encBodyBytes, encBodyElements);
         }
 
@@ -230,56 +230,56 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             final short stage = header.getInteractionStage().getValue();
             switch (stage) {
                 case MALPubSubOperation._REGISTER_STAGE:
-                    return new GENRegisterBody(ctx, wrapBodyParts,
+                    return new RegisterBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
                 case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return new GENPublishRegisterBody(ctx, wrapBodyParts,
+                    return new PublishRegisterBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes,
                             encBodyElements);
                 case MALPubSubOperation._PUBLISH_STAGE:
-                    return new GENPublishBody(ctx, wrapBodyParts,
+                    return new PublishBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
                 case MALPubSubOperation._NOTIFY_STAGE:
-                    return new GENNotifyBody(ctx, wrapBodyParts,
+                    return new NotifyBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
                 case MALPubSubOperation._DEREGISTER_STAGE:
-                    return new GENDeregisterBody(ctx, wrapBodyParts,
+                    return new DeregisterBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
                 default:
-                    return new GENMessageBody(ctx, wrapBodyParts,
+                    return new MessageBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
             }
         }
 
-        return new GENMessageBody(ctx, wrapBodyParts,
+        return new MessageBody(ctx, wrapBodyParts,
                 encFactory, encBodyBytes, encBodyElements);
     }
 
-    private GENMessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
+    private MessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
 
         if (header.getIsErrorMessage()) {
-            return new GENErrorBody(ctx, encFactory, bodyElements);
+            return new ErrorBody(ctx, encFactory, bodyElements);
         }
 
         if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
             final short stage = header.getInteractionStage().getValue();
             switch (stage) {
                 case MALPubSubOperation._REGISTER_STAGE:
-                    return new GENRegisterBody(ctx, encFactory, bodyElements);
+                    return new RegisterBody(ctx, encFactory, bodyElements);
                 case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return new GENPublishRegisterBody(ctx, encFactory, bodyElements);
+                    return new PublishRegisterBody(ctx, encFactory, bodyElements);
                 case MALPubSubOperation._PUBLISH_STAGE:
-                    return new GENPublishBody(ctx, encFactory, bodyElements);
+                    return new PublishBody(ctx, encFactory, bodyElements);
                 case MALPubSubOperation._NOTIFY_STAGE:
-                    return new GENNotifyBody(ctx, encFactory, bodyElements);
+                    return new NotifyBody(ctx, encFactory, bodyElements);
                 case MALPubSubOperation._DEREGISTER_STAGE:
-                    return new GENDeregisterBody(ctx, encFactory, bodyElements);
+                    return new DeregisterBody(ctx, encFactory, bodyElements);
                 default:
-                    return new GENMessageBody(ctx, encFactory, bodyElements);
+                    return new MessageBody(ctx, encFactory, bodyElements);
             }
         }
 
-        return new GENMessageBody(ctx, encFactory, bodyElements);
+        return new MessageBody(ctx, encFactory, bodyElements);
     }
 }

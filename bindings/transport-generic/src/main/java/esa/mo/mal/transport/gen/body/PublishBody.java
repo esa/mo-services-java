@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 /**
  * Implementation of the MALPublishBody interface.
  */
-public class GENPublishBody extends GENMessageBody implements MALPublishBody {
+public class PublishBody extends MessageBody implements MALPublishBody {
 
     private static final long serialVersionUID = 222222222222227L;
     private final int offset;
@@ -45,7 +45,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
      * @param encFactory The encoder stream factory to use.
      * @param messageParts The message parts that compose the body.
      */
-    public GENPublishBody(final MALEncodingContext ctx,
+    public PublishBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         super(ctx, encFactory, messageParts);
@@ -60,7 +60,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
      * @param messageParts The message parts that compose the body.
      * @param offset The offset in the message parts where the updates start.
      */
-    public GENPublishBody(final MALEncodingContext ctx,
+    public PublishBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts, final int offset) {
         super(ctx, encFactory, messageParts);
@@ -78,7 +78,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
-    public GENPublishBody(final MALEncodingContext ctx,
+    public PublishBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,
@@ -99,7 +99,7 @@ public class GENPublishBody extends GENMessageBody implements MALPublishBody {
      * parts.
      * @param offset The offset in the message parts where the updates start.
      */
-    public GENPublishBody(final MALEncodingContext ctx,
+    public PublishBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,

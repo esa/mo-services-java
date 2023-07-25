@@ -23,11 +23,7 @@ package esa.mo.mal.transport.gen.util;
 /**
  * Simple class for holding helper methods.
  */
-public abstract class GENHelper {
-
-    private GENHelper() {
-        // private contructor as not a real class but a place for static methods
-    }
+public class ByteArrayHelper {
 
     /**
      * Creates a string version of byte buffer in hex.

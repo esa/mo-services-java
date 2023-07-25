@@ -53,7 +53,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Implementation of the MALMessageBody interface.
  */
-public class GENMessageBody implements MALMessageBody, java.io.Serializable {
+public class MessageBody implements MALMessageBody, java.io.Serializable {
 
     /**
      * Factory used to create encoders/decoders.
@@ -90,7 +90,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
      * @param encFactory The encoder stream factory to use.
      * @param messageParts The message body parts.
      */
-    public GENMessageBody(final MALEncodingContext ctx,
+    public MessageBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         this.ctx = ctx;
@@ -112,7 +112,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
-    public GENMessageBody(final MALEncodingContext ctx,
+    public MessageBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,
@@ -129,7 +129,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
         try {
             decodeMessageBody();
         } catch (MALException ex) {
-            Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
                     "MAL encoded body encoding error", ex);
         }
 
@@ -406,7 +406,7 @@ public class GENMessageBody implements MALMessageBody, java.io.Serializable {
                         messageParts[i] = decodeBodyPart(benc, ctx, sf);
                     } catch (Exception ex) {
                         TypeId typeId = new TypeId((Long) sf);
-                        Logger.getLogger(GENMessageBody.class.getName()).log(Level.SEVERE,
+                        Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
                                 "Error decoding Body part (with typeId: "
                                 + typeId.toString()
                                 + ") with index: " + i, ex);

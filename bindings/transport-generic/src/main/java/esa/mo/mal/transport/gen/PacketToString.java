@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.util.GENHelper;
+import esa.mo.mal.transport.gen.util.ByteArrayHelper;
 import java.util.Properties;
 
 /**
@@ -66,7 +66,7 @@ public class PacketToString {
         str = "";
 
         if (logFullDebug && data != null) {
-            str = GENHelper.byteArrayToHexString(data);
+            str = ByteArrayHelper.byteArrayToHexString(data);
         }
 
         return str;
