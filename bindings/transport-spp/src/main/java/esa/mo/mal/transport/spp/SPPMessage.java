@@ -151,7 +151,6 @@ public class SPPMessage extends GENMessage {
 
             super.encodeMessage(localBodyStreamFactory, bodyEnc, bodyBaos, false);
 
-            MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
             hdrEnc.writeHeader(header);
             byte[] hdrBuf = hdrBaos.toByteArray();
             byte[] bodyBuf = bodyBaos.toByteArray();

@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -29,8 +30,6 @@ import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-
-import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 
 /**
  * TCPIP Message header encoder
@@ -41,9 +40,14 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
     private static final long MAX_STRING_LENGTH = 2 * (long) Integer.MAX_VALUE + 1;
+    private static final BinaryTimeHandler tHandler = new BinaryTimeHandler();
 
     public TCPIPFixedBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler) {
         super(new TCPIPStreamHolder(os), timeHandler);
+    }
+
+    public TCPIPFixedBinaryEncoder(final OutputStream os) {
+        super(new TCPIPStreamHolder(os), tHandler);
     }
 
     @Override

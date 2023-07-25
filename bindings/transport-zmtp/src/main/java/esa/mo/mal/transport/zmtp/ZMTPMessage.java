@@ -122,7 +122,6 @@ public class ZMTPMessage extends GENMessage {
 
             super.encodeMessage(streamFactory, bodyEnc, bodyBaos, false);
 
-            MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
             hdrEnc.writeHeader(header);
             lowLevelOutputStream.write(hdrBaos.toByteArray());
             lowLevelOutputStream.write(bodyBaos.toByteArray());
