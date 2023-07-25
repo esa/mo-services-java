@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
 /**
  * Implementation of the MALRegisterBody interface.
  */
-public class GENRegisterBody extends GENMessageBody implements MALRegisterBody {
+public class RegisterBody extends MessageBody implements MALRegisterBody {
 
     private static final long serialVersionUID = 222222222222229L;
 
@@ -42,7 +42,7 @@ public class GENRegisterBody extends GENMessageBody implements MALRegisterBody {
      * @param encFactory The encoder stream factory to use.
      * @param messageParts The message parts that compose the body.
      */
-    public GENRegisterBody(final MALEncodingContext ctx,
+    public RegisterBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         super(ctx, encFactory, messageParts);
@@ -59,7 +59,7 @@ public class GENRegisterBody extends GENMessageBody implements MALRegisterBody {
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
-    public GENRegisterBody(final MALEncodingContext ctx,
+    public RegisterBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,

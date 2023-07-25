@@ -22,18 +22,19 @@ package esa.mo.mal.transport.gen.body;
 
 import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 /**
- * Implementation of the MALPublishRegisterBody interface.
+ * Implementation of the MALErrorBody interface.
  */
-public class GENPublishRegisterBody extends GENMessageBody implements MALPublishRegisterBody {
+public class ErrorBody extends MessageBody implements MALErrorBody {
 
-    private static final long serialVersionUID = 222222222222228L;
+    private static final long serialVersionUID = 222222222222225L;
 
     /**
      * Constructor.
@@ -42,7 +43,7 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
      * @param encFactory The encoder stream factory to use.
      * @param messageParts The message parts that compose the body.
      */
-    public GENPublishRegisterBody(final MALEncodingContext ctx,
+    public ErrorBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         super(ctx, encFactory, messageParts);
@@ -59,7 +60,7 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
-    public GENPublishRegisterBody(final MALEncodingContext ctx,
+    public ErrorBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,
@@ -68,8 +69,9 @@ public class GENPublishRegisterBody extends GENMessageBody implements MALPublish
     }
 
     @Override
-    public IdentifierList getSubscriptionKeyNames() throws MALException {
-        IdentifierList keyNames = (IdentifierList) getBodyElement(0, new IdentifierList());
-        return (keyNames != null) ? keyNames : new IdentifierList();
+    public MOErrorException getError() throws MALException {
+        decodeMessageBody();
+        Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
+        return new MOErrorException((UInteger) messageParts[0], extraInfo);
     }
 }

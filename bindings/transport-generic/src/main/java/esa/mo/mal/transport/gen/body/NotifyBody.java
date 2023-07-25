@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
 /**
  * Implementation of the MALNotifyBody interface.
  */
-public class GENNotifyBody extends GENPublishBody implements MALNotifyBody {
+public class NotifyBody extends PublishBody implements MALNotifyBody {
 
     private static final long serialVersionUID = 222222222222226L;
 
@@ -42,7 +42,7 @@ public class GENNotifyBody extends GENPublishBody implements MALNotifyBody {
      * @param encFactory The encoder stream factory to use.
      * @param messageParts The message parts that compose the body.
      */
-    public GENNotifyBody(final MALEncodingContext ctx,
+    public NotifyBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         super(ctx, encFactory, messageParts, 1);
@@ -59,7 +59,7 @@ public class GENNotifyBody extends GENPublishBody implements MALNotifyBody {
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
-    public GENNotifyBody(final MALEncodingContext ctx,
+    public NotifyBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,
