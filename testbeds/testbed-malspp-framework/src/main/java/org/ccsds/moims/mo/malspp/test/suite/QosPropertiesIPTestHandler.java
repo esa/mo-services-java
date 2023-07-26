@@ -44,11 +44,11 @@ import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressMultiInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.TestInvokeEmptyBodyInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.TestProgressEmptyBodyInteraction;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 
 public class QosPropertiesIPTestHandler extends IPTestInheritanceSkeleton {

@@ -32,7 +32,7 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.malspp.test.datatype;
 
-public final class LargeEnumerationFactory implements org.ccsds.moims.mo.mal.MALElementFactory {
+public final class LargeEnumerationFactory extends org.ccsds.moims.mo.mal.MALElementsRegistry {
 
     public org.ccsds.moims.mo.mal.structures.Element createElement() {
         return new LargeEnumeration(0);
