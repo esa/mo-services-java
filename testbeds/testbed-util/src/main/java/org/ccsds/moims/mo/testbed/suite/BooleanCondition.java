@@ -20,23 +20,23 @@
  */
 package org.ccsds.moims.mo.testbed.suite;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
-import org.omg.CORBA.BooleanHolder;
 
 /**
  *
  */
 public final class BooleanCondition {
 
-    private final BooleanHolder isSet = new BooleanHolder(false);
+    private final AtomicBoolean isSet = new AtomicBoolean(false);
 
     public synchronized final void set() {
-        isSet.value = true;
+        isSet.set(true);
         notifyAll();
     }
 
     public synchronized final void reset() {
-        isSet.value = false;
+        isSet.set(false);
         notifyAll();
     }
 
@@ -46,7 +46,7 @@ public final class BooleanCondition {
 
         // Wait until response receieved
         synchronized (this) {
-            while ((timeToGo > 0) && !isSet.value) {
+            while ((timeToGo > 0) && !isSet.get()) {
                 try {
                     this.wait(timeToGo);
                 } catch (InterruptedException ex) {
@@ -59,10 +59,10 @@ public final class BooleanCondition {
         }
 
         // held value will be true if set, false if timed out
-        if (false == isSet.value) {
+        if (!isSet.get()) {
             LoggingBase.logMessage("Condition timed out");
         }
 
-        return isSet.value;
+        return isSet.get();
     }
 }
