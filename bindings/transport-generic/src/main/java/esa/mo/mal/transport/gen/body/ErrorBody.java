@@ -71,7 +71,8 @@ public class ErrorBody extends MessageBody implements MALErrorBody {
     @Override
     public MOErrorException getError() throws MALException {
         decodeMessageBody();
+        UInteger errorNumber = (UInteger) messageParts[0];
         Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
-        return new MOErrorException((UInteger) messageParts[0], extraInfo);
+        return new MOErrorException(errorNumber, extraInfo);
     }
 }
