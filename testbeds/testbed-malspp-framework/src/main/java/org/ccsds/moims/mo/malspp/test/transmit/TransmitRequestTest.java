@@ -73,9 +73,9 @@ public class TransmitRequestTest {
     public boolean createAndSendTemplateSendMessage() throws Exception {
         templateSendMsg = LocalMALInstance.instance().segCounterTestStub().send(null);
         MALMessageHeader header = templateSendMsg.getHeader();
-        origURIFrom = header.getURIFrom();
+        origURIFrom = header.getFromURI();
         origAuthenticationId = header.getAuthenticationId();
-        origUriTo = header.getURITo();
+        origUriTo = header.getToURI();
         origTimestamp = header.getTimestamp();
         origQoSlevel = header.getQoSlevel();
         origPriority = header.getPriority();
