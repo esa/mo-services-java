@@ -42,6 +42,7 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -118,8 +119,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                     uris = FileBasedDirectory
                             .loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
                 } else {
-                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME
-                            .getValue());
+                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
                 }
             } else {
                 if (shared) {
@@ -135,8 +135,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                     uris = FileBasedDirectory
                             .loadURIs(TestServiceProvider.TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
                 } else {
-                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME
-                            .getValue());
+                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
                 }
             } else {
                 if (shared) {
@@ -725,7 +724,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
     }
 
     public String receivedMessageMalHeaderFieldUriFromIs() {
-        return rcvdMsg.getHeader().getURIFrom().toString();
+        return rcvdMsg.getHeader().getFromURI().toString();
     }
 
     public int presenceFlagIs() {
@@ -895,8 +894,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         @Override
         public void monitorMultiNotifyReceived(MALMessageHeader msgHeader,
-                Identifier _Identifier0, UpdateHeaderList _UpdateHeaderList1,
-                TestUpdateList _TestUpdateList2, ElementList _ElementList3, Map qosProperties) {
+                Identifier _Identifier0, UpdateHeader _UpdateHeaderList1,
+                TestUpdate _TestUpdateList2, Element _ElementList3, Map qosProperties) {
             monitorMultiCond.set();
         }
 

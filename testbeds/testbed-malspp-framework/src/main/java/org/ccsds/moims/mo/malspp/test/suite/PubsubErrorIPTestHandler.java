@@ -34,7 +34,6 @@ package org.ccsds.moims.mo.malspp.test.suite;
 
 import java.util.Hashtable;
 import java.util.Map;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -45,7 +44,7 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -63,7 +62,7 @@ import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
 
 public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
 
@@ -131,7 +130,7 @@ public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
 
     public void publishUpdates(TestPublishUpdate testPublishUpdate,
             MALInteraction interaction) throws MALInteractionException, MALException {
-        getMonitorPublisher(testPublishUpdate).publish(new UpdateHeaderList(), new TestUpdateList());
+        getMonitorPublisher(testPublishUpdate).publish(new UpdateHeader(), new TestUpdate());
     }
 
     public String request(IPTestDefinition arg0, MALInteraction arg1)
