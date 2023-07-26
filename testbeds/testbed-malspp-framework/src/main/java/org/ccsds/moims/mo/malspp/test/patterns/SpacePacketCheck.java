@@ -212,13 +212,13 @@ public class SpacePacketCheck {
     public boolean checkUriFrom() {
         URI expectedURI = TestHelper.getUriFrom(spacePacket,
                 secondaryHeaderReader.getSecondaryHeader());
-        boolean fmt = TestHelper.isValidUri(malHeader.getURIFrom());
+        boolean fmt = TestHelper.isValidUri(malHeader.getFromURI());
         if (!fmt) {
-            LoggingBase.logMessage("Wrong URI format for " + malHeader.getURIFrom());
+            LoggingBase.logMessage("Wrong URI format for " + malHeader.getFromURI());
         }
-        boolean res = expectedURI.equals(malHeader.getURIFrom());
+        boolean res = expectedURI.equals(malHeader.getFromURI());
         if (!res) {
-            LoggingBase.logMessage(expectedURI + " != " + malHeader.getURIFrom());
+            LoggingBase.logMessage(expectedURI + " != " + malHeader.getFromURI());
         }
         return res && fmt;
     }
@@ -226,13 +226,13 @@ public class SpacePacketCheck {
     public boolean checkUriTo() {
         URI expectedURI = TestHelper.getUriTo(spacePacket,
                 secondaryHeaderReader.getSecondaryHeader());
-        boolean fmt = TestHelper.isValidUri(malHeader.getURIFrom());
+        boolean fmt = TestHelper.isValidUri(malHeader.getFromURI());
         if (!fmt) {
-            LoggingBase.logMessage("Wrong URI format for " + malHeader.getURIFrom());
+            LoggingBase.logMessage("Wrong URI format for " + malHeader.getFromURI());
         }
-        boolean res = expectedURI.equals(malHeader.getURITo());
+        boolean res = expectedURI.equals(malHeader.getToURI());
         if (!res) {
-            LoggingBase.logMessage(expectedURI + " != " + malHeader.getURITo());
+            LoggingBase.logMessage(expectedURI + " != " + malHeader.getToURI());
         }
         return res && fmt;
     }

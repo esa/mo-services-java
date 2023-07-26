@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.body.ProgressMultiAck;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
 import org.ccsds.moims.mo.malspp.test.datatype.MalSppDataTypeTest;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptorSocket;

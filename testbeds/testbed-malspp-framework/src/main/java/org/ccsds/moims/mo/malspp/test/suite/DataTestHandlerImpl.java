@@ -34,7 +34,9 @@ import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.ULong;
@@ -45,11 +47,16 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
+import org.ccsds.moims.mo.malprototype.datatest.body.TestPolymorphicObjectRefTypesResponse;
 import org.ccsds.moims.mo.malprototype.datatest.provider.DataTestInheritanceSkeleton;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublish;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishList;
+import org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublish;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
+import org.ccsds.moims.mo.malprototype.structures.Auto;
+import org.ccsds.moims.mo.malprototype.structures.Garage;
 import org.ccsds.moims.mo.malspp.test.segmentation.MalSppSegmentationTest;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -172,11 +179,6 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public ObjectRef<Identifier> testDataObjectRef(ObjectRef<Identifier> _Identifier_0, MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -215,5 +217,55 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     public TestPublishList testAbstractCompositeList(TestPublishList tpl, MALInteraction mali) throws MALInteractionException, MALException {
         return tpl;
+    }
+
+    @Override
+    public ObjectRef<Auto> testDataObjectRef(ObjectRef<Auto> _Auto_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public TestInnerAbstractMultiReturnResponse testInnerAbstractMultiReturn(UOctet _UOctet0, Element _Element1, Element _Element2, UInteger _UInteger3, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public AbstractCompositeList testPolymorphicAbstractCompositeList(AbstractCompositeList _AbstractCompositeList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public CompositeList testPolymorphicMalCompositeList(CompositeList _CompositeList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public ElementList testPolymorphicMalElementList(ElementList _ElementList0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(Garage garage, ObjectRefList porsches, ObjectRefList autos, ObjectRefList elements, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public ObjectRef<Auto> createObject(Auto _Auto0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public ObjectRef<Auto> createObjectFromFields(Identifier _Identifier0, Identifier _Identifier1, Boolean _Boolean2, String _String3, String _String4, StringList _StringList5, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deleteObject(ObjectRef<Auto> _Auto_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Auto getObject(ObjectRef<Auto> _Auto_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

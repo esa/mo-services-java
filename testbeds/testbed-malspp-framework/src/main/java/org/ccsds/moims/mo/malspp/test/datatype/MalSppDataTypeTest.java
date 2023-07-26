@@ -45,10 +45,10 @@ import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.test.datatype.DataTypeScenario;
 import org.ccsds.moims.mo.mal.test.datatype.TestData;
 import org.ccsds.moims.mo.malprototype.datatest.consumer.DataTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublish;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishList;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublish;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdateList;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptor;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
@@ -594,8 +594,8 @@ public class MalSppDataTypeTest extends DataTypeScenario {
     }
 
     public boolean testAbstractCompositeList() {
-        Composite composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
-        TestPublishList abstractCompositeList = new TestPublishUpdateList();
+        TestPublishUpdate composite = new TestPublishUpdate(null, null, null, null, null, null, null, null, null, null, null, null, null);
+        TestPublishList abstractCompositeList = new TestPublishList();
         abstractCompositeList.add(composite);
         abstractCompositeList.add(composite);
         TestPublishList res;
