@@ -124,13 +124,13 @@ public class ParseHelper {
         } else if (UNSUPPORTED_OPERATION_ERROR.equals(error)) {
             return MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER;
         } else if (UNSUPPORTED_VERSION_ERROR.equals(error)) {
-            return MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER;
+            return MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER;
         } else if (BAD_ENCODING_ERROR.equals(error)) {
             return MALHelper.BAD_ENCODING_ERROR_NUMBER;
         } else if (UNKNOWN_ERROR.equals(error)) {
             return MALHelper.UNKNOWN_ERROR_NUMBER;
         } else if (AUTHENTICATION_FAIL_ERROR.equals(error)) {
-            return MALHelper.AUTHENTICATION_FAIL_ERROR_NUMBER;
+            return MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER;
         } else if (AUTHORISATION_FAIL_ERROR.equals(error)) {
             return MALHelper.AUTHORISATION_FAIL_ERROR_NUMBER;
         } else {
@@ -157,13 +157,13 @@ public class ParseHelper {
             return UNSUPPORTED_AREA_ERROR;
         } else if (MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER.equals(error)) {
             return UNSUPPORTED_OPERATION_ERROR;
-        } else if (MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER.equals(error)) {
+        } else if (MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER.equals(error)) {
             return UNSUPPORTED_VERSION_ERROR;
         } else if (MALHelper.BAD_ENCODING_ERROR_NUMBER.equals(error)) {
             return BAD_ENCODING_ERROR;
         } else if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(error)) {
             return UNKNOWN_ERROR;
-        } else if (MALHelper.AUTHENTICATION_FAIL_ERROR_NUMBER.equals(error)) {
+        } else if (MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER.equals(error)) {
             return AUTHENTICATION_FAIL_ERROR;
         } else if (MALHelper.AUTHORISATION_FAIL_ERROR_NUMBER.equals(error)) {
             return AUTHORISATION_FAIL_ERROR;

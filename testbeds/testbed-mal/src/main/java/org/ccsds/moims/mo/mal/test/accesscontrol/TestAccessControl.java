@@ -66,7 +66,7 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
                     x = new MsgDetails((int) msg.getHeader().getInteractionType().getNumericValue().getValue(), stage,
                             msg.getHeader().getAuthenticationId().getValue(), msg.getHeader().getIsErrorMessage().booleanValue());
                 } catch (MALException exc) {
-                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAIL_ERROR_NUMBER,
+                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,
                             new Union("Could not get the authentication id: " + exc)),
                             msg.getQoSProperties());
                 }
@@ -81,7 +81,7 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
                     && msg.getHeader().getInteractionStage().getValue() == 1) {
                 if (msg.getHeader().getOperation().getValue() == ErrorTestServiceInfo._TESTAUTHENTICATIONFAILURE_OP_NUMBER) {
                     logMessage("Rejecting operation " + ErrorTestServiceInfo.TESTAUTHENTICATIONFAILURE_OP.getName().getValue());
-                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAIL_ERROR_NUMBER,
+                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,
                             new Union(errorPrefix + "Rejecting operation " + ErrorTestServiceInfo.TESTAUTHENTICATIONFAILURE_OP.getName().getValue())),
                             msg.getQoSProperties());
                 }
@@ -101,7 +101,7 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
             try {
                 authId = msg.getHeader().getAuthenticationId().getValue();
             } catch (MALException exc) {
-                throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAIL_ERROR_NUMBER,
+                throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,
                         new Union("Could not get the authentication id: " + exc)),
                         msg.getQoSProperties());
             }

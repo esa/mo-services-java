@@ -94,7 +94,7 @@ public class TransportErrorScenario {
                 case (int) MALHelper._UNSUPPORTED_OPERATION_ERROR_NUMBER:
                     errorTest.testUnsupportedOperation(body);
                     break;
-                case (int) MALHelper._UNSUPPORTED_VERSION_ERROR_NUMBER:
+                case (int) MALHelper._UNSUPPORTED_AREA_VERSION_ERROR_NUMBER:
                     errorTest.testUnsupportedVersion(body);
                     break;
                 case (int) MALHelper._BAD_ENCODING_ERROR_NUMBER:
