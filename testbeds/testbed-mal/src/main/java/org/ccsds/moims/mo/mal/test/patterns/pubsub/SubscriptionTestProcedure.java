@@ -105,7 +105,8 @@ public class SubscriptionTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.asyncMonitorRegister(subscription, listener);
         synchronized (listener.cond) {
@@ -121,7 +122,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.asyncMonitorRegister(subscription, listener);
         synchronized (listener.cond) {
@@ -137,7 +138,10 @@ public class SubscriptionTestProcedure extends LoggingBase {
         listener.resetState();
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN,
+                (new AttributeList("A")).getAsNullableAttributeList()
+        ));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
@@ -145,7 +149,8 @@ public class SubscriptionTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+                SESSION, SESSION_NAME, false, updateHeaderList,
+                updateList, null, expectedErrorCode, false, null);
 
         ipTest.publishUpdates(testPublishUpdate);
         return true;

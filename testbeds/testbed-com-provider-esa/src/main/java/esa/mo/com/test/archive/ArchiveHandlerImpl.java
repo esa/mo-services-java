@@ -673,10 +673,10 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             LoggingBase.logMessage(CLS + ":matchesFilter:class cast exception - filter not expected type:"
                     + compositeFilter);
             if (obj.getElement() != null) {
-                LoggingBase.logMessage(CLS + ":matchesFilter:object ele class" + obj.getElement().getClass());
+                LoggingBase.logMessage(CLS + ":matchesFilter:object ele class " + obj.getElement().getClass());
             }
             throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
-                    null));
+                    ex.toString()));
         }
         if (bMatch) {
             if (filterType == FilterType.NUMERIC) {

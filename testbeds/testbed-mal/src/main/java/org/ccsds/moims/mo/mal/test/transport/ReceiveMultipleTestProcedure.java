@@ -39,6 +39,8 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -92,7 +94,7 @@ public class ReceiveMultipleTestProcedure {
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(value)));
 
-        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.monitorRegister(subscription, listener);
 
@@ -113,8 +115,11 @@ public class ReceiveMultipleTestProcedure {
                         keyNames, expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
+        NullableAttributeList atts = new NullableAttributeList();
+        atts.add(new NullableAttribute(value));
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(value)));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, atts));
 
         TestUpdateList testUpdateList = new TestUpdateList();
         testUpdateList.add(new TestUpdate(0));

@@ -39,15 +39,17 @@ import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.test.util.Helper;
@@ -79,13 +81,14 @@ public class EntityRequestTestProcedure extends LoggingBase {
     private IPTestStub ipTest;
 
     // TODO: rename to: prepare test to use the following subsctiption key values
-    public boolean prepareTestToUseTheFollowingSubscriptionKeyValuesAndSharedBroker(String entities, String sharedBroker) throws Exception {
+    public boolean prepareTestToUseTheFollowingSubscriptionKeyValuesAndSharedBroker(
+            String entities, String sharedBroker) throws Exception {
         logMessage("EntityRequestTestProcedure.initiatePublisherWithEntitiesAndSharedBroker({"
                 + entities + "}," + sharedBroker + ")");
 
         boolean shared = Boolean.parseBoolean(sharedBroker);
 
-        ArrayList<AttributeList> entityKeyList = parseAllKeyValues(entities);
+        ArrayList<NullableAttributeList> entityKeyList = parseAllKeyValues(entities);
 
         ipTest = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
@@ -105,7 +108,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         updateList = new TestUpdateList();
 
         for (int i = 0; i < entityKeyList.size(); i++) {
-            AttributeList attList = entityKeyList.get(i);
+            NullableAttributeList attList = entityKeyList.get(i);
             updateHeaderList.add(new UpdateHeader(new Identifier(""), HeaderTestProcedure.DOMAIN, attList));
             updateList.add(new TestUpdate(i));
         }
@@ -113,8 +116,8 @@ public class EntityRequestTestProcedure extends LoggingBase {
         return true;
     }
 
-    public static ArrayList<AttributeList> parseAllKeyValues(String s) {
-        ArrayList<AttributeList> allKeyValues = new ArrayList<>();
+    public static ArrayList<NullableAttributeList> parseAllKeyValues(String s) {
+        ArrayList<NullableAttributeList> allKeyValues = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(s, " ,");
         while (st.hasMoreTokens()) {
             allKeyValues.add(parse4KeyValues(st.nextToken()));
@@ -122,21 +125,21 @@ public class EntityRequestTestProcedure extends LoggingBase {
         return allKeyValues;
     }
 
-    public static AttributeList parse4KeyValues(String s) {
+    public static NullableAttributeList parse4KeyValues(String s) {
         StringTokenizer st = new StringTokenizer(s, ".");
-        AttributeList k = new AttributeList();
-        k.add(parseStringKeyValue(st.nextToken()));
-        k.add(parseNumberKeyValue(st.nextToken()));
-        k.add(parseNumberKeyValue(st.nextToken()));
-        k.add(parseNumberKeyValue(st.nextToken()));
+        NullableAttributeList k = new NullableAttributeList();
+        k.add(new NullableAttribute(parseStringKeyValue(st.nextToken())));
+        k.add(new NullableAttribute(parseNumberKeyValue(st.nextToken())));
+        k.add(new NullableAttribute(parseNumberKeyValue(st.nextToken())));
+        k.add(new NullableAttribute(parseNumberKeyValue(st.nextToken())));
         return k;
     }
 
-    public static AttributeList parseKeyValues(String s) {
+    public static NullableAttributeList parseKeyValues(String s) {
         StringTokenizer st = new StringTokenizer(s, ".");
-        AttributeList k = new AttributeList();
+        NullableAttributeList k = new NullableAttributeList();
         while (st.hasMoreTokens()) {
-            k.add(parseStringKeyValue(st.nextToken()));
+            k.add(new NullableAttribute(parseStringKeyValue(st.nextToken())));
         }
         return k;
     }
@@ -158,13 +161,13 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    public static Long parseNumberKeyValue(String s) {
+    public static Union parseNumberKeyValue(String s) {
         if (s.equals("[null]")) {
             return null;
         } else if (s.equals("*")) {
-            return new Long(0);
+            return new Union(new Long(0));
         } else {
-            return new Long(Long.parseLong(s));
+            return new Union(new Long(Long.parseLong(s)));
         }
     }
 
@@ -173,16 +176,20 @@ public class EntityRequestTestProcedure extends LoggingBase {
         logMessage("EntityRequestTestProcedure.subscribeToEntityKeyValuesAndExpectedEntities({"
                 + keyValues + "},{" + expectedEntities + "})");
 
-        ArrayList<AttributeList> expectedKeyValues = parseAllKeyValues(expectedEntities);
-        AttributeList values = parse4KeyValues(keyValues);
+        ArrayList<NullableAttributeList> expectedKeyValues = parseAllKeyValues(expectedEntities);
+        NullableAttributeList values = parse4KeyValues(keyValues);
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(0)))));
-        filters.add(new SubscriptionFilter(Helper.key2, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(1)))));
-        filters.add(new SubscriptionFilter(Helper.key3, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(2)))));
-        filters.add(new SubscriptionFilter(Helper.key4, new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(3)))));
+        filters.add(new SubscriptionFilter(Helper.key1,
+                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(0).getValue()))));
+        filters.add(new SubscriptionFilter(Helper.key2,
+                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(1).getValue()))));
+        filters.add(new SubscriptionFilter(Helper.key3,
+                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(2).getValue()))));
+        filters.add(new SubscriptionFilter(Helper.key4,
+                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(3).getValue()))));
 
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         MonitorListener listener = new MonitorListener();
 
@@ -200,7 +207,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         // Check the Notify arrival
         // The QoS level is Assured (FIFO) so the Notify messages arrived
         // before the 'publishUpdates' ack.
-        ArrayList<AttributeList> notifiedKeyValues = listener.getNotifiedKeys();
+        ArrayList<NullableAttributeList> notifiedKeyValues = listener.getNotifiedKeys();
 
         IdentifierList idList = new IdentifierList();
         idList.add(SUBSCRIPTION_ID);
@@ -229,14 +236,15 @@ public class EntityRequestTestProcedure extends LoggingBase {
         return true;
     }
 
-    private void checkIsContainedInto(ArrayList<AttributeList> containedList, ArrayList<AttributeList> containerList,
+    private void checkIsContainedInto(ArrayList<NullableAttributeList> containedList,
+            ArrayList<NullableAttributeList> containerList,
             AssertionList assertions, String procedureName, String info) {
         // Print out the sizes of the lists!
         logMessage("containedList.size() = " + containedList.size()
                 + "  --  containerList.size() = " + containerList.size());
 
         for (int i = 0; i < containedList.size(); i++) {
-            AttributeList keyValues = containedList.get(i);
+            NullableAttributeList keyValues = containedList.get(i);
             logMessage("containedList keyValues = " + keyValues.toString());
 
             boolean found = false;
@@ -251,7 +259,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    private boolean valuesAreMatching(AttributeList listA, AttributeList listB) {
+    private boolean valuesAreMatching(NullableAttributeList listA, NullableAttributeList listB) {
         if (listA.size() != listB.size()) {
             return false;
         }
@@ -278,7 +286,8 @@ public class EntityRequestTestProcedure extends LoggingBase {
 
     static class MonitorListener extends IPTestAdapter {
 
-        private ArrayList<AttributeList> notifiedKeyValues;
+        // private ArrayList<AttributeList> notifiedKeyValues;
+        private ArrayList<NullableAttributeList> notifiedKeyValues;
 
         MonitorListener() {
             notifiedKeyValues = new ArrayList<>();
@@ -291,7 +300,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
             notifiedKeyValues.add(updateHeader.getKeyValues());
         }
 
-        ArrayList<AttributeList> getNotifiedKeys() {
+        ArrayList<NullableAttributeList> getNotifiedKeys() {
             return notifiedKeyValues;
         }
     }

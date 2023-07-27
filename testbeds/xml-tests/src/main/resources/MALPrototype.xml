@@ -1077,7 +1077,7 @@
                                comment="This operation creates a new MO Object from fields values">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="Identifier" comment="autoType" />
+                            <smc:type area="MAL" name="Long" comment="autoType" />
                             <smc:type area="MAL" name="Identifier" comment="key" />
                             <smc:type area="MAL" name="Boolean" comment="update" />
                             <smc:type area="MAL" name="String" comment="engine" />
@@ -1582,7 +1582,7 @@
                 </smc:field>
                 <smc:field name="keyValues"
                            comment="The list of key values">
-                    <smc:type area="MAL" name="AttributeList" />
+                    <smc:type area="MAL" name="NullableAttributeList" />
                 </smc:field>
                 <smc:field name="errorCode"
                            comment="The code of the Publish error expected to be received.-1 if no Publish error is expected.">
@@ -1594,7 +1594,7 @@
                 </smc:field>
                 <smc:field name="failedKeyValues"
                            comment="The list of failed keys values.">
-                    <smc:type area="MAL" name="AttributeList" />
+                    <smc:type area="MAL" name="NullableAttributeList" />
                 </smc:field>
             </smc:composite>
             <smc:composite name="TestUpdate" shortFormPart="10"

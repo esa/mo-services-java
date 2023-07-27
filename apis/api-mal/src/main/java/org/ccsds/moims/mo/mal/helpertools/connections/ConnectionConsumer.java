@@ -282,7 +282,7 @@ public class ConnectionConsumer {
      * @return The subscription object
      */
     public static Subscription subscriptionWildcard(final Identifier subscriptionId) {
-        return new Subscription(subscriptionId, null, null);
+        return new Subscription(subscriptionId, null, null, null);
     }
 
     /**
@@ -296,7 +296,7 @@ public class ConnectionConsumer {
     @Deprecated
     public static Subscription subscriptionKeys(final Identifier subscriptionId,
             final SubscriptionFilterList filters) {
-        return new Subscription(subscriptionId, null, filters);
+        return new Subscription(subscriptionId, null, null, filters);
     }
 
     /**
@@ -333,7 +333,7 @@ public class ConnectionConsumer {
         filters.add(new SubscriptionFilter(new Identifier("key3"), list3));
         filters.add(new SubscriptionFilter(new Identifier("key4"), list4));
 
-        return new Subscription(subId, null, filters);
+        return new Subscription(subId, null, null, filters);
     }
 
 }

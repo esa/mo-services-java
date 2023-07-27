@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectCreation;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectDeletion;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -74,20 +75,26 @@ public class EventDetails {
         // Check key
         // First Sub Key = event object number (Identifier) 
         bValid = COMChecker.equalsCheck(strObject, "Header.Key.First",
-                updateHeader.getKeyValues().get(0).toString(),
+                updateHeader.getKeyValues().get(0).getValue().toString(),
                 objNumber, bValid);
         // Second Sub Key = event object type (3 sub-fields)
+        Attribute attVal = updateHeader.getKeyValues().get(1).getValue();
+        Long myLong1 = (Long) Attribute.attribute2JavaType(attVal);
+
         bValid = COMChecker.equalsCheck(strObject, "Header.Key.Second",
-                (Long) updateHeader.getKeyValues().get(1),
+                myLong1,
                 COMTestHelper.getEventTestObjectTypeAsKey(0), bValid);
         // Third Sub Key = event object instance identifier 
         //updateHeader.getKey().getThirdSubKey().intValue();
+        Attribute attVal2 = updateHeader.getKeyValues().get(2).getValue();
+        Long myLong2 = (Long) Attribute.attribute2JavaType(attVal2);
         bValid = COMChecker.equalsCheck(strObject, "Header.Key.Third",
-                (Long) updateHeader.getKeyValues().get(2),
-                instId, bValid);
+                myLong2, instId, bValid);
         // Fourth Sub Key = event source object type (4 sub-fields)
+        Attribute attVal3 = updateHeader.getKeyValues().get(3).getValue();
+        Long myLong3 = (Long) Attribute.attribute2JavaType(attVal3);
         bValid = COMChecker.equalsCheck(strObject, "Header.Key.Fourth",
-                (Long) updateHeader.getKeyValues().get(3),
+                myLong3,
                 COMTestHelper.getEventTestObjectTypeAsKey((new Integer(sourceObjNumber)).intValue()), bValid);
         // Check source URI
         COMChecker.equalsCheck(strObject, "Header.UpdateType", updateHeader.getSource().toString(),

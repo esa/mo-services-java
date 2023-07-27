@@ -498,8 +498,7 @@ public abstract class Encoder implements MALListEncoder {
                 outputStream.writeString(value.getDomain().get(i).getValue());
             }
 
-            outputStream.writeString(value.getArea().getValue());
-            outputStream.writeString(value.getType().getValue());
+            outputStream.writeSignedLong(value.getabsoluteSFP());
             outputStream.writeString(value.getKey().getValue());
             outputStream.writeSignedLong(value.getObjectVersion().getValue());
         } catch (IOException ex) {

@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -275,7 +276,7 @@ public class EventTestScenario extends LoggingBase {
         EventStub evStub = LocalMALInstance.instance().eventStub(domain);
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription sub = new Subscription(new Identifier("SubA"), null, filters);
+        Subscription sub = new Subscription(new Identifier("SubA"), null, null, filters);
         evStub.monitorEventRegister(sub, testEventAdapter);
         eventDomain = strDomain;
         logMessage(loggingClassName + ":registerForEvents Complete");
@@ -563,7 +564,9 @@ public class EventTestScenario extends LoggingBase {
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-        boolean bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
+        Attribute attVal = ev.updateHeader.getKeyValues().get(2).getValue();
+        Long myLong1 = (Long) Attribute.attribute2JavaType(attVal);
+        boolean bMatch = archiveDetails.getInstId().equals(myLong1);
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
         return bMatch;
     }
@@ -601,11 +604,12 @@ public class EventTestScenario extends LoggingBase {
             IdentifierList domainId = new IdentifierList();
             domainId.add(new Identifier(eventDomain));
             // Set instance
-            Long instanceId = (Long) ev.getUpdateHeader().getKeyValues().get(2);
+            Attribute attVal = ev.getUpdateHeader().getKeyValues().get(2).getValue();
+            Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
             LongList instanceIdsToRetrieve = new LongList();
             instanceIdsToRetrieve.add(instanceId);
             // Set Object Type
-            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());
+            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).getValue().toString());
             objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber));
             LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId,

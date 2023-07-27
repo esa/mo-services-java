@@ -38,7 +38,9 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
     /**
      * Default constructor.
      *
-     * @param attribute An attribute to be added to the list.
+     * @param attribute An attribute to be added to the list. The type has to be
+     * Object (instead of Attribute) because the Union type does not extend the
+     * Attribute type.
      */
     public AttributeList(Object attribute) {
         super();
@@ -85,6 +87,14 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
     @Override
     public Object get(int index) {
         return Attribute.attribute2JavaType(super.get(index));
+    }
+
+    public NullableAttributeList getAsNullableAttributeList() {
+        NullableAttributeList attributes = new NullableAttributeList();
+        for (Object obj : this) {
+            attributes.add(new NullableAttribute((Attribute) Attribute.javaType2Attribute(obj)));
+        }
+        return attributes;
     }
 
     /**

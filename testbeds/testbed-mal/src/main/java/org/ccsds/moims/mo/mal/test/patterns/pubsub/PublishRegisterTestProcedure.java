@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -116,11 +117,11 @@ public class PublishRegisterTestProcedure extends LoggingBase {
                 + entityKeyValue + ',' + error + ')');
         listener.clear();
 
-        AttributeList values = EntityRequestTestProcedure.parseKeyValues(entityKeyValue);
+        NullableAttributeList values = EntityRequestTestProcedure.parseKeyValues(entityKeyValue);
 
         // Empty filters list because we don't want any filter
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
         ipTest.monitorRegister(subscription, listener);
 
         boolean expectError = Boolean.parseBoolean(error);
@@ -132,7 +133,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
         updateList.add(new TestUpdate(new Integer(0)));
 
         UInteger expectedErrorCode;
-        AttributeList failedEntityKeys;
+        NullableAttributeList failedEntityKeys;
         if (expectError) {
             expectedErrorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
             // failedEntityKeys = values;

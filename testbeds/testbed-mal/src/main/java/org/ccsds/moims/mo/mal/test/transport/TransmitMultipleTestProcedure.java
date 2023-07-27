@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -92,7 +93,8 @@ public class TransmitMultipleTestProcedure {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, values));
-        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
         return true;
     }
 
@@ -117,14 +119,15 @@ public class TransmitMultipleTestProcedure {
         ipTest2.monitorRegister(subscription, listener2);
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, values.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
 
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, 
+                SESSION, SESSION_NAME, false, updateHeaderList,
                 updateList, null, expectedErrorCode, false, null);
         ipTest1.testMultipleNotify(testPublishUpdate);
 

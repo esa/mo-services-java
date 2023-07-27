@@ -479,8 +479,8 @@
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
     <xsd:attribute name="shortFormPart" type="mal:ShortFormPart" use="required"/>
+    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
   </xsd:complexType>
 

@@ -40,10 +40,11 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -383,8 +384,8 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 
         for (int i = 0; i < poolSize;) {
             BasicUpdate basic = new BasicUpdate(currentValue);
-            AttributeList keyValues = new AttributeList();
-            keyValues.add(new Identifier(String.valueOf(i)));
+            NullableAttributeList keyValues = new NullableAttributeList();
+            keyValues.add(new NullableAttribute(new Identifier(String.valueOf(i))));
             UpdateHeader hdr = new UpdateHeader(new Identifier("SomeURI"), null, keyValues);
             updateList.add(new AbstractMap.SimpleEntry<>(hdr, basic));
         }

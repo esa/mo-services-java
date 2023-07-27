@@ -53,6 +53,7 @@ import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -242,7 +243,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         ObjectDetails objDetails = new ObjectDetails(relatedInstId, source);
 
         // Produce header
-        UpdateHeader uh = setUpdateHeader(TEST_OBJECT_CREATION_NO, sourceInstId);
+        UpdateHeader uh = generateUpdateHeader(TEST_OBJECT_CREATION_NO, sourceInstId);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, oc);
@@ -273,7 +274,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         }
 
         // Produce header
-        UpdateHeader uh = setUpdateHeader(TEST_OBJECT_DELETION_NO, sourceInstId);
+        UpdateHeader uh = generateUpdateHeader(TEST_OBJECT_DELETION_NO, sourceInstId);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, od);
@@ -286,7 +287,9 @@ public class EventTestHandlerImpl implements EventTestHandler {
     protected void storeInArchive(ObjectDetails objDetails, UpdateHeader updateHeader,
             ElementList elementList, String objectNumber) throws MALInteractionException, MALException {
         ArchiveDetailsList archiveDetailsList = new ArchiveDetailsList();
-        archiveDetailsList.add(new ArchiveDetails((Long) updateHeader.getKeyValues().get(2), objDetails, NETWORK,
+        Attribute attVal = updateHeader.getKeyValues().get(2).getValue();
+        Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
+        archiveDetailsList.add(new ArchiveDetails(instanceId, objDetails, NETWORK,
                 FineTime.now(), new URI(updateHeader.getSource().getValue())));
 
         // Domain is TBD
@@ -332,7 +335,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         ObjectDetails objDetails = new ObjectDetails(related, source);
 
         // Produce header
-        UpdateHeader uh = setUpdateHeader(TEST_OBJECT_UPDATE_NO, sourceInstId);
+        UpdateHeader uh = generateUpdateHeader(TEST_OBJECT_UPDATE_NO, sourceInstId);
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, ou);
@@ -342,7 +345,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
     }
 
-    private UpdateHeader setUpdateHeader(String eventObjectNumber, long sourceInstId) {
+    private UpdateHeader generateUpdateHeader(String eventObjectNumber, long sourceInstId) {
         short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
 
         AttributeList keyValues = new AttributeList();
@@ -365,7 +368,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
         UpdateHeader uh = new UpdateHeader(
                 new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()),
-                domain, keyValues);
+                domain, keyValues.getAsNullableAttributeList());
         return uh;
     }
 

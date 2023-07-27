@@ -69,7 +69,7 @@ class MonitorEventAdapter extends EventAdapter {
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _UpdateHeaderList1);
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ObjectDetailsList2);
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _ElementList3);
-        Identifier objectNumber = (Identifier) header.getKeyValues().get(0);
+        Identifier objectNumber = (Identifier) header.getKeyValues().get(0).getValue();
         Identifier source = header.getSource();
         String strObjectNumber = objectNumber.toString();
         String strEventName = objToEventName(objectNumber.toString());
@@ -89,8 +89,8 @@ class MonitorEventAdapter extends EventAdapter {
             success = activityTransferExecution.getSuccess();
         }
         // TBC do we need to support multiple updates
-        monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(), success,
-                header, objectDetails, (Element) element));
+        monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(),
+                success, header, objectDetails, (Element) element));
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived " + strEventName + " " + success);
     }
 
@@ -101,7 +101,8 @@ class MonitorEventAdapter extends EventAdapter {
      * @param msgHeader The header of the received message.
      * @param qosProperties The QoS properties associated with the message.
      */
-    public void monitorEventRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader, java.util.Map qosProperties) {
+    public void monitorEventRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+            java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterAckReceived - ERROR");
     }
 

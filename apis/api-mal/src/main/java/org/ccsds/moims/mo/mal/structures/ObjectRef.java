@@ -33,8 +33,7 @@ public class ObjectRef<T extends Element> implements Attribute {
 
     private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
     private final IdentifierList domain;
-    private final Identifier area;
-    private final Identifier type;
+    private final Long absoluteSFP;
     private final Identifier key;
     private final UInteger objectVersion;
 
@@ -42,24 +41,21 @@ public class ObjectRef<T extends Element> implements Attribute {
      * Default constructor.
      */
     public ObjectRef() {
-        this(new IdentifierList(), new Identifier(), new Identifier(),
-                new Identifier(), new UInteger());
+        this(new IdentifierList(), 0L, new Identifier(), new UInteger());
     }
 
     /**
      * Constructor.
      *
      * @param domain The domain.
-     * @param area The area.
-     * @param type The type.
+     * @param absoluteSFP The absolute short form part.
      * @param key The key.
      * @param objectVersion The object version.
      */
-    public ObjectRef(final IdentifierList domain, final Identifier area,
-            final Identifier type, final Identifier key, final UInteger objectVersion) {
+    public ObjectRef(final IdentifierList domain, final Long absoluteSFP,
+            final Identifier key, final UInteger objectVersion) {
         this.domain = domain;
-        this.area = area;
-        this.type = type;
+        this.absoluteSFP = absoluteSFP;
         this.key = key;
         this.objectVersion = objectVersion;
     }
@@ -79,21 +75,12 @@ public class ObjectRef<T extends Element> implements Attribute {
     }
 
     /**
-     * Returns the area.
+     * Returns the absoluteSFP.
      *
-     * @return the area.
+     * @return the absoluteSFP.
      */
-    public Identifier getArea() {
-        return area;
-    }
-
-    /**
-     * Returns the type.
-     *
-     * @return the type.
-     */
-    public Identifier getType() {
-        return type;
+    public Long getabsoluteSFP() {
+        return absoluteSFP;
     }
 
     /**
@@ -164,10 +151,7 @@ public class ObjectRef<T extends Element> implements Attribute {
         if (!domain.equals(((ObjectRef) obj).getDomain())) {
             return false;
         }
-        if (!area.equals(((ObjectRef) obj).getArea())) {
-            return false;
-        }
-        if (!type.equals(((ObjectRef) obj).getType())) {
+        if (!absoluteSFP.equals(((ObjectRef) obj).getabsoluteSFP())) {
             return false;
         }
         if (!key.equals(((ObjectRef) obj).getKey())) {
@@ -181,14 +165,13 @@ public class ObjectRef<T extends Element> implements Attribute {
 
     @Override
     public int hashCode() {
-        return domain.hashCode() + area.hashCode() + type.hashCode()
+        return domain.hashCode() + absoluteSFP.hashCode()
                 + key.hashCode() + objectVersion.hashCode();
     }
 
     @Override
     public String toString() {
-        return String.valueOf(domain) + ":" + String.valueOf(area) + ":"
-                + String.valueOf(type) + ":" + String.valueOf(key) + ":"
-                + String.valueOf(objectVersion) + ":";
+        return String.valueOf(domain) + ":" + String.valueOf(absoluteSFP) + ":"
+                + String.valueOf(key) + ":" + String.valueOf(objectVersion) + ":";
     }
 }

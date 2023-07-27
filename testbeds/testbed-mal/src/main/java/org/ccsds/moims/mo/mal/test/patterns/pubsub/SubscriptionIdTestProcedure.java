@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
@@ -115,7 +116,8 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("*")));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
 
         MonitorListener listener = new MonitorListener();
         listeners.addElement(listener);
@@ -127,9 +129,10 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
     public boolean publish() throws Exception {
         logMessage("SubscriptionIdTestProcedure.publish()");
 
+        AttributeList att = new AttributeList(new Union("value"));
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
         updateHeaderList.add(new UpdateHeader(new Identifier("source"),
-                HeaderTestProcedure.DOMAIN, new AttributeList("value")));
+                HeaderTestProcedure.DOMAIN, att.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
