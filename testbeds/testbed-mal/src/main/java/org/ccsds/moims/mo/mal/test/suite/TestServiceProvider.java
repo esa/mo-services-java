@@ -120,6 +120,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider erprovider = defaultProviderMgr.createProvider(
@@ -134,6 +135,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider ipprovider = defaultProviderMgr.createProvider(
@@ -148,6 +150,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         FileBasedDirectory.storePrivateBrokerAuthenticationId(
@@ -166,7 +169,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                sharedBrokerUriPair.broker);
+                sharedBrokerUriPair.broker,
+                null);
         FileBasedDirectory.storeURI(IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
                 ipproviderSharedBroker.getURI(), ipproviderSharedBroker.getBrokerURI());
 
@@ -182,7 +186,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                sharedBrokerUriPair.broker);
+                sharedBrokerUriPair.broker,
+                null);
 
         MALProvider ipFromArea2provider = defaultProviderMgr.createProvider(
                 IP_TEST_PROVIDER_FROM_AREA2_NAME,
@@ -196,6 +201,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         MALProvider ip2provider = defaultProviderMgr.createProvider(
@@ -210,7 +216,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                sharedBrokerUriPair.broker);
+                sharedBrokerUriPair.broker,
+                null);
 
         FileBasedDirectory.storePrivateBrokerAuthenticationId(
                 ipprovider.getBrokerAuthenticationId());

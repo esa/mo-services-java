@@ -83,7 +83,8 @@ public class DirectoryServiceWrapper {
                     sessionName,
                     QoSLevel.BESTEFFORT,
                     System.getProperties(),
-                    new UInteger(0));
+                    new UInteger(0),
+                    null);
 
             directoryService = new DirectoryStub(consumer);
         }

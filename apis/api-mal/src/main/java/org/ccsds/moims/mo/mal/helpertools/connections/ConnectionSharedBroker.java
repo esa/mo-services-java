@@ -67,7 +67,8 @@ public class ConnectionSharedBroker {
                 new Blob("".getBytes()),
                 new QoSLevel[]{QoSLevel.ASSURED},
                 new UInteger(1),
-                new Hashtable());
+                new Hashtable(),
+                null);
 
         Logger.getLogger(ConnectionSharedBroker.class.getName()).log(Level.INFO,
                 "Shared Broker URI: {0}", brokerBinding.getURI());

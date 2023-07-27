@@ -146,7 +146,8 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
                 new UInteger(1),
                 System.getProperties(),
                 true,
-                sharedBrokerURI);
+                sharedBrokerURI,
+                null);
 
         DemoProviderGui.LOGGER.log(Level.INFO,
                 "Demo Service URI       : {0}", demoServiceProvider.getURI());

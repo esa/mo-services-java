@@ -102,6 +102,7 @@ public class ArchiveEventPublisher {
                 new UInteger(1),
                 null,
                 true,
+                null,
                 null);
         LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store URI");
         FileBasedDirectory.storeURI(ARCHIVE_EVENT_NAME,

@@ -53,6 +53,7 @@ public interface MALConsumerManager {
      * @param qosProps QoS properties that are needed to configure the QoS
      * level, may be NULL
      * @param priority Message priority required by the consumer for all the
+     * @param supplements Set of optional named values
      * interactions with the provider
      * @return The created MALConsumer.
      * @throws java.lang.IllegalArgumentException If the parameters ‘service’,
@@ -72,7 +73,8 @@ public interface MALConsumerManager {
             Identifier sessionName,
             QoSLevel qosLevel,
             java.util.Map qosProps,
-            UInteger priority)
+            UInteger priority,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**
@@ -95,6 +97,7 @@ public interface MALConsumerManager {
      * @param qosProps QoS properties that are needed to configure the QoS
      * level, may be NULL
      * @param priority Message priority required by the consumer for all the
+     * @param supplements Set of optional named values
      * interactions with the provider
      * @return The created MALConsumer.
      * @throws java.lang.IllegalArgumentException If the parameters 'endpoint',
@@ -114,7 +117,8 @@ public interface MALConsumerManager {
             Identifier sessionName,
             QoSLevel qosLevel,
             java.util.Map qosProps,
-            UInteger priority)
+            UInteger priority,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**

@@ -1065,7 +1065,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
                     String ns = convertToNamespace(serviceInfoName + "." + op.getName().toUpperCase() + "_OP");
                     method.addMethodWithDependencyStatement("return new " + updateType.getTypeName()
-                            + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, networkZone, sessionType, sessionName, qos, qosProps, priority))", ns, true);
+                            + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, networkZone, sessionType, sessionName, qos, qosProps, priority, null))", ns, true);
                     method.addMethodCloseStatement();
                     break;
                 }

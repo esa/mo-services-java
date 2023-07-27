@@ -107,6 +107,7 @@ public interface MALProvider {
      * @param remotePublisherQos QoS level of the PUBLISH messages
      * @param remotePublisherQosProps QoS properties of the PUBLISH messages
      * @param remotePublisherPriority Priority of the PUBLISH messages
+     * @param supplements Set of optional named values
      * @return the new MALPublisher.
      * @throws java.lang.IllegalArgumentException If the parameters ‘op’ or
      * ‘domain’ or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ or
@@ -121,7 +122,8 @@ public interface MALProvider {
             Identifier sessionName,
             QoSLevel remotePublisherQos,
             Map remotePublisherQosProps,
-            UInteger remotePublisherPriority)
+            UInteger remotePublisherPriority,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**

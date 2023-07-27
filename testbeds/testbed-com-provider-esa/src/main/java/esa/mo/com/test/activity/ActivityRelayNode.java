@@ -145,6 +145,7 @@ public class ActivityRelayNode {
                 new UInteger(1),
                 null,
                 true,
+                null,
                 null);
         LoggingBase.logMessage("ActivityRelayNode:createMonitorEventPublisher - calling store UI\n");
         FileBasedDirectory.storeURI(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName, malProvider.getURI(), malProvider.getBrokerURI());
@@ -242,7 +243,9 @@ public class ActivityRelayNode {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             evstub = new EventStub(consumer);
         }

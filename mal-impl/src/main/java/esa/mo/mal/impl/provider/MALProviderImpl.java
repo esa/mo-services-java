@@ -84,7 +84,8 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                         authenticationId,
                         expectedQos,
                         priorityLevelNumber,
-                        defaultQoSProperties);
+                        defaultQoSProperties,
+                        null);
                 this.localBrokerUri = this.localBrokerBinding.getURI();
             } else {
                 this.localBrokerBinding = null;
@@ -130,7 +131,8 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                         authenticationId,
                         expectedQos,
                         priorityLevelNumber,
-                        defaultQoSProperties);
+                        defaultQoSProperties,
+                        null);
                 this.localBrokerUri = this.localBrokerBinding.getURI();
             } else {
                 this.localBrokerBinding = null;
@@ -160,7 +162,8 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
             final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority)
+            final UInteger remotePublisherPriority,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
         final String key = this.createPublisherKey(op,
                 domain,

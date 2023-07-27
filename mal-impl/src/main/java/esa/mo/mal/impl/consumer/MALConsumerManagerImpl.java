@@ -60,7 +60,8 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             final Identifier sessionName,
             final QoSLevel qosLevel,
             final Map qosProps,
-            final UInteger priority) throws MALException {
+            final UInteger priority,
+            final NamedValueList supplements) throws MALException {
         return (MALConsumer) addChild(new MALConsumerImpl(impl,
                 this,
                 localName,
@@ -89,7 +90,8 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             final Identifier sessionName,
             final QoSLevel qosLevel,
             final Map qosProps,
-            final UInteger priority) 
+            final UInteger priority,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
         return (MALConsumer) addChild(new MALConsumerImpl(impl,
                 this,

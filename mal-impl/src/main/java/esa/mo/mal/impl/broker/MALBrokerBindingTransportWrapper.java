@@ -75,6 +75,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final IdentifierList domainId,
             final Map notifyQosProps,
             final Identifier subscriptionId,
+            final NamedValueList supplements,
             final UpdateHeader updateHeader,
             final Object... updateObjects)
             throws IllegalArgumentException, MALInteractionException, MALException {
@@ -87,6 +88,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 domainId,
                 notifyQosProps,
                 subscriptionId,
+                supplements,
                 updateHeader,
                 updateObjects);
     }
@@ -103,6 +105,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final Map notifyQosProps,
             final UInteger notifyPriority,
             final Identifier subscriptionId,
+            final NamedValueList supplements,
             final UpdateHeader updateHeader,
             final Object... updateObjects)
             throws IllegalArgumentException, MALInteractionException, MALException {
@@ -117,6 +120,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 notifyQosProps,
                 notifyPriority,
                 subscriptionId,
+                supplements,
                 updateHeader,
                 updateObjects);
     }
@@ -135,7 +139,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendNotifyError(area,
                 service,
@@ -150,7 +155,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 notifyQos,
                 notifyQosProps,
                 notifyPriority,
-                error);
+                error,
+                supplements);
     }
 
     @Override
@@ -164,7 +170,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendNotifyError(op,
                 subscriber,
@@ -176,7 +183,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 notifyQos,
                 notifyQosProps,
                 notifyPriority,
-                error);
+                error,
+                supplements);
     }
 
     @Override
@@ -193,7 +201,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel qos,
             final Map qosProps,
             final UInteger priority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendPublishError(area,
                 service,
@@ -208,7 +217,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 qos,
                 qosProps,
                 priority,
-                error);
+                error,
+                supplements);
     }
 
     @Override
@@ -222,7 +232,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
             final QoSLevel qos,
             final Map qosProps,
             final UInteger priority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         return transportDelegate.sendPublishError(op,
                 publisher,
@@ -234,7 +245,8 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
                 qos,
                 qosProps,
                 priority,
-                error);
+                error,
+                supplements);
     }
 
     @Override

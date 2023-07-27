@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.broker;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
@@ -67,6 +68,7 @@ public interface MALBrokerManager {
      * @param expectedQos QoS levels the broker assumes it can rely on
      * @param priorityLevelNumber Number of priorities the broker uses
      * @param qosProperties Default QoS properties used by the broker to send
+     * @param supplements Set of optional named values
      * messages, may be NULL
      * @return The new broker binding.
      * @throws java.lang.IllegalArgumentException If the parameters ‘protocol’,
@@ -80,7 +82,8 @@ public interface MALBrokerManager {
             Blob authenticationId,
             QoSLevel[] expectedQos,
             UInteger priorityLevelNumber,
-            Map qosProperties)
+            Map qosProperties,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**
@@ -94,6 +97,7 @@ public interface MALBrokerManager {
      * @param expectedQos QoS levels the broker assumes it can rely on
      * @param priorityLevelNumber Number of priorities the broker uses
      * @param qosProperties Default QoS properties used by the broker to send
+     * @param supplements Set of optional named values
      * messages, may be NULL
      * @return The new broker binding.
      * @throws java.lang.IllegalArgumentException If the parameters ‘endpoint’,
@@ -106,7 +110,8 @@ public interface MALBrokerManager {
             Blob authenticationId,
             QoSLevel[] expectedQos,
             UInteger priorityLevelNumber,
-            Map qosProperties)
+            Map qosProperties,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**

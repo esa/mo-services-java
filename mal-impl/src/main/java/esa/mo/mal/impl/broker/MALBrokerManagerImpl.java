@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
@@ -76,7 +77,8 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
             final Blob authenticationId,
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
-            final Map qosProperties) throws MALException {
+            final Map qosProperties,
+            final NamedValueList supplements) throws MALException {
         MALBrokerBinding retVal = null;
 
         MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
@@ -118,7 +120,8 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
             final Blob authenticationId,
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
-            final Map qosProperties) 
+            final Map qosProperties,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
         MALBrokerBinding retVal = null;
 
