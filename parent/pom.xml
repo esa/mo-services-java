@@ -101,7 +101,7 @@
         <ccsds.specification.download.ref-artifact>xml-ccsds-mo-prototypes</ccsds.specification.download.ref-artifact>
         <ccsds.specification.download.ref-version>${ccsds.specification.version}</ccsds.specification.download.ref-version>
         <ccsds.specification.download.ref-directory>${project.build.directory}/xml-ref</ccsds.specification.download.ref-directory>
-        <ccsds.specification.download.ref-filter>**/area001-v002-MAL.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml</ccsds.specification.download.ref-filter>
         <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
         <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
     </properties>
