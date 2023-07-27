@@ -94,6 +94,7 @@ public class TestMAL {
                 new UInteger(1),
                 System.getProperties(),
                 false,
+                null,
                 null);
 
         IdentifierList domain = new IdentifierList();
@@ -112,7 +113,8 @@ public class TestMAL {
                 new Identifier("LIVE"),
                 QoSLevel.ASSURED,
                 System.getProperties(),
-                new UInteger(0));
+                new UInteger(0),
+                null);
 
         PerfTestStub testService = new PerfTestStub(serviceConsumer);
 

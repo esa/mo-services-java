@@ -109,6 +109,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final IdentifierList domainId,
             final Map notifyQosProps,
             final Identifier subscriptionId,
+            final NamedValueList supplements,
             final UpdateHeader updateHeader,
             final Object... updateObjects)
             throws IllegalArgumentException, MALInteractionException, MALException {
@@ -132,7 +133,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 operation,
                 version,
                 Boolean.FALSE,
-                new NamedValueList(),
+                supplements,
                 notifyQosProps,
                 body);
 
@@ -152,6 +153,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final Map notifyQosProps,
             final UInteger notifyPriority,
             final Identifier subscriptionId,
+            final NamedValueList supplements,
             final UpdateHeader updateHeader,
             final Object... updateObjects) throws IllegalArgumentException, MALInteractionException, MALException {
         final Object[] body = new Object[2 + updateObjects.length];
@@ -168,7 +170,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 Time.now(),
                 transactionId,
                 Boolean.FALSE,
-                new NamedValueList(),
+                supplements,
                 op,
                 MALPubSubOperation.NOTIFY_STAGE,
                 notifyQosProps,
@@ -192,7 +194,8 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
@@ -205,7 +208,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 operation,
                 version,
                 Boolean.TRUE,
-                new NamedValueList(),
+                supplements,
                 notifyQosProps,
                 error.getErrorNumber(), error.getExtraInformation());
 
@@ -224,7 +227,8 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel notifyQos,
             final Map notifyQosProps,
             final UInteger notifyPriority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(
                 authenticationId,
@@ -232,11 +236,12 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 Time.now(),
                 transactionId,
                 Boolean.TRUE,
-                new NamedValueList(),
+                supplements,
                 op,
                 MALPubSubOperation.NOTIFY_STAGE,
                 notifyQosProps,
-                error.getErrorNumber(), error.getExtraInformation());
+                error.getErrorNumber(),
+                error.getExtraInformation());
 
         endpoint.sendMessage(msg);
         return msg;
@@ -256,7 +261,8 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel qos,
             final Map qosProps,
             final UInteger priority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 publisher,
@@ -269,9 +275,10 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 operation,
                 version,
                 Boolean.TRUE,
-                new NamedValueList(),
+                supplements,
                 qosProps,
-                error.getErrorNumber(), error.getExtraInformation());
+                error.getErrorNumber(),
+                error.getExtraInformation());
 
         endpoint.sendMessage(msg);
         return msg;
@@ -288,14 +295,15 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel qos,
             final Map qosProps,
             final UInteger priority,
-            final MOErrorException error)
+            final MOErrorException error,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 publisher,
                 Time.now(),
                 transactionId,
                 Boolean.TRUE,
-                new NamedValueList(),
+                supplements,
                 op,
                 MALPubSubOperation.PUBLISH_STAGE,
                 qosProps,

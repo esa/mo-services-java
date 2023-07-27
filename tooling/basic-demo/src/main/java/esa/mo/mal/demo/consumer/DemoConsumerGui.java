@@ -240,7 +240,8 @@ public class DemoConsumerGui extends javax.swing.JFrame {
                 sessionName,
                 QoSLevel.ASSURED,
                 System.getProperties(),
-                new UInteger(0));
+                new UInteger(0),
+                null);
 
         demoService = new BasicMonitorStub(tmConsumer);
     }

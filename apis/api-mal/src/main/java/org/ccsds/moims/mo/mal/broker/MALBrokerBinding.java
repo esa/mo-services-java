@@ -73,6 +73,7 @@ public interface MALBrokerBinding {
      * @param domainId Domain of the NOTIFY message
      * @param notifyQosProps QoS properties of the NOTIFY message
      * @param subscriptionId Subscription identifier
+     * @param supplements Set of optional named values
      * @param updateHeader Update header
      * @param updateObjects Update objects
      * @return The sent MALMessage.
@@ -95,6 +96,7 @@ public interface MALBrokerBinding {
             IdentifierList domainId,
             Map notifyQosProps,
             Identifier subscriptionId,
+            NamedValueList supplements,
             UpdateHeader updateHeader,
             Object... updateObjects)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
@@ -116,6 +118,7 @@ public interface MALBrokerBinding {
      * @param notifyQosProps QoS properties of the NOTIFY message
      * @param notifyPriority Priority of the NOTIFY message
      * @param subscriptionId Subscription identifier
+     * @param supplements Set of optional named values
      * @param updateHeader Update header
      * @param updateObjects Update objects
      * @return The sent MALMessage.
@@ -140,6 +143,7 @@ public interface MALBrokerBinding {
             Map notifyQosProps,
             UInteger notifyPriority,
             Identifier subscriptionId,
+            NamedValueList supplements,
             UpdateHeader updateHeader,
             Object... updateObjects)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
@@ -162,6 +166,7 @@ public interface MALBrokerBinding {
      * @param notifyQosProps QoS properties of the NOTIFY ERROR message
      * @param notifyPriority Priority of the NOTIFY ERROR message
      * @param error Body of the NOTIFY ERROR Error message
+     * @param supplements Set of optional named values
      * @return The sent MALMessage.
      * @throws java.lang.IllegalArgumentException If at least one of the
      * arguments, except ‘notifyQoSProps’, is NULL
@@ -186,7 +191,8 @@ public interface MALBrokerBinding {
             QoSLevel notifyQos,
             Map notifyQosProps,
             UInteger notifyPriority,
-            MOErrorException error)
+            MOErrorException error,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -204,6 +210,7 @@ public interface MALBrokerBinding {
      * @param notifyQosProps QoS properties of the NOTIFY ERROR message
      * @param notifyPriority Priority of the NOTIFY ERROR message
      * @param error Body of the NOTIFY ERROR Error message
+     * @param supplements Set of optional named values
      * @return The sent MALMessage.
      * @throws java.lang.IllegalArgumentException If at least one of the
      * arguments, except ‘notifyQoSProps’, is NULL
@@ -225,7 +232,8 @@ public interface MALBrokerBinding {
             QoSLevel notifyQos,
             Map notifyQosProps,
             UInteger notifyPriority,
-            MOErrorException error)
+            MOErrorException error,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -246,6 +254,7 @@ public interface MALBrokerBinding {
      * @param qosProps QoS properties of the PUBLISH ERROR message
      * @param priority Priority of the PUBLISH ERROR message
      * @param error Body of the PUBLISH ERROR Error message
+     * @param supplements Set of optional named values
      * @return The sent MALMessage.
      * @throws java.lang.IllegalArgumentException If at least one of the
      * arguments, except ‘notifyQoSProps’, is NULL
@@ -270,7 +279,8 @@ public interface MALBrokerBinding {
             QoSLevel qos,
             Map qosProps,
             UInteger priority,
-            MOErrorException error)
+            MOErrorException error,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
@@ -288,6 +298,7 @@ public interface MALBrokerBinding {
      * @param qosProps QoS properties of the PUBLISH ERROR message
      * @param priority Priority of the PUBLISH ERROR message
      * @param error Body of the PUBLISH ERROR Error message
+     * @param supplements Set of optional named values
      * @return The sent MALMessage.
      * @throws java.lang.IllegalArgumentException If at least one of the
      * arguments, except ‘notifyQoSProps’, is NULL
@@ -309,7 +320,8 @@ public interface MALBrokerBinding {
             QoSLevel qos,
             Map qosProps,
             UInteger priority,
-            MOErrorException error)
+            MOErrorException error,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**

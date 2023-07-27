@@ -126,7 +126,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             stub = new ActivityTestStub(consumer);
             activityTestStubs.put(extraNamePart, stub);
@@ -149,7 +151,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             activityRelayManagementStub = new ActivityRelayManagementStub(consumer);
         }
@@ -173,7 +177,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             activityEventStub = new EventStub(consumer);
         }
@@ -196,7 +202,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveStub = new ArchiveStub(consumer);
         }
@@ -219,7 +227,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveTestStub = new ArchiveTestStub(consumer);
         }
@@ -242,7 +252,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveEventStub = new EventStub(consumer);
         }
@@ -269,7 +281,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             eventTestStub = new EventTestStub(consumer);
         }
@@ -293,7 +307,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             eventStub = new EventStub(consumer);
         }
@@ -322,7 +338,8 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 new UInteger(1),
                 null,
                 true,
-                uris.broker);
+                uris.broker,
+                null);
         LoggingBase.logMessage("ActivityTestHandlerImpl:createMonitorEventPublisher - calling store UI\n");
         // FileBasedDirectory.storeURI(EventHelper.EVENT_SERVICE_NAME.getValue() + PROVIDER, malProvider.getURI(), malProvider.getBrokerURI());
 

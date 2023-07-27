@@ -237,7 +237,8 @@ public abstract class BaseMalServer {
                 new Identifier("LIVE"),
                 QoSLevel.BESTEFFORT,
                 System.getProperties(),
-                new UInteger(0));
+                new UInteger(0),
+                null);
     }
 
     protected MALProvider createProvider(MALService service, 
@@ -252,6 +253,7 @@ public abstract class BaseMalServer {
                 new UInteger(1),
                 System.getProperties(),
                 isPublisher,
+                null,
                 null);
     }
 

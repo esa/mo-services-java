@@ -28,10 +28,7 @@ import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
@@ -62,7 +59,8 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
         return (MALProvider) addChild(new MALProviderImpl(this,
                 impl,
                 localName,
@@ -87,7 +85,8 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
         return (MALProvider) addChild(new MALProviderImpl(this,
                 impl,
                 endPoint,

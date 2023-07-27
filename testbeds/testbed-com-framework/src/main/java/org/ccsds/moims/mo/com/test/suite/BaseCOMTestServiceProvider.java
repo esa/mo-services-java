@@ -77,6 +77,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         MALProvider archiveTestProvider = defaultProviderMgr.createProvider(
@@ -90,6 +91,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         MALProvider archiveEventProvider = defaultProviderMgr.createProvider(
@@ -103,6 +105,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         MALProvider activityTestProvider = defaultProviderMgr.createProvider(
@@ -116,6 +119,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider activityRelayManagementProvider = defaultProviderMgr.createProvider(
@@ -129,6 +133,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider activityEventProvider = defaultProviderMgr.createProvider(
@@ -142,6 +147,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         MALProvider eventTestProvider = defaultProviderMgr.createProvider(
@@ -155,6 +161,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider eventProvider = defaultProviderMgr.createProvider(
@@ -168,6 +175,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         List<URItriple> returnValues = new ArrayList<URItriple>();
@@ -211,6 +219,7 @@ public abstract class BaseCOMTestServiceProvider extends UriCOMTestServiceProvid
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         FileBasedDirectory.storeURI(LocalMALInstance.ACTIVITY_EVENT_NAME + name, 

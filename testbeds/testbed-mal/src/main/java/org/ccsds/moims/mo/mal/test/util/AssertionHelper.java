@@ -38,6 +38,8 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
@@ -118,11 +120,29 @@ public class AssertionHelper {
         if (expectedField == null) {
             res = (field == null);
         } else {
-            res = expectedField.equals(field);
+            // if checking for supplements, they may be in a different order
+            if (field.getClass().getName() == NamedValueList.class.getName() && expectedField.getClass().getName() == NamedValueList.class.getName()) {
+                res = checkSupplementEquality(NamedValueList.class.cast(field), NamedValueList.class.cast(expectedField));
+            }
+            else {
+                res = expectedField.equals(field);
+            }
         }
         Assertion assertion = new Assertion(procedureName, "Check header field '"
                 + fieldName + "': " + toString(field) + " == " + toString(expectedField), res);
         assertions.add(assertion);
+    }
+
+    private static boolean checkSupplementEquality(NamedValueList supplements, NamedValueList expectedSupplements) {
+        if (supplements.size() != expectedSupplements.size()) {
+            return false;
+        }
+        for (NamedValue namedValue : supplements){
+            if (!expectedSupplements.contains(namedValue)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String toString(Object field) {

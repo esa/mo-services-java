@@ -110,7 +110,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     new QoSLevel[]{
                         QoSLevel.ASSURED
                     },
-                    new UInteger(1), defaultProps);
+                    new UInteger(1),
+                    defaultProps,
+                    null);
 
             logMessage("C: " + protocol);
             // DF: now started as soon as created
@@ -144,7 +146,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             dtstub = new DataTestStub(consumer);
         }
@@ -167,7 +171,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             erstub = new ErrorTestStub(consumer);
         }
@@ -231,7 +237,8 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 sessionName,
                 qosLevel,
                 qosProperties,
-                priority);
+                priority,
+                null);
 
         IPTestStub stub = new IPTestStub(consumer);
         return new IPTestConsumer(consumer, stub);
@@ -265,10 +272,17 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 //"IPTestFromArea2Consumer-" + sessionName + "-" + shared,
                 (String) null,
                 uris.uri,
-                uris.broker, org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,
-                authenticationId, domain,
-                networkZone, sessionType, sessionName, qosLevel, qosProperties,
-                priority);
+                uris.broker,
+                org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.IPTEST_SERVICE,
+                authenticationId,
+                domain,
+                networkZone,
+                sessionType,
+                sessionName,
+                qosLevel,
+                qosProperties,
+                priority,
+                null);
 
         org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub stub
                 = new org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub(consumer);
@@ -299,7 +313,8 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 uris.broker, IPTest2Helper.IPTEST2_SERVICE,
                 authenticationId, domain,
                 networkZone, sessionType, sessionName, qosLevel, qosProperties,
-                priority);
+                priority,
+                null);
 
         IPTest2Stub stub = new IPTest2Stub(consumer);
         return stub;

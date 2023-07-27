@@ -191,6 +191,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
                 new UInteger(1),
                 null,
                 true,
+                null,
                 null);
         LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store UI");
         FileBasedDirectory.storeURI(EventServiceInfo.EVENT_SERVICE_NAME.getValue(), malProvider.getURI(), malProvider.getBrokerURI());
@@ -404,7 +405,9 @@ public class EventTestHandlerImpl implements EventTestHandler {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveStub = new ArchiveStub(consumer);
         }

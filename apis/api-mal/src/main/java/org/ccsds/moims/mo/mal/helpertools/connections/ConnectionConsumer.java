@@ -159,7 +159,8 @@ public class ConnectionConsumer {
                 configuration.getSessionName(),
                 QoSLevel.ASSURED,
                 props,
-                new UInteger(0));
+                new UInteger(0),
+                null);
 
         return tmConsumer;
     }
@@ -207,7 +208,8 @@ public class ConnectionConsumer {
                 configuration.getSessionName(),
                 qosLevel,
                 props,
-                priorityLevels);
+                priorityLevels,
+                null);
 
         return tmConsumer;
     }

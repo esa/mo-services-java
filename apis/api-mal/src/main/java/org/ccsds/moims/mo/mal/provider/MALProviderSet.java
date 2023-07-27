@@ -64,6 +64,7 @@ public class MALProviderSet {
      * @param remotePublisherQos QoS level of the PUBLISH messages
      * @param remotePublisherQosProps QoS properties of the PUBLISH messages
      * @param remotePublisherPriority Priority of the PUBLISH messages
+     * @param supplements Set of optional named values
      * @return The created publisher set.
      * @throws java.lang.IllegalArgumentException If the parameters ‘op’ or
      * ‘domain’ or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ or
@@ -78,7 +79,8 @@ public class MALProviderSet {
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
             final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority)
+            final UInteger remotePublisherPriority,
+            final NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException {
         final MALPublisherSet publisherSet = new MALPublisherSet(this,
                 op,

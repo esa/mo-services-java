@@ -146,6 +146,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                         msgBody.getDomain(),
                         msg.getHeader().getQosProps(),
                         msgBody.getSubscriptionId(),
+                        null,
                         msgBody.getUpdateHeader(),
                         msgBody.getUpdateObjects());
             } catch (MALTransmitErrorException ex) {

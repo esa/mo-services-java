@@ -62,6 +62,7 @@ public class FastProviderScenario {
                 new UInteger(1),
                 System.getProperties(),
                 true,
+                null,
                 null);
 
         MALConsumer testConsumer = LocalMALInstance.instance().getConsumerManager().createConsumer((String) null,
@@ -75,7 +76,8 @@ public class FastProviderScenario {
                 new Identifier(""),
                 QoSLevel.ASSURED,
                 System.getProperties(),
-                new UInteger(0));
+                new UInteger(0),
+                null);
 
         testService = new IPTestStub(testConsumer);
 

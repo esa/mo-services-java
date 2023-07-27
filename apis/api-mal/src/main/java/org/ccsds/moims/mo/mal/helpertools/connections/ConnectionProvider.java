@@ -154,7 +154,8 @@ public class ConnectionProvider {
                 new UInteger(1),
                 props,
                 isPublisher,
-                sharedBrokerURI);
+                sharedBrokerURI,
+                null);
 
         IntegerList serviceKey = new IntegerList();
         serviceKey.add((int) malService.getAreaNumber().getValue()); // Area
@@ -201,7 +202,8 @@ public class ConnectionProvider {
                     new UInteger(1),
                     props,
                     isPublisher,
-                    sharedBrokerURI);
+                    sharedBrokerURI,
+                    null);
 
             secondaryConnectionDetails.setProviderURI(serviceProvider2.getURI());
             secondaryConnectionDetails.setBrokerURI(serviceProvider2.getBrokerURI());

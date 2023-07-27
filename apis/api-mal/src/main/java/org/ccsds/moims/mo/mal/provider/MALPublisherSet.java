@@ -97,7 +97,8 @@ public class MALPublisherSet {
                 sessionName,
                 remotePublisherQos,
                 remotePublisherQosProps,
-                remotePublisherPriority);
+                remotePublisherPriority,
+                null);
         subpublishers.add(pub);
     }
 
