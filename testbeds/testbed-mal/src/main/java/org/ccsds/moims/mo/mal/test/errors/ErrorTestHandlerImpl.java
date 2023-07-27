@@ -100,6 +100,6 @@ public class ErrorTestHandlerImpl extends ErrorTestInheritanceSkeleton {
 
     public Element testUnsupportedVersion(Element _Element, MALInteraction interaction) throws MALInteractionException {
         throw new MALInteractionException(new MOErrorException(
-                MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER, null));
+                MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER, null));
     }
 }

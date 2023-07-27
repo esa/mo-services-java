@@ -137,7 +137,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
             } else if (ErrorTestServiceInfo.TESTUNSUPPORTEDVERSION_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
-                        MALHelper.UNSUPPORTED_VERSION_ERROR_NUMBER, null), msg.getQoSProperties());
+                        MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER, null), msg.getQoSProperties());
             } else if (ErrorTestServiceInfo.TESTBADENCODING_OP.getNumber().equals(
                     msg.getHeader().getOperation())) {
                 throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
