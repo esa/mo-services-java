@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -48,7 +49,6 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.maldemo.MALDemoHelper;
 import org.ccsds.moims.mo.maldemo.basicmonitor.BasicMonitorHelper;
@@ -57,7 +57,6 @@ import org.ccsds.moims.mo.maldemo.basicmonitor.consumer.BasicMonitorStub;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicComposite;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicEnum;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicUpdate;
-import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicUpdateList;
 
 /**
  * This class provides a simple form for the control of the consumer.
@@ -155,7 +154,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
         final Identifier subscriptionId = new Identifier("SUB");
 
         // set up the wildcard subscription
-        subRequestWildcard = new Subscription(subscriptionId, domain, null);
+        subRequestWildcard = new Subscription(subscriptionId, domain, null, null);
 
         // set up the named first half subscription
         {
@@ -167,7 +166,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
                 subList.add(new SubscriptionFilter(new Identifier("key" + i), att));
             }
 
-            subRequestHalf = new Subscription(subscriptionId, domain, subList);
+            subRequestHalf = new Subscription(subscriptionId, domain, null, subList);
         }
         // set up the named all subscription
         {
@@ -179,7 +178,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
                 subList1.add(new SubscriptionFilter(new Identifier("key" + i), att1));
             }
 
-            subRequestAll = new Subscription(subscriptionId, domain, subList1);
+            subRequestAll = new Subscription(subscriptionId, domain, null, subList1);
         }
     }
 
@@ -271,8 +270,8 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             LOGGER.log(Level.INFO, "Received update message!");
 
             final long iDiff = System.currentTimeMillis() - msgHeader.getTimestamp().getValue();
-            AttributeList lst = updateHeader.getKeyValues();
-            final String name = ((Identifier) lst.get(0)).getValue();
+            NullableAttributeList lst = updateHeader.getKeyValues();
+            final String name = ((Identifier) lst.get(0).getValue()).getValue();
 
             try {
                 final int index = Integer.parseInt(name);

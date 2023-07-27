@@ -92,7 +92,7 @@ public class JavaExceptions {
         }
 
         // Construct path to Error in the Helper
-        String errorNameCaps = error.getName().toUpperCase();
+        String errorNameCaps = convertToUppercaseWithUnderscores(error.getName());
         String errorPath = area.getName() + "Helper." + errorNameCaps + "_ERROR_NUMBER";
 
         // Constructor without parameters
@@ -118,7 +118,7 @@ public class JavaExceptions {
     }
 
     public static String convertToCamelCase(String text) {
-        // Is it all Upper Case?
+        // Is the Error in the old style? With all Upper Case and underscores?
         if (text.equals(text.toUpperCase())) {
             StringBuilder all = new StringBuilder();
             // Split by underscore:
@@ -132,6 +132,11 @@ public class JavaExceptions {
             return all.toString();
         }
 
-        return text;
+        return text.replace(" ", "").replace("_", "");
+    }
+
+    public static String convertToUppercaseWithUnderscores(String text) {
+        String out = text.toUpperCase();
+        return out.replace(" ", "_");
     }
 }

@@ -113,7 +113,7 @@ public class SubscriptionSessionNameTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         listener = new MonitorListener();
 
@@ -125,7 +125,9 @@ public class SubscriptionSessionNameTestProcedure extends LoggingBase {
         ipTestToSubscribe.monitorRegister(subscription, listener);
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN,
+                (new AttributeList("A")).getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));

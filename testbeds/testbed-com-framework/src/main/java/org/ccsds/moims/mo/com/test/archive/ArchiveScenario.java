@@ -851,7 +851,7 @@ public class ArchiveScenario {
     entityRequestList.add(entityRequest);
          */
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(ARCHIVE_EVENT_SUBSCRIPTION, domain, filters);
+        Subscription subscription = new Subscription(ARCHIVE_EVENT_SUBSCRIPTION, domain, null, filters);
         try {
             LoggingBase.logMessage("subscribeToArchiveEvents:: calling monitorEventRegister");
             LocalMALInstance.instance().archiveEventStub()
@@ -912,7 +912,7 @@ public class ArchiveScenario {
     }
 
     public boolean selectedNotifiedObjectNumberIs(String objectNumber) {
-        return selectedNotifiedUpdateHeader.getKeyValues().get(0).equals(new Identifier(objectNumber));
+        return selectedNotifiedUpdateHeader.getKeyValues().get(0).getValue().equals(new Identifier(objectNumber));
     }
 
     public boolean queriedArchiveDetailsListIsEqualToLocalList() {

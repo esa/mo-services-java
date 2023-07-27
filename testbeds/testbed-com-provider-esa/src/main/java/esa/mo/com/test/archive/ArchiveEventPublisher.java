@@ -192,7 +192,7 @@ public class ArchiveEventPublisher {
         domain.add(new Identifier("mission"));
 
         return new UpdateHeader(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()),
-                domain, keyValues);
+                domain, keyValues.getAsNullableAttributeList());
     }
 
     /**

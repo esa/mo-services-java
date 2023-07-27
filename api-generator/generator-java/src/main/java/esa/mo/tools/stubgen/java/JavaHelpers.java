@@ -72,9 +72,9 @@ public class JavaHelpers {
                 null, "Helper class for " + serviceName + " service.");
 
         // create error numbers
-        if ((null != service.getErrors()) && !service.getErrors().getError().isEmpty()) {
+        if ((service.getErrors() != null) && !service.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : service.getErrors().getError()) {
-                String errorNameCaps = error.getName().toUpperCase();
+                String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
                 CompositeField _errorNumberVar = generator.createCompositeElementsDetails(file, false, "_" + errorNameCaps + "_ERROR_NUMBER",
                         TypeUtils.createTypeReference(null, null, "long", false),
                         false, true, "Error literal for error " + errorNameCaps);
@@ -177,7 +177,7 @@ public class JavaHelpers {
             String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
 
             for (ErrorDefinitionType error : service.getErrors().getError()) {
-                String errorNameCaps = error.getName().toUpperCase();
+                String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
                 method.addLine(generator.convertToNamespace(factoryType + ".registerError("
                         + prefix + "_NUMBER, "
                         + prefix + "_VERSION, "
@@ -196,7 +196,6 @@ public class JavaHelpers {
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();
-
         file.flush();
     }
 
@@ -238,9 +237,7 @@ public class JavaHelpers {
 
         file.addClassVariable(true, true, StdStrings.PUBLIC, _areaNumberVar, false, String.valueOf(area.getNumber()));
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaNumberVar, false, "(_" + areaNumber + ")");
-
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaNameVar, false, "(\"" + areaName + "\")");
-
         file.addClassVariable(true, true, StdStrings.PUBLIC, _areaVersionVar, false, String.valueOf(area.getVersion()));
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaVersionVar, false, "(_" + areaNameCaps + "_AREA_VERSION)");
 
@@ -248,9 +245,9 @@ public class JavaHelpers {
         file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
         // create error numbers
-        if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
+        if ((area.getErrors() != null) && !area.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
-                String errorNameCaps = error.getName().toUpperCase();
+                String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
                 CompositeField _errorNumberVar = generator.createCompositeElementsDetails(file, false, "_" + errorNameCaps + "_ERROR_NUMBER",
                         TypeUtils.createTypeReference(null, null, "long", false), false, false, "Error literal for error " + errorNameCaps);
                 CompositeField errorNumberVar = generator.createCompositeElementsDetails(file, false, errorNameCaps + "_ERROR_NUMBER",
@@ -341,8 +338,9 @@ public class JavaHelpers {
         // register error numbers
         if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
-                String errorNameCaps = error.getName().toUpperCase();
-                method.addLine(generator.convertToNamespace(factoryType + ".registerError("
+                String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
+                method.addLine(generator.convertToNamespace(
+                        factoryType + ".registerError("
                         + areaNumber + ", "
                         + areaNameCaps + "_AREA_VERSION, "
                         + errorNameCaps + "_ERROR_NUMBER, "
@@ -368,5 +366,4 @@ public class JavaHelpers {
         file.addClassCloseStatement();
         file.flush();
     }
-
 }

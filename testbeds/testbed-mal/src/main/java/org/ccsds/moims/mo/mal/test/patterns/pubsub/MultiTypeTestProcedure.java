@@ -105,7 +105,8 @@ public class MultiTypeTestProcedure extends LoggingBase {
         AttributeList values = new AttributeList(A_KEY_VALUE);
         filters.add(new SubscriptionFilter(Helper.key1, values));
 
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
 
         MonitorListener listener = new MonitorListener();
         listeners.addElement(listener);
@@ -117,8 +118,10 @@ public class MultiTypeTestProcedure extends LoggingBase {
     public boolean publish() throws Exception {
         logMessage("MultiTypeTestProcedure.publish()");
 
+        AttributeList values = new AttributeList(A_KEY_VALUE);
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(A_KEY_VALUE)));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, values.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(new Integer(0)));
@@ -151,7 +154,8 @@ public class MultiTypeTestProcedure extends LoggingBase {
         TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
                 QOS_LEVEL, PRIORITY,
                 HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true, expectedErrorCode);
+                HeaderTestProcedure.NETWORK_ZONE, SESSION,
+                SESSION_NAME, true, expectedErrorCode);
         ipTest.publishDeregister(testPublishDeregister);
         return true;
     }

@@ -150,8 +150,7 @@ public abstract class Decoder implements MALDecoder {
         }
 
         return new ObjectRef(decodedDomain,
-                new Identifier(sourceBuffer.readString()),
-                new Identifier(sourceBuffer.readString()),
+                sourceBuffer.readSignedLong(),
                 new Identifier(sourceBuffer.readString()),
                 new UInteger(sourceBuffer.readSignedLong())
         );

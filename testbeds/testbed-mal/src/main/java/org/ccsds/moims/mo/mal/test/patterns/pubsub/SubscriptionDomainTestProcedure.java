@@ -108,7 +108,8 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
 
         // Prepare the Publish Updates that will be sent later on
         for (int i = 0; i < publishDomainIds.length; i++) {
-            UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), publishDomainIds[i], keyValues);
+            UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"),
+                    publishDomainIds[i], keyValues.getAsNullableAttributeList());
             UpdateHeaderList uhl = new UpdateHeaderList();
             uhl.add(updateHeader);
             updateHeaderList[i] = uhl;
@@ -160,7 +161,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
         logMessage("subdomainId=" + subdomainId);
         logMessage("Subscription domain = " + domainId);
 
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, domainId, null);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, domainId, null, null);
 
         MonitorListener listener = new MonitorListener();
 

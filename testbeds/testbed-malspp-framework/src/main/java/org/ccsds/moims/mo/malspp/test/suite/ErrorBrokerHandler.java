@@ -103,7 +103,7 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
         if (body.getSubscription().getSubscriptionId().getValue().equals(SUBSCRIPTION_RAISING_ERROR)) {
             throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
         } else {
-            subscriberUri = interaction.getMessageHeader().getURIFrom();
+            subscriberUri = interaction.getMessageHeader().getFromURI();
             transactionId = interaction.getMessageHeader().getTransactionId();
         }
     }

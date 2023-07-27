@@ -147,7 +147,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
     erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
          */
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
+        Subscription sub = new Subscription(new Identifier("SubA"), domain, null, filters);
         evStub.monitorEventRegister(sub, monitorEventAdapter);
         logMessage(loggingClassName + ":registerForEvents Complete");
         return true;
@@ -213,9 +213,9 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * @return monitorkey to be used to check result of the pattern.
      * @throws Exception generated in case of comms failures
      */
-    public String patternInitiationForViaWithTransportActivityAndExecutionActivity(String pattern, 
+    public String patternInitiationForViaWithTransportActivityAndExecutionActivity(String pattern,
             String relay, String[] transactivity, String[] exeactivity) throws MALException, MALInteractionException {
-        logMessage(loggingClassName + ":patternInitiationForViaWithTransportActivityAndExecutionActivity[" 
+        logMessage(loggingClassName + ":patternInitiationForViaWithTransportActivityAndExecutionActivity["
                 + pattern + "," + relay + "," + toString(transactivity) + "," + toString(exeactivity) + "]");
 
         MonitorActivityTestAdapter monitor = new MonitorActivityTestAdapter();
@@ -482,7 +482,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * @throws MALInteractionException
      * @throws MALException
      */
-    protected void publishReleaseEvent(boolean withSuccess, String relay, 
+    protected void publishReleaseEvent(boolean withSuccess, String relay,
             MALMessageHeader hdr) throws MALInteractionException, MALException {
         LoggingBase.logMessage(loggingClassName + ":publishReleaseEvent " + withSuccess);
 
@@ -509,7 +509,8 @@ public class MonitorActivityScenario extends BaseActivityScenario {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), domain, keys);
+        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"),
+                domain, keys.getAsNullableAttributeList());
 
         // Produce ActivityTransfer
         ActivityTransfer activityTransferInstance = new ActivityTransfer(withSuccess);

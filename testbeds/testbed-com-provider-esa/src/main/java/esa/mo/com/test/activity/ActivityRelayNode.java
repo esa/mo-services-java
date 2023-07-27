@@ -198,7 +198,7 @@ public class ActivityRelayNode {
         SubscriptionFilterList filters = new SubscriptionFilterList();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
-        Subscription sub = new Subscription(new Identifier("Sub-" + relayName), domain, filters);
+        Subscription sub = new Subscription(new Identifier("Sub-" + relayName), domain, null, filters);
         try {
             evStub.monitorEventRegister(sub, new MonitorEventAdapter());
         } catch (MALInteractionException ex) {
@@ -279,7 +279,8 @@ public class ActivityRelayNode {
         domain.add(new Identifier("mission"));
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), domain, keyValues);
+        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName),
+                domain, keyValues.getAsNullableAttributeList());
 
         // Produce ActivityTransfer
         ActivityTransfer activityTransferInstance = new ActivityTransfer(withSuccess);

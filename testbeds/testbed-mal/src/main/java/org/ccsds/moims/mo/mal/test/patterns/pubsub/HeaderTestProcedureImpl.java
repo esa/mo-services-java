@@ -47,6 +47,8 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -204,7 +206,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.getDomain(domain), filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.getDomain(domain), null, filters);
         MonitorListener listener = new MonitorListener();
 
         ConsumerContext consumerContext = new ConsumerContext(listener);
@@ -309,7 +312,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
 
         IdentifierList d = HeaderTestProcedure.getDomain(domain);
-        AttributeList keyValues = new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME);
+        NullableAttributeList keyValues = new NullableAttributeList();
+        keyValues.add(new NullableAttribute(HeaderTestProcedure.RIGHT_KEY_NAME));
 
         UpdateHeader updateHeader1 = new UpdateHeader(new Identifier("source"), d, keyValues);
         TestUpdate update1 = new TestUpdate(1);
@@ -479,9 +483,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         ipTest = ipTestConsumer.getStub();
 
-        AttributeList keyValues = new AttributeList(HeaderTestProcedure.WRONG_KEY_NAME);
-        keyValues.add(new Identifier("OneMoreValueToForceUnknownError"));
-        UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), HeaderTestProcedure.getDomain(domain), keyValues);
+        NullableAttributeList keyValues = new NullableAttributeList();
+        keyValues.add(new NullableAttribute(HeaderTestProcedure.WRONG_KEY_NAME));
+        keyValues.add(new NullableAttribute(new Identifier("OneMoreValueToForceUnknownError")));
+        UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.getDomain(domain), keyValues);
         TestUpdate update = new TestUpdate(1);
 
         UpdateHeaderList updateHeaders = new UpdateHeaderList();
@@ -683,7 +689,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
 
         Subscription subscription = new Subscription(
-                HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.getDomain(domain), filters);
+                HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID,
+                HeaderTestProcedure.getDomain(domain),
+                null,
+                filters);
         MonitorListener listener = new MonitorListener();
 
         ConsumerContext consumerContext = new ConsumerContext(listener);
@@ -936,11 +945,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             this.transactionId = transactionId;
         }
 
-        public void checkTransactionIdUniqueness(
-                String procedureName,
-                Long transactionId) {
+        public void checkTransactionIdUniqueness(String procedureName, Long transactionId) {
             Assertion tidAssertion = new Assertion(procedureName,
-                    "Transaction identifier uniqueness: " + transactionId, (transactionIds.indexOf(transactionId) == -1));
+                    "Transaction identifier uniqueness: " + transactionId,
+                    (transactionIds.indexOf(transactionId) == -1));
             transactionIds.addElement(transactionId);
             assertions.add(tidAssertion);
         }

@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
@@ -224,7 +225,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         if (updateHeader != null) {
             Map<String, SubscriptionSource> consumers = this.getConsumerSubscriptions(brokerKey);
 
-            AttributeList keyValues = updateHeader.getKeyValues();
+            NullableAttributeList keyValues = updateHeader.getKeyValues();
             IdentifierList srcDomainId = updateHeader.getDomain();
 
             if (keyValues.size() != keyNames.size()) {
@@ -243,7 +244,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
             for (int j = 0; j < keyNames.size(); j++) {
                 Identifier name = keyNames.get(j);
-                Object value = keyValues.get(j);
+                Object value = keyValues.get(j).getValue();
                 value = (Attribute) Attribute.javaType2Attribute(value);
                 providerKeyValues.add(new NamedValue(name, (Attribute) value));
             }

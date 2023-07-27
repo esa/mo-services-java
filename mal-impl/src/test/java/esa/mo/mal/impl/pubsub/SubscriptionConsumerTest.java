@@ -114,7 +114,7 @@ public class SubscriptionConsumerTest {
         UpdateKeyValues rhs ;
         rhs = new UpdateKeyValues(null, new UShort(1), new UShort(2), new UShort(3), null);
         
-        AttributeList values= new AttributeList(value);
+        AttributeList values = new AttributeList(value);
         SubscriptionFilter subFilter = new SubscriptionFilter(key, values);        
         SubscriptionFilterList subFilters = new SubscriptionFilterList();
         subFilters.add(subFilter);

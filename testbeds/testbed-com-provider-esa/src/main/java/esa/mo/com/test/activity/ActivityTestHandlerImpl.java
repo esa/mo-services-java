@@ -23,12 +23,9 @@ package esa.mo.com.test.activity;
 import esa.mo.com.support.ComStructureHelper;
 import java.util.Map;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptanceList;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecution;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecutionList;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.InvokeInteraction;
@@ -42,7 +39,6 @@ import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestInheritanceSkeleton;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
@@ -303,7 +299,8 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         domain.add(new Identifier("mission"));
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
+        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()),
+                domain, keyValues.getAsNullableAttributeList());
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, aa);
@@ -342,7 +339,8 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         domain.add(new Identifier("mission"));
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
+        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()),
+                domain, keyValues.getAsNullableAttributeList());
 
         // Produce ActivityTransferList
         ActivityExecution activityExecutionInstance = new ActivityExecution(

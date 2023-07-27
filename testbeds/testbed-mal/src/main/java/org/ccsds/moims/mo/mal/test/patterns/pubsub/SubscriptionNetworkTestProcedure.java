@@ -32,23 +32,26 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
-import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Map;
 import java.util.Vector;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
@@ -112,8 +115,8 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
                 + network + ',' + notifyNumber + ")");
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("*")));
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(new Union("*"))));
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         listener = new MonitorListener();
 
@@ -126,7 +129,10 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         ipTestToSubscribe.monitorRegister(subscription, listener);
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("value")));
+        NullableAttributeList keyValues = new NullableAttributeList();
+        keyValues.add(new NullableAttribute(new Union("value")));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, keyValues));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));

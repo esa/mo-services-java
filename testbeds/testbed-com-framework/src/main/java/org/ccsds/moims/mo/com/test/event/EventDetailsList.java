@@ -52,7 +52,7 @@ public class EventDetailsList extends java.util.ArrayList<EventDetails> {
         int index;
         for (index = (size() - 1); index >= 0 && !bFound; index--) {
             EventDetails eventDetails = get(index);
-            String evObjNumber = eventDetails.getUpdateHeader().getKeyValues().get(0).toString();
+            String evObjNumber = eventDetails.getUpdateHeader().getKeyValues().get(0).getValue().toString();
             String evSourceObjNumber = eventDetails.getObjectDetails().getSource().getType().getNumber().toString();
             IdentifierList evSourceDomain = eventDetails.getObjectDetails().getSource().getKey().getDomain();
             String evSourceInstId = eventDetails.getObjectDetails().getSource().getKey().getInstId().toString();

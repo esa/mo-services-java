@@ -352,7 +352,7 @@ public class MalSppPatternTest extends PatternTest {
                 stage,
                 transId,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestHelper.IPTEST_SERVICE.IPTEST_SERVICE_NUMBER,
                 operation,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
@@ -377,28 +377,28 @@ public class MalSppPatternTest extends PatternTest {
             msg = createMessage(uriTo, ep,
                     InteractionType.SUBMIT,
                     MALSubmitOperation.SUBMIT_STAGE,
-                    IPTestHelper.TESTSUBMIT_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.TESTSUBMIT_OP_NUMBER,
                     qos, session
             );
         } else if ("REQUEST".equalsIgnoreCase(pattern)) {
             msg = createMessage(uriTo, ep,
                     InteractionType.REQUEST,
                     MALRequestOperation.REQUEST_STAGE,
-                    IPTestHelper.REQUEST_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.REQUEST_OP_NUMBER,
                     qos, session
             );
         } else if ("INVOKE".equalsIgnoreCase(pattern)) {
             msg = createMessage(uriTo, ep,
                     InteractionType.INVOKE,
                     MALInvokeOperation.INVOKE_STAGE,
-                    IPTestHelper.INVOKE_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.INVOKE_OP_NUMBER,
                     qos, session
             );
         } else if ("PROGRESS".equalsIgnoreCase(pattern)) {
             msg = createMessage(uriTo, ep,
                     InteractionType.PROGRESS,
                     MALProgressOperation.PROGRESS_STAGE,
-                    IPTestHelper.PROGRESS_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.PROGRESS_OP_NUMBER,
                     qos, session
             );
         }
@@ -429,7 +429,7 @@ public class MalSppPatternTest extends PatternTest {
     }
 
     public String receivedMessageMalHeaderFieldUriFromIs() {
-        return rcvdMsg.getHeader().getURIFrom().toString();
+        return rcvdMsg.getHeader().getFrom().getValue();
     }
 
     public int bufferRemainingSizeIs() {

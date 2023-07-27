@@ -32,12 +32,12 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
@@ -154,15 +154,15 @@ public class ActivityTrackingPublisher {
         ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // Produce header
-        AttributeList keys = new AttributeList();
-        keys.add(new Identifier(OBJ_NO_ASE_ACCEPTANCE_STR));
-        keys.add(new Union(ComStructureHelper.generateSubKey(
+        NullableAttributeList keys = new NullableAttributeList();
+        keys.add(new NullableAttribute(new Identifier(OBJ_NO_ASE_ACCEPTANCE_STR)));
+        keys.add(new NullableAttribute(new Union(ComStructureHelper.generateSubKey(
                         COMHelper._COM_AREA_NUMBER,
                         ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                         COMHelper._COM_AREA_VERSION,
-                        0)));
-        keys.add(new Union((long) instanceIdentifier++));
-        keys.add(new Union(0L));
+                        0))));
+        keys.add(new NullableAttribute(new Union((long) instanceIdentifier++)));
+        keys.add(new NullableAttribute(new Union(0L)));
         
         BaseMalServer.LOGGER.log(Level.FINE, "ActivityTracking:eKey = {0}", keys);
 
@@ -307,15 +307,15 @@ public class ActivityTrackingPublisher {
                 new Object[]{eventSourceURI, source});
 
         // Produce header
-        AttributeList keys = new AttributeList();
-        keys.add(new Identifier(OBJ_NO_ASE_EXECUTION_STR));
-        keys.add(new Union(ComStructureHelper.generateSubKey(
+        NullableAttributeList keys = new NullableAttributeList();
+        keys.add(new NullableAttribute(new Identifier(OBJ_NO_ASE_EXECUTION_STR)));
+        keys.add(new NullableAttribute(new Union(ComStructureHelper.generateSubKey(
                         COMHelper._COM_AREA_NUMBER,
                         ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                         COMHelper._COM_AREA_VERSION,
-                        0)));
-        keys.add(new Union((long) instanceIdentifier++));
-        keys.add(new Union(0L));
+                        0))));
+        keys.add(new NullableAttribute(new Union((long) instanceIdentifier++)));
+        keys.add(new NullableAttribute(new Union(0L)));
         
         BaseMalServer.LOGGER.log(Level.FINE,
                 "ActivityTracking:publishexecution ekey = {0}", keys);

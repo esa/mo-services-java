@@ -114,7 +114,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         listener = new MonitorListener();
 
@@ -127,7 +127,8 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
 
         AttributeList keyValues = new AttributeList("A");
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, keyValues));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, keyValues.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
@@ -136,7 +137,8 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL,
                 PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
                 publisherSessionType, SESSION_NAME, false, updateHeaderList,
-                updateList, keyValues, expectedErrorCode, false, null);
+                updateList, keyValues.getAsNullableAttributeList(),
+                expectedErrorCode, false, null);
 
         ipTestToPublish.publishUpdates(testPublishUpdate);
 

@@ -105,24 +105,24 @@ public abstract class TestData {
     public static final IdentifierList testDomain = new IdentifierList(Arrays.stream(testDomainAsString.split("."))
             .map(s -> new Identifier(s))
             .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
-    public static final ObjectRef testObjectRef = new ObjectRef(testDomain, txt, txt, txt, new UInteger(1));
+    public static final ObjectRef testObjectRef = new ObjectRef(testDomain, 1L, txt, new UInteger(1));
     public static final Garage testGarage;
     // TODO find the type Identifier from the Element
     public static final ObjectRef<Lamborghini> testCourtesyCar
-            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                    new Identifier("Lamborghini"), new Identifier("car0"), new UInteger(1));
+            = new ObjectRef<>(testDomain, Lamborghini.SHORT_FORM,
+                    new Identifier("car0"), new UInteger(1));
     public static final ObjectRef<Lamborghini> testCarL1
-            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                    new Identifier("Lamborghini"), new Identifier("carL1"), new UInteger(1));
+            = new ObjectRef<>(testDomain, Lamborghini.SHORT_FORM,
+                    new Identifier("carL1"), new UInteger(1));
     public static final ObjectRef<Lamborghini> testCarL2
-            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                    new Identifier("Lamborghini"), new Identifier("carL2"), new UInteger(1));
+            = new ObjectRef<>(testDomain, Lamborghini.SHORT_FORM,
+                    new Identifier("carL2"), new UInteger(1));
     public static final ObjectRef<Porsche> testCarP1
-            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                    new Identifier("Porsche"), new Identifier("carP1"), new UInteger(1));
+            = new ObjectRef<>(testDomain, Porsche.SHORT_FORM,
+                    new Identifier("carP1"), new UInteger(1));
     public static final ObjectRef<Porsche> testCarP2
-            = new ObjectRef<>(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                    new Identifier("Porsche"), new Identifier("carP2"), new UInteger(1));
+            = new ObjectRef<>(testDomain, Porsche.SHORT_FORM,
+                    new Identifier("carP2"), new UInteger(1));
     public static final ObjectRefList testCars = new ObjectRefList();
     public static final ObjectRefList testPorscheCars = new ObjectRefList();
     public static final int[] testIndexes;
@@ -162,13 +162,13 @@ public abstract class TestData {
         testEnumerations.add(SessionType.REPLAY);
         testEnumerations.add(SessionType.SIMULATION);
 
-        testEnumerations.add(AreaNumber.MAL);
-        testEnumerations.add(AreaNumber.COM);
-        testEnumerations.add(AreaNumber.COMMON);
-        testEnumerations.add(AreaNumber.MC);
-        testEnumerations.add(AreaNumber.MPS);
-        testEnumerations.add(AreaNumber.SM);
-        testEnumerations.add(AreaNumber.MDPD);
+        testEnumerations.add(MOArea.MAL);
+        testEnumerations.add(MOArea.COM);
+        testEnumerations.add(MOArea.COMMON);
+        testEnumerations.add(MOArea.MC);
+        testEnumerations.add(MOArea.MPS);
+        testEnumerations.add(MOArea.SM);
+        testEnumerations.add(MOArea.MDPD);
 
         testEnumerations.add(AttributeType.BLOB);
         testEnumerations.add(AttributeType.BOOLEAN);
@@ -200,18 +200,18 @@ public abstract class TestData {
         domId.add(testIdentifier);
         domId.add(testIdentifier);
         domId.add(testIdentifier);
-        AttributeList testKeyValues = new AttributeList();
-        testKeyValues.add(new Identifier("TestValue"));
-        testKeyValues.add(new String("TestValue"));
+        NullableAttributeList testKeyValues = new NullableAttributeList();
+        testKeyValues.add(new NullableAttribute(new Identifier("TestValue")));
+        testKeyValues.add(new NullableAttribute(new Union("TestValue")));
         TestPublish a = new TestPublishRegister(QoSLevel.QUEUED, testUInteger,
                 domId, testIdentifier, testEnumeration, testIdentifier,
                 false, null, testUInteger);
         TestPublish b = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger,
                 domId, testIdentifier, testEnumeration, testIdentifier,
-                false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
+                false, null, null, testKeyValues, testUInteger, testBoolean, (NullableAttributeList) null);
         TestPublish c = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger,
                 domId, testIdentifier, testEnumeration, testIdentifier,
-                false, null, null, testKeyValues, testUInteger, testBoolean, (AttributeList) null);
+                false, null, null, testKeyValues, testUInteger, testBoolean, (NullableAttributeList) null);
         testAbstracts.add(a);
         testAbstracts.add(b);
         testAbstracts.add(c);
@@ -281,16 +281,15 @@ public abstract class TestData {
         testPorscheCars.add(testCarP1);
         testPorscheCars.add(testCarP2);
         // TODO find the type Identifier more programmatically
-        ObjectIdentity garageId = new ObjectIdentity(testDomain, MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                new Identifier("Garage"), new Identifier("garage"), new UInteger(1));
+        ObjectIdentity garageId = new ObjectIdentity(testDomain, new Identifier("garage"), new UInteger(1));
 //        testGarage.setCourtesyCarAsPorsche(null);
         // TODO the next 2 lines do not compile
-        ObjectRef<Porsche> porscheCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
-                testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
-        ObjectRef<Auto> autoCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
-                testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
-        ObjectRef<Element> elementCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getArea(),
-                testCourtesyCar.getType(), testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
+        ObjectRef<Porsche> porscheCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getabsoluteSFP(),
+                testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
+        ObjectRef<Auto> autoCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getabsoluteSFP(),
+                testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
+        ObjectRef<Element> elementCar = new ObjectRef(testCourtesyCar.getDomain(), testCourtesyCar.getabsoluteSFP(),
+                testCourtesyCar.getKey(), testCourtesyCar.getObjectVersion());
 
         testGarage = new Garage(garageId, porscheCar, autoCar, elementCar,
                 testPorscheCars, testCars, testCars);

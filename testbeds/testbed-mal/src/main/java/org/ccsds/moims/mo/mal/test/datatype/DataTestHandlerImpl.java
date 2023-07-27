@@ -325,7 +325,8 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     public static final IdentifierList testDomain = new IdentifierList(Arrays.stream(testDomainAsString.split("\\."))
             .map(s -> new Identifier(s))
             .collect(Collectors.toCollection(ArrayList<Identifier>::new)));
-    HashMap<ObjectIdentity, Auto> autoList = new HashMap<>();
+    HashMap<ObjectIdentity, Porsche> porscheList = new HashMap<>();
+    HashMap<ObjectIdentity, Lamborghini> lamboList = new HashMap<>();
 
     @Override
     public ObjectRef<Auto> createObject(Auto auto, MALInteraction interaction) throws MALInteractionException, MALException {
@@ -334,20 +335,27 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
                     new Union("Unexpected exception - null object value.")));
         }
         // MO Objects have a unique and an immutable identity
-        ObjectIdentity autoId0 = new ObjectIdentity(auto.getObjectIdentity().getDomainId(),
-                auto.getObjectIdentity().getAreaId(),
-                auto.getObjectIdentity().getTypeId(),
-                auto.getObjectIdentity().getKeyId(),
+        ObjectIdentity autoId0 = new ObjectIdentity(
+                auto.getObjectIdentity().getDomain(),
+                auto.getObjectIdentity().getKey(),
                 new UInteger(0));
-        Auto lastAuto = autoList.get(autoId0);
-        long versionUpdate = auto.getObjectIdentity().getVersionId().getValue();
+        Auto lastAuto = null;
+
+        if (auto instanceof Porsche) {
+            lastAuto = porscheList.get(autoId0);
+        }
+        if (auto instanceof Lamborghini) {
+            lastAuto = lamboList.get(autoId0);
+        }
+
+        long versionUpdate = auto.getObjectIdentity().getVersion().getValue();
         if (lastAuto == null) {
             if (versionUpdate != 1) {
                 throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                         new Union("Wrong version for new object.")));
             }
         } else {
-            versionUpdate -= lastAuto.getObjectIdentity().getVersionId().getValue();
+            versionUpdate -= lastAuto.getObjectIdentity().getVersion().getValue();
             if (versionUpdate == 0) {
                 throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
                         new Union("Object already exists.")));
@@ -356,50 +364,46 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
                         new Union("Wrong version for updated object.")));
             }
         }
-        // check the identity type
-        // TODO improve Java mapping to allow simpler checking code
-        String expectedAutoType = null;
-        if (auto instanceof Lamborghini) {
-            expectedAutoType = "Lamborghini";
-        } else if (auto instanceof Porsche) {
-            expectedAutoType = "Porsche";
-        } else {
-            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
-                    new Union("Unexpected Auto value.")));
-        }
-        if (!expectedAutoType.equals(auto.getObjectIdentity().getTypeId().getValue())) {
-            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
-                    new Union("Illegal type field value.")));
-        }
 
-        autoList.put(autoId0, auto);
-        autoList.put(auto.getObjectIdentity(), auto);
+        if (auto instanceof Porsche) {
+            porscheList.put(autoId0, (Porsche) auto);
+            porscheList.put(auto.getObjectIdentity(), (Porsche) auto);
+        }
+        if (auto instanceof Lamborghini) {
+            lamboList.put(autoId0, (Lamborghini) auto);
+            lamboList.put(auto.getObjectIdentity(), (Lamborghini) auto);
+        }
 
         return auto.getObjectRef();
     }
 
-    public ObjectRef<Auto> createObjectFromFields(Identifier autoType, Identifier key,
+    public ObjectRef<Auto> createObjectFromFields(Long autoType, Identifier key,
             Boolean update, String engine, String chassis, StringList windows,
             MALInteraction interaction) throws MALInteractionException, MALException {
         ObjectIdentity autoId0 = new ObjectIdentity(testDomain,
-                MALPrototypeHelper.MALPROTOTYPE_AREA_NAME,
-                autoType,
                 key,
                 new UInteger(0));
-        Auto auto = autoList.get(autoId0);
+        Auto auto = null;
+
+        if (autoType.equals(Porsche.SHORT_FORM)) {
+            auto = porscheList.get(autoId0);
+        }
+        if (autoType.equals(Lamborghini.SHORT_FORM)) {
+            auto = lamboList.get(autoId0);
+        }
+
         if (auto != null && !update.booleanValue()) {
             throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
                     new Union("Object already exists.")));
         }
-        ObjectIdentity autoId = new ObjectIdentity(autoId0.getDomainId(),
-                autoId0.getAreaId(),
-                autoId0.getTypeId(),
-                autoId0.getKeyId(),
-                auto == null ? new UInteger(1) : new UInteger(auto.getObjectIdentity().getVersionId().getValue() + 1));
+        ObjectIdentity autoId = new ObjectIdentity(
+                autoId0.getDomain(),
+                autoId0.getKey(),
+                auto == null ? new UInteger(1) : new UInteger(auto.getObjectIdentity().getVersion().getValue() + 1));
 
-        if (new Identifier("Lamborghini").equals(autoType)) {
+        if (Lamborghini.SHORT_FORM.equals(autoType)) {
             auto = new Lamborghini(autoId, engine, chassis, windows);
-        } else if (new Identifier("Porsche").equals(autoType)) {
+        } else if (Porsche.SHORT_FORM.equals(autoType)) {
             auto = new Porsche(autoId, engine, chassis, windows);
         } else {
             throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
@@ -412,23 +416,30 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     public void deleteObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
         ObjectIdentity autoId = new ObjectIdentity(
                 autoRef.getDomain(),
-                autoRef.getArea(),
-                autoRef.getType(),
                 autoRef.getKey(),
                 autoRef.getObjectVersion());
-        Auto auto = autoList.remove(autoId);
+        Auto auto = null;
+        if (autoRef.getabsoluteSFP().equals(Porsche.SHORT_FORM)) {
+            auto = porscheList.remove(autoId);
+        }
+        if (autoRef.getabsoluteSFP().equals(Lamborghini.SHORT_FORM)) {
+            auto = lamboList.remove(autoId);
+        }
 
         if (new UInteger(0).equals(autoRef.getObjectVersion())) {
             // remove all versions of the object
-            for (long version = auto.getObjectIdentity().getVersionId().getValue(); --version > 0;) {
+            for (long version = auto.getObjectIdentity().getVersion().getValue(); --version > 0;) {
                 ObjectIdentity autoId2 = new ObjectIdentity(
                         autoRef.getDomain(),
-                        autoRef.getArea(),
-                        autoRef.getType(),
                         autoRef.getKey(),
                         new UInteger(version));
 
-                autoList.remove(autoId2);
+                if (autoRef.getabsoluteSFP().equals(Porsche.SHORT_FORM)) {
+                    auto = porscheList.remove(autoId2);
+                }
+                if (autoRef.getabsoluteSFP().equals(Lamborghini.SHORT_FORM)) {
+                    auto = lamboList.remove(autoId2);
+                }
             }
         }
     }
@@ -440,13 +451,18 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
      */
     @Override
     public Auto getObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
-        ObjectIdentity autoId = new ObjectIdentity(autoRef.getDomain(),
-                autoRef.getArea(),
-                autoRef.getType(),
+        ObjectIdentity autoId = new ObjectIdentity(
+                autoRef.getDomain(),
                 autoRef.getKey(),
                 autoRef.getObjectVersion());
 
-        return autoList.get(autoId);
+        if (autoRef.getabsoluteSFP().equals(Porsche.SHORT_FORM)) {
+            return porscheList.get(autoId);
+        }
+        if (autoRef.getabsoluteSFP().equals(Lamborghini.SHORT_FORM)) {
+            return lamboList.get(autoId);
+        }
+        return null;
     }
 
     @Override
@@ -471,6 +487,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(
             Garage _Garage0, ObjectRefList _Porsche_1, ObjectRefList _Auto_2,
             ObjectRefList _Element_3, MALInteraction interaction) throws MALInteractionException, MALException {
-        return new TestPolymorphicObjectRefTypesResponse(_Garage0, _Porsche_1, _Auto_2, _Element_3);
+        return new TestPolymorphicObjectRefTypesResponse(_Garage0,
+                _Porsche_1, _Auto_2, _Element_3);
     }
 }

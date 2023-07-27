@@ -43,7 +43,6 @@ import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -119,7 +118,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                     uris = FileBasedDirectory
                             .loadURIs(TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
                 } else {
-                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
+                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE.IPTEST_SERVICE_NAME.getValue());
                 }
             } else {
                 if (shared) {
@@ -135,7 +134,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                     uris = FileBasedDirectory
                             .loadURIs(TestServiceProvider.TM_TC_IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
                 } else {
-                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE_NAME.getValue());
+                    uris = FileBasedDirectory.loadURIs(IPTestHelper.IPTEST_SERVICE.IPTEST_SERVICE_NAME.getValue());
                 }
             } else {
                 if (shared) {
@@ -394,6 +393,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         Subscription subscription = new Subscription(
                 new Identifier(ErrorBrokerHandler.SUBSCRIPTION_RAISING_ERROR),
                 null,
+                null,
                 new SubscriptionFilterList());
 
         try {
@@ -420,7 +420,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
         IPTest ipTest = ipTestConsumer.getStub();
 
-        Subscription subscription = new Subscription(new Identifier("subscription"), null, new SubscriptionFilterList());
+        Subscription subscription = new Subscription(new Identifier("subscription"),
+                null, null, new SubscriptionFilterList());
 
         IPTestListener listener = new IPTestListener();
 
@@ -440,7 +441,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 qos, HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.getDomain(domain),
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
-                new UpdateHeaderList(), new TestUpdateList(), keyValues, errorCode, Boolean.FALSE, null);
+                new UpdateHeaderList(), new TestUpdateList(),
+                keyValues.getAsNullableAttributeList(), errorCode, Boolean.FALSE, null);
         ipTest.publishUpdates(testPublishUpdate);
 
         listener.waitNotifyError();
@@ -526,7 +528,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
          */
         //Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, entityRequests);
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, null, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, null, null, filters);
         ipTest.monitorMultiRegister(subscription, new IPTestListener());
 
         return true;
@@ -564,13 +566,17 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         }
 
         // Publish
-        UpdateHeader updateHeader1 = new UpdateHeader(new Identifier(""), null, keyValues);
+        UpdateHeader updateHeader1 = new UpdateHeader(new Identifier(""),
+                null, keyValues.getAsNullableAttributeList());
         TestUpdate update1 = new TestUpdate(new Integer(1));
-        UpdateHeader updateHeader2 = new UpdateHeader(new Identifier(""), null, keyValues);
+        UpdateHeader updateHeader2 = new UpdateHeader(new Identifier(""),
+                null, keyValues.getAsNullableAttributeList());
         TestUpdate update2 = new TestUpdate(new Integer(2));
-        UpdateHeader updateHeader3 = new UpdateHeader(new Identifier(""), null, keyValues);
+        UpdateHeader updateHeader3 = new UpdateHeader(new Identifier(""),
+                null, keyValues.getAsNullableAttributeList());
         TestUpdate update3 = new TestUpdate(new Integer(3));
-        UpdateHeader updateHeader4 = new UpdateHeader(new Identifier(""), null, keyValues);
+        UpdateHeader updateHeader4 = new UpdateHeader(new Identifier(""),
+                null, keyValues.getAsNullableAttributeList());
         TestUpdate update4 = new TestUpdate(new Integer(4));
 
         UpdateHeaderList updateHeaders = new UpdateHeaderList();
@@ -587,8 +593,10 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
-                qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE,
-                session, sessionName, true, updateHeaders, updates, keyValues, expectedErrorCode, false, null);
+                qos, HeaderTestProcedure.PRIORITY,
+                HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE,
+                session, sessionName, true, updateHeaders, updates,
+                keyValues.getAsNullableAttributeList(), expectedErrorCode, false, null);
 
         ipTest.publishUpdates(testPublishUpdate);
 
@@ -643,8 +651,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 stage,
                 transId,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
-                IPTestHelper.MONITOR_OP_NUMBER,
+                IPTestHelper.IPTEST_SERVICE.IPTEST_SERVICE_NUMBER,
+                IPTestHelper.IPTEST_SERVICE.MONITOR_OP_NUMBER,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
                 null, // qos proerties
@@ -680,7 +688,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
          */
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(keyName, new AttributeList(OTHER_KEY_VALUE)));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, null, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, null, null, filters);
 
         if ("REGISTER".equalsIgnoreCase(stage)) {
             Object[] body = new Object[]{subscription};

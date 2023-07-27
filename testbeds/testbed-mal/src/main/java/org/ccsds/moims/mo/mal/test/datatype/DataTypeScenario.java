@@ -429,7 +429,8 @@ public class DataTypeScenario extends LoggingBase {
         try {
             getDataTestStub().setTestDataOffset(54);
             TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
-                    TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
+                    TestData.testUOctet, TestData.testUShort,
+                    TestData.testUInteger, TestData.testULong);
             rv = subMultiTest(TestData.testMultiReturnExplicit.get_UOctet0(),
                     tv.get_UOctet0(), null, "explicit Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnExplicit.get_UShort1(),
@@ -452,7 +453,8 @@ public class DataTypeScenario extends LoggingBase {
         logMessage("Starting abstract multi return data test...");
         try {
             TestAbstractMultiReturnResponse tv = getDataTestStub().testAbstractMultiReturn(
-                    TestData.testUOctet, TestData.testUShort, TestData.testUInteger, TestData.testULong);
+                    TestData.testUOctet, TestData.testUShort,
+                    TestData.testUInteger, TestData.testULong);
             rv = subMultiTest(TestData.testMultiReturnAbstract.get_UOctet0(),
                     tv.get_UOctet0(), null, "abstract Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnAbstract.get_UShort1(),
@@ -475,7 +477,8 @@ public class DataTypeScenario extends LoggingBase {
         logMessage("Starting abstract multi return data test...");
         try {
             TestInnerAbstractMultiReturnResponse tv = getDataTestStub().testInnerAbstractMultiReturn(
-                    TestData.testUOctet, TestData.testULong, TestData.testUShort, TestData.testUInteger);
+                    TestData.testUOctet, TestData.testULong,
+                    TestData.testUShort, TestData.testUInteger);
             rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UOctet0(),
                     tv.get_UOctet0(), null, "inner abstract Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element1(),
@@ -499,7 +502,8 @@ public class DataTypeScenario extends LoggingBase {
         try {
             getDataTestStub().setTestDataOffset(55);
             TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
-                    TestData.testUOctet, TestData.testUShort, TestData.testUInteger, null);
+                    TestData.testUOctet, TestData.testUShort,
+                    TestData.testUInteger, null);
             rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement0(),
                     tv.getBodyElement0(), null, "null Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement1(),
@@ -687,9 +691,8 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public static final ObjectIdentity getObjectIdentityFromObjectRef(ObjectRef objRef) {
-        return new ObjectIdentity(objRef.getDomain(),
-                objRef.getArea(),
-                objRef.getType(),
+        return new ObjectIdentity(
+                objRef.getDomain(),
                 objRef.getKey(),
                 objRef.getObjectVersion());
     }
@@ -710,7 +713,7 @@ public class DataTypeScenario extends LoggingBase {
             windows2.add("rear");
             // create a first object
             ObjectRef<Auto> autoRef1 = getDataTestStub().createObjectFromFields(
-                    new Identifier("Lamborghini"), new Identifier("my first car"), false,
+                    Lamborghini.SHORT_FORM, new Identifier("my first car"), false,
                     "V12 L539 - 850 CV", "Monocoque CFRP", windows1);
             // create another object with exactly the same identity, must fail
             ObjectIdentity autoId2 = getObjectIdentityFromObjectRef(autoRef1);
@@ -727,12 +730,12 @@ public class DataTypeScenario extends LoggingBase {
                         rv,
                         "Expected object already exists error for Object identity is unique test");
             }
-            rv = subMultiTest(null, autoRef2, rv, "Expecting object already exists error for Object identity is unique test");
+            rv = subMultiTest(null, autoRef2, rv,
+                    "Expecting object already exists error for Object identity is unique test");
 
             // create a valid Object identity
-            ObjectIdentity autoId3 = new ObjectIdentity(autoId2.getDomainId(),
-                    autoId2.getAreaId(), autoId2.getTypeId(), autoId2.getKeyId(),
-                    new UInteger(autoId2.getVersionId().getValue() + 1));
+            ObjectIdentity autoId3 = new ObjectIdentity(autoId2.getDomain(),
+                    autoId2.getKey(), new UInteger(autoId2.getVersion().getValue() + 1));
             //autoId2.setVersionId(new UInteger(autoId2.getVersionId().getValue() + 1));
             // use it for a wrong typed object
             // this could be detected by the Java mapping at object creation
@@ -749,7 +752,8 @@ public class DataTypeScenario extends LoggingBase {
                         rv,
                         "Wrong type error for Object identity type check");
             }
-            rv = subMultiTest(null, porscheRef2, rv, "Expecting wrong type error for Object identity type check");
+            rv = subMultiTest(null, porscheRef2, rv,
+                    "Expecting wrong type error for Object identity type check");
 
             // create a revision of the first object
             Lamborghini auto3 = new Lamborghini(autoId3,
@@ -757,12 +761,12 @@ public class DataTypeScenario extends LoggingBase {
                     "Monocoque CFRP",
                     windows2);
             ObjectRef<Auto> autoRef3 = getDataTestStub().createObject(auto3);
-            rv = subMultiTest(autoId3.getVersionId(), autoRef3.getObjectVersion(), rv,
+            rv = subMultiTest(autoId3.getVersion(), autoRef3.getObjectVersion(), rv,
                     "New version of first object created");
             // get the latest version of an object
-            ObjectRef<Auto> autoRef0 = new ObjectRef<>(autoRef1.getDomain(),
-                    autoRef1.getArea(),
-                    autoRef1.getType(),
+            ObjectRef<Auto> autoRef0 = new ObjectRef<>(
+                    autoRef1.getDomain(),
+                    autoRef1.getabsoluteSFP(),
                     autoRef1.getKey(),
                     new UInteger(0));
             Auto auto0 = getDataTestStub().getObject(autoRef0);
@@ -859,7 +863,8 @@ public class DataTypeScenario extends LoggingBase {
     protected String subSingleTestExceptionHandler(MALInteractionException ex,
             String testMsg) throws MALInteractionException {
         long errNum = ex.getStandardError().getErrorNumber().getValue();
-        if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum) || (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
+        if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum)
+                || (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
             String msg = "Test " + testMsg + " failed in consumer, encoding error received:\n"
                     + ex.getStandardError().getExtraInformation().toString();
             logMessage(msg);

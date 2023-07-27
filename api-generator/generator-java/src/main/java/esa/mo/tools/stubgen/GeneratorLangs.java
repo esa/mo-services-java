@@ -1593,11 +1593,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create decode method
         method = decodeMethodOpen(file, elementType);
-        if (null != parentClass) {
+        if (parentClass != null) {
             method.addSuperMethodStatement("decode", "decoder");
         }
         for (CompositeField element : compElements) {
-            boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
+            boolean isAbstract = isAbstract(element.getTypeReference())
+                    && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String castString = element.getDecodeCast();
 
@@ -1614,7 +1615,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             + createMethodCall("decoder.decode" + canBeNullStr + "AbstractElement()"));
                 }
             } else {
-                if (castString.contains("AttributeList")) {
+                // Needs the "." before the AttributeList because of the NullableAttributeList
+                if (castString.contains(".AttributeList")) {
                     // This is when the Element is set as the abstract AttributeList type
                     String attNew = "new org.ccsds.moims.mo.mal.structures.AttributeList()";
                     method.addLine(element.getFieldName() + " = " + castString
