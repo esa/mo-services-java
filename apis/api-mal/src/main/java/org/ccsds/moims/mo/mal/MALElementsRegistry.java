@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -22,6 +22,8 @@ package org.ccsds.moims.mo.mal;
 
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
@@ -78,6 +80,11 @@ public class MALElementsRegistry {
 
         if (callable == null) {
             TypeId typeId = new TypeId(absoluteSFP);
+
+            if (typeId.isOldMAL()) {
+                Logger.getLogger(MALElementsRegistry.class.getName()).log(Level.SEVERE,
+                        "The typeId is incorrect! It is: {0}", typeId.toString());
+            }
 
             throw new NotFoundException("The element was not found: "
                     + absoluteSFP + "\n" + typeId.toString());

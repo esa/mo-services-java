@@ -89,6 +89,20 @@ public class TypeId {
     }
 
     /**
+     * Initializes the TypeId class.
+     *
+     * @param areaNumber The area number of the service.
+     * @param areaVersion The area version of the service.
+     * @param serviceNumber The service number of the service.
+     * @param sfp The Short Form Part number.
+     * @throws java.lang.IllegalArgumentException If any argument is null.
+     */
+    public TypeId(final int areaNumber, final int areaVersion,
+            final int serviceNumber, final int sfp) {
+        this((short) areaNumber, (short) areaVersion, (short) serviceNumber, (short) sfp);
+    }
+
+    /**
      * Returns the area number of the service.
      *
      * @return The area number of the service.
@@ -113,6 +127,10 @@ public class TypeId {
      */
     public int getServiceNumber() {
         return serviceNumber;
+    }
+
+    public boolean isOldMAL() {
+        return (areaNumber == 1 && areaVersion < 3);
     }
 
     /**
@@ -143,10 +161,11 @@ public class TypeId {
 
     @Override
     public String toString() {
-        return "TypeId: "
-                + " areaNumber:" + areaNumber
-                + " areaVersion: " + areaVersion
-                + " serviceNumber: " + serviceNumber
-                + " sfp: " + sfp;
+        return "(TypeId:"
+                + " areaNumber=" + areaNumber
+                + " areaVersion=" + areaVersion
+                + " serviceNumber=" + serviceNumber
+                + " sfp=" + sfp
+                + ")";
     }
 }

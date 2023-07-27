@@ -48,8 +48,8 @@ public class MALArea {
      * @param version The area version.
      * @throws IllegalArgumentException If either argument is null.
      */
-    public MALArea(final UShort number, final Identifier name, final UOctet version)
-            throws java.lang.IllegalArgumentException {
+    public MALArea(final UShort number, final Identifier name,
+            final UOctet version) throws java.lang.IllegalArgumentException {
         if (number == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
