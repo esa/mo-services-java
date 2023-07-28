@@ -40,7 +40,6 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
@@ -146,7 +145,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
                         msgBody.getDomain(),
                         msg.getHeader().getQosProps(),
                         msgBody.getSubscriptionId(),
-                        null,
+                        hdr.getSupplements(),
                         msgBody.getUpdateHeader(),
                         msgBody.getUpdateObjects());
             } catch (MALTransmitErrorException ex) {

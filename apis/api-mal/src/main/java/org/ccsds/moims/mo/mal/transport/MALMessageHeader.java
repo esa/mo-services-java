@@ -96,6 +96,10 @@ public class MALMessageHeader {
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
             final NamedValueList supplements) {
+        if (supplements == null) {
+            throw new IllegalArgumentException("The supplements field cannot be NULL!");
+        }
+
         this.from = from;
         this.authenticationId = authenticationId;
         this.to = to;
