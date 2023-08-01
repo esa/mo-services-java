@@ -164,7 +164,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
         Object bodyPart = messageParts[index];
 
-        // Up-cast the List if it is a polymorphic list!
+        // Up-cast the List if it is a heterogeneous list!
         if (element != null && bodyPart instanceof HeterogeneousList) {
             for (Element entry : (HeterogeneousList) bodyPart) {
                 ((HeterogeneousList) element).add(entry);
@@ -179,7 +179,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             messageParts[index] = bodyPart;
         }
         if (bodyPart instanceof MALEncodedElement) {
-            System.out.println("getBodyElement requesting encoded body : " + this.decodedBody);
+            System.out.println("getBodyElement requesting encoded body: " + this.decodedBody);
         }
 
         return bodyPart;
@@ -240,7 +240,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             // if we only have a single body part then encode that directly
             if (count == 1) {
                 ctx.setBodyElementIndex(0);
-                Object sf = ctx.getOperation().getOperationStage(stage).getElementShortForms()[0];
+                Object sf = ctx.getOperation().getOperationStage(stage).getFields()[0].getTypeId();
                 encodeBodyPart(streamFactory, enc, wrappedBodyParts, sf, getBodyElement(0, null), ctx);
             } else if (count > 1) {
                 MALElementOutputStream benc = enc;
@@ -263,7 +263,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                         if (!ctx.getHeader().getIsErrorMessage()) {
                             sf = ctx.getOperation()
                                     .getOperationStage(stage)
-                                    .getElementShortForms()[i];
+                                    .getFields()[i].getTypeId();
                         }
                     }
                     encodeBodyPart(streamFactory, benc, wrappedBodyParts,
@@ -370,7 +370,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             } else {
                 bodyPartCount = ctx.getOperation()
                         .getOperationStage(interactionStage)
-                        .getElementShortForms().length;
+                        .getFields().length;
             }
 
             GENTransport.LOGGER.log(Level.FINE,
@@ -380,7 +380,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             if (bodyPartCount == 1) {
                 Object sf = ctx.getOperation()
                         .getOperationStage(interactionStage)
-                        .getElementShortForms()[0];
+                        .getFields()[0].getTypeId();
                 messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
             } else if (bodyPartCount > 1) {
                 MALElementInputStream benc = encBodyElements;
@@ -399,7 +399,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                     if (!ctx.getHeader().getIsErrorMessage()) {
                         sf = ctx.getOperation()
                                 .getOperationStage(interactionStage)
-                                .getElementShortForms()[i];
+                                .getFields()[i].getTypeId();
                     }
 
                     try {

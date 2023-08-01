@@ -121,7 +121,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             UOctet stage = ctx.getHeader().getInteractionStage();
             Object sf = ctx.getOperation()
                     .getOperationStage(stage)
-                    .getElementShortForms()[ctx.getBodyElementIndex()];
+                    .getFields()[ctx.getBodyElementIndex()].getTypeId();
 
             if (sf == null) {
                 encodeAbstractSubElement(e);
@@ -135,7 +135,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             final MALEncodingContext ctx) throws MALException {
         UOctet stage = ctx.getHeader().getInteractionStage();
         MALOperationStage op = ctx.getOperation().getOperationStage(stage);
-        Object sf = op.getElementShortForms()[ctx.getBodyElementIndex()];
+        Object sf = op.getFields()[ctx.getBodyElementIndex()].getTypeId();
 
         // Is it encoding an abstract element?
         if (sf == null) {

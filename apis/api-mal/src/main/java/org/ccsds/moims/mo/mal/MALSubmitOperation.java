@@ -49,7 +49,7 @@ public class MALSubmitOperation extends MALOperation {
 
     private final MALOperationStage submitStage;
     private static final MALOperationStage SUBMIT_ACK_OPERATION_STAGE
-            = new MALOperationStage(SUBMIT_ACK_STAGE, new Long[0]);
+            = new MALOperationStage(SUBMIT_ACK_STAGE, new OperationField[0]);
 
     /**
      * Initialises the internal variables with the supplied values.

@@ -95,7 +95,7 @@ public class TestMAL {
                 System.getProperties(),
                 false,
                 null,
-                null);
+                new NamedValueList());
 
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("ccsds"));

@@ -30,27 +30,25 @@ public class MALOperationStage {
 
     private final UOctet stageNumber;
 
-    // Should be Long for normal MAL types or String for XML types:
-    private final Object[] elementShortForms;
+    private final OperationField[] fields;
 
     /**
      * Constructs an operation stage using the supplied arguments.
      *
      * @param stageNumber Number of the interaction stage.
-     * @param elementShortForms Short forms of the body element types.
+     * @param fields The fields of this operation stage.
      * @throws java.lang.IllegalArgumentException If any of the arguments are
      * null.
      */
-    public MALOperationStage(final UOctet stageNumber,
-            final Object[] elementShortForms) throws java.lang.IllegalArgumentException {
+    public MALOperationStage(final UOctet stageNumber, final OperationField[] fields) {
         if (stageNumber == null) {
-            throw new IllegalArgumentException("Number argument must not be NULL");
+            throw new IllegalArgumentException("stageNumber argument cannot be NULL");
         }
-        if (elementShortForms == null) {
-            throw new IllegalArgumentException("Element short forms argument must not be NULL");
+        if (fields == null) {
+            throw new IllegalArgumentException("fields argument cannot be NULL");
         }
         this.stageNumber = stageNumber;
-        this.elementShortForms = elementShortForms;
+        this.fields = fields;
     }
 
     /**
@@ -63,12 +61,11 @@ public class MALOperationStage {
     }
 
     /**
-     * Returns the contained element short forms.
+     * Returns the fields for this operation stage.
      *
-     * @return The element short forms.
+     * @return The fields for this operation stage.
      */
-    public Object[] getElementShortForms() {
-        // returns the internal reference for performance reasons
-        return elementShortForms;
+    public OperationField[] getFields() {
+        return fields;
     }
 }

@@ -243,13 +243,13 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final QoSLevel remotePublisherQos,
             final UInteger remotePublisherPriority) {
         final StringBuilder buf = new StringBuilder();
-        buf.append(op.getNumber()).append(":");
-        buf.append(domain).append(":");
-        buf.append(networkZone).append(":");
-        buf.append(sessionType).append(":");
-        buf.append(sessionName).append(":");
-        buf.append(remotePublisherQos).append(":");
-        buf.append(remotePublisherPriority).append(":");
+        buf.append(op.getNumber());
+        buf.append(":").append(domain);
+        buf.append(":").append(networkZone);
+        buf.append(":").append(sessionType);
+        buf.append(":").append(sessionName);
+        buf.append(":").append(remotePublisherQos);
+        buf.append(":").append(remotePublisherPriority);
         return buf.toString();
     }
 }

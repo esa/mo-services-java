@@ -301,7 +301,6 @@ public class JavaServiceInfo {
 
     // Generates the MALOperationStage(...)
     private String addMalTypes(int index, List<TypeInfo> ti, boolean isPubSub) {
-        ArrayList<String> typeArgs = new ArrayList<>();
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
 
@@ -313,12 +312,6 @@ public class JavaServiceInfo {
             } else {
                 needMalTypes = true;
             }
-
-            if (generator.isAbstract(type)) {
-                typeArgs.add("null");
-            } else {
-                typeArgs.add(typeInfo.getMalShortFormField());
-            }
         }
 
         if (needMalTypes && needXmlSchema) {
@@ -326,20 +319,58 @@ public class JavaServiceInfo {
                     + " type specifications in the same message! This is not supported.");
         }
 
-        String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
-        String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
+        //String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
+        //String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
+        String arrayArgs = this.generateOperationFieldsArray(ti);
 
         String initNewLine = "\n            ";
         String newLine = "\n                    ";
 
         if (isPubSub) {
-            return "new " + shortFormType + "[] {" + arrayArgs + "}";
+            return "new " + OP_FIELD + "[] {" + arrayArgs + "}";
         } else {
             return initNewLine + "new org.ccsds.moims.mo.mal.MALOperationStage("
                     + newLine
                     + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + "),"
                     + newLine
-                    + "new " + shortFormType + "[] {" + arrayArgs + "})";
+                    + "new " + OP_FIELD + "[] {" + arrayArgs + "})";
         }
     }
+
+    private final String OP_FIELD = "org.ccsds.moims.mo.mal.OperationField";
+
+    private String generateOperationFieldsArray(List<TypeInfo> ti) {
+        StringBuilder buffer = new StringBuilder();
+        String newLine = "\n                        ";
+
+        for (int i = 0; i < ti.size(); i++) {
+            TypeInfo typeInfo = ti.get(i);
+            buffer.append(newLine);
+            buffer.append("new ").append(OP_FIELD).append("(");
+            String argName = typeInfo.getFieldName();
+
+            if (argName == null) {
+                String separator = generator.getConfig().getNamingSeparator();
+                argName = "_" + TypeUtils.shortTypeName(separator, typeInfo.getTargetType()) + i;
+            }
+
+            buffer.append("\"").append(argName).append("\"");
+            buffer.append(", ");
+            buffer.append("true"); // Force the nullable field to be true until we find a better solution...
+            buffer.append(", ");
+
+            TypeReference type = typeInfo.getSourceType();
+
+            if (generator.isAbstract(type)) {
+                buffer.append("null");
+            } else {
+                buffer.append(typeInfo.getMalShortFormField());
+            }
+
+            buffer.append((i != ti.size() - 1) ? ")," : ")");
+        }
+
+        return buffer.toString();
+    }
+
 }

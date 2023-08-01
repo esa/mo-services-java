@@ -122,7 +122,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
     private Element decodePublishNotifyMessages(final MALEncodingContext ctx) throws MALException {
         UOctet stage = ctx.getHeader().getInteractionStage();
         MALOperationStage op = ctx.getOperation().getOperationStage(stage);
-        Object sf = op.getElementShortForms()[ctx.getBodyElementIndex()];
+        Object sf = op.getFields()[ctx.getBodyElementIndex()].getTypeId();
 
         // element is defined as an abstract type
         if (sf == null) {
