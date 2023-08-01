@@ -210,12 +210,13 @@ public class JavaConsumer {
                 }
                 case PUBSUB_OP: {
                     List<TypeInfo> retTypes = new LinkedList<>();
+                    boolean nullableField = false;
                     retTypes.add(0, TypeUtils.convertTypeReference(generator,
                             TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
-                            "subscriptionId", "The subscriptionId of the subscription."));
+                            "subscriptionId", "The subscriptionId of the subscription.", nullableField));
                     retTypes.add(1, TypeUtils.convertTypeReference(generator,
                             TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
-                            "updateHeader", "The Update header."));
+                            "updateHeader", "The Update header.", nullableField));
 
                     for (TypeInfo ti : op.getRetTypes()) {
                         retTypes.add(ti);

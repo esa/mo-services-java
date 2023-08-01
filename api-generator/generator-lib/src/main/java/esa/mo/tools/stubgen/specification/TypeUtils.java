@@ -41,7 +41,7 @@ public class TypeUtils {
      * @return the converted type information.
      */
     public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeReference tr) {
-        return convertTypeReference(tiSource, tr, null, null);
+        return convertTypeReference(tiSource, tr, null, null, false);
     }
 
     /**
@@ -51,10 +51,11 @@ public class TypeUtils {
      * @param tr The XML type reference
      * @param fieldName Optional field name.
      * @param fieldComment Optional field comment.
+     * @param fieldNullability The nullability of the field.
      * @return the converted type information.
      */
     public static TypeInfo convertTypeReference(TypeInformation tiSource,
-            TypeReference tr, String fieldName, String fieldComment) {
+            TypeReference tr, String fieldName, String fieldComment, boolean fieldNullability) {
         if (tr == null) {
             return null;
         }
@@ -67,14 +68,16 @@ public class TypeUtils {
         if (!tr.isList()) {
             return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
                     argTypeStr, tiSource.isAttributeNativeType(tr),
-                    getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+                    getTypeShortForm(tiSource, tr, argTypeStr),
+                    argVersionStr, fieldNullability);
         }
 
         if (StdStrings.XML.equals(tr.getArea())) {
             // ToDo proper support for lists of XML types
             return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
                     argTypeStr, tiSource.isAttributeNativeType(tr),
-                    getTypeShortForm(tiSource, tr, argTypeStr), argVersionStr);
+                    getTypeShortForm(tiSource, tr, argTypeStr),
+                    argVersionStr, fieldNullability);
         }
 
         if (tiSource.isAttributeNativeType(tr)) {
@@ -82,20 +85,20 @@ public class TypeUtils {
                     + "mal.structures." + tr.getName() + "List";
             return new TypeInfo(tr, fieldName, fieldComment,
                     tr.getName() + "List", fqName, false,
-                    fqName + ".SHORT_FORM", argVersionStr);
+                    fqName + ".SHORT_FORM", argVersionStr, fieldNullability);
         }
 
         if (GeneratorBase.isObjectRef(argTypeStr)) {
             return new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List",
                     "org.ccsds.moims.mo.mal.structures.ObjectRefList", false,
                     getTypeShortForm(tiSource, tr, "ObjectRefList"),
-                    argVersionStr);
+                    argVersionStr, fieldNullability);
         }
 
         return new TypeInfo(tr, fieldName, fieldComment,
                 tr.getName() + "List", argTypeStr + "List", false,
                 getTypeShortForm(tiSource, tr, argTypeStr + "List"),
-                argVersionStr);
+                argVersionStr, fieldNullability);
     }
 
     /**
@@ -111,13 +114,14 @@ public class TypeUtils {
         }
 
         if (!ttr.isField()) {
-            return convertTypeReference(tiSource, ttr.getTypeRef(), null, null);
+            return convertTypeReference(tiSource, ttr.getTypeRef(), null, null, false);
         }
 
         String fieldName = ttr.getFieldRef().getName();
         String fieldComment = ttr.getFieldRef().getComment();
+        boolean fieldNullability = ttr.getFieldRef().isCanBeNull();
         TypeReference tr = ttr.getFieldRef().getType();
-        return convertTypeReference(tiSource, tr, fieldName, fieldComment);
+        return convertTypeReference(tiSource, tr, fieldName, fieldComment, fieldNullability);
     }
 
     /**

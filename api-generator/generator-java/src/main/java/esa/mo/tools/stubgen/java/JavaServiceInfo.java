@@ -22,7 +22,6 @@ package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorLangs;
-import esa.mo.tools.stubgen.StubUtils;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
@@ -53,6 +52,7 @@ import java.util.List;
  */
 public class JavaServiceInfo {
 
+    private final static String OP_FIELD = "org.ccsds.moims.mo.mal.OperationField";
     public final static String SERVICE_INFO = "ServiceInfo";
     private final GeneratorLangs generator;
 
@@ -337,8 +337,6 @@ public class JavaServiceInfo {
         }
     }
 
-    private final String OP_FIELD = "org.ccsds.moims.mo.mal.OperationField";
-
     private String generateOperationFieldsArray(List<TypeInfo> ti) {
         StringBuilder buffer = new StringBuilder();
         String newLine = "\n                        ";
@@ -356,7 +354,7 @@ public class JavaServiceInfo {
 
             buffer.append("\"").append(argName).append("\"");
             buffer.append(", ");
-            buffer.append("true"); // Force the nullable field to be true until we find a better solution...
+            buffer.append(typeInfo.getCanBeNull());
             buffer.append(", ");
 
             TypeReference type = typeInfo.getSourceType();
