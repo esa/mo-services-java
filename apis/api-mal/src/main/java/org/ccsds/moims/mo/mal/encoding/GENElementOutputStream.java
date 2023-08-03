@@ -23,10 +23,7 @@ package org.ccsds.moims.mo.mal.encoding;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALOperationStage;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -77,38 +74,6 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             return;
         }
 
-        if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
-            int index = ctx.getBodyElementIndex();
-
-            switch (ctx.getHeader().getInteractionStage().getValue()) {
-                case MALPubSubOperation._REGISTER_STAGE:
-                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                case MALPubSubOperation._DEREGISTER_STAGE:
-                    ((Element) element).encode(enc);
-                    return;
-                case MALPubSubOperation._PUBLISH_STAGE:
-                    if (index == 0) {
-                        ((Element) element).encode(enc);
-                    } else {
-                        encodePublishNotifyMessages((Element) element, ctx);
-                    }
-                    return;
-                case MALPubSubOperation._NOTIFY_STAGE:
-                    if (index == 0) {
-                        ((Element) element).encode(enc);
-                    } else if (index == 1) {
-                        ((Element) element).encode(enc);
-                    } else {
-                        encodePublishNotifyMessages((Element) element, ctx);
-                    }
-                    return;
-                default:
-                    // This should never happen...
-                    encodeAbstractSubElement((Element) element);
-                    return;
-            }
-        }
-
         if (element == null) {
             enc.encodeNullableElement(null);
             return;
@@ -128,27 +93,6 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             } else {
                 enc.encodeNullableElement(e);
             }
-        }
-    }
-
-    private void encodePublishNotifyMessages(final Element element,
-            final MALEncodingContext ctx) throws MALException {
-        UOctet stage = ctx.getHeader().getInteractionStage();
-        MALOperationStage op = ctx.getOperation().getOperationStage(stage);
-        Object sf = op.getFields()[ctx.getBodyElementIndex()].getTypeId();
-
-        // Is it encoding an abstract element?
-        if (sf == null) {
-            if (element != null) {
-                enc.encodeAbstractElementSFP(element.getShortForm(), true);
-                enc.encodeNullableElement(element);
-            } else {
-                // If the element is null
-                enc.encodeAbstractElementSFP(null, true);
-            }
-        } else {
-            // Not abstract type:
-            enc.encodeNullableElement(element);
         }
     }
 

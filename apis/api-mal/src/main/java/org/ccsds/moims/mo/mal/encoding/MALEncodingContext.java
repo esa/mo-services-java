@@ -21,6 +21,9 @@
 package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALOperationStage;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -97,4 +100,9 @@ public class MALEncodingContext {
         this.bodyElementIndex = bodyElementIndex;
     }
 
+    public OperationField getOperationalField() {
+        UOctet stage = this.getHeader().getInteractionStage();
+        MALOperationStage op = this.getOperation().getOperationStage(stage);
+        return op.getFields()[this.getBodyElementIndex()];
+    }
 }

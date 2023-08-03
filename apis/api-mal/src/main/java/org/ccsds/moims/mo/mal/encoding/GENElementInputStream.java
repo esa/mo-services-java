@@ -20,18 +20,9 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALOperationStage;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -72,75 +63,11 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             return decodeAbstractSubElement();
         }
 
-        if (InteractionType._PUBSUB_INDEX == ctx.getHeader().getInteractionType().getOrdinal()) {
-            /*
-            // In theory, we should not have to hardcode the decoding part
-            // because it is alread properly defined in the MALPubSubOperation
-            // This code need to be tested and upgraded in the future to something like:
-            MALPubSubOperation operation = (MALPubSubOperation) ctx.getOperation();
-            MALOperationStage stage = operation.getOperationStage(ctx.getHeader().getInteractionStage());
-            int idx = ctx.getBodyElementIndex();
-            return dec.decodeElement((Element) stage.getElementShortForms()[idx]);
-             */
-            int index = ctx.getBodyElementIndex();
-
-            switch (ctx.getHeader().getInteractionStage().getValue()) {
-                case MALPubSubOperation._REGISTER_STAGE:
-                    return dec.decodeElement(new Subscription());
-                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return dec.decodeElement(new IdentifierList());
-                case MALPubSubOperation._DEREGISTER_STAGE:
-                    return dec.decodeElement(new IdentifierList());
-                case MALPubSubOperation._PUBLISH_STAGE: {
-                    if (index == 0) {
-                        return dec.decodeElement(new UpdateHeader());
-                    } else {
-                        return decodePublishNotifyMessages(ctx);
-                    }
-                }
-                case MALPubSubOperation._NOTIFY_STAGE: {
-                    if (index == 0) {
-                        return dec.decodeIdentifier();
-                    } else if (index == 1) {
-                        return dec.decodeElement(new UpdateHeader());
-                    } else {
-                        return decodePublishNotifyMessages(ctx);
-                    }
-                }
-                default:
-                    return decodeAbstractSubElement();
-            }
-        }
-
         if (element == null) {
             return decodeAbstractSubElement();
         } else {
             return dec.decodeNullableElement((Element) element);
         }
-    }
-
-    private Element decodePublishNotifyMessages(final MALEncodingContext ctx) throws MALException {
-        UOctet stage = ctx.getHeader().getInteractionStage();
-        MALOperationStage op = ctx.getOperation().getOperationStage(stage);
-        Object sf = op.getFields()[ctx.getBodyElementIndex()].getTypeId();
-
-        // element is defined as an abstract type
-        if (sf == null) {
-            sf = dec.decodeAbstractElementSFP(true);
-
-            if (sf == null) {
-                return null;
-            }
-        }
-
-        try {
-            Element e = MALContextFactory.getElementsRegistry().createElement((Long) sf);
-            return dec.decodeNullableElement(e);
-        } catch (Exception ex) {
-            Logger.getLogger(GENElementInputStream.class.getName()).log(Level.SEVERE,
-                    "The Element could not be created or decoded!", ex);
-        }
-        return null;
     }
 
     /**
