@@ -60,11 +60,11 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                 return dec.decodeUInteger();
             }
 
-            return decodeAbstractSubElement();
+            return decodeAbstractSubElement(true);
         }
 
         if (element == null) {
-            return decodeAbstractSubElement();
+            return decodeAbstractSubElement(true);
         } else {
             return dec.decodeNullableElement((Element) element);
         }
@@ -87,8 +87,8 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         // Nothing to do for this decoder
     }
 
-    protected Element decodeAbstractSubElement() throws MALException {
-        Long shortForm = dec.decodeAbstractElementSFP(true);
+    protected Element decodeAbstractSubElement(boolean isNullable) throws MALException {
+        Long shortForm = dec.decodeAbstractElementSFP(isNullable);
 
         if (shortForm == null) {
             return null;

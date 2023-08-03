@@ -49,4 +49,7 @@ public final class OperationField {
         return typeId;
     }
 
+    public boolean isAbstractType() {
+        return (typeId == null);
+    }
 }

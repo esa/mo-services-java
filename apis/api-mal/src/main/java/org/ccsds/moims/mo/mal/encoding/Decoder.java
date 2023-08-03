@@ -429,12 +429,12 @@ public abstract class Decoder implements MALDecoder {
     /**
      * Allows the decoding for the type of an abstract element to be over-ridded
      *
-     * @param withNull If true encode a isNull field
+     * @param isNullable If true encode a isNull field
      * @return The type to decode
      * @throws MALException if there is an error
      */
-    public Long decodeAbstractElementSFP(boolean withNull) throws MALException {
-        if (withNull) {
+    public Long decodeAbstractElementSFP(boolean isNullable) throws MALException {
+        if (isNullable) {
             return decodeNullableLong();
         }
 

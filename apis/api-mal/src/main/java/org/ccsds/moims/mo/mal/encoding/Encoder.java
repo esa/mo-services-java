@@ -638,11 +638,11 @@ public abstract class Encoder implements MALListEncoder {
      * Allows the encoding for the type of an abstract element to be over-ridded
      *
      * @param value The type to encode
-     * @param withNull If true encode a isNull field
+     * @param isNullable If true encode a isNull field
      * @throws MALException if there is an error
      */
-    public void encodeAbstractElementSFP(final Long value, boolean withNull) throws MALException {
-        if (withNull) {
+    public void encodeAbstractElementSFP(final Long value, boolean isNullable) throws MALException {
+        if (isNullable) {
             encodeNullableLong(value);
         } else {
             encodeLong(value);

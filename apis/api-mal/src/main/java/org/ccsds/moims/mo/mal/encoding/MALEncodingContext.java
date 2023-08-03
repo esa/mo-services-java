@@ -100,7 +100,7 @@ public class MALEncodingContext {
         this.bodyElementIndex = bodyElementIndex;
     }
 
-    public OperationField getOperationalField() {
+    public OperationField getOperationField() {
         UOctet stage = this.getHeader().getInteractionStage();
         MALOperationStage op = this.getOperation().getOperationStage(stage);
         return op.getFields()[this.getBodyElementIndex()];

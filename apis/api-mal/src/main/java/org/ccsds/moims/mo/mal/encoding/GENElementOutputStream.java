@@ -23,8 +23,8 @@ package org.ccsds.moims.mo.mal.encoding;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -69,7 +69,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             if (ctx.getBodyElementIndex() == 0) {
                 ((Element) element).encode(enc);
             } else {
-                encodeAbstractSubElement((Element) element);
+                encodeAbstractSubElement((Element) element, true);
             }
             return;
         }
@@ -79,20 +79,12 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             return;
         }
 
-        if (element instanceof Element) {
-            // encode the short form if it is not fixed in the operation
-            final Element e = (Element) element;
+        OperationField field = ctx.getOperationField();
 
-            UOctet stage = ctx.getHeader().getInteractionStage();
-            Object sf = ctx.getOperation()
-                    .getOperationStage(stage)
-                    .getFields()[ctx.getBodyElementIndex()].getTypeId();
-
-            if (sf == null) {
-                encodeAbstractSubElement(e);
-            } else {
-                enc.encodeNullableElement(e);
-            }
+        if (field.isAbstractType()) {
+            encodeAbstractSubElement(element, true);
+        } else {
+            enc.encodeNullableElement(element);
         }
     }
 
@@ -117,12 +109,12 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
         }
     }
 
-    protected void encodeAbstractSubElement(final Element element) throws MALException {
+    protected void encodeAbstractSubElement(final Element element, boolean isNullable) throws MALException {
         if (element != null) {
-            enc.encodeAbstractElementSFP(element.getShortForm(), true);
+            enc.encodeAbstractElementSFP(element.getShortForm(), isNullable);
             enc.encodeElement(element);
         } else {
-            enc.encodeAbstractElementSFP(null, true);
+            enc.encodeAbstractElementSFP(null, isNullable);
         }
     }
 
