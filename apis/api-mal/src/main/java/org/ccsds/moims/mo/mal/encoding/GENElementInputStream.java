@@ -67,7 +67,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             return decodeAbstractSubElement(true);
         }
 
-        if (element == null) {
+        if (ctx.getOperationField().isAbstractType()) {
             return decodeAbstractSubElement(true);
         } else {
             return dec.decodeNullableElement(element);

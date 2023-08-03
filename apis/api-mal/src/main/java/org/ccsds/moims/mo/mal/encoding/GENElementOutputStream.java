@@ -23,7 +23,6 @@ package org.ccsds.moims.mo.mal.encoding;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -79,14 +78,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             return;
         }
 
-        if (element == null) {
-            enc.encodeNullableElement(null);
-            return;
-        }
-
-        OperationField field = ctx.getOperationField();
-
-        if (field.isAbstractType()) {
+        if (ctx.getOperationField().isAbstractType()) {
             encodeAbstractSubElement(element, true);
         } else {
             enc.encodeNullableElement(element);
