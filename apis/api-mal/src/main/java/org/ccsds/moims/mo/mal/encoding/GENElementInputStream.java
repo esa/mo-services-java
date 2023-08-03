@@ -50,6 +50,10 @@ public abstract class GENElementInputStream implements MALElementInputStream {
     @Override
     public Element readElement(final Element element, final MALEncodingContext ctx)
             throws IllegalArgumentException, MALException {
+        if (ctx == null) {
+            return dec.decodeNullableElement(element);
+        }
+
         if (element == ctx.getHeader()) {
             throw new MALException("The header is no longer read here! Use: readHeader()");
         }
@@ -66,7 +70,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
         if (element == null) {
             return decodeAbstractSubElement(true);
         } else {
-            return dec.decodeNullableElement((Element) element);
+            return dec.decodeNullableElement(element);
         }
     }
 

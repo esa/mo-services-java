@@ -60,6 +60,11 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             this.enc = createEncoder(dos);
         }
 
+        if (ctx == null) {
+            enc.encodeNullableElement(element);
+            return;
+        }
+
         if (element == ctx.getHeader()) {
             throw new MALException("The header is no longer read here! Use: writeHeader()");
         }
