@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.TypeId;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
@@ -235,13 +236,10 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
         } else {
             final int count = getElementCount();
 
-            GENTransport.LOGGER.log(Level.FINE, "GEN Message encoding body ... pc ({0})", count);
-
             // if we only have a single body part then encode that directly
             if (count == 1) {
                 ctx.setBodyElementIndex(0);
-                Object sf = ctx.getOperation().getOperationStage(stage).getFields()[0].getTypeId();
-                encodeBodyPart(streamFactory, enc, wrappedBodyParts, sf, getBodyElement(0, null), ctx);
+                encodeBodyPart(streamFactory, enc, wrappedBodyParts, getBodyElement(0, null), ctx);
             } else if (count > 1) {
                 MALElementOutputStream benc = enc;
                 ByteArrayOutputStream bbaos = null;
@@ -256,18 +254,11 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                 }
 
                 for (int i = 0; i < count; i++) {
-                    Object sf = null;
                     if (ctx != null) {
                         ctx.setBodyElementIndex(i);
-
-                        if (!ctx.getHeader().getIsErrorMessage()) {
-                            sf = ctx.getOperation()
-                                    .getOperationStage(stage)
-                                    .getFields()[i].getTypeId();
-                        }
                     }
                     encodeBodyPart(streamFactory, benc, wrappedBodyParts,
-                            sf, getBodyElement(i, null), ctx);
+                            getBodyElement(i, null), ctx);
                 }
 
                 if (wrappedBodyParts) {
@@ -285,12 +276,12 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
     protected void encodeBodyPart(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc, final boolean wrapBodyParts,
-            final Object sf, final Object o, final MALEncodingContext ctx) throws MALException {
+            final Object o, final MALEncodingContext ctx) throws MALException {
         // if it is already an encoded element then just write it directly
         if (o instanceof MALEncodedElement) {
             enc.writeElement(((MALEncodedElement) o).getEncodedElement(), ctx);
         } // else if it is a MAL data type object
-        else if ((null == o) || (o instanceof Element)) {
+        else if ((o == null) || (o instanceof Element)) {
             MALElementOutputStream lenc = enc;
             ByteArrayOutputStream lbaos = null;
 
@@ -364,23 +355,13 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             }
 
             UOctet interactionStage = ctx.getHeader().getInteractionStage();
+            OperationField[] fields = ctx.getOperation().getOperationStage(interactionStage).getFields();
 
-            if (ctx.getHeader().getIsErrorMessage()) {
-                bodyPartCount = 2;
-            } else {
-                bodyPartCount = ctx.getOperation()
-                        .getOperationStage(interactionStage)
-                        .getFields().length;
-            }
-
-            GENTransport.LOGGER.log(Level.FINE,
-                    "GEN Message decoding body! bodyPartCount: {0}", bodyPartCount);
+            bodyPartCount = (ctx.getHeader().getIsErrorMessage()) ? 2 : fields.length;
             messageParts = new Object[bodyPartCount];
 
             if (bodyPartCount == 1) {
-                Object sf = ctx.getOperation()
-                        .getOperationStage(interactionStage)
-                        .getFields()[0].getTypeId();
+                Object sf = fields[0].getTypeId();
                 messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
             } else if (bodyPartCount > 1) {
                 MALElementInputStream benc = encBodyElements;
@@ -397,9 +378,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                     Object sf = null;
 
                     if (!ctx.getHeader().getIsErrorMessage()) {
-                        sf = ctx.getOperation()
-                                .getOperationStage(interactionStage)
-                                .getFields()[i].getTypeId();
+                        sf = fields[i].getTypeId();
                     }
 
                     try {
