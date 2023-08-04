@@ -47,9 +47,10 @@ public class MALSubmitOperation extends MALOperation {
      */
     public static final UOctet SUBMIT_ACK_STAGE = new UOctet(_SUBMIT_ACK_STAGE);
 
-    private final MALOperationStage submitStage;
     private static final MALOperationStage SUBMIT_ACK_OPERATION_STAGE
             = new MALOperationStage(SUBMIT_ACK_STAGE, new OperationField[0]);
+
+    private final MALOperationStage submitStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -83,8 +84,7 @@ public class MALSubmitOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }
