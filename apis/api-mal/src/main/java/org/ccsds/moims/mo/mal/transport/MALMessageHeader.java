@@ -364,35 +364,35 @@ public class MALMessageHeader {
     }
 
     public void encode(final MALEncoder encoder) throws MALException {
-        encoder.encodeNullableIdentifier(from);
-        encoder.encodeNullableBlob(authenticationId);
-        encoder.encodeNullableIdentifier(to);
-        encoder.encodeNullableTime(timestamp);
-        encoder.encodeNullableElement(interactionType);
-        encoder.encodeNullableUOctet(interactionStage);
-        encoder.encodeNullableLong(transactionId);
-        encoder.encodeNullableUShort(serviceArea);
-        encoder.encodeNullableUShort(service);
-        encoder.encodeNullableUShort(operation);
-        encoder.encodeNullableUOctet(serviceVersion);
-        encoder.encodeNullableBoolean(isErrorMessage);
-        encoder.encodeNullableElement(supplements);
+        encoder.encodeIdentifier(from);
+        encoder.encodeBlob(authenticationId);
+        encoder.encodeIdentifier(to);
+        encoder.encodeTime(timestamp);
+        encoder.encodeElement(interactionType);
+        encoder.encodeUOctet(interactionStage);
+        encoder.encodeLong(transactionId);
+        encoder.encodeUShort(serviceArea);
+        encoder.encodeUShort(service);
+        encoder.encodeUShort(operation);
+        encoder.encodeUOctet(serviceVersion);
+        encoder.encodeBoolean(isErrorMessage);
+        encoder.encodeElement(supplements);
     }
 
     public MALMessageHeader decode(final MALDecoder decoder) throws MALException {
-        from = decoder.decodeNullableIdentifier();
-        authenticationId = decoder.decodeNullableBlob();
-        to = decoder.decodeNullableIdentifier();
-        timestamp = decoder.decodeNullableTime();
-        interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
-        interactionStage = decoder.decodeNullableUOctet();
-        transactionId = decoder.decodeNullableLong();
-        serviceArea = decoder.decodeNullableUShort();
-        service = decoder.decodeNullableUShort();
-        operation = decoder.decodeNullableUShort();
-        serviceVersion = decoder.decodeNullableUOctet();
-        isErrorMessage = decoder.decodeNullableBoolean();
-        supplements = (NamedValueList) decoder.decodeNullableElement(new NamedValueList());
+        from = decoder.decodeIdentifier();
+        authenticationId = decoder.decodeBlob();
+        to = decoder.decodeIdentifier();
+        timestamp = decoder.decodeTime();
+        interactionType = (InteractionType) decoder.decodeElement(InteractionType.SEND);
+        interactionStage = decoder.decodeUOctet();
+        transactionId = decoder.decodeLong();
+        serviceArea = decoder.decodeUShort();
+        service = decoder.decodeUShort();
+        operation = decoder.decodeUShort();
+        serviceVersion = decoder.decodeUOctet();
+        isErrorMessage = decoder.decodeBoolean();
+        supplements = (NamedValueList) decoder.decodeElement(new NamedValueList());
 
         return this;
     }
