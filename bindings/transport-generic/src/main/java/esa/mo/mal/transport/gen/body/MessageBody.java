@@ -28,12 +28,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.TypeId;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
@@ -49,7 +46,6 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implementation of the MALMessageBody interface.
@@ -236,37 +232,31 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
         } else {
             final int count = getElementCount();
 
-            // if we only have a single body part then encode that directly
-            if (count == 1) {
-                ctx.setBodyElementIndex(0);
-                encodeBodyPart(streamFactory, enc, wrappedBodyParts, getBodyElement(0, null), ctx);
-            } else if (count > 1) {
-                MALElementOutputStream benc = enc;
-                ByteArrayOutputStream bbaos = null;
+            MALElementOutputStream benc = enc;
+            ByteArrayOutputStream bbaos = null;
 
-                if (wrappedBodyParts) {
-                    // we have more than one body part, therefore encode each part 
-                    // into a separate byte buffer, and then encode that byte buffer 
-                    // as a whole. This allows use to be able to return the complete 
-                    // body of the message as a single unit if required.
-                    bbaos = new ByteArrayOutputStream();
-                    benc = streamFactory.createOutputStream(bbaos);
+            if (wrappedBodyParts) {
+                // we have more than one body part, therefore encode each part 
+                // into a separate byte buffer, and then encode that byte buffer 
+                // as a whole. This allows use to be able to return the complete 
+                // body of the message as a single unit if required.
+                bbaos = new ByteArrayOutputStream();
+                benc = streamFactory.createOutputStream(bbaos);
+            }
+
+            for (int i = 0; i < count; i++) {
+                if (ctx != null) {
+                    ctx.setBodyElementIndex(i);
                 }
+                encodeBodyPart(streamFactory, benc, wrappedBodyParts,
+                        getBodyElement(i, null), ctx);
+            }
 
-                for (int i = 0; i < count; i++) {
-                    if (ctx != null) {
-                        ctx.setBodyElementIndex(i);
-                    }
-                    encodeBodyPart(streamFactory, benc, wrappedBodyParts,
-                            getBodyElement(i, null), ctx);
-                }
+            if (wrappedBodyParts) {
+                benc.flush();
+                benc.close();
 
-                if (wrappedBodyParts) {
-                    benc.flush();
-                    benc.close();
-
-                    enc.writeElement(new Blob(bbaos.toByteArray()), null);
-                }
+                enc.writeElement(new Blob(bbaos.toByteArray()), null);
             }
         }
 
@@ -321,76 +311,38 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
         decodedBody = true;
 
         try {
-            if (ctx.getOperation() == null) {
-                MALMessageHeader header = ctx.getHeader();
-                MALArea area = MALContextFactory
-                        .lookupArea(header.getServiceArea(), header.getServiceVersion());
-                if (area != null) {
-                    MALService service = area.getServiceByNumber(header.getService());
-                    if (service != null) {
-                        MALOperation op = service.getOperationByNumber(header.getOperation());
-
-                        if (op != null) {
-                            ctx.setOperation(op);
-                        } else {
-                            GENTransport.LOGGER.log(Level.SEVERE,
-                                    "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
-                                    new Object[]{
-                                        header.getServiceArea(), header.getServiceVersion(),
-                                        header.getService(), header.getOperation()
-                                    });
-                        }
-                    } else {
-                        GENTransport.LOGGER.log(Level.SEVERE,
-                                "Operation for unknown area/version/service received ({0}, {1}, {2})",
-                                new Object[]{
-                                    header.getServiceArea(), header.getServiceVersion(), header.getService()
-                                });
-                    }
-                } else {
-                    GENTransport.LOGGER.log(Level.SEVERE,
-                            "Operation for unknown area/version received ({0}, {1})",
-                            new Object[]{header.getServiceArea(), header.getServiceVersion()});
-                }
-            }
-
             UOctet interactionStage = ctx.getHeader().getInteractionStage();
             OperationField[] fields = ctx.getOperation().getOperationStage(interactionStage).getFields();
 
             bodyPartCount = (ctx.getHeader().getIsErrorMessage()) ? 2 : fields.length;
             messageParts = new Object[bodyPartCount];
 
-            if (bodyPartCount == 1) {
-                Object sf = fields[0].getTypeId();
-                messageParts[0] = decodeBodyPart(encBodyElements, ctx, sf);
-            } else if (bodyPartCount > 1) {
-                MALElementInputStream benc = encBodyElements;
-                if (wrappedBodyParts) {
-                    GENTransport.LOGGER.fine("GEN Message decoding body wrapper");
-                    final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
-                    final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
-                    benc = encFactory.createInputStream(bais);
+            MALElementInputStream benc = encBodyElements;
+            if (wrappedBodyParts) {
+                GENTransport.LOGGER.fine("GEN Message decoding body wrapper");
+                final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
+                final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
+                benc = encFactory.createInputStream(bais);
+            }
+
+            // Iterate through each message part and decode it
+            for (int i = 0; i < bodyPartCount; i++) {
+                ctx.setBodyElementIndex(i);
+                Object sf = null;
+
+                if (!ctx.getHeader().getIsErrorMessage()) {
+                    sf = fields[i].getTypeId();
                 }
 
-                // Iterate through each message part and decode it
-                for (int i = 0; i < bodyPartCount; i++) {
-                    ctx.setBodyElementIndex(i);
-                    Object sf = null;
-
-                    if (!ctx.getHeader().getIsErrorMessage()) {
-                        sf = fields[i].getTypeId();
-                    }
-
-                    try {
-                        messageParts[i] = decodeBodyPart(benc, ctx, sf);
-                    } catch (Exception ex) {
-                        TypeId typeId = new TypeId((Long) sf);
-                        Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
-                                "Error decoding Body part (with typeId: "
-                                + typeId.toString()
-                                + ") with index: " + i, ex);
-                        throw ex;
-                    }
+                try {
+                    messageParts[i] = decodeBodyPart(benc, ctx, sf);
+                } catch (Exception ex) {
+                    TypeId typeId = new TypeId((Long) sf);
+                    Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
+                            "Error decoding Body part (with typeId: "
+                            + typeId.toString()
+                            + ") with index: " + i, ex);
+                    throw ex;
                 }
             }
         } catch (MALException ex) {

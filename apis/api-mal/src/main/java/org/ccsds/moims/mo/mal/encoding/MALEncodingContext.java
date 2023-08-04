@@ -20,8 +20,13 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALOperationStage;
+import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -70,16 +75,42 @@ public class MALEncodingContext {
      * @return the operation
      */
     public MALOperation getOperation() {
-        return operation;
-    }
+        if (operation != null) {
+            return operation;
+        }
 
-    /**
-     * Sets the operation.
-     *
-     * @param operation the service to set
-     */
-    public void setOperation(final MALOperation operation) {
-        this.operation = operation;
+        MALArea area = MALContextFactory
+                .lookupArea(header.getServiceArea(), header.getServiceVersion());
+
+        if (area != null) {
+            MALService service = area.getServiceByNumber(header.getService());
+            if (service != null) {
+                MALOperation op = service.getOperationByNumber(header.getOperation());
+
+                if (op != null) {
+                    operation = op;
+                } else {
+                    Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
+                            "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
+                            new Object[]{
+                                header.getServiceArea(), header.getServiceVersion(),
+                                header.getService(), header.getOperation()
+                            });
+                }
+            } else {
+                Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
+                        "Operation for unknown area/version/service received ({0}, {1}, {2})",
+                        new Object[]{
+                            header.getServiceArea(), header.getServiceVersion(), header.getService()
+                        });
+            }
+        } else {
+            Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
+                    "Operation for unknown area/version received ({0}, {1})",
+                    new Object[]{header.getServiceArea(), header.getServiceVersion()});
+        }
+
+        return operation;
     }
 
     /**
