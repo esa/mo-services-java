@@ -30,6 +30,15 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALSendOperation extends MALOperation {
 
+    /**
+     * Literal representing the SUBMIT stage.
+     */
+    public static final byte _SEND_STAGE = (byte) 0x1;
+    /**
+     * MAL UOctet representing the SUBMIT stage.
+     */
+    public static final UOctet SEND_STAGE = new UOctet(_SEND_STAGE);
+
     private final MALOperationStage sendStage;
 
     /**
