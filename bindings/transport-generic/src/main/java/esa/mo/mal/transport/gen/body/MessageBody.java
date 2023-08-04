@@ -209,8 +209,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             final UOctet stage,
             final MALEncodingContext ctx) throws MALException {
         // first check to see if we have an already encoded body
-        if ((messageParts != null)
-                && (1 == messageParts.length)
+        if ((messageParts != null) && (messageParts.length == 1)
                 && (messageParts[0] instanceof MALEncodedBody)) {
             enc.flush();
 
@@ -255,7 +254,6 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             if (wrappedBodyParts) {
                 benc.flush();
                 benc.close();
-
                 enc.writeElement(new Blob(bbaos.toByteArray()), null);
             }
         }
@@ -292,8 +290,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                 enc.writeElement(new Blob(lbaos.toByteArray()), null);
             }
         } else {
-            throw new MALException(
-                    "ERROR: Unable to encode body object of type: "
+            throw new MALException("Unable to encode body object of type: "
                     + o.getClass().getSimpleName());
         }
     }
@@ -311,10 +308,8 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
         decodedBody = true;
 
         try {
-            UOctet interactionStage = ctx.getHeader().getInteractionStage();
-            OperationField[] fields = ctx.getOperation().getOperationStage(interactionStage).getFields();
-
-            bodyPartCount = (ctx.getHeader().getIsErrorMessage()) ? 2 : fields.length;
+            OperationField[] fields = ctx.getOperationFields();
+            bodyPartCount = fields.length;
             messageParts = new Object[bodyPartCount];
 
             MALElementInputStream benc = encBodyElements;
@@ -328,11 +323,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             // Iterate through each message part and decode it
             for (int i = 0; i < bodyPartCount; i++) {
                 ctx.setBodyElementIndex(i);
-                Object sf = null;
-
-                if (!ctx.getHeader().getIsErrorMessage()) {
-                    sf = fields[i].getTypeId();
-                }
+                Object sf = fields[i].getTypeId();
 
                 try {
                     messageParts[i] = decodeBodyPart(benc, ctx, sf);

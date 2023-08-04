@@ -68,16 +68,6 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             throw new MALException("The header is no longer read here! Use: writeHeader()");
         }
 
-        if (ctx.getHeader().getIsErrorMessage()) {
-            // error messages have a standard format
-            if (ctx.getBodyElementIndex() == 0) {
-                ((Element) element).encode(enc);
-            } else {
-                encodeAbstractSubElement((Element) element, true);
-            }
-            return;
-        }
-
         if (ctx.getOperationField().isAbstractType()) {
             encodeAbstractSubElement(element, true);
         } else {

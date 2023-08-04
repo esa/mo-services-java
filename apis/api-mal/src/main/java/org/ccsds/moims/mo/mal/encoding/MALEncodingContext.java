@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALOperationStage;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -41,6 +41,11 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  *
  */
 public class MALEncodingContext {
+
+    private static final OperationField[] ERROR_OPERATION_FIELD = new OperationField[]{
+        new OperationField("errorCode", false, UInteger.UINTEGER_SHORT_FORM),
+        new OperationField("extraInfo", true, null)
+    };
 
     private final MALMessageHeader header;
     private MALOperation operation;
@@ -74,7 +79,7 @@ public class MALEncodingContext {
      *
      * @return the operation
      */
-    public MALOperation getOperation() {
+    private MALOperation getOperation() {
         if (operation != null) {
             return operation;
         }
@@ -114,15 +119,6 @@ public class MALEncodingContext {
     }
 
     /**
-     * Returns the index.
-     *
-     * @return The index.
-     */
-    public int getBodyElementIndex() {
-        return bodyElementIndex;
-    }
-
-    /**
      * Sets the index.
      *
      * @param bodyElementIndex The index to set.
@@ -131,9 +127,16 @@ public class MALEncodingContext {
         this.bodyElementIndex = bodyElementIndex;
     }
 
+    public OperationField[] getOperationFields() {
+        if (header.getIsErrorMessage()) {
+            return ERROR_OPERATION_FIELD;
+        }
+
+        UOctet stage = header.getInteractionStage();
+        return this.getOperation().getOperationStage(stage).getFields();
+    }
+
     public OperationField getOperationField() {
-        UOctet stage = this.getHeader().getInteractionStage();
-        MALOperationStage op = this.getOperation().getOperationStage(stage);
-        return op.getFields()[this.getBodyElementIndex()];
+        return this.getOperationFields()[bodyElementIndex];
     }
 }
