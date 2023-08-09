@@ -111,17 +111,17 @@ public class MALPublisherSet {
      * The method synchronously registers through all the MALPublishers of this
      * MALPublisherSet.
      *
-     * @param keys Keys of the subscriptions that are to be published
+     * @param keyNames Key Names of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * ERROR
      * @throws java.lang.IllegalArgumentException If entityKeyList is null.
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
+    public void register(final IdentifierList keyNames, final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         for (MALPublisher publisher : subpublishers) {
-            publisher.register(keys, listener);
+            publisher.register(keyNames, null, listener);
         }
     }
 
@@ -176,7 +176,7 @@ public class MALPublisherSet {
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            msg = p.asyncRegister(keys, listener);
+            msg = p.asyncRegister(keys, null, listener);
         }
 
         return msg;

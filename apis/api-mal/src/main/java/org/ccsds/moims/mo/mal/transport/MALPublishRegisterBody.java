@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 
 /**
@@ -37,4 +38,13 @@ public interface MALPublishRegisterBody extends MALMessageBody {
      * @throws MALException If an error occurs
      */
     IdentifierList getSubscriptionKeyNames() throws MALException;
+
+    /**
+     * The method returns the Subscription Key Types from the PUBLISH_REGISTER
+     * message.
+     *
+     * @return The decoded key types.
+     * @throws MALException If an error occurs
+     */
+    AttributeTypeList getSubscriptionKeyTypes() throws MALException;
 }

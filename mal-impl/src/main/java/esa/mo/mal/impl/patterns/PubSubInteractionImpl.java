@@ -39,8 +39,7 @@ public class PubSubInteractionImpl extends BaseInteractionImpl {
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public PubSubInteractionImpl(final MessageSend sender,
-            final Address address,
+    public PubSubInteractionImpl(final MessageSend sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }

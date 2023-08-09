@@ -161,7 +161,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
     public synchronized void handleDeregister(final MALInteraction interaction,
             final MALDeregisterBody body) throws MALInteractionException, MALException {
         final MALMessageHeader hdr = interaction.getMessageHeader();
-        final IdentifierList subIds = body.getIdentifierList();
+        final IdentifierList subIds = body.getSubscriptionIds();
         final String key = hdr.getTo().getValue();
 
         report(key);
@@ -226,6 +226,14 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
             NullableAttributeList keyValues = updateHeader.getKeyValues();
             IdentifierList srcDomainId = updateHeader.getDomain();
+
+            if (keyValues == null) {
+                throw new IllegalArgumentException("keyValues cannot be NULL!");
+            }
+
+            if (keyNames == null) {
+                throw new IllegalArgumentException("keyNames cannot be NULL!");
+            }
 
             if (keyValues.size() != keyNames.size()) {
                 String txt = "The keyValues size don't match the providerNames "

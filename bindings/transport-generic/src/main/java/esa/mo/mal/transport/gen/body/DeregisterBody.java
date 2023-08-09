@@ -68,7 +68,7 @@ public class DeregisterBody extends MessageBody implements MALDeregisterBody {
     }
 
     @Override
-    public IdentifierList getIdentifierList() throws MALException {
+    public IdentifierList getSubscriptionIds() throws MALException {
         return (IdentifierList) getBodyElement(0, new IdentifierList());
     }
 }

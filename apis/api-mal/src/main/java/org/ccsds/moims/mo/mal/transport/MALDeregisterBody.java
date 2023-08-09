@@ -35,5 +35,5 @@ public interface MALDeregisterBody extends MALMessageBody {
      * @return The decoded identifier list.
      * @throws MALException If an error occurs
      */
-    IdentifierList getIdentifierList() throws MALException;
+    IdentifierList getSubscriptionIds() throws MALException;
 }

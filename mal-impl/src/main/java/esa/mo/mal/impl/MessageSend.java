@@ -75,7 +75,8 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
-     * @param keys List of keys to be published.
+     * @param keyNames List of key names to be published.
+     * @param keyTypes List of key types to be published.
      * @param listener Error callback interface.
      * @return Publish transaction identifier.
      * @throws MALInteractionException if there is a problem during the
@@ -83,16 +84,18 @@ public class MessageSend {
      * @throws MALException on error.
      */
     public Long publishRegister(final MessageDetails details, final MALPubSubOperation op,
-            final IdentifierList keys, final MALPublishInteractionListener listener)
-            throws MALInteractionException, MALException {
+            final IdentifierList keyNames, final AttributeTypeList keyTypes,
+            final MALPublishInteractionListener listener) throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details.uriFrom.getValue(), listener);
-        IdentifierList publishedKeys = (keys != null) ? keys : new IdentifierList();
+        IdentifierList publishedKeyNames = (keyNames != null) ? keyNames : new IdentifierList();
+        AttributeTypeList publishedKeyValues = (keyTypes != null) ? keyTypes : new AttributeTypeList();
 
         return initiateSynchronousInteraction(details,
                 op,
                 MALPubSubOperation.PUBLISH_REGISTER_STAGE,
                 (MALPublishInteractionListener) null,
-                publishedKeys);
+                publishedKeyNames,
+                publishedKeyValues);
     }
 
     /**
@@ -142,7 +145,8 @@ public class MessageSend {
      *
      * @param details Message details structure.
      * @param op The operation.
-     * @param keys List of keys that can be published.
+     * @param keyNames List of keys names that can be published.
+     * @param keyTypes List of keys types that can be published.
      * @param listener Response callback interface.
      * @return The sent MAL message.
      * @throws MALInteractionException if there is a problem during the
@@ -151,14 +155,22 @@ public class MessageSend {
      */
     public MALMessage publishRegisterAsync(final MessageDetails details,
             final MALPubSubOperation op,
-            final IdentifierList keys,
+            final IdentifierList keyNames,
+            final AttributeTypeList keyTypes,
             final MALPublishInteractionListener listener)
             throws MALInteractionException, MALException {
         ipsmap.registerPublishListener(details.uriFrom.getValue(), listener);
-        IdentifierList publishedKeys = (keys != null) ? keys : new IdentifierList();
+        IdentifierList publishedKeyNames = (keyNames != null) ? keyNames : new IdentifierList();
+        AttributeTypeList publishedKeyValues = (keyTypes != null) ? keyTypes : new AttributeTypeList();
         final Long transId = icmap.createPubSubTransaction(false, listener);
         return initiateAsynchronousInteraction(details,
-                createMessage(details, op, transId, MALPubSubOperation.PUBLISH_REGISTER_STAGE, publishedKeys));
+                createMessage(details,
+                        op,
+                        transId,
+                        MALPubSubOperation.PUBLISH_REGISTER_STAGE,
+                        publishedKeyNames,
+                        publishedKeyValues)
+        );
     }
 
     /**
@@ -709,11 +721,7 @@ public class MessageSend {
             final Long transactionId,
             final UOctet interactionStage,
             final Object... body) throws MALException {
-        URI to = details.brokerUri;
-
-        if (op.getInteractionType() != InteractionType.PUBSUB) {
-            to = details.uriTo;
-        }
+        URI to = op.isPubSub() ? details.brokerUri : details.uriTo;
 
         return details.endpoint.createMessage(
                 details.authenticationId,
@@ -733,11 +741,7 @@ public class MessageSend {
             final Long transactionId,
             final UOctet interactionStage,
             final MALEncodedBody body) throws MALException {
-        URI to = details.brokerUri;
-
-        if (op.getInteractionType() != InteractionType.PUBSUB) {
-            to = details.uriTo;
-        }
+        URI to = op.isPubSub() ? details.brokerUri : details.uriTo;
 
         return details.endpoint.createMessage(
                 details.authenticationId,

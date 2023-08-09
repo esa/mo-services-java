@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -125,7 +126,8 @@ public class MALPubSubOperation extends MALOperation {
 
     private static final MALOperationStage PUBSUB_PUBREG_OPERATION_STAGE
             = new MALOperationStage(PUBLISH_REGISTER_STAGE, new OperationField[]{
-                new OperationField("keyNames", false, IdentifierList.SHORT_FORM)
+                new OperationField("names", false, IdentifierList.SHORT_FORM),
+                new OperationField("types", false, AttributeTypeList.SHORT_FORM)
             });
 
     private static final MALOperationStage PUBSUB_PUBREGACK_OPERATION_STAGE
@@ -179,7 +181,7 @@ public class MALPubSubOperation extends MALOperation {
             notifyFields[i + 2] = field;
         }
         // Publish message:
-        publishFields[0] = new OperationField("updateHeader", false, UpdateHeader.SHORT_FORM);
+        publishFields[0] = new OperationField("header", false, UpdateHeader.SHORT_FORM);
 
         // Notify message:
         notifyFields[0] = new OperationField("subscriptionId", false, Attribute.IDENTIFIER_SHORT_FORM);

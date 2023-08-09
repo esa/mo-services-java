@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublisher;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
@@ -69,7 +70,8 @@ public class MALPublisherImpl implements MALPublisher {
     }
 
     @Override
-    public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
+    public void register(final IdentifierList keyNames, final AttributeTypeList keyTypes,
+            final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
                 provider.getEndpoint(),
@@ -79,12 +81,13 @@ public class MALPublisherImpl implements MALPublisher {
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        Long transactionId = handler.publishRegister(details, operation, keys, listener);
+        Long transactionId = handler.publishRegister(details, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), transactionId);
     }
 
     @Override
-    public MALMessage asyncRegister(final IdentifierList keys,final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final IdentifierList keyNames,
+            final AttributeTypeList keyTypes, final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
         final MessageDetails details = new MessageDetails(
                 provider.getEndpoint(),
@@ -94,7 +97,7 @@ public class MALPublisherImpl implements MALPublisher {
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        MALMessage msg = handler.publishRegisterAsync(details, operation, keys, listener);
+        MALMessage msg = handler.publishRegisterAsync(details, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), msg.getHeader().getTransactionId());
         return msg;
     }

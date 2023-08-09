@@ -97,6 +97,16 @@ public abstract class MALOperation {
     }
 
     /**
+     * Returns if it is a PUB-SUB Interaction Pattern operation.
+     *
+     * @return True if it is a PUB-SUB Interaction Pattern operation. False
+     * otherwise.
+     */
+    public boolean isPubSub() {
+        return interactionType == InteractionType.PUBSUB;
+    }
+
+    /**
      * Returns whether the operation is replayable.
      *
      * @return Whether the operation is replayable.

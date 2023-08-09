@@ -25,6 +25,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 
@@ -71,5 +72,11 @@ public class PublishRegisterBody extends MessageBody implements MALPublishRegist
     public IdentifierList getSubscriptionKeyNames() throws MALException {
         IdentifierList keyNames = (IdentifierList) getBodyElement(0, new IdentifierList());
         return (keyNames != null) ? keyNames : new IdentifierList();
+    }
+
+    @Override
+    public AttributeTypeList getSubscriptionKeyTypes() throws MALException {
+        AttributeTypeList keyTypes = (AttributeTypeList) getBodyElement(1, new AttributeTypeList());
+        return (keyTypes != null) ? keyTypes : new AttributeTypeList();
     }
 }
