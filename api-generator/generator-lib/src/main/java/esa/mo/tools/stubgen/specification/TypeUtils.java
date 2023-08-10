@@ -114,7 +114,7 @@ public class TypeUtils {
         }
 
         if (!ttr.isField()) {
-            return convertTypeReference(tiSource, ttr.getTypeRef(), null, null, false);
+            return convertTypeReference(tiSource, ttr.getTypeRef(), null, null, true);
         }
 
         String fieldName = ttr.getFieldRef().getName();
@@ -282,7 +282,7 @@ public class TypeUtils {
                 String smaxOccurrs = re.getAttribute("maxOccurs");
                 if (!"".equals(smaxOccurrs)) {
                     int maxOccurrs = Integer.parseInt(smaxOccurrs);
-                    if (1 < maxOccurrs) {
+                    if (maxOccurrs > 1) {
                         isList = true;
                     }
                 }
@@ -292,8 +292,7 @@ public class TypeUtils {
                 newTr.setName(type);
                 newTr.setList(isList);
 
-                NamedElementReferenceWithCommentType newField
-                        = new NamedElementReferenceWithCommentType();
+                NamedElementReferenceWithCommentType newField = new NamedElementReferenceWithCommentType();
                 newField.setName(re.getAttribute("name"));
                 newField.setType(newTr);
                 newField.setCanBeNull(true);

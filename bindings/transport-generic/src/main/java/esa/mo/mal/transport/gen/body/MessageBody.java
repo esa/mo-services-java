@@ -41,7 +41,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
-import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
@@ -199,14 +198,12 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
      * @param enc The output stream to use for encoding.
      * @param lowLevelOutputStream Low level output stream to use when have an
      * already encoded body.
-     * @param stage The operation stage being encoded.
      * @param ctx The encoding context.
      * @throws MALException On encoding error.
      */
     public void encodeMessageBody(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc,
             final OutputStream lowLevelOutputStream,
-            final UOctet stage,
             final MALEncodingContext ctx) throws MALException {
         // first check to see if we have an already encoded body
         if ((messageParts != null) && (messageParts.length == 1)
@@ -328,11 +325,17 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                 try {
                     messageParts[i] = decodeBodyPart(benc, ctx, sf);
                 } catch (Exception ex) {
-                    TypeId typeId = new TypeId((Long) sf);
+                    String typeStr = "";
+
+                    if (sf != null) {
+                        TypeId typeId = new TypeId((Long) sf);
+                        typeStr = "' and typeId:'" + typeId.toString();
+                    }
+
                     Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
-                            "Error decoding Body part (with typeId: "
-                            + typeId.toString()
-                            + ") with index: " + i, ex);
+                            "Error decoding Body part with fieldName:'"
+                            + fields[i].getFieldName() + typeStr
+                            + "' and with index: " + i, ex);
                     throw ex;
                 }
             }

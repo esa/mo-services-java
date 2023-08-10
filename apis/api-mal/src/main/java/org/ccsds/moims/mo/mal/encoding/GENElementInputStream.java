@@ -20,6 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -58,10 +60,16 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             throw new MALException("The header is no longer read here! Use: readHeader()");
         }
 
-        if (ctx.getOperationField().isAbstractType()) {
-            return decodeAbstractSubElement(true);
-        } else {
-            return dec.decodeNullableElement(element);
+        try {
+            if (ctx.getOperationField().isAbstractType()) {
+                return decodeAbstractSubElement(ctx.getOperationField().isNullable());
+            } else {
+                return dec.decodeNullableElement(element);
+            }
+        } catch (MALException ex) {
+            Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
+                    "The following field could not be decoded: " + ctx.getOperationField().getFieldName(), ex);
+            throw ex;
         }
     }
 

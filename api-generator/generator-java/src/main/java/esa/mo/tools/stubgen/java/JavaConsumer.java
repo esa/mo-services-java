@@ -36,6 +36,7 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ServiceType;
+import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -210,7 +211,8 @@ public class JavaConsumer {
                 }
                 case PUBSUB_OP: {
                     List<TypeInfo> retTypes = new LinkedList<>();
-                    boolean nullableField = false;
+                    boolean nullableField = false; // Just for subscriptionId, and updateHeader
+
                     retTypes.add(0, TypeUtils.convertTypeReference(generator,
                             TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
                             "subscriptionId", "The subscriptionId of the subscription.", nullableField));
@@ -399,8 +401,9 @@ public class JavaConsumer {
                         TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
 
                 for (TypeInfo ti : op.getRetTypes()) {
+                    TypeReference source = ti.getSourceType();
                     opTypes.add(TypeUtils.convertTypeReference(generator,
-                            TypeUtils.createTypeReference(ti.getSourceType().getArea(), ti.getSourceType().getService(), ti.getSourceType().getName(), ti.getSourceType().isList())));
+                            TypeUtils.createTypeReference(source.getArea(), source.getService(), source.getName(), source.isList())));
                 }
 
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);

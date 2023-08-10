@@ -49,6 +49,7 @@ public class TypeInfo {
      * type.
      * @param malShortFormField The short form field value for the type.
      * @param versionInfo The version information for the type.
+     * @param canBeNull The canBeNull flag for the type.
      */
     public TypeInfo(TypeReference sourceType, String fieldName,
             String fieldComment, String actualMalType, String targetType,

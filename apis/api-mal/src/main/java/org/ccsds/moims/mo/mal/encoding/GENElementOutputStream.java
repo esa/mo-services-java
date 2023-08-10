@@ -22,6 +22,8 @@ package org.ccsds.moims.mo.mal.encoding;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -68,10 +70,16 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             throw new MALException("The header is no longer read here! Use: writeHeader()");
         }
 
-        if (ctx.getOperationField().isAbstractType()) {
-            encodeAbstractSubElement(element, true);
-        } else {
-            enc.encodeNullableElement(element);
+        try {
+            if (ctx.getOperationField().isAbstractType()) {
+                encodeAbstractSubElement(element, ctx.getOperationField().isNullable());
+            } else {
+                enc.encodeNullableElement(element);
+            }
+        } catch (MALException ex) {
+            Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
+                    "The following field could not be encoded: " + ctx.getOperationField().getFieldName(), ex);
+            throw ex;
         }
     }
 

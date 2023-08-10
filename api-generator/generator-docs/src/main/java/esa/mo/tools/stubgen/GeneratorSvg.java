@@ -283,14 +283,15 @@ public class GeneratorSvg extends GeneratorDocument {
                 updateHdr.setList(Boolean.TRUE);
                 types.add(0, TypeUtils.convertTypeReference(this, subId));
                 types.add(1, TypeUtils.convertTypeReference(this, updateHdr));
-                List<esa.mo.tools.stubgen.specification.TypeInfo> rt = op.getRetTypes();
-                for (TypeInfo typeInfo : rt) {
+
+                for (TypeInfo typeInfo : op.getRetTypes()) {
                     TypeReference refType = typeInfo.getSourceType();
                     refType.setList(Boolean.TRUE);
                     types.add(TypeUtils.convertTypeReference(this, refType));
                     refType.setList(Boolean.FALSE);
                 }
-                drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:", types, op.getRetComment(), op.getName(), "PUBSUB");
+                drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:",
+                        types, op.getRetComment(), op.getName(), "PUBSUB");
                 break;
             }
 

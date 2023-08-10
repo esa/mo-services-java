@@ -201,14 +201,13 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         try {
             MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
 
-            // if we have a header encode it
+            // If we have a header encode it
             if (writeHeader && (header != null)) {
                 enc.writeHeader(header);
             }
 
-            // now encode the body
-            body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream,
-                    header.getInteractionStage(), ctx);
+            // Now encode the body:
+            body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, ctx);
         } catch (IllegalArgumentException ex1) {
             throw new MALException("Internal error encoding header of message", ex1);
         } catch (MALException ex2) {
