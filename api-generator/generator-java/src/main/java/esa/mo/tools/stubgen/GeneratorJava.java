@@ -161,15 +161,19 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("this.publisherSet = publisherSet");
         method.addMethodCloseStatement();
 
-        CompositeField keyList = createCompositeElementsDetails(file, false, "keys",
+        CompositeField keyNamesList = createCompositeElementsDetails(file, false, "keyNames",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
-                true, true, "The keys to use in the method");
+                true, true, "The key names to use in the method");
+        CompositeField keyTypesList = createCompositeElementsDetails(file, false, "keyTypes",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "AttributeType", true),
+                true, true, "The key types to use in the method");
         CompositeField psListener = createCompositeElementsDetails(file, false, "listener",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false),
                 false, true,
                 "The listener object to use for callback from the publisher");
         List<CompositeField> argPSListenerList = new LinkedList<>();
-        argPSListenerList.add(keyList);
+        argPSListenerList.add(keyNamesList);
+        argPSListenerList.add(keyTypesList);
         argPSListenerList.add(psListener);
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "register", argPSListenerList, throwsExceptions,
@@ -177,7 +181,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.register(keys, listener)");
+        method.addLine("publisherSet.register(keyNames, keyTypes, listener)");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -186,13 +190,13 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.asyncRegister(keys, listener)");
+        method.addLine("publisherSet.asyncRegister(keyNames, keyTypes, listener)");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
         argList.add(createCompositeElementsDetails(file, true, "updateHeader",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false), true, true,
-                "The headers of the updates being added"));
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
+                true, true, "The headers of the updates being added"));
         argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes()));
 
         String argNameList = "";

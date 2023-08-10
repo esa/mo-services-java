@@ -55,6 +55,7 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -215,7 +216,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
 
-        monitorEventPublisher.register(keys, publisherListener);
+        monitorEventPublisher.register(keys, new AttributeTypeList(), publisherListener);
 
     }
 

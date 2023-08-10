@@ -255,7 +255,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public ObjectRef<Auto> createObjectFromFields(Identifier _Identifier0, Identifier _Identifier1, Boolean _Boolean2, String _String3, String _String4, StringList _StringList5, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ObjectRef<Auto> createObjectFromFields(Long _Long0, Identifier _Identifier1, Boolean _Boolean2, String _String3, String _String4, StringList _StringList5, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

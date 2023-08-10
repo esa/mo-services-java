@@ -42,10 +42,12 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -483,7 +485,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 sessionName, qos, new Hashtable(), new UInteger(1));
 
         try {
-            publisher.register(new IdentifierList(), new PublishListener());
+            publisher.register(new IdentifierList(), new AttributeTypeList(), new PublishListener());
         } catch (MALInteractionException exc) {
             // Expected error
             return true;
@@ -641,12 +643,6 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uriTo,
                 new Time(System.currentTimeMillis()),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 stage,
                 transId,
@@ -655,6 +651,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 IPTestHelper.IPTEST_SERVICE.MONITOR_OP_NUMBER,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
+                new NamedValueList(),
                 null, // qos proerties
                 body
         );

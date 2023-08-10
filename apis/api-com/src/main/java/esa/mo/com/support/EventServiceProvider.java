@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -81,7 +82,7 @@ public class EventServiceProvider extends EventInheritanceSkeleton {
                     null,
                     new UInteger(0));
             
-            monitorEventPublisher.register(new IdentifierList(), eventPublishListener);
+            monitorEventPublisher.register(new IdentifierList(), new AttributeTypeList(), eventPublishListener);
         }
     }
 

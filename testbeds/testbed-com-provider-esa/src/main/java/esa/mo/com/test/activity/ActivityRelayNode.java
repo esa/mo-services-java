@@ -178,7 +178,7 @@ public class ActivityRelayNode {
         LoggingBase.logMessage("ActivityRelayNode:createMonitorEventPublisher Reset X calling register");
 
         try {
-            monitorEventPublisher.register(keys, activityTestPublisher);
+            monitorEventPublisher.register(keys, new AttributeTypeList(), activityTestPublisher);
         } catch (MALInteractionException ex) {
             // todo
             ex.printStackTrace();

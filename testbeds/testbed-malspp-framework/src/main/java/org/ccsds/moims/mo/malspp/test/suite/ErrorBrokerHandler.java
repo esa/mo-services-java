@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
@@ -76,14 +77,19 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
         } catch (InterruptedException e) {
         }
 
-        binding.sendNotifyError(interaction.getOperation(), subscriberUri, transactionId,
+        binding.sendNotifyError(interaction.getOperation(),
+                subscriberUri,
+                transactionId,
                 interaction.getMessageHeader().getDomain(),
                 interaction.getMessageHeader().getNetworkZone(),
                 interaction.getMessageHeader().getSession(),
                 interaction.getMessageHeader().getSessionName(),
-                interaction.getMessageHeader().getQoSlevel(), new HashMap(0),
+                interaction.getMessageHeader().getQoSlevel(),
+                new HashMap(0),
                 interaction.getMessageHeader().getPriority(),
-                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
+                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
+                new NamedValueList()
+        );
     }
 
     public void handlePublishDeregister(MALInteraction interaction)

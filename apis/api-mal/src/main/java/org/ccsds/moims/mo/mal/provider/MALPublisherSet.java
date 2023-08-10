@@ -75,7 +75,7 @@ public class MALPublisherSet {
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
             final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority) 
+            final UInteger remotePublisherPriority)
             throws java.lang.IllegalArgumentException, MALException {
         this.providerSet = providerSet;
         this.op = op;
@@ -112,16 +112,18 @@ public class MALPublisherSet {
      * MALPublisherSet.
      *
      * @param keyNames Key Names of the subscriptions that are to be published
+     * @param keyTypes Key Types of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * ERROR
      * @throws java.lang.IllegalArgumentException If entityKeyList is null.
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public void register(final IdentifierList keyNames, final MALPublishInteractionListener listener)
+    public void register(final IdentifierList keyNames, final AttributeTypeList keyTypes,
+            final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         for (MALPublisher publisher : subpublishers) {
-            publisher.register(keyNames, null, listener);
+            publisher.register(keyNames, keyTypes, listener);
         }
     }
 
@@ -163,7 +165,8 @@ public class MALPublisherSet {
      * The method asynchronously registers through all the MALPublishers of this
      * MALPublisherSet.
      *
-     * @param keys Keys of the subscriptions that are to be published
+     * @param keyNames Key Names of the subscriptions that are to be published
+     * @param keyTypes Key Types of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * REGISTER ACK, PUBLISH REGISTER ERROR and PUBLISH ERROR
      * @return The message sent.
@@ -172,11 +175,12 @@ public class MALPublisherSet {
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public MALMessage asyncRegister(final IdentifierList keys, final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final IdentifierList keyNames, final AttributeTypeList keyTypes,
+            final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
         MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            msg = p.asyncRegister(keys, null, listener);
+            msg = p.asyncRegister(keyNames, keyTypes, listener);
         }
 
         return msg;

@@ -365,7 +365,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
         keys.add(new Identifier("K2"));
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
-        monitorEventPublisher.register(keys, new MALPublishInteractionListenerImpl());
+        monitorEventPublisher.register(keys, new AttributeTypeList(), new MALPublishInteractionListenerImpl());
     }
 
     public MonitorEventPublisher getMonitorEventPublisher(String relay) throws MALInteractionException, MALException {

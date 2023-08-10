@@ -405,7 +405,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         _TestPublishRegister.getPriority());
 
                 LoggingBase.logMessage("IPTestHandlerImpl.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
-                publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
+                publisher.asyncRegister(_TestPublishRegister.getKeyNames(), new AttributeTypeList(), listener);
             } else {
                 MonitorPublisher publisher = getMonitorPublisher(
                         _TestPublishRegister.getDomain(),
@@ -416,7 +416,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         _TestPublishRegister.getPriority());
 
                 LoggingBase.logMessage("IPTestHandlerImpl.doPublishRegister: The keyNames are: " + _TestPublishRegister.getKeyNames());
-                publisher.asyncRegister(_TestPublishRegister.getKeyNames(), listener);
+                publisher.asyncRegister(_TestPublishRegister.getKeyNames(), new AttributeTypeList(), listener);
             }
             listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
         } catch (InterruptedException e) {

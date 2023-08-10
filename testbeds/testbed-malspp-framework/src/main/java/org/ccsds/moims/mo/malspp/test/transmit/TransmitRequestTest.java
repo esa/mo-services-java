@@ -117,7 +117,7 @@ public class TransmitRequestTest {
     }
 
     public boolean setUriFrom(String uri) {
-        templateSendMsg.getHeader().setURIFrom(new URI(uri));
+        templateSendMsg.getHeader().setFrom(new Identifier(uri));
         return true;
     }
 

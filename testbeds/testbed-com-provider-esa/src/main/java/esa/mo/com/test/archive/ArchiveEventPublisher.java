@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -128,7 +129,7 @@ public class ArchiveEventPublisher {
         keys.add(new Identifier("K4"));
 
         PublisherListener publisherListener = new PublisherListener();
-        monitorEventPublisher.register(keys, publisherListener);
+        monitorEventPublisher.register(keys, new AttributeTypeList(), publisherListener);
 
     }
 

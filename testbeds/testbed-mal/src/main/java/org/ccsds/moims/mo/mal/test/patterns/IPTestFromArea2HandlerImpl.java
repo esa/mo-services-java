@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
@@ -88,7 +89,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
+        publisher.register(_TestPublishRegister.getKeyNames(), new AttributeTypeList(), new PublisherListener());
 
         Monitor2Publisher publisher2 = createMonitor2Publisher(
                 _TestPublishRegister.getDomain(),
@@ -98,7 +99,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher2.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
+        publisher2.register(_TestPublishRegister.getKeyNames(), new AttributeTypeList(), new PublisherListener());
     }
 
     public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)

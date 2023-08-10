@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -79,7 +80,7 @@ public class PubsubErrorIPTestHandler extends IPTestInheritanceSkeleton {
             publisher = createMonitorPublisher(testPublishUpdate.getDomain(),
                     HeaderTestProcedure.NETWORK_ZONE, testPublishUpdate.getSession(),
                     testPublishUpdate.getSessionName(), testPublishUpdate.getQos(), new Hashtable(), new UInteger(1));
-            publisher.asyncRegister(new IdentifierList(), new PublishListener());
+            publisher.asyncRegister(new IdentifierList(), new AttributeTypeList(), new PublishListener());
             publishers.put(key, publisher);
         }
         return publisher;

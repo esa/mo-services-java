@@ -104,7 +104,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                         publishRegister.getPriority());
 
                 LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + publishRegister.getKeyNames());
-                publisher.asyncRegister(publishRegister.getKeyNames(), listener);
+                publisher.asyncRegister(publishRegister.getKeyNames(), new AttributeTypeList(), listener);
             } else {
                 opNumber = IPTestServiceInfo.MONITOR_OP.getNumber();
                 MonitorPublisher publisher = getMonitorPublisher(publishRegister.getDomain(),
@@ -115,7 +115,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
                         publishRegister.getPriority());
 
                 LoggingBase.logMessage("IPTestHandlerWithSharedBroker.doPublishRegister: The keyNames are: " + publishRegister.getKeyNames());
-                publisher.asyncRegister(publishRegister.getKeyNames(), listener);
+                publisher.asyncRegister(publishRegister.getKeyNames(), new AttributeTypeList(), listener);
             }
             listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
         } catch (InterruptedException e) {

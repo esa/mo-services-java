@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -330,7 +331,8 @@ public class MalSppPatternTest extends PatternTest {
         return spacePacketCheck.packetDataLengthIsLengthOfPacketDataFieldMinusOne();
     }
 
-    private MALMessage createMessage(URI uriTo, MALEndpoint ep, InteractionType type, UOctet stage, UShort operation, QoSLevel qos, SessionType session) throws Exception {
+    private MALMessage createMessage(URI uriTo, MALEndpoint ep, InteractionType type,
+            UOctet stage, UShort operation, QoSLevel qos, SessionType session) throws Exception {
         Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
         Long transId = 0L;
         try {
@@ -342,12 +344,6 @@ public class MalSppPatternTest extends PatternTest {
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uriTo,
                 new Time(System.currentTimeMillis()),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 type,
                 stage,
                 transId,
@@ -356,6 +352,7 @@ public class MalSppPatternTest extends PatternTest {
                 operation,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
+                new NamedValueList(),
                 null, // qos proerties
                 new Object[]{null} // body
         );

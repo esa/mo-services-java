@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -345,7 +346,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
     private void registerPublisher() throws MALException, MALInteractionException {
         if (!isRegistered) {
             IdentifierList keys = new IdentifierList();
-            publisher.register(keys, new PublishInteractionListener());
+            publisher.register(keys, new AttributeTypeList(), new PublishInteractionListener());
             isRegistered = true;
         }
     }
