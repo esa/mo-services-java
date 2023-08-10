@@ -163,38 +163,6 @@ public interface MALEndpoint {
             throws java.lang.IllegalArgumentException, MALException;
 
     /**
-     * The method instantiates a new MALMessage object.
-     *
-     * @param authenticationId Authentication identifier of the message
-     * @param uriTo URI of the message destination
-     * @param timestamp Timestamp of the message
-     * @param transactionId Transaction identifier of the interaction, may be
-     * null.
-     * @param isErrorMessage Flag indicating if the message conveys an error
-     * @param supplements The header supplements
-     * @param op Operation represented as a MALOperation
-     * @param interactionStage Interaction stage of the interaction
-     * @param qosProperties QoS properties of the message, may be null.
-     * @param body The already encoded message body
-     * @return The created message.
-     * @throws java.lang.IllegalArgumentException If any of the parameters
-     * except ‘transactionId’ or ‘qosProperties’ are NULL
-     * @throws MALException If the MALEndpoint is closed
-     */
-    MALMessage createMessage(
-            Blob authenticationId,
-            URI uriTo,
-            Time timestamp,
-            Long transactionId,
-            Boolean isErrorMessage,
-            NamedValueList supplements,
-            MALOperation op,
-            UOctet interactionStage,
-            Map qosProperties,
-            MALEncodedBody body)
-            throws java.lang.IllegalArgumentException, MALException;
-
-    /**
      * The method sends a MALMessage.
      *
      * @param msg The message to be sent.

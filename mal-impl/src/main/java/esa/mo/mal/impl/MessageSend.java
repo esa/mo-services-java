@@ -490,57 +490,6 @@ public class MessageSend {
     }
 
     /**
-     * Send return response method.
-     *
-     * @param msgAddress Address structure to use for return message.
-     * @param srcHdr Message header to use as reference for return messages
-     * header.
-     * @param lvl The QoS level to use.
-     * @param rspnInteractionStage Interaction stage to use on the response.
-     * @param rspn Response encoded message body.
-     * @param qosProperties The QoS properties.
-     * @param operation The operation.
-     * @return The sent MAL message.
-     */
-    public MALMessage returnResponse(final Address msgAddress,
-            final MALMessageHeader srcHdr,
-            final QoSLevel lvl,
-            final UOctet rspnInteractionStage,
-            final MALOperation operation,
-            final Map qosProperties,
-            final MALEncodedBody rspn) {
-        MALMessage msg = null;
-
-        try {
-            MALEndpoint endpoint = msgAddress.getEndpoint();
-            msg = endpoint.createMessage(
-                    msgAddress.getAuthenticationId(),
-                    srcHdr.getFromURI(),
-                    Time.now(),
-                    srcHdr.getTransactionId(),
-                    false,
-                    srcHdr.getSupplements(),
-                    operation,
-                    rspnInteractionStage,
-                    qosProperties,
-                    rspn);
-
-            endpoint.sendMessage(msg);
-        } catch (MALException ex) {
-            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
-        } catch (MALTransmitErrorException ex) {
-            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
-        } catch (RuntimeException ex) {
-            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
-        }
-
-        return msg;
-    }
-
-    /**
      * Send return error method.
      *
      * @param msgAddress Address structure to use for return message.
@@ -721,26 +670,6 @@ public class MessageSend {
             final Long transactionId,
             final UOctet interactionStage,
             final Object... body) throws MALException {
-        URI to = op.isPubSub() ? details.brokerUri : details.uriTo;
-
-        return details.endpoint.createMessage(
-                details.authenticationId,
-                to,
-                Time.now(),
-                transactionId,
-                Boolean.FALSE,
-                new NamedValueList(),
-                op,
-                interactionStage,
-                details.qosProps,
-                body);
-    }
-
-    private static MALMessage createMessage(final MessageDetails details,
-            final MALOperation op,
-            final Long transactionId,
-            final UOctet interactionStage,
-            final MALEncodedBody body) throws MALException {
         URI to = op.isPubSub() ? details.brokerUri : details.uriTo;
 
         return details.endpoint.createMessage(

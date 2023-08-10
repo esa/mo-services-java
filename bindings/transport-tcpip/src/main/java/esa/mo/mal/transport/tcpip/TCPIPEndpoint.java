@@ -82,21 +82,6 @@ public class TCPIPEndpoint extends GENEndpoint {
 
     @Override
     public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final Long transactionId,
-            final Boolean isErrorMessage,
-            final NamedValueList supplements,
-            final MALOperation op,
-            final UOctet interactionStage,
-            final Map qosProperties,
-            final MALEncodedBody body) throws MALException {
-        return null;
-
-    }
-
-    @Override
-    public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo, final Time timestamp, final Long transactionId,
             final Boolean isErrorMessage, final NamedValueList supplements,
             final MALOperation op, final UOctet interactionStage,

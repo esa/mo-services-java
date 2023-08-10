@@ -44,21 +44,24 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class TestEndPoint implements MALEndpoint {
 
-    private MALEndpoint delegate;
+    private final MALEndpoint delegate;
     private ReceivedMessageInterceptor receivedMessageInterceptor;
 
     TestEndPoint(MALEndpoint delegate) {
         this.delegate = delegate;
     }
 
+    @Override
     public void startMessageDelivery() throws MALException {
         delegate.startMessageDelivery();
     }
 
+    @Override
     public void close() throws MALException {
         delegate.close();
     }
 
+    @Override
     public MALMessage createMessage(Blob authenticationId, URI uRITo,
             Time timestamp, InteractionType interactionType,
             UOctet interactionStage, Long transactionId, UShort serviceArea,
@@ -71,6 +74,7 @@ public class TestEndPoint implements MALEndpoint {
                 isErrorMessage, supplements, qosProperties, body);
     }
 
+    @Override
     public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
             Long transactionId, Boolean isErrorMessage, NamedValueList supplements,
             MALOperation op, UOctet interactionStage, Map qosProperties,
@@ -79,10 +83,12 @@ public class TestEndPoint implements MALEndpoint {
                 isErrorMessage, supplements, op, interactionStage, qosProperties, body);
     }
 
+    @Override
     public String getLocalName() {
         return delegate.getLocalName();
     }
 
+    @Override
     public URI getURI() {
         return delegate.getURI();
     }
@@ -121,6 +127,7 @@ public class TestEndPoint implements MALEndpoint {
         return res;
     }
 
+    @Override
     public void sendMessages(MALMessage[] messages) throws MALTransmitMultipleErrorException, MALException {
         if (null != TransportInterceptor.instance().getEndpointSendInterceptor()) {
             TransportInterceptor.instance().getEndpointSendInterceptor().sendMessages(this, messages);
@@ -136,6 +143,7 @@ public class TestEndPoint implements MALEndpoint {
         TransportInterceptor.instance().incrementTransmitMultipleResponseCount();
     }
 
+    @Override
     public void setMessageListener(MALMessageListener listener) throws MALException {
         this.receivedMessageInterceptor = new ReceivedMessageInterceptor(listener);
         delegate.setMessageListener(receivedMessageInterceptor);
@@ -212,14 +220,17 @@ public class TestEndPoint implements MALEndpoint {
             }
         }
 
+        @Override
         public void onInternalError(MALEndpoint callingEndpoint, Throwable error) {
             error.printStackTrace();
         }
 
+        @Override
         public void onTransmitError(MALEndpoint callingEndpoint, MALMessageHeader srcMessageHeader, MOErrorException err, Map qosMap) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void onMessage(MALEndpoint callingEndpoint, MALMessage msg) {
             boolean selfProcess = false;
 
@@ -236,6 +247,7 @@ public class TestEndPoint implements MALEndpoint {
             }
         }
 
+        @Override
         public void onMessages(MALEndpoint callingEndpoint, MALMessage[] messages) {
             boolean selfProcess = false;
 
@@ -271,9 +283,9 @@ public class TestEndPoint implements MALEndpoint {
 
     static class TestMessage implements MALMessage {
 
-        private MALMessageHeader header;
-        private MALMessageBody body;
-        private Map props;
+        private final MALMessageHeader header;
+        private final MALMessageBody body;
+        private final Map props;
 
         public TestMessage(MALMessageHeader header, MALMessageBody body, Map props) {
             super();
@@ -282,18 +294,22 @@ public class TestEndPoint implements MALEndpoint {
             this.props = props;
         }
 
+        @Override
         public void free() throws MALException {
             // Do nothing
         }
 
+        @Override
         public MALMessageHeader getHeader() {
             return header;
         }
 
+        @Override
         public Map getQoSProperties() {
             return props;
         }
 
+        @Override
         public MALMessageBody getBody() {
             return body;
         }
@@ -305,6 +321,7 @@ public class TestEndPoint implements MALEndpoint {
         }
     }
 
+    @Override
     public void stopMessageDelivery() throws MALException {
         delegate.stopMessageDelivery();
     }
@@ -318,15 +335,6 @@ public class TestEndPoint implements MALEndpoint {
                 interactionType, interactionStage, transactionId,
                 serviceAreaNumber, serviceNumber, operationNumber,
                 areaVersion, isErrorMessage, supplements,
-                qosProperties, body);
-    }
-
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
-            Long transactionId, Boolean isErrorMessage, NamedValueList supplements,
-            MALOperation op, UOctet interactionStage, Map qosProperties,
-            MALEncodedBody body) throws IllegalArgumentException, MALException {
-        return delegate.createMessage(authenticationId, uriTo, timestamp,
-                transactionId, isErrorMessage, supplements, op, interactionStage,
                 qosProperties, body);
     }
 }

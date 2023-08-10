@@ -188,13 +188,4 @@ public class FastEndpoint implements MALEndpoint {
             Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
-            Long transactionId, Boolean isErrorMessage, NamedValueList supplements,
-            MALOperation op, UOctet interactionStage, Map qosProperties,
-            MALEncodedBody body) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

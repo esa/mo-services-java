@@ -130,15 +130,18 @@ public class Main {
             this.destination = destination;
         }
 
+        @Override
         public void onInternalError(MALEndpoint callingEndpoint, Throwable err) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void onTransmitError(MALEndpoint callingEndpoint,
                 MALMessageHeader srcMessageHeader, MOErrorException err, Map qosMap) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void onMessage(MALEndpoint callingEndpoint, MALMessage srcMessage) {
             try {
                 System.out.println("Received message from: "
@@ -154,6 +157,7 @@ public class Main {
             }
         }
 
+        @Override
         public void onMessages(MALEndpoint callingEndpoint, MALMessage[] srcMessageList) {
             try {
                 MALMessage[] dMsgList = new MALMessage[srcMessageList.length];
