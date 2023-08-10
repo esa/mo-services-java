@@ -45,7 +45,7 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     // The code will wait on this PERIOD: ~630 times !
-    public static final int PERIOD = 250; // in ms
+    public static final int PERIOD = 100; // in ms
     private final HashMap<PublisherKey, MonitorPublisher> publishers;
     private final HashMap<PublisherKey, MonitorMultiPublisher> publishersMulti;
     protected MonitorPublishInteractionListener defaultListener = new MonitorPublishInteractionListener();
