@@ -49,20 +49,16 @@ public class MALEncodingContext {
 
     private final MALMessageHeader header;
     private MALOperation operation;
-    private int bodyElementIndex;
 
     /**
      * Creates an instance.
      *
      * @param header The MAL message header.
      * @param operation The MAL operation
-     * @param bodyElementIndex the index of the body element
      */
-    public MALEncodingContext(final MALMessageHeader header,
-            final MALOperation operation, final int bodyElementIndex) {
+    public MALEncodingContext(final MALMessageHeader header, final MALOperation operation) {
         this.header = header;
         this.operation = operation;
-        this.bodyElementIndex = bodyElementIndex;
     }
 
     /**
@@ -84,47 +80,40 @@ public class MALEncodingContext {
             return operation;
         }
 
-        MALArea area = MALContextFactory
-                .lookupArea(header.getServiceArea(), header.getServiceVersion());
+        MALArea area = MALContextFactory.lookupArea(header.getServiceArea(), header.getServiceVersion());
 
-        if (area != null) {
-            MALService service = area.getServiceByNumber(header.getService());
-            if (service != null) {
-                MALOperation op = service.getOperationByNumber(header.getOperation());
-
-                if (op != null) {
-                    operation = op;
-                } else {
-                    Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
-                            "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
-                            new Object[]{
-                                header.getServiceArea(), header.getServiceVersion(),
-                                header.getService(), header.getOperation()
-                            });
-                }
-            } else {
-                Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
-                        "Operation for unknown area/version/service received ({0}, {1}, {2})",
-                        new Object[]{
-                            header.getServiceArea(), header.getServiceVersion(), header.getService()
-                        });
-            }
-        } else {
+        if (area == null) {
             Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
                     "Operation for unknown area/version received ({0}, {1})",
                     new Object[]{header.getServiceArea(), header.getServiceVersion()});
+            return null;
         }
 
-        return operation;
-    }
+        MALService service = area.getServiceByNumber(header.getService());
 
-    /**
-     * Sets the index.
-     *
-     * @param bodyElementIndex The index to set.
-     */
-    public void setBodyElementIndex(final int bodyElementIndex) {
-        this.bodyElementIndex = bodyElementIndex;
+        if (service == null) {
+            Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
+                    "Service for unknown area/version/service received ({0}, {1}, {2})",
+                    new Object[]{
+                        header.getServiceArea(), header.getServiceVersion(), header.getService()
+                    });
+            return null;
+        }
+
+        MALOperation op = service.getOperationByNumber(header.getOperation());
+
+        if (op == null) {
+            Logger.getLogger(MALEncodingContext.class.getName()).log(Level.SEVERE,
+                    "Operation for unknown area/version/service/op received ({0}, {1}, {2}, {3})",
+                    new Object[]{
+                        header.getServiceArea(), header.getServiceVersion(),
+                        header.getService(), header.getOperation()
+                    });
+            return null;
+        }
+
+        operation = op;
+        return operation;
     }
 
     public OperationField[] getOperationFields() {
@@ -134,9 +123,5 @@ public class MALEncodingContext {
 
         UOctet stage = header.getInteractionStage();
         return this.getOperation().getOperationStage(stage).getFields();
-    }
-
-    public OperationField getOperationField() {
-        return this.getOperationFields()[bodyElementIndex];
     }
 }

@@ -199,7 +199,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             final OutputStream lowLevelOutputStream,
             final boolean writeHeader) throws MALException {
         try {
-            MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
+            MALEncodingContext ctx = new MALEncodingContext(header, operation);
 
             // If we have a header encode it
             if (writeHeader && (header != null)) {
@@ -218,7 +218,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
     private MessageBody createMessageBody(final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
+        MALEncodingContext ctx = new MALEncodingContext(header, operation);
 
         if (header.getIsErrorMessage()) {
             return new ErrorBody(ctx, wrapBodyParts,
@@ -255,7 +255,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     }
 
     private MessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header, operation, 0);
+        MALEncodingContext ctx = new MALEncodingContext(header, operation);
 
         if (header.getIsErrorMessage()) {
             return new ErrorBody(ctx, encFactory, bodyElements);

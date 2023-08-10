@@ -100,12 +100,7 @@ public class TestEncoder {
         System.out.println("Creating objects");
         org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementsRegistry());
 
-        IdentifierList domain = new IdentifierList();
-        domain.add(new Identifier("ccsds"));
-        domain.add(new Identifier("mission"));
-        domain.add(null);
-        Identifier nz = new Identifier("network");
-        MALEncodingContext ctx = new MALEncodingContext(new MALMessageHeader(
+        MALMessageHeader header = new MALMessageHeader(
                 new Identifier("from"),
                 new Blob("".getBytes()),
                 new Identifier("to"),
@@ -117,8 +112,9 @@ public class TestEncoder {
                 PerfTestHelper.PERFTEST_SERVICE.getServiceNumber(),
                 PerfTestHelper.PERFTEST_SERVICE.SEND_OP_NUMBER,
                 PerfTestHelper.PERFTEST_SERVICE.getServiceVersion(),
-                Boolean.FALSE, new NamedValueList()), 
-                PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0);
+                Boolean.FALSE, new NamedValueList());
+
+        MALEncodingContext ctx = new MALEncodingContext(header, PerfTestHelper.PERFTEST_SERVICE.SEND_OP);
 
         System.out.println("Running tests");
         for (Results result : results) {
@@ -183,7 +179,7 @@ public class TestEncoder {
             baos = new ByteArrayOutputStream();
             MALElementOutputStream encoder = streamFactory.createOutputStream(baos);
 
-            encoder.writeElement(testComposite, ctx.getOperationField());
+            encoder.writeElement(testComposite, ctx.getOperationFields()[0]);
             encoder.flush();
             encoder.close();
         }
@@ -217,7 +213,7 @@ public class TestEncoder {
             ByteArrayInputStream bais = new ByteArrayInputStream(bbuf);
             MALElementInputStream decoder = streamFactory.createInputStream(bais);
 //      MALElementInputStream decoder = streamFactory.createInputStream(bbuf, 0);
-            rv = decoder.readElement((Element) blankComposite, ctx.getOperationField());
+            rv = decoder.readElement((Element) blankComposite, ctx.getOperationFields()[0]);
             decoder.close();
         }
         long stopTime = System.nanoTime();

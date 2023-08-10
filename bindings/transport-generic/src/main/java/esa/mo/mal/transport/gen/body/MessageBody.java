@@ -368,7 +368,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             MALElementInputStream lenc = encFactory.createInputStream(lbais);
 
             try {
-                elementList.add(lenc.readElement(fr.createElement(sf), ctx.getOperationField()));
+                elementList.add(lenc.readElement(fr.createElement(sf), ctx.getOperationFields()[0]));
             } catch (Exception ex) {
                 throw new MALException("The Element could not be created!", ex);
             }
