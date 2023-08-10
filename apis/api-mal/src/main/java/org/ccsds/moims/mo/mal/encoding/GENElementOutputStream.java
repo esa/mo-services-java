@@ -74,7 +74,11 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             if (ctx.getOperationField().isAbstractType()) {
                 encodeAbstractSubElement(element, ctx.getOperationField().isNullable());
             } else {
-                enc.encodeNullableElement(element);
+                if (ctx.getOperationField().isNullable()) {
+                    enc.encodeNullableElement(element);
+                } else {
+                    enc.encodeElement(element);
+                }
             }
         } catch (MALException ex) {
             Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,

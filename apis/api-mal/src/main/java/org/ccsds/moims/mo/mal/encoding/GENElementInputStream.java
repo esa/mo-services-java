@@ -64,7 +64,11 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             if (ctx.getOperationField().isAbstractType()) {
                 return decodeAbstractSubElement(ctx.getOperationField().isNullable());
             } else {
-                return dec.decodeNullableElement(element);
+                if (ctx.getOperationField().isNullable()) {
+                    return dec.decodeNullableElement(element);
+                } else {
+                    return dec.decodeElement(element);
+                }
             }
         } catch (MALException ex) {
             Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
