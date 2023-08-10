@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -34,8 +35,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class GENElementOutputStream implements MALElementOutputStream {
 
-    protected final OutputStream dos;
-    protected Encoder enc = null;
+    private final OutputStream dos;
+    private Encoder enc = null;
 
     /**
      * Constructor.
@@ -56,25 +57,21 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
-    public void writeElement(final Element element, final MALEncodingContext ctx) throws MALException {
+    public void writeElement(final Element element, final OperationField field) throws MALException {
         if (enc == null) {
             this.enc = createEncoder(dos);
         }
 
-        if (ctx == null) {
+        if (field == null) {
             enc.encodeNullableElement(element);
             return;
         }
 
-        if (element == ctx.getHeader()) {
-            throw new MALException("The header is no longer read here! Use: writeHeader()");
-        }
-
         try {
-            if (ctx.getOperationField().isAbstractType()) {
-                encodeAbstractSubElement(element, ctx.getOperationField().isNullable());
+            if (field.isAbstractType()) {
+                encodeAbstractSubElement(element, field.isNullable());
             } else {
-                if (ctx.getOperationField().isNullable()) {
+                if (field.isNullable()) {
                     enc.encodeNullableElement(element);
                 } else {
                     enc.encodeElement(element);
@@ -82,7 +79,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
             }
         } catch (MALException ex) {
             Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
-                    "The following field could not be encoded: " + ctx.getOperationField().getFieldName(), ex);
+                    "The following field could not be encoded: " + field.getFieldName(), ex);
             throw ex;
         }
     }

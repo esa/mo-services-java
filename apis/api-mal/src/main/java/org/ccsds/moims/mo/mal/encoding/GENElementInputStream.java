@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -50,21 +51,17 @@ public abstract class GENElementInputStream implements MALElementInputStream {
     }
 
     @Override
-    public Element readElement(final Element element, final MALEncodingContext ctx)
+    public Element readElement(final Element element, final OperationField field)
             throws IllegalArgumentException, MALException {
-        if (ctx == null) {
+        if (field == null) {
             return dec.decodeNullableElement(element);
         }
 
-        if (element == ctx.getHeader()) {
-            throw new MALException("The header is no longer read here! Use: readHeader()");
-        }
-
         try {
-            if (ctx.getOperationField().isAbstractType()) {
-                return decodeAbstractSubElement(ctx.getOperationField().isNullable());
+            if (field.isAbstractType()) {
+                return decodeAbstractSubElement(field.isNullable());
             } else {
-                if (ctx.getOperationField().isNullable()) {
+                if (field.isNullable()) {
                     return dec.decodeNullableElement(element);
                 } else {
                     return dec.decodeElement(element);
@@ -72,7 +69,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
             }
         } catch (MALException ex) {
             Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
-                    "The following field could not be decoded: " + ctx.getOperationField().getFieldName(), ex);
+                    "The following field could not be decoded: " + field.getFieldName(), ex);
             throw ex;
         }
     }

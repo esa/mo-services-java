@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -28,9 +27,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
 
 /**
  * Implements the MALElementStreamFactory interface for a binary encoding. It
@@ -108,18 +104,5 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory {
         } catch (Exception ex) {
             throw new MALException("Error when creating output stream.", ex);
         }
-    }
-
-    @Override
-    public Blob encode(final Element[] elements, final MALEncodingContext ctx) throws MALException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final MALElementOutputStream os = createOutputStream(baos);
-
-        for (Element element : elements) {
-            os.writeElement(element, ctx);
-        }
-
-        os.flush();
-        return new Blob(baos.toByteArray());
     }
 }

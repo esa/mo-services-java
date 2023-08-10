@@ -169,17 +169,4 @@ public abstract class MALElementStreamFactory {
      */
     public abstract MALElementOutputStream createOutputStream(java.io.OutputStream os)
             throws java.lang.IllegalArgumentException, MALException;
-
-    /**
-     * The method encodes an element array and returns the encoding result as a
-     * byte array.
-     *
-     * @param elements Elements to encode
-     * @param ctx MALEncodingContext to be used in order to encode the elements
-     * @return The encoded elements as a byte array.
-     * @throws java.lang.IllegalArgumentException if the arguments are null.
-     * @throws MALException If an encoding error occurs
-     */
-    public abstract Blob encode(Element[] elements, MALEncodingContext ctx)
-            throws java.lang.IllegalArgumentException, MALException;
 }

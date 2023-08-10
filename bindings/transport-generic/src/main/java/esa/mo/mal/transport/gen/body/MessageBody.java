@@ -241,11 +241,8 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             }
 
             for (int i = 0; i < count; i++) {
-                if (ctx != null) {
-                    ctx.setBodyElementIndex(i);
-                }
                 encodeBodyPart(streamFactory, benc, wrappedBodyParts,
-                        getBodyElement(i, null), ctx);
+                        getBodyElement(i, null), ctx.getOperationFields()[i]);
             }
 
             if (wrappedBodyParts) {
@@ -261,10 +258,10 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
     protected void encodeBodyPart(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc, final boolean wrapBodyParts,
-            final Object o, final MALEncodingContext ctx) throws MALException {
+            final Object o, final OperationField field) throws MALException {
         // if it is already an encoded element then just write it directly
         if (o instanceof MALEncodedElement) {
-            enc.writeElement(((MALEncodedElement) o).getEncodedElement(), ctx);
+            enc.writeElement(((MALEncodedElement) o).getEncodedElement(), field);
         } // else if it is a MAL data type object
         else if ((o == null) || (o instanceof Element)) {
             MALElementOutputStream lenc = enc;
@@ -277,7 +274,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             }
 
             // now encode the element
-            lenc.writeElement((Element) o, ctx);
+            lenc.writeElement((Element) o, field);
 
             if (wrapBodyParts) {
                 lenc.flush();
@@ -319,11 +316,10 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
             // Iterate through each message part and decode it
             for (int i = 0; i < bodyPartCount; i++) {
-                ctx.setBodyElementIndex(i);
                 Object sf = fields[i].getTypeId();
 
                 try {
-                    messageParts[i] = decodeBodyPart(benc, ctx, sf);
+                    messageParts[i] = decodeBodyPart(benc, ctx.getOperationFields()[i], sf);
                 } catch (Exception ex) {
                     String typeStr = "";
 
@@ -353,8 +349,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
      * @return The decoded chunk.
      * @throws MALException if any error detected.
      */
-    protected Object decodeEncodedElementListBodyPart(
-            final MALEncodedElementList meel) throws MALException {
+    protected Object decodeEncodedElementListBodyPart(MALEncodedElementList meel) throws MALException {
         long sf = (Long) meel.getShortForm();
 
         // create list of correct type
@@ -373,7 +368,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             MALElementInputStream lenc = encFactory.createInputStream(lbais);
 
             try {
-                elementList.add(lenc.readElement(fr.createElement(sf), ctx));
+                elementList.add(lenc.readElement(fr.createElement(sf), ctx.getOperationField()));
             } catch (Exception ex) {
                 throw new MALException("The Element could not be created!", ex);
             }
@@ -386,13 +381,13 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
      * Decodes a single part of the message body.
      *
      * @param decoder The decoder to use.
-     * @param ctx The encoding context to use.
+     * @param field The field information to encode.
      * @param sf The type short form.
      * @return The decoded chunk.
      * @throws MALException if any error detected.
      */
     protected Object decodeBodyPart(final MALElementInputStream decoder,
-            MALEncodingContext ctx, Object sf) throws MALException {
+            OperationField field, Object sf) throws MALException {
         MALElementInputStream lenc = decoder;
 
         if (wrappedBodyParts) {
@@ -422,6 +417,6 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             }
         }
 
-        return lenc.readElement(element, ctx);
+        return lenc.readElement(element, field);
     }
 }

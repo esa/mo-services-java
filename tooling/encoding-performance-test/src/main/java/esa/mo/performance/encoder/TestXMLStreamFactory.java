@@ -31,6 +31,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -60,11 +61,6 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public Blob encode(Element[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     protected static class TestXMLOutputStream implements MALElementOutputStream {
 
         private final OutputStream os;
@@ -87,7 +83,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public void writeElement(Element o, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public void writeElement(Element o, OperationField field) throws IllegalArgumentException, MALException {
             try {
                 String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
                 String schemaEle = "report";
@@ -139,7 +135,7 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public Element readElement(Element element, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public Element readElement(Element element, OperationField field) throws IllegalArgumentException, MALException {
             try {
                 JAXBContext jc = JAXBContext.newInstance(element.getClass().getPackage().getName());
                 Unmarshaller unmarshaller = jc.createUnmarshaller();

@@ -23,8 +23,8 @@ package esa.mo.mal.encoder.line;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -62,7 +62,7 @@ public class LineElementOutputStream implements MALElementOutputStream {
     }
 
     @Override
-    public void writeElement(final Element element, final MALEncodingContext ctx) throws MALException {
+    public void writeElement(final Element element, final OperationField field) throws MALException {
         final LineEncoder enc = new LineEncoder();
 
         if (element instanceof MALMessageHeader) {

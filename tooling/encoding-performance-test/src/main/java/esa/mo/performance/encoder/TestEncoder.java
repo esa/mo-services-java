@@ -183,7 +183,7 @@ public class TestEncoder {
             baos = new ByteArrayOutputStream();
             MALElementOutputStream encoder = streamFactory.createOutputStream(baos);
 
-            encoder.writeElement(testComposite, ctx);
+            encoder.writeElement(testComposite, ctx.getOperationField());
             encoder.flush();
             encoder.close();
         }
@@ -217,7 +217,7 @@ public class TestEncoder {
             ByteArrayInputStream bais = new ByteArrayInputStream(bbuf);
             MALElementInputStream decoder = streamFactory.createInputStream(bais);
 //      MALElementInputStream decoder = streamFactory.createInputStream(bbuf, 0);
-            rv = decoder.readElement((Element) blankComposite, ctx);
+            rv = decoder.readElement((Element) blankComposite, ctx.getOperationField());
             decoder.close();
         }
         long stopTime = System.nanoTime();

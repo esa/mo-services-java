@@ -30,9 +30,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
 
 public class TestGZipStreamFactory extends MALElementStreamFactory {
 
@@ -67,10 +64,5 @@ public class TestGZipStreamFactory extends MALElementStreamFactory {
     @Override
     public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException {
         return delegate.createInputStream(bytes, offset);
-    }
-
-    @Override
-    public Blob encode(Element[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
-        return delegate.encode(elements, ctx);
     }
 }

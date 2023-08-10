@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -44,12 +45,12 @@ public interface MALElementInputStream {
      * The method reads an Element from the stream.
      *
      * @param element Element to decode, may be null.
-     * @param ctx MALEncodingContext to be used in order to decode an Element
+     * @param field The field information to be used in order to decode an Element
      * @return The decoded element.
      * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL
      * @throws MALException If the MALElementInputStream is closed
      */
-    Element readElement(Element element, MALEncodingContext ctx)
+    Element readElement(Element element, OperationField field)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**
