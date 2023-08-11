@@ -58,7 +58,7 @@ public class JavaLists {
             ServiceType service, String srcTypeName) throws IOException {
         TypeReference srcType = new TypeReference();
         srcType.setArea(area.getName());
-        if (null != service) {
+        if (service != null) {
             srcType.setService(service.getName());
         }
 
@@ -190,11 +190,11 @@ public class JavaLists {
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, rtype, "add", argList, null,
                 "Adds an element to the list.", "The success status.", null);
-        /*
+/*
         method.addLine("if (element == null) {", false);
-        method.addLine("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
+        method.addLine("    throw new IllegalArgumentException(\"The added argument cannot be null!\")");
         method.addLine("}", false);
-         */
+*/
         method.addLine("return super.add(element)");
         method.addMethodCloseStatement();
 
