@@ -27,6 +27,7 @@ import esa.mo.mal.impl.pubsub.PublisherSource;
 import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import esa.mo.mal.impl.util.MALClose;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,7 +92,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final String key = hdr.getTo().getValue();
 
         report(key);
-        if ((hdr != null) && (subscription != null)) {
+        if (subscription != null) {
             SubscriptionSource sub = this.getConsumerEntry(key, hdr, true);
             sub.addSubscription(hdr, subscription);
         }
@@ -105,10 +106,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         final String key = hdr.getTo().getValue();
 
         report(key);
-        if (hdr != null) {
-            PublisherSource s = this.getPublisherSource(key, hdr, true);
-            s.setSubscriptionKeyNames(body.getSubscriptionKeyNames());
-        }
+        PublisherSource s = this.getPublisherSource(key, hdr, true);
+        s.setSubscriptionKeyNames(body.getSubscriptionKeyNames());
         report(key);
     }
 
@@ -166,7 +165,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
         report(key);
 
-        if ((hdr != null) && (subIds != null) && !subIds.isEmpty()) {
+        if ((subIds != null) && !subIds.isEmpty()) {
             SubscriptionSource sub = this.getConsumerEntry(key, hdr, false);
             internalDeregisterSubscriptions(key, sub, subIds);
         }
@@ -222,7 +221,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
         List<NotifyMessage> notifyMessages = new LinkedList<>();
 
         if (updateHeader != null) {
-            Map<String, SubscriptionSource> consumers = this.getConsumerSubscriptions(brokerKey);
+            Collection<SubscriptionSource> subSources = this.getConsumerSubscriptions(brokerKey).values();
 
             NullableAttributeList keyValues = updateHeader.getKeyValues();
             IdentifierList srcDomainId = updateHeader.getDomain();
@@ -260,7 +259,7 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
             // Iterate through all the consumers and generate
             // the notify list if it matches with any of the subscriptions
-            for (SubscriptionSource subSource : consumers.values()) {
+            for (SubscriptionSource subSource : subSources) {
                 try {
                     List<NotifyMessage> list = subSource.generateNotifyMessagesIfMatch(srcHdr, publishBody, providerUpdates);
                     notifyMessages.addAll(list);

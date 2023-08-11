@@ -44,12 +44,12 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  */
 public class MALContextImpl extends MALClose implements MALContext {
 
-    private final Map initialProperties;
-    private final MALAccessControl securityManager;
+    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
     private final InteractionConsumerMap icmap = new InteractionConsumerMap();
     private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
-    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
+    private final MALAccessControl securityManager;
     private final MessageReceive receiver;
+    private final Map initialProperties;
     private final MessageSend sender;
 
     /**

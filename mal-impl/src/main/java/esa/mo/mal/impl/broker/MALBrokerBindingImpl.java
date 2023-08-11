@@ -137,6 +137,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 notifyQosProps,
                 body);
 
+        super.sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
         return msg;
     }
@@ -176,6 +177,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 notifyQosProps,
                 body);
 
+        sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
         return msg;
     }
@@ -212,6 +214,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 notifyQosProps,
                 error.getErrorNumber(), error.getExtraInformation());
 
+        sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
         return msg;
     }
@@ -243,6 +246,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 error.getErrorNumber(),
                 error.getExtraInformation());
 
+        sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
         return msg;
     }
@@ -280,6 +284,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 error.getErrorNumber(),
                 error.getExtraInformation());
 
+        sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
         return msg;
     }
@@ -309,6 +314,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 qosProps,
                 error.getErrorNumber(), error.getExtraInformation());
 
+        sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
         return msg;
     }

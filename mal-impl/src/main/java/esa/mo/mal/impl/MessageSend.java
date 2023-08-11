@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
+import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -45,6 +46,10 @@ public class MessageSend {
         this.securityManager = securityManager;
         this.icmap = imap;
         this.ipsmap = psmap;
+    }
+
+    public MALAccessControl getSecurityManager() {
+        return securityManager;
     }
 
     /**
@@ -474,16 +479,20 @@ public class MessageSend {
                     qosProperties,
                     rspn);
 
+            msg = securityManager.check(msg);
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "(1) Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (MALTransmitErrorException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "(2) Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+                    "(3) Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
+        } catch (MALCheckErrorException ex) {
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                    "(4) Error returning response to consumer : " + srcHdr.getFrom() + " : ", ex);
         }
 
         return msg;
@@ -529,7 +538,6 @@ public class MessageSend {
             MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-
             details.endpoint.sendMessage(msg);
         } catch (IllegalArgumentException ex) {
             throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
@@ -647,6 +655,7 @@ public class MessageSend {
                     error.getErrorNumber(),
                     error.getExtraInformation());
 
+            msg = securityManager.check(msg);
             endpoint.sendMessage(msg);
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
@@ -659,6 +668,10 @@ public class MessageSend {
         } catch (RuntimeException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "(3) Error occurred while trying to return error to consumer: "
+                    + destination, ex);
+        } catch (MALCheckErrorException ex) {
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                    "(4) Error occurred while trying to return error to consumer: "
                     + destination, ex);
         }
 
