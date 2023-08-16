@@ -7,7 +7,6 @@ variables:
 jobs:
 
   get-date:
-    runs-on: ubuntu-latest    
     script:
       - echo "$(/bin/date -u "+%Y-week-%U")" > $DATE_FILE
     artifacts:
