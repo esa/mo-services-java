@@ -3,26 +3,16 @@ on: [push]
 
 jobs:
 
-  get-date:
-    steps:
-      - name: Set Date
-        id: set-date
-        run: echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
-        outputs:
-          date: ${{ steps.set-date.outputs.date }}
-
   build-jdk8:
-    needs: get-date
     runs-on: ubuntu-latest
     env:
       DATE_FILE: ./date.txt
     steps:
-      #- name: Get Date
-      #  id: get-date
-      #  run: |
-      #    echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
-      #  shell: bash
-      - uses: actions/download-artifact@v2
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+        shell: bash
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
@@ -34,10 +24,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ needs.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
 
   build-jdk11:
-    needs: get-date
     runs-on: ubuntu-latest
     steps:
       - name: Get Date
@@ -59,7 +48,6 @@ jobs:
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
 
   build-jdk17:
-    needs: get-date
     runs-on: ubuntu-latest
     steps:
       - name: Get Date
