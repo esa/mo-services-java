@@ -1,13 +1,12 @@
 name: Testbeds
 on: [push]
 
-variables:
-  DATE_FILE: ./date.txt
-
 jobs:
 
   get-date:
     runs-on: ubuntu-latest
+    env:
+      DATE_FILE: ./date.txt
     steps:
       - name: Set Date
         run: |
@@ -21,6 +20,8 @@ jobs:
   build-jdk8:
     needs: get-date
     runs-on: ubuntu-latest
+    env:
+      DATE_FILE: ./date.txt
     steps:
       #- name: Get Date
       #  id: get-date
