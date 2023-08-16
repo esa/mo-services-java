@@ -7,7 +7,6 @@ variables:
 jobs:
 
   get-date:
-
     runs-on: ubuntu-latest
     steps:
       - name: Set Date
@@ -29,11 +28,11 @@ jobs:
       #    echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
       #  shell: bash
       - uses: actions/checkout@v3
-      - name: Run Maven install
-        uses: actions/setup-java@v3
+      - uses: actions/setup-java@v3
         with:
           java-version: '8'
           distribution: 'adopt'
+      - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
         uses: actions/download-artifact@v2
