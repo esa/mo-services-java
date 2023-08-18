@@ -1399,31 +1399,40 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     @Override
     public LongList store(Boolean setInstId, ObjectType objectType, IdentifierList domain,
-            ArchiveDetailsList archiveDetailsList, ElementList elementList, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            ArchiveDetailsList archiveDetailsList, ElementList elementList,
+            MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":Store " + " ObjectType" + ":" + objectType + ":archiveDetails:" + archiveDetailsList);
         LongList instIds = new LongList();
         LongList retVal = null;
 
         try {
             checkStoreValidity(setInstId, objectType, domain, archiveDetailsList, elementList);
+            ArchiveDetailsList newArcDetails = new ArchiveDetailsList();
 
             for (int i = 0; i < archiveDetailsList.size(); i++) {
                 if (archiveDetailsList.get(i).getInstId() == 0) {
-                    archiveDetailsList.get(i).setInstId((++lastInstanceId));
+                    ArchiveDetails newDetails = new ArchiveDetails((++lastInstanceId),
+                            archiveDetailsList.get(i).getDetails(),
+                            archiveDetailsList.get(i).getNetwork(),
+                            archiveDetailsList.get(i).getTimestamp(),
+                            archiveDetailsList.get(i).getProvider());
+
+                    newArcDetails.add(newDetails);
                     instIds.add(new Long(lastInstanceId));
                 } else {
                     instIds.add(archiveDetailsList.get(i).getInstId());
                     if (archiveDetailsList.get(i).getInstId() > lastInstanceId) {
                         lastInstanceId = archiveDetailsList.get(i).getInstId();
                     }
-                }
-                if (elementList != null) {
-                    archive.add(objectType, domain, archiveDetailsList.get(i), elementList.get(i));
-                } else {
-                    archive.add(objectType, domain, archiveDetailsList.get(i), null);
+                    newArcDetails.add(archiveDetailsList.get(i));
                 }
             }
+
+            for (int i = 0; i < newArcDetails.size(); i++) {
+                Object element = (elementList != null) ? elementList.get(i) : null;
+                archive.add(objectType, domain, newArcDetails.get(i), element);
+            }
+
         } catch (MALInteractionException malEx) {
             throw malEx;
         } catch (Exception ex) {
