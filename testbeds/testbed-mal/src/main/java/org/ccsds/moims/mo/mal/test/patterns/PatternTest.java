@@ -276,6 +276,14 @@ public class PatternTest {
     }
 
     private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
+        return swapInteractionStage(expectedFinalHeader, interactionStage, expectedFinalHeader.getIsErrorMessage());
+    }
+
+    private MALMessageHeader swapIsError(MALMessageHeader expectedFinalHeader, Boolean isError) {
+        return swapInteractionStage(expectedFinalHeader, expectedFinalHeader.getInteractionStage(), isError);
+    }
+
+    private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage, Boolean isError) {
         return new MALMessageHeader(
                 expectedFinalHeader.getFrom(),
                 expectedFinalHeader.getAuthenticationId(),
@@ -288,21 +296,22 @@ public class PatternTest {
                 expectedFinalHeader.getService(),
                 expectedFinalHeader.getOperation(),
                 expectedFinalHeader.getServiceVersion(),
-                expectedFinalHeader.getIsErrorMessage(),
+                isError,
                 expectedFinalHeader.getSupplements());
     }
 
     private boolean addSubmitReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
         MALMessageHeader msgHeaderFinal = null;
+        Boolean isError = expectedFinalHeader.getIsErrorMessage();
 
         if ((1 == procedureId) || (3 == procedureId)) {
             msgHeaderFinal = monitor.submitAckReceivedMsgHeader;
         } else if ((2 == procedureId) || (4 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            isError = Boolean.TRUE;
             msgHeaderFinal = monitor.submitErrorReceivedMsgHeader;
         }
 
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALSubmitOperation.SUBMIT_ACK_STAGE);
+        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALSubmitOperation.SUBMIT_ACK_STAGE, isError);
         AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
 
         LoggingBase.logMessage("PatternTest.testSubmit(" + msgHeaderFinal + ")");
@@ -326,15 +335,16 @@ public class PatternTest {
 
     private boolean addRequestReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
         MALMessageHeader msgHeaderFinal = null;
+        Boolean isError = expectedFinalHeader.getIsErrorMessage();
 
         if ((1 == procedureId) || (3 == procedureId)) {
             msgHeaderFinal = monitor.requestResponseReceivedMsgHeader;
         } else if ((2 == procedureId) || (4 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            isError = Boolean.TRUE;
             msgHeaderFinal = monitor.requestErrorReceivedMsgHeader;
         }
 
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALRequestOperation.REQUEST_RESPONSE_STAGE);
+        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALRequestOperation.REQUEST_RESPONSE_STAGE, isError);
         AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
 
         LoggingBase.logMessage("PatternTest.testRequest(" + msgHeaderFinal + ")");
@@ -358,24 +368,21 @@ public class PatternTest {
 
     private boolean addInvokeReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
         expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_ACK_STAGE);
-
         MALMessageHeader msgHeaderAck;
-        MALMessageHeader msgHeaderFinal;
 
         if ((3 == procedureId) || (6 == procedureId)) {
             expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
         } else if (7 == procedureId) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
-            expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
+            expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE, Boolean.TRUE);
         } else {
             msgHeaderAck = monitor.invokeAckReceivedMsgHeader;
         }
 
         AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader);
-
         expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
+        MALMessageHeader msgHeaderFinal;
 
         if ((2 == procedureId) || (5 == procedureId)) {
             expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
