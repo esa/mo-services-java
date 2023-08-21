@@ -266,9 +266,7 @@ public class GENEndpoint implements MALEndpoint {
         } else {
             GENTransport.LOGGER.log(Level.WARNING,
                     "GENEndpoint ({0}) Discarding message active({1}) listener({2}) {3}",
-                    new Object[]{
-                        localName, active, messageListener, msg.toString()
-                    });
+                    new Object[]{localName, active, messageListener, msg.toString()});
         }
     }
 
@@ -284,9 +282,7 @@ public class GENEndpoint implements MALEndpoint {
         } else {
             GENTransport.LOGGER.log(Level.WARNING,
                     "GENEndpoint ({0}) Discarding messages active({1}) listener({2})",
-                    new Object[]{
-                        localName, active, messageListener
-                    });
+                    new Object[]{localName, active, messageListener});
         }
     }
 
@@ -305,8 +301,7 @@ public class GENEndpoint implements MALEndpoint {
      * @throws MALTransmitErrorException On a transmit error.
      */
     protected void internalSendMessage(final Object multiSendHandle,
-            final boolean lastForHandle,
-            final GENMessage msg) throws MALTransmitErrorException {
+            final boolean lastForHandle, final GENMessage msg) throws MALTransmitErrorException {
         transport.sendMessage(multiSendHandle, lastForHandle, msg);
     }
 
