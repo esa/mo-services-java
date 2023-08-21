@@ -38,9 +38,6 @@ public class MALService {
     public static final UShort NULL_SERVICE_NUMBER = new UShort(0);
 
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
-    private final Map<String, MALOperation> operationsByName = new HashMap<>();
-    private final Map<Integer, ArrayList<MALOperation>> operationsBySet = new HashMap<>();
-
     private final ServiceKey serviceKey;
     private final Identifier serviceName;
 
@@ -106,17 +103,7 @@ public class MALService {
         }
 
         operation.setService(this);
-        operationsByName.put(operation.getName().getValue(), operation);
         operationsByNumber.put(operation.getNumber().getValue(), operation);
-
-        ArrayList<MALOperation> opsSet = operationsBySet.get(operation.getCapabilitySet().getValue());
-
-        if (opsSet == null) {
-            opsSet = new ArrayList<>();
-        }
-
-        opsSet.add(operation);
-        operationsBySet.put(operation.getCapabilitySet().getValue(), opsSet);
     }
 
     public Identifier getName() {
@@ -167,26 +154,5 @@ public class MALService {
      */
     public MALOperation getOperationByNumber(final UShort opNumber) {
         return (MALOperation) operationsByNumber.get(opNumber.getValue());
-    }
-
-    /**
-     * Return an operation identified by its name.
-     *
-     * @param opName The name of the operation.
-     * @return The found operation or null.
-     */
-    public MALOperation getOperationByName(final Identifier opName) {
-        return (MALOperation) operationsByName.get(opName.getValue());
-    }
-
-    /**
-     * Returns a set of operations by their capability set.
-     *
-     * @param capabilitySet The capability set.
-     * @return The set of operations or an empty array if not found.
-     */
-    public ArrayList<MALOperation> getOperationsByCapabilitySet(final int capabilitySet) {
-        final ArrayList<MALOperation> operations = operationsBySet.get(capabilitySet);
-        return (operations == null) ? new ArrayList<>() : operations;
     }
 }
