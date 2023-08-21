@@ -319,27 +319,26 @@ public class JavaServiceInfo {
                     + " type specifications in the same message! This is not supported.");
         }
 
-        //String shortFormType = (needXmlSchema ? StdStrings.STRING : StdStrings.LONG);
-        //String arrayArgs = StubUtils.concatenateStringArguments(false, typeArgs.toArray(new String[0]));
-        String arrayArgs = this.generateOperationFieldsArray(ti);
-
-        String initNewLine = "\n            ";
-        String newLine = "\n                    ";
+        String new_line_0 = "\n            ";
+        String new_line_1 = "\n                ";
+        String new_line_2 = "\n                    ";
+        String new_line_3 = "\n                        ";
 
         if (isPubSub) {
+            String arrayArgs = this.generateOperationFieldsArray(ti, new_line_1);
             return "new " + OP_FIELD + "[] {" + arrayArgs + "}";
-        } else {
-            return initNewLine + "new org.ccsds.moims.mo.mal.MALOperationStage("
-                    + newLine
-                    + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + "),"
-                    + newLine
-                    + "new " + OP_FIELD + "[] {" + arrayArgs + "})";
         }
+
+        String arrayArgs = this.generateOperationFieldsArray(ti, new_line_3);
+        return new_line_0 + "new org.ccsds.moims.mo.mal.MALOperationStage("
+                + new_line_2
+                + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + "),"
+                + "\n                    "
+                + "new " + OP_FIELD + "[] {" + arrayArgs + "})";
     }
 
-    private String generateOperationFieldsArray(List<TypeInfo> ti) {
+    private String generateOperationFieldsArray(List<TypeInfo> ti, String newLine) {
         StringBuilder buffer = new StringBuilder();
-        String newLine = "\n                        ";
 
         for (int i = 0; i < ti.size(); i++) {
             TypeInfo typeInfo = ti.get(i);
@@ -370,5 +369,4 @@ public class JavaServiceInfo {
 
         return buffer.toString();
     }
-
 }
