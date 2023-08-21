@@ -471,11 +471,15 @@ public class MessageSend {
                     msgAddress.getAuthenticationId(),
                     srcHdr.getFromURI(),
                     Time.now(),
+                    operation.getInteractionType(),
+                    rspnInteractionStage,
                     srcHdr.getTransactionId(),
+                    operation.getService().getAreaNumber(),
+                    operation.getService().getServiceNumber(),
+                    operation.getNumber(),
+                    operation.getService().getServiceVersion(),
                     false,
                     srcHdr.getSupplements(),
-                    operation,
-                    rspnInteractionStage,
                     qosProperties,
                     rspn);
 
@@ -679,21 +683,25 @@ public class MessageSend {
     }
 
     private static MALMessage createMessage(final MessageDetails details,
-            final MALOperation op,
+            final MALOperation operation,
             final Long transactionId,
             final UOctet interactionStage,
             final Object... body) throws MALException {
-        URI to = op.isPubSub() ? details.brokerUri : details.uriTo;
+        URI to = operation.isPubSub() ? details.brokerUri : details.uriTo;
 
         return details.endpoint.createMessage(
                 details.authenticationId,
                 to,
                 Time.now(),
+                operation.getInteractionType(),
+                interactionStage,
                 transactionId,
+                operation.getService().getAreaNumber(),
+                operation.getService().getServiceNumber(),
+                operation.getNumber(),
+                operation.getService().getServiceVersion(),
                 Boolean.FALSE,
                 new NamedValueList(),
-                op,
-                interactionStage,
                 details.qosProps,
                 body);
     }

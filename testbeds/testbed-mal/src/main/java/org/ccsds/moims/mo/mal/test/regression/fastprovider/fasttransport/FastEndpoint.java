@@ -93,34 +93,6 @@ public class FastEndpoint implements MALEndpoint {
     }
 
     @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final Long transactionId,
-            final Boolean isErrorMessage,
-            final NamedValueList supplements,
-            final MALOperation op,
-            final UOctet interactionStage,
-            final Map qosProperties,
-            final Object... body) throws IllegalArgumentException, MALException {
-        return new FastMessage(createMessageHeader(getURI(),
-                authenticationId,
-                uriTo,
-                timestamp,
-                op.getInteractionType(),
-                interactionStage,
-                transactionId,
-                op.getService().getAreaNumber(),
-                op.getService().getServiceNumber(),
-                op.getNumber(),
-                op.getService().getServiceVersion(),
-                isErrorMessage,
-                supplements),
-                qosProperties,
-                body);
-    }
-
-    @Override
     public void sendMessage(MALMessage malm) throws IllegalArgumentException, MALTransmitErrorException, MALException {
         transport.internalSendMessage(malm);
     }

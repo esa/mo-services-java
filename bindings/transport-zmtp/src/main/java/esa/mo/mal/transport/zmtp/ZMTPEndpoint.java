@@ -140,42 +140,6 @@ public class ZMTPEndpoint extends GENEndpoint {
     }
 
     @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final Long transactionId,
-            final Boolean isErrorMessage,
-            final NamedValueList supplements,
-            final MALOperation op,
-            final UOctet interactionStage,
-            final Map qosProperties,
-            final Object... body) throws MALException {
-        try {
-            ZMTPMessageHeader hdr = (ZMTPMessageHeader) createMessageHeader(
-                    getURI(),
-                    authenticationId,
-                    uriTo,
-                    timestamp,
-                    op.getInteractionType(),
-                    interactionStage,
-                    transactionId,
-                    op.getService().getAreaNumber(),
-                    op.getService().getServiceNumber(),
-                    op.getNumber(),
-                    op.getService().getServiceVersion(),
-                    isErrorMessage,
-                    supplements,
-                    qosProperties);
-
-            return new ZMTPMessage(((ZMTPTransport) transport).getHeaderStreamFactory(),
-                    wrapBodyParts, hdr, qosProperties, op,
-                    transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
-    }
-
-    @Override
     public MALMessageHeader createMessageHeader(URI uriFrom,
             Blob authenticationId,
             URI uriTo,

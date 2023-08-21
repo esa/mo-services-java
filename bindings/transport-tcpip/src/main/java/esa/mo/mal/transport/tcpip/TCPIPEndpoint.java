@@ -80,29 +80,6 @@ public class TCPIPEndpoint extends GENEndpoint {
         return null;
     }
 
-    @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo, final Time timestamp, final Long transactionId,
-            final Boolean isErrorMessage, final NamedValueList supplements,
-            final MALOperation op, final UOctet interactionStage,
-            final Map qosProperties, final Object... body) throws MALException {
-        TCPIPMessageHeader hdr = (TCPIPMessageHeader) createMessageHeader(
-                getURI(), authenticationId,
-                uriTo, timestamp, op.getInteractionType(),
-                interactionStage, transactionId,
-                op.getService().getAreaNumber(),
-                op.getService().getServiceNumber(),
-                op.getNumber(),
-                op.getService().getServiceVersion(),
-                isErrorMessage, supplements, qosProperties);
-        try {
-            return new TCPIPMessage(false, hdr, qosProperties,
-                    op, transport.getStreamFactory(), body);
-        } catch (MALInteractionException e) {
-            throw new MALException("Error creating message", e);
-        }
-    }
-
     /**
      * Create a message header with all header properties set. The serviceFrom
      * and serviceTo parameters will be explicitly set in the header, so that

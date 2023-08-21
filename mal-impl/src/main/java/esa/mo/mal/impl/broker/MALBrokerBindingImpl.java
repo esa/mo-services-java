@@ -143,7 +143,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     }
 
     @Override
-    public MALMessage sendNotify(final MALOperation op,
+    public MALMessage sendNotify(final MALOperation operation,
             final URI subscriber,
             final Long transactionId,
             final IdentifierList domainId,
@@ -169,11 +169,15 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 subscriber,
                 Time.now(),
+                operation.getInteractionType(),
+                MALPubSubOperation.NOTIFY_STAGE,
                 transactionId,
+                operation.getService().getAreaNumber(),
+                operation.getService().getServiceNumber(),
+                operation.getNumber(),
+                operation.getService().getServiceVersion(),
                 Boolean.FALSE,
                 supplements,
-                op,
-                MALPubSubOperation.NOTIFY_STAGE,
                 notifyQosProps,
                 body);
 
@@ -220,7 +224,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     }
 
     @Override
-    public MALMessage sendNotifyError(final MALOperation op,
+    public MALMessage sendNotifyError(final MALOperation operation,
             final URI subscriber,
             final Long transactionId,
             final IdentifierList domainId,
@@ -237,11 +241,15 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 authenticationId,
                 subscriber,
                 Time.now(),
+                operation.getInteractionType(),
+                MALPubSubOperation.NOTIFY_STAGE,
                 transactionId,
+                operation.getService().getAreaNumber(),
+                operation.getService().getServiceNumber(),
+                operation.getNumber(),
+                operation.getService().getServiceVersion(),
                 Boolean.TRUE,
                 supplements,
-                op,
-                MALPubSubOperation.NOTIFY_STAGE,
                 notifyQosProps,
                 error.getErrorNumber(),
                 error.getExtraInformation());
@@ -290,7 +298,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     }
 
     @Override
-    public MALMessage sendPublishError(final MALOperation op,
+    public MALMessage sendPublishError(final MALOperation operation,
             final URI publisher,
             final Long transactionId,
             final IdentifierList domainId,
@@ -306,11 +314,15 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
         final MALMessage msg = endpoint.createMessage(authenticationId,
                 publisher,
                 Time.now(),
+                operation.getInteractionType(),
+                MALPubSubOperation.PUBLISH_STAGE,
                 transactionId,
+                operation.getService().getAreaNumber(),
+                operation.getService().getServiceNumber(),
+                operation.getNumber(),
+                operation.getService().getServiceVersion(),
                 Boolean.TRUE,
                 supplements,
-                op,
-                MALPubSubOperation.PUBLISH_STAGE,
                 qosProps,
                 error.getErrorNumber(), error.getExtraInformation());
 
