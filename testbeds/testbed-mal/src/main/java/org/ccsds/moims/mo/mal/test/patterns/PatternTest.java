@@ -371,8 +371,8 @@ public class PatternTest {
         MALMessageHeader msgHeaderAck;
 
         if ((3 == procedureId) || (6 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
+            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
         } else if (7 == procedureId) {
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
             expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE, Boolean.TRUE);
@@ -385,7 +385,7 @@ public class PatternTest {
         MALMessageHeader msgHeaderFinal;
 
         if ((2 == procedureId) || (5 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if ((1 == procedureId) || (4 == procedureId)) {
@@ -426,10 +426,10 @@ public class PatternTest {
         MALMessageHeader msgHeaderFinal = null;
 
         if ((3 == procedureId) || (9 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
         } else if ((10 == procedureId) || (11 == procedureId) || (12 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
             if (12 == procedureId) {
                 expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
@@ -456,7 +456,7 @@ public class PatternTest {
         }
 
         if ((5 == procedureId) || (13 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressUpdateErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         }
@@ -464,7 +464,7 @@ public class PatternTest {
         expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
 
         if ((2 == procedureId) || (6 == procedureId) || (8 == procedureId) || (14 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if ((1 == procedureId) || (4 == procedureId) || (7 == procedureId)) {
