@@ -22,7 +22,6 @@ package org.ccsds.moims.mo.mal.transport;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**

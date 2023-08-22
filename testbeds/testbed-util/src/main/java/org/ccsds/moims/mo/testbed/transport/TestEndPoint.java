@@ -36,7 +36,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;

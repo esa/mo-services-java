@@ -42,47 +42,55 @@ public class FastTransport implements MALTransport {
     protected static final Random RANDOM_NAME = new Random();
     protected Map<String, FastEndpoint> endpointMap = new HashMap<>();
 
+    @Override
     public MALEndpoint createEndpoint(String localName, Map map) throws MALException {
         FastEndpoint ep = new FastEndpoint(this, getLocalName(localName, map));
         endpointMap.put(ep.getURI().getValue(), ep);
-
         return ep;
     }
 
+    @Override
     public MALEndpoint getEndpoint(String string) throws IllegalArgumentException, MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public MALEndpoint getEndpoint(URI uri) throws IllegalArgumentException, MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void deleteEndpoint(String string) throws IllegalArgumentException, MALException {
     }
 
+    @Override
     public MALBrokerBinding createBroker(String string, Blob blob, QoSLevel[] qsls,
             UInteger ui, Map map) throws IllegalArgumentException, MALException {
         return null;
     }
 
+    @Override
     public MALBrokerBinding createBroker(MALEndpoint male, Blob blob, QoSLevel[] qsls,
             UInteger ui, Map map) throws IllegalArgumentException, MALException {
         return null;
     }
 
+    @Override
     public boolean isSupportedQoSLevel(QoSLevel qsl) {
         return true;
     }
 
+    @Override
     public boolean isSupportedInteractionType(InteractionType it) {
         return !InteractionType.PUBSUB.equals(it);
     }
 
+    @Override
     public void close() throws MALException {
     }
 
     protected void internalSendMessage(MALMessage malm) {
-        endpointMap.get(malm.getHeader().getToURI().getValue()).internalSendMessage(malm);
+        endpointMap.get(malm.getHeader().getTo().getValue()).internalSendMessage(malm);
     }
 
     protected String getLocalName(String localName,

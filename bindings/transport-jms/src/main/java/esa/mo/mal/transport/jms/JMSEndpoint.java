@@ -227,7 +227,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             MALInteractionException {
         // get components parts of messsage
         Subscription subscription = (Subscription) msg.getBody().getBodyElement(0, new Subscription());
-        final String strURL = msg.getHeader().getToURI().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -313,7 +313,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             throws MALException, MALInteractionException {
         // get components parts of messsage
         IdentifierList subList = (IdentifierList) msg.getBody().getBodyElement(0, new IdentifierList());
-        final String strURL = msg.getHeader().getToURI().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 

@@ -362,16 +362,20 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
 
     public static class ActivityTestPublisher implements MALPublishInteractionListener {
 
+        @Override
         public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
         }
 
+        @Override
         public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
         }
 
+        @Override
         public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
             LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
         }
 
+        @Override
         public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
         }
     }

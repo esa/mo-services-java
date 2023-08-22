@@ -25,7 +25,6 @@ import esa.mo.mal.transport.gen.GENTransport;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;

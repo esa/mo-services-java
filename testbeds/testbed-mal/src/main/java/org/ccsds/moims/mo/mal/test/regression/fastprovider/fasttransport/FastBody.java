@@ -36,18 +36,22 @@ public class FastBody implements MALMessageBody {
         this.body = body;
     }
 
+    @Override
     public int getElementCount() {
         return body.length;
     }
 
+    @Override
     public Object getBodyElement(int i, Object o) throws MALException {
         return body[i];
     }
 
+    @Override
     public MALEncodedElement getEncodedBodyElement(int i) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public MALEncodedBody getEncodedBody() throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
