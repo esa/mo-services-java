@@ -84,7 +84,8 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         return bodyLength;
     }
 
-    public void setBodyLength(int bodyLength) {
+    @Deprecated
+    private void setBodyLength(int bodyLength) {
         this.bodyLength = bodyLength;
     }
 
@@ -92,32 +93,31 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         return serviceFrom;
     }
 
-    public void setServiceFrom(String serviceFrom) {
-        this.serviceFrom = serviceFrom;
-    }
-
     public String getServiceTo() {
         return serviceTo;
-    }
-
-    public void setServiceTo(String serviceTo) {
-        this.serviceTo = serviceTo;
     }
 
     public byte[] getRemainingEncodedData() {
         return remainingEncodedData;
     }
 
-    public void setRemainingEncodedData(byte[] remainingEncodedData) {
-        this.remainingEncodedData = remainingEncodedData;
-    }
-
     public short getEncodingId() {
         return encodingId;
     }
 
-    public void setEncodingId(short encodingId) {
+    @Deprecated
+    private void setEncodingId(short encodingId) {
         this.encodingId = encodingId;
+    }
+
+    @Deprecated
+    private void setInteractionType(short sduType) {
+        interactionType = getInteractionType(sduType);
+    }
+
+    @Deprecated
+    private void setInteractionStage(short sduType) {
+        interactionStage = getInteractionStage(sduType);
     }
 
     @Override
@@ -462,14 +462,6 @@ public class TCPIPMessageHeader extends MALMessageHeader {
                 + "received during decoding of {0}", sduType);
 
         return null;
-    }
-
-    public void setInteractionType(short sduType) {
-        interactionType = getInteractionType(sduType);
-    }
-
-    public void setInteractionStage(short sduType) {
-        interactionStage = getInteractionStage(sduType);
     }
 
     @Override

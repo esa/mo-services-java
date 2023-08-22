@@ -150,7 +150,7 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
                         details.getMessage().getQoSProperties());
             }
 
-            if (details.isNeedToReturnAnException()) {
+            if (details.isError()) {
                 throw new MALInteractionException(((MALErrorBody) details.getMessage().getBody()).getError());
             }
         } catch (MALException ex) {

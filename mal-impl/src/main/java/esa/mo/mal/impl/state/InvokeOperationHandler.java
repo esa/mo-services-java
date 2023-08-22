@@ -125,7 +125,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
                         details.getMessage().getQoSProperties());
             }
 
-            if (details.isNeedToReturnAnException()) {
+            if (details.isError()) {
                 MALErrorBody errorBody = (MALErrorBody) details.getMessage().getBody();
                 throw new MALInteractionException(errorBody.getError());
             }

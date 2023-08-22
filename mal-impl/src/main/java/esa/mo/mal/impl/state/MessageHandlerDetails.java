@@ -32,7 +32,7 @@ public final class MessageHandlerDetails {
 
     private final boolean ackStage;
     private final MALMessage message;
-    private final boolean needToReturnAnException;
+    private final boolean isError;
 
     /**
      * Creates a Message Handler for a non-error message.
@@ -43,7 +43,7 @@ public final class MessageHandlerDetails {
     public MessageHandlerDetails(boolean isAckStage, MALMessage msg) {
         this.ackStage = isAckStage;
         this.message = msg;
-        this.needToReturnAnException = false;
+        this.isError = false;
     }
 
     /**
@@ -60,7 +60,7 @@ public final class MessageHandlerDetails {
                 msg.getHeader(),
                 new DummyErrorBody(new MOErrorException(errNum, null)),
                 msg.getQoSProperties());
-        this.needToReturnAnException = true;
+        this.isError = true;
     }
 
     public boolean isAckStage() {
@@ -71,7 +71,7 @@ public final class MessageHandlerDetails {
         return message;
     }
 
-    public boolean isNeedToReturnAnException() {
-        return needToReturnAnException;
+    public boolean isError() {
+        return isError;
     }
 }
