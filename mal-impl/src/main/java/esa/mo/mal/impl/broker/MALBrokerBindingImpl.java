@@ -50,7 +50,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
             final Map qosProperties) throws MALException {
-        super(parent,
+        super(
                 impl,
                 localName,
                 protocol,
@@ -76,7 +76,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
             final Map qosProperties) throws MALException {
-        super(parent,
+        super(
                 impl,
                 endPoint,
                 null,

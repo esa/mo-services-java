@@ -43,8 +43,6 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
      * @param impl MAL implementation.
      */
     public MALConsumerManagerImpl(final MALContextImpl impl) {
-        super(impl);
-
         this.impl = impl;
     }
 

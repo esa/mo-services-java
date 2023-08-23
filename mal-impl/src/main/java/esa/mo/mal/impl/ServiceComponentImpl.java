@@ -67,7 +67,7 @@ public abstract class ServiceComponentImpl extends MALClose {
      * @param handler Service interaction handler.
      * @throws MALException on error.
      */
-    public ServiceComponentImpl(final MALClose parent,
+    public ServiceComponentImpl(
             final MALContextImpl impl,
             final String localName,
             final String protocol,
@@ -77,8 +77,6 @@ public abstract class ServiceComponentImpl extends MALClose {
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final MALInteractionHandler handler) throws MALException {
-        super(parent);
-
         this.sendHandler = impl.getSendingInterface();
         this.receiveHandler = impl.getReceivingInterface();
         this.handler = handler;
@@ -115,7 +113,7 @@ public abstract class ServiceComponentImpl extends MALClose {
      * @param handler Service interaction handler.
      * @throws MALException on error.
      */
-    public ServiceComponentImpl(final MALClose parent,
+    public ServiceComponentImpl(
             final MALContextImpl impl,
             final MALEndpoint endPoint,
             final MALService service,
@@ -124,8 +122,6 @@ public abstract class ServiceComponentImpl extends MALClose {
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final MALInteractionHandler handler) throws MALException {
-        super(parent);
-
         this.sendHandler = impl.getSendingInterface();
         this.receiveHandler = impl.getReceivingInterface();
         this.handler = handler;

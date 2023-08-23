@@ -61,7 +61,6 @@ public class MALContextImpl extends MALClose implements MALContext {
      */
     public MALContextImpl(final MALAccessControlFactory securityFactory, 
             final Map properties) throws MALException {
-        super(null);
         initialProperties = properties;
 
         if (securityFactory != null) {

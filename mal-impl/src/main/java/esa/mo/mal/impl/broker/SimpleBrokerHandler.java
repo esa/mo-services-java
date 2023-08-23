@@ -21,7 +21,6 @@
 package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.pubsub.SubscriptionSource;
-import esa.mo.mal.impl.util.MALClose;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -32,11 +31,9 @@ public class SimpleBrokerHandler extends MALBrokerHandlerImpl {
 
     /**
      * Constructor
-     *
-     * @param parent The parent of this class.
      */
-    public SimpleBrokerHandler(MALClose parent) {
-        super(parent);
+    public SimpleBrokerHandler() {
+        super();
     }
 
     @Override

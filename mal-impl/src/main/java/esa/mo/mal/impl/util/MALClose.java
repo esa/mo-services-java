@@ -33,14 +33,6 @@ import org.ccsds.moims.mo.mal.MALException;
 public abstract class MALClose {
 
     /**
-     * Initialises the parent field of the closing class.
-     *
-     * @param parent The parent object of this class, may be null if no parent.
-     */
-    public MALClose(final MALClose parent) {
-    }
-
-    /**
      * Closes this class, informs all children that we are being closed and they
      * should also, and then informs our parent (if we have one) that we are
      * closing.

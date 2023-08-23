@@ -59,7 +59,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final Map defaultQoSProperties,
             final Boolean isPublisher,
             final URI sharedBrokerUri) throws MALException {
-        super(parent,
+        super(
                 impl,
                 localName,
                 protocol,
@@ -108,7 +108,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final Map defaultQoSProperties,
             final Boolean isPublisher,
             final URI sharedBrokerUri) throws MALException {
-        super(parent,
+        super(
                 impl,
                 endPoint,
                 service,

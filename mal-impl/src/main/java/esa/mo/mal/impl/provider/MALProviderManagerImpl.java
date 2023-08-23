@@ -44,7 +44,6 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
      * @param impl The MAL implementation.
      */
     public MALProviderManagerImpl(final MALContextImpl impl) {
-        super(impl);
         this.impl = impl;
     }
 

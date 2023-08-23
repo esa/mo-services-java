@@ -52,21 +52,19 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
      */
     public MALBrokerManagerImpl(final MALContextImpl impl,
             final Map<String, MALBrokerBindingImpl> brokerBindingMap) {
-        super(impl);
-
         this.impl = impl;
         this.brokerBindingMap = brokerBindingMap;
     }
 
     @Override
     public synchronized MALBroker createBroker() throws MALException {
-        return new MALBrokerImpl(this);
+        return new MALBrokerImpl();
     }
 
     @Override
     public MALBroker createBroker(final MALBrokerHandler handler)
             throws IllegalArgumentException, MALException {
-        return new MALBrokerImpl(this, handler);
+        return new MALBrokerImpl(handler);
     }
 
     @Override
@@ -93,7 +91,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
                     qosProperties);
 
             if (null != retVal) {
-                retVal = new MALBrokerBindingTransportWrapper(tparent, retVal);
+                retVal = new MALBrokerBindingTransportWrapper(retVal);
             }
         }
 
@@ -137,7 +135,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
                     qosProperties);
 
             if (null != retVal) {
-                retVal = new MALBrokerBindingTransportWrapper(tparent, retVal);
+                retVal = new MALBrokerBindingTransportWrapper(retVal);
             }
         }
 

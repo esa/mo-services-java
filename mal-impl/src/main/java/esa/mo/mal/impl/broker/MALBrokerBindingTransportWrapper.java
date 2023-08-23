@@ -38,10 +38,7 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
 
     private final MALBrokerBinding transportDelegate;
 
-    MALBrokerBindingTransportWrapper(final MALClose parent,
-            final MALBrokerBinding transportDelegate) throws MALException {
-        super(parent);
-
+    MALBrokerBindingTransportWrapper(final MALBrokerBinding transportDelegate) throws MALException {
         this.transportDelegate = transportDelegate;
     }
 

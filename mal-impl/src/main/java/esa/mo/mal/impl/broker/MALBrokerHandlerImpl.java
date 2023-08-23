@@ -67,11 +67,8 @@ public abstract class MALBrokerHandlerImpl extends MALClose implements MALBroker
 
     /**
      * Constructor.
-     *
-     * @param parent Parent closing class.
      */
-    protected MALBrokerHandlerImpl(MALClose parent) {
-        super(parent);
+    public MALBrokerHandlerImpl() {
     }
 
     @Override

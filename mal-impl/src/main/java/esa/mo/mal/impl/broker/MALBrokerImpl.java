@@ -43,13 +43,11 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
     private final MALBrokerHandler handler;
     private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
 
-    MALBrokerImpl(final MALClose parent) throws MALException {
-        super(parent);
+    MALBrokerImpl() throws MALException {
         this.handler = createBrokerHandler();
     }
 
-    MALBrokerImpl(final MALClose parent, MALBrokerHandler handler) throws MALException {
-        super(parent);
+    MALBrokerImpl(MALBrokerHandler handler) throws MALException {
         this.handler = handler;
     }
 
@@ -106,7 +104,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
         }
 
         if (null == broker) {
-            broker = new SimpleBrokerHandler(this);
+            broker = new SimpleBrokerHandler();
             MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: SimpleBrokerHandler");
         }
 

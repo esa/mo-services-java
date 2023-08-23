@@ -61,8 +61,6 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final QoSLevel qosLevel,
             final Map qosProps,
             final UInteger priority) throws MALException {
-        super(parent);
-
         if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
@@ -103,8 +101,6 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final QoSLevel qosLevel,
             final Map qosProps,
             final UInteger priority) throws MALException {
-        super(parent);
-
         if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
