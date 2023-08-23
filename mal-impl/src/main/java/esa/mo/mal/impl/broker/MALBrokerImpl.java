@@ -45,7 +45,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
 
     MALBrokerImpl(final MALClose parent) throws MALException {
         super(parent);
-        this.handler = (MALBrokerHandlerImpl) super.addChild(createBrokerHandler());
+        this.handler = createBrokerHandler();
     }
 
     MALBrokerImpl(final MALClose parent, MALBrokerHandler handler) throws MALException {
@@ -111,5 +111,15 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
         }
 
         return broker;
+    }
+
+    @Override
+    public void close() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void thisObjectClose() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

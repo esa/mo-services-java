@@ -76,17 +76,17 @@ public class MALContextImpl extends MALClose implements MALContext {
 
     @Override
     public MALConsumerManager createConsumerManager() throws MALException {
-        return (MALConsumerManager) addChild(new MALConsumerManagerImpl(this));
+        return new MALConsumerManagerImpl(this);
     }
 
     @Override
     public MALProviderManager createProviderManager() throws MALException {
-        return (MALProviderManager) addChild(new MALProviderManagerImpl(this));
+        return new MALProviderManagerImpl(this);
     }
 
     @Override
     public MALBrokerManager createBrokerManager() throws MALException {
-        return (MALBrokerManager) addChild(new MALBrokerManagerImpl(this, brokerBindingMap));
+        return new MALBrokerManagerImpl(this, brokerBindingMap);
     }
 
     @Override
@@ -106,7 +106,6 @@ public class MALContextImpl extends MALClose implements MALContext {
 
     @Override
     public void close() throws MALException {
-        super.close();
         esa.mo.mal.impl.transport.TransportSingleton.close();
     }
 
@@ -144,5 +143,9 @@ public class MALContextImpl extends MALClose implements MALContext {
      */
     public MALAccessControl getSecurityManager() {
         return securityManager;
+    }
+
+    @Override
+    public void thisObjectClose() throws MALException {
     }
 }

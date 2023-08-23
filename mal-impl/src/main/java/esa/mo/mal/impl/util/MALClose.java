@@ -20,20 +20,17 @@
  */
 package esa.mo.mal.impl.util;
 
-import java.util.LinkedList;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Base class that tracks children classes and its parent class and supports the
  * concept of being closed. Closing this class informs the parent we are being
- * closed and also all children that they should close also.
+ * closed and also all children that they should close also. Deprecated because
+ * this is totally useless code.
  *
  */
-public class MALClose {
-
-    private final List<MALClose> children = new LinkedList<>();
-    private final MALClose parent;
+@Deprecated
+public abstract class MALClose {
 
     /**
      * Initialises the parent field of the closing class.
@@ -41,7 +38,6 @@ public class MALClose {
      * @param parent The parent object of this class, may be null if no parent.
      */
     public MALClose(final MALClose parent) {
-        this.parent = parent;
     }
 
     /**
@@ -51,56 +47,7 @@ public class MALClose {
      *
      * @throws MALException If there is a problem with being closed.
      */
-    public void close() throws MALException {
-        synchronized (children) {
-            parentClose();
-
-            if (parent != null) {
-                parent.childClose(this);
-            }
-        }
-    }
-
-    /**
-     * Called by parent to notify its children that we are closing.
-     *
-     * @throws MALException If an error occurs.
-     */
-    protected void parentClose() throws MALException {
-        synchronized (children) {
-            for (MALClose obj : children) {
-                obj.parentClose();
-            }
-
-            children.clear();
-            thisObjectClose();
-        }
-    }
-
-    /**
-     * Removes a child from the list of children.
-     *
-     * @param child The child to remove.
-     */
-    protected void childClose(final MALClose child) {
-        synchronized (children) {
-            children.remove(child);
-        }
-    }
-
-    /**
-     * Add a child to the list of children.
-     *
-     * @param child The child to add.
-     * @return Returns the passed in child.
-     */
-    protected final MALClose addChild(final MALClose child) {
-        synchronized (children) {
-            children.add(child);
-        }
-
-        return child;
-    }
+    public abstract void close() throws MALException;
 
     /**
      * This should be overridden by any implementing class to provide the actual
@@ -109,7 +56,5 @@ public class MALClose {
      * @throws MALException If an error occurs, implementations should throw a
      * MALException.
      */
-    protected void thisObjectClose() throws MALException {
-        // do nothing by default
-    }
+    public abstract void thisObjectClose() throws MALException;
 }

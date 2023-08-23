@@ -62,7 +62,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             final Map qosProps,
             final UInteger priority,
             final NamedValueList supplements) throws MALException {
-        return (MALConsumer) addChild(new MALConsumerImpl(impl,
+        return new MALConsumerImpl(impl,
                 this,
                 localName,
                 uriTo,
@@ -75,7 +75,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
                 sessionName,
                 qosLevel,
                 qosProps,
-                priority));
+                priority);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             final UInteger priority,
             final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
-        return (MALConsumer) addChild(new MALConsumerImpl(impl,
+        return new MALConsumerImpl(impl,
                 this,
                 endPoint,
                 uriTo,
@@ -106,6 +106,16 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
                 sessionName,
                 qosLevel,
                 qosProps,
-                priority));
+                priority);
+    }
+
+    @Override
+    public void close() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void thisObjectClose() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

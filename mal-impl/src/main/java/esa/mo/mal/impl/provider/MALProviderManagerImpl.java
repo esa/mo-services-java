@@ -61,7 +61,7 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
             final Boolean isPublisher,
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
-        return (MALProvider) addChild(new MALProviderImpl(this,
+        return new MALProviderImpl(this,
                 impl,
                 localName,
                 protocol,
@@ -72,7 +72,7 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
                 priorityLevelNumber,
                 defaultQoSProperties,
                 isPublisher,
-                sharedBrokerUri));
+                sharedBrokerUri);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
             final Boolean isPublisher,
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
-        return (MALProvider) addChild(new MALProviderImpl(this,
+        return new MALProviderImpl(this,
                 impl,
                 endPoint,
                 service,
@@ -97,6 +97,16 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
                 priorityLevelNumber,
                 defaultQoSProperties,
                 isPublisher,
-                sharedBrokerUri));
+                sharedBrokerUri);
+    }
+
+    @Override
+    public void close() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void thisObjectClose() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

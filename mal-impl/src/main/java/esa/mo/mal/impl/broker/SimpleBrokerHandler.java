@@ -22,6 +22,7 @@ package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.pubsub.SubscriptionSource;
 import esa.mo.mal.impl.util.MALClose;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -41,5 +42,15 @@ public class SimpleBrokerHandler extends MALBrokerHandlerImpl {
     @Override
     protected SubscriptionSource createEntry(final MALMessageHeader hdr) {
         return new SubscriptionSource(hdr);
+    }
+
+    @Override
+    public void close() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void thisObjectClose() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

@@ -221,15 +221,11 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     @Override
     public void close() throws MALException {
-        super.close();
-
         this.handler.malFinalize(this);
     }
 
     @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
-
+    public void thisObjectClose() throws MALException {
         if (localBrokerBinding != null) {
             localBrokerBinding.close();
         }

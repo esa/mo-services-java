@@ -196,9 +196,7 @@ public abstract class ServiceComponentImpl extends MALClose {
     }
 
     @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
-
+    public void thisObjectClose() throws MALException {
         this.receiveHandler.removeProviderEndpoint(endpoint.getURI().getValue(), service);
         endpoint.stopMessageDelivery();
         endpoint.close();

@@ -258,4 +258,9 @@ public class MALBrokerBindingTransportWrapper extends MALClose implements MALBro
     public MALTransmitErrorListener getTransmitErrorListener() throws MALException {
         return transportDelegate.getTransmitErrorListener();
     }
+
+    @Override
+    public void thisObjectClose() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

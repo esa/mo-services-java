@@ -338,10 +338,13 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
     }
 
     @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
-
+    public void thisObjectClose() throws MALException {
         details.endpoint.stopMessageDelivery();
         details.endpoint.close();
+    }
+
+    @Override
+    public void close() throws MALException {
+        thisObjectClose();
     }
 }
