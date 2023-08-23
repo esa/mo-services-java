@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 /**
  * Implementation of the MALBroker interface.
  */
-public class MALBrokerImpl extends MALClose implements MALBroker {
+public class MALBrokerImpl implements MALBroker, MALCloseable {
 
     /**
      * Logger
@@ -83,7 +83,7 @@ public class MALBrokerImpl extends MALClose implements MALBroker {
         try {
             final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
-            broker = (MALBrokerHandlerImpl) cls.getConstructor(MALClose.class).newInstance(this);
+            broker = (MALBrokerHandlerImpl) cls.getConstructor(MALCloseable.class).newInstance(this);
             MALBrokerImpl.LOGGER.log(Level.FINE, 
                     "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
         } catch (ClassNotFoundException ex) {

@@ -26,7 +26,7 @@ import esa.mo.mal.impl.broker.MALBrokerManagerImpl;
 import esa.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import esa.mo.mal.impl.provider.MALProviderManagerImpl;
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContext;
@@ -42,7 +42,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Implementation of the MALContext.
  */
-public class MALContextImpl extends MALClose implements MALContext {
+public class MALContextImpl implements MALContext, MALCloseable {
 
     private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
     private final InteractionConsumerMap icmap = new InteractionConsumerMap();

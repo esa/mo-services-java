@@ -22,7 +22,7 @@ package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
@@ -39,7 +39,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Implements the MALBrokerManager interface.
  */
-public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
+public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
 
     private final MALContextImpl impl;
     private final Map<String, MALBrokerBindingImpl> brokerBindingMap;

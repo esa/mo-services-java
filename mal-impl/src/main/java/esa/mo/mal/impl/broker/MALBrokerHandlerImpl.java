@@ -25,7 +25,7 @@ import esa.mo.mal.impl.pubsub.NotifyMessageBody;
 import esa.mo.mal.impl.pubsub.SubscriptionSource;
 import esa.mo.mal.impl.pubsub.PublisherSource;
 import esa.mo.mal.impl.pubsub.UpdateKeyValues;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
  * Base implementation of the MALBrokerHandler class that should be extended by
  * real broker implementations.
  */
-public abstract class MALBrokerHandlerImpl extends MALClose implements MALBrokerHandler {
+public abstract class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
 
     private final List<MALBrokerBindingImpl> brokers = new LinkedList<>();
     private final Map<String, Map<String, PublisherSource>> providers = new HashMap();

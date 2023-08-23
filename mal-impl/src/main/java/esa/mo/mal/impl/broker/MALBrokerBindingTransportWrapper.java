@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl.broker;
 
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 /**
  * Wrapper class for Transport level broker bindings.
  */
-public class MALBrokerBindingTransportWrapper extends MALClose implements MALBrokerBinding {
+public class MALBrokerBindingTransportWrapper implements MALBrokerBinding, MALCloseable {
 
     private final MALBrokerBinding transportDelegate;
 

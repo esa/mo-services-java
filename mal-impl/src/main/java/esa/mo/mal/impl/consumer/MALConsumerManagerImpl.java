@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.consumer;
 
 import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 /**
  * Implements the MALConsumerManager interface.
  */
-public class MALConsumerManagerImpl extends MALClose implements MALConsumerManager {
+public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable {
 
     private final MALContextImpl impl;
 
@@ -109,7 +109,7 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
 
     @Override
     public void close() throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        impl.close();
     }
 
 }

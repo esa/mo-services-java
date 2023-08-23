@@ -21,7 +21,7 @@
 package esa.mo.mal.impl;
 
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Base class that is used by service providers, both providers and Brokers.
  */
-public abstract class ServiceComponentImpl extends MALClose {
+public abstract class ServiceComponentImpl implements MALCloseable {
 
     protected final MessageSend sendHandler;
     protected final MessageReceive receiveHandler;
@@ -55,7 +55,6 @@ public abstract class ServiceComponentImpl extends MALClose {
     /**
      * Constructor.
      *
-     * @param parent Parent object.
      * @param impl MAL impl.
      * @param localName Local name of this component.
      * @param protocol The protocol to use.
@@ -102,7 +101,6 @@ public abstract class ServiceComponentImpl extends MALClose {
     /**
      * Constructor.
      *
-     * @param parent Parent object.
      * @param impl MAL impl.
      * @param endPoint The endpoint to use.
      * @param service The service.

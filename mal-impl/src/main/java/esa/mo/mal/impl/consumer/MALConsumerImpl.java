@@ -24,7 +24,7 @@ import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.MessageDetails;
 import esa.mo.mal.impl.MessageSend;
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  * Implementation of the MALConsumer interface. Delegates most of the work to
  * the MessageSend class.
  */
-class MALConsumerImpl extends MALClose implements MALConsumer {
+class MALConsumerImpl implements MALConsumer, MALCloseable {
 
     private final MessageSend sender;
     private final MessageDetails details;

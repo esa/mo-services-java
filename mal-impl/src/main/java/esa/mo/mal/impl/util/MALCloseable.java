@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -23,19 +23,13 @@ package esa.mo.mal.impl.util;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- * Base class that tracks children classes and its parent class and supports the
- * concept of being closed. Closing this class informs the parent we are being
- * closed and also all children that they should close also. Deprecated because
- * this is totally useless code.
+ * The MALCloseable class allows classes to be closed.
  *
  */
-@Deprecated
-public abstract class MALClose {
+public interface MALCloseable {
 
     /**
-     * Closes this class, informs all children that we are being closed and they
-     * should also, and then informs our parent (if we have one) that we are
-     * closing.
+     * Closes the class.
      *
      * @throws MALException If there is a problem with being closed.
      */

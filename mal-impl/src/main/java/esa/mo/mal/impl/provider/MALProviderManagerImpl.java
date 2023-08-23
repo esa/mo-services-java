@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.provider;
 
 import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 /**
  * Implementation of the MALProviderManager interface.
  */
-public class MALProviderManagerImpl extends MALClose implements MALProviderManager {
+public class MALProviderManagerImpl implements MALProviderManager, MALCloseable {
 
     private final MALContextImpl impl;
 
