@@ -41,12 +41,4 @@ public abstract class MALClose {
      */
     public abstract void close() throws MALException;
 
-    /**
-     * This should be overridden by any implementing class to provide the actual
-     * close functionality of this class.
-     *
-     * @throws MALException If an error occurs, implementations should throw a
-     * MALException.
-     */
-    public abstract void thisObjectClose() throws MALException;
 }

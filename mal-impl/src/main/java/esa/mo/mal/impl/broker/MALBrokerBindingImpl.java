@@ -378,8 +378,4 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
         return subscriberSet.contains(uri);
     }
 
-    @Override
-    public void close() throws MALException {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
-    }
 }

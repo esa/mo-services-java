@@ -143,8 +143,4 @@ public class MALContextImpl extends MALClose implements MALContext {
     public MALAccessControl getSecurityManager() {
         return securityManager;
     }
-
-    @Override
-    public void thisObjectClose() throws MALException {
-    }
 }

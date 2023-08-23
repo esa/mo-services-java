@@ -155,13 +155,7 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
     }
 
     @Override
-    public void thisObjectClose() throws MALException {
-        // we are closing this so make sure the broker binding map shared with out MAL context is empty too.
-        brokerBindingMap.clear();
-    }
-
-    @Override
     public void close() throws MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        brokerBindingMap.clear();
     }
 }
