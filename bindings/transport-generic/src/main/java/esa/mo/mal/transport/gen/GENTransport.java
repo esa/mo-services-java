@@ -707,8 +707,6 @@ public abstract class GENTransport<I, O> implements MALTransport {
                             oriMsg.getQoSProperties(),
                             errorNumber, new Union(errorMsg));
 
-                    retMsg.getHeader().setFrom(srcHdr.getTo());
-
                     sendMessage(null, true, retMsg);
                 } else {
                     LOGGER.log(Level.WARNING, "(1) Unable to return error"

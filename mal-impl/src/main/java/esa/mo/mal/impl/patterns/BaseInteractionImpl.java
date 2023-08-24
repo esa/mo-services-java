@@ -24,10 +24,11 @@ import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MessageSend;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -37,31 +38,16 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class BaseInteractionImpl implements MALInteraction {
 
+    private final Map qosProperties = new HashMap();
     private final MessageSend sender;
     private final Address address;
     private final MALMessage msg;
-    private final MALOperation operation;
-    private final Map qosProperties = new HashMap();
+    private MALOperation operation;
 
-    public BaseInteractionImpl(final MessageSend sender, final Address address,
-            final MALMessage msg) throws MALInteractionException {
+    public BaseInteractionImpl(final MessageSend sender, final Address address, final MALMessage msg) {
         this.sender = sender;
         this.address = address;
         this.msg = msg;
-        MALMessageHeader header = msg.getHeader();
-        this.operation = MALContextFactory
-                .lookupArea(header.getServiceArea(), header.getServiceVersion())
-                .getServiceByNumber(header.getService())
-                .getOperationByNumber(header.getOperation());
-
-        if (this.operation == null) {
-            throw new MALInteractionException(new MOErrorException(
-                    MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER,
-                    new Union(header.getServiceArea()
-                            + "::" + header.getService()
-                            + "::" + header.getOperation()))
-            );
-        }
     }
 
     @Override
@@ -71,6 +57,14 @@ public abstract class BaseInteractionImpl implements MALInteraction {
 
     @Override
     public MALOperation getOperation() {
+        if (operation == null) {
+            try {
+                operation = msg.getHeader().getMALOperation();
+            } catch (NotFoundException ex) {
+                Logger.getLogger(BaseInteractionImpl.class.getName()).log(
+                        Level.SEVERE, "The operation was not found!", ex);
+            }
+        }
         return operation;
     }
 

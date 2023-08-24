@@ -90,9 +90,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
 
         MALBrokerImpl.LOGGER.log(Level.INFO,
                 "Creating internal MAL Broker for localName: {0} with URI: {1}",
-                new Object[]{
-                    localName, this.localUri
-                });
+                new Object[]{localName, this.localUri});
     }
 
     void init() {

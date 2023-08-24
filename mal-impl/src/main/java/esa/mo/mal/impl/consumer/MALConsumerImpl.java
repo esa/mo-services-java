@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  * Implementation of the MALConsumer interface. Delegates most of the work to
  * the MessageSend class.
  */
-class MALConsumerImpl implements MALConsumer, MALCloseable {
+public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
     private final MessageSend sender;
     private final MessageDetails details;

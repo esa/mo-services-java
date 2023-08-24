@@ -20,14 +20,19 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -38,6 +43,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * The MALMessageHeader structure is used to hold the header fields that exist
@@ -132,15 +138,6 @@ public class MALMessageHeader {
      */
     public Identifier getFrom() {
         return this.from;
-    }
-
-    /**
-     * Sets the field from.
-     *
-     * @param newValue The new value to set.
-     */
-    public void setFrom(final Identifier newValue) {
-        this.from = newValue;
     }
 
     /**
@@ -393,8 +390,25 @@ public class MALMessageHeader {
         serviceVersion = decoder.decodeUOctet();
         isErrorMessage = decoder.decodeBoolean();
         supplements = (NamedValueList) decoder.decodeElement(new NamedValueList());
-
         return this;
+    }
+
+    public MALOperation getMALOperation() throws NotFoundException {
+        MALOperation op = MALContextFactory
+                .lookupArea(this.getServiceArea(), this.getServiceVersion())
+                .getServiceByNumber(this.getService())
+                .getOperationByNumber(this.getOperation());
+
+        if (op == null) {
+            throw new NotFoundException(new MOErrorException(
+                    MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER,
+                    new Union(this.getServiceArea()
+                            + "::" + this.getService()
+                            + "::" + this.getOperation()))
+            );
+        }
+
+        return op;
     }
 
 }
