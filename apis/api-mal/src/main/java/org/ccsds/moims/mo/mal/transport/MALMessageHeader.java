@@ -141,6 +141,16 @@ public class MALMessageHeader {
     }
 
     /**
+     * Sets the field from.
+     *
+     * @param from The from value to set.
+     */
+    @Deprecated
+    public void setFrom(final Identifier from) {
+        this.from = from;
+    }
+
+    /**
      * Returns the field authenticationId.
      *
      * @return the field authenticationId.
