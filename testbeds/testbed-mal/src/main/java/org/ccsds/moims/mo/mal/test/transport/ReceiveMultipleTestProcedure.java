@@ -39,6 +39,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -88,7 +89,7 @@ public class ReceiveMultipleTestProcedure {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false);
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false);
         ipTest = ipTestConsumer.getStub();
 
         SubscriptionFilterList filters = new SubscriptionFilterList();

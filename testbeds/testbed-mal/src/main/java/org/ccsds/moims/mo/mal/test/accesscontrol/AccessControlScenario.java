@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -65,7 +66,7 @@ public class AccessControlScenario extends LoggingBase {
         }
 
         ipTestConsumer = LocalMALInstance.instance().ipTestStub(AUTHENTICATION_ID, DOMAIN, 
-                NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false);
+                NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false);
         ipTestStub = ipTestConsumer.getStub();
 
         return true;

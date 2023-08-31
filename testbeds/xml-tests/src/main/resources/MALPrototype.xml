@@ -1463,6 +1463,10 @@
                            comment="The identifier of the session used by the consumer">
                     <smc:type area="MAL" name="Identifier" />
                 </smc:field>
+                <smc:field name="supplements"
+                           comment="The supplements field used by the consumer">
+                    <smc:type list="true" area="MAL" name="NamedValue" />
+                </smc:field>
                 <smc:field name="transitions"
                            comment="The transitions that are requested by the consumer">
                     <smc:type list="true" area="MALPrototype"

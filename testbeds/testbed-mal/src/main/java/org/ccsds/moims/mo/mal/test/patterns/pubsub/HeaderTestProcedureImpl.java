@@ -144,7 +144,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 HeaderTestProcedure.getDomain(domain),
                 HeaderTestProcedure.NETWORK_ZONE,
                 session, sessionName, qos,
-                HeaderTestProcedure.PRIORITY, shared);
+                HeaderTestProcedure.PRIORITY, new NamedValueList(), shared);
     }
 
     public boolean initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,

@@ -39,27 +39,19 @@ is set to "-1". The field 'Transition list id' is used to identify the test proc
 The transitions are checked by ensuring that the faulty messages are not received by the consumer.
 
 !*> Sub scenario definitions
-|scenario| pattern | interaction | with qos| qos | and session | sess | and transitions | trans | and behaviour id | id | test |
-|ensure |pattern initiation for| @interaction | with multi| false | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and behaviour id | @id | test |
+|scenario| pattern | interaction | with supplements| supplements | and transitions | trans | and behaviour id | id | test |
+|ensure |pattern initiation for| @interaction | with multi| false | with empty body| false | and supplements| @supplements | and transitions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
-|ensure |pattern initiation for| @interaction | with multi| false | with empty body| true | and qos| @qos | and session | @sess | and transistions | @trans | and behaviour id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| false | with empty body| true | and supplements| @supplements | and transitions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
-|ensure |pattern initiation for| @interaction | with multi| true | with empty body| false | and qos| @qos | and session | @sess | and transistions | @trans | and behaviour id | @id | test |
+|ensure |pattern initiation for| @interaction | with multi| true | with empty body| false | and supplements| @supplements | and transitions | @trans | and behaviour id | @id | test |
 |ensure |the consumer assertions are ok|
 |ensure |the transitions are ok|
-
-|scenario| pattern | interaction | and session | sess | and transitions | trans | and behaviour id | id | test |
-|pattern | @interaction | with qos| Best Effort | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
-|pattern | @interaction | with qos| Assured  | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
-|pattern | @interaction | with qos| Queued | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
-|pattern | @interaction | with qos| Timely | and session | @sess | and transitions | @trans | and behaviour id | @id | test |
 
 |scenario| test interaction pattern | interaction | with transitions | trans | and behaviour id | id |
-|pattern | @interaction | and session | Live | and transitions | @trans | and behaviour id | @id | test |
-|pattern | @interaction | and session | Simulation | and transitions | @trans | and behaviour id | @id | test |
-|pattern | @interaction | and session | Replay | and transitions | @trans | and behaviour id | @id | test |
+|pattern | @interaction | with supplements | Empty | and transitions | @trans | and behaviour id | @id | test |
 
 ***********!
 

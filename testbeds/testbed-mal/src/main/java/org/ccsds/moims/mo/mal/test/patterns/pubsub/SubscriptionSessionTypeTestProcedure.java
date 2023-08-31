@@ -37,6 +37,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -93,7 +94,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
         ipTestToPublish = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, publisherSessionType, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         IdentifierList keyNames = new IdentifierList();
         keyNames.add(Helper.key1);
@@ -121,7 +122,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
         ipTestToSubscribe = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, subscriberSessionType, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         ipTestToSubscribe.monitorRegister(subscription, listener);
 

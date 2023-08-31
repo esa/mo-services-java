@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -99,7 +100,7 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         ipTestToPublish = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 publishNetworkId, SESSION, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister = new TestPublishRegister(
@@ -124,7 +125,7 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         ipTestToSubscribe = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 subscribeNetworkId, SESSION, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         ipTestToSubscribe.monitorRegister(subscription, listener);
 

@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -183,13 +184,13 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized IPTestConsumer ipTestStub(Blob authenticationId,
             IdentifierList domain, Identifier networkZone, SessionType sessionType,
-            Identifier sessionName, QoSLevel qosLevel, UInteger priority, boolean shared) throws MALException {
+            Identifier sessionName, QoSLevel qosLevel, UInteger priority, NamedValueList supplements, boolean shared) throws MALException {
         StubKey key = new StubKey(authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, shared);
         IPTestConsumer ipconsumer = (IPTestConsumer) ipstubs.get(key);
 
         if (ipconsumer == null) {
             ipconsumer = newIPTestStub(null, authenticationId, domain, networkZone,
-                    sessionType, sessionName, qosLevel, priority, shared);
+                    sessionType, sessionName, qosLevel, priority, supplements, shared);
             ipstubs.put(key, ipconsumer);
         }
         return ipconsumer;
@@ -197,7 +198,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized IPTestConsumer newIPTestStub(String consumerName, Blob authenticationId,
             IdentifierList domain, Identifier networkZone, SessionType sessionType,
-            Identifier sessionName, QoSLevel qosLevel, UInteger priority, boolean shared) throws MALException {
+            Identifier sessionName, QoSLevel qosLevel, UInteger priority, NamedValueList supplements, boolean shared) throws MALException {
         FileBasedDirectory.URIpair uris;
         if (shared) {
             logMessage("Loading URIs from file: " + TestServiceProvider.IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME);
@@ -209,12 +210,12 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
         logMessage("The Loaded uris are :\nuri: " + uris.uri + "\nbroker: " + uris.broker);
 
-        return newIPTestStub(consumerName, uris, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, shared);
+        return newIPTestStub(consumerName, uris, authenticationId, domain, networkZone, sessionType, sessionName, qosLevel, priority, supplements, shared);
     }
 
     public synchronized IPTestConsumer newIPTestStub(String consumerName, FileBasedDirectory.URIpair uris, Blob authenticationId,
             IdentifierList domain, Identifier networkZone, SessionType sessionType,
-            Identifier sessionName, QoSLevel qosLevel, UInteger priority, boolean shared) throws MALException {
+            Identifier sessionName, QoSLevel qosLevel, UInteger priority, NamedValueList supplements, boolean shared) throws MALException {
         Hashtable qosProperties = new Hashtable();
 
         if (uris.uri.getValue().startsWith("malamqp")) {
@@ -238,7 +239,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 qosLevel,
                 qosProperties,
                 priority,
-                null);
+                supplements);
 
         IPTestStub stub = new IPTestStub(consumer);
         return new IPTestConsumer(consumer, stub);
@@ -282,7 +283,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 qosLevel,
                 qosProperties,
                 priority,
-                null);
+                new NamedValueList());
 
         org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub stub
                 = new org.ccsds.moims.mo.malprototype2.iptest.consumer.IPTestStub(consumer);
@@ -314,7 +315,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 authenticationId, domain,
                 networkZone, sessionType, sessionName, qosLevel, qosProperties,
                 priority,
-                null);
+                new NamedValueList());
 
         IPTest2Stub stub = new IPTest2Stub(consumer);
         return stub;

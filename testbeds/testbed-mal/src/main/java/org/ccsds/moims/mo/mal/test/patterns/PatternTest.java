@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
@@ -63,34 +64,32 @@ public class PatternTest {
      * Allows a subclass to override the consumer, for example by interacting
      * with another service provider and with specific QoS properties.
      *
-     * @param session
-     * @param sessionName
-     * @param qos
+     * @param supplements
      * @throws Exception
      */
-    protected void initConsumer(SessionType session, Identifier sessionName, QoSLevel qos) throws Exception {
+    protected void initConsumer(String supplements) throws Exception {
+        NamedValueList supplementsValue = Helper.parseSupplements(supplements);
         ipTestConsumer = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
-                qos,
+                SessionType.LIVE,
+                new Identifier(supplements),
+                QoSLevel.BESTEFFORT,
                 HeaderTestProcedure.PRIORITY,
+                supplementsValue,
                 false);
     }
 
-    public boolean patternInitiationForWithMultiWithEmptyBodyAndQosAndSessionAndTransistionsAndBehaviourIdTest(
-            String pattern, boolean callMultiVersion, boolean callEmptyVersion, String qosLevel,
-            String sessionType, String[] transistions, int procedureId) throws Exception {
-        LoggingBase.logMessage("PatternTest(" + pattern + ", " + callMultiVersion + ", " + qosLevel + ", " + sessionType + ", " + procedureId + ")");
+    public boolean patternInitiationForWithMultiWithEmptyBodyAndSupplementsAndTransitionsAndBehaviourIdTest(
+            String pattern, boolean callMultiVersion, boolean callEmptyVersion, String supplements,
+            String[] transitions, int procedureId) throws Exception {
+        LoggingBase.logMessage("PatternTest(" + pattern + ", " + callMultiVersion + ", " + supplements + ", " + procedureId + ")");
         resetAssertions();
 
-        QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
-        SessionType session = ParseHelper.parseSessionType(sessionType);
-        Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+        NamedValueList supplementsValue = Helper.parseSupplements(supplements);
 
-        initConsumer(session, sessionName, qos);
+        initConsumer(supplements);
         IPTestStub ipTest = ipTestConsumer.getStub();
         ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
@@ -105,7 +104,7 @@ public class PatternTest {
 
         boolean seenGoodTransition = false;
         int expectedTransitionCount = 0;
-        for (String trans : transistions) {
+        for (String trans : transitions) {
             IPTestTransitionType transition = IPTestTransitionTypeFromString(trans);
 
             if (trans.startsWith("_")) {
@@ -131,11 +130,12 @@ public class PatternTest {
         IPTestDefinition testDef = new IPTestDefinition(String.valueOf(procedureId),
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                qos,
+                QoSLevel.BESTEFFORT,
                 HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                session, sessionName,
+                SessionType.LIVE, null,
+                supplementsValue,
                 transList,
                 new Time(System.currentTimeMillis()));
 
@@ -213,7 +213,7 @@ public class PatternTest {
                 operation,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
-                msgHeader.getSupplements());
+                supplementsValue);
 
         AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
 
@@ -230,7 +230,7 @@ public class PatternTest {
                 expectedInitialHeader.getOperation(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
-                msgHeader.getSupplements());
+                supplementsValue);
 
         sendInitialFaultyTransitions(initialFaultyTransList, expectedFinalHeader);
 
