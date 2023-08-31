@@ -52,6 +52,7 @@ The transitions are checked by ensuring that the faulty messages are not receive
 
 |scenario| test interaction pattern | interaction | with transitions | trans | and behaviour id | id |
 |pattern | @interaction | with supplements | Empty | and transitions | @trans | and behaviour id | @id | test |
+#|pattern | @interaction | with supplements | Full | and transitions | @trans | and behaviour id | @id | test |
 
 ***********!
 
