@@ -521,7 +521,6 @@ public class JavaConsumer {
         }
 
         for (OperationSummary op : summary.getOperations()) {
-            //String operationInstanceVar = generator.addressOf(helperType) + op.getName().toUpperCase() + "_OP";
             String operationInstanceVar = generator.addressOf(serviceInfoType) + op.getName().toUpperCase() + "_OP";
             switch (op.getPattern()) {
                 case SEND_OP: {
@@ -662,7 +661,8 @@ public class JavaConsumer {
         file.flush();
     }
 
-    private void createOperationReturn(LanguageWriter file, MethodWriter method, OperationSummary op, CompositeField opRetType) throws IOException {
+    private void createOperationReturn(LanguageWriter file, MethodWriter method,
+            OperationSummary op, CompositeField opRetType) throws IOException {
         List<TypeInfo> targetTypes = op.getRetTypes();
 
         if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {

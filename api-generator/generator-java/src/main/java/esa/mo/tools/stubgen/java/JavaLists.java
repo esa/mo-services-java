@@ -147,7 +147,7 @@ public class JavaLists {
                 superTypeReference, true, true, "List element.");
         String sElement = listSuperElement.getTypeName();
         if (sElement.contains("Attribute")) {
-            sElement = sElement.replace("Attribute", "Element"); // Needs to be replaced for Attributes
+            sElement = sElement.replace("Attribute", "Homogeneous"); // Needs to be replaced for Attributes
         }
 
         file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",

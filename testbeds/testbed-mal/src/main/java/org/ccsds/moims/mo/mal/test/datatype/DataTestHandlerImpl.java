@@ -303,7 +303,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public ElementList testMalElementList(ElementList el,
+    public HeterogeneousList testMalElementList(HeterogeneousList el,
             MALInteraction mali) throws MALInteractionException, MALException {
         return el;
     }
@@ -478,7 +478,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public ElementList testPolymorphicMalElementList(ElementList el,
+    public HeterogeneousList testPolymorphicMalElementList(HeterogeneousList el,
             MALInteraction interaction) throws MALInteractionException, MALException {
         return el;
     }

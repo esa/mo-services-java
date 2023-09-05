@@ -97,7 +97,6 @@ public class GeneratorJava extends GeneratorLangs {
         super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
         setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("java.requiresDefaultConstructors")));
-        //setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
 
         addAttributeType(StdStrings.MAL, StdStrings.BLOB, false, "Blob", "");
         addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "Boolean.FALSE");
@@ -308,7 +307,7 @@ public class GeneratorJava extends GeneratorLangs {
             AreaType area, ServiceType service) throws IOException {
         String basePackageName = getConfig().getAreaPackage(area.getName());
         String packageName = basePackageName + "." + area.getName().toLowerCase();
-        if (null != service) {
+        if (service != null) {
             packageName += "." + service.getName().toLowerCase();
         }
 

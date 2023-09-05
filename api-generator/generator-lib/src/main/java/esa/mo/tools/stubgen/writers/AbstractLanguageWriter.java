@@ -60,18 +60,18 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
      * Processes a list of comments making sure they contain a full stop at the
      * end.
      *
-     * @param rv The list to return.
+     * @param output The list to return.
      * @param comments List of comments to check.
      * @return the processed list.
      */
-    public static List<String> normaliseComments(List<String> rv, List<String> comments) {
-        if (null != comments) {
+    public static List<String> normaliseComments(List<String> output, List<String> comments) {
+        if (comments != null) {
             for (String comment : comments) {
-                normaliseComment(rv, comment);
+                normaliseComment(output, comment);
             }
         }
 
-        return rv;
+        return output;
     }
 
     /**
@@ -79,12 +79,12 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
      * will also break it into multiple lines if it is longer than 100
      * characters.
      *
-     * @param rv The list to return.
+     * @param output The list to return.
      * @param comment The comment to check.
      * @return the supplied list.
      */
-    public static List<String> normaliseComment(List<String> rv, String comment) {
-        if ((null != rv) && (null != comment) && (comment.length() > 0)) {
+    public static List<String> normaliseComment(List<String> output, String comment) {
+        if ((null != output) && (comment != null) && (comment.length() > 0)) {
             if (!comment.endsWith(".")) {
                 comment += ".";
             }
@@ -94,29 +94,29 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
             int LENGTH_THRESHOLD = 80;
 
             if (comment.length() < LENGTH_THRESHOLD) {
-                rv.add(comment);
+                output.add(comment);
             } else {
                 for (String paragraph : comment.split("\n")) {
                     String[] parts = paragraph.split(" ");
                     String str = "";
                     int counter = 0;
 
-                    for (int i = 0; i < parts.length; i++) {
+                    for (String part : parts) {
                         if (counter > LENGTH_THRESHOLD) {
-                            rv.add(str);
+                            output.add(str);
                             // Reset both the string and the counter
                             str = "";
                             counter = 0;
                         }
-                        str += parts[i] + " ";
-                        counter += 1 + parts[i].length();
+                        str += part + " ";
+                        counter += 1 + part.length();
                     }
 
-                    rv.add(str);
+                    output.add(str);
                 }
             }
         }
 
-        return rv;
+        return output;
     }
 }

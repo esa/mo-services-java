@@ -253,30 +253,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     /**
-     * Sets the generator support a string generator value.
-     *
-     * @param supportsToString the supportsToString to set
-     */
-    public void setSupportsToString(boolean supportsToString) {
-        this.supportsToString = supportsToString;
-    }
-
-    /**
      * Does the generator support an equals method on structures.
      *
      * @return the supportsEquals
      */
     public boolean isSupportsEquals() {
         return supportsEquals;
-    }
-
-    /**
-     * Sets the generator support equals value.
-     *
-     * @param supportsEquals the supportsEquals to set
-     */
-    public void setSupportsEquals(boolean supportsEquals) {
-        this.supportsEquals = supportsEquals;
     }
 
     /**
@@ -289,30 +271,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     /**
-     * Sets the generator support value generator value.
-     *
-     * @param supportsToValue the supportsToValue to set
-     */
-    public void setSupportsToValue(boolean supportsToValue) {
-        this.supportsToValue = supportsToValue;
-    }
-
-    /**
      * Does the generator need to generate async operation methods.
      *
      * @return the supportsAsync
      */
     public boolean isSupportsAsync() {
         return supportsAsync;
-    }
-
-    /**
-     * Sets the generator async support value.
-     *
-     * @param supportsAsync the supportsAsync to set
-     */
-    public void setSupportsAsync(boolean supportsAsync) {
-        this.supportsAsync = supportsAsync;
     }
 
     /**
@@ -341,15 +305,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
      */
     public boolean isGenerateStructures() {
         return generateStructures;
-    }
-
-    /**
-     * Sets the generate structures value.
-     *
-     * @param generateStructures the generateStructures to set
-     */
-    public void setGenerateStructures(boolean generateStructures) {
-        this.generateStructures = generateStructures;
     }
 
     /**
@@ -454,7 +409,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createServiceProviderClasses(serviceFolder, area, service, summary, requiredPublishers);
 
         // if service level types exist
-        if (generateStructures && (null != service.getDataTypes()) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
+        if (generateStructures && (service.getDataTypes() != null) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
             // create structure folder
             File structureFolder = StubUtils.createFolder(serviceFolder, getConfig().getStructureFolder());
             // create a comment for the structure folder if supported
@@ -1531,7 +1486,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             String prefixSeparator = "";
 
-            if (null != parentClass) {
+            if (parentClass != null) {
                 method.addLine("buf.append(super.toString())");
                 prefixSeparator = ", ";
             }
@@ -1828,57 +1783,47 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public String createAdapterMethodsArgs(List<TypeInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
+        if (typeInfos == null) {
+            return "";
+        }
+
         StringBuilder buf = new StringBuilder();
 
-        if (null != typeInfos) {
-            for (int i = 0; i < typeInfos.size(); i++) {
-                TypeInfo ti = typeInfos.get(i);
+        for (int i = 0; i < typeInfos.size(); i++) {
+            TypeInfo ti = typeInfos.get(i);
 
-                boolean morePrecedingArgs = precedingArgs || (i > 0);
-                boolean evenMoreArgs = moreArgs && i == (typeInfos.size() - 1);
-                buf.append(createAdapterMethodsArgs(ti, argNamePrefix, i, morePrecedingArgs, evenMoreArgs));
-            }
+            boolean morePrecedingArgs = precedingArgs || (i > 0);
+            boolean evenMoreArgs = moreArgs && i == (typeInfos.size() - 1);
+            buf.append(createAdapterMethodsArgs(ti, argNamePrefix, i, morePrecedingArgs, evenMoreArgs));
         }
 
         return buf.toString();
     }
 
-    public String createAdapterMethodsArgs(TypeInfo ti, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(TypeInfo typeInfo, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
         String retStr = "";
 
-        if ((null != ti.getTargetType()) && !(StdStrings.VOID.equals(ti.getTargetType()))) {
+        if ((typeInfo.getTargetType() != null) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
             if (precedingArgs) {
                 retStr = ",\n                ";
             }
 
-            if (ti.isNativeType()) {
+            if (typeInfo.isNativeType()) {
                 // If is is Java native (Short, Long, etc), then needs to be wrapped into a Union type!
                 String unionType = getConfig().getAreaPackage(StdStrings.MAL)
                         + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION;
 
-                AttributeTypeDetails details = getAttributeDetails(ti.getSourceType());
+                AttributeTypeDetails details = getAttributeDetails(typeInfo.getSourceType());
                 String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", "
                         + "new " + unionType + "(" + details.getDefaultValue() + "))";
                 retStr += "(" + av + " == null) ? null : ((" + unionType + ") " + av + ").get" + details.getMalType() + "Value()";
             } else {
                 // Not Java native...
-                String ct = ti.getTargetType();
-                String at = null;
-
-                if (!isAbstract(ti.getSourceType())) {
-                    CompositeField ce = createCompositeElementsDetails(null, false,
-                            "", ti.getSourceType(), true, true, null);
-                    at = ce.getNewCall();
-                }
-                if (at == null && ct.contains("List") && !ct.contains(".Element") && !ct.contains(".Composite")) {
-                    at = "new " + ct + "()";
-                }
-                if (ct.contains(".MOObject")) {
-                    at = "null";
-                }
-
-                String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", " + at + ")";
-                retStr += "(" + ct + ") " + av;
+                String expectedType = generateExpectedType(typeInfo);
+                String cast = typeInfo.getTargetType();
+                cast = cast.replace(".ElementList", ".HeterogeneousList");
+                String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", " + expectedType + ")";
+                retStr += "(" + cast + ") " + av;
             }
 
             if (moreArgs) {
@@ -1889,15 +1834,33 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return retStr;
     }
 
-    public String checkForReservedWords(String arg) {
-        if (null != arg) {
-            String replacementWord = reservedWordsMap.get(arg);
-            if (null != replacementWord) {
-                return replacementWord;
-            }
+    private String generateExpectedType(TypeInfo ti) {
+        // Not Java native...
+        String cast = ti.getTargetType();
+        String at = null;
+
+        if (!isAbstract(ti.getSourceType())) {
+            CompositeField ce = createCompositeElementsDetails(null, false,
+                    "", ti.getSourceType(), true, true, null);
+            at = ce.getNewCall();
+        }
+        if (at == null && cast.contains("List") && !cast.contains(".Element") && !cast.contains(".Composite")) {
+            at = "new " + cast + "()";
+        }
+        if (cast.contains(".MOObject")) {
+            at = "null";
         }
 
-        return arg;
+        return at;
+    }
+
+    public String checkForReservedWords(String arg) {
+        if (arg == null) {
+            return arg;
+        }
+
+        String replacementWord = reservedWordsMap.get(arg);
+        return (replacementWord != null) ? replacementWord : arg;
     }
 
     public String createConsumerPatternCall(OperationSummary op) {
@@ -1939,14 +1902,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
     public CompositeField createOperationReturnType(LanguageWriter file, AreaType area, ServiceType service, OperationSummary op) {
         switch (op.getPattern()) {
             case REQUEST_OP: {
-                if (null != op.getRetTypes()) {
+                if (op.getRetTypes() != null) {
                     return createReturnReference(createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes()));
                 }
                 break;
             }
             case INVOKE_OP:
             case PROGRESS_OP: {
-                if ((null != op.getAckTypes()) && (!op.getAckTypes().isEmpty())) {
+                if ((op.getAckTypes() != null) && (!op.getAckTypes().isEmpty())) {
                     return createReturnReference(createReturnType(file, area, service, op.getName(), "Ack", op.getAckTypes()));
                 }
                 break;
@@ -1996,7 +1959,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     public String createOperationArgReturn(LanguageWriter file, MethodWriter method,
             TypeInfo typeInfo, String argName, int argIndex) throws IOException {
-        if ((null != typeInfo.getTargetType()) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
+        if ((typeInfo.getTargetType() != null) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
             String eleType = "Object";
             String tv = argName + argIndex;
             String av;
@@ -2008,22 +1971,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 av = argName + ".getBodyElement(" + argIndex + ", new " + elementType + "(" + details.getDefaultValue() + "))";
                 returnParameter = "(" + tv + " == null) ? null : ((" + elementType + ") " + tv + ").get" + details.getMalType() + "Value()";
             } else {
-                String ct = typeInfo.getTargetType();
-                String at = null;
-                if (!isAbstract(typeInfo.getSourceType())) {
-                    CompositeField ce = createCompositeElementsDetails(null, false, "",
-                            typeInfo.getSourceType(), true, true, null);
-                    at = ce.getNewCall();
-                }
-                if (at == null && ct.contains("List") && !ct.contains(".Element") && !ct.contains(".Composite")) {
-                    at = "new " + ct + "()";
-                }
-                if (ct.contains(".MOObject")) {
-                    at = "null";
-                }
-
-                av = argName + ".getBodyElement(" + argIndex + ", " + at + ")";
-                returnParameter = "(" + ct + ") " + tv;
+                String cast = typeInfo.getTargetType();
+                cast = cast.replace(".ElementList", ".HeterogeneousList");
+                String expectedType = generateExpectedType(typeInfo);
+                av = argName + ".getBodyElement(" + argIndex + ", " + expectedType + ")";
+                returnParameter = "(" + cast + ") " + tv;
             }
 
             method.addLine(eleType + " " + tv + " = (" + eleType + ") " + av);
@@ -2035,24 +1987,24 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected CompositeField createReturnType(LanguageWriter file, AreaType area,
             ServiceType service, String opName, String messageType, List<TypeInfo> returnTypes) {
-        if ((null != returnTypes) && (!returnTypes.isEmpty())) {
-            if (1 == returnTypes.size()) {
-                return createCompositeElementsDetails(file, false, "return",
-                        returnTypes.get(0).getSourceType(), true, true, null);
-            } else {
-                String shortName = StubUtils.preCap(opName) + messageType;
-                String rt = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
-                if (!multiReturnTypeMap.containsKey(rt)) {
-                    multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
-                }
-
-                return createCompositeElementsDetails(file, false, "return",
-                        TypeUtils.createTypeReference(area.getName().toLowerCase(), service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
-                        false, true, null);
-            }
+        if (returnTypes == null || returnTypes.isEmpty()) {
+            return null;
         }
 
-        return null;
+        if (returnTypes.size() == 1) {
+            return createCompositeElementsDetails(file, false, "return",
+                    returnTypes.get(0).getSourceType(), true, true, null);
+        }
+
+        String shortName = StubUtils.preCap(opName) + messageType;
+        String rt = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
+        if (!multiReturnTypeMap.containsKey(rt)) {
+            multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
+        }
+
+        return createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(area.getName().toLowerCase(), service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
+                false, true, null);
     }
 
     /**
@@ -2063,42 +2015,39 @@ public abstract class GeneratorLangs extends GeneratorBase {
      * @return The argument string.
      */
     public String createArgNameOrNull(List<TypeInfo> typeNames) {
-        if ((null != typeNames) && (!typeNames.isEmpty())) {
-            StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < typeNames.size(); i++) {
-                TypeInfo ti = typeNames.get(i);
-                if (i > 0) {
-                    buf.append(", ");
-                }
-
-                String argName = ti.getFieldName();
-
-                if (argName == null) {
-                    argName = "_" + TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()) + i;
-                }
-
-                if (ti.isNativeType()) {
-                    buf.append("(");
-                    buf.append(argName);
-                    buf.append(" == null) ? null : new ");
-                    buf.append(getConfig().getAreaPackage(StdStrings.MAL));
-                    buf.append("mal.");
-                    buf.append(getConfig().getStructureFolder());
-                    buf.append(".");
-                    buf.append(StdStrings.UNION);
-                    buf.append("(").append(argName).append(")");
-                } else {
-                    buf.append(argName);
-                }
-            }
-
-            String ret = buf.toString();
-            ret = ret.replaceAll("<", "_");
-            ret = ret.replaceAll(">", "_");
-            return ret;
+        if (typeNames == null || typeNames.isEmpty()) {
+            return getConfig().getNullValue();
         }
 
-        return getConfig().getNullValue();
+        StringBuilder buf = new StringBuilder();
+
+        for (int i = 0; i < typeNames.size(); i++) {
+            TypeInfo ti = typeNames.get(i);
+            if (i > 0) {
+                buf.append(", ");
+            }
+
+            String argName = ti.getFieldName();
+
+            if (argName == null) {
+                argName = "_" + TypeUtils.shortTypeName(getConfig().getNamingSeparator(), ti.getTargetType()) + i;
+            }
+
+            if (ti.isNativeType()) {
+                buf.append("(").append(argName).append(" == null)");
+                buf.append(" ? null : new ");
+                buf.append(getConfig().getAreaPackage(StdStrings.MAL));
+                buf.append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION);
+                buf.append("(").append(argName).append(")");
+            } else {
+                buf.append(argName);
+            }
+        }
+
+        String ret = buf.toString();
+        ret = ret.replaceAll("<", "_");
+        ret = ret.replaceAll(">", "_");
+        return ret;
     }
 
     public MethodWriter encodeMethodOpen(ClassWriter file) throws IOException {

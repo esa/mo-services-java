@@ -639,7 +639,7 @@ public class DataTypeScenario extends LoggingBase {
             /*
              * PROPER CODE
              */
-            ElementList abstractList = new HeterogeneousList();
+            HeterogeneousList abstractList = new HeterogeneousList();
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
             res = getDataTestStub().testPolymorphicMalElementList(abstractList);
             rv = subMultiTest(abstractList,

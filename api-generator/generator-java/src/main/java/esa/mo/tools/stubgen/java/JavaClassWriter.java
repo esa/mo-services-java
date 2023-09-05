@@ -191,12 +191,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         StringBuilder buf = new StringBuilder(scope);
         buf.append(" ");
-        if (isStatic) {
-            buf.append("static ");
-        }
-        if (isFinal) {
-            buf.append("final ");
-        }
+        buf.append(isStatic ? "static " : "");
+        buf.append(isFinal ? "final " : "");
+
         String ltype = createLocalType(arg);
         buf.append(ltype);
         if (isArray) {
@@ -479,74 +476,77 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private List<String> normaliseArgComments(String comment, String returnComment,
             List<CompositeField> argsComments, List<String> throwsComment) {
-        List<String> rv = new LinkedList<>();
+        List<String> list = new LinkedList<>();
 
-        if (null != argsComments) {
+        if (argsComments != null) {
             for (CompositeField arg : argsComments) {
-                rv.add(arg.getFieldName() + " " + arg.getComment());
+                list.add(arg.getFieldName() + " " + arg.getComment());
             }
         }
 
-        return normaliseComments(comment, returnComment, rv, throwsComment);
+        return normaliseComments(comment, returnComment, list, throwsComment);
     }
 
     private List<String> normaliseComments(String comment, String returnComment,
             List<String> argsComments, List<String> throwsComment) {
-        List<String> rv = new LinkedList<>();
+        List<String> output = new LinkedList<>();
 
-        normaliseComment(rv, comment);
-        rv.add(""); // Separation between the comment and params
-        normaliseComments(rv, StubUtils.conditionalAdd("@param ", argsComments));
-        normaliseComment(rv, StubUtils.conditionalAdd("@return ", returnComment));
-        normaliseComments(rv, StubUtils.conditionalAdd("@throws ", throwsComment));
+        normaliseComment(output, comment);
+        output.add(""); // Separation between the comment and params
+        normaliseComments(output, StubUtils.conditionalAdd("@param ", argsComments));
+        normaliseComment(output, StubUtils.conditionalAdd("@return ", returnComment));
+        normaliseComments(output, StubUtils.conditionalAdd("@throws ", throwsComment));
 
-        return rv;
+        return output;
     }
 
     private String processArgs(List<CompositeField> args, boolean includeType) {
+        if (args == null || args.isEmpty()) {
+            return "";
+        }
+
         StringBuilder buf = new StringBuilder();
-        if (args != null && (!args.isEmpty())) {
-            boolean firstTime = true;
+        boolean firstTime = true;
 
-            for (CompositeField arg : args) {
-                if (firstTime) {
-                    firstTime = false;
-                } else {
-                    buf.append(",\n            ");
-                }
-
-                if (includeType) {
-                    buf.append(createLocalType(arg)).append(" ");
-                }
-
-                String name = generator.checkForReservedWords(arg.getFieldName());
-                name = name.replaceAll("<", "_");
-                name = name.replaceAll(">", "_");
-                buf.append(name);
+        for (CompositeField arg : args) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                buf.append(",\n            ");
             }
+
+            if (includeType) {
+                buf.append(createLocalType(arg)).append(" ");
+            }
+
+            String name = generator.checkForReservedWords(arg.getFieldName());
+            name = name.replaceAll("<", "_");
+            name = name.replaceAll(">", "_");
+            buf.append(name);
         }
 
         return buf.toString();
     }
 
     private String createLocalType(CompositeField type) {
-        if (type != null) {
-            String fullType = type.getTypeName();
-
-            if (generator.isNativeType(fullType)) {
-                NativeTypeDetails dets = generator.getNativeType(fullType);
-                return dets.getLanguageTypeName();
-            } else if (!type.isList() && generator.isAttributeType(type.getTypeReference())) {
-                AttributeTypeDetails dets = generator.getAttributeDetails(type.getTypeReference());
-                if (null != dets) {
-                    return dets.getTargetType();
-                }
-            }
-
-            return fullType;
+        if (type == null) {
+            return StdStrings.VOID;
         }
 
-        return StdStrings.VOID;
+        String fullType = type.getTypeName();
+        fullType = fullType.replaceAll(".ElementList", ".HeterogeneousList");
+
+        if (generator.isNativeType(fullType)) {
+            NativeTypeDetails dets = generator.getNativeType(fullType);
+            return dets.getLanguageTypeName();
+        } else if (!type.isList() && generator.isAttributeType(type.getTypeReference())) {
+            AttributeTypeDetails dets = generator.getAttributeDetails(type.getTypeReference());
+            if (dets != null) {
+                return dets.getTargetType();
+            }
+        }
+
+        return fullType;
     }
 
 }
