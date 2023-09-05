@@ -636,33 +636,11 @@ public class DataTypeScenario extends LoggingBase {
         ElementList res;
         try {
             // homogeneous concrete list type List<StructureWithAbstractField>
-            /*
-             * PROPER CODE
-             */
             HeterogeneousList abstractList = new HeterogeneousList();
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
             res = getDataTestStub().testPolymorphicMalElementList(abstractList);
             rv = subMultiTest(abstractList,
                     res, null, "testStructureWithAbstractFieldSingleTypedList1");
-            /*
-             * END OF PROPER CODE
-             */
-            /*
-             * ALTERNATE CODE - does not conform to the MAL specification
-             * The current mapping allows to pass an homogeneous list as parameter, which is not allowed
-             * by the MAL specification. If this restriction cannot be ensured by the mapping, then we should
-             * add a test checking that the call is rejected by the MAL implementation.
-             */
-            res = getDataTestStub().testPolymorphicMalElementList(TestData.testStructureWithAbstractFieldSingleTypedList1);
-            /*
-             * Ensure this test fails in the surefire report so that it is eventually fixed
-             */
-            res = null;
-            rv = subMultiTest(TestData.testStructureWithAbstractFieldSingleTypedList1,
-                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
-            /*
-             * END OF ALTERNATE CODE
-             */
             // heterogeneous concrete list type List<Element>
             res = getDataTestStub().testPolymorphicMalElementList(TestData.testAbstractCompositeMultipleTypedList);
             rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
