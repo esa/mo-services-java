@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -21,9 +21,28 @@
 package org.ccsds.moims.mo.mal.structures;
 
 /**
- * List interface for Composites.
- *
- * @param <T> The type of the list, must extend Composite.
+ * List class for Composites.
  */
-public interface CompositeList<T extends Composite> extends ElementList<T> {
+public class CompositeList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+
+    /**
+     * Default constructor for CompositeList.
+     *
+     */
+    public CompositeList() {
+    }
+
+    /**
+     * Adds an element to the list and checks if the type is correct.
+     *
+     * @param element The element to be added.
+     * @return The success status.
+     */
+    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+        if (element != null && !(element instanceof Composite)) {
+            throw new java.lang.ClassCastException("The added element does not extend the type: Composite");
+        }
+        return super.add(element);
+    }
+
 }

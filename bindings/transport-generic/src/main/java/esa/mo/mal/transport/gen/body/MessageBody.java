@@ -160,7 +160,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
         Object bodyPart = messageParts[index];
 
-        // Up-cast the List if it is a heterogeneous list!
+        // Up-cast the List if it is a heterogeneous list! Upcasting...
         if (element != null && bodyPart instanceof HeterogeneousList) {
             for (Element entry : (HeterogeneousList) bodyPart) {
                 ((HeterogeneousList) element).add(entry);

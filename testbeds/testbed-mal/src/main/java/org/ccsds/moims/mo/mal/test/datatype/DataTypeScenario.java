@@ -579,21 +579,9 @@ public class DataTypeScenario extends LoggingBase {
             // However CompositeList is not an HeterogeneousList, so this mapping does not conform the the specification.
             // A proper mapping should probably enforce the use of the HeterogeneousList type.
           
-            /*
-             * COMPILATION ERROR
-             * incompatible types: HeterogeneousList cannot be converted to CompositeList
-             *
-            HeterogeneousList abstractList = new HeterogeneousList();
+            CompositeList abstractList = new CompositeList();
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
-             * END OF COMPILATION ERROR
-             */
-            /*
-             * ALTERNATE CODE - does not conform to the MAL specification
-             */
-            CompositeList abstractList = TestData.testStructureWithAbstractFieldSingleTypedList1;
-            /*
-             * END OF ALTERNATE CODE
-             */
+
             res = getDataTestStub().testPolymorphicMalCompositeList(abstractList);
             rv = subMultiTest(abstractList,
                     res, null, "testStructureWithAbstractFieldSingleTypedList1");

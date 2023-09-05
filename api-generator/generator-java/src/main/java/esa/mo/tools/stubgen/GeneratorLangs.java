@@ -1207,8 +1207,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             String opCall, CompositeField opRetType) throws IOException {
         List<TypeInfo> targetTypes = op.getRetTypes();
 
-        if ((null != targetTypes) && (!targetTypes.isEmpty())) {
-            if (1 == targetTypes.size()) {
+        if ((targetTypes != null) && (!targetTypes.isEmpty())) {
+            if (targetTypes.size() == 1) {
                 if ((op.getRetTypes().get(0).isNativeType())) {
                     String arg = op.getName() + "Rt";
                     method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall);
@@ -1844,7 +1844,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     "", ti.getSourceType(), true, true, null);
             at = ce.getNewCall();
         }
-        if (at == null && cast.contains("List") && !cast.contains(".Element") && !cast.contains(".Composite")) {
+        if (at == null && cast.contains("List") && !cast.contains(".Element")) {
             at = "new " + cast + "()";
         }
         if (cast.contains(".MOObject")) {

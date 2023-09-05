@@ -92,7 +92,7 @@ public class JavaLists {
                 "The success status.", null);
 
         method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {", false);
-        method.addLine("  throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
+        method.addLine("    throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
         method.addLine("}", false);
         method.addLine("return super.add(element)");
         method.addMethodCloseStatement();
@@ -117,7 +117,7 @@ public class JavaLists {
 
         TypeReference srcType = new TypeReference();
         srcType.setArea(area.getName());
-        if (null != service) {
+        if (service != null) {
             srcType.setService(service.getName());
         }
 
@@ -132,6 +132,7 @@ public class JavaLists {
                 true, true, null);
         String fqSrcTypeName = generator.createElementType(file, area, service, srcTypeName);
 
+        /*
         TypeReference superTypeReference = new TypeReference();
         superTypeReference.setArea(StdStrings.MAL);
 
@@ -149,7 +150,8 @@ public class JavaLists {
         if (sElement.contains("Attribute")) {
             sElement = sElement.replace("Attribute", "Homogeneous"); // Needs to be replaced for Attributes
         }
-
+        */
+        String sElement = "org.ccsds.moims.mo.mal.structures.Homogeneous";
         file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",
                 sElement + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
 
