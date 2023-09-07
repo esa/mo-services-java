@@ -45,12 +45,12 @@
                 <mal:item value="PROGRESS" nvalue="5" comment="Used for PROGRESS interactions."/>
                 <mal:item value="PUBSUB" nvalue="6" comment="Used for Publish-Subscribe interactions."/>
             </mal:enumeration>
-            <mal:enumeration name="SessionType" shortFormPart="102" comment="SessionType is an enumeration that shall be used to hold the session types. This shall facilitate the use of different Sessions in out-of-band agreements.">
+            <mal:enumeration name="SessionType" shortFormPart="102" comment="SessionType is an enumeration that shall be used to hold the session types. This facilitates the use of different Sessions in out-of-band agreements.">
                 <mal:item value="LIVE" nvalue="1" comment="Used for Live sessions."/>
                 <mal:item value="SIMULATION" nvalue="2" comment="Used for Simulation sessions."/>
                 <mal:item value="REPLAY" nvalue="3" comment="Used for Replay sessions."/>
             </mal:enumeration>
-            <mal:enumeration name="QoSLevel" shortFormPart="103" comment="QoSLevel is an enumeration that shall be used to hold the possible QoS levels. This shall facilitate the use of different QoS in out-of-band agreements.">
+            <mal:enumeration name="QoSLevel" shortFormPart="103" comment="QoSLevel is an enumeration that shall be used to hold the possible QoS levels. This facilitates the use of different QoS in out-of-band agreements.">
                 <mal:item value="BESTEFFORT" nvalue="1" comment="Used for Best Effort QoS Level."/>
                 <mal:item value="ASSURED" nvalue="2" comment="Used for Assured QoS Level."/>
                 <mal:item value="QUEUED" nvalue="3" comment="Used for Queued QoS Level."/>
