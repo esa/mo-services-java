@@ -578,7 +578,7 @@ public class DataTypeScenario extends LoggingBase {
             // instead of the HeterogeneousList type which maps the List<Element> type required at the MAL level.
             // However CompositeList is not an HeterogeneousList, so this mapping does not conform the the specification.
             // A proper mapping should probably enforce the use of the HeterogeneousList type.
-          
+
             CompositeList abstractList = new CompositeList();
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
 
@@ -586,22 +586,12 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(abstractList,
                     res, null, "testStructureWithAbstractFieldSingleTypedList1");
             // heterogeneous concrete list type List<Element>
-            /*
-             * COMPILATION ERROR
-             * incompatible types: AbstractCompositeList cannot be converted to CompositeList
-             *
-            res = getDataTestStub().testPolymorphicMalCompositeList(TestData.testAbstractCompositeMultipleTypedList);
-             *
-             * END OF COMPILATION ERROR
-             */
-            /*
-             * ALTERNATE CODE - ensure this test fails in the surefire report so that it is eventually fixed
-             */
-            res = null;
-            /*
-             * END OF ALTERNATE CODE
-             */
-            rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
+
+            CompositeList compositeList = new CompositeList();
+            compositeList.addAll(TestData.testAbstractCompositeMultipleTypedList);
+            res = getDataTestStub().testPolymorphicMalCompositeList(compositeList);
+
+            rv = subMultiTest(compositeList,
                     res, rv, "testAbstractCompositeMultipleTypedList");
             logMessage("The current Java mapping prevents this test from compiling.");
         } catch (MALInteractionException ex) {
