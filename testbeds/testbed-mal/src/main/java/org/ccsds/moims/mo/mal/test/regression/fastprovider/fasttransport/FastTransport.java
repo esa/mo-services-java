@@ -81,8 +81,8 @@ public class FastTransport implements MALTransport {
     }
 
     @Override
-    public boolean isSupportedInteractionType(InteractionType it) {
-        return !InteractionType.PUBSUB.equals(it);
+    public boolean isSupportedInteractionType(InteractionType interactionType) {
+        return !InteractionType.PUBSUB.equals(interactionType);
     }
 
     @Override
@@ -93,8 +93,7 @@ public class FastTransport implements MALTransport {
         endpointMap.get(malm.getHeader().getTo().getValue()).internalSendMessage(malm);
     }
 
-    protected String getLocalName(String localName,
-            final java.util.Map properties) {
+    protected String getLocalName(String localName, final java.util.Map properties) {
         if ((null == localName) || (0 == localName.length())) {
             localName = String.valueOf(RANDOM_NAME.nextInt());
         }

@@ -47,8 +47,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public ProgressInteractionImpl(final MessageSend sender,
-            final Address address,
+    public ProgressInteractionImpl(final MessageSend sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }
