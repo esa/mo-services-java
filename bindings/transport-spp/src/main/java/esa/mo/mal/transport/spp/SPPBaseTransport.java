@@ -20,10 +20,10 @@
  */
 package esa.mo.mal.transport.spp;
 
-import esa.mo.mal.transport.gen.GENEndpoint;
+import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +44,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
-public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffer>> {
+public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>> {
 
     /**
      * Logger
@@ -202,7 +202,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     }
 
     @Override
-    protected GENEndpoint internalCreateEndpoint(final String localName,
+    protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties) throws MALException {
         return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier,
                 uriRep, ssc, localName, routingName, uriBase + routingName,
@@ -210,7 +210,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
     }
 
     @Override
-    protected GENOutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(
+    protected OutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(
             final String destinationRootURI,
             final String destinationURI,
             final Object multiSendHandle,
@@ -239,7 +239,7 @@ public abstract class SPPBaseTransport<I> extends GENTransport<I, List<ByteBuffe
             }
         }
 
-        return new GENOutgoingMessageHolder<List<ByteBuffer>>(defaultApid,
+        return new OutgoingMessageHolder<List<ByteBuffer>>(defaultApid,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,

@@ -21,27 +21,26 @@
 package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoderFactory;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import java.nio.ByteBuffer;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
+import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
+import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * Factory class for SPPMessage decoders.
  *
  * @param <I>
  */
-public class SPPMessageDecoderFactory<I> implements
-        GENIncomingMessageDecoderFactory<I, List<ByteBuffer>> {
+public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, List<ByteBuffer>> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(GENTransport<I, List<ByteBuffer>> transport,
-            GENReceptionHandler receptionHandler, I messageSource) {
+    public GENIncomingMessageDecoder createDecoder(Transport<I, List<ByteBuffer>> transport,
+            ReceptionHandler receptionHandler, I messageSource) {
         return new SPPMessageDecoder((SPPBaseTransport<I>) transport, messageSource);
     }
 
@@ -68,12 +67,12 @@ public class SPPMessageDecoderFactory<I> implements
         }
 
         @Override
-        public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
+        public IncomingMessageHolder decodeAndCreateMessage() throws MALException {
             PacketToString smsg = new PacketToString(null);
             GENMessage malMsg = transport.createMessage(rawMessage);
 
-            if (null != malMsg) {
-                return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+            if (malMsg != null) {
+                return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
             }
 
             return null;

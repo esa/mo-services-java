@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.zmtp;
 
-import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Endpoint;
+import esa.mo.mal.transport.gen.Transport;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -40,11 +40,11 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public class ZMTPEndpoint extends GENEndpoint {
+public class ZMTPEndpoint extends Endpoint {
 
     private final ZMTPConfiguration configuration;
 
-    public ZMTPEndpoint(GENTransport transport,
+    public ZMTPEndpoint(Transport transport,
             ZMTPConfiguration configuration,
             String localName,
             String routingName,

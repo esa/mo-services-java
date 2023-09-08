@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.rmi;
 
-import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory.GENIncomingByteMessageDecoder;
+import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory.GENIncomingByteMessageDecoder;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 

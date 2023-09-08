@@ -20,14 +20,14 @@
  */
 package esa.mo.mal.transport.gen.util;
 
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoderFactory;
+import esa.mo.mal.transport.gen.Transport;
 import java.io.IOException;
 import java.io.EOFException;
 import java.util.logging.Level;
-import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import static esa.mo.mal.transport.gen.Transport.LOGGER;
+import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
+import esa.mo.mal.transport.gen.sending.MessageSender;
+import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * This utility class creates a thread to pull encoded messages from a
@@ -44,16 +44,16 @@ import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
  * @param <I> The type of the encoded messages.
  * @param <O> The type of the outgoing messages.
  */
-public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandler {
+public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
 
     /**
      * Reference to the transport
      */
-    protected final GENTransport transport;
+    protected final Transport transport;
     /**
      * the low level message sender
      */
-    protected final GENMessageSender messageSender;
+    protected final MessageSender messageSender;
     /**
      * the low level message receiver
      */
@@ -76,10 +76,10 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
      * @param decoderFactory The decoder factory to create message decoders
      * from.
      */
-    public GENMessagePoller(GENTransport<I, O> transport,
-            GENMessageSender messageSender,
+    public MessagePoller(Transport<I, O> transport,
+            MessageSender messageSender,
             GENMessageReceiver<I> messageReceiver,
-            GENIncomingMessageDecoderFactory<I, O> decoderFactory) {
+            MessageDecoderFactory<I, O> decoderFactory) {
         this.transport = transport;
         this.messageSender = messageSender;
         this.messageReceiver = new MessageAdapter<I, O>(transport,
@@ -96,8 +96,8 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
      * @param messageReceiver The message reception interface, used for pulling
      * messaging into this transport.
      */
-    protected GENMessagePoller(GENTransport<I, O> transport,
-            GENMessageSender messageSender, MessageAdapter messageReceiver) {
+    protected MessagePoller(Transport<I, O> transport,
+            MessageSender messageSender, MessageAdapter messageReceiver) {
         this.transport = transport;
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
@@ -146,7 +146,7 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
     }
 
     @Override
-    public GENMessageSender getMessageSender() {
+    public MessageSender getMessageSender() {
         return messageSender;
     }
 
@@ -188,10 +188,10 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
      */
     protected static class MessageAdapter<I, O> {
 
-        private final GENTransport transport;
-        private final GENReceptionHandler handler;
+        private final Transport transport;
+        private final ReceptionHandler handler;
         private final GENMessageReceiver<I> receiver;
-        private final GENIncomingMessageDecoderFactory<I, O> decoderFactory;
+        private final MessageDecoderFactory<I, O> decoderFactory;
 
         /**
          * Constructor.
@@ -202,10 +202,10 @@ public class GENMessagePoller<I, O> extends Thread implements GENReceptionHandle
          * @param decoderFactory The decoder factory to create message decoders
          * from.
          */
-        public MessageAdapter(GENTransport transport,
-                GENReceptionHandler handler,
+        public MessageAdapter(Transport transport,
+                ReceptionHandler handler,
                 GENMessageReceiver<I> receiver,
-                GENIncomingMessageDecoderFactory<I, O> decoderFactory) {
+                MessageDecoderFactory<I, O> decoderFactory) {
             this.transport = transport;
             this.handler = handler;
             this.receiver = receiver;

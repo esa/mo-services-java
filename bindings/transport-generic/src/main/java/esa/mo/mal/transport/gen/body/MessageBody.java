@@ -20,23 +20,22 @@
  */
 package esa.mo.mal.transport.gen.body;
 
-import org.ccsds.moims.mo.mal.encoding.GENElementInputStream;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALElementsRegistry;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.OperationField;
-import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.encoding.GENElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
+import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -45,6 +44,7 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * Implementation of the MALMessageBody interface.
@@ -308,7 +308,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
             MALElementInputStream benc = encBodyElements;
             if (wrappedBodyParts) {
-                GENTransport.LOGGER.fine("GEN Message decoding body wrapper");
+                Transport.LOGGER.fine("GEN Message decoding body wrapper");
                 final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
                 final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
                 benc = encFactory.createInputStream(bais);
@@ -336,7 +336,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                 }
             }
         } catch (MALException ex) {
-            GENTransport.LOGGER.log(Level.WARNING,
+            Transport.LOGGER.log(Level.WARNING,
                     "Unable to decode the Message Body!", ex);
             throw ex;
         }
@@ -407,7 +407,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
         // It is not an abstract element:
         if (sf != null) {
             Long shortForm = (Long) sf;
-            GENTransport.LOGGER.log(Level.FINER,
+            Transport.LOGGER.log(Level.FINER,
                     "GEN Message decoding body part : Type = {0}", shortForm);
 
             try {

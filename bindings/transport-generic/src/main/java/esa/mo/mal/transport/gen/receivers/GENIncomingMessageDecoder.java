@@ -34,5 +34,5 @@ public interface GENIncomingMessageDecoder {
      * @return The decoded incoming message.
      * @throws MALException On error.s
      */
-    GENIncomingMessageHolder decodeAndCreateMessage() throws MALException;
+    IncomingMessageHolder decodeAndCreateMessage() throws MALException;
 }

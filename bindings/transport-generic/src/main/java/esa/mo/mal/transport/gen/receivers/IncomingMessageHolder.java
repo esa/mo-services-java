@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2014      European Space Agency
+ * Copyright (C) 2013      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,40 +18,40 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.gen;
+package esa.mo.mal.transport.gen.receivers;
 
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.PacketToString;
 
 /**
- * The GENReceptionHandler interface defines the methods needed for a receiver
- * managing incoming data from a communication channel.
+ * Simple structure class for holding related aspects of a decoded MAL message.
  */
-public interface GENReceptionHandler {
+public final class IncomingMessageHolder {
 
     /**
-     * Returns the remote URI for this reception handler.
+     * The transaction id of this message.
+     */
+    public final Long transactionId;
+    /**
+     * The decoded MAL message.
+     */
+    public final GENMessage malMsg;
+    /**
+     * A string representation for debug tracing.
+     */
+    public final PacketToString smsg;
+
+    /**
+     * Constructor.
      *
-     * @return the remote URI that this reception handler receives data from
+     * @param transactionId the message transaction id.
+     * @param malMsg The decoded MAL message.
+     * @param smsg A string representation for debug tracing.
      */
-    public String getRemoteURI();
-
-    /**
-     * Setter method for the remote URI of this handler
-     *
-     * @param newURI the remote root URI, i.e. maltcp://10.0.0.1:61617
-     */
-    public void setRemoteURI(String newURI);
-
-    /**
-     * Returns the message sender for this reception handler.
-     *
-     * @return the message sender for this receiver. Null if this receiver does
-     * not support sending messages
-     */
-    public GENMessageSender getMessageSender();
-
-    /**
-     * Closes the communication channel for this reception handler
-     */
-    public void close();
+    public IncomingMessageHolder(final Long transactionId, 
+            final GENMessage malMsg, final PacketToString smsg) {
+        this.transactionId = transactionId;
+        this.malMsg = malMsg;
+        this.smsg = smsg;
+    }
 }

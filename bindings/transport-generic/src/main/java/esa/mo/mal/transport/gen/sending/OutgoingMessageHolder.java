@@ -20,11 +20,10 @@
  */
 package esa.mo.mal.transport.gen.sending;
 
+import static esa.mo.mal.transport.gen.Transport.LOGGER;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-
-import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
 import java.util.concurrent.TimeUnit;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
@@ -35,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  *
  * @param <O> The type of the encoded message.
  */
-public class GENOutgoingMessageHolder<O> {
+public class OutgoingMessageHolder<O> {
 
     /**
      * The reply queue
@@ -87,7 +86,7 @@ public class GENOutgoingMessageHolder<O> {
      * @param originalMessage The un-encoded message to be sent
      * @param encodedMessage The encoded message to be sent
      */
-    public GENOutgoingMessageHolder(final int timeout,
+    public OutgoingMessageHolder(final int timeout,
             final String destinationRootURI,
             final String destinationURI,
             final Object multiSendHandle,

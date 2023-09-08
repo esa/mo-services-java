@@ -20,9 +20,8 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.MessagePoller.GENMessageReceiver;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -33,6 +32,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.structures.URI;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * This class implements the low level data (MAL Message) transport protocol.
@@ -41,7 +41,7 @@ import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
  *
  * This class manages both the transmitting and receiving of messages.
  */
-public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPacketInfoHolder>, GENMessageSender {
+public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPacketInfoHolder>, MessageSender {
 
     private boolean closed = false;
     private final static int HEADER_SIZE = 23;
@@ -80,7 +80,7 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
      * @throws java.io.IOException
      */
     @Override
-    public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException {
+    public void sendEncodedMessage(OutgoingMessageHolder packetData) throws IOException {
         if (!closed) {
             socketWriteIf.write((byte[]) packetData.getEncodedMessage());
             socketWriteIf.flush();

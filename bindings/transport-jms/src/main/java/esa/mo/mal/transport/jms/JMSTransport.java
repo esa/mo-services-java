@@ -31,11 +31,10 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
-import esa.mo.mal.transport.gen.GENEndpoint;
+import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.io.IOException;
 import javax.naming.NameNotFoundException;
 import org.ccsds.moims.mo.mal.MALHelper;
@@ -43,11 +42,12 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  *
  */
-public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTransport {
+public class JMSTransport extends Transport<byte[], byte[]> implements MALTransport {
 
     /**
      * Logger
@@ -91,7 +91,7 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
     }
 
     @Override
-    protected GENEndpoint internalCreateEndpoint(String localName, String routingName,
+    protected Endpoint internalCreateEndpoint(String localName, String routingName,
             Map qosProperties) throws MALException {
         try {
             Session qs = getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -159,7 +159,7 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
     }
 
     @Override
-    protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
+    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
                 "JMS received request to create connections to URI:{0}", remoteRootURI);
@@ -188,10 +188,10 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
     }
 
     @Override
-    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
+    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
             String destinationURI, Object multiSendHandle, boolean lastForHandle,
             String targetURI, GENMessage msg) throws Exception {
-        return new GENOutgoingMessageHolder<byte[]>(10,
+        return new OutgoingMessageHolder<byte[]>(10,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,
@@ -200,7 +200,7 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
                 internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
     }
 
-    private class JMSMessageSender implements GENMessageSender<byte[]> {
+    private class JMSMessageSender implements MessageSender<byte[]> {
 
         private final String remoteRootURI;
 
@@ -209,7 +209,7 @@ public class JMSTransport extends GENTransport<byte[], byte[]> implements MALTra
         }
 
         @Override
-        public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> tmsg) throws IOException {
+        public void sendEncodedMessage(OutgoingMessageHolder<byte[]> tmsg) throws IOException {
             String sendRoutingKey = tmsg.getDestinationURI().substring(remoteRootURI.length() + 1);
 
             RLOGGER.log(Level.FINE, "Attempting to send to {0}",

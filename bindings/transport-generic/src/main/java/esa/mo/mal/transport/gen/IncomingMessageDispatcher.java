@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -33,8 +33,8 @@ import java.util.Queue;
  */
 public class IncomingMessageDispatcher implements Runnable {
 
-    private final Queue<GENIncomingMessageHolder> malMsgs = new ArrayDeque<>();
-    private final GENTransport transport;
+    private final Queue<IncomingMessageHolder> malMsgs = new ArrayDeque<>();
+    private final Transport transport;
     private boolean finished = false;
 
     /**
@@ -43,8 +43,7 @@ public class IncomingMessageDispatcher implements Runnable {
      * @param transport
      * @param malMsg The MAL message.
      */
-    public IncomingMessageDispatcher(final GENTransport transport,
-            final GENIncomingMessageHolder malMsg) {
+    public IncomingMessageDispatcher(final Transport transport, final IncomingMessageHolder malMsg) {
         this.transport = transport;
         malMsgs.add(malMsg);
     }
@@ -58,7 +57,7 @@ public class IncomingMessageDispatcher implements Runnable {
      * @return True if this needs to be resubmitted to the processing executor
      * pool.
      */
-    public synchronized boolean addMessage(final GENIncomingMessageHolder malMsg) {
+    public synchronized boolean addMessage(final IncomingMessageHolder malMsg) {
         malMsgs.add(malMsg);
 
         if (finished) {
@@ -80,7 +79,7 @@ public class IncomingMessageDispatcher implements Runnable {
 
     @Override
     public void run() {
-        GENIncomingMessageHolder msg;
+        IncomingMessageHolder msg;
 
         synchronized (this) {
             msg = malMsgs.poll();

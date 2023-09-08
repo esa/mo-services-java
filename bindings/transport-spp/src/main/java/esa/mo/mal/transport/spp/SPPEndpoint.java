@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.spp;
 
-import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Endpoint;
+import esa.mo.mal.transport.gen.Transport;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.APID_QUALIFIER_PROPERTY;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.IS_TC_PACKET_PROPERTY;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public class SPPEndpoint extends GENEndpoint {
+public class SPPEndpoint extends Endpoint {
 
     private final SPPConfiguration configuration;
     private final int apidQualifier;
@@ -52,7 +52,7 @@ public class SPPEndpoint extends GENEndpoint {
     private final SPPSourceSequenceCounter ssCounter;
     private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap = new HashMap<>();
 
-    public SPPEndpoint(GENTransport transport,
+    public SPPEndpoint(Transport transport,
             SPPConfiguration configuration,
             int apidQualifier,
             SPPURIRepresentation uriRep,

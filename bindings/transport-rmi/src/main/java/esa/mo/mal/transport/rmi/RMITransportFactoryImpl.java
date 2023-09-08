@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.rmi;
 
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 public class RMITransportFactoryImpl extends MALTransportFactory {
 
     private static final Object MUTEX = new Object();
-    private GENTransport transport = null;
+    private Transport transport = null;
 
     /**
      * Constructor.

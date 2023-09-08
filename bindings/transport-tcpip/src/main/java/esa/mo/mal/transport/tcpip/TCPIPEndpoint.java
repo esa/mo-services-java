@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Endpoint;
+import esa.mo.mal.transport.gen.Transport;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -37,9 +37,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * @author Rian van Gijlswijk
  *
  */
-public class TCPIPEndpoint extends GENEndpoint {
+public class TCPIPEndpoint extends Endpoint {
 
-    public TCPIPEndpoint(GENTransport transport, String localName,
+    public TCPIPEndpoint(Transport transport, String localName,
             String routingName, String uri, boolean wrapBodyParts) {
         super(transport, localName, routingName, uri, wrapBodyParts);
     }

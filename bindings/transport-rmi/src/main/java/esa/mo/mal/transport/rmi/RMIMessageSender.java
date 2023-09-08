@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.rmi;
 
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 /**
  * implementation of the GENMessageSender information for RMI transport.
  */
-public class RMIMessageSender implements GENMessageSender<byte[]> {
+public class RMIMessageSender implements MessageSender<byte[]> {
 
     private final String remoteURI;
     private boolean closed = false;
@@ -52,7 +52,7 @@ public class RMIMessageSender implements GENMessageSender<byte[]> {
     }
 
     @Override
-    public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException {
+    public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         try {
             internalSendMessage(packetData);
         } catch (RemoteException ex) {
@@ -63,7 +63,7 @@ public class RMIMessageSender implements GENMessageSender<byte[]> {
         }
     }
 
-    private void internalSendMessage(GENOutgoingMessageHolder<byte[]> packetData) 
+    private void internalSendMessage(OutgoingMessageHolder<byte[]> packetData) 
             throws MalformedURLException, RemoteException, IOException {
         if (!closed) {
             if (null == destinationRMI) {

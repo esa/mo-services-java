@@ -52,7 +52,7 @@ public class PacketToString {
         // Should be removed in the future...
         if (logFullDebug == null) {
             Properties properties = System.getProperties();
-            String prop = properties.getProperty(GENTransport.DEBUG_PROPERTY, "false");
+            String prop = properties.getProperty(Transport.DEBUG_PROPERTY, "false");
             logFullDebug = Boolean.valueOf(prop);
         }
     }

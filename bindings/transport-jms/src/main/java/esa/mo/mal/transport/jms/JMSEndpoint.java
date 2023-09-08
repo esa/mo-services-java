@@ -34,13 +34,13 @@ import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
-import esa.mo.mal.transport.gen.GENEndpoint;
+import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 
 /**
  *
  */
-public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
+public class JMSEndpoint extends Endpoint implements MALEndpoint {
 
     public static final String DOM_PROPERTY = "DOM";
     public static final String NET_PROPERTY = "NET";

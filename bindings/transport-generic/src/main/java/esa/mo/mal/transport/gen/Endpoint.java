@@ -34,9 +34,9 @@ import org.ccsds.moims.mo.mal.transport.*;
 /**
  * A generic implementation of the end point interface.
  */
-public class GENEndpoint implements MALEndpoint {
+public class Endpoint implements MALEndpoint {
 
-    protected final GENTransport transport;
+    protected final Transport transport;
     protected final String localName;
     protected final String routingName;
     protected final String localURI;
@@ -54,7 +54,7 @@ public class GENEndpoint implements MALEndpoint {
      * @param wrapBodyParts True if the encoded body parts should be wrapped in
      * BLOBs.
      */
-    public GENEndpoint(final GENTransport transport, final String localName,
+    public Endpoint(final Transport transport, final String localName,
             final String routingName, final String uri, final boolean wrapBodyParts) {
         this.transport = transport;
         this.localName = localName;
@@ -65,14 +65,14 @@ public class GENEndpoint implements MALEndpoint {
 
     @Override
     public void startMessageDelivery() throws MALException {
-        GENTransport.LOGGER.log(Level.FINE,
+        Transport.LOGGER.log(Level.FINE,
                 "GENEndpoint ({0}) Activating message delivery", localName);
         active = true;
     }
 
     @Override
     public void stopMessageDelivery() throws MALException {
-        GENTransport.LOGGER.log(Level.FINE,
+        Transport.LOGGER.log(Level.FINE,
                 "GENEndpoint ({0}) Deactivating message delivery", localName);
         active = false;
     }
@@ -204,15 +204,6 @@ public class GENEndpoint implements MALEndpoint {
         }
     }
 
-    /**
-     * Returns the current message listener.
-     *
-     * @return the current message listener.
-     */
-    public MALMessageListener getMessageListener() {
-        return messageListener;
-    }
-
     @Override
     public void setMessageListener(final MALMessageListener list) throws MALException {
         this.messageListener = list;
@@ -228,7 +219,7 @@ public class GENEndpoint implements MALEndpoint {
         if (active && (messageListener != null)) {
             messageListener.onMessage(this, msg);
         } else {
-            GENTransport.LOGGER.log(Level.WARNING,
+            Transport.LOGGER.log(Level.WARNING,
                     "GENEndpoint ({0}) Discarding message active({1}) listener({2}) {3}",
                     new Object[]{localName, active, messageListener, msg.toString()});
         }
@@ -244,7 +235,7 @@ public class GENEndpoint implements MALEndpoint {
         if (active && (messageListener != null)) {
             messageListener.onMessages(this, msgs);
         } else {
-            GENTransport.LOGGER.log(Level.WARNING,
+            Transport.LOGGER.log(Level.WARNING,
                     "GENEndpoint ({0}) Discarding messages active({1}) listener({2})",
                     new Object[]{localName, active, messageListener});
         }

@@ -21,48 +21,49 @@
 package esa.mo.mal.transport.gen.receivers;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
+import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
+import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
- * Factory class for byte decoders.
+ * Factory class for IO stream decoders.
  */
-public class GENIncomingByteMessageDecoderFactory<O> implements
-        GENIncomingMessageDecoderFactory<byte[], O> {
+public class IncomingStreamMessageDecoderFactory<O> implements MessageDecoderFactory<InputStream, O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(GENTransport<byte[], O> transport,
-            GENReceptionHandler receptionHandler, byte[] messageSource) {
-        return new GENIncomingByteMessageDecoder(transport, messageSource);
+    public GENIncomingMessageDecoder createDecoder(Transport<InputStream, O> transport,
+            ReceptionHandler receptionHandler, InputStream messageSource) {
+        return new GENIncomingStreamMessageDecoder(transport, messageSource);
     }
 
     /**
      * Implementation of the GENIncomingMessageDecoder class for newly arrived
-     * MAL Messages in byte array format.
+     * MAL Messages in stream format.
      */
-    public static final class GENIncomingByteMessageDecoder<O> implements GENIncomingMessageDecoder {
+    public static final class GENIncomingStreamMessageDecoder<O> implements GENIncomingMessageDecoder {
 
-        private final GENTransport<byte[], O> transport;
-        private final byte[] rawMessage;
+        private final Transport<InputStream, O> transport;
+        private final InputStream ios;
 
         /**
          * Constructor
          *
          * @param transport Containing transport.
-         * @param rawMessage The raw message
+         * @param ios The stream message
          */
-        public GENIncomingByteMessageDecoder(final GENTransport<byte[], O> transport, byte[] rawMessage) {
+        public GENIncomingStreamMessageDecoder(
+                final Transport<InputStream, O> transport, InputStream ios) {
             this.transport = transport;
-            this.rawMessage = rawMessage;
+            this.ios = ios;
         }
 
         @Override
-        public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
-            PacketToString smsg = new PacketToString(rawMessage);
-            GENMessage malMsg = transport.createMessage(rawMessage);
-            return new GENIncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+        public IncomingMessageHolder decodeAndCreateMessage() throws MALException {
+            PacketToString smsg = new PacketToString(null);
+            GENMessage malMsg = transport.createMessage(ios);
+            return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
         }
     }
 }

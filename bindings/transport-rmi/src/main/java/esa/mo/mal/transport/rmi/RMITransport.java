@@ -21,9 +21,9 @@
 package esa.mo.mal.transport.rmi;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.sending.MessageSender;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -52,7 +52,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 /**
  * An implementation of the transport interface for the RMI protocol.
  */
-public class RMITransport extends GENTransport<byte[], byte[]> {
+public class RMITransport extends Transport<byte[], byte[]> {
 
     /**
      * Logger
@@ -185,7 +185,7 @@ public class RMITransport extends GENTransport<byte[], byte[]> {
     }
 
     @Override
-    protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
+    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
                 "RMI received request to create connections to URI: {0}", remoteRootURI);
@@ -214,14 +214,14 @@ public class RMITransport extends GENTransport<byte[], byte[]> {
     }
 
     @Override
-    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
             String destinationRootURI,
             String destinationURI,
             Object multiSendHandle,
             boolean lastForHandle,
             String targetURI,
             GENMessage msg) throws Exception {
-        return new GENOutgoingMessageHolder<byte[]>(10,
+        return new OutgoingMessageHolder<byte[]>(10,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,
@@ -241,7 +241,7 @@ public class RMITransport extends GENTransport<byte[], byte[]> {
      * @throws MALException On error
      */
     private static String getHostName(String preferredHostname) throws MALException {
-        if (null == preferredHostname) {
+        if (preferredHostname == null) {
             try {
                 // Build RMI url string
                 final InetAddress addr = Inet4Address.getLocalHost();

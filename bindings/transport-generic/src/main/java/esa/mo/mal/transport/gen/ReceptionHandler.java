@@ -18,26 +18,40 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.gen.sending;
+package esa.mo.mal.transport.gen;
 
-import java.io.IOException;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
- * Interface used to map to the low level transport specific send.
+ * The GENReceptionHandler interface defines the methods needed for a receiver
+ * managing incoming data from a communication channel.
  */
-public interface GENMessageSender<O> {
+public interface ReceptionHandler {
 
     /**
-     * Sends an encoded message to the client (MAL Message encoded as a byte
-     * array)
+     * Returns the remote URI for this reception handler.
      *
-     * @param encodedMessage the MALMessage
-     * @throws IOException in case the message cannot be sent to the client
+     * @return the remote URI that this reception handler receives data from
      */
-    void sendEncodedMessage(GENOutgoingMessageHolder<O> encodedMessage) throws IOException;
+    public String getRemoteURI();
 
     /**
-     * Closes any resources connected to the low level interface.
+     * Setter method for the remote URI of this handler
+     *
+     * @param newURI the remote root URI, i.e. maltcp://10.0.0.1:61617
      */
-    void close();
+    public void setRemoteURI(String newURI);
+
+    /**
+     * Returns the message sender for this reception handler.
+     *
+     * @return the message sender for this receiver. Null if this receiver does
+     * not support sending messages
+     */
+    public MessageSender getMessageSender();
+
+    /**
+     * Closes the communication channel for this reception handler
+     */
+    public void close();
 }

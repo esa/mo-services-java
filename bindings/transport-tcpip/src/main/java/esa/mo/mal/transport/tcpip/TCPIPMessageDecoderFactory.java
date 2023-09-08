@@ -22,12 +22,12 @@ package esa.mo.mal.transport.tcpip;
 
 import org.ccsds.moims.mo.mal.MALException;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoderFactory;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
+import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  *
@@ -35,11 +35,11 @@ import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
  * @param <O>
  *
  */
-public class TCPIPMessageDecoderFactory<O> implements GENIncomingMessageDecoderFactory<TCPIPPacketInfoHolder, O> {
+public class TCPIPMessageDecoderFactory<O> implements MessageDecoderFactory<TCPIPPacketInfoHolder, O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(GENTransport transport,
-            GENReceptionHandler receptionHandler, TCPIPPacketInfoHolder packetInfo) {
+    public GENIncomingMessageDecoder createDecoder(Transport transport,
+            ReceptionHandler receptionHandler, TCPIPPacketInfoHolder packetInfo) {
         return new TCPIPMessageDecoder((TCPIPTransport) transport, packetInfo);
     }
 
@@ -54,13 +54,13 @@ public class TCPIPMessageDecoderFactory<O> implements GENIncomingMessageDecoderF
         }
 
         @Override
-        public GENIncomingMessageHolder decodeAndCreateMessage() throws MALException {
+        public IncomingMessageHolder decodeAndCreateMessage() throws MALException {
             GENMessage msg = transport.createMessage(packetInfo);
             packetInfo.setPacketData(null);
 
             if (msg != null) {
                 PacketToString smsg = new PacketToString(null);
-                return new GENIncomingMessageHolder(msg.getHeader().getTransactionId(), msg, smsg);
+                return new IncomingMessageHolder(msg.getHeader().getTransactionId(), msg, smsg);
             }
 
             return null;

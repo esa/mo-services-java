@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.gen.sending;
 
-import esa.mo.mal.transport.gen.GENTransport;
-import static esa.mo.mal.transport.gen.GENTransport.LOGGER;
+import esa.mo.mal.transport.gen.Transport;
+import static esa.mo.mal.transport.gen.Transport.LOGGER;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,12 +49,12 @@ import static java.lang.Thread.interrupted;
  * or not.
  *
  */
-public class GENConcurrentMessageSender {
+public class ConcurrentMessageSender {
 
     /**
      * input message queue
      */
-    private final BlockingQueue<GENOutgoingMessageHolder> outgoingQueue;
+    private final BlockingQueue<OutgoingMessageHolder> outgoingQueue;
 
     /**
      * the list of processing threads that send the messages
@@ -64,7 +64,7 @@ public class GENConcurrentMessageSender {
     /**
      * reference to the transport
      */
-    private final GENTransport transport;
+    private final Transport transport;
 
     /**
      * reference to target URI
@@ -78,7 +78,7 @@ public class GENConcurrentMessageSender {
      * @param transport reference to the transport
      * @param targetURI The target URI.
      */
-    public GENConcurrentMessageSender(GENTransport transport, String targetURI) {
+    public ConcurrentMessageSender(Transport transport, String targetURI) {
         outgoingQueue = new LinkedBlockingQueue<>();
         processingThreads = Collections.synchronizedList(new ArrayList<>());
         this.transport = transport;
@@ -94,7 +94,7 @@ public class GENConcurrentMessageSender {
      *
      * @param message the message to be sent.
      */
-    public void sendMessage(GENOutgoingMessageHolder message) {
+    public void sendMessage(OutgoingMessageHolder message) {
         if (processingThreads.isEmpty()) {
             //this should never happen. Only possibly in boundary cases where
             // this object is asked to terminate and there is another thread 
@@ -122,7 +122,7 @@ public class GENConcurrentMessageSender {
      * @param uriTo the target URI
      * @return number of active processors
      */
-    public synchronized int addProcessor(GENMessageSender messageSender, String uriTo) {
+    public synchronized int addProcessor(MessageSender messageSender, String uriTo) {
         // create new thread
         GENSenderThread procThread = new GENSenderThread(messageSender, uriTo);
 
@@ -201,7 +201,7 @@ public class GENConcurrentMessageSender {
         /**
          * The message sender
          */
-        private final GENMessageSender messageSender;
+        private final MessageSender messageSender;
 
         /**
          * Constructor
@@ -209,7 +209,7 @@ public class GENConcurrentMessageSender {
          * @param messageSender
          * @param uriTo
          */
-        public GENSenderThread(GENMessageSender messageSender, String uriTo) {
+        public GENSenderThread(MessageSender messageSender, String uriTo) {
             this.uriTo = uriTo;
             this.messageSender = messageSender;
             setName("Transport_Send" + " URI: " + uriTo);
@@ -221,7 +221,7 @@ public class GENConcurrentMessageSender {
 
             // read forever while not interrupted
             while (bContinue && !interrupted()) {
-                GENOutgoingMessageHolder messageHolder = null;
+                OutgoingMessageHolder messageHolder = null;
                 try {
                     messageHolder = outgoingQueue.take();
 

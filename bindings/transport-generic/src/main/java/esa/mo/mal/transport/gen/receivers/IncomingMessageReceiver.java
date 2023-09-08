@@ -20,20 +20,20 @@
  */
 package esa.mo.mal.transport.gen.receivers;
 
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * This Runnable task is responsible for decoding newly arrived MAL Messages and
  * passing to the transport executor.
  */
-public class GENIncomingMessageReceiver implements Runnable {
+public class IncomingMessageReceiver implements Runnable {
 
-    protected final GENTransport transport;
-    protected final GENReceptionHandler receptionHandler;
+    protected final Transport transport;
+    protected final ReceptionHandler receptionHandler;
     protected final GENIncomingMessageDecoder decoder;
 
     /**
@@ -44,8 +44,8 @@ public class GENIncomingMessageReceiver implements Runnable {
      * @param decoder The class responsible for decoding the message from the
      * incoming connection
      */
-    public GENIncomingMessageReceiver(final GENTransport transport,
-            final GENReceptionHandler receptionHandler,
+    public IncomingMessageReceiver(final Transport transport,
+            final ReceptionHandler receptionHandler,
             final GENIncomingMessageDecoder decoder) {
         this.transport = transport;
         this.receptionHandler = receptionHandler;
@@ -61,11 +61,11 @@ public class GENIncomingMessageReceiver implements Runnable {
     @Override
     public void run() {
         try {
-            GENIncomingMessageHolder msg = decoder.decodeAndCreateMessage();
+            IncomingMessageHolder msg = decoder.decodeAndCreateMessage();
 
             // the decoder may return null for transports that support fragmentation
             if (msg != null) {
-                GENTransport.LOGGER.log(Level.FINE,
+                Transport.LOGGER.log(Level.FINE,
                         "Receving message : {0} : {1}",
                         new Object[]{msg.malMsg.getHeader().getTransactionId(), msg.smsg});
 
@@ -74,12 +74,12 @@ public class GENIncomingMessageReceiver implements Runnable {
                 transport.receiveIncomingMessage(msg);
             }
         } catch (MALException e) {
-            GENTransport.LOGGER.log(Level.WARNING,
+            Transport.LOGGER.log(Level.WARNING,
                     "Error occurred when decoding data : {0}", e);
 
             transport.communicationError(null, receptionHandler);
         } catch (MALTransmitErrorException e) {
-            GENTransport.LOGGER.log(Level.WARNING,
+            Transport.LOGGER.log(Level.WARNING,
                     "Error occurred when decoding data : {0}", e);
 
             transport.communicationError(null, receptionHandler);

@@ -22,9 +22,8 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
 import esa.mo.mal.transport.gen.*;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENMessagePoller;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.MessagePoller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Inet6Address;
@@ -54,6 +53,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * The TCPIP MAL Transport implementation.
@@ -97,7 +97,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  * (uses bidirectional TCP/IP communication).
  *
  */
-public class TCPIPTransport extends GENTransport<byte[], byte[]> {
+public class TCPIPTransport extends Transport<byte[], byte[]> {
 
     /**
      * Logger
@@ -171,7 +171,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     /**
      * Holds the list of data poller threads
      */
-    private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
+    private final List<MessagePoller> messagePollerThreadPool = new ArrayList<>();
 
     private static boolean aliasesLoaded = false;
 
@@ -433,7 +433,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         synchronized (this) {
             clientSockets.close();
 
-            for (GENMessagePoller entry : messagePollerThreadPool) {
+            for (MessagePoller entry : messagePollerThreadPool) {
                 entry.close();
             }
 
@@ -463,7 +463,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * @throws Exception if an error.
      */
     @Override
-    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
             final String destinationRootURI, final String destinationURI,
             final Object multiSendHandle, final boolean lastForHandle,
             final String targetURI, final GENMessage msg) throws Exception {
@@ -477,7 +477,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             LOGGER.log(Level.FINE, "GEN Sending data to {0} : {1}",
                     new Object[]{targetURI, new PacketToString(data)});
 
-            return new GENOutgoingMessageHolder<byte[]>(10, destinationRootURI,
+            return new OutgoingMessageHolder<byte[]>(10, destinationRootURI,
                     destinationURI, multiSendHandle, lastForHandle, msg, data);
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "GEN could not encode message!", ex);
@@ -491,7 +491,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * the base url plus the service identifier.
      */
     @Override
-    protected GENEndpoint internalCreateEndpoint(final String localName,
+    protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties) throws MALException {
         RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}", uriBase);
         return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
@@ -591,7 +591,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * terminate when the underlying connection is terminated.
      */
     @Override
-    protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
+    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.fine("TCPIPTransport.createMessageSender()");
         try {
@@ -620,7 +620,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
             TCPIPTransportDataTransceiver trans = createDataTransceiver(s);
 
-            GENMessagePoller messageReceiver = new GENMessagePoller(this, trans,
+            MessagePoller messageReceiver = new MessagePoller(this, trans,
                     trans, new TCPIPMessageDecoderFactory());
             messageReceiver.setRemoteURI(remoteRootURI);
             messageReceiver.start();

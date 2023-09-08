@@ -21,11 +21,10 @@
 package esa.mo.mal.transport.gen;
 
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageHolder;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageReceiver;
-import esa.mo.mal.transport.gen.sending.GENConcurrentMessageSender;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageReceiver;
+import esa.mo.mal.transport.gen.sending.ConcurrentMessageSender;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.TransportThreadFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -43,6 +42,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.*;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * A generic implementation of the transport interface.
@@ -50,7 +50,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  * @param <I> The type of incoming message
  * @param <O> The type of the outgoing encoded message
  */
-public abstract class GENTransport<I, O> implements MALTransport {
+public abstract class Transport<I, O> implements MALTransport {
 
     /**
      * System property to control whether message parts of wrapped in BLOBs.
@@ -147,11 +147,11 @@ public abstract class GENTransport<I, O> implements MALTransport {
     /**
      * Map of string MAL names to endpoints.
      */
-    protected final Map<String, GENEndpoint> endpointMalMap = new HashMap<>();
+    protected final Map<String, Endpoint> endpointMalMap = new HashMap<>();
     /**
      * Map of string transport routing names to endpoints.
      */
-    protected final Map<String, GENEndpoint> endpointRoutingMap = new HashMap<>();
+    protected final Map<String, Endpoint> endpointRoutingMap = new HashMap<>();
     /**
      * Map of QoS properties.
      */
@@ -181,7 +181,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * Map of outgoing channels. This associates a URI to a transport resource
      * that is able to send messages to this URI.
      */
-    private final Map<String, GENConcurrentMessageSender> outgoingDataChannels = new HashMap<>();
+    private final Map<String, ConcurrentMessageSender> outgoingDataChannels = new HashMap<>();
     /**
      * The stream factory used for encoding and decoding messages.
      */
@@ -219,7 +219,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    public GENTransport(final String protocol,
+    public Transport(final String protocol,
             final char serviceDelim,
             final boolean supportsRouting,
             final boolean wrapBodyParts,
@@ -245,7 +245,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    public GENTransport(final String protocol,
+    public Transport(final String protocol,
             final String protocolDelim,
             final char serviceDelim,
             final char routingDelim,
@@ -340,7 +340,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         }
 
         final String strRoutingName = getLocalName(localName, localProperties);
-        GENEndpoint endpoint = endpointRoutingMap.get(strRoutingName);
+        Endpoint endpoint = endpointRoutingMap.get(strRoutingName);
 
         if (endpoint == null) {
             LOGGER.log(Level.FINE, "Creating endpoint {0} : {1}",
@@ -384,9 +384,9 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param decoder The class responsible for decoding the message from the
      * incoming connection
      */
-    public void receive(final GENReceptionHandler receptionHandler,
+    public void receive(final ReceptionHandler receptionHandler,
             final GENIncomingMessageDecoder decoder) {
-        decoderExecutor.submit(new GENIncomingMessageReceiver(this, receptionHandler, decoder));
+        decoderExecutor.submit(new IncomingMessageReceiver(this, receptionHandler, decoder));
     }
 
     /**
@@ -422,8 +422,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     new Object[]{endpointUriPart});
 
             // if local then just send internally
-            receiveIncomingMessage(
-                    new GENIncomingMessageHolder(
+            receiveIncomingMessage(new IncomingMessageHolder(
                             header.getTransactionId(), msg, new PacketToString(null)));
         } else {
             try {
@@ -432,9 +431,9 @@ public abstract class GENTransport<I, O> implements MALTransport {
                         new Object[]{remoteRootURI, destinationURI});
 
                 // get outgoing channel
-                GENConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
+                ConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
 
-                GENOutgoingMessageHolder outgoingPacket = internalEncodeMessage(
+                OutgoingMessageHolder outgoingPacket = internalEncodeMessage(
                         remoteRootURI, destinationURI, multiSendHandle,
                         lastForHandle, dataSender.getTargetURI(), msg);
 
@@ -478,7 +477,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param uriTo the connection handler that received this message
      * @param receptionHandler The reception handler to pass them to.
      */
-    public void closeConnection(final String uriTo, final GENReceptionHandler receptionHandler) {
+    public void closeConnection(final String uriTo, final ReceptionHandler receptionHandler) {
         String localUriTo = uriTo;
         // remove all associations with this target URI
         if ((null == localUriTo) && (null != receptionHandler)) {
@@ -486,7 +485,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
         }
 
         if (localUriTo != null) {
-            GENConcurrentMessageSender commsChannel;
+            ConcurrentMessageSender commsChannel;
 
             synchronized (this) {
                 commsChannel = outgoingDataChannels.get(localUriTo);
@@ -519,14 +518,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param uriTo the connection handler that received this message
      * @param receptionHandler The reception handler to pass them to.
      */
-    public void communicationError(String uriTo, GENReceptionHandler receptionHandler) {
+    public void communicationError(String uriTo, ReceptionHandler receptionHandler) {
         LOGGER.log(Level.WARNING, "Communication Error with uri: {0} ", uriTo);
         closeConnection(uriTo, receptionHandler);
     }
 
     @Override
     public void deleteEndpoint(final String localName) throws MALException {
-        final GENEndpoint endpoint = endpointMalMap.get(localName);
+        final Endpoint endpoint = endpointMalMap.get(localName);
 
         if (null != endpoint) {
             LOGGER.log(Level.INFO, "Deleting endpoint", localName);
@@ -538,7 +537,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
     @Override
     public void close() throws MALException {
-        for (GENEndpoint entry : endpointMalMap.values()) {
+        for (Endpoint entry : endpointMalMap.values()) {
             entry.close();
         }
 
@@ -550,7 +549,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
         LOGGER.fine("Closing outgoing channels");
         synchronized (this) {
-            for (GENConcurrentMessageSender sender : outgoingDataChannels.values()) {
+            for (ConcurrentMessageSender sender : outgoingDataChannels.values()) {
                 sender.terminate();
             }
 
@@ -565,7 +564,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      *
      * @param malMsg the message
      */
-    public void receiveIncomingMessage(final GENIncomingMessageHolder malMsg) {
+    public void receiveIncomingMessage(final IncomingMessageHolder malMsg) {
         LOGGER.log(Level.FINE, "Queuing message : {0} : {1}",
                 new Object[]{malMsg.malMsg.getHeader().getTransactionId(), malMsg.smsg});
 
@@ -611,7 +610,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
             String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
-            final GENEndpoint endpoint = endpointRoutingMap.get(endpointUriPart);
+            final Endpoint endpoint = endpointRoutingMap.get(endpointUriPart);
 
             if (endpoint != null) {
                 LOGGER.log(Level.FINE, "Passing message to endpoint {0} : {1}",
@@ -670,7 +669,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param errorMsg The error message.
      * @throws MALException if cannot encode a response message
      */
-    protected void returnErrorMessage(GENEndpoint ep, final GENMessage oriMsg,
+    protected void returnErrorMessage(Endpoint ep, final GENMessage oriMsg,
             final UInteger errorNumber, final String errorMsg) throws MALException {
         try {
             final MALMessageHeader srcHdr = oriMsg.getHeader();
@@ -689,7 +688,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
                     || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
 
                 if ((null == ep) && (!endpointMalMap.isEmpty())) {
-                    GENEndpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
+                    Endpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
 
                     final GENMessage retMsg = (GENMessage) endpoint.createMessage(
                             srcHdr.getAuthenticationId(),
@@ -772,9 +771,9 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @return The new endpoint
      * @throws MALException on Error.
      */
-    protected GENEndpoint internalCreateEndpoint(final String localName,
+    protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map qosProperties) throws MALException {
-        return new GENEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
+        return new Endpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
     }
 
     /**
@@ -791,9 +790,9 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @return returns an existing or newly created message sender
      * @throws MALTransmitErrorException in case of communication problems
      */
-    public synchronized GENConcurrentMessageSender manageCommunicationChannel(GENMessage msg,
-            boolean isIncomingMsg, GENReceptionHandler receptionHandler) throws MALTransmitErrorException {
-        GENConcurrentMessageSender sender = null;
+    public synchronized ConcurrentMessageSender manageCommunicationChannel(GENMessage msg,
+            boolean isIncomingMsg, ReceptionHandler receptionHandler) throws MALTransmitErrorException {
+        ConcurrentMessageSender sender = null;
 
         if (isIncomingMsg) {
             // incoming msg
@@ -829,14 +828,14 @@ public abstract class GENTransport<I, O> implements MALTransport {
 
                 try {
                     // create new sender for this URI
-                    GENMessageSender transmitter = createMessageSender(msg, remoteRootURI);
+                    MessageSender transmitter = createMessageSender(msg, remoteRootURI);
                     sender = registerMessageSender(transmitter, remoteRootURI);
 
                     LOGGER.log(Level.FINE, "Opening {0}", numConnections);
 
                     for (int i = 1; i < numConnections; i++) {
                         // insert new processor (message sender) to root data sender for the URI
-                        GENMessageSender anotherTransmitter = createMessageSender(msg, remoteRootURI);
+                        MessageSender anotherTransmitter = createMessageSender(msg, remoteRootURI);
                         sender.addProcessor(anotherTransmitter, remoteRootURI);
                     }
                 } catch (MALException e) {
@@ -876,10 +875,10 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @param remoteRootURI the remote root URI
      * @return returns the GENConcurrentMessageSender for this URI.
      */
-    protected synchronized GENConcurrentMessageSender registerMessageSender(
-            GENMessageSender dataTransmitter, String remoteRootURI) {
+    protected synchronized ConcurrentMessageSender registerMessageSender(
+            MessageSender dataTransmitter, String remoteRootURI) {
         //check if we already have a communication channel for this URI
-        GENConcurrentMessageSender dataSender = outgoingDataChannels.get(remoteRootURI);
+        ConcurrentMessageSender dataSender = outgoingDataChannels.get(remoteRootURI);
 
         if (dataSender != null) {
             //we already have a communication channel for this URI
@@ -893,7 +892,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
             //we do not have a communication channel, create a data sender manager and add the first data sender
             // create new sender manager for this URI
             LOGGER.log(Level.FINE, "Creating data sender manager for URI: {0}", remoteRootURI);
-            dataSender = new GENConcurrentMessageSender(this, remoteRootURI);
+            dataSender = new ConcurrentMessageSender(this, remoteRootURI);
 
             LOGGER.log(Level.FINE, "Registering data sender for URI: {0}", remoteRootURI);
             outgoingDataChannels.put(remoteRootURI, dataSender);
@@ -917,7 +916,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @return The message holder for the outgoing message.
      * @throws Exception if an error.
      */
-    protected abstract GENOutgoingMessageHolder<O> internalEncodeMessage(
+    protected abstract OutgoingMessageHolder<O> internalEncodeMessage(
             final String destinationRootURI,
             final String destinationURI,
             final Object multiSendHandle,
@@ -984,7 +983,7 @@ public abstract class GENTransport<I, O> implements MALTransport {
      * @throws MALTransmitErrorException in case of error connecting to the
      * target URI
      */
-    protected abstract GENMessageSender createMessageSender(GENMessage msg,
+    protected abstract MessageSender createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException;
 
 }
