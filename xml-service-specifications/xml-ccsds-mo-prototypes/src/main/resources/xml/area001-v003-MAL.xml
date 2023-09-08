@@ -225,26 +225,26 @@
             </mal:composite>
         </mal:dataTypes>
         <mal:errors>
-            <mal:error number="1" name="Delivery Failed" comment="Confirmed communication error."/>
-            <mal:error number="2" name="Delivery Timedout" comment="Unconfirmed communication error."/>
-            <mal:error number="3" name="Delivery Delayed" comment="Message queued somewhere awaiting contact."/>
-            <mal:error number="4" name="Destination Unknown" comment="Destination cannot be contacted."/>
-            <mal:error number="5" name="Destination Transient" comment="Destination middleware reports destination application does not exist."/>
-            <mal:error number="6" name="Destination Lost" comment="Destination lost halfway through conversation."/>
-            <mal:error number="7" name="Authentication Failed" comment="A failure to authenticate the message correctly."/>
-            <mal:error number="8" name="Authorisation Fail" comment="A failure in the MAL to authorise the message."/>
-            <mal:error number="9" name="Encryption Fail" comment="A failure in the MAL to encrypt/decrypt the message."/>
-            <mal:error number="10" name="Unsupported Area" comment="The destination does not support the selected area."/>
-            <mal:error number="11" name="Unsupported Area Version" comment="The destination does not support the selected area version."/>
-            <mal:error number="12" name="Unsupported Service" comment="The destination does not support the selected service."/>
-            <mal:error number="13" name="Unsupported Operation" comment="The destination does not support the selected operation."/>
-            <mal:error number="14" name="Bad Encoding" comment="The destination was unable to decode the message."/>
-            <mal:error number="15" name="Internal" comment="An internal error has occurred."/>
-            <mal:error number="16" name="Unknown" comment="Operation specific."/>
-            <mal:error number="17" name="Incorrect State" comment="The destination was not in the correct state for the received message."/>
-            <mal:error number="18" name="Too Many" comment="Maximum number of subscriptions or providers of a broker has been exceeded."/>
-            <mal:error number="19" name="Shutdown" comment="The component is being shutdown."/>
-            <mal:error number="20" name="Transaction Timeout" comment="The interaction exceeded a certain timeout duration."/>
+            <mal:error number="65536" name="Delivery Failed" comment="Confirmed communication error."/>
+            <mal:error number="65537" name="Delivery Timedout" comment="Unconfirmed communication error."/>
+            <mal:error number="65538" name="Delivery Delayed" comment="Message queued somewhere awaiting contact."/>
+            <mal:error number="65539" name="Destination Unknown" comment="Destination cannot be contacted."/>
+            <mal:error number="65540" name="Destination Transient" comment="Destination middleware reports destination application does not exist."/>
+            <mal:error number="65541" name="Destination Lost" comment="Destination lost halfway through conversation."/>
+            <mal:error number="65542" name="Authentication Failed" comment="A failure to authenticate the message correctly."/>
+            <mal:error number="65543" name="Authorisation Fail" comment="A failure in the MAL to authorise the message."/>
+            <mal:error number="65544" name="Encryption Fail" comment="A failure in the MAL to encrypt/decrypt the message."/>
+            <mal:error number="65545" name="Unsupported Area" comment="The destination does not support the selected area."/>
+            <mal:error number="65546" name="Unsupported Area Version" comment="The destination does not support the selected area version."/>
+            <mal:error number="65547" name="Unsupported Service" comment="The destination does not support the selected service."/>
+            <mal:error number="65548" name="Unsupported Operation" comment="The destination does not support the selected operation."/>
+            <mal:error number="65549" name="Bad Encoding" comment="The destination was unable to decode the message."/>
+            <mal:error number="65550" name="Internal" comment="An internal error has occurred."/>
+            <mal:error number="65551" name="Unknown" comment="Operation specific."/>
+            <mal:error number="65552" name="Incorrect State" comment="The destination was not in the correct state for the received message."/>
+            <mal:error number="65553" name="Too Many" comment="Maximum number of subscriptions or providers of a broker has been exceeded."/>
+            <mal:error number="65554" name="Shutdown" comment="The component is being shutdown."/>
+            <mal:error number="65555" name="Transaction Timeout" comment="The interaction exceeded a certain timeout duration."/>
         </mal:errors>
     </mal:area>
 </mal:specification>
