@@ -230,7 +230,7 @@ public class PatternTest {
                 expectedInitialHeader.getOperation(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
-                supplementsValue);
+                Helper.supplementsIPTestProvider);
 
         sendInitialFaultyTransitions(initialFaultyTransList, expectedFinalHeader);
 

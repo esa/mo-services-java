@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.test.patterns.IPTestFromArea2HandlerImpl;
 import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.IPTestHandlerWithSharedBroker;
 import org.ccsds.moims.mo.mal.test.transport.MALTestEndPointSendInterceptor;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestServiceInfo;
@@ -151,7 +152,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 null,
                 Boolean.TRUE, // isPublisher
                 null,
-                null);
+                Helper.supplementsIPTestProvider);
 
         FileBasedDirectory.storePrivateBrokerAuthenticationId(
                 ipprovider.getBrokerAuthenticationId());

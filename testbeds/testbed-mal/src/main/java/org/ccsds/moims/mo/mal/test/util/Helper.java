@@ -42,6 +42,7 @@ public final class Helper {
 
     public static NamedValueList supplementsEmpty;
     public static NamedValueList supplementsFull;
+    public static NamedValueList supplementsIPTestProvider;
 
     public static final String EMPTY_SUPPLEMENTS = "Empty";
     public static final String FULL_SUPPLEMENTS = "Full";
@@ -73,6 +74,8 @@ public final class Helper {
       supplementsFull.add(new NamedValue(new Identifier("FineTime suppl"), new FineTime(Long.MAX_VALUE)));
       supplementsFull.add(new NamedValue(new Identifier("URI suppl"), new URI("URI suppl")));
       supplementsFull.add(new NamedValue(new Identifier("ObjectRef suppl"), new ObjectRef(testDomain, MyFirstObject.SHORT_FORM, new Identifier("ObjectRef suppl"), new UInteger(1))));
+      supplementsIPTestProvider = new NamedValueList();
+      supplementsIPTestProvider.add(new NamedValue(new Identifier("Provider name"), new Identifier("IPTest")));
     }
     
     private Helper() {
