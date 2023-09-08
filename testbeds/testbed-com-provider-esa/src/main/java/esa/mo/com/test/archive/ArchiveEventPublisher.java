@@ -227,7 +227,8 @@ public class ArchiveEventPublisher {
         Archive.inst().add(
                 new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveServiceInfo.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
                 eventDomainId,
-                new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())), null);
+                new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())),
+                null);
     }
 
     /**

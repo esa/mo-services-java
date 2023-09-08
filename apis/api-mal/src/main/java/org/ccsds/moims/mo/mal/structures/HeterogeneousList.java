@@ -98,7 +98,11 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
     public void encode(MALEncoder encoder) throws MALException {
         MALListEncoder listEncoder = encoder.createListEncoder(this);
         for (int i = 0; i < size(); i++) {
-            listEncoder.encodeNullableAbstractElement(get(i));
+            Object entry = get(i);
+            if (!(entry instanceof Element)) {
+                entry = Attribute.javaType2Attribute(entry);
+            }
+            listEncoder.encodeNullableAbstractElement((Element) entry);
         }
         listEncoder.close();
     }

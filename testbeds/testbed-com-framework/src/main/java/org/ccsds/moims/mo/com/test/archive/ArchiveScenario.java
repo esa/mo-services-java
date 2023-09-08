@@ -76,6 +76,7 @@ import org.ccsds.moims.mo.mal.structures.BooleanList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
@@ -639,10 +640,16 @@ public class ArchiveScenario {
         duplicateStoreIndexes = null;
 
         ElementList specificList = getObjectList();
+        HeterogeneousList objs = null;
+
+        if (specificList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(specificList);
+        }
 
         try {
             returnedInstanceIds = LocalMALInstance.instance().archiveStub().store(
-                    returnInstanceIds, objectType, domain, archiveDetailsList, specificList);
+                    returnInstanceIds, objectType, domain, archiveDetailsList, objs);
         } catch (MALInteractionException exc) {
             onStoreError(exc.getStandardError());
         }
@@ -677,10 +684,16 @@ public class ArchiveScenario {
         unknownUpdateIndexes = null;
 
         ElementList specificList = getObjectList();
+        HeterogeneousList objs = null;
+
+        if (specificList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(specificList);
+        }
 
         try {
             LocalMALInstance.instance().archiveStub().update(
-                    objectType, domain, archiveDetailsList, specificList);
+                    objectType, domain, archiveDetailsList, objs);
         } catch (MALInteractionException exc) {
             onUpdateError(exc.getStandardError());
         }
@@ -1208,12 +1221,15 @@ public class ArchiveScenario {
         }
     }
 
-    private void addAllInQueriedObjectList(ElementList objectList) {
+    private void addAllInQueriedObjectList(HeterogeneousList objectList) {
         if (objectList != null) {
             if (queriedObjectList == null) {
                 queriedObjectList = new ArrayList();
             }
-            queriedObjectList.addAll(objectList);
+
+            for (int i = 0; i < objectList.size(); i++) {
+                queriedObjectList.add(Attribute.attribute2JavaType(objectList.get(i)));
+            }
         }
     }
 
@@ -1260,7 +1276,7 @@ public class ArchiveScenario {
 
         @Override
         public void retrieveResponseReceived(MALMessageHeader msgHeader,
-                ArchiveDetailsList archiveDetailsList, ElementList objectList,
+                ArchiveDetailsList archiveDetailsList, HeterogeneousList objectList,
                 Map qosProperties) {
             retrievedArchiveDetailsList = archiveDetailsList;
             retrievedObjectList = objectList;
@@ -1277,7 +1293,7 @@ public class ArchiveScenario {
         @Override
         public void queryResponseReceived(MALMessageHeader msgHeader,
                 ObjectType objectType, IdentifierList domain, ArchiveDetailsList archiveDetailsList,
-                ElementList objectList, Map qosProperties) {
+                HeterogeneousList objectList, Map qosProperties) {
             LoggingBase.logMessage("queryResponseReceived=" + objectType + ":" + archiveDetailsList + ")");
 
             // TODO: check object type and domain
@@ -1293,7 +1309,7 @@ public class ArchiveScenario {
         @Override
         public void queryUpdateReceived(MALMessageHeader msgHeader,
                 ObjectType objectType, IdentifierList domain, ArchiveDetailsList archiveDetailsList,
-                ElementList objectList, Map qosProperties) {
+                HeterogeneousList objectList, Map qosProperties) {
             LoggingBase.logMessage("queryUpdateReceived=" + objectType + ":" + archiveDetailsList + ")");
 
             // TODO: check object type and domain

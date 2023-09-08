@@ -65,13 +65,16 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
 import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
@@ -957,6 +960,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         LoggingBase.logMessage(CLS + ":returnQueryResults:" + objLists.size());
         ArchiveDetailsList archiveDetailsList;
         ElementList elementList = null;
+        HeterogeneousList objs = null;
 
         if (objLists.isEmpty()) {
             // No Matches
@@ -997,13 +1001,25 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     if (elementList != null) {
                         LoggingBase.logMessage(CLS + ":returnQueryResults:send update elementList" + elementList.size() + ":" + elementList);
                     }
-                    interaction.sendUpdate(objectType, domain, archiveDetailsList, elementList);
+
+                    if (elementList != null) {
+                        objs = new HeterogeneousList();
+                        objs.addAll(elementList);
+                    }
+
+                    interaction.sendUpdate(objectType, domain, archiveDetailsList, objs);
                 } else {
                     LoggingBase.logMessage(CLS + ":returnQueryResults:send response: " + archiveDetailsList.size() + ":" + archiveDetailsList);
                     if (elementList != null) {
                         LoggingBase.logMessage(CLS + ":returnQueryResults:send update elementList" + elementList.size() + ":" + elementList);
                     }
-                    interaction.sendResponse(objectType, domain, archiveDetailsList, elementList);
+
+                    if (elementList != null) {
+                        objs = new HeterogeneousList();
+                        objs.addAll(elementList);
+                    }
+
+                    interaction.sendResponse(objectType, domain, archiveDetailsList, objs);
                 }
                 waitForShortTime();
             }
@@ -1089,7 +1105,14 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             elementList = null;
         }
 
-        interaction.sendResponse(archiveDetailsList, elementList);
+        HeterogeneousList objs = null;
+
+        if (elementList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(elementList);
+        }
+
+        interaction.sendResponse(archiveDetailsList, objs);
         LoggingBase.logMessage(CLS + ":retrieve RET");
     }
 
@@ -1399,7 +1422,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     @Override
     public LongList store(Boolean setInstId, ObjectType objectType, IdentifierList domain,
-            ArchiveDetailsList archiveDetailsList, ElementList elementList,
+            ArchiveDetailsList archiveDetailsList, HeterogeneousList elementList,
             MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":Store " + " ObjectType" + ":" + objectType + ":archiveDetails:" + archiveDetailsList);
         LongList instIds = new LongList();
@@ -1465,7 +1488,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     @Override
     public void update(ObjectType objectType, IdentifierList domain,
-            ArchiveDetailsList archiveDetailsList, ElementList elementList, MALInteraction interaction)
+            ArchiveDetailsList archiveDetailsList, HeterogeneousList elementList, MALInteraction interaction)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":update ObjectType:" + objectType + ":Domain:"
                 + domain + ":archiveDetailsList:" + archiveDetailsList + ":elementList:" + elementList);

@@ -39,6 +39,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.LongList;
@@ -651,7 +652,7 @@ public class EventTestScenario extends LoggingBase {
 
         @Override
         public void retrieveResponseReceived(MALMessageHeader msgHeader,
-                ArchiveDetailsList archiveDetailsList, ElementList objectList,
+                ArchiveDetailsList archiveDetailsList, HeterogeneousList objectList,
                 Map qosProperties) {
             LoggingBase.logMessage("TestArchiveAdapter::retrieveResponseReceived=" + archiveDetailsList);
             retrievedArchiveDetailsList = archiveDetailsList;

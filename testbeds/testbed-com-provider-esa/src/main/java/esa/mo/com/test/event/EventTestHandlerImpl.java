@@ -60,6 +60,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -298,12 +299,19 @@ public class EventTestHandlerImpl implements EventTestHandler {
 //        final IdentifierList domain = new IdentifierList();
 //        domain.add(new Identifier("esa"));
 //        domain.add(new Identifier("mission"));
+        HeterogeneousList objs = null;
+
+        if (elementList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(elementList);
+        }
+
         archiveStub().store(Boolean.FALSE,
                 new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
                         COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(Integer.parseInt(objectNumber))),
                 eventDomainId,
                 archiveDetailsList,
-                elementList);
+                objs);
     }
 
     protected void publishTestObjectUpdate(long sourceInstId,
