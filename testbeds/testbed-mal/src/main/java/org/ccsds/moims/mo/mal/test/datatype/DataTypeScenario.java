@@ -576,9 +576,9 @@ public class DataTypeScenario extends LoggingBase {
             // homogeneous concrete list type List<StructureWithAbstractField>
             // The current mapping requires to use the CompositeList type at the API level
             // instead of the HeterogeneousList type which maps the List<Element> type required at the MAL level.
-            // However CompositeList is not an HeterogeneousList, so this mapping does not conform the the specification.
-            // A proper mapping should probably enforce the use of the HeterogeneousList type.
-
+            // The consumer stub and provider skeleton will ensure that the structure will properly be encoded
+            // as an heterogeneous list (i.e. short form 0). So even if a CompositeList is not a HeterogeneousList,
+            // the MAL specification is respected.
             CompositeList abstractList = new CompositeList();
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
 
@@ -586,14 +586,20 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(abstractList,
                     res, null, "testStructureWithAbstractFieldSingleTypedList1");
             // heterogeneous concrete list type List<Element>
-
+            // The current mapping requires to use the CompositeList type at the API level
+            // instead of the HeterogeneousList type which maps the List<Element> type required at the MAL level.
+            // However as the CompositeList type is not a HeterogeneousList, it is not possible to cast the
+            // test parameter into a CompositeList, even if the parameter is an HeterogeneousList as expected by the MAL.
+            // We need then to convert the parameter into a new CompositeList variable before calling the operation.
+            // The consumer stub and provider skeleton will ensure that the structure will properly be encoded
+            // as an heterogeneous list (i.e. short form 0), so the MAL specification is respected.
+            // This issue is just a Java mapping issue. It has no impact on the MAL prototyping.
             CompositeList compositeList = new CompositeList();
             compositeList.addAll(TestData.testAbstractCompositeMultipleTypedList);
             res = getDataTestStub().testPolymorphicMalCompositeList(compositeList);
 
             rv = subMultiTest(compositeList,
                     res, rv, "testAbstractCompositeMultipleTypedList");
-            logMessage("The current Java mapping prevents this test from compiling.");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "polymorphicMalCompositeListsWork");
         }
@@ -620,6 +626,13 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(abstractList,
                     res, null, "testStructureWithAbstractFieldSingleTypedList1");
             // heterogeneous concrete list type List<Element>
+            // The current mapping requires to use the HeterogeneousList type at the API level.
+            // The variable is an AbstractCompositeList, which extends HeterogeneousList, so a Java typecast applies.
+            // When the result parameters comes back, it has been created by the stub as a HeterogeneousList.
+            // The stub has no way to know that it was originally an AbstractCompositeList.
+            // The test passes because the equals function of the ArrayList java type does not check the type
+            // of the list itself, it only checks that all the list elements match.
+            // This conforms to the MAL specification.
             res = getDataTestStub().testPolymorphicMalElementList(TestData.testAbstractCompositeMultipleTypedList);
             rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
                     res, rv, "polymorphicMalElementListsWork");
