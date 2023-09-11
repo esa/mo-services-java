@@ -36,11 +36,11 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public final class UpdateKeyValues {
 
+    private final NamedValueList keyValues;
     private final IdentifierList domain;
     private final UShort area;
     private final UShort service;
     private final UShort operation;
-    private final NamedValueList keyValues;
 
     /**
      * Constructor.
