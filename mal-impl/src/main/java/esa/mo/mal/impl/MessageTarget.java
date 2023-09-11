@@ -22,57 +22,77 @@ package esa.mo.mal.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * Simple struct style class for holding details of a message.
  */
-public final class MessageDetails {
+public final class MessageTarget {
 
     /**
      * The MAL endpoint used for this message.
      */
     public final MALEndpoint endpoint;
-    /**
-     * The URI from field.
-     */
-    public final URI uriFrom;
-    /**
-     * The URI to field.
-     */
-    public final URI uriTo;
-    /**
-     * The broker URI to use.
-     */
-    public final URI brokerUri;
-    /**
-     * The authentication id being used.
-     */
-    public Blob authenticationId;
-    /**
-     * The QoS properties.
-     */
-    public final Map qosProps;
+
+    private final URI uriTo;
+    private final URI brokerUri;
+    private final Map qosProps;
+    private Blob authenticationId;
 
     /**
      * Constructor.
      *
      * @param endpoint Endpoint.
-     * @param uriFrom URIFrom.
      * @param uriTo URITo.
      * @param brokerUri BrokerURI.
      * @param authenticationId Authentication Identifier.
      * @param qosProps QOS properties.
      */
-    public MessageDetails(final MALEndpoint endpoint, final URI uriFrom, final URI uriTo,
+    public MessageTarget(final MALEndpoint endpoint, final URI uriTo,
             final URI brokerUri, final Blob authenticationId, final Map qosProps) {
         this.endpoint = endpoint;
-        this.uriFrom = uriFrom;
         this.uriTo = uriTo;
         this.brokerUri = brokerUri;
         this.authenticationId = authenticationId;
         this.qosProps = (null == qosProps) ? new HashMap() : qosProps;
+    }
+
+    public void setAuthenticationId(Blob authenticationId) {
+        this.authenticationId = authenticationId;
+    }
+
+    public Blob getAuthenticationId() {
+        return authenticationId;
+    }
+
+    public MALMessage createMessage(final MALOperation operation,
+            final Long transactionId,
+            final UOctet interactionStage,
+            final Object... body) throws MALException {
+        URI to = operation.isPubSub() ? this.brokerUri : this.uriTo;
+
+        return endpoint.createMessage(
+                authenticationId,
+                to,
+                Time.now(),
+                operation.getInteractionType(),
+                interactionStage,
+                transactionId,
+                operation.getService().getAreaNumber(),
+                operation.getService().getServiceNumber(),
+                operation.getNumber(),
+                operation.getService().getServiceVersion(),
+                Boolean.FALSE,
+                new NamedValueList(),
+                qosProps,
+                body);
     }
 }

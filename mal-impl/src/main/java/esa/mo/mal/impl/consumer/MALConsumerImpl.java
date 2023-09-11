@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.consumer;
 
 import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.MessageDetails;
+import esa.mo.mal.impl.MessageTarget;
 import esa.mo.mal.impl.MessageSend;
 import esa.mo.mal.impl.transport.TransportSingleton;
 import esa.mo.mal.impl.util.MALCloseable;
@@ -43,7 +43,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
     private final MessageSend sender;
-    private final MessageDetails details;
+    private final MessageTarget details;
     private MALTransmitErrorListener transmissionListener;
     public Blob authenticationId;
 
@@ -77,8 +77,7 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
         ep.setMessageListener(impl.getReceivingInterface());
 
-        this.details = new MessageDetails(ep,
-                ep.getURI(),
+        this.details = new MessageTarget(ep,
                 uriTo,
                 brokerUri,
                 authenticationId,
@@ -109,8 +108,7 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
         endPoint.setMessageListener(impl.getReceivingInterface());
 
-        this.details = new MessageDetails(endPoint,
-                endPoint.getURI(),
+        this.details = new MessageTarget(endPoint,
                 uriTo,
                 brokerUri,
                 authenticationId,
@@ -124,13 +122,13 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
     @Override
     public Blob getAuthenticationId() {
-        return details.authenticationId;
+        return details.getAuthenticationId();
     }
 
     @Override
     public Blob setAuthenticationId(Blob newAuthenticationId) {
-        Blob previous = details.authenticationId;
-        details.authenticationId = newAuthenticationId;
+        Blob previous = details.getAuthenticationId();
+        details.setAuthenticationId(newAuthenticationId);
         return previous;
     }
 

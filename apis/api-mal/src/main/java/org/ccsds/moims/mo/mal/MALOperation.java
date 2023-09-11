@@ -120,11 +120,13 @@ public abstract class MALOperation {
      *
      * @return The operation service.
      */
+    @Deprecated
     public MALService getService() {
         return service;
     }
 
-    void setService(final MALService service) throws java.lang.IllegalArgumentException {
+    @Deprecated
+    public void setService(final MALService service) throws java.lang.IllegalArgumentException {
         this.service = service;
     }
 

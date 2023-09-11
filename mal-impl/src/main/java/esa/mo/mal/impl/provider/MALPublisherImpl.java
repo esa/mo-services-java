@@ -20,9 +20,8 @@
  */
 package esa.mo.mal.impl.provider;
 
-import esa.mo.mal.impl.MessageDetails;
+import esa.mo.mal.impl.MessageTarget;
 import esa.mo.mal.impl.MessageSend;
-import esa.mo.mal.impl.provider.MALProviderImpl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -74,15 +73,14 @@ public class MALPublisherImpl implements MALPublisher {
     public void register(final IdentifierList keyNames, final AttributeTypeList keyTypes,
             final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(
+        final MessageTarget details = new MessageTarget(
                 provider.getEndpoint(),
-                provider.getURI(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        Long transactionId = handler.publishRegister(details, operation, keyNames, keyTypes, listener);
+        Long transactionId = handler.publishRegister(provider.getURI().getValue(), details, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), transactionId);
     }
 
@@ -90,15 +88,14 @@ public class MALPublisherImpl implements MALPublisher {
     public MALMessage asyncRegister(final IdentifierList keyNames,
             final AttributeTypeList keyTypes, final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(
+        final MessageTarget details = new MessageTarget(
                 provider.getEndpoint(),
-                provider.getURI(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        MALMessage msg = handler.publishRegisterAsync(details, operation, keyNames, keyTypes, listener);
+        MALMessage msg = handler.publishRegisterAsync(provider.getURI().getValue(), details, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), msg.getHeader().getTransactionId());
         return msg;
     }
@@ -106,9 +103,8 @@ public class MALPublisherImpl implements MALPublisher {
     @Override
     public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(
+        final MessageTarget details = new MessageTarget(
                 provider.getEndpoint(),
-                provider.getURI(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
@@ -135,9 +131,8 @@ public class MALPublisherImpl implements MALPublisher {
 
     @Override
     public void deregister() throws MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(
+        final MessageTarget details = new MessageTarget(
                 provider.getEndpoint(),
-                provider.getURI(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
@@ -150,9 +145,8 @@ public class MALPublisherImpl implements MALPublisher {
     @Override
     public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageDetails details = new MessageDetails(
+        final MessageTarget details = new MessageTarget(
                 provider.getEndpoint(),
-                provider.getURI(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
