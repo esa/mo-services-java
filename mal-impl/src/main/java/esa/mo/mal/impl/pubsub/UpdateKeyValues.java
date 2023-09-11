@@ -20,9 +20,11 @@
  */
 package esa.mo.mal.impl.pubsub;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -54,7 +56,7 @@ public final class UpdateKeyValues {
     /**
      * The keyValues of the update.
      */
-    private final List<NamedValue> keyValues;
+    private final NamedValueList keyValues;
 
     /**
      * Constructor.
@@ -64,7 +66,7 @@ public final class UpdateKeyValues {
      * @param keyValues Key values.
      */
     public UpdateKeyValues(final MALMessageHeader srcHdr,
-            final IdentifierList domainId, final List<NamedValue> keyValues) {
+            final IdentifierList domainId, final NamedValueList keyValues) {
         this(domainId, srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), keyValues);
     }
 
@@ -78,7 +80,7 @@ public final class UpdateKeyValues {
      * @param keyValues key value provided by provider
      */
     public UpdateKeyValues(final IdentifierList domain, final UShort area,
-            final UShort service, final UShort operation, final List<NamedValue> keyValues) {
+            final UShort service, final UShort operation, final NamedValueList keyValues) {
         this.domain = domain;
         this.area = area;
         this.service = service;
@@ -113,7 +115,7 @@ public final class UpdateKeyValues {
      *
      * @return the keyValues.
      */
-    public List<NamedValue> getKeyValues() {
+    public NamedValueList getKeyValues() {
         return keyValues;
     }
 
@@ -142,5 +144,20 @@ public final class UpdateKeyValues {
      */
     public UShort getOperation() {
         return operation;
+    }
+
+    public NullableAttributeList selectKeys(IdentifierList selectedKeys) {
+        NullableAttributeList newKeyValues = new NullableAttributeList();
+
+        // No keys were selected!
+        if (selectedKeys == null) {
+            for (NamedValue namedValue : this.getKeyValues()) {
+                newKeyValues.add(new NullableAttribute(namedValue.getValue())); // Exact copy as of now...
+            }
+
+            return newKeyValues;
+        }
+
+        return newKeyValues;
     }
 }

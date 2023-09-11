@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.impl.pubsub;
 
+import esa.mo.mal.impl.broker.BrokerMatcher;
 import esa.mo.mal.impl.broker.MALBrokerImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -132,8 +134,12 @@ public class SubscriptionSource {
             if (sub.matchesAnySubscription(updateKeyValues)) {
                 // Create a Notify message for this consumer because at least one
                 // of the subscriptions matched the published Update Key-values
+                NullableAttributeList notifyValues = updateKeyValues.selectKeys(null);
+                UpdateHeader strippedUpdateHeader = new UpdateHeader(updateHeader.getSource(),
+                        updateHeader.getDomain(), notifyValues);
+
                 NotifyMessageBody body = new NotifyMessageBody(sub.getSubscriptionId(),
-                        updateHeader, updateObjects, srcHdr, srcDomainId);
+                        strippedUpdateHeader, updateObjects, srcHdr, srcDomainId);
                 notifyMsgs.add(new NotifyMessage(msgHeaderDetails, body));
             }
         }

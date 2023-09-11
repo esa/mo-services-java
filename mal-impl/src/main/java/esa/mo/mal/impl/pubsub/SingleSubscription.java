@@ -133,10 +133,10 @@ public final class SingleSubscription {
             return false;
         }
 
-        if (!(BrokerMatcher.matchedSubkeyWithWildcard(area, updateMsg.getArea())
-                && BrokerMatcher.matchedSubkeyWithWildcard(service, updateMsg.getService())
-                && BrokerMatcher.matchedSubkeyWithWildcard(operation, updateMsg.getOperation()))) {
-            //if not matched, return without checking domain & filters to avoid cpu load
+        if (!(area.equals(updateMsg.getArea())
+                && service.equals(updateMsg.getService())
+                && operation.equals(updateMsg.getOperation()))) {
+            // If not matched, return without checking domain & filters to avoid cpu load
             return false;
         }
 

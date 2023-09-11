@@ -77,35 +77,35 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
 
     private MALBrokerHandlerImpl createBrokerHandler() {
         final String clsName = System.getProperty("org.ccsds.moims.mo.mal.broker.class",
-                SimpleBrokerHandler.class.getName());
+                MALBrokerHandlerImpl.class.getName());
 
         MALBrokerHandlerImpl broker = null;
         try {
             final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
             broker = (MALBrokerHandlerImpl) cls.getConstructor(MALCloseable.class).newInstance(this);
-            MALBrokerImpl.LOGGER.log(Level.FINE, 
+            MALBrokerImpl.LOGGER.log(Level.FINE,
                     "Creating internal MAL Broker handler: {0}", cls.getSimpleName());
         } catch (ClassNotFoundException ex) {
-            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+            MALBrokerImpl.LOGGER.log(Level.WARNING,
                     "Unable to find MAL Broker handler class: {0}", clsName);
         } catch (InstantiationException ex) {
-            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+            MALBrokerImpl.LOGGER.log(Level.WARNING,
                     "Unable to instantiate MAL Broker handler: {0}", clsName);
         } catch (NoSuchMethodException ex) {
-            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+            MALBrokerImpl.LOGGER.log(Level.WARNING,
                     "Unable to instantiate MAL Broker handler: {0}", clsName);
         } catch (InvocationTargetException ex) {
-            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+            MALBrokerImpl.LOGGER.log(Level.WARNING,
                     "InvocationTargetExceptionUnable when instantiating MAL Broker handler class: {0}", clsName);
         } catch (IllegalAccessException ex) {
-            MALBrokerImpl.LOGGER.log(Level.WARNING, 
+            MALBrokerImpl.LOGGER.log(Level.WARNING,
                     "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
         }
 
-        if (null == broker) {
-            broker = new SimpleBrokerHandler();
-            MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: SimpleBrokerHandler");
+        if (broker == null) {
+            broker = new MALBrokerHandlerImpl();
+            MALBrokerImpl.LOGGER.fine("Creating internal MAL Broker handler: MALBrokerHandlerImpl");
         }
 
         return broker;
@@ -113,6 +113,6 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
 
     @Override
     public void close() throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

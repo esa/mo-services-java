@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.accesscontrol.NullSecurityManager;
+import esa.mo.mal.impl.accesscontrol.EchoSecurityManager;
 import esa.mo.mal.impl.broker.MALBrokerBindingImpl;
 import esa.mo.mal.impl.broker.MALBrokerManagerImpl;
 import esa.mo.mal.impl.consumer.MALConsumerManagerImpl;
@@ -66,7 +66,7 @@ public class MALContextImpl implements MALContext, MALCloseable {
         if (securityFactory != null) {
             securityManager = securityFactory.createAccessControl(initialProperties);
         } else {
-            securityManager = new NullSecurityManager();
+            securityManager = new EchoSecurityManager();
         }
 
         sender = new MessageSend(securityManager, icmap, ipsmap);

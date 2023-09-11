@@ -22,6 +22,7 @@ package esa.mo.mal.impl.provider;
 
 import esa.mo.mal.impl.MessageDetails;
 import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.provider.MALProviderImpl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ public class MALPublisherImpl implements MALPublisher {
     private final MALPubSubOperation operation;
     private final Map remotePublisherQosProps;
 
-    MALPublisherImpl(final MALProviderImpl provider, final MessageSend handler,
+    public MALPublisherImpl(final MALProviderImpl provider, final MessageSend handler,
             final MALPubSubOperation operation, final Map remotePublisherQosProps) {
         this.provider = provider;
         this.handler = handler;
@@ -115,20 +116,21 @@ public class MALPublisherImpl implements MALPublisher {
 
         final Long tid = this.getTransId(provider.getBrokerURI());
 
-        if (tid != null) {
-            LOGGER.log(Level.FINE, "Publisher using transaction Id of: {0}", tid);
-
-            final Object[] body = new Object[updateValues.length + 1];
-            body[0] = updateHeader;
-            System.arraycopy(updateValues, 0, body, 1, updateValues.length);
-
-            return handler.onewayInteraction(details, tid, operation,
-                    MALPubSubOperation.PUBLISH_STAGE, body);
-        } else {
+        if (tid == null) {
             // this means that we haven't successfully registered, need to throw an exception
             throw new MALInteractionException(new MOErrorException(
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+
         }
+
+        LOGGER.log(Level.FINE, "Publisher using transaction Id of: {0}", tid);
+
+        final Object[] body = new Object[updateValues.length + 1];
+        body[0] = updateHeader;
+        System.arraycopy(updateValues, 0, body, 1, updateValues.length);
+
+        return handler.onewayInteraction(details, tid, operation,
+                MALPubSubOperation.PUBLISH_STAGE, body);
     }
 
     @Override

@@ -70,12 +70,7 @@ public abstract class BaseMalServer {
      * @param network The network of the service provider.
      */
     public BaseMalServer(IdentifierList domain, Identifier network) {
-        this.malFactory = null;
-        this.mal = null;
-        this.consumerMgr = null;
-        this.providerMgr = null;
-        this.domain = domain;
-        this.network = network;
+        this(null, null, null, null, domain, network);
     }
 
     /**

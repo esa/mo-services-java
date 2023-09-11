@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 public class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
 
     private final Map<String, MALPublisher> pubsubPublishers = new HashMap<>();
-    private final boolean isPublisher;
+    private final boolean withPubSub;
     private final URI sharedBrokerUri;
     private final MALBrokerBinding localBrokerBinding;
     private final URI localBrokerUri;
@@ -57,7 +57,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
-            final Boolean isPublisher,
+            final Boolean withPubSub,
             final URI sharedBrokerUri) throws MALException {
         super(
                 impl,
@@ -70,10 +70,10 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 defaultQoSProperties,
                 handler);
 
-        this.isPublisher = isPublisher;
+        this.withPubSub = withPubSub;
         this.sharedBrokerUri = sharedBrokerUri;
 
-        if (this.isPublisher) {
+        if (this.withPubSub) {
             this.handler.malInitialize(this);
 
             if (this.sharedBrokerUri == null) {
@@ -118,10 +118,10 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 defaultQoSProperties,
                 handler);
 
-        this.isPublisher = isPublisher;
+        this.withPubSub = isPublisher;
         this.sharedBrokerUri = sharedBrokerUri;
 
-        if (this.isPublisher) {
+        if (this.withPubSub) {
             this.handler.malInitialize(this);
 
             if (this.sharedBrokerUri == null) {
@@ -146,7 +146,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     @Override
     public boolean isPublisher() {
-        return isPublisher;
+        return withPubSub;
     }
 
     @Override

@@ -26,7 +26,6 @@ import esa.mo.mal.impl.pubsub.SubscriptionSource;
 import esa.mo.mal.impl.pubsub.PublisherSource;
 import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import esa.mo.mal.impl.util.MALCloseable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,6 +43,7 @@ import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -59,7 +59,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
  * Base implementation of the MALBrokerHandler class that should be extended by
  * real broker implementations.
  */
-public abstract class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
+public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
 
     private final List<MALBrokerBindingImpl> brokers = new LinkedList<>();
     private final Map<String, Map<String, PublisherSource>> providers = new HashMap();
@@ -119,7 +119,7 @@ public abstract class MALBrokerHandlerImpl implements MALBrokerHandler, MALClose
         // Dispatch the Notify messages
         for (NotifyMessage msg : notifyList) {
             String uriTo = msg.getHeader().getUriTo().getValue();
-            MALBrokerBinding binding = this.getBroker(uriTo);
+            MALBrokerBinding binding = this.getBinding(uriTo);
 
             if (binding == null) {
                 MALBrokerImpl.LOGGER.log(Level.WARNING,
@@ -189,7 +189,7 @@ public abstract class MALBrokerHandlerImpl implements MALBrokerHandler, MALClose
         report(key);
     }
 
-    private synchronized MALBrokerBinding getBroker(String uriTo) {
+    private synchronized MALBrokerBinding getBinding(String uriTo) {
         for (MALBrokerBindingImpl binding : brokers) {
             if (binding.hasSubscriber(uriTo)) {
                 return binding;
@@ -215,56 +215,58 @@ public abstract class MALBrokerHandlerImpl implements MALBrokerHandler, MALClose
         }
 
         final UpdateHeader updateHeader = publishBody.getUpdateHeader();
+
+        if (updateHeader == null) {
+            return new LinkedList<>(); // Empty list
+        }
+
+        Collection<SubscriptionSource> subSources = this.getConsumerSubscriptions(brokerKey).values();
+
+        NullableAttributeList keyValues = updateHeader.getKeyValues();
+        IdentifierList srcDomainId = updateHeader.getDomain();
+
+        if (keyValues == null) {
+            throw new IllegalArgumentException("keyValues cannot be NULL!");
+        }
+
+        if (keyNames == null) {
+            throw new IllegalArgumentException("keyNames cannot be NULL!");
+        }
+
+        if (keyValues.size() != keyNames.size()) {
+            String txt = "The keyValues size don't match the providerNames "
+                    + "size: " + keyValues.size() + "!=" + keyNames.size()
+                    + "\nkeyNames: " + keyNames.toString()
+                    + "\nkeyValues: " + keyValues.toString();
+
+            MALBrokerImpl.LOGGER.warning(txt);
+            throw new MALInteractionException(new MOErrorException(
+                    MALHelper.UNKNOWN_ERROR_NUMBER, null));
+        }
+
+        // Prepare the Key-Value list
+        NamedValueList providerKeyValues = new NamedValueList();
+
+        for (int j = 0; j < keyNames.size(); j++) {
+            Identifier name = keyNames.get(j);
+            Object value = keyValues.get(j).getValue();
+            value = (Attribute) Attribute.javaType2Attribute(value);
+            providerKeyValues.add(new NamedValue(name, (Attribute) value));
+        }
+
+        UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
         List<NotifyMessage> notifyMessages = new LinkedList<>();
 
-        if (updateHeader != null) {
-            Collection<SubscriptionSource> subSources = this.getConsumerSubscriptions(brokerKey).values();
-
-            NullableAttributeList keyValues = updateHeader.getKeyValues();
-            IdentifierList srcDomainId = updateHeader.getDomain();
-
-            if (keyValues == null) {
-                throw new IllegalArgumentException("keyValues cannot be NULL!");
-            }
-
-            if (keyNames == null) {
-                throw new IllegalArgumentException("keyNames cannot be NULL!");
-            }
-
-            if (keyValues.size() != keyNames.size()) {
-                String txt = "The keyValues size don't match the providerNames "
-                        + "size: " + keyValues.size() + "!=" + keyNames.size()
-                        + "\nkeyNames: " + keyNames.toString()
-                        + "\nkeyValues: " + keyValues.toString();
-
-                MALBrokerImpl.LOGGER.warning(txt);
+        // Iterate through all the consumers and generate
+        // the notify list if it matches with any of the subscriptions
+        for (SubscriptionSource subSource : subSources) {
+            try {
+                List<NotifyMessage> list = subSource.generateNotifyMessagesIfMatch(srcHdr, publishBody, providerUpdates);
+                notifyMessages.addAll(list);
+            } catch (MALException ex) {
+                MALBrokerImpl.LOGGER.warning(ex.getMessage());
                 throw new MALInteractionException(new MOErrorException(
                         MALHelper.UNKNOWN_ERROR_NUMBER, null));
-            }
-
-            // Prepare the Key-Value list
-            List<NamedValue> providerKeyValues = new ArrayList<>();
-
-            for (int j = 0; j < keyNames.size(); j++) {
-                Identifier name = keyNames.get(j);
-                Object value = keyValues.get(j).getValue();
-                value = (Attribute) Attribute.javaType2Attribute(value);
-                providerKeyValues.add(new NamedValue(name, (Attribute) value));
-            }
-
-            UpdateKeyValues providerUpdates = new UpdateKeyValues(srcHdr, srcDomainId, providerKeyValues);
-
-            // Iterate through all the consumers and generate
-            // the notify list if it matches with any of the subscriptions
-            for (SubscriptionSource subSource : subSources) {
-                try {
-                    List<NotifyMessage> list = subSource.generateNotifyMessagesIfMatch(srcHdr, publishBody, providerUpdates);
-                    notifyMessages.addAll(list);
-                } catch (MALException ex) {
-                    MALBrokerImpl.LOGGER.warning(ex.getMessage());
-                    throw new MALInteractionException(new MOErrorException(
-                            MALHelper.UNKNOWN_ERROR_NUMBER, null));
-                }
             }
         }
 
@@ -372,11 +374,12 @@ public abstract class MALBrokerHandlerImpl implements MALBrokerHandler, MALClose
         }
     }
 
-    /**
-     * Creates a broker implementation specific subscription source.
-     *
-     * @param hdr Source message header.
-     * @return The new subscription source object.
-     */
-    protected abstract SubscriptionSource createEntry(final MALMessageHeader hdr);
+    protected SubscriptionSource createEntry(final MALMessageHeader hdr) {
+        return new SubscriptionSource(hdr);
+    }
+
+    @Override
+    public void close() throws MALException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

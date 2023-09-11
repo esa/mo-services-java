@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,31 +18,20 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.broker;
+package esa.mo.mal.impl.accesscontrol;
 
-import esa.mo.mal.impl.pubsub.SubscriptionSource;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
+import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Extends the base broker handler for the Simple broker implementation.
+ * The NullSecurityManager class.
  */
-public class SimpleBrokerHandler extends MALBrokerHandlerImpl {
-
-    /**
-     * Constructor
-     */
-    public SimpleBrokerHandler() {
-        super();
-    }
+public class EchoSecurityManager implements MALAccessControl {
 
     @Override
-    protected SubscriptionSource createEntry(final MALMessageHeader hdr) {
-        return new SubscriptionSource(hdr);
+    public MALMessage check(final MALMessage msg) throws IllegalArgumentException, MALCheckErrorException {
+        return msg;
     }
 
-    @Override
-    public void close() throws MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

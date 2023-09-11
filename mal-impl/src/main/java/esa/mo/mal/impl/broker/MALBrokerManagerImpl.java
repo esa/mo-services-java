@@ -62,8 +62,7 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
     }
 
     @Override
-    public MALBroker createBroker(final MALBrokerHandler handler)
-            throws IllegalArgumentException, MALException {
+    public MALBroker createBroker(final MALBrokerHandler handler) throws MALException {
         return new MALBrokerImpl(handler);
     }
 
@@ -90,12 +89,12 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
                     priorityLevelNumber,
                     qosProperties);
 
-            if (null != retVal) {
-                retVal = new MALBrokerBindingTransportWrapper(retVal);
+            if (retVal != null) {
+                return retVal;
             }
         }
 
-        if (null == retVal) {
+        if (retVal == null) {
             retVal = new MALBrokerBindingImpl(tparent,
                     impl,
                     localName,
@@ -134,12 +133,12 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
                     priorityLevelNumber,
                     qosProperties);
 
-            if (null != retVal) {
-                retVal = new MALBrokerBindingTransportWrapper(retVal);
+            if (retVal != null) {
+                return retVal;
             }
         }
 
-        if (null == retVal) {
+        if (retVal == null) {
             retVal = new MALBrokerBindingImpl(tparent,
                     impl,
                     endPoint,

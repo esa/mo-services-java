@@ -53,7 +53,8 @@ public interface MALBrokerManager {
      * @throws MALException If an error occurs or if the MALBrokerManager is
      * closed
      */
-    MALBroker createBroker(MALBrokerHandler handler) throws java.lang.IllegalArgumentException, MALException;
+    @Deprecated
+    MALBroker createBroker(MALBrokerHandler handler) throws MALException;
 
     /**
      * The method binds a shared MAL level broker to a particular transport or

@@ -168,7 +168,7 @@ public class MessageSend {
         IdentifierList publishedKeyNames = (keyNames != null) ? keyNames : new IdentifierList();
         AttributeTypeList publishedKeyValues = (keyTypes != null) ? keyTypes : new AttributeTypeList();
         final Long transId = icmap.createPubSubTransaction(false, listener);
-        return initiateAsynchronousInteraction(details,
+        return initiateAsynchronousInteraction(details.endpoint,
                 createMessage(details,
                         op,
                         transId,
@@ -215,7 +215,7 @@ public class MessageSend {
             throws MALInteractionException, MALException {
         ipsmap.getPublishListenerAndRemove(details.endpoint.getURI());
         final Long transId = icmap.createPubSubTransaction(false, listener);
-        return initiateAsynchronousInteraction(details,
+        return initiateAsynchronousInteraction(details.endpoint,
                 createMessage(details, op, transId, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (Object[]) null));
     }
 
@@ -328,7 +328,7 @@ public class MessageSend {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
         MALMessage msg = createMessage(details, op, transId, syncStage, msgBody);
-        return initiateSynchronousInteraction(transId, details, msg);
+        return initiateSynchronousInteraction(transId, details.endpoint, msg);
     }
 
     /**
@@ -352,7 +352,7 @@ public class MessageSend {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
         MALMessage msg = createMessage(details, op, transId, syncStage, msgBody);
-        return initiateSynchronousInteraction(transId, details, msg);
+        return initiateSynchronousInteraction(transId, details.endpoint, msg);
     }
 
     /**
@@ -375,7 +375,7 @@ public class MessageSend {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
         MALMessage msg = createMessage(details, op, transId, initialStage, msgBody);
-        return initiateAsynchronousInteraction(details, msg);
+        return initiateAsynchronousInteraction(details.endpoint, msg);
     }
 
     /**
@@ -398,7 +398,7 @@ public class MessageSend {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
         MALMessage msg = createMessage(details, op, transId, initialStage, msgBody);
-        return initiateAsynchronousInteraction(details, msg);
+        return initiateAsynchronousInteraction(details.endpoint, msg);
     }
 
     /**
@@ -579,15 +579,15 @@ public class MessageSend {
             final Object... msgBody) throws MALInteractionException, MALException {
         final Long transId = icmap.createPubSubTransaction(true, listener);
         MALMessage msg = createMessage(details, op, transId, syncStage, msgBody);
-        initiateSynchronousInteraction(transId, details, msg);
+        initiateSynchronousInteraction(transId, details.endpoint, msg);
         return transId;
     }
 
     private MALMessageBody initiateSynchronousInteraction(final Long transId,
-            final MessageDetails details, MALMessage msg) throws MALInteractionException, MALException {
+            final MALEndpoint endpoint, MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-            details.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
             final MALMessage rtn = icmap.waitForResponse(transId);
 
             if (rtn == null) {
@@ -618,11 +618,11 @@ public class MessageSend {
         }
     }
 
-    private MALMessage initiateAsynchronousInteraction(final MessageDetails details,
+    private MALMessage initiateAsynchronousInteraction(final MALEndpoint endpoint,
             MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
-            details.endpoint.sendMessage(msg);
+            endpoint.sendMessage(msg);
         } catch (IllegalArgumentException ex) {
             throw new MALException("IllegalArgumentException", ex);
         } catch (MALException ex) {
