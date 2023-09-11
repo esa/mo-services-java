@@ -35,10 +35,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class Subscriptions {
 
     private final ArrayList<SingleSubscription> subscriptions = new ArrayList<>();
-    private final String subscriptionId;
+    private final Identifier subscriptionId;
 
     public Subscriptions(final String subscriptionId) {
-        this.subscriptionId = subscriptionId;
+        this.subscriptionId = new Identifier(subscriptionId);
     }
 
     public final ArrayList<SingleSubscription> getSubscriptions() {
@@ -46,7 +46,7 @@ public class Subscriptions {
     }
 
     public final Identifier getSubscriptionId() {
-        return new Identifier(subscriptionId);
+        return subscriptionId;
     }
 
     public void report() {
@@ -59,13 +59,21 @@ public class Subscriptions {
         MALBrokerImpl.LOGGER.log(Level.FINE, str.toString());
     }
 
-    public void setIds(final IdentifierList domain,
-            final MALMessageHeader srcHdr, final SubscriptionFilterList filters) {
+    public void setIds(final IdentifierList domain, final MALMessageHeader srcHdr,
+            final SubscriptionFilterList filters, final IdentifierList selectedKeys) {
         subscriptions.clear();
-        subscriptions.add(new SingleSubscription(domain, srcHdr, filters));
+        subscriptions.add(new SingleSubscription(domain, srcHdr, filters, selectedKeys));
     }
 
     public boolean matchesAnySubscription(UpdateKeyValues providerUpdates) {
         return BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptions);
+    }
+
+    public IdentifierList getSelectedKeys() {
+        if (subscriptions.isEmpty()) {
+            return null;
+        }
+
+        return subscriptions.get(0).getSelectedKeys();
     }
 }

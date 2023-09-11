@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.impl.pubsub;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
@@ -29,33 +31,15 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Simple class that represents a MAL update key.
+ * The UpdateKeyValues class holds the keyValues with the respective domain and
+ * area/service/operation numbers.
  */
 public final class UpdateKeyValues {
 
-    /**
-     * The domain of the update.
-     */
     private final IdentifierList domain;
-
-    /**
-     * The area of the update.
-     */
     private final UShort area;
-
-    /**
-     * The service of the update.
-     */
     private final UShort service;
-
-    /**
-     * The operation of the update.
-     */
     private final UShort operation;
-
-    /**
-     * The keyValues of the update.
-     */
     private final NamedValueList keyValues;
 
     /**
@@ -146,16 +130,32 @@ public final class UpdateKeyValues {
         return operation;
     }
 
-    public NullableAttributeList selectKeys(IdentifierList selectedKeys) {
+    public NullableAttributeList generateNotifyKeyValues(IdentifierList selectedKeys) throws MALException {
         NullableAttributeList newKeyValues = new NullableAttributeList();
 
-        // No keys were selected!
+        // NULL means that All Keys were selected!
         if (selectedKeys == null) {
             for (NamedValue namedValue : this.getKeyValues()) {
-                newKeyValues.add(new NullableAttribute(namedValue.getValue())); // Exact copy as of now...
+                newKeyValues.add(new NullableAttribute(namedValue.getValue()));
             }
 
             return newKeyValues;
+        }
+
+        for (Identifier selectedKey : selectedKeys) {
+            boolean found = false;
+
+            for (NamedValue namedValue : this.getKeyValues()) {
+                if (selectedKey.equals(namedValue.getName())) {
+                    newKeyValues.add(new NullableAttribute(namedValue.getValue()));
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                throw new MALException("The selectedKey was not found! selectedKey name: " + selectedKey);
+            }
         }
 
         return newKeyValues;

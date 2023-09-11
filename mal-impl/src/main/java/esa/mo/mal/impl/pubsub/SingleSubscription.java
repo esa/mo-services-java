@@ -46,6 +46,7 @@ public final class SingleSubscription {
     private final UShort service;
     private final UShort operation;
     private final SubscriptionFilterList filters;
+    private final IdentifierList selectedKeys;
 
     /**
      * Constructor.
@@ -55,14 +56,17 @@ public final class SingleSubscription {
      * @param service subscription service
      * @param operation subscription operation
      * @param filters subscription filters
+     * @param selectedKeys The selectedKeys of the subscription.
      */
     public SingleSubscription(final IdentifierList domain, final UShort area,
-            final UShort service, final UShort operation, final SubscriptionFilterList filters) {
+            final UShort service, final UShort operation,
+            final SubscriptionFilterList filters, final IdentifierList selectedKeys) {
         this.domain = domain;
         this.area = area;
         this.service = service;
         this.operation = operation;
         this.filters = filters;
+        this.selectedKeys = selectedKeys;
     }
 
     /**
@@ -71,53 +75,15 @@ public final class SingleSubscription {
      * @param domain The domain of the subscription.
      * @param hdr Subscription message header.
      * @param filters The filters of the subscription.
+     * @param selectedKeys The selectedKeys of the subscription.
      */
-    public SingleSubscription(final IdentifierList domain,
-            final MALMessageHeader hdr, final SubscriptionFilterList filters) {
-        this(domain, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters);
+    public SingleSubscription(final IdentifierList domain, final MALMessageHeader hdr,
+            final SubscriptionFilterList filters, final IdentifierList selectedKeys) {
+        this(domain, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters, selectedKeys);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = HASH_MAGIC_NUMBER * hash + (this.domain != null ? this.domain.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.area != null ? this.area.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.service != null ? this.service.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.operation != null ? this.operation.hashCode() : 0);
-        hash = HASH_MAGIC_NUMBER * hash + (this.filters != null ? this.filters.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SingleSubscription other = (SingleSubscription) obj;
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (this.domain == null ? other.domain != null : !this.domain.equals(other.domain)) {
-            return false;
-        }
-        if (this.area != other.area && (this.area == null || !this.area.equals(other.area))) {
-            return false;
-        }
-        if (this.service != other.service && (this.service == null || !this.service.equals(other.service))) {
-            return false;
-        }
-        if (this.operation != other.operation && (this.operation == null || !this.operation.equals(other.operation))) {
-            return false;
-        }
-        if (this.filters != null) {
-            if (!this.filters.equals(other.filters)) {
-                return false;
-            }
-        }
-        return true;
+    public IdentifierList getSelectedKeys() {
+        return selectedKeys;
     }
 
     /**

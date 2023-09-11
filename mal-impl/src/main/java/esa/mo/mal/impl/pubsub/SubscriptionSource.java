@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.impl.pubsub;
 
-import esa.mo.mal.impl.broker.BrokerMatcher;
 import esa.mo.mal.impl.broker.MALBrokerImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,7 +105,7 @@ public class SubscriptionSource {
             sub = new Subscriptions(subId);
             subs.put(subId, sub);
         }
-        sub.setIds(subscription.getDomain(), srcHdr, subscription.getFilters());
+        sub.setIds(subscription.getDomain(), srcHdr, subscription.getFilters(), subscription.getSelectedKeys());
         updateIds();
     }
 
@@ -134,7 +133,7 @@ public class SubscriptionSource {
             if (sub.matchesAnySubscription(updateKeyValues)) {
                 // Create a Notify message for this consumer because at least one
                 // of the subscriptions matched the published Update Key-values
-                NullableAttributeList notifyValues = updateKeyValues.selectKeys(null);
+                NullableAttributeList notifyValues = updateKeyValues.generateNotifyKeyValues(sub.getSelectedKeys());
                 UpdateHeader strippedUpdateHeader = new UpdateHeader(updateHeader.getSource(),
                         updateHeader.getDomain(), notifyValues);
 

@@ -66,7 +66,7 @@ public class SubscriptionConsumerTest {
     public void testMatchesWithFilters() {
         System.out.println("matchesWithFilters: rsh and filters are both null");
         UpdateKeyValues rhs = null;
-        SingleSubscription instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), null);
+        SingleSubscription instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), null, null);
         boolean expResult = false;
         boolean result = instance.matchesWithFilters(rhs);
         assertEquals(expResult, result);
@@ -76,7 +76,7 @@ public class SubscriptionConsumerTest {
     public void testMatchesWithFilters2() {
         System.out.println("matchesWithFilters: keyValues of rsh and filters are null");
         UpdateKeyValues rhs = new UpdateKeyValues(null, new UShort(1), new UShort(2), new UShort(3), null);
-        SingleSubscription instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), null);
+        SingleSubscription instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), null, null);
         boolean expResult = true;
         boolean result = instance.matchesWithFilters(rhs);
         assertEquals(expResult, result);
@@ -95,7 +95,7 @@ public class SubscriptionConsumerTest {
         UpdateKeyValues rhs;
         rhs = new UpdateKeyValues(null, new UShort(1), new UShort(2), new UShort(3), keyVals);
 
-        SingleSubscription instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), null);
+        SingleSubscription instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), null, null);
 
         boolean expResult = true;
         boolean result = instance.matchesWithFilters(rhs);
@@ -118,7 +118,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = true;
         boolean result = instance.matchesWithFilters(rhs);
@@ -144,7 +144,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = true;
         boolean result = instance.matchesWithFilters(rhs);
@@ -174,7 +174,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = false;
         boolean result = instance.matchesWithFilters(rhs);
@@ -205,7 +205,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = false;
         boolean result = instance.matchesWithFilters(rhs);
@@ -254,7 +254,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter2);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = true;
         boolean result = instance.matchesWithFilters(rhs);
@@ -306,7 +306,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter2);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = false;
         boolean result = instance.matchesWithFilters(rhs);
@@ -358,7 +358,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter2);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(null, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = false;
         boolean result = instance.matchesWithFilters(rhs);
@@ -465,7 +465,7 @@ public class SubscriptionConsumerTest {
         subFilters.add(subFilter2);
 
         SingleSubscription instance;
-        instance = new SingleSubscription(domains, new UShort(1), new UShort(2), new UShort(3), subFilters);
+        instance = new SingleSubscription(domains, new UShort(1), new UShort(2), new UShort(3), subFilters, null);
 
         boolean expResult = true;
         boolean result = instance.matchesWithFilters(rhs);

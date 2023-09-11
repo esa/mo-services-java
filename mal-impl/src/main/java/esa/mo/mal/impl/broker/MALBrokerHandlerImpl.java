@@ -306,8 +306,8 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
         final String signature = hdr.getFrom().getValue();
         SubscriptionSource subSource = subs.get(signature);
 
-        if ((subSource == null) && (create)) {
-            subSource = createEntry(hdr);
+        if ((subSource == null) && create) {
+            subSource = new SubscriptionSource(hdr);
             subs.put(signature, subSource);
         }
 
@@ -372,10 +372,6 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
                 }
             }
         }
-    }
-
-    protected SubscriptionSource createEntry(final MALMessageHeader hdr) {
-        return new SubscriptionSource(hdr);
     }
 
     @Override
