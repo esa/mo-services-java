@@ -329,7 +329,8 @@ public abstract class Transport<I, O> implements MALTransport {
     }
 
     @Override
-    public MALEndpoint createEndpoint(final String localName, final Map qosProperties) throws MALException {
+    public MALEndpoint createEndpoint(final String localName, final Map qosProperties,
+            final NamedValueList supplements) throws MALException {
         final Map localProperties = new HashMap();
 
         if (null != this.qosProperties) {
@@ -345,7 +346,7 @@ public abstract class Transport<I, O> implements MALTransport {
         if (endpoint == null) {
             LOGGER.log(Level.FINE, "Creating endpoint {0} : {1}",
                     new Object[]{localName, strRoutingName});
-            endpoint = internalCreateEndpoint(localName, strRoutingName, localProperties);
+            endpoint = internalCreateEndpoint(localName, strRoutingName, localProperties, supplements);
             endpointMalMap.put(localName, endpoint);
             endpointRoutingMap.put(strRoutingName, endpoint);
         }
@@ -664,15 +665,15 @@ public abstract class Transport<I, O> implements MALTransport {
      * Creates a return error message based on a received message.
      *
      * @param ep The endpoint to use for sending the error.
-     * @param oriMsg The original message
+     * @param srcMsg The original message
      * @param errorNumber The error number
      * @param errorMsg The error message.
      * @throws MALException if cannot encode a response message
      */
-    protected void returnErrorMessage(Endpoint ep, final GENMessage oriMsg,
+    protected void returnErrorMessage(Endpoint ep, final GENMessage srcMsg,
             final UInteger errorNumber, final String errorMsg) throws MALException {
         try {
-            final MALMessageHeader srcHdr = oriMsg.getHeader();
+            final MALMessageHeader srcHdr = srcMsg.getHeader();
             final int type = srcHdr.getInteractionType().getOrdinal();
             final short stage = (null != srcHdr.getInteractionStage())
                     ? srcHdr.getInteractionStage().getValue() : 0;
@@ -690,8 +691,7 @@ public abstract class Transport<I, O> implements MALTransport {
                 if ((null == ep) && (!endpointMalMap.isEmpty())) {
                     Endpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
 
-                    final GENMessage retMsg = (GENMessage) endpoint.createMessage(
-                            srcHdr.getAuthenticationId(),
+                    final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
                             srcHdr.getFromURI(),
                             Time.now(),
                             srcHdr.getInteractionType(),
@@ -703,7 +703,7 @@ public abstract class Transport<I, O> implements MALTransport {
                             srcHdr.getServiceVersion(),
                             true,
                             srcHdr.getSupplements(),
-                            oriMsg.getQoSProperties(),
+                            srcMsg.getQoSProperties(),
                             errorNumber, new Union(errorMsg));
 
                     sendMessage(null, true, retMsg);
@@ -768,12 +768,14 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param localName The local mal name to use.
      * @param routingName The local routing name to use.
      * @param qosProperties the QoS properties.
+     * @param supplements The supplements for this endpoint.
      * @return The new endpoint
      * @throws MALException on Error.
      */
     protected Endpoint internalCreateEndpoint(final String localName,
-            final String routingName, final Map qosProperties) throws MALException {
-        return new Endpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
+            final String routingName, final Map qosProperties,
+            final NamedValueList supplements) throws MALException {
+        return new Endpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts, supplements);
     }
 
     /**

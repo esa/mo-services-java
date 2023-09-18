@@ -41,6 +41,7 @@ public class Endpoint implements MALEndpoint {
     protected final String routingName;
     protected final String localURI;
     protected final boolean wrapBodyParts;
+    private final NamedValueList endpointSupplements;
     private boolean active = false;
     private MALMessageListener messageListener = null;
 
@@ -53,14 +54,17 @@ public class Endpoint implements MALEndpoint {
      * @param uri The URI string for this end point.
      * @param wrapBodyParts True if the encoded body parts should be wrapped in
      * BLOBs.
+     * @param supplements Endpoint supplements.
      */
     public Endpoint(final Transport transport, final String localName,
-            final String routingName, final String uri, final boolean wrapBodyParts) {
+            final String routingName, final String uri,
+            final boolean wrapBodyParts, final NamedValueList supplements) {
         this.transport = transport;
         this.localName = localName;
         this.routingName = routingName;
         this.localURI = uri;
         this.wrapBodyParts = wrapBodyParts;
+        this.endpointSupplements = (supplements != null) ? supplements : new NamedValueList();
     }
 
     @Override
@@ -319,7 +323,8 @@ public class Endpoint implements MALEndpoint {
             final Boolean isErrorMessage,
             final NamedValueList supplements,
             final Map qosProperties) {
-        return new MALMessageHeader(new Identifier(uriFrom.getValue()),
+        return new MALMessageHeader(
+                new Identifier(uriFrom.getValue()),
                 authenticationId,
                 new Identifier(uriTo.getValue()),
                 timestamp,
@@ -331,6 +336,6 @@ public class Endpoint implements MALEndpoint {
                 operation,
                 serviceVersion,
                 isErrorMessage,
-                supplements);
+                endpointSupplements);
     }
 }

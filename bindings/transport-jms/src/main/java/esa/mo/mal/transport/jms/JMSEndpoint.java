@@ -74,7 +74,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
      */
     public JMSEndpoint(final JMSTransport transport, final String localName,
             final String routingName, String baseuri, Session qs, Queue q) throws Exception {
-        super(transport, localName, routingName, baseuri + q.getQueueName(), false);
+        super(transport, localName, routingName, baseuri + q.getQueueName(), false, new NamedValueList());
 
         this.jtransport = transport;
         this.qs = qs;

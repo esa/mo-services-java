@@ -39,9 +39,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class TCPIPEndpoint extends Endpoint {
 
-    public TCPIPEndpoint(Transport transport, String localName,
-            String routingName, String uri, boolean wrapBodyParts) {
-        super(transport, localName, routingName, uri, wrapBodyParts);
+    public TCPIPEndpoint(Transport transport, String localName, String routingName,
+            String uri, boolean wrapBodyParts, NamedValueList supplements) {
+        super(transport, localName, routingName, uri, wrapBodyParts, supplements);
     }
 
     @Override

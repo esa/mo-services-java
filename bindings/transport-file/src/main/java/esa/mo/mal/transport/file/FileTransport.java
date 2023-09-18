@@ -46,6 +46,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.sending.MessageSender;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * An implementation of the transport interface for a file based protocol.
@@ -170,8 +171,8 @@ public class FileTransport extends Transport <InputStream, InputStream> {
 
     @Override
     protected Endpoint internalCreateEndpoint(String localName,
-            String routingName, Map qosProperties) throws MALException {
-        return new Endpoint(this, localName, routingName, uriBase + localName, false);
+            String routingName, Map qosProperties, NamedValueList supplements) throws MALException {
+        return new Endpoint(this, localName, routingName, uriBase + localName, false, supplements);
     }
 
     @Override

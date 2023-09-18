@@ -58,7 +58,8 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final Boolean withPubSub,
-            final URI sharedBrokerUri) throws MALException {
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
         super(
                 impl,
                 localName,
@@ -67,6 +68,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
+                supplements,
                 defaultQoSProperties,
                 handler);
 
@@ -107,7 +109,8 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
         super(
                 impl,
                 endPoint,
@@ -115,6 +118,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
+                supplements,
                 defaultQoSProperties,
                 handler);
 

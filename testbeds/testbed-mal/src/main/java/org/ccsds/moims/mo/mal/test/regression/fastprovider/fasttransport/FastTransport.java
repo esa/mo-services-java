@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -43,7 +44,7 @@ public class FastTransport implements MALTransport {
     protected Map<String, FastEndpoint> endpointMap = new HashMap<>();
 
     @Override
-    public MALEndpoint createEndpoint(String localName, Map map) throws MALException {
+    public MALEndpoint createEndpoint(String localName, Map map, NamedValueList supplements) throws MALException {
         FastEndpoint ep = new FastEndpoint(this, getLocalName(localName, map));
         endpointMap.put(ep.getURI().getValue(), ep);
         return ep;

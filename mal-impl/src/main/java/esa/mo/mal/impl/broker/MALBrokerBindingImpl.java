@@ -49,6 +49,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final Blob authenticationId,
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
+            final NamedValueList supplements,
             final Map qosProperties) throws MALException {
         super(
                 impl,
@@ -58,6 +59,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
+                supplements,
                 qosProperties,
                 null);
 
@@ -75,6 +77,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
             final Blob authenticationId,
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
+            final NamedValueList supplements,
             final Map qosProperties) throws MALException {
         super(
                 impl,
@@ -83,6 +86,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
+                supplements,
                 qosProperties,
                 null);
 

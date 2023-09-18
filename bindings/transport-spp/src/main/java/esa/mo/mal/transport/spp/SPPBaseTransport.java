@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
@@ -203,7 +204,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
 
     @Override
     protected Endpoint internalCreateEndpoint(final String localName,
-            final String routingName, final Map properties) throws MALException {
+            final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier,
                 uriRep, ssc, localName, routingName, uriBase + routingName,
                 wrapBodyParts, properties);

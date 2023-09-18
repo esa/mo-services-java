@@ -71,7 +71,8 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
                 priorityLevelNumber,
                 defaultQoSProperties,
                 isPublisher,
-                sharedBrokerUri);
+                sharedBrokerUri,
+                supplements);
     }
 
     @Override
@@ -96,7 +97,8 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
                 priorityLevelNumber,
                 defaultQoSProperties,
                 isPublisher,
-                sharedBrokerUri);
+                sharedBrokerUri,
+                supplements);
     }
 
     @Override

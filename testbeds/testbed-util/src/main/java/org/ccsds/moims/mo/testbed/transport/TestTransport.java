@@ -54,8 +54,8 @@ public class TestTransport implements MALTransport {
     }
 
     @Override
-    public MALEndpoint createEndpoint(String localName, Map qosProperties) throws MALException {
-        TestEndPoint ep = new TestEndPoint(delegate.createEndpoint(localName, qosProperties));
+    public MALEndpoint createEndpoint(String localName, Map qosProperties, NamedValueList supplements) throws MALException {
+        TestEndPoint ep = new TestEndPoint(delegate.createEndpoint(localName, qosProperties, supplements));
         TransportInterceptor.instance().addEndPoint(ep);
         return ep;
     }

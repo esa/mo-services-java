@@ -50,6 +50,7 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import esa.mo.mal.transport.gen.sending.MessageSender;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * The ZMTP MAL Transport implementation.
@@ -416,7 +417,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
 
     @Override
     protected Endpoint internalCreateEndpoint(final String localName,
-            final String routingName, final Map properties) throws MALException {
+            final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new ZMTPEndpoint(this, defaultConfiguration, localName,
                 routingName, uriBase + routingName, wrapBodyParts, properties);
     }

@@ -57,9 +57,12 @@ public class SPPEndpoint extends Endpoint {
             int apidQualifier,
             SPPURIRepresentation uriRep,
             SPPSourceSequenceCounter ssCounter,
-            String localName, String routingName, String uri, boolean wrapBodyParts,
+            String localName,
+            String routingName,
+            String uri,
+            boolean wrapBodyParts,
             final Map properties) {
-        super(transport, localName, routingName, uri, wrapBodyParts);
+        super(transport, localName, routingName, uri, wrapBodyParts, new NamedValueList());
 
         this.configuration = new SPPConfiguration(configuration, properties);
 

@@ -92,7 +92,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     @Override
     protected Endpoint internalCreateEndpoint(String localName, String routingName,
-            Map qosProperties) throws MALException {
+            Map qosProperties, NamedValueList supplements) throws MALException {
         try {
             Session qs = getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
             Queue q = getAdministrator().createQueue(qs, routingName);

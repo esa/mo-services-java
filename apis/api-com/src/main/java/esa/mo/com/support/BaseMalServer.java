@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -50,6 +51,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  * create an instance of a derived class, call init(), call start, and then when
  * finished call stop.
  */
+@Deprecated
 public abstract class BaseMalServer {
 
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.mal");
@@ -129,7 +131,7 @@ public abstract class BaseMalServer {
             transport = mal.getTransport(protocol);
         }
 
-        ep = transport.createEndpoint(localname, System.getProperties());
+        ep = transport.createEndpoint(localname, System.getProperties(), new NamedValueList());
         ep.startMessageDelivery();
 
         subInit();

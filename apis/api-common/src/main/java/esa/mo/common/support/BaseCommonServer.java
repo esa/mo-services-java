@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
  * Extension of the base COM service provide class for Common based service
  * providers.
  */
+@Deprecated
 public abstract class BaseCommonServer extends BaseComServer {
 
     private final Identifier providerName;

@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -77,7 +78,7 @@ public class Main {
 
     protected static MALEndpoint createEndpoint(String protocol, MALTransport trans) throws Exception {
         System.out.println("Creating end point for transport " + protocol);
-        MALEndpoint ep = trans.createEndpoint("BRIDGE", null);
+        MALEndpoint ep = trans.createEndpoint("BRIDGE", null, new NamedValueList());
 
         System.out.println("Transport " + protocol + " URI is " + ep.getURI().getValue());
 

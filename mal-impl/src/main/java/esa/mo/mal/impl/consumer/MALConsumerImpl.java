@@ -60,15 +60,16 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
             final Identifier sessionName,
             final QoSLevel qosLevel,
             final Map qosProps,
-            final UInteger priority) throws MALException {
+            final UInteger priority,
+            NamedValueList supplements) throws MALException {
         if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
 
         this.sender = impl.getSendingInterface();
 
-        final MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
-                .createEndpoint(localName, qosProps);
+        MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
+                .createEndpoint(localName, qosProps, supplements);
 
         if (ep == null) {
             // transport was unable to create the end point for us, need to throw an exception

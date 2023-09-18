@@ -73,7 +73,8 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
                 sessionName,
                 qosLevel,
                 qosProps,
-                priority);
+                priority,
+                supplements);
     }
 
     @Override

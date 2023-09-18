@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -62,6 +63,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
      * @param authenticationId Authentication identifier.
      * @param expectedQosA Expected QoS.
      * @param priorityLevelNumber Number of priority levels.
+     * @param supplements Supplements for this service component.
      * @param defaultQoSProperties Default QOS properties.
      * @param handler Service interaction handler.
      * @throws MALException on error.
@@ -74,6 +76,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
             final Blob authenticationId,
             final QoSLevel[] expectedQosA,
             final UInteger priorityLevelNumber,
+            final NamedValueList supplements,
             final Map defaultQoSProperties,
             final MALInteractionHandler handler) throws MALException {
         this.sendHandler = impl.getSendingInterface();
@@ -90,7 +93,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
         this.priorityLevelNumber = priorityLevelNumber;
         this.defaultQoSProperties = (defaultQoSProperties != null) ? defaultQoSProperties : null;
         this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
-        this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
+        this.endpoint = transport.createEndpoint(localName, defaultQoSProperties, supplements);
         this.localUri = this.endpoint.getURI();
         this.msgAddress = new Address(endpoint, authenticationId, handler);
         this.receiveHandler.addProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
@@ -107,6 +110,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
      * @param authenticationId Authentication identifier.
      * @param expectedQosA Expected QoS.
      * @param priorityLevelNumber Number of priority levels.
+     * @param supplements Supplements for this service component.
      * @param defaultQoSProperties Default QOS properties.
      * @param handler Service interaction handler.
      * @throws MALException on error.
@@ -118,6 +122,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
             final Blob authenticationId,
             final QoSLevel[] expectedQosA,
             final UInteger priorityLevelNumber,
+            final NamedValueList supplements,
             final Map defaultQoSProperties,
             final MALInteractionHandler handler) throws MALException {
         this.sendHandler = impl.getSendingInterface();

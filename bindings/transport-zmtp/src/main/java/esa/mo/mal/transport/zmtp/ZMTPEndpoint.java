@@ -51,7 +51,7 @@ public class ZMTPEndpoint extends Endpoint {
             String uri,
             boolean wrapBodyParts,
             final Map properties) {
-        super(transport, localName, routingName, uri, wrapBodyParts);
+        super(transport, localName, routingName, uri, wrapBodyParts, new NamedValueList());
         this.configuration = new ZMTPConfiguration(configuration, properties);
     }
 

@@ -102,6 +102,7 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
                     authenticationId,
                     expectedQos,
                     priorityLevelNumber,
+                    supplements,
                     qosProperties);
             ((MALBrokerBindingImpl) retVal).init();
             brokerBindingMap.put(retVal.getURI().getValue(), (MALBrokerBindingImpl) retVal);
@@ -145,6 +146,7 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
                     authenticationId,
                     expectedQos,
                     priorityLevelNumber,
+                    supplements,
                     qosProperties);
             ((MALBrokerBindingImpl) retVal).init();
             brokerBindingMap.put(retVal.getURI().getValue(), (MALBrokerBindingImpl) retVal);

@@ -54,6 +54,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.sending.MessageSender;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * The TCPIP MAL Transport implementation.
@@ -492,9 +493,9 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      */
     @Override
     protected Endpoint internalCreateEndpoint(final String localName,
-            final String routingName, final Map properties) throws MALException {
+            final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}", uriBase);
-        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
+        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts, supplements);
     }
 
     /**

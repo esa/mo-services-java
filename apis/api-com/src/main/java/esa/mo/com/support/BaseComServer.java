@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
  * Extension of the base MAL service provide class for COM based service
  * providers.
  */
+@Deprecated
 public abstract class BaseComServer extends BaseMalServer {
 
     protected EventServiceProvider eventService;
