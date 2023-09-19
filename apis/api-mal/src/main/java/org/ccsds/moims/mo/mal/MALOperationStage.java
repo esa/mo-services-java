@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
  */
 public class MALOperationStage {
 
+    @Deprecated
     private final UOctet stageNumber;
 
     private final OperationField[] fields;
@@ -49,15 +50,6 @@ public class MALOperationStage {
         }
         this.stageNumber = stageNumber;
         this.fields = fields;
-    }
-
-    /**
-     * Returns the stage number.
-     *
-     * @return the stage number.
-     */
-    public UOctet getNumber() {
-        return stageNumber;
     }
 
     /**

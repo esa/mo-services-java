@@ -23,7 +23,6 @@ package org.ccsds.moims.mo.mal.broker;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -102,53 +101,6 @@ public interface MALBrokerBinding {
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
-     * The method enables a MALBrokerHandler to send a NOTIFY message to a
-     * subscriber. The allowed update list types shall be: a MAL element list; a
-     * {@code List<MALEncodedElement>} containing the encoded updates; a List
-     * defined by a specific Java mapping extension.
-     *
-     * @param op Operation of the NOTIFY message
-     * @param subscriber Subscriber’s URI
-     * @param transactionId Transaction identifier of the NOTIFY message
-     * @param domainId Domain of the NOTIFY message
-     * @param networkZone Network zone of the NOTIFY message
-     * @param sessionType Session type of the NOTIFY message
-     * @param sessionName Session name of the NOTIFY message
-     * @param notifyQos QoS level of the NOTIFY message
-     * @param notifyQosProps QoS properties of the NOTIFY message
-     * @param notifyPriority Priority of the NOTIFY message
-     * @param subscriptionId Subscription identifier
-     * @param supplements Set of optional named values
-     * @param updateHeader Update header
-     * @param updateObjects Update objects
-     * @return The sent MALMessage.
-     * @throws java.lang.IllegalArgumentException If at least one of the
-     * arguments, except ‘notifyQoSProps’, is NULL
-     * @throws MALInteractionException if a MAL standard error occurs during the
-     * message sending
-     * @throws MALException thrown if a non-MAL error occurs during the message
-     * sending, MALBrokerBinding represents a transport level broker or is
-     * linked to a MAL level broker without MALBrokerHandler, or
-     * MALBrokerBinding is closed.
-     */
-    MALMessage sendNotify(
-            MALOperation op,
-            URI subscriber,
-            Long transactionId,
-            IdentifierList domainId,
-            Identifier networkZone,
-            SessionType sessionType,
-            Identifier sessionName,
-            QoSLevel notifyQos,
-            Map notifyQosProps,
-            UInteger notifyPriority,
-            Identifier subscriptionId,
-            NamedValueList supplements,
-            UpdateHeader updateHeader,
-            Object... updateObjects)
-            throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
-
-    /**
      * The method enables a MALBrokerHandler to send a NOTIFY ERROR message to a
      * subscriber
      *
@@ -196,47 +148,6 @@ public interface MALBrokerBinding {
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 
     /**
-     * The method enables a MALBrokerHandler to send a NOTIFY ERROR message to a
-     * subscriber
-     *
-     * @param op Operation of the NOTIFY ERROR message
-     * @param subscriber Subscriber’s URI
-     * @param transactionId Transaction identifier of the NOTIFY ERROR message
-     * @param domainId Domain of the NOTIFY ERROR message
-     * @param networkZone Network zone of the NOTIFY ERROR message
-     * @param sessionType Session type of the NOTIFY ERROR message
-     * @param sessionName Session name of the NOTIFY ERROR message
-     * @param notifyQos QoS level of the NOTIFY ERROR message
-     * @param notifyQosProps QoS properties of the NOTIFY ERROR message
-     * @param notifyPriority Priority of the NOTIFY ERROR message
-     * @param error Body of the NOTIFY ERROR Error message
-     * @param supplements Set of optional named values
-     * @return The sent MALMessage.
-     * @throws java.lang.IllegalArgumentException If at least one of the
-     * arguments, except ‘notifyQoSProps’, is NULL
-     * @throws MALInteractionException if a MAL standard error occurs during the
-     * message sending
-     * @throws MALException thrown if a non-MAL error occurs during the message
-     * sending, MALBrokerBinding represents a transport level broker or is
-     * linked to a MAL level broker without MALBrokerHandler, or
-     * MALBrokerBinding is closed.
-     */
-    MALMessage sendNotifyError(
-            MALOperation op,
-            URI subscriber,
-            Long transactionId,
-            IdentifierList domainId,
-            Identifier networkZone,
-            SessionType sessionType,
-            Identifier sessionName,
-            QoSLevel notifyQos,
-            Map notifyQosProps,
-            UInteger notifyPriority,
-            MOErrorException error,
-            NamedValueList supplements)
-            throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
-
-    /**
      * The method enables a MALBrokerHandler to send a PUBLISH ERROR message to
      * a publisher
      *
@@ -270,47 +181,6 @@ public interface MALBrokerBinding {
             UShort service,
             UShort operation,
             UOctet version,
-            URI publisher,
-            Long transactionId,
-            IdentifierList domainId,
-            Identifier networkZone,
-            SessionType sessionType,
-            Identifier sessionName,
-            QoSLevel qos,
-            Map qosProps,
-            UInteger priority,
-            MOErrorException error,
-            NamedValueList supplements)
-            throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
-
-    /**
-     * The method enables a MALBrokerHandler to send a PUBLISH ERROR message to
-     * a publisher
-     *
-     * @param op Operation of the PUBLISH ERROR message
-     * @param publisher Publisher’s URI
-     * @param transactionId Transaction identifier of the PUBLISH ERROR message
-     * @param domainId Domain of the PUBLISH ERROR message
-     * @param networkZone Network zone of the PUBLISH ERROR message
-     * @param sessionType Session type of the PUBLISH ERROR message
-     * @param sessionName Session name of the PUBLISH ERROR message
-     * @param qos QoS level of the PUBLISH ERROR message
-     * @param qosProps QoS properties of the PUBLISH ERROR message
-     * @param priority Priority of the PUBLISH ERROR message
-     * @param error Body of the PUBLISH ERROR Error message
-     * @param supplements Set of optional named values
-     * @return The sent MALMessage.
-     * @throws java.lang.IllegalArgumentException If at least one of the
-     * arguments, except ‘notifyQoSProps’, is NULL
-     * @throws MALInteractionException if a MAL standard error occurs during the
-     * message sending
-     * @throws MALException thrown if a non-MAL error occurs during the message
-     * sending, MALBrokerBinding represents a transport level broker or is
-     * linked to a MAL level broker without MALBrokerHandler, or
-     * MALBrokerBinding is closed.
-     */
-    MALMessage sendPublishError(
-            MALOperation op,
             URI publisher,
             Long transactionId,
             IdentifierList domainId,

@@ -145,50 +145,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     }
 
     @Override
-    public MALMessage sendNotify(final MALOperation operation,
-            final URI subscriber,
-            final Long transactionId,
-            final IdentifierList domainId,
-            final Identifier networkZone,
-            final SessionType sessionType,
-            final Identifier sessionName,
-            final QoSLevel notifyQos,
-            final Map notifyQosProps,
-            final UInteger notifyPriority,
-            final Identifier subscriptionId,
-            final NamedValueList supplements,
-            final UpdateHeader updateHeader,
-            final Object... updateObjects) throws IllegalArgumentException, MALInteractionException, MALException {
-        final Object[] body = new Object[2 + updateObjects.length];
-        body[0] = subscriptionId;
-        body[1] = updateHeader;
-        int i = 2;
-        for (Object object : updateObjects) {
-            body[i] = object;
-            i++;
-        }
-
-        final MALMessage msg = endpoint.createMessage(authenticationId,
-                subscriber,
-                Time.now(),
-                operation.getInteractionType(),
-                MALPubSubOperation.NOTIFY_STAGE,
-                transactionId,
-                operation.getService().getAreaNumber(),
-                operation.getService().getServiceNumber(),
-                operation.getNumber(),
-                operation.getService().getServiceVersion(),
-                Boolean.FALSE,
-                supplements,
-                notifyQosProps,
-                body);
-
-        sendHandler.getSecurityManager().check(msg);
-        endpoint.sendMessage(msg);
-        return msg;
-    }
-
-    @Override
     public MALMessage sendNotifyError(final UShort area,
             final UShort service,
             final UShort operation,
@@ -219,42 +175,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 supplements,
                 notifyQosProps,
                 error.getErrorNumber(), error.getExtraInformation());
-
-        sendHandler.getSecurityManager().check(msg);
-        endpoint.sendMessage(msg);
-        return msg;
-    }
-
-    @Override
-    public MALMessage sendNotifyError(final MALOperation operation,
-            final URI subscriber,
-            final Long transactionId,
-            final IdentifierList domainId,
-            final Identifier networkZone,
-            final SessionType sessionType,
-            final Identifier sessionName,
-            final QoSLevel notifyQos,
-            final Map notifyQosProps,
-            final UInteger notifyPriority,
-            final MOErrorException error,
-            final NamedValueList supplements)
-            throws IllegalArgumentException, MALInteractionException, MALException {
-        final MALMessage msg = endpoint.createMessage(
-                authenticationId,
-                subscriber,
-                Time.now(),
-                operation.getInteractionType(),
-                MALPubSubOperation.NOTIFY_STAGE,
-                transactionId,
-                operation.getService().getAreaNumber(),
-                operation.getService().getServiceNumber(),
-                operation.getNumber(),
-                operation.getService().getServiceVersion(),
-                Boolean.TRUE,
-                supplements,
-                notifyQosProps,
-                error.getErrorNumber(),
-                error.getExtraInformation());
 
         sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);
@@ -293,40 +213,6 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 qosProps,
                 error.getErrorNumber(),
                 error.getExtraInformation());
-
-        sendHandler.getSecurityManager().check(msg);
-        endpoint.sendMessage(msg);
-        return msg;
-    }
-
-    @Override
-    public MALMessage sendPublishError(final MALOperation operation,
-            final URI publisher,
-            final Long transactionId,
-            final IdentifierList domainId,
-            final Identifier networkZone,
-            final SessionType sessionType,
-            final Identifier sessionName,
-            final QoSLevel qos,
-            final Map qosProps,
-            final UInteger priority,
-            final MOErrorException error,
-            final NamedValueList supplements)
-            throws IllegalArgumentException, MALInteractionException, MALException {
-        final MALMessage msg = endpoint.createMessage(authenticationId,
-                publisher,
-                Time.now(),
-                operation.getInteractionType(),
-                MALPubSubOperation.PUBLISH_STAGE,
-                transactionId,
-                operation.getService().getAreaNumber(),
-                operation.getService().getServiceNumber(),
-                operation.getNumber(),
-                operation.getService().getServiceVersion(),
-                Boolean.TRUE,
-                supplements,
-                qosProps,
-                error.getErrorNumber(), error.getExtraInformation());
 
         sendHandler.getSecurityManager().check(msg);
         endpoint.sendMessage(msg);

@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
@@ -59,12 +60,14 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
 
     private Long transactionId;
 
+    @Override
     public void handleDeregister(MALInteraction interaction, MALDeregisterBody body)
             throws MALInteractionException, MALException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void handlePublish(MALInteraction interaction, MALPublishBody body)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage("ErrorBrokerHandler.handlePublish(" + interaction.getMessageHeader() + ')');
@@ -77,7 +80,12 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
         } catch (InterruptedException e) {
         }
 
-        binding.sendNotifyError(interaction.getOperation(),
+        MALMessageHeader header = interaction.getMessageHeader();
+        binding.sendNotifyError(
+                header.getServiceArea(),
+                header.getService(),
+                header.getOperation(),
+                header.getServiceVersion(),
                 subscriberUri,
                 transactionId,
                 interaction.getMessageHeader().getDomain(),
@@ -92,17 +100,20 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
         );
     }
 
+    @Override
     public void handlePublishDeregister(MALInteraction interaction)
             throws MALInteractionException, MALException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void handlePublishRegister(MALInteraction interaction,
             MALPublishRegisterBody body) throws MALInteractionException, MALException {
         throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
     }
 
+    @Override
     public void handleRegister(MALInteraction interaction, MALRegisterBody body)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage("ErrorBrokerHandler.handleRegister(" + interaction.getMessageHeader() + ')');
@@ -114,10 +125,12 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
         }
     }
 
+    @Override
     public void malFinalize(MALBrokerBinding binding) {
 
     }
 
+    @Override
     public void malInitialize(MALBrokerBinding binding) {
         this.binding = binding;
     }
