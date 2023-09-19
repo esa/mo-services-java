@@ -39,7 +39,7 @@ public class MALSendOperation extends MALOperation {
      */
     public static final UOctet SEND_STAGE = new UOctet(_SEND_STAGE);
 
-    private final MALOperationStage sendStage;
+    private final OperationField[] sendStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -57,7 +57,7 @@ public class MALSendOperation extends MALOperation {
             final Identifier name,
             final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage sendStage)
+            final OperationField[] sendStage)
             throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.SEND, capabilitySet);
         this.sendStage = sendStage;
@@ -70,7 +70,7 @@ public class MALSendOperation extends MALOperation {
      * @return The operation stage.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) {
         return sendStage;
     }
 }

@@ -116,40 +116,33 @@ public class MALPubSubOperation extends MALOperation {
      */
     public static final UOctet PUBLISH_DEREGISTER_ACK_STAGE = new UOctet(_PUBLISH_DEREGISTER_ACK_STAGE);
 
-    private static final MALOperationStage PUBSUB_REG_OPERATION_STAGE
-            = new MALOperationStage(REGISTER_STAGE, new OperationField[]{
-                new OperationField("subscription", false, Subscription.SHORT_FORM)
-            });
+    private static final OperationField[] PUBSUB_REG_OPERATION_STAGE = new OperationField[]{
+        new OperationField("subscription", false, Subscription.SHORT_FORM)
+    };
 
-    private static final MALOperationStage PUBSUB_REGACK_OPERATION_STAGE
-            = new MALOperationStage(REGISTER_ACK_STAGE, new OperationField[0]);
+    private static final OperationField[] PUBSUB_REGACK_OPERATION_STAGE = new OperationField[0];
 
-    private static final MALOperationStage PUBSUB_PUBREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new OperationField[]{
+    private static final OperationField[] PUBSUB_PUBREG_OPERATION_STAGE
+            = new OperationField[]{
                 new OperationField("names", false, IdentifierList.SHORT_FORM),
                 new OperationField("types", false, AttributeTypeList.SHORT_FORM)
-            });
+            };
 
-    private static final MALOperationStage PUBSUB_PUBREGACK_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_ACK_STAGE, new OperationField[0]);
+    private static final OperationField[] PUBSUB_PUBREGACK_OPERATION_STAGE = new OperationField[0];
 
-    private static final MALOperationStage PUBSUB_DEREG_OPERATION_STAGE
-            = new MALOperationStage(DEREGISTER_STAGE, new OperationField[]{
-                new OperationField("subscriptionIds", false, IdentifierList.SHORT_FORM)
-            });
+    private static final OperationField[] PUBSUB_DEREG_OPERATION_STAGE = new OperationField[]{
+        new OperationField("subscriptionIds", false, IdentifierList.SHORT_FORM)
+    };
 
-    private static final MALOperationStage PUBSUB_DEREGACK_OPERATION_STAGE
-            = new MALOperationStage(DEREGISTER_ACK_STAGE, new OperationField[0]);
+    private static final OperationField[] PUBSUB_DEREGACK_OPERATION_STAGE = new OperationField[0];
 
-    private static final MALOperationStage PUBSUB_PUBDEREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_DEREGISTER_STAGE, new OperationField[0]);
+    private static final OperationField[] PUBSUB_PUBDEREG_OPERATION_STAGE = new OperationField[0];
 
-    private static final MALOperationStage PUBSUB_PUBDEREGACK_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_DEREGISTER_ACK_STAGE, new OperationField[0]);
+    private static final OperationField[] PUBSUB_PUBDEREGACK_OPERATION_STAGE = new OperationField[0];
 
-    private final MALOperationStage pubSubPublishStage;
+    private final OperationField[] pubSubPublishStage;
 
-    private final MALOperationStage pubSubNotifyStage;
+    private final OperationField[] pubSubNotifyStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -172,8 +165,8 @@ public class MALPubSubOperation extends MALOperation {
             throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.PUBSUB, capabilitySet);
 
-        final OperationField[] publishFields = new OperationField[fields.length + 1];
-        final OperationField[] notifyFields = new OperationField[fields.length + 2];
+        OperationField[] publishFields = new OperationField[fields.length + 1];
+        OperationField[] notifyFields = new OperationField[fields.length + 2];
 
         for (int i = 0; i < fields.length; i++) {
             final OperationField field = fields[i];
@@ -187,8 +180,8 @@ public class MALPubSubOperation extends MALOperation {
         notifyFields[0] = new OperationField("subscriptionId", false, Attribute.IDENTIFIER_SHORT_FORM);
         notifyFields[1] = new OperationField("updateHeader", false, UpdateHeader.SHORT_FORM);
 
-        this.pubSubPublishStage = new MALOperationStage(PUBLISH_STAGE, publishFields);
-        this.pubSubNotifyStage = new MALOperationStage(NOTIFY_STAGE, notifyFields);
+        this.pubSubPublishStage = publishFields;
+        this.pubSubNotifyStage = notifyFields;
     }
 
     /**
@@ -200,7 +193,7 @@ public class MALPubSubOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

@@ -63,10 +63,10 @@ public class MALProgressOperation extends MALOperation {
      */
     public static final UOctet PROGRESS_RESPONSE_STAGE = new UOctet(_PROGRESS_RESPONSE_STAGE);
 
-    private final MALOperationStage progressStage;
-    private final MALOperationStage progressAckStage;
-    private final MALOperationStage progressUpdateStage;
-    private final MALOperationStage progressResponseStage;
+    private final OperationField[] progressStage;
+    private final OperationField[] progressAckStage;
+    private final OperationField[] progressUpdateStage;
+    private final OperationField[] progressResponseStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -89,10 +89,10 @@ public class MALProgressOperation extends MALOperation {
             final Identifier name,
             final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage progressStage,
-            final MALOperationStage progressAckStage,
-            final MALOperationStage progressUpdateStage,
-            final MALOperationStage progressResponseStage) throws java.lang.IllegalArgumentException {
+            final OperationField[] progressStage,
+            final OperationField[] progressAckStage,
+            final OperationField[] progressUpdateStage,
+            final OperationField[] progressResponseStage) throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.PROGRESS, capabilitySet);
 
         this.progressStage = progressStage;
@@ -110,7 +110,7 @@ public class MALProgressOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

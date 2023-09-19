@@ -47,10 +47,9 @@ public class MALSubmitOperation extends MALOperation {
      */
     public static final UOctet SUBMIT_ACK_STAGE = new UOctet(_SUBMIT_ACK_STAGE);
 
-    private static final MALOperationStage SUBMIT_ACK_OPERATION_STAGE
-            = new MALOperationStage(SUBMIT_ACK_STAGE, new OperationField[0]);
+    private static final OperationField[] SUBMIT_ACK_OPERATION_STAGE = new OperationField[0];
 
-    private final MALOperationStage submitStage;
+    private final OperationField[] submitStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -68,7 +67,7 @@ public class MALSubmitOperation extends MALOperation {
             final Identifier name,
             final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage submitStage)
+            final OperationField[] submitStage)
             throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.SUBMIT, capabilitySet);
 
@@ -84,7 +83,7 @@ public class MALSubmitOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

@@ -122,6 +122,6 @@ public class MALEncodingContext {
         }
 
         UOctet stage = header.getInteractionStage();
-        return this.getOperation().getOperationStage(stage).getFields();
+        return this.getOperation().getFieldsOnStage(stage);
     }
 }

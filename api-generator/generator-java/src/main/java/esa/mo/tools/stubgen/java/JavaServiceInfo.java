@@ -299,7 +299,7 @@ public class JavaServiceInfo {
         return opArgs;
     }
 
-    // Generates the MALOperationStage(...)
+    // Generates the OperationField[] (...)
     private String addMalTypes(int index, List<TypeInfo> ti, boolean isPubSub) {
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
@@ -321,20 +321,9 @@ public class JavaServiceInfo {
 
         String new_line_0 = "\n            ";
         String new_line_1 = "\n                ";
-        String new_line_2 = "\n                    ";
-        String new_line_3 = "\n                        ";
 
-        if (isPubSub) {
-            String arrayArgs = this.generateOperationFieldsArray(ti, new_line_1);
-            return "new " + OP_FIELD + "[] {" + arrayArgs + "}";
-        }
-
-        String arrayArgs = this.generateOperationFieldsArray(ti, new_line_3);
-        return new_line_0 + "new org.ccsds.moims.mo.mal.MALOperationStage("
-                + new_line_2
-                + "new org.ccsds.moims.mo.mal.structures.UOctet(" + index + "),"
-                + "\n                    "
-                + "new " + OP_FIELD + "[] {" + arrayArgs + "})";
+        String arrayArgs = this.generateOperationFieldsArray(ti, new_line_1);
+        return new_line_0 + "new " + OP_FIELD + "[] {" + arrayArgs + "}";
     }
 
     private String generateOperationFieldsArray(List<TypeInfo> ti, String newLine) {

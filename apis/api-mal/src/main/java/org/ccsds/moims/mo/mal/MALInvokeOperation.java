@@ -54,9 +54,9 @@ public class MALInvokeOperation extends MALOperation {
      * MAL UOctet representing the INVOKE_RESPONSE stage.
      */
     public static final UOctet INVOKE_RESPONSE_STAGE = new UOctet(_INVOKE_RESPONSE_STAGE);
-    private final MALOperationStage invokeStage;
-    private final MALOperationStage invokeAckStage;
-    private final MALOperationStage invokeResponseStage;
+    private final OperationField[] invokeStage;
+    private final OperationField[] invokeAckStage;
+    private final OperationField[] invokeResponseStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -77,9 +77,9 @@ public class MALInvokeOperation extends MALOperation {
             final Identifier name,
             final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage invokeStage,
-            final MALOperationStage invokeAckStage,
-            final MALOperationStage invokeResponseStage)
+            final OperationField[] invokeStage,
+            final OperationField[] invokeAckStage,
+            final OperationField[] invokeResponseStage)
             throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.INVOKE, capabilitySet);
 
@@ -97,7 +97,7 @@ public class MALInvokeOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

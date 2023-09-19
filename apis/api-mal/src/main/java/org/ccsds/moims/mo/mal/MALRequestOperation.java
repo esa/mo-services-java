@@ -47,8 +47,8 @@ public class MALRequestOperation extends MALOperation {
      */
     public static final UOctet REQUEST_RESPONSE_STAGE = new UOctet(_REQUEST_RESPONSE_STAGE);
 
-    private final MALOperationStage requestStage;
-    private final MALOperationStage responseStage;
+    private final OperationField[] requestStage;
+    private final OperationField[] responseStage;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -68,8 +68,8 @@ public class MALRequestOperation extends MALOperation {
             final Identifier name,
             final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage requestStage,
-            final MALOperationStage responseStage)
+            final OperationField[] requestStage,
+            final OperationField[] responseStage)
             throws java.lang.IllegalArgumentException {
         super(number, name, replayable, InteractionType.REQUEST, capabilitySet);
 
@@ -86,8 +86,7 @@ public class MALRequestOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

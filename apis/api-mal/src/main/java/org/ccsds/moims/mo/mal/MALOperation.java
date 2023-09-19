@@ -147,5 +147,5 @@ public abstract class MALOperation {
      * @throws java.lang.IllegalArgumentException if the supplied argument is
      * null or stage does not exist for this pattern.
      */
-    public abstract MALOperationStage getOperationStage(UOctet stageNumber) throws java.lang.IllegalArgumentException;
+    public abstract OperationField[] getFieldsOnStage(UOctet stageNumber) throws java.lang.IllegalArgumentException;
 }
