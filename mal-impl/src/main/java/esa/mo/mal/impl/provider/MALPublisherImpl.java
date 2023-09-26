@@ -73,14 +73,14 @@ public class MALPublisherImpl implements MALPublisher {
     public void register(final IdentifierList keyNames, final AttributeTypeList keyTypes,
             final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageTarget details = new MessageTarget(
+        final MessageTarget messageTarget = new MessageTarget(
                 provider.getEndpoint(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        Long transactionId = handler.publishRegister(provider.getURI().getValue(), details, operation, keyNames, keyTypes, listener);
+        Long transactionId = handler.publishRegister(provider.getURI().getValue(), messageTarget, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), transactionId);
     }
 
@@ -88,14 +88,14 @@ public class MALPublisherImpl implements MALPublisher {
     public MALMessage asyncRegister(final IdentifierList keyNames,
             final AttributeTypeList keyTypes, final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageTarget details = new MessageTarget(
+        final MessageTarget messageTarget = new MessageTarget(
                 provider.getEndpoint(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        MALMessage msg = handler.publishRegisterAsync(provider.getURI().getValue(), details, operation, keyNames, keyTypes, listener);
+        MALMessage msg = handler.publishRegisterAsync(provider.getURI().getValue(), messageTarget, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), msg.getHeader().getTransactionId());
         return msg;
     }
@@ -103,7 +103,7 @@ public class MALPublisherImpl implements MALPublisher {
     @Override
     public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageTarget details = new MessageTarget(
+        final MessageTarget messageTarget = new MessageTarget(
                 provider.getEndpoint(),
                 null,
                 provider.getBrokerURI(),
@@ -125,34 +125,34 @@ public class MALPublisherImpl implements MALPublisher {
         body[0] = updateHeader;
         System.arraycopy(updateValues, 0, body, 1, updateValues.length);
 
-        return handler.onewayInteraction(details, tid, operation,
+        return handler.onewayInteraction(messageTarget, tid, operation,
                 MALPubSubOperation.PUBLISH_STAGE, body);
     }
 
     @Override
     public void deregister() throws MALInteractionException, MALException {
-        final MessageTarget details = new MessageTarget(
+        final MessageTarget messageTarget = new MessageTarget(
                 provider.getEndpoint(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        handler.publishDeregister(details, operation);
+        handler.publishDeregister(messageTarget, operation);
         this.removeTransId(provider.getBrokerURI());
     }
 
     @Override
     public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        final MessageTarget details = new MessageTarget(
+        final MessageTarget messageTarget = new MessageTarget(
                 provider.getEndpoint(),
                 null,
                 provider.getBrokerURI(),
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        final MALMessage msg = handler.publishDeregisterAsync(details, operation, listener);
+        final MALMessage msg = handler.publishDeregisterAsync(messageTarget, operation, listener);
         this.removeTransId(provider.getBrokerURI());
         return msg;
     }

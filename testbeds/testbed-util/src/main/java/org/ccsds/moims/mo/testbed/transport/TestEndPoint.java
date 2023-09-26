@@ -316,6 +316,7 @@ public class TestEndPoint implements MALEndpoint {
         delegate.stopMessageDelivery();
     }
 
+    @Override
     public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, Long transactionId,
             UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,

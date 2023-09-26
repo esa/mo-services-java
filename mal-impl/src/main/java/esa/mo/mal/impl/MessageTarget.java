@@ -40,7 +40,7 @@ public final class MessageTarget {
     /**
      * The MAL endpoint used for this message.
      */
-    public final MALEndpoint endpoint;
+    private final MALEndpoint endpoint;
 
     private final URI uriTo;
     private final URI brokerUri;
@@ -71,6 +71,10 @@ public final class MessageTarget {
 
     public Blob getAuthenticationId() {
         return authenticationId;
+    }
+
+    public MALEndpoint getEndpoint() {
+        return endpoint;
     }
 
     public MALMessage createMessage(final MALOperation operation,
