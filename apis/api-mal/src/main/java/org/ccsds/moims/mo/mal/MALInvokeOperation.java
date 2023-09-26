@@ -63,8 +63,6 @@ public class MALInvokeOperation extends MALOperation {
      *
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param invokeStage The stage information for the INVOKE stage.
      * @param invokeAckStage The stage information for the INVOKE_ACK stage.
@@ -75,13 +73,12 @@ public class MALInvokeOperation extends MALOperation {
      */
     public MALInvokeOperation(final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
             final OperationField[] invokeStage,
             final OperationField[] invokeAckStage,
             final OperationField[] invokeResponseStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.INVOKE, capabilitySet);
+        super(number, name, InteractionType.INVOKE, capabilitySet);
 
         this.invokeStage = invokeStage;
         this.invokeAckStage = invokeAckStage;

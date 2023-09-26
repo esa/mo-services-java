@@ -55,8 +55,6 @@ public class MALRequestOperation extends MALOperation {
      *
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param requestStage The stage information for the REQUEST stage.
      * @param responseStage The stage information for the REQUEST_RESPONSE
@@ -66,12 +64,11 @@ public class MALRequestOperation extends MALOperation {
      */
     public MALRequestOperation(final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
             final OperationField[] requestStage,
             final OperationField[] responseStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.REQUEST, capabilitySet);
+        super(number, name, InteractionType.REQUEST, capabilitySet);
 
         this.requestStage = requestStage;
         this.responseStage = responseStage;

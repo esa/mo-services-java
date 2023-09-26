@@ -266,7 +266,7 @@ public class JavaServiceInfo {
         List<String> opArgs = new LinkedList<>();
         opArgs.add(op.getName().toUpperCase() + "_OP_NUMBER");
         opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
-        opArgs.add(initNewLine + "" + op.getReplay());
+        // opArgs.add(initNewLine + "" + op.getReplay());
         opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
 
         switch (op.getPattern()) {

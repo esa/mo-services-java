@@ -56,8 +56,6 @@ public class MALSubmitOperation extends MALOperation {
      *
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param submitStage The stage information for the SUBMIT stage.
      * @throws java.lang.IllegalArgumentException If any argument is null,
@@ -65,11 +63,10 @@ public class MALSubmitOperation extends MALOperation {
      */
     public MALSubmitOperation(final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
             final OperationField[] submitStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.SUBMIT, capabilitySet);
+        super(number, name, InteractionType.SUBMIT, capabilitySet);
 
         this.submitStage = submitStage;
     }

@@ -149,8 +149,6 @@ public class MALPubSubOperation extends MALOperation {
      *
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param fields PUB-SUB fields. transmitted by the PUBLISH/NOTIFY message
      * of a PUBLISH-SUBSCRIBE operation.
@@ -159,11 +157,10 @@ public class MALPubSubOperation extends MALOperation {
      */
     public MALPubSubOperation(final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
             final OperationField[] fields)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.PUBSUB, capabilitySet);
+        super(number, name, InteractionType.PUBSUB, capabilitySet);
 
         OperationField[] publishFields = new OperationField[fields.length + 1];
         OperationField[] notifyFields = new OperationField[fields.length + 2];

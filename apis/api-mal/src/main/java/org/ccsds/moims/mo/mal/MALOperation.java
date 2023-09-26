@@ -33,7 +33,6 @@ public abstract class MALOperation {
 
     private final Identifier name;
     private final UShort number;
-    private final Boolean replayable;
     private final InteractionType interactionType;
     private final UShort capabilitySet;
     private MALService service;
@@ -43,28 +42,23 @@ public abstract class MALOperation {
      *
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param interactionType Interaction type of the operation
      * @param capabilitySet Capability set of the operation.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
     public MALOperation(final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final InteractionType interactionType,
             final UShort capabilitySet)
             throws java.lang.IllegalArgumentException {
         if ((number == null)
                 || (name == null)
-                || (replayable == null)
                 || (interactionType == null)
                 || (capabilitySet == null)) {
             throw new IllegalArgumentException("Supplied arguments must not be NULL");
         }
         this.name = name;
         this.number = number;
-        this.replayable = replayable;
         this.interactionType = interactionType;
         this.capabilitySet = capabilitySet;
     }
@@ -104,15 +98,6 @@ public abstract class MALOperation {
      */
     public boolean isPubSub() {
         return interactionType == InteractionType.PUBSUB;
-    }
-
-    /**
-     * Returns whether the operation is replayable.
-     *
-     * @return Whether the operation is replayable.
-     */
-    public Boolean isReplayable() {
-        return replayable;
     }
 
     /**

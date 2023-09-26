@@ -46,8 +46,6 @@ public class MALSendOperation extends MALOperation {
      *
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param sendStage The stage information for the SEND stage.
      * @throws java.lang.IllegalArgumentException If any argument is null,
@@ -55,11 +53,10 @@ public class MALSendOperation extends MALOperation {
      */
     public MALSendOperation(final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
             final OperationField[] sendStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.SEND, capabilitySet);
+        super(number, name, InteractionType.SEND, capabilitySet);
         this.sendStage = sendStage;
     }
 
