@@ -271,28 +271,28 @@ public class JavaServiceInfo {
 
         switch (op.getPattern()) {
             case SEND_OP:
-                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                opArgs.add(addMalTypes(op.getArgTypes()));
                 break;
             case SUBMIT_OP:
-                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
+                opArgs.add(addMalTypes(op.getArgTypes()));
                 break;
             case REQUEST_OP:
-                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
-                opArgs.add(addMalTypes(2, op.getRetTypes(), false));
+                opArgs.add(addMalTypes(op.getArgTypes()));
+                opArgs.add(addMalTypes(op.getRetTypes()));
                 break;
             case INVOKE_OP:
-                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
-                opArgs.add(addMalTypes(2, op.getAckTypes(), false));
-                opArgs.add(addMalTypes(3, op.getRetTypes(), false));
+                opArgs.add(addMalTypes(op.getArgTypes()));
+                opArgs.add(addMalTypes(op.getAckTypes()));
+                opArgs.add(addMalTypes(op.getRetTypes()));
                 break;
             case PROGRESS_OP:
-                opArgs.add(addMalTypes(1, op.getArgTypes(), false));
-                opArgs.add(addMalTypes(2, op.getAckTypes(), false));
-                opArgs.add(addMalTypes(3, op.getUpdateTypes(), false));
-                opArgs.add(addMalTypes(4, op.getRetTypes(), false));
+                opArgs.add(addMalTypes(op.getArgTypes()));
+                opArgs.add(addMalTypes(op.getAckTypes()));
+                opArgs.add(addMalTypes(op.getUpdateTypes()));
+                opArgs.add(addMalTypes(op.getRetTypes()));
                 break;
             case PUBSUB_OP:
-                opArgs.add(addMalTypes(1, op.getRetTypes(), true));
+                opArgs.add(addMalTypes(op.getRetTypes()));
                 break;
         }
 
@@ -300,7 +300,7 @@ public class JavaServiceInfo {
     }
 
     // Generates the OperationField[] (...)
-    private String addMalTypes(int index, List<TypeInfo> ti, boolean isPubSub) {
+    private String addMalTypes(List<TypeInfo> ti) {
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
 
