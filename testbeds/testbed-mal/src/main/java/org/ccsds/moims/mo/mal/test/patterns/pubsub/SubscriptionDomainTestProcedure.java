@@ -118,7 +118,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
             UInteger expectedErrorCode = new UInteger(999);
             TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL,
                     PRIORITY, publishDomainIds[i], HeaderTestProcedure.NETWORK_ZONE, SESSION,
-                    SESSION_NAME, false, keyNames, expectedErrorCode);
+                    SESSION_NAME, false, keyNames, Helper.get1TestKeyType(), expectedErrorCode);
             ipTestForPublish.publishRegister(testPublishRegister);
         }
         return true;

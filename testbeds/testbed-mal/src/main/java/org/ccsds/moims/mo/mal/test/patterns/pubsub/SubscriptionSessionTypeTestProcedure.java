@@ -102,7 +102,7 @@ public class SubscriptionSessionTypeTestProcedure extends LoggingBase {
         TestPublishRegister testPublishRegister = new TestPublishRegister(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, publisherSessionType, SESSION_NAME,
-                false, keyNames, expectedErrorCode);
+                false, keyNames, Helper.get1TestKeyType(), expectedErrorCode);
         ipTestToPublish.publishRegister(testPublishRegister);
         return true;
     }

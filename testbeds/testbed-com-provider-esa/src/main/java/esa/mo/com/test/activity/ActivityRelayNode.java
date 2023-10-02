@@ -175,10 +175,16 @@ public class ActivityRelayNode {
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
 
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+
         LoggingBase.logMessage("ActivityRelayNode:createMonitorEventPublisher Reset X calling register");
 
         try {
-            monitorEventPublisher.register(keys, new AttributeTypeList(), activityTestPublisher);
+            monitorEventPublisher.register(keys, keyTypes, activityTestPublisher);
         } catch (MALInteractionException ex) {
             // todo
             ex.printStackTrace();

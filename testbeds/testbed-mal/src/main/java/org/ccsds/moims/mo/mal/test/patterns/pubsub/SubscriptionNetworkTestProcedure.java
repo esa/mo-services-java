@@ -105,8 +105,8 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister = new TestPublishRegister(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-                new Identifier(network), SESSION, SESSION_NAME, false, Helper.get1TestKey(),
-                expectedErrorCode);
+                new Identifier(network), SESSION, SESSION_NAME, false,
+                Helper.get1TestKey(), Helper.get1TestKeyType(), expectedErrorCode);
         ipTestToPublish.publishRegister(testPublishRegister);
         return true;
     }

@@ -93,7 +93,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-                        keyNames, expectedErrorCode);
+                        keyNames, Helper.get1TestKeyType(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         listener = new MonitorListener();

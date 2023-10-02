@@ -1548,8 +1548,12 @@
                               name="TestPublish" />
                 </smc:extends>
                 <smc:field name="keyNames"
-                           comment="The name of the keys to be used by the broker.">
+                           comment="The names of the keys to be used by the broker.">
                     <smc:type area="MAL" name="IdentifierList" />
+                </smc:field>
+                <smc:field name="keyTypes"
+                           comment="The types of the keys to be used by the broker.">
+                    <smc:type area="MAL" name="AttributeTypeList" />
                 </smc:field>
                 <smc:field name="errorCode"
                            comment="The code of the Publish Register error expected to be received.-1 if no Publish Register error is expected.">

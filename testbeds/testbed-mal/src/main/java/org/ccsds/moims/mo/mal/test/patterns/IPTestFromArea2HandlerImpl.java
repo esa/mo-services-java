@@ -89,7 +89,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher.register(_TestPublishRegister.getKeyNames(), new AttributeTypeList(), new PublisherListener());
+        publisher.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
 
         Monitor2Publisher publisher2 = createMonitor2Publisher(
                 _TestPublishRegister.getDomain(),
@@ -99,7 +99,7 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher2.register(_TestPublishRegister.getKeyNames(), new AttributeTypeList(), new PublisherListener());
+        publisher2.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
     }
 
     public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
@@ -150,24 +150,28 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
 
     static class PublisherListener implements MALPublishInteractionListener {
 
+        @Override
         public void publishDeregisterAckReceived(MALMessageHeader arg0, Map arg1)
                 throws MALException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void publishErrorReceived(MALMessageHeader arg0, MALErrorBody arg1,
                 Map arg2) throws MALException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void publishRegisterAckReceived(MALMessageHeader arg0, Map arg1)
                 throws MALException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void publishRegisterErrorReceived(MALMessageHeader arg0,
                 MALErrorBody arg1, Map arg2) throws MALException {
             // TODO Auto-generated method stub

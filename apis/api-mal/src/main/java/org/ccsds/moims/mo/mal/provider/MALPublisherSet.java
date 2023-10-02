@@ -38,7 +38,6 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 public class MALPublisherSet {
 
     private final Set<MALPublisher> subpublishers = new HashSet<>();
-    private final MALProviderSet providerSet;
     private final MALPubSubOperation op;
     private final IdentifierList domain;
     private final Identifier networkZone;
@@ -51,7 +50,6 @@ public class MALPublisherSet {
     /**
      * Constructor.
      *
-     * @param providerSet MALProviderSet that owns this MALPublisherSet
      * @param op PUBLISH-SUBSCRIBE operation
      * @param domain Domain of the PUBLISH messages
      * @param networkZone Network zone of the PUBLISH messages
@@ -62,12 +60,11 @@ public class MALPublisherSet {
      * may be null.
      * @param remotePublisherPriority Priority of the PUBLISH messages, may be
      * null.
-     * @throws java.lang.IllegalArgumentException If the parameters
-     * ‘providerSet’ or ‘domain’ or ‘networkZone’ or ‘sessionType’ or
-     * ‘sessionName’ are NULL
+     * @throws java.lang.IllegalArgumentException If the parameters or ‘domain’
+     * or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ are NULL
      * @throws MALException If an error occurs.
      */
-    public MALPublisherSet(final MALProviderSet providerSet,
+    public MALPublisherSet(
             final MALPubSubOperation op,
             final IdentifierList domain,
             final Identifier networkZone,
@@ -77,7 +74,6 @@ public class MALPublisherSet {
             final Map remotePublisherQosProps,
             final UInteger remotePublisherPriority)
             throws java.lang.IllegalArgumentException, MALException {
-        this.providerSet = providerSet;
         this.op = op;
         this.domain = domain;
         this.networkZone = networkZone;
@@ -88,8 +84,7 @@ public class MALPublisherSet {
         this.remotePublisherPriority = remotePublisherPriority;
     }
 
-    void createPublisher(final MALProvider provider)
-            throws java.lang.IllegalArgumentException, MALException {
+    void createPublisher(final MALProvider provider) throws java.lang.IllegalArgumentException, MALException {
         final MALPublisher pub = provider.createPublisher(op,
                 domain,
                 networkZone,
@@ -122,6 +117,11 @@ public class MALPublisherSet {
     public void register(final IdentifierList keyNames, final AttributeTypeList keyTypes,
             final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
+        if (keyNames.size() != keyTypes.size()) {
+            throw new IllegalArgumentException("The size of keyNames (" + keyNames.size()
+                    + ") is different from the size of the keyTypes (" + keyTypes.size() + ")!");
+        }
+
         for (MALPublisher publisher : subpublishers) {
             publisher.register(keyNames, keyTypes, listener);
         }
@@ -178,6 +178,11 @@ public class MALPublisherSet {
     public MALMessage asyncRegister(final IdentifierList keyNames, final AttributeTypeList keyTypes,
             final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
+        if (keyNames.size() != keyTypes.size()) {
+            throw new IllegalArgumentException("The size of keyNames (" + keyNames.size()
+                    + ") is different from the size of the keyTypes (" + keyTypes.size() + ")!");
+        }
+
         MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
             msg = p.asyncRegister(keyNames, keyTypes, listener);

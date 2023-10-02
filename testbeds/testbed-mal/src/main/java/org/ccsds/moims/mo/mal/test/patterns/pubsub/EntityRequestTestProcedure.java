@@ -102,7 +102,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME,
-                        false, Helper.get4TestKeys(), expectedErrorCode);
+                        false, Helper.get4TestKeys(), Helper.get4TestKeyType(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         updateHeaderList = new UpdateHeaderList();

@@ -98,7 +98,8 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
         TestPublishRegister testPublishRegister
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
-                        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, keyNames,
+                        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME,
+                        false, keyNames, Helper.get1TestKeyType(),
                         expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 

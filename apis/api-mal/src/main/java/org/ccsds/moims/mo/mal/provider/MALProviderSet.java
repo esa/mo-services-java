@@ -82,7 +82,7 @@ public class MALProviderSet {
             final UInteger remotePublisherPriority,
             final NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException {
-        final MALPublisherSet publisherSet = new MALPublisherSet(this,
+        final MALPublisherSet publisherSet = new MALPublisherSet(
                 op,
                 domain,
                 networkZone,

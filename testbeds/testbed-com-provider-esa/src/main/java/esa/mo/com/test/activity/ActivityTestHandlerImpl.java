@@ -89,7 +89,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             keys.add(new Identifier("K3"));
             keys.add(new Identifier("K4"));
 
-            monitorEventPublisher.register(keys, new AttributeTypeList(), new ActivityTestPublisher());
+            AttributeTypeList keyTypes = new AttributeTypeList();
+            keyTypes.add(AttributeType.IDENTIFIER);
+            keyTypes.add(AttributeType.IDENTIFIER);
+            keyTypes.add(AttributeType.IDENTIFIER);
+            keyTypes.add(AttributeType.IDENTIFIER);
+
+            monitorEventPublisher.register(keys, keyTypes, new ActivityTestPublisher());
         }
     }
 

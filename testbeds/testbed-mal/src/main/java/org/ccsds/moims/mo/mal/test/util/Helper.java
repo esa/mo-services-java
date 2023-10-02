@@ -4,6 +4,8 @@ import java.math.BigInteger;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
@@ -95,7 +97,22 @@ public final class Helper {
         list.add(key1);
         return list;
     }
-    
+
+    public static AttributeTypeList get1TestKeyType() {
+        AttributeTypeList list = new AttributeTypeList();
+        list.add(AttributeType.IDENTIFIER);
+        return list;
+    }
+
+    public static AttributeTypeList get4TestKeyType() {
+        AttributeTypeList list = new AttributeTypeList();
+        list.add(AttributeType.IDENTIFIER);
+        list.add(AttributeType.IDENTIFIER);
+        list.add(AttributeType.IDENTIFIER);
+        list.add(AttributeType.IDENTIFIER);
+        return list;
+    }
+
     public static NamedValueList parseSupplements(String supplements) throws Exception {
       if (EMPTY_SUPPLEMENTS.equals(supplements)) {
         return supplementsEmpty;

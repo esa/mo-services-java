@@ -85,7 +85,7 @@ public class MultiTypeTestProcedure extends LoggingBase {
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true,
-                        Helper.get1TestKey(), expectedErrorCode);
+                        Helper.get1TestKey(), Helper.get1TestKeyType(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         return true;

@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
 import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.FineTime;
@@ -128,8 +129,14 @@ public class ArchiveEventPublisher {
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
 
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+
         PublisherListener publisherListener = new PublisherListener();
-        monitorEventPublisher.register(keys, new AttributeTypeList(), publisherListener);
+        monitorEventPublisher.register(keys, keyTypes, publisherListener);
 
     }
 
@@ -268,18 +275,22 @@ public class ArchiveEventPublisher {
      */
     public class PublisherListener implements MALPublishInteractionListener {
 
+        @Override
         public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
             LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
         }
 
+        @Override
         public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
             LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
         }
 
+        @Override
         public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
             LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
         }

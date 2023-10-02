@@ -164,7 +164,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         IdentifierList keyNames = Helper.get1TestKey();
         TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
                 HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, errorCode);
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, Helper.get1TestKeyType(), errorCode);
         ipTest.publishRegister(testPublishRegister);
         return true;
     }
@@ -665,7 +665,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
                 HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
-                list, errorCode);
+                list, Helper.get1TestKeyType(), errorCode);
         ipTest.publishRegister(testPublishRegister);
         return true;
     }

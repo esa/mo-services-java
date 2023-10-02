@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
@@ -205,7 +204,7 @@ public abstract class TestData {
         testKeyValues.add(new NullableAttribute(new Union("TestValue")));
         TestPublish a = new TestPublishRegister(QoSLevel.QUEUED, testUInteger,
                 domId, testIdentifier, testEnumeration, testIdentifier,
-                false, null, testUInteger);
+                false, new IdentifierList(), new AttributeTypeList(), testUInteger);
         TestPublish b = new TestPublishUpdate(QoSLevel.QUEUED, testUInteger,
                 domId, testIdentifier, testEnumeration, testIdentifier,
                 false, null, null, testKeyValues, testUInteger, testBoolean, (NullableAttributeList) null);
