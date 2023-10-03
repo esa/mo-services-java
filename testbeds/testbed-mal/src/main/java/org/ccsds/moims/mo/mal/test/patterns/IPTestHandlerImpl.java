@@ -204,6 +204,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         Thread.sleep(PERIOD);
                         interaction.sendResponse("");
                         break;
+                    case 8:
+                        interaction.sendAcknowledgement("");
+                        // the interaction has no final message to match the test case
+                        break;
                     default:
                         throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                                 new Union("Unexpected procedure number of " + transId)));
@@ -303,7 +307,8 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendAcknowledgement("");
+                        // the interaction has no final message to match the test case
                         break;
                     case 10:
                         interaction.sendAcknowledgement("");
@@ -345,6 +350,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         Thread.sleep(PERIOD);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
+                    case 15:
+                      interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                      // the interaction has no final message to match the test case
+                      break;
                     default:
                         throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
                                 new Union("Unexpected procedure number of " + transId)));

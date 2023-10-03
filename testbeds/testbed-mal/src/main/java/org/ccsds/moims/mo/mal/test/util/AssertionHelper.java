@@ -58,25 +58,28 @@ public class AssertionHelper {
      * @param assertions
      * @param expectedHeader
      * @param header
+     * @param limited if TRUE do not check the authenticationId and supplements fields
      */
     public static void checkHeader(String procedureName,
             AssertionList assertions, MALMessageHeader header,
-            MALMessageHeader expectedHeader) {
+            MALMessageHeader expectedHeader, boolean limited) {
         if ((null == header) || (null == expectedHeader)) {
             checkEquality(procedureName, assertions, "Header", header, expectedHeader);
         } else {
             checkEquality(procedureName, assertions, "Area", header.getServiceArea(),
                     expectedHeader.getServiceArea());
-            checkEquality(procedureName, assertions, "AuthenticationId", header
-                    .getAuthenticationId(), expectedHeader.getAuthenticationId());
+            if (!limited)
+                checkEquality(procedureName, assertions, "AuthenticationId", header
+                        .getAuthenticationId(), expectedHeader.getAuthenticationId());
             checkEquality(procedureName, assertions, "InteractionType", header
                     .getInteractionType(), expectedHeader.getInteractionType());
             checkEquality(procedureName, assertions, "InteractionStage", header
                     .getInteractionStage(), expectedHeader.getInteractionStage());
             checkEquality(procedureName, assertions, "IsError", header
                     .getIsErrorMessage(), expectedHeader.getIsErrorMessage());
-            checkEquality(procedureName, assertions, "Supplements",
-                    header.getSupplements(), expectedHeader.getSupplements());
+            if (!limited)
+                checkEquality(procedureName, assertions, "Supplements",
+                        header.getSupplements(), expectedHeader.getSupplements());
             checkEquality(procedureName, assertions, "Operation",
                     header.getOperation(), expectedHeader.getOperation());
             checkEquality(procedureName, assertions, "Service", header.getService(),
@@ -113,6 +116,24 @@ public class AssertionHelper {
         }
     }
 
+    /**
+     * Check the equality of all the MAL message header fields.The field
+     * 'transactionId' is not checked if the interaction type and stages are: -
+     * Submit, Request, Invoke, Progress: initiation stage - Pub/Sub:
+     * REGISTER_STAGE, DEREGISTER_STAGE, PUBLISH_REGISTER_STAGE,
+     * PUBLISH_DEREGISTER_STAGE
+     *
+     * @param procedureName
+     * @param assertions
+     * @param expectedHeader
+     * @param header
+     */
+    public static void checkHeader(String procedureName,
+            AssertionList assertions, MALMessageHeader header,
+            MALMessageHeader expectedHeader) {
+        checkHeader(procedureName, assertions, header, expectedHeader, false);
+    }
+    
     public static void checkEquality(String procedureName,
             AssertionList assertions, String fieldName,
             Object field, Object expectedField) {
