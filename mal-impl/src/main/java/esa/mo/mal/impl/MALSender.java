@@ -35,13 +35,13 @@ import org.ccsds.moims.mo.mal.transport.*;
 /**
  * This class is the central point for sending messages out.
  */
-public class MessageSend {
+public class MALSender {
 
     private final MALAccessControl securityManager;
     private final InteractionConsumerMap icmap;
     private final InteractionPubSubMap ipsmap;
 
-    MessageSend(final MALAccessControl securityManager,
+    MALSender(final MALAccessControl securityManager,
             final InteractionConsumerMap imap, final InteractionPubSubMap psmap) {
         this.securityManager = securityManager;
         this.icmap = imap;
@@ -601,7 +601,7 @@ public class MessageSend {
                 if (rtn.getBody() instanceof MALErrorBody) {
                     MOErrorException error = ((MALErrorBody) rtn.getBody()).getError();
                     MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
-                            "Something went wrong! {0}", error);
+                            "Something went wrong!", error);
                     throw new MALInteractionException(error);
                 }
 

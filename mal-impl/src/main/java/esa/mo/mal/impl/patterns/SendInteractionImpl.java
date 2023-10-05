@@ -20,14 +20,14 @@
  */
 package esa.mo.mal.impl.patterns;
 
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * Send interaction class.
  */
-public class SendInteractionImpl extends BaseInteractionImpl {
+public class SendInteractionImpl extends InteractionImpl {
 
     /**
      * Constructor.
@@ -37,7 +37,7 @@ public class SendInteractionImpl extends BaseInteractionImpl {
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public SendInteractionImpl(final MessageSend sender, final MALMessage msg) throws MALInteractionException {
+    public SendInteractionImpl(final MALSender sender, final MALMessage msg) throws MALInteractionException {
         super(sender, null, msg);
     }
 }

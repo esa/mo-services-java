@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.patterns;
 
 import esa.mo.mal.impl.Address;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Progress interaction class.
  */
-public class ProgressInteractionImpl extends BaseInteractionImpl implements MALProgress {
+public class ProgressInteractionImpl extends InteractionImpl implements MALProgress {
 
     private boolean ackSent = false;
 
@@ -47,7 +47,7 @@ public class ProgressInteractionImpl extends BaseInteractionImpl implements MALP
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public ProgressInteractionImpl(final MessageSend sender, final Address address,
+    public ProgressInteractionImpl(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }

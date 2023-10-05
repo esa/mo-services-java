@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.patterns;
 
 import esa.mo.mal.impl.Address;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Request interaction class.
  */
-public class RequestInteractionImpl extends BaseInteractionImpl implements MALRequest {
+public class RequestInteractionImpl extends InteractionImpl implements MALRequest {
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ public class RequestInteractionImpl extends BaseInteractionImpl implements MALRe
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public RequestInteractionImpl(final MessageSend sender,
+    public RequestInteractionImpl(final MALSender sender,
             final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);

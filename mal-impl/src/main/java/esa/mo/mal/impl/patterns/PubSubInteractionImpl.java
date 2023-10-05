@@ -21,14 +21,14 @@
 package esa.mo.mal.impl.patterns;
 
 import esa.mo.mal.impl.Address;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * PubSub interaction class.
  */
-public class PubSubInteractionImpl extends BaseInteractionImpl {
+public class PubSubInteractionImpl extends InteractionImpl {
 
     /**
      * Constructor.
@@ -39,7 +39,7 @@ public class PubSubInteractionImpl extends BaseInteractionImpl {
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public PubSubInteractionImpl(final MessageSend sender, final Address address,
+    public PubSubInteractionImpl(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }

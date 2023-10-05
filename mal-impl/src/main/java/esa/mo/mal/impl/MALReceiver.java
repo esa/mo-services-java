@@ -42,25 +42,25 @@ import org.ccsds.moims.mo.mal.transport.*;
 /**
  * This class is the main class for handling received messages.
  */
-public class MessageReceive implements MALMessageListener {
+public class MALReceiver implements MALMessageListener {
 
-    private final MessageSend sender;
+    private final MALSender sender;
     private final MALAccessControl securityManager;
     private final InteractionConsumerMap consumersMap;
-    private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
+    private final Map<String, MALBrokerBindingImpl> brokers;
     private final Map<EndPointPair, Address> providerEndpointMap = new HashMap();
     private final InteractionPubSubMap pubSubMap;
 
-    MessageReceive(final MessageSend sender,
+    MALReceiver(final MALSender sender,
             final MALAccessControl securityManager,
             final InteractionConsumerMap imap,
             final InteractionPubSubMap psmap,
-            final Map<String, MALBrokerBindingImpl> brokerBindingMap) {
+            final Map<String, MALBrokerBindingImpl> brokers) {
         this.sender = sender;
         this.securityManager = securityManager;
         this.consumersMap = imap;
         this.pubSubMap = psmap;
-        this.brokerBindingMap = brokerBindingMap;
+        this.brokers = brokers;
     }
 
     @Override
@@ -377,7 +377,7 @@ public class MessageReceive implements MALMessageListener {
     private void handleRegister(final MALMessage msg, final Address address)
             throws MALInteractionException, MALException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
+        final MALBrokerBindingImpl brokerHandler = brokers.get(msg.getHeader().getTo().getValue());
 
         if (null != brokerHandler) {
             if (msg.getBody() instanceof MALRegisterBody) {
@@ -417,7 +417,7 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublishRegister(final MALMessage msg,
             final Address address) throws MALInteractionException, MALException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
+        final MALBrokerBindingImpl brokerHandler = brokers.get(msg.getHeader().getTo().getValue());
 
         if (null != brokerHandler) {
             if (msg.getBody() instanceof MALPublishRegisterBody) {
@@ -476,7 +476,7 @@ public class MessageReceive implements MALMessageListener {
             }
         } else {
             // find relevant broker
-            final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
+            final MALBrokerBindingImpl brokerHandler = brokers.get(msg.getHeader().getTo().getValue());
 
             if (null != brokerHandler) {
                 if (msg.getBody() instanceof MALPublishBody) {
@@ -562,7 +562,7 @@ public class MessageReceive implements MALMessageListener {
             final Address address) throws MALInteractionException {
         // find relevant broker
         String uri = msg.getHeader().getTo().getValue();
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(uri);
+        final MALBrokerBindingImpl brokerHandler = brokers.get(uri);
 
         if (null != brokerHandler) {
             try {
@@ -597,7 +597,7 @@ public class MessageReceive implements MALMessageListener {
     private void handlePublishDeregister(final MALMessage msg,
             final Address address) throws MALInteractionException, MALException {
         // find relevant broker
-        final MALBrokerBindingImpl brokerHandler = brokerBindingMap.get(msg.getHeader().getTo().getValue());
+        final MALBrokerBindingImpl brokerHandler = brokers.get(msg.getHeader().getTo().getValue());
 
         if (null != brokerHandler) {
             // update register list

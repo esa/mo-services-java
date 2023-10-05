@@ -20,10 +20,10 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.state.BaseOperationHandler;
+import esa.mo.mal.impl.state.OperationHandler;
 import esa.mo.mal.impl.state.RequestOperationHandler;
 import esa.mo.mal.impl.state.InvokeOperationHandler;
-import esa.mo.mal.impl.state.MessageHandlerDetails;
+import esa.mo.mal.impl.state.StateMachineDetails;
 import esa.mo.mal.impl.state.OperationResponseHolder;
 import esa.mo.mal.impl.state.SubmitOperationHandler;
 import esa.mo.mal.impl.state.PubSubOperationHandler;
@@ -52,7 +52,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class InteractionConsumerMap {
 
-    private final Map<Long, BaseOperationHandler> transactions = new HashMap<>();
+    private final Map<Long, OperationHandler> transactions = new HashMap<>();
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap = new HashMap<>();
 
@@ -64,7 +64,7 @@ public class InteractionConsumerMap {
         synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
-            BaseOperationHandler handler = null;
+            OperationHandler handler = null;
             OperationResponseHolder responseHandler = new OperationResponseHolder(listener);
 
             switch (interactionType) {
@@ -135,7 +135,7 @@ public class InteractionConsumerMap {
                 throw new MALException("Transaction Id already in use and cannot be continued");
             }
 
-            BaseOperationHandler handler = null;
+            OperationHandler handler = null;
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
 
             switch (interactionType) {
@@ -200,8 +200,8 @@ public class InteractionConsumerMap {
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
-        BaseOperationHandler handler;
-        MessageHandlerDetails dets = null;
+        OperationHandler handler;
+        StateMachineDetails state = null;
 
         synchronized (transactions) {
             handler = transactions.get(id);
@@ -218,7 +218,7 @@ public class InteractionConsumerMap {
                 throw new MALException(txt);
             }
 
-            dets = handler.handleStage(msg);
+            state = handler.handleStage(msg);
 
             // delete entry from trans map
             if (handler.finished()) {
@@ -229,13 +229,13 @@ public class InteractionConsumerMap {
         }
 
         synchronized (handler) {
-            handler.processStage(dets);
+            handler.processStage(state);
         }
     }
 
     public void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap) {
         final Long id = hdr.getTransactionId();
-        BaseOperationHandler handler = null;
+        OperationHandler handler = null;
 
         synchronized (transactions) {
             if (transactions.containsKey(id)) {

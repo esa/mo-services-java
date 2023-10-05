@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.patterns;
 
 import esa.mo.mal.impl.Address;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Submit interaction class.
  */
-public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSubmit {
+public class SubmitInteractionImpl extends InteractionImpl implements MALSubmit {
 
     /**
      * Constructor.
@@ -43,7 +43,7 @@ public class SubmitInteractionImpl extends BaseInteractionImpl implements MALSub
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public SubmitInteractionImpl(final MessageSend sender, final Address address,
+    public SubmitInteractionImpl(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }

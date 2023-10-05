@@ -24,7 +24,6 @@ import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -37,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Handles the state machine for a consumer for an INVOKE operation.
  */
-public final class InvokeOperationHandler extends BaseOperationHandler {
+public final class InvokeOperationHandler extends OperationHandler {
 
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
@@ -69,7 +68,7 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
     }
 
     @Override
-    public MessageHandlerDetails handleStage(final MALMessage msg) throws MALInteractionException {
+    public StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException {
         final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
         final int interactionStage = msg.getHeader().getInteractionStage().getValue();
         if (!receivedAck) {
@@ -78,55 +77,51 @@ public final class InvokeOperationHandler extends BaseOperationHandler {
                 if (!isSynchronous && msg.getHeader().getIsErrorMessage()) {
                     receivedResponse = true;
                 }
-                return new MessageHandlerDetails(true, msg);
+                return new StateMachineDetails(true, msg, false);
             } else {
                 receivedResponse = true;
                 logUnexpectedTransitionError(interactionType, interactionStage);
-                return new MessageHandlerDetails(true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+                return new StateMachineDetails(true, msg, true);
             }
         } else if ((!receivedResponse) && (interactionType == InteractionType._INVOKE_INDEX) && (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE)) {
             receivedResponse = true;
-            return new MessageHandlerDetails(false, msg);
+            return new StateMachineDetails(false, msg, false);
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
             receivedResponse = true;
-            return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+            return new StateMachineDetails(false, msg, true);
         }
     }
 
     @Override
-    public void processStage(final MessageHandlerDetails details) throws MALInteractionException {
-        boolean isError = details.getMessage().getHeader().getIsErrorMessage();
+    public void processStage(final StateMachineDetails state) throws MALInteractionException {
+        boolean isError = state.getMessage().getHeader().getIsErrorMessage();
 
         try {
-            if (details.isAckStage()) {
+            if (state.isAckStage()) {
                 if (isSynchronous) {
-                    responseHolder.signalResponse(isError, details.getMessage());
+                    responseHolder.signalResponse(isError, state.getMessage());
                 } else if (isError) {
-                    responseHolder.getListener().invokeAckErrorReceived(
-                            details.getMessage().getHeader(),
-                            (MALErrorBody) details.getMessage().getBody(),
-                            details.getMessage().getQoSProperties());
+                    responseHolder.getListener().invokeAckErrorReceived(state.getMessage().getHeader(),
+                            (MALErrorBody) state.getMessage().getBody(),
+                            state.getMessage().getQoSProperties());
                 } else {
-                    responseHolder.getListener().invokeAckReceived(
-                            details.getMessage().getHeader(),
-                            details.getMessage().getBody(),
-                            details.getMessage().getQoSProperties());
+                    responseHolder.getListener().invokeAckReceived(state.getMessage().getHeader(),
+                            state.getMessage().getBody(),
+                            state.getMessage().getQoSProperties());
                 }
             } else if (isError) {
-                responseHolder.getListener().invokeResponseErrorReceived(
-                        details.getMessage().getHeader(),
-                        (MALErrorBody) details.getMessage().getBody(),
-                        details.getMessage().getQoSProperties());
+                responseHolder.getListener().invokeResponseErrorReceived(state.getMessage().getHeader(),
+                        (MALErrorBody) state.getMessage().getBody(),
+                        state.getMessage().getQoSProperties());
             } else {
-                responseHolder.getListener().invokeResponseReceived(
-                        details.getMessage().getHeader(),
-                        details.getMessage().getBody(),
-                        details.getMessage().getQoSProperties());
+                responseHolder.getListener().invokeResponseReceived(state.getMessage().getHeader(),
+                        state.getMessage().getBody(),
+                        state.getMessage().getQoSProperties());
             }
 
-            if (details.isError()) {
-                MALErrorBody errorBody = (MALErrorBody) details.getMessage().getBody();
+            if (state.isIncorrectState()) {
+                MALErrorBody errorBody = (MALErrorBody) state.getMessage().getBody();
                 throw new MALInteractionException(errorBody.getError());
             }
         } catch (MALException ex) {

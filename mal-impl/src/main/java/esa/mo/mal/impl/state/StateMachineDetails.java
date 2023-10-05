@@ -20,47 +20,39 @@
  */
 package esa.mo.mal.impl.state;
 
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
  * Wrapper class to hold message details when passing from a reception handler
  * to process handler.
  */
-public final class MessageHandlerDetails {
+public final class StateMachineDetails {
 
     private final boolean ackStage;
     private final MALMessage message;
-    private final boolean isError;
+    private final boolean isIncorrectState;
 
     /**
      * Creates a Message Handler for a non-error message.
      *
      * @param isAckStage If it is a ack stage.
      * @param msg The MAL message.
+     * @param isIncorrectState
      */
-    public MessageHandlerDetails(boolean isAckStage, MALMessage msg) {
+    public StateMachineDetails(boolean isAckStage, MALMessage msg, boolean isIncorrectState) {
         this.ackStage = isAckStage;
-        this.message = msg;
-        this.isError = false;
-    }
-
-    /**
-     * Creates a Message Handler for an error message.
-     *
-     * @param isAckStage If it is a ack stage.
-     * @param msg The MAL message.
-     * @param errNum The error number.
-     */
-    public MessageHandlerDetails(boolean isAckStage, MALMessage msg, UInteger errNum) {
-        this.ackStage = isAckStage;
-        msg.getHeader().setIsErrorMessage(true);
-        this.message = new DummyMessage(
-                msg.getHeader(),
-                new DummyErrorBody(new MOErrorException(errNum, null)),
-                msg.getQoSProperties());
-        this.isError = true;
+        if (!isIncorrectState) {
+            this.message = msg;
+        } else {
+            msg.getHeader().setIsErrorMessage(true);
+            this.message = new DummyMessage(
+                    msg.getHeader(),
+                    new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)),
+                    msg.getQoSProperties());
+        }
+        this.isIncorrectState = isIncorrectState;
     }
 
     public boolean isAckStage() {
@@ -71,7 +63,7 @@ public final class MessageHandlerDetails {
         return message;
     }
 
-    public boolean isError() {
-        return isError;
+    public boolean isIncorrectState() {
+        return isIncorrectState;
     }
 }

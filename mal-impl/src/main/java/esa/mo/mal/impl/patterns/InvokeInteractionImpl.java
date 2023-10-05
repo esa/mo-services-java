@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.patterns;
 
 import esa.mo.mal.impl.Address;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Invoke interaction class.
  */
-public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInvoke {
+public class InvokeInteractionImpl extends InteractionImpl implements MALInvoke {
 
     private boolean ackSent = false;
 
@@ -47,7 +47,7 @@ public class InvokeInteractionImpl extends BaseInteractionImpl implements MALInv
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public InvokeInteractionImpl(final MessageSend sender,
+    public InvokeInteractionImpl(final MALSender sender,
             final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);

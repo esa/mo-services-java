@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Handles the state machine for a consumer for an SUBMIT operation.
  */
-public class SubmitOperationHandler extends BaseOperationHandler {
+public class SubmitOperationHandler extends OperationHandler {
 
     protected boolean receivedInitialStage = false;
     protected final int interactionType;
@@ -74,32 +74,32 @@ public class SubmitOperationHandler extends BaseOperationHandler {
     }
 
     @Override
-    public synchronized MessageHandlerDetails handleStage(final MALMessage msg) throws MALInteractionException {
+    public synchronized StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException {
         if (!receivedInitialStage) {
             if ((interactionType == msg.getHeader().getInteractionType().getOrdinal())
                     && checkStage(msg.getHeader().getInteractionStage().getValue())) {
                 receivedInitialStage = true;
 
-                return new MessageHandlerDetails(true, msg);
+                return new StateMachineDetails(true, msg, false);
             } else {
                 logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
                         msg.getHeader().getInteractionStage().getValue());
-                return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+                return new StateMachineDetails(false, msg, true);
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-            return new MessageHandlerDetails(false, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+            return new StateMachineDetails(false, msg, true);
         }
     }
 
     @Override
-    public void processStage(final MessageHandlerDetails details) throws MALInteractionException {
-        if (details.isAckStage()) {
+    public void processStage(final StateMachineDetails state) throws MALInteractionException {
+        if (state.isAckStage()) {
             try {
                 if (isSynchronous) {
-                    responseHolder.signalResponse(false, details.getMessage());
+                    responseHolder.signalResponse(false, state.getMessage());
                 } else {
-                    informListener(details.getMessage());
+                    informListener(state.getMessage());
                 }
             } catch (MALException ex) {
                 // nothing we can do with this

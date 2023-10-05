@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.patterns;
 
 import esa.mo.mal.impl.Address;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,15 +36,15 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Base class for interactions.
  */
-public abstract class BaseInteractionImpl implements MALInteraction {
+public abstract class InteractionImpl implements MALInteraction {
 
     private final Map qosProperties = new HashMap();
-    private final MessageSend sender;
+    private final MALSender sender;
     private final Address address;
     private final MALMessage msg;
     private MALOperation operation;
 
-    public BaseInteractionImpl(final MessageSend sender, final Address address, final MALMessage msg) {
+    public InteractionImpl(final MALSender sender, final Address address, final MALMessage msg) {
         this.sender = sender;
         this.address = address;
         this.msg = msg;
@@ -61,7 +61,7 @@ public abstract class BaseInteractionImpl implements MALInteraction {
             try {
                 operation = msg.getHeader().getMALOperation();
             } catch (NotFoundException ex) {
-                Logger.getLogger(BaseInteractionImpl.class.getName()).log(
+                Logger.getLogger(InteractionImpl.class.getName()).log(
                         Level.SEVERE, "The operation was not found!", ex);
             }
         }

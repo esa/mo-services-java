@@ -21,7 +21,7 @@
 package esa.mo.mal.impl.provider;
 
 import esa.mo.mal.impl.MessageTarget;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -47,11 +47,11 @@ public class MALPublisherImpl implements MALPublisher {
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.provider");
     private final Map<String, Long> transIdMap = new HashMap<>();
     private final MALProviderImpl provider;
-    private final MessageSend handler;
+    private final MALSender handler;
     private final MALPubSubOperation operation;
     private final Map remotePublisherQosProps;
 
-    public MALPublisherImpl(final MALProviderImpl provider, final MessageSend handler,
+    public MALPublisherImpl(final MALProviderImpl provider, final MALSender handler,
             final MALPubSubOperation operation, final Map remotePublisherQosProps) {
         this.provider = provider;
         this.handler = handler;

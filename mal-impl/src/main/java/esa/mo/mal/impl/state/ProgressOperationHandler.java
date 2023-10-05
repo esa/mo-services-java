@@ -24,7 +24,6 @@ import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -37,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Handles the state machine for a consumer for a PROGRESS operation.
  */
-public final class ProgressOperationHandler extends BaseOperationHandler {
+public final class ProgressOperationHandler extends OperationHandler {
 
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
@@ -70,7 +69,7 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
     }
 
     @Override
-    public MessageHandlerDetails handleStage(final MALMessage msg) throws MALInteractionException {
+    public StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException {
         final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
         final int interactionStage = msg.getHeader().getInteractionStage().getValue();
         boolean isError = msg.getHeader().getIsErrorMessage();
@@ -82,11 +81,11 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
                     if (isError) {
                         receivedResponse = true;
                     }
-                    return new MessageHandlerDetails(true, msg);
+                    return new StateMachineDetails(true, msg, false);
                 } else {
                     receivedResponse = true;
                     logUnexpectedTransitionError(interactionType, interactionStage);
-                    return new MessageHandlerDetails(true, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+                    return new StateMachineDetails(true, msg, true);
                 }
             } else if ((!receivedResponse) && (interactionType == InteractionType._PROGRESS_INDEX)
                     && ((interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE)
@@ -98,60 +97,54 @@ public final class ProgressOperationHandler extends BaseOperationHandler {
                 } else {
                     receivedResponse = true;
                 }
-                return new MessageHandlerDetails(false, msg);
+                return new StateMachineDetails(false, msg, false);
             } else {
                 receivedResponse = true;
                 logUnexpectedTransitionError(interactionType, interactionStage);
-                return new MessageHandlerDetails(!receivedAck, msg, MALHelper.INCORRECT_STATE_ERROR_NUMBER);
+                return new StateMachineDetails(!receivedAck, msg, true);
             }
         }
     }
 
     @Override
-    public void processStage(final MessageHandlerDetails details) throws MALInteractionException {
-        final int interactionStage = details.getMessage().getHeader().getInteractionStage().getValue();
-        boolean isError = details.getMessage().getHeader().getIsErrorMessage();
+    public void processStage(final StateMachineDetails state) throws MALInteractionException {
+        final int interactionStage = state.getMessage().getHeader().getInteractionStage().getValue();
+        boolean isError = state.getMessage().getHeader().getIsErrorMessage();
         try {
-            if (details.isAckStage()) {
+            if (state.isAckStage()) {
                 if (isSynchronous) {
-                    responseHolder.signalResponse(isError, details.getMessage());
+                    responseHolder.signalResponse(isError, state.getMessage());
                 } else if (isError) {
-                    responseHolder.getListener().progressAckErrorReceived(
-                            details.getMessage().getHeader(),
-                            (MALErrorBody) details.getMessage().getBody(),
-                            details.getMessage().getQoSProperties());
+                    responseHolder.getListener().progressAckErrorReceived(state.getMessage().getHeader(),
+                            (MALErrorBody) state.getMessage().getBody(),
+                            state.getMessage().getQoSProperties());
                 } else {
-                    responseHolder.getListener().progressAckReceived(
-                            details.getMessage().getHeader(),
-                            details.getMessage().getBody(),
-                            details.getMessage().getQoSProperties());
+                    responseHolder.getListener().progressAckReceived(state.getMessage().getHeader(),
+                            state.getMessage().getBody(),
+                            state.getMessage().getQoSProperties());
                 }
             } else if (interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE) {
                 if (isError) {
-                    responseHolder.getListener().progressUpdateErrorReceived(
-                            details.getMessage().getHeader(),
-                            (MALErrorBody) details.getMessage().getBody(),
-                            details.getMessage().getQoSProperties());
+                    responseHolder.getListener().progressUpdateErrorReceived(state.getMessage().getHeader(),
+                            (MALErrorBody) state.getMessage().getBody(),
+                            state.getMessage().getQoSProperties());
                 } else {
-                    responseHolder.getListener().progressUpdateReceived(
-                            details.getMessage().getHeader(),
-                            details.getMessage().getBody(),
-                            details.getMessage().getQoSProperties());
+                    responseHolder.getListener().progressUpdateReceived(state.getMessage().getHeader(),
+                            state.getMessage().getBody(),
+                            state.getMessage().getQoSProperties());
                 }
             } else if (isError) {
-                responseHolder.getListener().progressResponseErrorReceived(
-                        details.getMessage().getHeader(),
-                        (MALErrorBody) details.getMessage().getBody(),
-                        details.getMessage().getQoSProperties());
+                responseHolder.getListener().progressResponseErrorReceived(state.getMessage().getHeader(),
+                        (MALErrorBody) state.getMessage().getBody(),
+                        state.getMessage().getQoSProperties());
             } else {
-                responseHolder.getListener().progressResponseReceived(
-                        details.getMessage().getHeader(),
-                        details.getMessage().getBody(),
-                        details.getMessage().getQoSProperties());
+                responseHolder.getListener().progressResponseReceived(state.getMessage().getHeader(),
+                        state.getMessage().getBody(),
+                        state.getMessage().getQoSProperties());
             }
 
-            if (details.isError()) {
-                throw new MALInteractionException(((MALErrorBody) details.getMessage().getBody()).getError());
+            if (state.isIncorrectState()) {
+                throw new MALInteractionException(((MALErrorBody) state.getMessage().getBody()).getError());
             }
         } catch (MALException ex) {
             // nothing we can do with this

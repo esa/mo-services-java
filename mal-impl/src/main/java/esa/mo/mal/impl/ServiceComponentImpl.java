@@ -39,8 +39,8 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  */
 public abstract class ServiceComponentImpl implements MALCloseable {
 
-    protected final MessageSend sendHandler;
-    protected final MessageReceive receiveHandler;
+    protected final MALSender sendHandler;
+    protected final MALReceiver receiveHandler;
     protected final MALInteractionHandler handler;
     protected final String localName;
     protected final MALService service;

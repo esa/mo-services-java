@@ -22,7 +22,7 @@ package esa.mo.mal.impl.consumer;
 
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.MessageTarget;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MALSender;
 import esa.mo.mal.impl.transport.TransportSingleton;
 import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
@@ -42,7 +42,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  */
 public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
-    private final MessageSend sender;
+    private final MALSender sender;
     private final MessageTarget messageTarget;
     private MALTransmitErrorListener transmissionListener;
 

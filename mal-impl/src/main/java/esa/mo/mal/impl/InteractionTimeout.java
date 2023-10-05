@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.state.BaseOperationHandler;
+import esa.mo.mal.impl.state.OperationHandler;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -42,7 +42,7 @@ public class InteractionTimeout {
      * The queue that holds a set of entries with the time when interaction was
      * started and the respective operation handler.
      */
-    private final LinkedBlockingQueue<SimpleEntry<Long, BaseOperationHandler>> queue
+    private final LinkedBlockingQueue<SimpleEntry<Long, OperationHandler>> queue
             = new LinkedBlockingQueue<>();
 
     // Defines if this object has been initialized
@@ -91,7 +91,7 @@ public class InteractionTimeout {
         initialized = true;
     }
 
-    public synchronized void insertInQueue(BaseOperationHandler handler) {
+    public synchronized void insertInQueue(OperationHandler handler) {
         if (!initialized) {
             Logger.getLogger(InteractionTimeout.class.getName()).log(
                     Level.FINE, "Initializing Interaction Timeout Thread...");
@@ -107,7 +107,7 @@ public class InteractionTimeout {
         return new Thread(() -> {
             while (true) {
                 try {
-                    SimpleEntry<Long, BaseOperationHandler> entry = queue.take();
+                    SimpleEntry<Long, OperationHandler> entry = queue.take();
                     long timeoutAt = entry.getKey() + timeout;
                     long sleepFor = timeoutAt - System.currentTimeMillis();
 
@@ -122,7 +122,7 @@ public class InteractionTimeout {
                         }
                     }
 
-                    BaseOperationHandler handler = entry.getValue();
+                    OperationHandler handler = entry.getValue();
 
                     // Is the interaction still pending?
                     if (!handler.finished()) {

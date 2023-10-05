@@ -28,7 +28,6 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
-import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
@@ -48,7 +47,6 @@ import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
-import org.ccsds.moims.mo.testbed.util.ParseHelper;
 
 /**
  *
@@ -83,11 +81,12 @@ public class PatternTest {
 
     private boolean isFinalTransition(String pattern, IPTestTransitionType transition) {
         if (IPTestTransitionType.ACK.equals(transition) && !"SUBMIT".equalsIgnoreCase(pattern)
-            || IPTestTransitionType.UPDATE.equals(transition))
+                || IPTestTransitionType.UPDATE.equals(transition)) {
             return false;
+        }
         return true;
     }
-    
+
     public boolean patternInitiationForWithMultiWithEmptyBodyAndSupplementsAndTransitionsAndBehaviourIdTest(
             String pattern, boolean callMultiVersion, boolean callEmptyVersion, String supplements,
             String[] transitions, int procedureId) throws Exception {
@@ -122,7 +121,7 @@ public class PatternTest {
                 } else {
                     initialFaultyTransList.add(transition);
                 }
-                if (! seenFinalTransition) {
+                if (!seenFinalTransition) {
                     ++expectedTransitionCount;
                     if (seenGoodTransition) {
                         incompleteIP = true;
@@ -132,19 +131,20 @@ public class PatternTest {
                 }
             } else {
                 seenGoodTransition = true;
-                if (! seenFinalTransition) {
+                if (!seenFinalTransition) {
                     ++expectedTransitionCount;
-                    if (isFinalTransition(pattern, transition))
+                    if (isFinalTransition(pattern, transition)) {
                         seenFinalTransition = true;
+                    }
                 }
             }
 
             transList.add(new IPTestTransition(transition, null));
         }
 
-        LoggingBase.logMessage("Transitions count = " + expectedTransitionCount +
-                " (" + initialFaultyTransList.size() + "-" + finalFaultyTransList.size() +
-                "/" + transitions.length + ") incompleteIP=" + incompleteIP);
+        LoggingBase.logMessage("Transitions count = " + expectedTransitionCount
+                + " (" + initialFaultyTransList.size() + "-" + finalFaultyTransList.size()
+                + "/" + transitions.length + ") incompleteIP=" + incompleteIP);
 
         IPTestDefinition testDef = new IPTestDefinition(String.valueOf(procedureId),
                 ipTestConsumer.getConsumer().getURI(),
@@ -257,7 +257,7 @@ public class PatternTest {
 
         try {
             LoggingBase.logMessage("PatternTest.waiting for responses");
-            retVal = monitor.cond.waitFor(10000);
+            retVal = monitor.cond.waitFor(1000);
         } catch (InterruptedException ex) {
             // do nothing, we are expecting this
         }
@@ -276,8 +276,9 @@ public class PatternTest {
                 // wait for the final message to be processed
                 try {
                     LoggingBase.logMessage("PatternTest.waiting for final message");
-                    retVal = monitor.cond.waitFor(10000);
-                } catch (InterruptedException ex) {}
+                    retVal = monitor.cond.waitFor(1000);
+                } catch (InterruptedException ex) {
+                }
             }
 
             if ("SUBMIT".equalsIgnoreCase(pattern)) {
@@ -501,7 +502,7 @@ public class PatternTest {
             AssertionHelper.checkHeader("PatternTest.checkUpdate1Header", assertions, msgHeaderUpdate1, expectedFinalHeader);
             AssertionHelper.checkHeader("PatternTest.checkUpdate2Header", assertions, msgHeaderUpdate2, expectedFinalHeader);
         } else if (9 == procedureId) {
-          LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader");
+            LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader");
             msgHeaderUpdate1 = monitor.progressUpdateErrorReceivedMsgHeader;
             LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader: " + msgHeaderUpdate1);
             // the former version of the testbed expects a ACK_ERROR message,

@@ -40,7 +40,7 @@ public class OperationResponseHolder {
 
     private final BooleanHolder responseSignal = new BooleanHolder();
     private final MALInteractionListener listener;
-    private boolean inError = false;
+    private boolean isError = false;
     private MALMessage result = null;
 
     public OperationResponseHolder(MALInteractionListener listener) {
@@ -70,7 +70,7 @@ public class OperationResponseHolder {
     }
 
     public void signalResponse(final boolean isError, final MALMessage msg) {
-        this.inError = isError;
+        this.isError = isError;
         this.result = msg;
 
         synchronized (responseSignal) {
@@ -80,7 +80,7 @@ public class OperationResponseHolder {
     }
 
     public MALMessage getResult() throws MALInteractionException, MALException {
-        if (inError) {
+        if (isError) {
             throw new MALInteractionException(((MALErrorBody) result.getBody()).getError());
         }
 

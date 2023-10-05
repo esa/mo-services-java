@@ -48,9 +48,9 @@ public class MALContextImpl implements MALContext, MALCloseable {
     private final InteractionConsumerMap icmap = new InteractionConsumerMap();
     private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
     private final MALAccessControl securityManager;
-    private final MessageReceive receiver;
+    private final MALReceiver receiver;
     private final Map initialProperties;
-    private final MessageSend sender;
+    private final MALSender sender;
 
     /**
      * Constructor.
@@ -69,8 +69,8 @@ public class MALContextImpl implements MALContext, MALCloseable {
             securityManager = new EchoSecurityManager();
         }
 
-        sender = new MessageSend(securityManager, icmap, ipsmap);
-        receiver = new MessageReceive(sender, securityManager, icmap, ipsmap, brokerBindingMap);
+        sender = new MALSender(securityManager, icmap, ipsmap);
+        receiver = new MALReceiver(sender, securityManager, icmap, ipsmap, brokerBindingMap);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class MALContextImpl implements MALContext, MALCloseable {
      *
      * @return The sender.
      */
-    public MessageSend getSendingInterface() {
+    public MALSender getSendingInterface() {
         return sender;
     }
 
@@ -131,7 +131,7 @@ public class MALContextImpl implements MALContext, MALCloseable {
      *
      * @return The receiver.
      */
-    public MessageReceive getReceivingInterface() {
+    public MALReceiver getReceivingInterface() {
         return receiver;
     }
 

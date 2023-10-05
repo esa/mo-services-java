@@ -32,19 +32,19 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public abstract class BaseOperationHandler {
+public abstract class OperationHandler {
 
     protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
 
-    protected BaseOperationHandler(final boolean isSynchronous, final OperationResponseHolder responseHolder) {
+    protected OperationHandler(final boolean isSynchronous, final OperationResponseHolder responseHolder) {
         this.isSynchronous = isSynchronous;
         this.responseHolder = responseHolder;
     }
 
-    public abstract MessageHandlerDetails handleStage(final MALMessage msg) throws MALInteractionException;
+    public abstract StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException;
 
-    public abstract void processStage(final MessageHandlerDetails details) throws MALInteractionException;
+    public abstract void processStage(final StateMachineDetails details) throws MALInteractionException;
 
     public abstract void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap);
 
