@@ -80,21 +80,21 @@ public class SubmitOperationHandler extends OperationHandler {
                     && checkStage(msg.getHeader().getInteractionStage().getValue())) {
                 receivedInitialStage = true;
 
-                return new StateMachineDetails(true, msg, false);
+                return new StateMachineDetails(msg, false);
             } else {
                 logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
                         msg.getHeader().getInteractionStage().getValue());
-                return new StateMachineDetails(false, msg, true);
+                return new StateMachineDetails(msg, true);
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-            return new StateMachineDetails(false, msg, true);
+            return new StateMachineDetails(msg, true);
         }
     }
 
     @Override
     public void processStage(final StateMachineDetails state) throws MALInteractionException {
-        if (state.isAckStage()) {
+        if (receivedInitialStage) {
             try {
                 if (isSynchronous) {
                     responseHolder.signalResponse(false, state.getMessage());

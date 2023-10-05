@@ -146,10 +146,10 @@ public class InteractionConsumerMap {
                     handler = new RequestOperationHandler(responseHolder);
                     break;
                 case InteractionType._INVOKE_INDEX:
-                    handler = new InvokeOperationHandler(lastInteractionStage, responseHolder);
+                    handler = new InvokeOperationHandler(false, responseHolder);
                     break;
                 case InteractionType._PROGRESS_INDEX:
-                    handler = new ProgressOperationHandler(lastInteractionStage, responseHolder);
+                    handler = new ProgressOperationHandler(false, responseHolder);
                     break;
                 case InteractionType._PUBSUB_INDEX:
                     handler = new PubSubOperationHandler(responseHolder);
@@ -222,8 +222,8 @@ public class InteractionConsumerMap {
 
             // delete entry from trans map
             if (handler.finished()) {
-                MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "Removing handler from service maps: {0}", id);
+                MALContextFactoryImpl.LOGGER.log(Level.FINE, "The transaction is "
+                        + "finished! Removing handler with transactionId: {0}", id);
                 transactions.remove(id);
             }
         }

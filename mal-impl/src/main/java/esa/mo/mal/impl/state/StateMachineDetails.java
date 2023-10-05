@@ -30,19 +30,16 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public final class StateMachineDetails {
 
-    private final boolean ackStage;
     private final MALMessage message;
     private final boolean isIncorrectState;
 
     /**
      * Creates a Message Handler for a non-error message.
      *
-     * @param isAckStage If it is a ack stage.
      * @param msg The MAL message.
      * @param isIncorrectState
      */
-    public StateMachineDetails(boolean isAckStage, MALMessage msg, boolean isIncorrectState) {
-        this.ackStage = isAckStage;
+    public StateMachineDetails(MALMessage msg, boolean isIncorrectState) {
         if (!isIncorrectState) {
             this.message = msg;
         } else {
@@ -53,10 +50,6 @@ public final class StateMachineDetails {
                     msg.getQoSProperties());
         }
         this.isIncorrectState = isIncorrectState;
-    }
-
-    public boolean isAckStage() {
-        return ackStage;
     }
 
     public MALMessage getMessage() {

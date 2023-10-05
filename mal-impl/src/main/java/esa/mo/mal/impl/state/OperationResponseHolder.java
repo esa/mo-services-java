@@ -22,6 +22,7 @@ package esa.mo.mal.impl.state;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -38,7 +39,7 @@ import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
  */
 public class OperationResponseHolder {
 
-    private final BooleanHolder responseSignal = new BooleanHolder();
+    private final AtomicBoolean responseSignal = new AtomicBoolean(false);
     private final MALInteractionListener listener;
     private boolean isError = false;
     private MALMessage result = null;
@@ -58,7 +59,7 @@ public class OperationResponseHolder {
     public void waitForResponseSignal() {
         // wait for the response signal
         synchronized (responseSignal) {
-            while (!responseSignal.getValue()) {
+            while (!responseSignal.get()) {
                 try {
                     responseSignal.wait();
                 } catch (InterruptedException ex) {
@@ -74,7 +75,7 @@ public class OperationResponseHolder {
         this.result = msg;
 
         synchronized (responseSignal) {
-            responseSignal.setValue();
+            responseSignal.set(true);
             responseSignal.notifyAll();
         }
     }
@@ -85,31 +86,6 @@ public class OperationResponseHolder {
         }
 
         return result;
-    }
-
-    /**
-     * Small class to hold a boolean value. Can be used for signalling purposes
-     * as can be synchronised on and have its value set.
-     */
-    private static final class BooleanHolder {
-
-        private boolean value = false;
-
-        /**
-         * Returns the current value.
-         *
-         * @return the current value.
-         */
-        public synchronized boolean getValue() {
-            return value;
-        }
-
-        /**
-         * Sets the held value to true.
-         */
-        public synchronized void setValue() {
-            value = true;
-        }
     }
 
     /**
