@@ -23,10 +23,8 @@ package esa.mo.tools.stubgen;
 import esa.mo.xsd.SpecificationType;
 import java.io.IOException;
 import java.util.Map;
-//import javax.xml.bind.JAXBElement;
-//import javax.xml.bind.JAXBException;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import w3c.xsd.Schema;
 
 /**

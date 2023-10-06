@@ -25,8 +25,7 @@ import esa.mo.xsd.TypeReference;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import java.util.ArrayList;
 import java.util.List;
-//import javax.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBElement;
 import org.w3c.dom.Element;
 
 /**

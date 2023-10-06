@@ -37,11 +37,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-//import javax.xml.bind.JAXBElement;
-//import javax.xml.bind.JAXBException;
-
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import org.apache.batik.transcoder.TranscoderException;
 
 /**

@@ -44,11 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-//import javax.xml.bind.JAXBElement;
-//import javax.xml.bind.JAXBException;
-
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
 
 /**

@@ -82,27 +82,21 @@
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-docs</artifactId>
             <version>10.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.annotation</groupId>
-                    <artifactId>javax.annotation-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-java</artifactId>
             <version>10.0-SNAPSHOT</version>
-        </dependency> <!--
+        </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <!- <version>2.2.11</version>
+            <!-- <version>2.2.11</version>  -->
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
     <properties>

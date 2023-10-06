@@ -22,8 +22,6 @@ package esa.mo.navigator;
 
 import esa.mo.tools.stubgen.GeneratorJava;
 import esa.mo.xsd.util.XmlHelper;
-import jakarta.xml.bind.JAXBException;
-
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +33,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
-//import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBException;
 
 /**
  *

@@ -34,9 +34,8 @@ import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
 import java.io.IOException;
 import java.util.*;
-
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
 import w3c.xsd.ComplexType;
 import w3c.xsd.NoFixedFacet;
