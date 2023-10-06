@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Submit interaction class.
  */
-public class SubmitInteractionImpl extends InteractionImpl implements MALSubmit {
+public class SubmitIPProviderHandler extends IPProviderHandler implements MALSubmit {
 
     /**
      * Constructor.
@@ -43,7 +43,7 @@ public class SubmitInteractionImpl extends InteractionImpl implements MALSubmit 
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public SubmitInteractionImpl(final MALSender sender, final Address address,
+    public SubmitIPProviderHandler(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }

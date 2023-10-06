@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Handles the state machine for a consumer for an INVOKE operation.
  */
-public final class InvokeOperationHandler extends OperationHandler {
+public final class InvokeIPConsumerHandler extends IPConsumerHandler {
 
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
@@ -47,7 +47,7 @@ public final class InvokeOperationHandler extends OperationHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public InvokeOperationHandler(final boolean syncOperation,
+    public InvokeIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
     }

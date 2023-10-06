@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Handles the state machine for a consumer for an REQUEST operation.
  */
-public final class RequestOperationHandler extends SubmitOperationHandler {
+public final class RequestIPConsumerHandler extends SubmitIPConsumerHandler {
 
     /**
      * Constructor.
@@ -37,7 +37,7 @@ public final class RequestOperationHandler extends SubmitOperationHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public RequestOperationHandler(final boolean syncOperation,
+    public RequestIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(InteractionType._REQUEST_INDEX,
                 MALRequestOperation._REQUEST_RESPONSE_STAGE,
@@ -50,7 +50,7 @@ public final class RequestOperationHandler extends SubmitOperationHandler {
      *
      * @param responseHolder The response holder.
      */
-    public RequestOperationHandler(final OperationResponseHolder responseHolder) {
+    public RequestIPConsumerHandler(final OperationResponseHolder responseHolder) {
         super(InteractionType._REQUEST_INDEX,
                 MALRequestOperation._REQUEST_RESPONSE_STAGE,
                 false,

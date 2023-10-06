@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Request interaction class.
  */
-public class RequestInteractionImpl extends InteractionImpl implements MALRequest {
+public class RequestIPProviderHandler extends IPProviderHandler implements MALRequest {
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ public class RequestInteractionImpl extends InteractionImpl implements MALReques
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public RequestInteractionImpl(final MALSender sender,
+    public RequestIPProviderHandler(final MALSender sender,
             final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);

@@ -20,14 +20,14 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.state.OperationHandler;
-import esa.mo.mal.impl.state.RequestOperationHandler;
-import esa.mo.mal.impl.state.InvokeOperationHandler;
+import esa.mo.mal.impl.state.IPConsumerHandler;
+import esa.mo.mal.impl.state.RequestIPConsumerHandler;
+import esa.mo.mal.impl.state.InvokeIPConsumerHandler;
 import esa.mo.mal.impl.state.StateMachineDetails;
 import esa.mo.mal.impl.state.OperationResponseHolder;
-import esa.mo.mal.impl.state.SubmitOperationHandler;
-import esa.mo.mal.impl.state.PubSubOperationHandler;
-import esa.mo.mal.impl.state.ProgressOperationHandler;
+import esa.mo.mal.impl.state.SubmitIPConsumerHandler;
+import esa.mo.mal.impl.state.PubSubIPConsumerHandler;
+import esa.mo.mal.impl.state.ProgressIPConsumerHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -52,7 +52,7 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class InteractionConsumerMap {
 
-    private final Map<Long, OperationHandler> transactions = new HashMap<>();
+    private final Map<Long, IPConsumerHandler> transactions = new HashMap<>();
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap = new HashMap<>();
 
@@ -64,7 +64,7 @@ public class InteractionConsumerMap {
         synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
-            OperationHandler handler = null;
+            IPConsumerHandler handler = null;
             OperationResponseHolder responseHandler = new OperationResponseHolder(listener);
 
             switch (interactionType) {
@@ -72,19 +72,19 @@ public class InteractionConsumerMap {
                     // do nothing as no handler is required for SEND interaction
                     break;
                 case InteractionType._SUBMIT_INDEX:
-                    handler = new SubmitOperationHandler(syncOperation, responseHandler);
+                    handler = new SubmitIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._REQUEST_INDEX:
-                    handler = new RequestOperationHandler(syncOperation, responseHandler);
+                    handler = new RequestIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._INVOKE_INDEX:
-                    handler = new InvokeOperationHandler(syncOperation, responseHandler);
+                    handler = new InvokeIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._PROGRESS_INDEX:
-                    handler = new ProgressOperationHandler(syncOperation, responseHandler);
+                    handler = new ProgressIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._PUBSUB_INDEX:
-                    handler = new PubSubOperationHandler(syncOperation, responseHandler);
+                    handler = new PubSubIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 default:
                     throw new MALInteractionException(
@@ -115,7 +115,7 @@ public class InteractionConsumerMap {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
-            transactions.put(oTransId, new PubSubOperationHandler(syncOperation, responseHolder));
+            transactions.put(oTransId, new PubSubIPConsumerHandler(syncOperation, responseHolder));
 
             if (syncOperation) {
                 synchronized (syncOpResponseMap) {
@@ -135,24 +135,24 @@ public class InteractionConsumerMap {
                 throw new MALException("Transaction Id already in use and cannot be continued");
             }
 
-            OperationHandler handler = null;
+            IPConsumerHandler handler = null;
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
 
             switch (interactionType) {
                 case InteractionType._SUBMIT_INDEX:
-                    handler = new SubmitOperationHandler(responseHolder);
+                    handler = new SubmitIPConsumerHandler(responseHolder);
                     break;
                 case InteractionType._REQUEST_INDEX:
-                    handler = new RequestOperationHandler(responseHolder);
+                    handler = new RequestIPConsumerHandler(responseHolder);
                     break;
                 case InteractionType._INVOKE_INDEX:
-                    handler = new InvokeOperationHandler(false, responseHolder);
+                    handler = new InvokeIPConsumerHandler(false, responseHolder);
                     break;
                 case InteractionType._PROGRESS_INDEX:
-                    handler = new ProgressOperationHandler(false, responseHolder);
+                    handler = new ProgressIPConsumerHandler(false, responseHolder);
                     break;
                 case InteractionType._PUBSUB_INDEX:
-                    handler = new PubSubOperationHandler(responseHolder);
+                    handler = new PubSubIPConsumerHandler(responseHolder);
                     break;
                 default:
                     throw new MALInteractionException(
@@ -200,7 +200,7 @@ public class InteractionConsumerMap {
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
-        OperationHandler handler;
+        IPConsumerHandler handler;
 
         synchronized (transactions) {
             handler = transactions.get(id);
@@ -230,7 +230,7 @@ public class InteractionConsumerMap {
 
     public void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap) {
         final Long id = hdr.getTransactionId();
-        OperationHandler handler = null;
+        IPConsumerHandler handler = null;
 
         synchronized (transactions) {
             if (transactions.containsKey(id)) {

@@ -33,14 +33,14 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public abstract class OperationHandler {
+public abstract class IPConsumerHandler {
 
     protected static final DummyErrorBody ERROR
             = new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
 
-    protected OperationHandler(final boolean isSynchronous, final OperationResponseHolder responseHolder) {
+    protected IPConsumerHandler(final boolean isSynchronous, final OperationResponseHolder responseHolder) {
         this.isSynchronous = isSynchronous;
         this.responseHolder = responseHolder;
     }

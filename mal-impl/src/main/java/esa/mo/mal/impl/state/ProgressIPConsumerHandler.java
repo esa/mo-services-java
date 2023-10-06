@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Handles the state machine for a consumer for a PROGRESS operation.
  */
-public final class ProgressOperationHandler extends OperationHandler {
+public final class ProgressIPConsumerHandler extends IPConsumerHandler {
 
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
@@ -46,7 +46,7 @@ public final class ProgressOperationHandler extends OperationHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public ProgressOperationHandler(final boolean syncOperation,
+    public ProgressIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
     }

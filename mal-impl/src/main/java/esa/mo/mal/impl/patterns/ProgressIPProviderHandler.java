@@ -24,17 +24,17 @@ import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Invoke interaction class.
+ * Progress interaction class.
  */
-public class InvokeInteractionImpl extends InteractionImpl implements MALInvoke {
+public class ProgressIPProviderHandler extends IPProviderHandler implements MALProgress {
 
     private boolean ackSent = false;
 
@@ -47,8 +47,7 @@ public class InvokeInteractionImpl extends InteractionImpl implements MALInvoke 
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public InvokeInteractionImpl(final MALSender sender,
-            final Address address,
+    public ProgressIPProviderHandler(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }
@@ -57,36 +56,52 @@ public class InvokeInteractionImpl extends InteractionImpl implements MALInvoke 
     public MALMessage sendAcknowledgement(final Object... result)
             throws MALInteractionException, MALException {
         ackSent = true;
-        return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
+        return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, result);
     }
 
     @Override
     public MALMessage sendAcknowledgement(final MALEncodedBody body)
             throws MALInteractionException, MALException {
         ackSent = true;
-        return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, body);
+        return returnResponse(MALProgressOperation.PROGRESS_ACK_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendUpdate(final Object... update) throws MALException {
+        return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, update);
+    }
+
+    @Override
+    public MALMessage sendUpdate(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALProgressOperation.PROGRESS_UPDATE_STAGE, body);
     }
 
     @Override
     public MALMessage sendResponse(final Object... result)
             throws MALInteractionException, MALException {
-        return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+        return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, result);
     }
 
     @Override
     public MALMessage sendResponse(final MALEncodedBody body)
             throws MALInteractionException, MALException {
-        return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, body);
+        return returnResponse(MALProgressOperation.PROGRESS_RESPONSE_STAGE, body);
     }
 
     @Override
     public MALMessage sendError(final MOErrorException error) throws MALException {
-        UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
+        UOctet stage = MALProgressOperation.PROGRESS_ACK_STAGE;
 
         if (ackSent) {
-            stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
+            stage = MALProgressOperation.PROGRESS_RESPONSE_STAGE;
         }
 
         return returnError(stage, error);
+    }
+
+    @Override
+    public MALMessage sendUpdateError(final MOErrorException error) throws MALException {
+        return returnError(MALProgressOperation.PROGRESS_UPDATE_STAGE, error);
     }
 }

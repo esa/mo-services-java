@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Base class for interactions.
  */
-public abstract class InteractionImpl implements MALInteraction {
+public abstract class IPProviderHandler implements MALInteraction {
 
     private final Map qosProperties = new HashMap();
     private final MALSender sender;
@@ -44,7 +44,7 @@ public abstract class InteractionImpl implements MALInteraction {
     private final MALMessage msg;
     private MALOperation operation;
 
-    public InteractionImpl(final MALSender sender, final Address address, final MALMessage msg) {
+    public IPProviderHandler(final MALSender sender, final Address address, final MALMessage msg) {
         this.sender = sender;
         this.address = address;
         this.msg = msg;
@@ -61,7 +61,7 @@ public abstract class InteractionImpl implements MALInteraction {
             try {
                 operation = msg.getHeader().getMALOperation();
             } catch (NotFoundException ex) {
-                Logger.getLogger(InteractionImpl.class.getName()).log(
+                Logger.getLogger(IPProviderHandler.class.getName()).log(
                         Level.SEVERE, "The operation was not found!", ex);
             }
         }

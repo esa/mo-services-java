@@ -20,27 +20,24 @@
  */
 package esa.mo.mal.impl.patterns;
 
-import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * PubSub interaction class.
+ * Send interaction class.
  */
-public class PubSubInteractionImpl extends InteractionImpl {
+public class SendIPProviderHandler extends IPProviderHandler {
 
     /**
      * Constructor.
      *
      * @param sender Used to return the messages.
-     * @param address Details of this endpoint.
      * @param msg The source message.
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public PubSubInteractionImpl(final MALSender sender, final Address address,
-            final MALMessage msg) throws MALInteractionException {
-        super(sender, address, msg);
+    public SendIPProviderHandler(final MALSender sender, final MALMessage msg) throws MALInteractionException {
+        super(sender, null, msg);
     }
 }

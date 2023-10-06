@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Handles the state machine for a consumer for an SUBMIT operation.
  */
-public class SubmitOperationHandler extends OperationHandler {
+public class SubmitIPConsumerHandler extends IPConsumerHandler {
 
     protected boolean receivedInitialStage = false;
     protected final int interactionType;
@@ -48,7 +48,7 @@ public class SubmitOperationHandler extends OperationHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public SubmitOperationHandler(final boolean syncOperation,
+    public SubmitIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
         this.interactionType = InteractionType._SUBMIT_INDEX;
@@ -60,13 +60,13 @@ public class SubmitOperationHandler extends OperationHandler {
      *
      * @param responseHolder The response holder.
      */
-    public SubmitOperationHandler(final OperationResponseHolder responseHolder) {
+    public SubmitIPConsumerHandler(final OperationResponseHolder responseHolder) {
         super(false, responseHolder);
         this.interactionType = InteractionType._SUBMIT_INDEX;
         this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
-    protected SubmitOperationHandler(final int interactionType, final int interactionStage,
+    protected SubmitIPConsumerHandler(final int interactionType, final int interactionStage,
             final boolean syncOperation, final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
         this.interactionType = interactionType;

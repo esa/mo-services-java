@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 /**
  * Handles the state machine for a consumer for a PUBSUB operation.
  */
-public final class PubSubOperationHandler extends SubmitOperationHandler {
+public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
 
     /**
      * Constructor.
@@ -37,7 +37,7 @@ public final class PubSubOperationHandler extends SubmitOperationHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public PubSubOperationHandler(final boolean syncOperation,
+    public PubSubIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(InteractionType._PUBSUB_INDEX, 0, syncOperation, responseHolder);
     }
@@ -47,7 +47,7 @@ public final class PubSubOperationHandler extends SubmitOperationHandler {
      *
      * @param responseHolder The response holder.
      */
-    public PubSubOperationHandler(final OperationResponseHolder responseHolder) {
+    public PubSubIPConsumerHandler(final OperationResponseHolder responseHolder) {
         super(InteractionType._PUBSUB_INDEX, 0, false, responseHolder);
     }
 

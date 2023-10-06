@@ -21,12 +21,12 @@
 package esa.mo.mal.impl;
 
 import esa.mo.mal.impl.broker.MALBrokerBindingImpl;
-import esa.mo.mal.impl.patterns.InvokeInteractionImpl;
-import esa.mo.mal.impl.patterns.ProgressInteractionImpl;
-import esa.mo.mal.impl.patterns.PubSubInteractionImpl;
-import esa.mo.mal.impl.patterns.RequestInteractionImpl;
-import esa.mo.mal.impl.patterns.SendInteractionImpl;
-import esa.mo.mal.impl.patterns.SubmitInteractionImpl;
+import esa.mo.mal.impl.patterns.InvokeIPProviderHandler;
+import esa.mo.mal.impl.patterns.ProgressIPProviderHandler;
+import esa.mo.mal.impl.patterns.PubSubIPProviderHandler;
+import esa.mo.mal.impl.patterns.RequestIPProviderHandler;
+import esa.mo.mal.impl.patterns.SendIPProviderHandler;
+import esa.mo.mal.impl.patterns.SubmitIPProviderHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -265,7 +265,7 @@ public class MALReceiver implements MALMessageListener {
             MALInteractionHandler handler = address.getHandler();
             MALContextFactoryImpl.LOGGER.log(Level.FINE,
                     "handleSend for type {0}", handler);
-            handler.handleSend(new SendInteractionImpl(sender, msg), msg.getBody());
+            handler.handleSend(new SendIPProviderHandler(sender, msg), msg.getBody());
         } catch (MALException ex) {
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                     "Error generated during reception of SEND pattern, dropping: {0}", ex);
@@ -274,7 +274,7 @@ public class MALReceiver implements MALMessageListener {
 
     private void handleSubmit(final MALMessage msg,
             final Address address) throws MALInteractionException {
-        SubmitInteractionImpl interaction = new SubmitInteractionImpl(sender, address, msg);
+        SubmitIPProviderHandler interaction = new SubmitIPProviderHandler(sender, address, msg);
 
         try {
             try {
@@ -297,7 +297,7 @@ public class MALReceiver implements MALMessageListener {
 
     private void handleRequest(final MALMessage msg,
             final Address address) throws MALInteractionException {
-        RequestInteractionImpl interaction = new RequestInteractionImpl(sender, address, msg);
+        RequestIPProviderHandler interaction = new RequestIPProviderHandler(sender, address, msg);
 
         try {
             try {
@@ -320,7 +320,7 @@ public class MALReceiver implements MALMessageListener {
 
     private void handleInvoke(final MALMessage msg,
             final Address address) throws MALInteractionException {
-        InvokeInteractionImpl interaction = new InvokeInteractionImpl(sender, address, msg);
+        InvokeIPProviderHandler interaction = new InvokeIPProviderHandler(sender, address, msg);
 
         try {
             try {
@@ -348,7 +348,7 @@ public class MALReceiver implements MALMessageListener {
 
     private void handleProgress(final MALMessage msg,
             final Address address) throws MALInteractionException {
-        ProgressInteractionImpl interaction = new ProgressInteractionImpl(sender, address, msg);
+        ProgressIPProviderHandler interaction = new ProgressIPProviderHandler(sender, address, msg);
 
         try {
             try {
@@ -382,7 +382,7 @@ public class MALReceiver implements MALMessageListener {
         if (null != brokerHandler) {
             if (msg.getBody() instanceof MALRegisterBody) {
                 // update register list
-                final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
+                final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
                 brokerHandler.addSubscriber(msg.getHeader().getFrom().getValue());
                 brokerHandler.getBrokerImpl().getHandler().handleRegister(
                         interaction, (MALRegisterBody) msg.getBody());
@@ -422,7 +422,7 @@ public class MALReceiver implements MALMessageListener {
         if (null != brokerHandler) {
             if (msg.getBody() instanceof MALPublishRegisterBody) {
                 // update register list
-                final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
+                final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
                 brokerHandler.getBrokerImpl().getHandler().handlePublishRegister(interaction, (MALPublishRegisterBody) msg.getBody());
 
                 // because we don't pass this upwards, we have to generate the ack
@@ -481,7 +481,7 @@ public class MALReceiver implements MALMessageListener {
             if (null != brokerHandler) {
                 if (msg.getBody() instanceof MALPublishBody) {
                     try {
-                        final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
+                        final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
                         brokerHandler.getBrokerImpl().getHandler().handlePublish(interaction, (MALPublishBody) msg.getBody());
                     } catch (MALInteractionException ex) {
                         sender.returnError(address,
@@ -567,7 +567,7 @@ public class MALReceiver implements MALMessageListener {
         if (null != brokerHandler) {
             try {
                 // update register list
-                final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
+                final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
                 brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
                 brokerHandler.removeSubscriber(msg.getHeader().getFrom().getValue());
 
@@ -601,7 +601,7 @@ public class MALReceiver implements MALMessageListener {
 
         if (null != brokerHandler) {
             // update register list
-            final MALInteraction interaction = new PubSubInteractionImpl(sender, address, msg);
+            final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
             brokerHandler.getBrokerImpl().getHandler().handlePublishDeregister(interaction);
 
             // because we don't pass this upwards, we have to generate the ack
