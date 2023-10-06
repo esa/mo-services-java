@@ -30,6 +30,9 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.*;
 import esa.mo.xsd.EnumerationType.Item;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -41,8 +44,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+//import javax.xml.bind.JAXBElement;
+//import javax.xml.bind.JAXBException;
 
 /**
  * Generates an XHTML compliant file of the service specification in an ECSS PUS

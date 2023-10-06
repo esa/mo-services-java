@@ -21,6 +21,12 @@
 package esa.mo.xsd.util;
 
 import esa.mo.xsd.SpecificationType;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+
+// import javax.xml.bind.JAXBElement;
 import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap;
@@ -29,10 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+// import javax.xml.bind.JAXBContext;
+// import javax.xml.bind.JAXBElement;
+// import javax.xml.bind.JAXBException;
+// import javax.xml.bind.Unmarshaller;
 
 /**
  * Small helper class to load in MO XML specifications via JAXB
@@ -50,7 +56,7 @@ public class XmlHelper {
             return specList;
         }
 
-        final File xmlFiles[] = directory.listFiles();
+        final File[] xmlFiles = directory.listFiles();
 
         for (File file : xmlFiles) {
             if (file.isFile()) {
@@ -90,7 +96,7 @@ public class XmlHelper {
         }
 
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
-        final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
+        final JAXBElement<?> rootElement = (JAXBElement<?>) unmarshaller.unmarshal(is);
         SpecificationType specType = (SpecificationType) rootElement.getValue();
         XmlSpecification xmlSpec = new XmlSpecification(is, rootElement);
         return new AbstractMap.SimpleEntry<>(specType, xmlSpec);
@@ -105,7 +111,7 @@ public class XmlHelper {
         /**
          * Holds the XML root element.
          */
-        public final JAXBElement rootElement;
+        public final JAXBElement<?> rootElement;
 
         /**
          * Constructor.
@@ -113,7 +119,7 @@ public class XmlHelper {
          * @param file The file.
          * @param rootElement The XML root element.
          */
-        public XmlSpecification(File file, JAXBElement rootElement) {
+        public XmlSpecification(File file, JAXBElement<?> rootElement) {
             this.file = file;
             this.rootElement = rootElement;
         }

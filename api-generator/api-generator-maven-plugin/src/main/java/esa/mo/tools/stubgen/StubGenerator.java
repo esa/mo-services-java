@@ -33,9 +33,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+// import javax.xml.bind.JAXBContext;
+// import javax.xml.bind.JAXBException;
+// import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.SystemStreamLog;
@@ -506,7 +509,7 @@ public class StubGenerator extends AbstractMojo {
         // pre process the reference XSD specifications
         for (Map.Entry<Schema, XmlSpecification> spec : refXsd) {
             try {
-                generator.preProcess(spec.getKey());
+                generator.preProcess((SpecificationType) spec.getKey());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(

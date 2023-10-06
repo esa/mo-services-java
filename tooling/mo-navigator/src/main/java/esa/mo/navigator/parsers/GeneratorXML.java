@@ -28,13 +28,19 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Marshaller.Listener;
+//import javax.xml.bind.JAXBContext;
+//import javax.xml.bind.JAXBElement;
+//import javax.xml.bind.JAXBException;
+//import javax.xml.bind.Marshaller;
+//import javax.xml.bind.Marshaller.Listener;
+import javax.xml.namespace.QName;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import org.ccsds.schema.serviceschema.AreaType;
 import org.ccsds.schema.serviceschema.InvokeOperationType;
 import org.ccsds.schema.serviceschema.ProgressOperationType;
@@ -69,7 +75,10 @@ public class GeneratorXML extends XmlGenerator {
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             org.ccsds.schema.serviceschema.ObjectFactory serviceSchemaObjectFactory = new org.ccsds.schema.serviceschema.ObjectFactory();
-            JAXBElement element = serviceSchemaObjectFactory.createSpecification(spec);
+
+            // updated due to jakarta migration
+            // JAXBElement element = serviceSchemaObjectFactory.createSpecification(spec);
+            JAXBElement element = new JAXBElement<>(new QName("http://www.ccsds.org/schema/ServiceSchema"), org.ccsds.schema.serviceschema.SpecificationType.class, spec);
             boolean validate = false;
 
             if (validate) {
@@ -130,7 +139,7 @@ public class GeneratorXML extends XmlGenerator {
      * Currently, only error lists exhibit this structure. They are used for
      * area, service and all operation types (except SEND).
      */
-    private static class CleanupListener extends Listener {
+    private static class CleanupListener extends Marshaller.Listener {
 
         @Override
         public void beforeMarshal(Object source) {

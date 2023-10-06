@@ -22,6 +22,8 @@ package esa.mo.navigator;
 
 import esa.mo.tools.stubgen.GeneratorJava;
 import esa.mo.xsd.util.XmlHelper;
+import jakarta.xml.bind.JAXBException;
+
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +35,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
-import javax.xml.bind.JAXBException;
+//import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -90,9 +92,7 @@ public class AppGenerateJavaCode {
             timestamp = System.currentTimeMillis() - timestamp;
             Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.INFO,
                     "Success! Generated the code in " + timestamp + " miliseconds!");
-        } catch (IOException ex) {
-            Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
+        } catch (IOException | JAXBException ex) {
             Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
