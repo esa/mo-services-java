@@ -386,7 +386,8 @@ public class PatternTest {
         return (null != msgHeaderFinal);
     }
 
-    private void testInvoke(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
+    private void testInvoke(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion,
+            boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
         LoggingBase.logMessage("PatternTest.testInvoke(" + callMultiVersion + ")");
 
         if (callMultiVersion) {
@@ -448,12 +449,13 @@ public class PatternTest {
             msgHeaderFinal = msgHeaderAck;
         }
 
-        LoggingBase.logMessage("PatternTest.testInvoke(" + msgHeaderAck + "," + msgHeaderFinal + ")");
+        LoggingBase.logMessage("PatternTest.addInvokeReturnAssertions(\n" + msgHeaderAck + " ,\n" + msgHeaderFinal + ")");
 
         return (null != msgHeaderFinal);
     }
 
-    private void testProgress(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
+    private void testProgress(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion,
+            boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
         LoggingBase.logMessage("PatternTest.testProgress(" + callMultiVersion + ")");
 
         synchronized (monitor) {

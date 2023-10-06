@@ -80,8 +80,7 @@ public class InvokeInteractionImpl extends InteractionImpl implements MALInvoke 
     }
 
     @Override
-    public MALMessage sendError(final MOErrorException error)
-            throws MALException {
+    public MALMessage sendError(final MOErrorException error) throws MALException {
         UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
 
         if (ackSent) {

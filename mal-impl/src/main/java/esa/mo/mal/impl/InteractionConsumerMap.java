@@ -201,7 +201,6 @@ public class InteractionConsumerMap {
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
         OperationHandler handler;
-        StateMachineDetails state = null;
 
         synchronized (transactions) {
             handler = transactions.get(id);
@@ -218,7 +217,7 @@ public class InteractionConsumerMap {
                 throw new MALException(txt);
             }
 
-            state = handler.handleStage(msg);
+            handler.handleStage(msg);
 
             // delete entry from trans map
             if (handler.finished()) {
@@ -226,10 +225,6 @@ public class InteractionConsumerMap {
                         + "finished! Removing handler with transactionId: {0}", id);
                 transactions.remove(id);
             }
-        }
-
-        synchronized (handler) {
-            handler.processStage(state);
         }
     }
 

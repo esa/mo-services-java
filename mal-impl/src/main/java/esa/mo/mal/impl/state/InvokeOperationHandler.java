@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -39,6 +39,7 @@ public final class InvokeOperationHandler extends OperationHandler {
 
     private boolean receivedAck = false;
     private boolean receivedResponse = false;
+    private boolean finished = false;
 
     /**
      * Constructor.
@@ -52,74 +53,58 @@ public final class InvokeOperationHandler extends OperationHandler {
     }
 
     @Override
-    public StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException {
-        final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
-        final int interactionStage = msg.getHeader().getInteractionStage().getValue();
-        if (!receivedAck) {
-            if ((interactionType == InteractionType._INVOKE_INDEX) && (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE)) {
-                receivedAck = true;
-                if (!isSynchronous && msg.getHeader().getIsErrorMessage()) {
-                    receivedResponse = true;
-                }
-                return new StateMachineDetails(msg, false);
-            } else {
-                receivedResponse = true;
-                logUnexpectedTransitionError(interactionType, interactionStage);
-                return new StateMachineDetails(msg, true);
-            }
-        } else if ((!receivedResponse)
-                && (interactionType == InteractionType._INVOKE_INDEX)
-                && (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE)) {
-            receivedResponse = true;
-            return new StateMachineDetails(msg, false);
-        } else {
-            logUnexpectedTransitionError(interactionType, interactionStage);
-            receivedResponse = true;
-            return new StateMachineDetails(msg, true);
-        }
-    }
-
-    @Override
-    public void processStage(final StateMachineDetails state) throws MALInteractionException {
-        MALMessageHeader header = state.getMessage().getHeader();
-        final int interactionStage = header.getInteractionStage().getValue();
+    public void handleStage(final MALMessage msg) throws MALInteractionException {
+        MALMessageHeader header = msg.getHeader();
         boolean isError = header.getIsErrorMessage();
+        int interactionStage = header.getInteractionStage().getValue();
+        MALInteractionListener listener = responseHolder.getListener();
+        Map qos = msg.getQoSProperties();
 
         try {
-            if (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE) {
-                if (isSynchronous) {
-                    responseHolder.signalResponse(isError, state.getMessage());
-                } else {
-                    if (isError) {
-                        responseHolder.getListener().invokeAckErrorReceived(header,
-                                (MALErrorBody) state.getMessage().getBody(),
-                                state.getMessage().getQoSProperties());
+            if (!receivedAck) {
+                if (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE) {
+                    receivedAck = true;
+                    if (isSynchronous) {
+                        responseHolder.signalResponse(isError, msg);
                     } else {
-                        responseHolder.getListener().invokeAckReceived(header,
-                                state.getMessage().getBody(),
-                                state.getMessage().getQoSProperties());
+                        if (isError) {
+                            finished = true;
+                            listener.invokeAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                        } else {
+                            listener.invokeAckReceived(header, msg.getBody(), qos);
+                        }
                     }
-                }
-            }
-            if (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE) {
-                if (isError || !receivedAck) {
-                    responseHolder.getListener().invokeResponseErrorReceived(header,
-                            (MALErrorBody) state.getMessage().getBody(),
-                            state.getMessage().getQoSProperties());
                 } else {
-                    responseHolder.getListener().invokeResponseReceived(header,
-                            state.getMessage().getBody(),
-                            state.getMessage().getQoSProperties());
+                    finished = true;
+                    header.setIsErrorMessage(true);
+                    listener.invokeAckErrorReceived(header, ERROR, qos);
                 }
+                return;
             }
-            if (state.isIncorrectState()) {
-                MALErrorBody errorBody = (MALErrorBody) state.getMessage().getBody();
-                throw new MALInteractionException(errorBody.getError());
+            if (receivedAck && !receivedResponse) {
+                finished = true;
+                if (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE) {
+                    receivedResponse = true;
+                    if (isError) {
+                        listener.invokeResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                    } else {
+                        listener.invokeResponseReceived(header, msg.getBody(), msg.getQoSProperties());
+                    }
+                } else {
+                    // The received MAL Header has the interactionStage set at 2 because it is ACK
+                    // However, the response expects a 3 because it comes through the Response Error method!
+                    // To fix, we need to force the field to be 2!!!
+                    // The Correct Solution should be to actually create a "Transition error" on
+                    // the interface, so we can push the correct messages to the top layer
+                    // without modifying them
+                    listener.invokeResponseErrorReceived(header, ERROR, qos);
+                }
+                return;
             }
         } catch (MALException ex) {
             // nothing we can do with this
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Exception thrown handling stage {0}", ex);
+                    "Exception thrown handling stage: " + interactionStage, ex);
         }
     }
 
@@ -145,6 +130,6 @@ public final class InvokeOperationHandler extends OperationHandler {
 
     @Override
     public synchronized boolean finished() {
-        return receivedResponse;
+        return finished;
     }
 }

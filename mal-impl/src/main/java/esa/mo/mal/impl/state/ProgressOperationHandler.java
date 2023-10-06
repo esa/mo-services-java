@@ -52,10 +52,13 @@ public final class ProgressOperationHandler extends OperationHandler {
     }
 
     @Override
-    public StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException {
-        final int interactionType = msg.getHeader().getInteractionType().getOrdinal();
-        final int interactionStage = msg.getHeader().getInteractionStage().getValue();
-        boolean isError = msg.getHeader().getIsErrorMessage();
+    public void handleStage(final MALMessage msg) throws MALInteractionException {
+        MALMessageHeader header = msg.getHeader();
+        final int interactionType = header.getInteractionType().getOrdinal();
+        final int interactionStage = header.getInteractionStage().getValue();
+        boolean isError = header.getIsErrorMessage();
+        StateMachineDetails state;
+
         synchronized (this) {
             if (!receivedAck) {
                 if ((interactionType == InteractionType._PROGRESS_INDEX)
@@ -64,11 +67,11 @@ public final class ProgressOperationHandler extends OperationHandler {
                     if (isError) {
                         receivedResponse = true;
                     }
-                    return new StateMachineDetails(msg, false);
+                    state = new StateMachineDetails(msg, false);
                 } else {
                     receivedResponse = true;
                     logUnexpectedTransitionError(interactionType, interactionStage);
-                    return new StateMachineDetails(msg, true);
+                    state = new StateMachineDetails(msg, true);
                 }
             } else if ((!receivedResponse) && (interactionType == InteractionType._PROGRESS_INDEX)
                     && ((interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE)
@@ -80,20 +83,14 @@ public final class ProgressOperationHandler extends OperationHandler {
                 } else {
                     receivedResponse = true;
                 }
-                return new StateMachineDetails(msg, false);
+                state = new StateMachineDetails(msg, false);
             } else {
                 receivedResponse = true;
                 logUnexpectedTransitionError(interactionType, interactionStage);
-                return new StateMachineDetails(msg, true);
+                state = new StateMachineDetails(msg, true);
             }
         }
-    }
 
-    @Override
-    public void processStage(final StateMachineDetails state) throws MALInteractionException {
-        MALMessageHeader header = state.getMessage().getHeader();
-        final int interactionStage = header.getInteractionStage().getValue();
-        boolean isError = header.getIsErrorMessage();
         try {
             if (interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE) {
                 if (isSynchronous) {

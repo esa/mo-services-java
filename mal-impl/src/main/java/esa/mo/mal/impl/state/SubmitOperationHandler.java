@@ -74,26 +74,25 @@ public class SubmitOperationHandler extends OperationHandler {
     }
 
     @Override
-    public synchronized StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException {
+    public synchronized void handleStage(final MALMessage msg) throws MALInteractionException {
+        StateMachineDetails state;
+
         if (!receivedInitialStage) {
             if ((interactionType == msg.getHeader().getInteractionType().getOrdinal())
                     && checkStage(msg.getHeader().getInteractionStage().getValue())) {
                 receivedInitialStage = true;
 
-                return new StateMachineDetails(msg, false);
+                state = new StateMachineDetails(msg, false);
             } else {
                 logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
                         msg.getHeader().getInteractionStage().getValue());
-                return new StateMachineDetails(msg, true);
+                state = new StateMachineDetails(msg, true);
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-            return new StateMachineDetails(msg, true);
+            state = new StateMachineDetails(msg, true);
         }
-    }
 
-    @Override
-    public void processStage(final StateMachineDetails state) throws MALInteractionException {
         if (receivedInitialStage) {
             try {
                 if (isSynchronous) {

@@ -23,6 +23,7 @@ package esa.mo.mal.impl.state;
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -34,6 +35,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class OperationHandler {
 
+    protected static final DummyErrorBody ERROR
+            = new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
 
@@ -42,9 +45,7 @@ public abstract class OperationHandler {
         this.responseHolder = responseHolder;
     }
 
-    public abstract StateMachineDetails handleStage(final MALMessage msg) throws MALInteractionException;
-
-    public abstract void processStage(final StateMachineDetails details) throws MALInteractionException;
+    public abstract void handleStage(final MALMessage msg) throws MALInteractionException;
 
     public abstract void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap);
 
