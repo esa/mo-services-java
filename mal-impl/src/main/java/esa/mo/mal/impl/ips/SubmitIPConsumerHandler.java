@@ -116,8 +116,7 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
     public synchronized void handleError(final MALMessageHeader hdr,
             final MOErrorException err, final Map qosMap) {
         if (isSynchronous) {
-            responseHolder.signalResponse(true,
-                    new DummyMessage(hdr, new DummyErrorBody(err), qosMap));
+            responseHolder.signalError(new DummyErrorBody(err));
         } else {
             try {
                 responseHolder.getListener().submitErrorReceived(hdr,

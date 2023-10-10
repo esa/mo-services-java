@@ -143,8 +143,7 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
     public synchronized void handleError(final MALMessageHeader hdr,
             final MOErrorException err, final Map qosMap) {
         if (isSynchronous) {
-            DummyErrorBody errBody = new DummyErrorBody(err);
-            responseHolder.signalResponse(true, new DummyMessage(hdr, errBody, qosMap));
+            responseHolder.signalError(new DummyErrorBody(err));
         } else {
             try {
                 if (!receivedAck) {

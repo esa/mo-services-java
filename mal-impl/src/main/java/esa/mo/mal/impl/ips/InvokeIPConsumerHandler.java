@@ -77,7 +77,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
                 } else {
                     finished = true;
                     header.setIsErrorMessage(true);
-                    listener.invokeAckErrorReceived(header, ERROR, qos);
+                    listener.invokeAckErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
                 }
                 return;
             }
@@ -97,7 +97,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
                     // The Correct Solution should be to actually create a "Transition error" on
                     // the interface, so we can push the correct messages to the top layer
                     // without modifying them
-                    listener.invokeResponseErrorReceived(header, ERROR, qos);
+                    listener.invokeResponseErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
                 }
                 return;
             }
@@ -112,7 +112,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
     public synchronized void handleError(final MALMessageHeader hdr,
             final MOErrorException err, final Map qosMap) {
         if (isSynchronous) {
-            responseHolder.signalResponse(true, new DummyMessage(hdr, new DummyErrorBody(err), qosMap));
+            responseHolder.signalError(new DummyErrorBody(err));
         } else {
             try {
                 if (!receivedAck) {

@@ -43,6 +43,7 @@ public class OperationResponseHolder {
     private final MALInteractionListener listener;
     private boolean isError = false;
     private MALMessage result = null;
+    private MALErrorBody errorBody;
 
     public OperationResponseHolder(MALInteractionListener listener) {
         this.listener = listener;
@@ -71,6 +72,10 @@ public class OperationResponseHolder {
     }
 
     public void signalResponse(final boolean isError, final MALMessage msg) {
+        if (isError) {
+            signalError((MALErrorBody) msg.getBody());
+            return;
+        }
         this.isError = isError;
         this.result = msg;
 
@@ -80,9 +85,19 @@ public class OperationResponseHolder {
         }
     }
 
+    public void signalError(final MALErrorBody errorBody) {
+        this.isError = true;
+        this.errorBody = errorBody;
+
+        synchronized (responseSignal) {
+            responseSignal.set(true);
+            responseSignal.notifyAll();
+        }
+    }
+
     public MALMessage getResult() throws MALInteractionException, MALException {
         if (isError) {
-            throw new MALInteractionException(((MALErrorBody) result.getBody()).getError());
+            throw new MALInteractionException(errorBody.getError());
         }
 
         return result;

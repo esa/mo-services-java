@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class IPConsumerHandler {
 
-    protected static final DummyErrorBody ERROR
+    protected static final DummyErrorBody ERROR_BODY_INCORRECT_STATE
             = new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
