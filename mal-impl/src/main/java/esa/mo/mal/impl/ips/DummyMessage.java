@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2016      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,26 +18,53 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.patterns;
+package esa.mo.mal.impl.ips;
 
-import esa.mo.mal.impl.MALSender;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Send interaction class.
+ * Used when returning an internally generated error.
  */
-public class SendIPProviderHandler extends IPProviderHandler {
+public final class DummyMessage implements MALMessage {
+
+    private final MALMessageHeader header;
+    private final MALMessageBody body;
+    private final Map qoSProperties;
 
     /**
      * Constructor.
      *
-     * @param sender Used to return the messages.
-     * @param msg The source message.
-     * @throws MALInteractionException if the received message operation is
-     * unknown.
+     * @param header Message header.
+     * @param body Message body.
+     * @param qoSProperties Message QoS properties.
      */
-    public SendIPProviderHandler(final MALSender sender, final MALMessage msg) throws MALInteractionException {
-        super(sender, null, msg);
+    protected DummyMessage(MALMessageHeader header, MALMessageBody body, Map qoSProperties) {
+        this.header = header;
+        this.body = body;
+        this.qoSProperties = qoSProperties;
+    }
+
+    @Override
+    public MALMessageHeader getHeader() {
+        return header;
+    }
+
+    @Override
+    public MALMessageBody getBody() {
+        return body;
+    }
+
+    @Override
+    public Map getQoSProperties() {
+        return qoSProperties;
+    }
+
+    @Override
+    public void free() throws MALException {
+        // nothing to do
     }
 }

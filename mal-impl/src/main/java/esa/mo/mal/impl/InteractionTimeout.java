@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.state.IPConsumerHandler;
+import esa.mo.mal.impl.ips.IPConsumerHandler;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;

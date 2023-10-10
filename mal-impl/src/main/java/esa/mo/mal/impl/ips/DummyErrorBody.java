@@ -18,53 +18,52 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.state;
+package esa.mo.mal.impl.ips;
 
-import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.transport.MALMessageBody;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
+import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 /**
  * Used when returning an internally generated error.
  */
-public final class DummyMessage implements MALMessage {
+public final class DummyErrorBody implements MALErrorBody {
 
-    private final MALMessageHeader header;
-    private final MALMessageBody body;
-    private final Map qoSProperties;
+    private final MOErrorException error;
 
     /**
      * Constructor.
      *
-     * @param header Message header.
-     * @param body Message body.
-     * @param qoSProperties Message QoS properties.
+     * @param error Error.
      */
-    protected DummyMessage(MALMessageHeader header, MALMessageBody body, Map qoSProperties) {
-        this.header = header;
-        this.body = body;
-        this.qoSProperties = qoSProperties;
+    protected DummyErrorBody(MOErrorException error) {
+        this.error = error;
     }
 
     @Override
-    public MALMessageHeader getHeader() {
-        return header;
+    public MOErrorException getError() throws MALException {
+        return error;
     }
 
     @Override
-    public MALMessageBody getBody() {
-        return body;
+    public int getElementCount() {
+        return 1;
     }
 
     @Override
-    public Map getQoSProperties() {
-        return qoSProperties;
+    public Object getBodyElement(int index, Object element) throws MALException {
+        return error;
     }
 
     @Override
-    public void free() throws MALException {
-        // nothing to do
+    public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
+        return null;
+    }
+
+    @Override
+    public MALEncodedBody getEncodedBody() throws MALException {
+        return null;
     }
 }

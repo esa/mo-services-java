@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.patterns;
+package esa.mo.mal.impl.ips;
 
 import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MALSender;

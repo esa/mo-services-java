@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2016      European Space Agency
+ * Copyright (C) 2013      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,45 +18,26 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.state;
+package esa.mo.mal.impl.ips;
 
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import esa.mo.mal.impl.MALSender;
+import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Wrapper class to hold message details when passing from a reception handler
- * to process handler.
+ * Send interaction class.
  */
-public final class StateMachineDetails {
-
-    private final MALMessage message;
-    private final boolean isIncorrectState;
+public class SendIPProviderHandler extends IPProviderHandler {
 
     /**
-     * Creates a Message Handler for a non-error message.
+     * Constructor.
      *
-     * @param msg The MAL message.
-     * @param isIncorrectState
+     * @param sender Used to return the messages.
+     * @param msg The source message.
+     * @throws MALInteractionException if the received message operation is
+     * unknown.
      */
-    public StateMachineDetails(MALMessage msg, boolean isIncorrectState) {
-        if (!isIncorrectState) {
-            this.message = msg;
-        } else {
-            msg.getHeader().setIsErrorMessage(true);
-            this.message = new DummyMessage(
-                    msg.getHeader(),
-                    new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)),
-                    msg.getQoSProperties());
-        }
-        this.isIncorrectState = isIncorrectState;
-    }
-
-    public MALMessage getMessage() {
-        return message;
-    }
-
-    public boolean isIncorrectState() {
-        return isIncorrectState;
+    public SendIPProviderHandler(final MALSender sender, final MALMessage msg) throws MALInteractionException {
+        super(sender, null, msg);
     }
 }

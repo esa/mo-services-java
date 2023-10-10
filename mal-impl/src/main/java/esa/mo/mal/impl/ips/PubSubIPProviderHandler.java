@@ -18,21 +18,17 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.patterns;
+package esa.mo.mal.impl.ips;
 
 import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MALSender;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.MALSubmitOperation;
-import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Submit interaction class.
+ * PubSub interaction class.
  */
-public class SubmitIPProviderHandler extends IPProviderHandler implements MALSubmit {
+public class PubSubIPProviderHandler extends IPProviderHandler {
 
     /**
      * Constructor.
@@ -43,18 +39,8 @@ public class SubmitIPProviderHandler extends IPProviderHandler implements MALSub
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public SubmitIPProviderHandler(final MALSender sender, final Address address,
+    public PubSubIPProviderHandler(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
-    }
-
-    @Override
-    public MALMessage sendAcknowledgement() throws MALException {
-        return returnResponse(MALSubmitOperation.SUBMIT_ACK_STAGE, (Object[]) null);
-    }
-
-    @Override
-    public MALMessage sendError(final MOErrorException error) throws MALException {
-        return returnError(MALSubmitOperation.SUBMIT_ACK_STAGE, error);
     }
 }

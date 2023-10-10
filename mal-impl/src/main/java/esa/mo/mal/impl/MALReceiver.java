@@ -21,12 +21,12 @@
 package esa.mo.mal.impl;
 
 import esa.mo.mal.impl.broker.MALBrokerBindingImpl;
-import esa.mo.mal.impl.patterns.InvokeIPProviderHandler;
-import esa.mo.mal.impl.patterns.ProgressIPProviderHandler;
-import esa.mo.mal.impl.patterns.PubSubIPProviderHandler;
-import esa.mo.mal.impl.patterns.RequestIPProviderHandler;
-import esa.mo.mal.impl.patterns.SendIPProviderHandler;
-import esa.mo.mal.impl.patterns.SubmitIPProviderHandler;
+import esa.mo.mal.impl.ips.InvokeIPProviderHandler;
+import esa.mo.mal.impl.ips.ProgressIPProviderHandler;
+import esa.mo.mal.impl.ips.PubSubIPProviderHandler;
+import esa.mo.mal.impl.ips.RequestIPProviderHandler;
+import esa.mo.mal.impl.ips.SendIPProviderHandler;
+import esa.mo.mal.impl.ips.SubmitIPProviderHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;

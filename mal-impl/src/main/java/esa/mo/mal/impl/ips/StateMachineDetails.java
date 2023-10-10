@@ -18,52 +18,45 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.state;
+package esa.mo.mal.impl.ips;
 
-import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
-import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
-import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Used when returning an internally generated error.
+ * Wrapper class to hold message details when passing from a reception handler
+ * to process handler.
  */
-public final class DummyErrorBody implements MALErrorBody {
+public final class StateMachineDetails {
 
-    private final MOErrorException error;
+    private final MALMessage message;
+    private final boolean isIncorrectState;
 
     /**
-     * Constructor.
+     * Creates a Message Handler for a non-error message.
      *
-     * @param error Error.
+     * @param msg The MAL message.
+     * @param isIncorrectState
      */
-    protected DummyErrorBody(MOErrorException error) {
-        this.error = error;
+    public StateMachineDetails(MALMessage msg, boolean isIncorrectState) {
+        if (!isIncorrectState) {
+            this.message = msg;
+        } else {
+            msg.getHeader().setIsErrorMessage(true);
+            this.message = new DummyMessage(
+                    msg.getHeader(),
+                    new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)),
+                    msg.getQoSProperties());
+        }
+        this.isIncorrectState = isIncorrectState;
     }
 
-    @Override
-    public MOErrorException getError() throws MALException {
-        return error;
+    public MALMessage getMessage() {
+        return message;
     }
 
-    @Override
-    public int getElementCount() {
-        return 1;
-    }
-
-    @Override
-    public Object getBodyElement(int index, Object element) throws MALException {
-        return error;
-    }
-
-    @Override
-    public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
-        return null;
-    }
-
-    @Override
-    public MALEncodedBody getEncodedBody() throws MALException {
-        return null;
+    public boolean isIncorrectState() {
+        return isIncorrectState;
     }
 }

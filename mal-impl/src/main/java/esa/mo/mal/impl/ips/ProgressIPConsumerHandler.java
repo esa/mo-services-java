@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.state;
+package esa.mo.mal.impl.ips;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
