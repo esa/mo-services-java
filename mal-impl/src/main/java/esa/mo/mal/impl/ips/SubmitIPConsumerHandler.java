@@ -75,30 +75,24 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
 
     @Override
     public synchronized void handleStage(final MALMessage msg) throws MALInteractionException {
-        StateMachineDetails state;
-
         if (!receivedInitialStage) {
             if ((interactionType == msg.getHeader().getInteractionType().getOrdinal())
                     && checkStage(msg.getHeader().getInteractionStage().getValue())) {
                 receivedInitialStage = true;
-
-                state = new StateMachineDetails(msg, false);
             } else {
                 logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
                         msg.getHeader().getInteractionStage().getValue());
-                state = new StateMachineDetails(msg, true);
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-            state = new StateMachineDetails(msg, true);
         }
 
         if (receivedInitialStage) {
             try {
                 if (isSynchronous) {
-                    responseHolder.signalResponse(false, state.getMessage());
+                    responseHolder.signalResponse(false, msg);
                 } else {
-                    informListener(state.getMessage());
+                    informListener(msg);
                 }
             } catch (MALException ex) {
                 // nothing we can do with this
@@ -114,13 +108,13 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
 
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
-            final MOErrorException err, final Map qosMap) {
+            final MOErrorException error, final Map qosMap) {
         if (isSynchronous) {
-            responseHolder.signalError(new DummyErrorBody(err));
+            responseHolder.signalError(error);
         } else {
             try {
                 responseHolder.getListener().submitErrorReceived(hdr,
-                        new DummyErrorBody(err), qosMap);
+                        new DummyErrorBody(error), qosMap);
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,

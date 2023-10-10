@@ -23,7 +23,6 @@ package esa.mo.mal.impl;
 import esa.mo.mal.impl.ips.IPConsumerHandler;
 import esa.mo.mal.impl.ips.RequestIPConsumerHandler;
 import esa.mo.mal.impl.ips.InvokeIPConsumerHandler;
-import esa.mo.mal.impl.ips.StateMachineDetails;
 import esa.mo.mal.impl.ips.OperationResponseHolder;
 import esa.mo.mal.impl.ips.SubmitIPConsumerHandler;
 import esa.mo.mal.impl.ips.PubSubIPConsumerHandler;

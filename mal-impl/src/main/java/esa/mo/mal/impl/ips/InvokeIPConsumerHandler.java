@@ -110,15 +110,15 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
 
     @Override
     public synchronized void handleError(final MALMessageHeader hdr,
-            final MOErrorException err, final Map qosMap) {
+            final MOErrorException error, final Map qosMap) {
         if (isSynchronous) {
-            responseHolder.signalError(new DummyErrorBody(err));
+            responseHolder.signalError(error);
         } else {
             try {
                 if (!receivedAck) {
-                    responseHolder.getListener().invokeAckErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+                    responseHolder.getListener().invokeAckErrorReceived(hdr, new DummyErrorBody(error), qosMap);
                 } else {
-                    responseHolder.getListener().invokeResponseErrorReceived(hdr, new DummyErrorBody(err), qosMap);
+                    responseHolder.getListener().invokeResponseErrorReceived(hdr, new DummyErrorBody(error), qosMap);
                 }
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it

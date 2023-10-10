@@ -24,8 +24,10 @@ import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -43,7 +45,7 @@ public class OperationResponseHolder {
     private final MALInteractionListener listener;
     private boolean isError = false;
     private MALMessage result = null;
-    private MALErrorBody errorBody;
+    private MOErrorException errorBody;
 
     public OperationResponseHolder(MALInteractionListener listener) {
         this.listener = listener;
@@ -73,7 +75,12 @@ public class OperationResponseHolder {
 
     public void signalResponse(final boolean isError, final MALMessage msg) {
         if (isError) {
-            signalError((MALErrorBody) msg.getBody());
+            try {
+                signalError(((MALErrorBody) msg.getBody()).getError());
+            } catch (MALException ex) {
+                Logger.getLogger(OperationResponseHolder.class.getName()).log(
+                        Level.SEVERE, "Something went wrong!", ex);
+            }
             return;
         }
         this.isError = isError;
@@ -85,7 +92,7 @@ public class OperationResponseHolder {
         }
     }
 
-    public void signalError(final MALErrorBody errorBody) {
+    public void signalError(final MOErrorException errorBody) {
         this.isError = true;
         this.errorBody = errorBody;
 
@@ -97,7 +104,7 @@ public class OperationResponseHolder {
 
     public MALMessage getResult() throws MALInteractionException, MALException {
         if (isError) {
-            throw new MALInteractionException(errorBody.getError());
+            throw new MALInteractionException(errorBody);
         }
 
         return result;
