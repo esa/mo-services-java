@@ -25,7 +25,7 @@ import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * The NullSecurityManager class.
+ * The EchoSecurityManager class.
  */
 public class EchoSecurityManager implements MALAccessControl {
 

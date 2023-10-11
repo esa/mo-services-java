@@ -84,15 +84,6 @@ public abstract class IPProviderHandler implements MALInteraction {
     }
 
     /**
-     * Returns the Address object used to create this object.
-     *
-     * @return the address.
-     */
-    public Address getAddress() {
-        return address;
-    }
-
-    /**
      * Returns a response to the consumer.
      *
      * @param stage Stage to use.

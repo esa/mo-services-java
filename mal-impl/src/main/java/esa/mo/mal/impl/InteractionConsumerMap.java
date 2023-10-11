@@ -170,31 +170,26 @@ public class InteractionConsumerMap {
         OperationResponseHolder holder = null;
 
         synchronized (syncOpResponseMap) {
-            if (syncOpResponseMap.containsKey(id)) {
-                holder = syncOpResponseMap.get(id);
-            } else {
-                MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "No key found in service maps to wait for response! {0}", id);
-            }
+            holder = syncOpResponseMap.get(id);
         }
 
         if (holder == null) {
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                    "No key found in service maps to wait for response! {0}", id);
             return null;
         }
 
         // Wait until ready...
         holder.waitForResponseSignal();
 
-        // delete entry from trans map
+        // delete entry from synchronous Operation Responses map
         synchronized (syncOpResponseMap) {
             MALContextFactoryImpl.LOGGER.log(Level.FINE,
                     "Removing handler from sync service map: {0}", id);
             syncOpResponseMap.remove(id);
         }
 
-        synchronized (holder) {
-            return holder.getResult(); // must have value now
-        }
+        return holder.getResult(); // must have value now
     }
 
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {

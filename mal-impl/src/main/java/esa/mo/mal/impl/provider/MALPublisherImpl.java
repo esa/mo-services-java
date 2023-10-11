@@ -80,7 +80,8 @@ public class MALPublisherImpl implements MALPublisher {
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        Long transactionId = handler.publishRegister(provider.getURI().getValue(), messageTarget, operation, keyNames, keyTypes, listener);
+        Long transactionId = handler.publishRegister(provider.getURI().getValue(),
+                messageTarget, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), transactionId);
     }
 
@@ -95,7 +96,8 @@ public class MALPublisherImpl implements MALPublisher {
                 provider.getAuthenticationId(),
                 remotePublisherQosProps);
 
-        MALMessage msg = handler.publishRegisterAsync(provider.getURI().getValue(), messageTarget, operation, keyNames, keyTypes, listener);
+        MALMessage msg = handler.publishRegisterAsync(provider.getURI().getValue(),
+                messageTarget, operation, keyNames, keyTypes, listener);
         this.putTransId(provider.getBrokerURI(), msg.getHeader().getTransactionId());
         return msg;
     }

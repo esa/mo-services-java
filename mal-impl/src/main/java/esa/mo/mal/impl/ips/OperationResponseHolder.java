@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
  */
 public class OperationResponseHolder {
 
-    private final AtomicBoolean responseSignal = new AtomicBoolean(false);
+    private final AtomicBoolean signalReceived = new AtomicBoolean(false);
     private final MALInteractionListener listener;
     private boolean isError = false;
     private MALMessage result = null;
@@ -61,10 +61,10 @@ public class OperationResponseHolder {
 
     public void waitForResponseSignal() {
         // wait for the response signal
-        synchronized (responseSignal) {
-            while (!responseSignal.get()) {
+        synchronized (signalReceived) {
+            while (!signalReceived.get()) {
                 try {
-                    responseSignal.wait();
+                    signalReceived.wait();
                 } catch (InterruptedException ex) {
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                             "Interrupted waiting for handler lock ", ex);
@@ -86,9 +86,9 @@ public class OperationResponseHolder {
         this.isError = isError;
         this.result = msg;
 
-        synchronized (responseSignal) {
-            responseSignal.set(true);
-            responseSignal.notifyAll();
+        synchronized (signalReceived) {
+            signalReceived.set(true);
+            signalReceived.notifyAll();
         }
     }
 
@@ -96,9 +96,9 @@ public class OperationResponseHolder {
         this.isError = true;
         this.errorBody = errorBody;
 
-        synchronized (responseSignal) {
-            responseSignal.set(true);
-            responseSignal.notifyAll();
+        synchronized (signalReceived) {
+            signalReceived.set(true);
+            signalReceived.notifyAll();
         }
     }
 

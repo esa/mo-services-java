@@ -60,6 +60,7 @@ public class TestNotifyBody implements MALNotifyBody {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Object getBodyElement(int index, Object element)
             throws IllegalArgumentException, MALException {
         switch (index) {
@@ -72,10 +73,12 @@ public class TestNotifyBody implements MALNotifyBody {
         }
     }
 
+    @Override
     public int getElementCount() {
         return 3;
     }
 
+    @Override
     public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
         throw new MALException("Invalid call");
     }
@@ -99,6 +102,7 @@ public class TestNotifyBody implements MALNotifyBody {
                 + ", updateObjects=" + Arrays.toString(updateObjects) + "]";
     }
 
+    @Override
     public MALEncodedBody getEncodedBody() throws MALException {
         throw new MALException("Not implemented");
     }

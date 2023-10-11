@@ -88,7 +88,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
                     if (isError) {
                         listener.invokeResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
                     } else {
-                        listener.invokeResponseReceived(header, msg.getBody(), msg.getQoSProperties());
+                        listener.invokeResponseReceived(header, msg.getBody(), qos);
                     }
                 } else {
                     // The received MAL Header has the interactionStage set at 2 because it is ACK
@@ -123,7 +123,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Error received from consumer error handler in response to a provider error! {0}", ex);
+                        "Error received from consumer error handler in response to a provider error!", ex);
             }
         }
     }

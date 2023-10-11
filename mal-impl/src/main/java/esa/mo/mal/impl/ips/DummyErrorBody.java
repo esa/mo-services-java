@@ -38,7 +38,7 @@ public final class DummyErrorBody implements MALErrorBody {
      *
      * @param error Error.
      */
-    protected DummyErrorBody(MOErrorException error) {
+    public DummyErrorBody(MOErrorException error) {
         this.error = error;
     }
 

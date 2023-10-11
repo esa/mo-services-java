@@ -34,8 +34,9 @@ public class FastErrorBody extends FastBody implements MALErrorBody {
         super(body);
     }
 
+    @Override
     public MOErrorException getError() throws MALException {
-        if (1 < body.length) {
+        if (body.length > 1) {
             return new MOErrorException((UInteger) body[0], body[1]);
         } else {
             return new MOErrorException((UInteger) body[0], null);

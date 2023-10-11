@@ -25,6 +25,7 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Handles the state machine for a consumer for a PUBSUB operation.
@@ -66,18 +67,16 @@ public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
 
     @Override
     protected void informListener(final MALMessage msg) throws MALException {
-        if (msg.getHeader().getIsErrorMessage()) {
+        MALMessageHeader header = msg.getHeader();
+
+        if (header.getIsErrorMessage()) {
             responseHolder.getListener().registerErrorReceived(
-                    msg.getHeader(),
-                    (MALErrorBody) msg.getBody(),
-                    msg.getQoSProperties());
-        } else if ((MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())
-                || (MALPubSubOperation._REGISTER_ACK_STAGE == msg.getHeader().getInteractionStage().getValue())) {
-            responseHolder.getListener().registerAckReceived(
-                    msg.getHeader(), msg.getQoSProperties());
+                    header, (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+        } else if ((header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE)
+                || (header.getInteractionStage().getValue() == MALPubSubOperation._REGISTER_ACK_STAGE)) {
+            responseHolder.getListener().registerAckReceived(header, msg.getQoSProperties());
         } else {
-            responseHolder.getListener().deregisterAckReceived(
-                    msg.getHeader(), msg.getQoSProperties());
+            responseHolder.getListener().deregisterAckReceived(header, msg.getQoSProperties());
         }
     }
 }
