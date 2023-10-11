@@ -35,6 +35,7 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -240,9 +241,15 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                 benc = streamFactory.createOutputStream(bbaos);
             }
 
-            for (int i = 0; i < count; i++) {
-                encodeBodyPart(streamFactory, benc, wrappedBodyParts,
-                        getBodyElement(i, null), ctx.getOperationFields()[i]);
+            try {
+                OperationField[] fields = ctx.getOperationFields();
+                for (int i = 0; i < count; i++) {
+                    encodeBodyPart(streamFactory, benc, wrappedBodyParts,
+                            getBodyElement(i, null), fields[i]);
+                }
+            } catch (NotFoundException ex) {
+                Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
+                        "The Operation fields could not be found!", ex);
             }
 
             if (wrappedBodyParts) {
@@ -337,8 +344,11 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             }
         } catch (MALException ex) {
             Transport.LOGGER.log(Level.WARNING,
-                    "Unable to decode the Message Body!", ex);
+                    "(1) Unable to decode the Message Body!", ex);
             throw ex;
+        } catch (NotFoundException ex) {
+            Transport.LOGGER.log(Level.WARNING,
+                    "(2) Unable to decode the Message Body!", ex);
         }
     }
 

@@ -64,6 +64,7 @@ public class MALMessageHeader {
     protected UOctet serviceVersion;
     protected Boolean isErrorMessage;
     protected NamedValueList supplements;
+    private MALOperation malOperation;
 
     /**
      * Constructor.
@@ -404,6 +405,10 @@ public class MALMessageHeader {
     }
 
     public MALOperation getMALOperation() throws NotFoundException {
+        if (malOperation != null) {
+            return malOperation;
+        }
+
         MALOperation op = MALContextFactory
                 .lookupArea(this.getServiceArea(), this.getServiceVersion())
                 .getServiceByNumber(this.getService())
@@ -418,7 +423,8 @@ public class MALMessageHeader {
             );
         }
 
-        return op;
+        malOperation = op;
+        return malOperation;
     }
 
 }

@@ -114,7 +114,7 @@ public class TestEncoder {
                 PerfTestHelper.PERFTEST_SERVICE.getServiceVersion(),
                 Boolean.FALSE, new NamedValueList());
 
-        MALEncodingContext ctx = new MALEncodingContext(header, PerfTestHelper.PERFTEST_SERVICE.SEND_OP);
+        MALEncodingContext ctx = new MALEncodingContext(header);
 
         System.out.println("Running tests");
         for (Results result : results) {

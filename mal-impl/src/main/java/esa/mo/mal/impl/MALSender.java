@@ -218,7 +218,8 @@ public class MALSender {
         ipsmap.getPublishListenerAndRemove(details.getEndpoint().getURI());
         final Long transId = icmap.createPubSubTransaction(false, listener);
         return initiateAsynchronousInteraction(details.getEndpoint(),
-                details.createMessage(op, transId, MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (Object[]) null));
+                details.createMessage(op, transId,
+                        MALPubSubOperation.PUBLISH_DEREGISTER_STAGE, (Object[]) null));
     }
 
     /**
