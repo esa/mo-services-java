@@ -309,15 +309,15 @@ public class PatternTest {
         }
     }
 
-    private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
-        return swapInteractionStage(expectedFinalHeader, interactionStage, expectedFinalHeader.getIsErrorMessage());
+    private MALMessageHeader generateHeaderWithInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
+        return generateHeaderWithInteractionStage(expectedFinalHeader, interactionStage, expectedFinalHeader.getIsErrorMessage());
     }
 
-    private MALMessageHeader swapIsError(MALMessageHeader expectedFinalHeader, Boolean isError) {
-        return swapInteractionStage(expectedFinalHeader, expectedFinalHeader.getInteractionStage(), isError);
+    private MALMessageHeader generateHeaderWithIsError(MALMessageHeader expectedFinalHeader, Boolean isError) {
+        return generateHeaderWithInteractionStage(expectedFinalHeader, expectedFinalHeader.getInteractionStage(), isError);
     }
 
-    private MALMessageHeader swapInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage, Boolean isError) {
+    private MALMessageHeader generateHeaderWithInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage, Boolean isError) {
         return new MALMessageHeader(
                 expectedFinalHeader.getFrom(),
                 expectedFinalHeader.getAuthenticationId(),
@@ -345,7 +345,7 @@ public class PatternTest {
             msgHeaderFinal = monitor.submitErrorReceivedMsgHeader;
         }
 
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALSubmitOperation.SUBMIT_ACK_STAGE, isError);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALSubmitOperation.SUBMIT_ACK_STAGE, isError);
         AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
 
         LoggingBase.logMessage("PatternTest.testSubmit(" + msgHeaderFinal + ")");
@@ -378,7 +378,7 @@ public class PatternTest {
             msgHeaderFinal = monitor.requestErrorReceivedMsgHeader;
         }
 
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALRequestOperation.REQUEST_RESPONSE_STAGE, isError);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALRequestOperation.REQUEST_RESPONSE_STAGE, isError);
         AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
 
         LoggingBase.logMessage("PatternTest.testRequest(" + msgHeaderFinal + ")");
@@ -402,14 +402,15 @@ public class PatternTest {
     }
 
     private boolean addInvokeReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_ACK_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_ACK_STAGE);
         MALMessageHeader msgHeaderAck;
         boolean limitedCheck = false;
 
         if ((3 == procedureId) || (6 == procedureId)) {
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
         } else if (7 == procedureId) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
             // the former version of the testbed expects a RESPONSE_ERROR message,
             // which is actually the initial faulty message sent by the test case
@@ -417,7 +418,6 @@ public class PatternTest {
             // as this violates the rules of the Invoke IP.
             // The MAL should then issue an ACK_ERROR indication, with an INCORRECT_STATE error
             // as specified in section 3.3.6.
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
             limitedCheck = true;
         } else if (8 == procedureId) {
             msgHeaderAck = monitor.invokeAckReceivedMsgHeader;
@@ -428,11 +428,11 @@ public class PatternTest {
         }
 
         AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader, limitedCheck);
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
         MALMessageHeader msgHeaderFinal;
 
         if ((2 == procedureId) || (5 == procedureId)) {
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if ((1 == procedureId) || (4 == procedureId)) {
@@ -440,9 +440,9 @@ public class PatternTest {
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if (8 == procedureId) {
             msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
-            // The ACK_ERROR sent as a wrong message must be changed into a RESPONSE_ERROR indication,
-            // with an INCORRECT_STATE error as specified in section 3.3.6.
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            // The header will be unchanged. However, the error field shall
+            // contain an INCORRECT_STATE error as specified in section 3.3.6.
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_ACK_STAGE);
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader, true);
         } else {
             // this is so that we return true on return
@@ -472,7 +472,7 @@ public class PatternTest {
     }
 
     private boolean addProgressReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_ACK_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_ACK_STAGE);
 
         MALMessageHeader msgHeaderAck;
         MALMessageHeader msgHeaderUpdate1;
@@ -481,14 +481,22 @@ public class PatternTest {
         boolean limitedCheck = false;
 
         if ((3 == procedureId) || (15 == procedureId)) {
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-        } else if ((10 == procedureId) || (11 == procedureId) || (12 == procedureId)) {
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+        } else if ((10 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.FALSE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-            // the test cases sends illegal error messages that violate the rules of the Progress IP.
-            // The MAL should replace those messages with an ACK_ERROR indication, with an INCORRECT_STATE error
-            // as specified in section 3.3.6.
+        } else if ((11 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
+            msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
+        } else if ((12 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.FALSE);
+            msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
+            // The header will be unchanged. However, the error field shall
+            // contain an INCORRECT_STATE error as specified in section 3.3.6.
             limitedCheck = true;
         } else {
             msgHeaderAck = monitor.progressAckReceivedMsgHeader;
@@ -496,7 +504,7 @@ public class PatternTest {
 
         AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader, limitedCheck);
 
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
 
         if ((4 == procedureId) || (5 == procedureId) || ((13 <= procedureId) && (14 >= procedureId))) {
             msgHeaderUpdate1 = monitor.progressUpdate1ReceivedMsgHeader;
@@ -507,13 +515,9 @@ public class PatternTest {
             LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader");
             msgHeaderUpdate1 = monitor.progressUpdateErrorReceivedMsgHeader;
             LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader: " + msgHeaderUpdate1);
-            // the former version of the testbed expects a ACK_ERROR message,
-            // which is actually the initial faulty message sent by the test case
-            // however when the MAL receives the ACK_ERROR, it has already received an ACK. It should then not pass it to the consumer
-            // as this violates the rules of the Progress IP.
-            // The MAL should then issue an UPDATE_ERROR indication, with an INCORRECT_STATE error
-            // as specified in section 3.3.6.
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_ACK_STAGE);
+            // The header will be unchanged. However, the error field shall
+            // contain an INCORRECT_STATE error as specified in section 3.3.6.
             AssertionHelper.checkHeader("PatternTest.checkUpdate1Header", assertions, msgHeaderUpdate1, expectedFinalHeader, true);
             // this is so that we return true on return
             msgHeaderUpdate2 = msgHeaderAck;
@@ -524,15 +528,15 @@ public class PatternTest {
         }
 
         if ((5 == procedureId) || (13 == procedureId)) {
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressUpdateErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         }
 
-        expectedFinalHeader = swapInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
 
         if ((2 == procedureId) || (6 == procedureId) || (8 == procedureId) || (14 == procedureId)) {
-            expectedFinalHeader = swapIsError(expectedFinalHeader, Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if ((1 == procedureId) || (4 == procedureId) || (7 == procedureId)) {

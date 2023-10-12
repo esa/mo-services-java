@@ -38,7 +38,6 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public final class InvokeIPConsumerHandler extends IPConsumerHandler {
 
     private boolean receivedAck = false;
-    private boolean receivedResponse = false;
     private boolean finished = false;
 
     /**
@@ -76,31 +75,25 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
                     }
                 } else {
                     finished = true;
-                    header.setIsErrorMessage(true);
                     listener.invokeAckErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
                 }
                 return;
             }
-            if (receivedAck && !receivedResponse) {
-                finished = true;
-                if (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE) {
-                    receivedResponse = true;
-                    if (isError) {
-                        listener.invokeResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
-                    } else {
-                        listener.invokeResponseReceived(header, msg.getBody(), qos);
-                    }
+
+            // If it is not the first ACK then we are done!
+            finished = true;
+
+            if (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE) {
+                if (isError) {
+                    listener.invokeResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
                 } else {
-                    // The received MAL Header has the interactionStage set at 2 because it is ACK
-                    // However, the response expects a 3 because it comes through the Response Error method!
-                    // To fix, we need to force the field to be 2!!!
-                    // The Correct Solution should be to actually create a "Transition error" on
-                    // the interface, so we can push the correct messages to the top layer
-                    // without modifying them
-                    listener.invokeResponseErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
+                    listener.invokeResponseReceived(header, msg.getBody(), qos);
                 }
                 return;
             }
+
+            // If it is not ACK, nor RESPONSE, then something went wrong!
+            listener.invokeResponseErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
         } catch (MALException ex) {
             // nothing we can do with this
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,

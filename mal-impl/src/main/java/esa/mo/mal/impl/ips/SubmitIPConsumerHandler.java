@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class SubmitIPConsumerHandler extends IPConsumerHandler {
 
-    protected boolean receivedInitialStage = false;
+    protected boolean receivedAck = false;
     protected final int interactionType;
     protected final int interactionStage;
 
@@ -75,34 +75,30 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
 
     @Override
     public synchronized void handleStage(final MALMessage msg) throws MALInteractionException {
-        if (!receivedInitialStage) {
+        if (!receivedAck) {
             if ((interactionType == msg.getHeader().getInteractionType().getOrdinal())
                     && checkStage(msg.getHeader().getInteractionStage().getValue())) {
-                receivedInitialStage = true;
+                receivedAck = true;
             } else {
                 logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
                         msg.getHeader().getInteractionStage().getValue());
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-        }
-
-        if (receivedInitialStage) {
-            try {
-                if (isSynchronous) {
-                    responseHolder.signalResponse(false, msg);
-                } else {
-                    informListener(msg);
-                }
-            } catch (MALException ex) {
-                // nothing we can do with this
-                MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Exception thrown handling stage {0}", ex);
-            }
-        } else {
-            logUnexpectedTransitionError(interactionType, interactionStage);
             throw new MALInteractionException(new MOErrorException(
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+        }
+
+        try {
+            if (isSynchronous) {
+                responseHolder.signalResponse(false, msg);
+            } else {
+                informListener(msg);
+            }
+        } catch (MALException ex) {
+            // nothing we can do with this
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                    "Exception thrown handling stage", ex);
         }
     }
 
@@ -118,14 +114,14 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Error received from consumer error handler in response to a provider error! {0}", ex);
+                        "Error received from consumer error handler in response to a provider error!", ex);
             }
         }
     }
 
     @Override
     public synchronized boolean finished() {
-        return receivedInitialStage;
+        return receivedAck;
     }
 
     protected boolean checkStage(final int stage) {

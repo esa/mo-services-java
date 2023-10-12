@@ -36,17 +36,19 @@ public interface MALInteractionListener {
     /**
      * Receives a SUBMIT ACK message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
      */
-    void submitAckReceived(MALMessageHeader header, Map qosProperties) 
+    void submitAckReceived(MALMessageHeader header, Map qosProperties)
             throws MALException;
 
     /**
      * Receives a SUBMIT ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -57,7 +59,8 @@ public interface MALInteractionListener {
     /**
      * Receives a REQUEST RESPONSE message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -68,7 +71,8 @@ public interface MALInteractionListener {
     /**
      * Receives a REQUEST ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -79,7 +83,8 @@ public interface MALInteractionListener {
     /**
      * Receives a INVOKE ACK message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -90,7 +95,8 @@ public interface MALInteractionListener {
     /**
      * Receives a INVOKE ACK ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -101,7 +107,8 @@ public interface MALInteractionListener {
     /**
      * Receives a INVOKE RESPONSE message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -112,7 +119,8 @@ public interface MALInteractionListener {
     /**
      * Receives a INVOKE RESPONSE ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -123,7 +131,8 @@ public interface MALInteractionListener {
     /**
      * Receives a PROGRESS ACK message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -134,7 +143,8 @@ public interface MALInteractionListener {
     /**
      * Receives a PROGRESS ACK ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -145,7 +155,8 @@ public interface MALInteractionListener {
     /**
      * Receives a PROGRESS UPDATE message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -156,7 +167,8 @@ public interface MALInteractionListener {
     /**
      * Receives a PROGRESS UPDATE ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -167,7 +179,8 @@ public interface MALInteractionListener {
     /**
      * Receives a PROGRESS RESPONSE message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -178,7 +191,8 @@ public interface MALInteractionListener {
     /**
      * Receives a PROGRESS RESPONSE ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -189,7 +203,8 @@ public interface MALInteractionListener {
     /**
      * Receives a REGISTER ACK message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
      */
@@ -199,7 +214,8 @@ public interface MALInteractionListener {
     /**
      * Receives a REGISTER ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -210,7 +226,8 @@ public interface MALInteractionListener {
     /**
      * Receives a NOTIFY message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -221,7 +238,8 @@ public interface MALInteractionListener {
     /**
      * Receives a NOTIFY ERROR message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param body The body of the message.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
@@ -232,7 +250,8 @@ public interface MALInteractionListener {
     /**
      * Receives a DEREGISTER ACK message.
      *
-     * @param header The header of the message.
+     * @param header The header of the message as exchanged between the provider
+     * and the consumer.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
      */

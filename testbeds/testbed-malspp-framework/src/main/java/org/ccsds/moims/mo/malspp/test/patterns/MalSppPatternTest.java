@@ -195,7 +195,9 @@ public class MalSppPatternTest extends PatternTest {
                 HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                session, sessionName,
+                session,
+                sessionName,
+                null,
                 new IPTestTransitionList(),
                 new Time(System.currentTimeMillis()));
 

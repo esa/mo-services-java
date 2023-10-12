@@ -61,7 +61,6 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
             final UInteger priority,
             final NamedValueList supplements) throws MALException {
         return new MALConsumerImpl(impl,
-                this,
                 localName,
                 uriTo,
                 brokerUri,
@@ -93,7 +92,6 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
             final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
         return new MALConsumerImpl(impl,
-                this,
                 endPoint,
                 uriTo,
                 brokerUri,

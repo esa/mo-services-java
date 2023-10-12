@@ -270,15 +270,6 @@ public class MALMessageHeader {
     }
 
     /**
-     * Sets the field isError.
-     *
-     * @param isErrorMessage The new value to set.
-     */
-    public void setIsErrorMessage(final Boolean isErrorMessage) {
-        this.isErrorMessage = isErrorMessage;
-    }
-
-    /**
      * Returns the field supplements.
      *
      * @return the field supplements.
