@@ -224,21 +224,16 @@ public class ConcurrentMessageSender {
                 OutgoingMessageHolder messageHolder = null;
                 try {
                     messageHolder = outgoingQueue.take();
-
                     messageSender.sendEncodedMessage(messageHolder);
 
                     //send back reply that the message was sent succesfully
                     messageHolder.setResult(Boolean.TRUE);
                 } catch (IOException e) {
-                    LOGGER.log(Level.WARNING,
-                            "Cannot send message to destination: {0} informing transport",
-                            uriTo);
-                    LOGGER.log(Level.FINE,
-                            "Cannot send message to destination: {0} informing transport",
-                            e);
+                    LOGGER.log(Level.WARNING, "(1) Cannot send message to destination: "
+                            + uriTo + " informing transport!", e);
 
                     //send back reply that the message was not sent successfully
-                    if (null != messageHolder) {
+                    if (messageHolder != null) {
                         messageHolder.setResult(Boolean.FALSE);
                     }
 

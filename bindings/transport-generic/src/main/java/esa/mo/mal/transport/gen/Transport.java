@@ -385,8 +385,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param decoder The class responsible for decoding the message from the
      * incoming connection
      */
-    public void receive(final ReceptionHandler receptionHandler,
-            final GENIncomingMessageDecoder decoder) {
+    public void receive(ReceptionHandler receptionHandler, GENIncomingMessageDecoder decoder) {
         decoderExecutor.submit(new IncomingMessageReceiver(this, receptionHandler, decoder));
     }
 
@@ -481,7 +480,7 @@ public abstract class Transport<I, O> implements MALTransport {
     public void closeConnection(final String uriTo, final ReceptionHandler receptionHandler) {
         String localUriTo = uriTo;
         // remove all associations with this target URI
-        if ((null == localUriTo) && (null != receptionHandler)) {
+        if ((localUriTo == null) && (receptionHandler != null)) {
             localUriTo = receptionHandler.getRemoteURI();
         }
 
@@ -520,7 +519,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param receptionHandler The reception handler to pass them to.
      */
     public void communicationError(String uriTo, ReceptionHandler receptionHandler) {
-        LOGGER.log(Level.WARNING, "Communication Error with uri: {0} ", uriTo);
+        LOGGER.log(Level.WARNING, "Communication Error with uri: {0}", uriTo);
         closeConnection(uriTo, receptionHandler);
     }
 

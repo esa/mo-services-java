@@ -63,7 +63,7 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
 
     @Override
     public MALBroker createBroker(final MALBrokerHandler handler) throws MALException {
-        return new MALBrokerImpl(handler);
+        return new MALBrokerImpl((MALBrokerHandlerImpl) handler);
     }
 
     @Override
@@ -157,6 +157,10 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
 
     @Override
     public void close() throws MALException {
+        for (MALBrokerBindingImpl broker : brokerBindingMap.values()) {
+            broker.close();
+        }
+
         brokerBindingMap.clear();
     }
 }

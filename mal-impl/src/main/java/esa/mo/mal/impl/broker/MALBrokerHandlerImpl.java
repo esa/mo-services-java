@@ -146,7 +146,7 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
                         msgBody.getUpdateObjects());
             } catch (MALTransmitErrorException ex) {
                 MALBrokerImpl.LOGGER.log(Level.WARNING,
-                        "The Broker was unable to send a NOTIFY message to URI: {0}",
+                        "The Broker was unable to send the NOTIFY message:\n{0}",
                         msgBody.toString());
                 handleConsumerCommunicationError(brokerKey, uriTo);
             }

@@ -429,19 +429,19 @@ public class MALSender {
             final Long transactionId,
             final MALInteractionListener listener)
             throws IllegalArgumentException, MALException, MALInteractionException {
-        if (null == op) {
-            throw new IllegalArgumentException("MALOperation argument of continueInteraction must not be null");
+        if (op == null) {
+            throw new IllegalArgumentException("op argument of continueInteraction must not be null");
         }
-        if (null == lastInteractionStage) {
+        if (lastInteractionStage == null) {
             throw new IllegalArgumentException("lastInteractionStage argument of continueInteraction must not be null");
         }
-        if (null == initiationTimestamp) {
+        if (initiationTimestamp == null) {
             throw new IllegalArgumentException("initiationTimestamp argument of continueInteraction must not be null");
         }
-        if (null == transactionId) {
+        if (transactionId == null) {
             throw new IllegalArgumentException("transactionId argument of continueInteraction must not be null");
         }
-        if (null == listener) {
+        if (listener == null) {
             throw new IllegalArgumentException("listener argument of continueInteraction must not be null");
         }
 

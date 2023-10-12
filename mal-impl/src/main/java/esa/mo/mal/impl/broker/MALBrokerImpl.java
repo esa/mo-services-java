@@ -40,14 +40,14 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
      * Logger
      */
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.impl.broker");
-    private final MALBrokerHandler handler;
+    private final MALBrokerHandlerImpl handler;
     private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
 
     MALBrokerImpl() throws MALException {
         this.handler = createBrokerHandler();
     }
 
-    MALBrokerImpl(MALBrokerHandler handler) throws MALException {
+    MALBrokerImpl(MALBrokerHandlerImpl handler) throws MALException {
         this.handler = handler;
     }
 
@@ -113,6 +113,6 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
 
     @Override
     public void close() throws MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        handler.close();
     }
 }

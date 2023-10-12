@@ -24,6 +24,7 @@ import java.io.IOException;
 
 /**
  * Interface used to map to the low level transport specific send.
+ * @param <O> The data type for the output.
  */
 public interface MessageSender<O> {
 

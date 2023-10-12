@@ -156,15 +156,6 @@ public abstract class ServiceComponentImpl implements MALCloseable {
     }
 
     /**
-     * Returns the interaction handler for messages received by this component.
-     *
-     * @return the interaction handler.
-     */
-    public MALInteractionHandler getHandler() {
-        return handler;
-    }
-
-    /**
      * Returns the Endpoint for sending messages from this component.
      *
      * @return the Endpoint.

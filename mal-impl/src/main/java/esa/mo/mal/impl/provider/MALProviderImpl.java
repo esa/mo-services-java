@@ -108,7 +108,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
-            final Boolean isPublisher,
+            final Boolean withPubSub,
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
         super(
@@ -122,7 +122,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
                 defaultQoSProperties,
                 handler);
 
-        this.withPubSub = isPublisher;
+        this.withPubSub = withPubSub;
         this.sharedBrokerUri = sharedBrokerUri;
 
         if (this.withPubSub) {

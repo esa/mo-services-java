@@ -214,7 +214,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
         protocol = getProtocol();
         brokerManager = defaultMal.createBrokerManager();
 
-        HashMap<Object, Object> tmProviderProps = new HashMap<Object, Object>();
+        HashMap<Object, Object> tmProviderProps = new HashMap<>();
         tmProviderProps.put(TestHelper.IS_TC_PACKET_PROPERTY, Boolean.FALSE);
         tmProviderProps.put(TestHelper.APID_QUALIFIER_PROPERTY,
                 TM_REMOTE_APID_QUALIFIER);
