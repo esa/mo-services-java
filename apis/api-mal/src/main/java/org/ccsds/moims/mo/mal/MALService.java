@@ -153,6 +153,6 @@ public class MALService {
      * @return The found operation or null.
      */
     public MALOperation getOperationByNumber(final UShort opNumber) {
-        return (MALOperation) operationsByNumber.get(opNumber.getValue());
+        return operationsByNumber.get(opNumber.getValue());
     }
 }

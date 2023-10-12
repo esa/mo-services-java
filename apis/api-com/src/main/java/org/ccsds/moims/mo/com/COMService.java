@@ -38,7 +38,6 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 public class COMService extends MALService {
 
     private final Map<Integer, COMObject> objectsByNumber = new HashMap<>();
-    private final Map<String, COMObject> objectsByName = new HashMap<>();
 
     public COMService(final ServiceKey serviceKey, final Identifier serviceName, final ArrayList<MALOperation> operations) {
         super(serviceKey, serviceName, operations);
@@ -57,7 +56,6 @@ public class COMService extends MALService {
     @Proposed
     public void addCOMObject(COMObject object) throws java.lang.IllegalArgumentException {
         objectsByNumber.put(object.getObjectType().getNumber().getValue(), object);
-        objectsByName.put(object.getObjectName().getValue(), object);
     }
 
     /**
@@ -71,21 +69,11 @@ public class COMService extends MALService {
     }
 
     /**
-     * Return an object identified by its name.
-     *
-     * @param opName The name of the object.
-     * @return The found operation or null.
-     */
-    public COMObject getObjectByName(final Identifier opName) {
-        return objectsByName.get(opName.getValue());
-    }
-
-    /**
      * Returns the set of objects.
      *
      * @return The set of objects or an empty array if none defined.
      */
     public COMObject[] getObjects() {
-        return (COMObject[]) Arrays.asList(objectsByName.values()).toArray();
+        return (COMObject[]) Arrays.asList(objectsByNumber.values()).toArray();
     }
 }
