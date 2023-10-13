@@ -43,11 +43,19 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
     private final MALBrokerHandlerImpl handler;
     private final List<MALBrokerBindingImpl> bindings = new LinkedList<>();
 
-    MALBrokerImpl() throws MALException {
+    /**
+     * Constructor
+     */
+    MALBrokerImpl() {
         this.handler = createBrokerHandler();
     }
 
-    MALBrokerImpl(MALBrokerHandlerImpl handler) throws MALException {
+    /**
+     * Constructor
+     *
+     * @param handler MAL broker handler
+     */
+    MALBrokerImpl(MALBrokerHandlerImpl handler) {
         this.handler = handler;
     }
 

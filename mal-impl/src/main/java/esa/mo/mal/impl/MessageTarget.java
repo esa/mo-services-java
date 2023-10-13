@@ -77,6 +77,16 @@ public final class MessageTarget {
         return endpoint;
     }
 
+    /**
+     * Creates a MAL Message
+     *
+     * @param operation         The MAL Operation
+     * @param transactionId     Transaction ID
+     * @param interactionStage  Interaction Stage
+     * @param body              The MAL Message Body
+     * @return                  The MAL Message
+     * @throws MALException     When something goes wrong
+     */
     public MALMessage createMessage(final MALOperation operation,
             final Long transactionId,
             final UOctet interactionStage,

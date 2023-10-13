@@ -46,6 +46,24 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
     private final MessageTarget messageTarget;
     private MALTransmitErrorListener transmissionListener;
 
+    /**
+     * Constructor.
+     * @param impl MAL Context implementation.
+     * @param localName Local name.
+     * @param uriTo Receiver URI.
+     * @param brokerUri Broker URI.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID.
+     * @param domain Domain.
+     * @param networkZone Network zone.
+     * @param sessionType Session type.
+     * @param sessionName Session name.
+     * @param qosLevel QoS level.
+     * @param qosProps QoS Properties.
+     * @param priority Priority.
+     * @param supplements MAL Supplements.
+     * @throws MALException on error.
+     */
     MALConsumerImpl(final MALContextImpl impl,
             final String localName,
             final URI uriTo,
@@ -85,6 +103,24 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
         ep.startMessageDelivery();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param impl MAL Context Implementation.
+     * @param endPoint MAL Endpoint
+     * @param uriTo Receiver URI.
+     * @param brokerUri Broker URI.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID
+     * @param domain Domain.
+     * @param networkZone Network zone.
+     * @param sessionType Session Type.
+     * @param sessionName Session Name.
+     * @param qosLevel QoS level.
+     * @param qosProps QoS properties.
+     * @param priority Priority.
+     * @throws MALException on error
+     */
     MALConsumerImpl(final MALContextImpl impl,
             final MALEndpoint endPoint,
             final URI uriTo,

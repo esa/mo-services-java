@@ -41,6 +41,12 @@ public class InteractionPubSubMap {
     private final Map<String, Map<String, MALInteractionListener>> notifyListenersMap = new HashMap<>();
     private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<>();
 
+    /**
+     * Registers a publish listener.
+     *
+     * @param uriFrom Publisher URI.
+     * @param listener The MAL publish interaction listener.
+     */
     public void registerPublishListener(final String uriFrom, final MALPublishInteractionListener listener) {
         synchronized (publisherMap) {
             publisherMap.put(uriFrom, listener);
@@ -62,6 +68,9 @@ public class InteractionPubSubMap {
         return list;
     }
 
+    /**
+     * Logs all publish listeners.
+     */
     public void listPublishListeners() {
         StringBuilder str = new StringBuilder();
         str.append("listPublishListeners()\n");
@@ -90,6 +99,12 @@ public class InteractionPubSubMap {
         MALContextFactoryImpl.LOGGER.info(str.toString());
     }
 
+    /**
+     * Returns the MAL publish interaction listener and removes it from the publisher list.
+     *
+     * @param uri The MAL publish interaction listener URI.
+     * @return The MAL publish interaction listener.
+     */
     public MALPublishInteractionListener getPublishListenerAndRemove(final URI uri) {
         final String id = uri.getValue();
         MALPublishInteractionListener list;
@@ -105,6 +120,13 @@ public class InteractionPubSubMap {
         return list;
     }
 
+    /**
+     * Registers a notify listener.
+     *
+     * @param uri   The URI.
+     * @param subscription  The subscription.
+     * @param list The MAL interaction listeners.
+     */
     public void registerNotifyListener(final String uri,
             final Subscription subscription, final MALInteractionListener list) {
         final String subId = subscription.getSubscriptionId().getValue();
@@ -151,6 +173,12 @@ public class InteractionPubSubMap {
         return null;
     }
 
+    /**
+     * Returns a MAP representation of the notified listeners and removes them.
+     *
+     * @param uri The URI.
+     * @return The notified listeners.
+     */
     public Map<String, MALInteractionListener> getNotifyListenersAndRemove(final String uri) {
         synchronized (notifyMap) {
             final Map<String, MALInteractionListener> listeners = notifyListenersMap.get(uri);
@@ -169,6 +197,12 @@ public class InteractionPubSubMap {
         }
     }
 
+    /**
+     * Removes the notified listeners.
+     *
+     * @param uri    The URI.
+     * @param unsubscriptions  Notified listeners to unsubscribe.
+     */
     public void deregisterNotifyListener(final String uri, final IdentifierList unsubscriptions) {
         synchronized (notifyMap) {
             for (Identifier unsubscription : unsubscriptions) {

@@ -44,6 +44,13 @@ public abstract class IPProviderHandler implements MALInteraction {
     private final MALMessage msg;
     private MALOperation operation;
 
+    /**
+     * Constructor
+     *
+     * @param sender Used to return the messages.
+     * @param address Details of this endpoint.
+     * @param msg       The MAL message.
+     */
     public IPProviderHandler(final MALSender sender, final Address address, final MALMessage msg) {
         this.sender = sender;
         this.address = address;

@@ -42,6 +42,20 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
     private final MALBrokerImpl brokerImpl;
     private MALTransmitErrorListener listener;
 
+    /**
+     * Constructor.
+     *
+     * @param parent MAL Broker implementation.
+     * @param impl MAL Context Implementation.
+     * @param localName Local name.
+     * @param protocol Used protocol.
+     * @param authenticationId The authentication ID.
+     * @param expectedQos The expected QoS level.
+     * @param priorityLevelNumber The priority level.
+     * @param supplements MAL Supplements.
+     * @param qosProperties QoS Properties.
+     * @throws MALException If the MAL endpoint is closed.
+     */
     MALBrokerBindingImpl(final MALBrokerImpl parent,
             final MALContextImpl impl,
             final String localName,
@@ -71,6 +85,19 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 new Object[]{localName, protocol, this.localUri});
     }
 
+    /**
+     * Constructor.
+     *
+     * @param parent Broker implementation.
+     * @param impl Context implementation.
+     * @param endPoint MAL Endpoint.
+     * @param authenticationId Authentication ID.
+     * @param expectedQos Expected QoS level.
+     * @param priorityLevelNumber Priority level.
+     * @param supplements MAL Supplements.
+     * @param qosProperties QoS priorities.
+     * @throws MALException on error.
+     */
     MALBrokerBindingImpl(final MALBrokerImpl parent,
             final MALContextImpl impl,
             final MALEndpoint endPoint,
@@ -97,6 +124,9 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
                 new Object[]{localName, this.localUri});
     }
 
+    /**
+     * Adds the binding implementation to this broker.
+     */
     void init() {
         this.brokerImpl.addBinding(this);
     }

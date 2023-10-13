@@ -37,6 +37,11 @@ public class Subscriptions {
     private final ArrayList<SingleSubscription> subscriptions = new ArrayList<>();
     private final Identifier subscriptionId;
 
+    /**
+     * Constructor.
+     *
+     * @param subscriptionId Subscription id.
+     */
     public Subscriptions(final String subscriptionId) {
         this.subscriptionId = new Identifier(subscriptionId);
     }
@@ -49,6 +54,9 @@ public class Subscriptions {
         return subscriptionId;
     }
 
+    /**
+     * Logs all subscriptions.
+     */
     public void report() {
         StringBuilder str = new StringBuilder();
         str.append("    START Subscription: ").append(subscriptionId);
@@ -65,6 +73,12 @@ public class Subscriptions {
         subscriptions.add(new SingleSubscription(domain, srcHdr, filters, selectedKeys));
     }
 
+    /**
+     * Returns true if the provider's update key values match the consumer's subscription filters.
+     *
+     * @param providerUpdates Update Key Values
+     * @return  boolean match found or not.
+     */
     public boolean matchesAnySubscription(UpdateKeyValues providerUpdates) {
         return BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptions);
     }

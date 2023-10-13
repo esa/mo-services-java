@@ -47,6 +47,24 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     private final URI localBrokerUri;
     private MALTransmitErrorListener listener;
 
+    /**
+     * Constructor
+     *
+     * @param parent MAL provider manager implementation.
+     * @param impl MAL context implementation.
+     * @param localName Local Name.
+     * @param protocol Protocol.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID.
+     * @param handler MAL interaction handler.
+     * @param expectedQos Expected QoS.
+     * @param priorityLevelNumber Priority level.
+     * @param defaultQoSProperties Default QoS properties.
+     * @param withPubSub With PubSub or not.
+     * @param sharedBrokerUri Shared broker URI.
+     * @param supplements MAL Supplements.
+     * @throws MALException on error.
+     */
     MALProviderImpl(final MALProviderManagerImpl parent,
             final MALContextImpl impl,
             final String localName,
@@ -98,7 +116,22 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             this.localBrokerUri = null;
         }
     }
-
+    /**
+     * Constructor
+     *
+     * @param parent MAL provider manager implementation.
+     * @param impl MAL context implementation.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID.
+     * @param handler MAL interaction handler.
+     * @param expectedQos Expected QoS.
+     * @param priorityLevelNumber Priority level.
+     * @param defaultQoSProperties Default QoS properties.
+     * @param withPubSub With PubSub or not.
+     * @param sharedBrokerUri Shared broker URI.
+     * @param supplements MAL Supplements.
+     * @throws MALException on error.
+     */
     MALProviderImpl(final MALProviderManagerImpl parent,
             final MALContextImpl impl,
             final MALEndpoint endPoint,

@@ -29,6 +29,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Simple structure style class that holds a single notify message body.
+ *
+ * @author Cesar.Coelho
  */
 public class NotifyMessageBody {
 
@@ -65,6 +67,15 @@ public class NotifyMessageBody {
      */
     private final Object[] updateObjects;
 
+    /**
+     * Constructor.
+     *
+     * @param subscriptionId    PubSub subscription id.
+     * @param updateHeader      PubSub update headers.
+     * @param notifyList        Update objects.
+     * @param srcHdr            Source MAL message header.
+     * @param domain            PubSub domain.
+     */
     public NotifyMessageBody(Identifier subscriptionId, UpdateHeader updateHeader,
             Object[] notifyList, MALMessageHeader srcHdr, IdentifierList domain) {
         this.subscriptionId = subscriptionId;

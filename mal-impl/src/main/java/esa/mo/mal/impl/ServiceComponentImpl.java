@@ -39,18 +39,57 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
  */
 public abstract class ServiceComponentImpl implements MALCloseable {
 
+    /**
+     * The MAL message sender.
+     */
     protected final MALSender sendHandler;
+    /**
+     * The MAL message receiver.
+     */
     protected final MALReceiver receiveHandler;
+    /**
+     * The MAL provider interaction handler.
+     */
     protected final MALInteractionHandler handler;
+    /**
+     * The local name of this component
+     */
     protected final String localName;
+    /**
+     * The MAL service.
+     */
     protected final MALService service;
+    /**
+     * Expected QoS level.
+     */
     protected final QoSLevel[] expectedQos;
+    /**
+     * Number of the priority levels.
+     */
     protected final UInteger priorityLevelNumber;
+    /**
+     * The default QoS levels.
+     */
     protected final Map defaultQoSProperties;
+    /**
+     * The local URI.
+     */
     protected final URI localUri;
+    /**
+     * The MAL Transport interface.
+     */
     protected final MALTransport transport;
+    /**
+     * The MAL Endpoint interface.
+     */
     protected final MALEndpoint endpoint;
+    /**
+     * MAL Endpoint details.
+     */
     protected final Address msgAddress;
+    /**
+     * The authentication ID.
+     */
     protected Blob authenticationId;
 
     /**

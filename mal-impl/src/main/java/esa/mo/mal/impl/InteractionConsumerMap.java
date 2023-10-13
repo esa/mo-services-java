@@ -58,6 +58,15 @@ public class InteractionConsumerMap {
     // This object will be shared across. It is thread-safe, so can be static!
     private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();
 
+    /**
+     * Creates a new transaction.
+     *
+     * @param interactionType   The interaction type.
+     * @param syncOperation     Sync Operation
+     * @param listener          The MAL interaction listener
+     * @return                  The transaction id.
+     * @throws MALInteractionException When the interaction type is not supported.
+     */
     public Long createTransaction(final int interactionType, final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
         synchronized (transactions) {
@@ -109,6 +118,13 @@ public class InteractionConsumerMap {
         }
     }
 
+    /**
+     * Creates a publish-subscribe transaction
+     *
+     * @param syncOperation The sync operation.
+     * @param listener  The MAL interaction listener.
+     * @return The transaction id.
+     */
     public Long createPubSubTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
         synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
@@ -126,6 +142,16 @@ public class InteractionConsumerMap {
         }
     }
 
+    /**
+     * Continues a transaction.
+     *
+     * @param interactionType Interaction type.
+     * @param lastInteractionStage The last interaction state.
+     * @param oTransId The transaction id.
+     * @param listener The MAL interaction listener.
+     * @throws MALException When the transaction is already in use.
+     * @throws MALInteractionException When the interaction type is not supported.
+     */
     public void continueTransaction(final int interactionType,
             final UOctet lastInteractionStage, final Long oTransId,
             final MALInteractionListener listener) throws MALException, MALInteractionException {
@@ -166,6 +192,14 @@ public class InteractionConsumerMap {
         }
     }
 
+    /**
+     * Waits for a response message.
+     *
+     * @param id The transaction id.
+     * @return MAL response message.
+     * @throws MALInteractionException When something goes wrong.
+     * @throws MALException When something goes wrong.
+     */
     public MALMessage waitForResponse(final Long id) throws MALInteractionException, MALException {
         OperationResponseHolder holder = null;
 
@@ -192,6 +226,13 @@ public class InteractionConsumerMap {
         return holder.getResult(); // must have value now
     }
 
+    /**
+     * Handles a MAL stage.
+     *
+     * @param msg The MAL message.
+     * @throws MALInteractionException When the message could not be handled.
+     * @throws MALException When no handler was found for the transaction id.
+     */
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
         IPConsumerHandler handler;
@@ -222,6 +263,13 @@ public class InteractionConsumerMap {
         }
     }
 
+    /**
+     * Handles a MAL message error.
+     *
+     * @param hdr   MAL message header.
+     * @param err   MAL error exception
+     * @param qosMap    QoS level.
+     */
     public void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap) {
         final Long id = hdr.getTransactionId();
         IPConsumerHandler handler = null;

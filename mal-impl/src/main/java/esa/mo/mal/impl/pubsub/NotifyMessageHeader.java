@@ -24,6 +24,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 
 /**
+ * Simple structure style class that holds a single notify message header.
  *
  * @author Cesar.Coelho
  */

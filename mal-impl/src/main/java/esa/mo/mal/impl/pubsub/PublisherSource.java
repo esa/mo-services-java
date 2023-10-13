@@ -34,6 +34,11 @@ public final class PublisherSource {
     private final String uri;
     private IdentifierList subscriptionKeyNames;
 
+    /**
+     * Constructor.
+     *
+     * @param uri The publisher source uri.
+     */
     public PublisherSource(final String uri) {
         this.uri = uri;
     }
@@ -46,6 +51,9 @@ public final class PublisherSource {
         this.subscriptionKeyNames = subscriptionKeyNames;
     }
 
+    /**
+     * Logs the START and END providers and the subscription keys.
+     */
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Provider ( {0} )", uri);
 

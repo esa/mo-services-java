@@ -51,6 +51,15 @@ public class MALReceiver implements MALMessageListener {
     private final Map<EndPointPair, Address> providerEndpointMap = new HashMap();
     private final InteractionPubSubMap pubSubMap;
 
+    /**
+     * Constructor
+     *
+     * @param sender            Sender
+     * @param securityManager   Security manager
+     * @param imap              Interaction consumers
+     * @param psmap             Interaction PuSub map
+     * @param brokers           Brokers
+     */
     MALReceiver(final MALSender sender,
             final MALAccessControl securityManager,
             final InteractionConsumerMap imap,
@@ -239,6 +248,13 @@ public class MALReceiver implements MALMessageListener {
         }
     }
 
+    /**
+     * Adds a provider endpoint to the MAL receiver.
+     *
+     * @param localURI  Local URI
+     * @param service   Endpoint service
+     * @param address   Endpoint address
+     */
     public void addProviderEndpoint(final String localURI,
             final MALService service, final Address address) {
         final EndPointPair key = new EndPointPair(localURI, service);
@@ -250,6 +266,12 @@ public class MALReceiver implements MALMessageListener {
         }
     }
 
+    /**
+     * Removes a provider endpoint from the MAL receiver.
+     *
+     * @param localURI  Local URI
+     * @param service   Endpoint Service
+     */
     public void removeProviderEndpoint(final String localURI, final MALService service) {
         final EndPointPair key = new EndPointPair(localURI, service);
 

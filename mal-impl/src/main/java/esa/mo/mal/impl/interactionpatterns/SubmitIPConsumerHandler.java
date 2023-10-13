@@ -38,8 +38,17 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class SubmitIPConsumerHandler extends IPConsumerHandler {
 
+    /**
+     * States, if an Ack message was received.
+     */
     protected boolean receivedAck = false;
+    /**
+     * The interaction type.
+     */
     protected final int interactionType;
+    /**
+     * The interaction stage.
+     */
     protected final int interactionStage;
 
     /**
@@ -66,6 +75,14 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
         this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
+    /**
+     * Submits an IP consumer Handler.
+     *
+     * @param interactionType Interaction type.
+     * @param interactionStage Interaction stage.
+     * @param syncOperation Synchronous or not.
+     * @param responseHolder Response holder.
+     */
     protected SubmitIPConsumerHandler(final int interactionType, final int interactionStage,
             final boolean syncOperation, final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
@@ -123,10 +140,22 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
         return receivedAck;
     }
 
+    /**
+     * Checks the interaction stage.
+     *
+     * @param stage Provided stage to check against.
+     * @return True if the provides stage equals the internal interaction stage.
+     */
     protected boolean checkStage(final int stage) {
         return interactionStage == stage;
     }
 
+    /**
+     * Informs the listeners about the received message.
+     *
+     * @param msg MAL message.
+     * @throws MALException on error.
+     */
     protected void informListener(final MALMessage msg) throws MALException {
         if (msg.getHeader().getIsErrorMessage()) {
             responseHolder.getListener().submitErrorReceived(msg.getHeader(),

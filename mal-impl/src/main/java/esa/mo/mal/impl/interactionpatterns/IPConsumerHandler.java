@@ -30,24 +30,61 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
+ * Abstract class for handling a consumer state machine.
  *
  */
 public abstract class IPConsumerHandler {
 
+    /**
+     * States, if the consumer is synchronous or not.
+     */
     protected final boolean isSynchronous;
+    /**
+     * Holds the response.
+     */
     protected final OperationResponseHolder responseHolder;
 
+    /**
+     * Constructor.
+     *
+     * @param isSynchronous Synchronous or not.
+     * @param responseHolder The operation response holder.
+     */
     protected IPConsumerHandler(final boolean isSynchronous, final OperationResponseHolder responseHolder) {
         this.isSynchronous = isSynchronous;
         this.responseHolder = responseHolder;
     }
 
+    /**
+     * Handles a MAL Message
+     *
+     * @param msg The MAL message
+     * @throws MALInteractionException When something goes wrong
+     */
     public abstract void handleStage(final MALMessage msg) throws MALInteractionException;
 
+    /**
+     * Handles an {@link MOErrorException MOErrorException} that might occur.
+     *
+     * @param hdr The MAL message header
+     * @param err The MO error exception
+     * @param qosMap The QoS Level
+     */
     public abstract void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap);
 
+    /**
+     * States, if the handle operation is finished or not.
+     *
+     * @return Boolean value if the operation is finished or not.
+     */
     public abstract boolean finished();
 
+    /**
+     * Logs an unexpected transition error.
+     *
+     * @param interactionType The interaction Type
+     * @param interactionStage The interaction Stage
+     */
     protected static void logUnexpectedTransitionError(final int interactionType, final int interactionStage) {
         MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                 "Unexpected transition IP({0}) Stage({1})",

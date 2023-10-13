@@ -35,6 +35,12 @@ public final class NotifyMessage {
      */
     private final NotifyMessageBody body;
 
+    /**
+     * Constructor.
+     *
+     * @param header The message header.
+     * @param body  The message body.
+     */
     public NotifyMessage(NotifyMessageHeader header, NotifyMessageBody body) {
         this.header = header;
         this.body = body;

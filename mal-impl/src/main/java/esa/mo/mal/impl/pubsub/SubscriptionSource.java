@@ -81,10 +81,18 @@ public class SubscriptionSource {
         commsErrorCount = 0;
     }
 
+    /**
+     * States if this consumer source is active or not.
+     *
+     * @return boolean value if the source is required or not.
+     */
     public boolean active() {
         return !required.isEmpty();
     }
 
+    /**
+     * Logs the START and END consumer and the required subscriptions.
+     */
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signatureURI);
         MALBrokerImpl.LOGGER.log(Level.FINE, "   Required: {0}", required.size());
@@ -98,6 +106,12 @@ public class SubscriptionSource {
         return signatureURI;
     }
 
+    /**
+     * Adds a subscription to the consumer.
+     *
+     * @param srcHdr    Source MAL message header.
+     * @param subscription  Subscription.
+     */
     public void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription) {
         final String subId = subscription.getSubscriptionId().getValue();
         Subscriptions sub = subs.get(subId);
@@ -146,6 +160,11 @@ public class SubscriptionSource {
         return notifyMsgs;
     }
 
+    /**
+     * Removes a subscription from the consumer.
+     *
+     * @param subscriptionIds The subscription IDs
+     */
     public void removeSubscriptions(final IdentifierList subscriptionIds) {
         if (null != subscriptionIds) {
             for (Identifier id : subscriptionIds) {

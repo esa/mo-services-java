@@ -47,10 +47,20 @@ public class OperationResponseHolder {
     private MALMessage result = null;
     private MOErrorException errorBody;
 
+    /**
+     * Constructor.
+     *
+     * @param listener The MAL interaction listener
+     */
     public OperationResponseHolder(MALInteractionListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param listener The MAL publish interaction listener
+     */
     public OperationResponseHolder(MALPublishInteractionListener listener) {
         this.listener = new InteractionListenerPublishAdapter(listener);
     }
@@ -59,6 +69,9 @@ public class OperationResponseHolder {
         return listener;
     }
 
+    /**
+     * Waits until a response signal is available.
+     */
     public void waitForResponseSignal() {
         // wait for the response signal
         synchronized (signalReceived) {
@@ -73,6 +86,12 @@ public class OperationResponseHolder {
         }
     }
 
+    /**
+     * Responds to a consumer.
+     *
+     * @param isError boolean value for error status.
+     * @param msg   MAL message
+     */
     public void signalResponse(final boolean isError, final MALMessage msg) {
         if (isError) {
             try {
@@ -92,6 +111,11 @@ public class OperationResponseHolder {
         }
     }
 
+    /**
+     * Responds an error to a consumer.
+     *
+     * @param errorBody MAL error message body.
+     */
     public void signalError(final MOErrorException errorBody) {
         this.isError = true;
         this.errorBody = errorBody;

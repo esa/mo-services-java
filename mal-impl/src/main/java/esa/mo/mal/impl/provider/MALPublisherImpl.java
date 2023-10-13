@@ -51,6 +51,14 @@ public class MALPublisherImpl implements MALPublisher {
     private final MALPubSubOperation operation;
     private final Map remotePublisherQosProps;
 
+    /**
+     * Constructor.
+     *
+     * @param provider  MAL provider.
+     * @param handler   MAL sender.
+     * @param operation MAL PubSub operation.
+     * @param remotePublisherQosProps   QoS Properties of the remote publisher.
+     */
     public MALPublisherImpl(final MALProviderImpl provider, final MALSender handler,
             final MALPubSubOperation operation, final Map remotePublisherQosProps) {
         this.provider = provider;

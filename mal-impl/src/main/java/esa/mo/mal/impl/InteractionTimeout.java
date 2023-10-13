@@ -54,6 +54,9 @@ public class InteractionTimeout {
     // The timeout in milliseconds
     private long timeout = 0;
 
+    /**
+     * Constructor.
+     */
     public InteractionTimeout() {
         // For testing purposes, one can use:
         // System.setProperty(PROP_INTERACTION_TIMEOUT, "1000"); // in ms
@@ -91,6 +94,11 @@ public class InteractionTimeout {
         initialized = true;
     }
 
+    /**
+     * Inserts a consumer handler into the message queue.
+     *
+     * @param handler The IP consumer handler.
+     */
     public synchronized void insertInQueue(IPConsumerHandler handler) {
         if (!initialized) {
             Logger.getLogger(InteractionTimeout.class.getName()).log(

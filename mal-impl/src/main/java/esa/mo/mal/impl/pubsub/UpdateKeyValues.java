@@ -130,6 +130,13 @@ public final class UpdateKeyValues {
         return operation;
     }
 
+    /**
+     * Generates notify key values
+     *
+     * @param selectedKeys   List with selected key objects.
+     * @return  The key value list.
+     * @throws MALException When a selected key was not found.
+     */
     public NullableAttributeList generateNotifyKeyValues(IdentifierList selectedKeys) throws MALException {
         NullableAttributeList newKeyValues = new NullableAttributeList();
 
