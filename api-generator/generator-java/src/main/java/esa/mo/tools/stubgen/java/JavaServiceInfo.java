@@ -187,14 +187,14 @@ public class JavaServiceInfo {
 
             SupportedFeatures features = eService.getFeatures();
 
-            if (null != features) {
+            if (features != null) {
                 if (null != features.getObjects()) {
                     for (ModelObjectType obj : features.getObjects().getObject()) {
                         createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj, false);
                     }
                 }
 
-                if (null != features.getEvents()) {
+                if (features.getEvents() != null) {
                     for (ModelObjectType obj : features.getEvents().getEvent()) {
                         createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj, true);
                     }
@@ -202,17 +202,26 @@ public class JavaServiceInfo {
             }
         }
 
+        boolean hasCOMObjects = !comObjectCalls.isEmpty();
+
+        if (hasCOMObjects) {
+            StringBuilder buf = new StringBuilder();
+            for (String objectCall : comObjectCalls) {
+                buf.append("\n        ").append(objectCall).append("_OBJECT,");
+            }
+
+            CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, "COM_OBJECTS",
+                    TypeUtils.createTypeReference(StdStrings.COM, null, "COMObject", false),
+                    false, true, "Object instance.");
+            file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, objectInstVar,
+                    false, true, buf.toString(), false);
+        }
+
         // Constructor - shouldn't it be started with the constructor method?
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
                 null, null, null, null, null);
-        method.addLine("super(SERVICE_KEY, " + serviceVar + "_SERVICE_NAME" + ", OPERATIONS)");
-
-        if (!comObjectCalls.isEmpty()) {
-            for (String objectCall : comObjectCalls) {
-                method.addLine(generator.createMethodCall("this.addCOMObject(" + objectCall + "_OBJECT)"));
-            }
-        }
-
+        String ending = hasCOMObjects ? ", COM_OBJECTS)" : ")";
+        method.addLine("super(SERVICE_KEY, " + serviceVar + "_SERVICE_NAME" + ", OPERATIONS" + ending);
         method.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();

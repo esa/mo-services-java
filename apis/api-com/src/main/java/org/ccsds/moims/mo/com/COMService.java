@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.com;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,31 +30,26 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
- * This class is deprecated. It is only here for backward compatibility with
- * the old MAL.
+ * This class is deprecated. It is only here for backward compatibility with the
+ * old MAL.
  */
 @Deprecated
 public class COMService extends MALService {
 
     private final Map<Integer, COMObject> objectsByNumber = new HashMap<>();
 
-    public COMService(final ServiceKey serviceKey, final Identifier serviceName, final ArrayList<MALOperation> operations) {
-        super(serviceKey, serviceName, operations);
+    public COMService(final ServiceKey serviceKey, final Identifier serviceName,
+            final MALOperation[] operations) {
+        this(serviceKey, serviceName, operations, new COMObject[0]);
     }
 
-    public COMService(final ServiceKey serviceKey, final Identifier serviceName, final MALOperation[] operations) {
+    public COMService(final ServiceKey serviceKey, final Identifier serviceName,
+            final MALOperation[] operations, final COMObject[] comObjects) {
         super(serviceKey, serviceName, operations);
-    }
 
-    /**
-     * Adds a COM object to this service specification.
-     *
-     * @param object The new object to add.
-     * @throws java.lang.IllegalArgumentException If the argument is null.
-     */
-    @Proposed
-    public void addCOMObject(COMObject object) throws java.lang.IllegalArgumentException {
-        objectsByNumber.put(object.getObjectType().getNumber().getValue(), object);
+        for (COMObject comObject : comObjects) {
+            objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);
+        }
     }
 
     /**

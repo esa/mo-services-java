@@ -70,14 +70,14 @@ public class Endpoint implements MALEndpoint {
     @Override
     public void startMessageDelivery() throws MALException {
         Transport.LOGGER.log(Level.FINE,
-                "GENEndpoint ({0}) Activating message delivery", localName);
+                "Endpoint ({0}) Activating message delivery", localName);
         active = true;
     }
 
     @Override
     public void stopMessageDelivery() throws MALException {
         Transport.LOGGER.log(Level.FINE,
-                "GENEndpoint ({0}) Deactivating message delivery", localName);
+                "Endpoint ({0}) Deactivating message delivery", localName);
         active = false;
     }
 

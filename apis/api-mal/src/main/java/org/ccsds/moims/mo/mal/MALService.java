@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -40,31 +39,6 @@ public class MALService {
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final ServiceKey serviceKey;
     private final Identifier serviceName;
-
-    /**
-     * Constructs a MALService object.
-     *
-     * @param serviceKey The key of the service.
-     * @param serviceName The name of the service.
-     * @param operations The operations of the service.
-     * @throws java.lang.IllegalArgumentException If any arguments are null.
-     */
-    public MALService(final ServiceKey serviceKey, final Identifier serviceName,
-            final ArrayList<MALOperation> operations) throws java.lang.IllegalArgumentException {
-        if (serviceKey == null) {
-            throw new IllegalArgumentException("Number argument must not be NULL");
-        }
-        if (operations == null) {
-            throw new IllegalArgumentException("Name argument must not be NULL");
-        }
-
-        this.serviceKey = serviceKey;
-        this.serviceName = serviceName;
-
-        for (MALOperation operation : operations) {
-            this.addOperation(operation);
-        }
-    }
 
     /**
      * Constructs a MALService object.
