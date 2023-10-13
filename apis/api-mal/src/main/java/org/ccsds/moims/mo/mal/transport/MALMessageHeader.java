@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.transport;
 
+import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
@@ -30,6 +31,7 @@ import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.NotFoundException;
@@ -43,7 +45,6 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * The MALMessageHeader structure is used to hold the header fields that exist
@@ -400,18 +401,33 @@ public class MALMessageHeader {
             return malOperation;
         }
 
-        MALOperation op = MALContextFactory
-                .lookupArea(this.getServiceArea(), this.getServiceVersion())
-                .getServiceByNumber(this.getService())
-                .getOperationByNumber(this.getOperation());
+        MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getServiceVersion());
+
+        if (malArea == null) {
+            throw new NotFoundException(new MOErrorException(
+                    MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER,
+                    "Operation for unknown area/version received ("
+                    + this.getServiceArea() + ", " + this.getServiceVersion() + ")"));
+        }
+
+        MALService malService = malArea.getServiceByNumber(this.getService());
+
+        if (malService == null) {
+            throw new NotFoundException(new MOErrorException(
+                    MALHelper.UNSUPPORTED_SERVICE_ERROR_NUMBER,
+                    "Service for unknown area/version/service received ("
+                    + this.getServiceArea() + ", " + this.getServiceVersion()
+                    + ", " + this.getService() + ")"));
+        }
+
+        MALOperation op = malService.getOperationByNumber(this.getOperation());
 
         if (op == null) {
             throw new NotFoundException(new MOErrorException(
                     MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER,
-                    new Union(this.getServiceArea()
-                            + "::" + this.getService()
-                            + "::" + this.getOperation()))
-            );
+                    "Operation for unknown area/version/service/op received ("
+                    + this.getServiceArea() + ", " + this.getServiceVersion() + ", "
+                    + this.getService() + ", " + this.getOperation() + ")"));
         }
 
         malOperation = op;
