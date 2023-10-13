@@ -109,8 +109,7 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
             responseHolder.signalError(error);
         } else {
             try {
-                responseHolder.getListener().submitErrorReceived(hdr,
-                        new DummyErrorBody(error), qosMap);
+                responseHolder.getListener().submitErrorReceived(hdr, error, qosMap);
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,

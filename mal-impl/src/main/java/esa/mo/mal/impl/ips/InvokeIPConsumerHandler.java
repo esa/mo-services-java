@@ -24,6 +24,7 @@ import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -75,7 +76,10 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
                     }
                 } else {
                     finished = true;
-                    listener.invokeAckErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
+                    MOErrorException incorrectStateError = new MOErrorException(
+                            MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+                            "The received message is not an INVOKE_ACK_STAGE!");
+                    listener.invokeAckErrorReceived(header, incorrectStateError, qos);
                 }
                 return;
             }
@@ -93,7 +97,10 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
             }
 
             // If it is not ACK, nor RESPONSE, then something went wrong!
-            listener.invokeResponseErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
+            MOErrorException incorrectStateError = new MOErrorException(
+                    MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+                    "The received message is not an INVOKE_ACK_STAGE, nor INVOKE_RESPONSE_STAGE!");
+            listener.invokeResponseErrorReceived(header, incorrectStateError, qos);
         } catch (MALException ex) {
             // nothing we can do with this
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
@@ -109,9 +116,9 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
         } else {
             try {
                 if (!receivedAck) {
-                    responseHolder.getListener().invokeAckErrorReceived(hdr, new DummyErrorBody(error), qosMap);
+                    responseHolder.getListener().invokeAckErrorReceived(hdr, error, qosMap);
                 } else {
-                    responseHolder.getListener().invokeResponseErrorReceived(hdr, new DummyErrorBody(error), qosMap);
+                    responseHolder.getListener().invokeResponseErrorReceived(hdr, error, qosMap);
                 }
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it

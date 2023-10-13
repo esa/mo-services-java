@@ -21,10 +21,10 @@
 package esa.mo.mal.impl.ips;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
-import static esa.mo.mal.impl.ips.IPConsumerHandler.ERROR_BODY_INCORRECT_STATE;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -76,7 +76,10 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
                     }
                 } else {
                     finished = true;
-                    listener.progressAckErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
+                    MOErrorException incorrectStateError = new MOErrorException(
+                            MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+                            "The received message is not a PROGRESS_ACK_STAGE!");
+                    listener.progressAckErrorReceived(header, incorrectStateError, qos);
                 }
                 return;
             }
@@ -104,7 +107,10 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
             }
 
             // If it is not ACK, PROGRESS, nor RESPONSE, then something went wrong!
-            listener.progressUpdateErrorReceived(header, ERROR_BODY_INCORRECT_STATE, qos);
+            MOErrorException incorrectStateError = new MOErrorException(
+                    MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+                    "The received message is not a PROGRESS_ACK_STAGE, nor PROGRESS_UPDATE_STAGE, nor PROGRESS_RESPONSE_STAGE!");
+            listener.progressUpdateErrorReceived(header, incorrectStateError, qos);
         } catch (MALException ex) {
             // nothing we can do with this
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
@@ -120,9 +126,9 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
         } else {
             try {
                 if (!receivedAck) {
-                    responseHolder.getListener().progressAckErrorReceived(hdr, new DummyErrorBody(error), qosMap);
+                    responseHolder.getListener().progressAckErrorReceived(hdr, error, qosMap);
                 } else {
-                    responseHolder.getListener().progressResponseErrorReceived(hdr, new DummyErrorBody(error), qosMap);
+                    responseHolder.getListener().progressResponseErrorReceived(hdr, error, qosMap);
                 }
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it

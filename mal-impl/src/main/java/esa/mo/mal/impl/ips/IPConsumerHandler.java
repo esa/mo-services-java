@@ -23,7 +23,6 @@ package esa.mo.mal.impl.ips;
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -35,8 +34,6 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class IPConsumerHandler {
 
-    protected static final DummyErrorBody ERROR_BODY_INCORRECT_STATE
-            = new DummyErrorBody(new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
     protected final boolean isSynchronous;
     protected final OperationResponseHolder responseHolder;
 
