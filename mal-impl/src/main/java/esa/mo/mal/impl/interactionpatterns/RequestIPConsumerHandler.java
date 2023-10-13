@@ -18,19 +18,18 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.ips;
+package esa.mo.mal.impl.interactionpatterns;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Handles the state machine for a consumer for a PUBSUB operation.
+ * Handles the state machine for a consumer for an REQUEST operation.
  */
-public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
+public final class RequestIPConsumerHandler extends SubmitIPConsumerHandler {
 
     /**
      * Constructor.
@@ -38,9 +37,12 @@ public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public PubSubIPConsumerHandler(final boolean syncOperation,
+    public RequestIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
-        super(InteractionType._PUBSUB_INDEX, 0, syncOperation, responseHolder);
+        super(InteractionType._REQUEST_INDEX,
+                MALRequestOperation._REQUEST_RESPONSE_STAGE,
+                syncOperation,
+                responseHolder);
     }
 
     /**
@@ -48,35 +50,21 @@ public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
      *
      * @param responseHolder The response holder.
      */
-    public PubSubIPConsumerHandler(final OperationResponseHolder responseHolder) {
-        super(InteractionType._PUBSUB_INDEX, 0, false, responseHolder);
-    }
-
-    @Override
-    protected boolean checkStage(final int stage) {
-        switch (stage) {
-            case MALPubSubOperation._REGISTER_ACK_STAGE:
-            case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
-            case MALPubSubOperation._DEREGISTER_ACK_STAGE:
-            case MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE:
-                return true;
-            default:
-                return true;
-        }
+    public RequestIPConsumerHandler(final OperationResponseHolder responseHolder) {
+        super(InteractionType._REQUEST_INDEX,
+                MALRequestOperation._REQUEST_RESPONSE_STAGE,
+                false,
+                responseHolder);
     }
 
     @Override
     protected void informListener(final MALMessage msg) throws MALException {
-        MALMessageHeader header = msg.getHeader();
-
-        if (header.getIsErrorMessage()) {
-            responseHolder.getListener().registerErrorReceived(
-                    header, (MALErrorBody) msg.getBody(), msg.getQoSProperties());
-        } else if ((header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE)
-                || (header.getInteractionStage().getValue() == MALPubSubOperation._REGISTER_ACK_STAGE)) {
-            responseHolder.getListener().registerAckReceived(header, msg.getQoSProperties());
+        if (msg.getHeader().getIsErrorMessage()) {
+            responseHolder.getListener().requestErrorReceived(
+                    msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
         } else {
-            responseHolder.getListener().deregisterAckReceived(header, msg.getQoSProperties());
+            responseHolder.getListener().requestResponseReceived(
+                    msg.getHeader(), msg.getBody(), msg.getQoSProperties());
         }
     }
 }

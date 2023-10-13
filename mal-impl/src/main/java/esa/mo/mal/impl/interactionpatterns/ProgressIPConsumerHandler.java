@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.ips;
+package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
@@ -34,9 +34,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Handles the state machine for a consumer for an INVOKE operation.
+ * Handles the state machine for a consumer for a PROGRESS operation.
  */
-public final class InvokeIPConsumerHandler extends IPConsumerHandler {
+public final class ProgressIPConsumerHandler extends IPConsumerHandler {
 
     private boolean receivedAck = false;
     private boolean finished = false;
@@ -47,7 +47,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
      * @param syncOperation true if this is a isSynchronous call.
      * @param responseHolder The response holder.
      */
-    public InvokeIPConsumerHandler(final boolean syncOperation,
+    public ProgressIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
     }
@@ -55,52 +55,62 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
     @Override
     public void handleStage(final MALMessage msg) throws MALInteractionException {
         MALMessageHeader header = msg.getHeader();
+        final int interactionStage = header.getInteractionStage().getValue();
         boolean isError = header.getIsErrorMessage();
-        int interactionStage = header.getInteractionStage().getValue();
         MALInteractionListener listener = responseHolder.getListener();
         Map qos = msg.getQoSProperties();
 
         try {
             if (!receivedAck) {
-                if (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE) {
+                if (interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE) {
                     receivedAck = true;
                     if (isSynchronous) {
                         responseHolder.signalResponse(isError, msg);
                     } else {
                         if (isError) {
                             finished = true;
-                            listener.invokeAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                            listener.progressAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
                         } else {
-                            listener.invokeAckReceived(header, msg.getBody(), qos);
+                            listener.progressAckReceived(header, msg.getBody(), qos);
                         }
                     }
                 } else {
                     finished = true;
                     MOErrorException incorrectStateError = new MOErrorException(
                             MALHelper.INCORRECT_STATE_ERROR_NUMBER,
-                            "The received message is not an INVOKE_ACK_STAGE!");
-                    listener.invokeAckErrorReceived(header, incorrectStateError, qos);
+                            "The received message is not a PROGRESS_ACK_STAGE!");
+                    listener.progressAckErrorReceived(header, incorrectStateError, qos);
                 }
                 return;
             }
 
-            // If it is not the first ACK then we are done!
+            if (interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE) {
+                if (isError) {
+                    finished = true;
+                    listener.progressUpdateErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                } else {
+                    listener.progressUpdateReceived(header, msg.getBody(), qos);
+                }
+                return;
+            }
+
+            // If it is not the first ACK stage nor a PROGRESS, then we are done!
             finished = true;
 
-            if (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE) {
+            if (interactionStage == MALProgressOperation._PROGRESS_RESPONSE_STAGE) {
                 if (isError) {
-                    listener.invokeResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                    listener.progressResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
                 } else {
-                    listener.invokeResponseReceived(header, msg.getBody(), qos);
+                    listener.progressResponseReceived(header, msg.getBody(), qos);
                 }
                 return;
             }
 
-            // If it is not ACK, nor RESPONSE, then something went wrong!
+            // If it is not ACK, PROGRESS, nor RESPONSE, then something went wrong!
             MOErrorException incorrectStateError = new MOErrorException(
                     MALHelper.INCORRECT_STATE_ERROR_NUMBER,
-                    "The received message is not an INVOKE_ACK_STAGE, nor INVOKE_RESPONSE_STAGE!");
-            listener.invokeResponseErrorReceived(header, incorrectStateError, qos);
+                    "The received message is not a PROGRESS_ACK_STAGE, nor PROGRESS_UPDATE_STAGE, nor PROGRESS_RESPONSE_STAGE!");
+            listener.progressUpdateErrorReceived(header, incorrectStateError, qos);
         } catch (MALException ex) {
             // nothing we can do with this
             MALContextFactoryImpl.LOGGER.log(Level.WARNING,
@@ -116,14 +126,14 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
         } else {
             try {
                 if (!receivedAck) {
-                    responseHolder.getListener().invokeAckErrorReceived(hdr, error, qosMap);
+                    responseHolder.getListener().progressAckErrorReceived(hdr, error, qosMap);
                 } else {
-                    responseHolder.getListener().invokeResponseErrorReceived(hdr, error, qosMap);
+                    responseHolder.getListener().progressResponseErrorReceived(hdr, error, qosMap);
                 }
             } catch (MALException ex) {
                 // not a lot we can do with this at this stage apart from log it
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "Error received from consumer error handler in response to a provider error!", ex);
+                        "Error received from consumer error handler in response to a provider error! {0}", ex);
             }
         }
     }

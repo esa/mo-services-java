@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.ips.IPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.IPConsumerHandler;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -135,12 +135,9 @@ public class InteractionTimeout {
                                 + "set to: " + timeout + " ms";
 
                         try {
-                            handler.handleError(
-                                    null,
-                                    new MOErrorException(
-                                            MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
-                                            msg),
-                                    null);
+                            MOErrorException error
+                                    = new MOErrorException(MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, msg);
+                            handler.handleError(null, error, null);
                         } catch (Exception ex) {
                             // Do not allow to kill the thread
                             Logger.getLogger(InteractionTimeout.class.getName()).log(

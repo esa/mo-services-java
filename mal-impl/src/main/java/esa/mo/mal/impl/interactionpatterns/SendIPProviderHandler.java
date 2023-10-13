@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.ips;
+package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALInteractionException;

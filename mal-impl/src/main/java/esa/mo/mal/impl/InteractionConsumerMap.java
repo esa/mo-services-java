@@ -20,13 +20,13 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.ips.IPConsumerHandler;
-import esa.mo.mal.impl.ips.RequestIPConsumerHandler;
-import esa.mo.mal.impl.ips.InvokeIPConsumerHandler;
-import esa.mo.mal.impl.ips.OperationResponseHolder;
-import esa.mo.mal.impl.ips.SubmitIPConsumerHandler;
-import esa.mo.mal.impl.ips.PubSubIPConsumerHandler;
-import esa.mo.mal.impl.ips.ProgressIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.IPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.RequestIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.InvokeIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.OperationResponseHolder;
+import esa.mo.mal.impl.interactionpatterns.SubmitIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.PubSubIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.ProgressIPConsumerHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;

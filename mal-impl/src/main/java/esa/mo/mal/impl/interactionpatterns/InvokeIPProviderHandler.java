@@ -18,22 +18,25 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.impl.ips;
+package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.Address;
 import esa.mo.mal.impl.MALSender;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.provider.MALRequest;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
 /**
- * Request interaction class.
+ * Invoke interaction class.
  */
-public class RequestIPProviderHandler extends IPProviderHandler implements MALRequest {
+public class InvokeIPProviderHandler extends IPProviderHandler implements MALInvoke {
+
+    private boolean ackSent = false;
 
     /**
      * Constructor.
@@ -44,24 +47,46 @@ public class RequestIPProviderHandler extends IPProviderHandler implements MALRe
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public RequestIPProviderHandler(final MALSender sender,
+    public InvokeIPProviderHandler(final MALSender sender,
             final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }
 
     @Override
-    public MALMessage sendResponse(final Object... result) throws MALInteractionException, MALException {
-        return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, result);
+    public MALMessage sendAcknowledgement(final Object... result)
+            throws MALInteractionException, MALException {
+        ackSent = true;
+        return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, result);
     }
 
     @Override
-    public MALMessage sendResponse(final MALEncodedBody body) throws MALInteractionException, MALException {
-        return returnResponse(MALRequestOperation.REQUEST_RESPONSE_STAGE, body);
+    public MALMessage sendAcknowledgement(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        ackSent = true;
+        return returnResponse(MALInvokeOperation.INVOKE_ACK_STAGE, body);
+    }
+
+    @Override
+    public MALMessage sendResponse(final Object... result)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, result);
+    }
+
+    @Override
+    public MALMessage sendResponse(final MALEncodedBody body)
+            throws MALInteractionException, MALException {
+        return returnResponse(MALInvokeOperation.INVOKE_RESPONSE_STAGE, body);
     }
 
     @Override
     public MALMessage sendError(final MOErrorException error) throws MALException {
-        return returnError(MALRequestOperation.REQUEST_RESPONSE_STAGE, error);
+        UOctet stage = MALInvokeOperation.INVOKE_ACK_STAGE;
+
+        if (ackSent) {
+            stage = MALInvokeOperation.INVOKE_RESPONSE_STAGE;
+        }
+
+        return returnError(stage, error);
     }
 }
