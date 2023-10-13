@@ -117,7 +117,6 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
         consumers.addElement(newIPTest);
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("*")));
         Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
                 HeaderTestProcedure.DOMAIN, null, filters);
 
@@ -131,7 +130,7 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
     public boolean publish() throws Exception {
         logMessage("SubscriptionIdTestProcedure.publish()");
 
-        AttributeList att = new AttributeList(new Union("value"));
+        AttributeList att = new AttributeList(new Identifier("value"));
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
         updateHeaderList.add(new UpdateHeader(new Identifier("source"),
                 HeaderTestProcedure.DOMAIN, att.getAsNullableAttributeList()));
