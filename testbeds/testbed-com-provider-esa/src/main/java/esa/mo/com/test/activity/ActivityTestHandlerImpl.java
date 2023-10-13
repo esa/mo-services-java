@@ -299,14 +299,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getToURI();
+        Identifier uri = interaction.getMessageHeader().getTo();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()),
-                domain, keyValues.getAsNullableAttributeList());
+        UpdateHeader uh = new UpdateHeader(uri, domain, keyValues.getAsNullableAttributeList());
 
         // We can now publish the event
         monitorEventPublisher.publish(uh, objDetails, aa);
@@ -339,14 +338,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getToURI();
+        Identifier uri = interaction.getMessageHeader().getTo();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
         // Produce header
-        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()),
-                domain, keyValues.getAsNullableAttributeList());
+        UpdateHeader uh = new UpdateHeader(uri, domain, keyValues.getAsNullableAttributeList());
 
         // Produce ActivityTransferList
         ActivityExecution activityExecutionInstance = new ActivityExecution(
