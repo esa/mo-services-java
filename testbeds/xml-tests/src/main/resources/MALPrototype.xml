@@ -1836,12 +1836,12 @@
             </smc:composite>
         </smc:dataTypes>
         <smc:errors>
-            <smc:error name="TEST_ERROR" number="0"
-                       comment="Fake error for testing." />
             <smc:error name="DATA_ERROR" number="1"
                        comment="Data interoperability error." />
             <smc:error name="TEST_OBJECT_EXISTS" number="2"
                        comment="MO Object already exists." />
+            <smc:error name="TEST_ERROR" number="3"
+                       comment="Fake error for testing." />
         </smc:errors>
     </smc:area>
     <smc:area name="MALPrototype2" number="101" version="1">
