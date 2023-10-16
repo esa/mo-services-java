@@ -50,7 +50,11 @@ public class MOErrorException extends Exception implements Serializable, MALErro
         super();
 
         if (errorNumber == null) {
-            throw new IllegalArgumentException("Number argument must not be NULL");
+            throw new IllegalArgumentException("The errorNumber argument cannot not be NULL!");
+        }
+
+        if (errorNumber.getValue() == 0) {
+            throw new IllegalArgumentException("The errorNumber argument cannot be zero!");
         }
 
         this.errorNumber = errorNumber;
