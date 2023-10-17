@@ -172,8 +172,8 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    public boolean subscribeToSubscriptionKeyNamesAndExpectedEntities(String keyValues, String expectedEntities)
-            throws Exception {
+    public boolean subscribeWithKeyNamesAndSelectKeysAndExpectedKeyValues(String keyValues,
+            String selectedKeys, String expectedEntities) throws Exception {
         logMessage("EntityRequestTestProcedure.subscribeToEntityKeyValuesAndExpectedEntities({"
                 + keyValues + "},{" + expectedEntities + "})");
 

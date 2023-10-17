@@ -69,13 +69,13 @@ The consumer checks that the expected keys are received and only them (see table
 !*> Sub scenario definitions
 |scenario| entity request | with shared broker |
 |ensure |prepare test to use the following subscription key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
-|ensure |subscribe to subscription key names | A.[null].[null].[null] | and expected entities | A.[null].[null].[null] |
-|ensure |subscribe to subscription key names | A.*.[null].[null] | and expected entities | A.[null].[null].[null],A.2.[null].[null] |
-|ensure |subscribe to subscription key names | A.*.*.* | and expected entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
-|ensure |subscribe to subscription key names | A.2.[null].[null] | and expected entities | A.2.[null].[null] |
-|ensure |subscribe to subscription key names | A.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null] |
-|ensure |subscribe to subscription key names | *.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
-|ensure |subscribe to subscription key names | B.*.*.* | and expected entities | B.[null].[null].[null] |
+|ensure |subscribe with key names | A.[null].[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null] |
+|ensure |subscribe with key names | A.*.[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null] |
+|ensure |subscribe with key names | A.*.*.*| and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
+|ensure |subscribe with key names | A.2.[null].[null] | and select keys | [null] | and expected key values | A.2.[null].[null] |
+|ensure |subscribe with key names | A.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null] |
+|ensure |subscribe with key names | *.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
+|ensure |subscribe with key names | B.*.*.* | and select keys | [null] | and expected key values | B.[null].[null].[null] |
 |ensure |publish deregister |
 ***********!
 
