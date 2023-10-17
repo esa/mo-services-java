@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -39,17 +40,19 @@ public class MALService {
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final ServiceKey serviceKey;
     private final Identifier serviceName;
+    private final Element[] elements;
 
     /**
      * Constructs a MALService object.
      *
      * @param serviceKey The key of the service.
      * @param serviceName The name of the service.
+     * @param elements The elements on this service.
      * @param operations The operations of the service.
      * @throws java.lang.IllegalArgumentException If any arguments are null.
      */
-    public MALService(final ServiceKey serviceKey, final Identifier serviceName,
-            final MALOperation[] operations) throws java.lang.IllegalArgumentException {
+    public MALService(ServiceKey serviceKey, Identifier serviceName, Element[] elements,
+            MALOperation[] operations) throws IllegalArgumentException {
         if (serviceKey == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
@@ -59,6 +62,7 @@ public class MALService {
 
         this.serviceKey = serviceKey;
         this.serviceName = serviceName;
+        this.elements = elements;
 
         for (MALOperation operation : operations) {
             this.addOperation(operation);
@@ -128,5 +132,9 @@ public class MALService {
      */
     public MALOperation getOperationByNumber(final UShort opNumber) {
         return operationsByNumber.get(opNumber.getValue());
+    }
+
+    public Element[] getElements() {
+        return elements;
     }
 }

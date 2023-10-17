@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -34,11 +35,12 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALArea {
 
+    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
+    private final ArrayList<MALService> services = new ArrayList<>();
     private final UShort number;
     private final Identifier name;
     private final UOctet version;
-    private final ArrayList<MALService> services = new ArrayList<>();
-    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
+    private final Element[] elements;
 
     /**
      * MALArea constructor.
@@ -46,10 +48,11 @@ public class MALArea {
      * @param number The number of the area.
      * @param name The name of the area.
      * @param version The area version.
+     * @param elements The elements on this service.
      * @throws IllegalArgumentException If either argument is null.
      */
-    public MALArea(final UShort number, final Identifier name,
-            final UOctet version) throws java.lang.IllegalArgumentException {
+    public MALArea(UShort number, Identifier name, UOctet version,
+            Element[] elements) throws java.lang.IllegalArgumentException {
         if (number == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
@@ -63,6 +66,7 @@ public class MALArea {
         this.number = number;
         this.name = name;
         this.version = version;
+        this.elements = elements;
     }
 
     /**
@@ -128,5 +132,9 @@ public class MALArea {
             Logger.getLogger(MALArea.class.getName()).log(Level.WARNING,
                     "Service already included in area! Service: {0}", service.getName());
         }
+    }
+
+    public Element[] getElements() {
+        return elements;
     }
 }

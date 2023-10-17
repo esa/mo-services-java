@@ -148,4 +148,20 @@ public class MALElementsRegistry {
                     + " Try initializing the Service Helper of this object.", ex);
         }
     }
+
+    public void registerElementsForArea(MALArea malArea) {
+        Element[] elements = malArea.getElements();
+
+        for (Element element : elements) {
+            this.addCallableElement(element.getShortForm(), () -> element.createElement());
+        }
+    }
+
+    public void registerElementsForService(MALService malService) {
+        Element[] elements = malService.getElements();
+
+        for (Element element : elements) {
+            this.addCallableElement(element.getShortForm(), () -> element.createElement());
+        }
+    }
 }

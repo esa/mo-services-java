@@ -26,6 +26,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
@@ -39,13 +40,13 @@ public class COMService extends MALService {
     private final Map<Integer, COMObject> objectsByNumber = new HashMap<>();
 
     public COMService(final ServiceKey serviceKey, final Identifier serviceName,
-            final MALOperation[] operations) {
-        this(serviceKey, serviceName, operations, new COMObject[0]);
+            final Element[] elements, final MALOperation[] operations) {
+        this(serviceKey, serviceName, elements, operations, new COMObject[0]);
     }
 
     public COMService(final ServiceKey serviceKey, final Identifier serviceName,
-            final MALOperation[] operations, final COMObject[] comObjects) {
-        super(serviceKey, serviceName, operations);
+            final Element[] elements, final MALOperation[] operations, final COMObject[] comObjects) {
+        super(serviceKey, serviceName, elements, operations);
 
         for (COMObject comObject : comObjects) {
             objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);

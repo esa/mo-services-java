@@ -34,6 +34,8 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
+import esa.mo.xsd.CompositeType;
+import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ExtendedServiceType;
 import esa.mo.xsd.ModelObjectType;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
@@ -66,7 +68,7 @@ public class JavaServiceInfo {
         ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
         String serviceName = service.getName();
-        String serviceVar = serviceName.toUpperCase();
+        String serviceCAPS = serviceName.toUpperCase();
 
         file.addPackageStatement(area, service, null);
         String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
@@ -81,18 +83,18 @@ public class JavaServiceInfo {
         }
 
         // COM service should not have its operations generated, these are generated as part of the specific services
-        CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceVar + "_SERVICE_NUMBER",
+        CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceCAPS + "_SERVICE_NUMBER",
                 TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "Service number literal.");
-        CompositeField serviceNumberVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE_NUMBER",
+        CompositeField serviceNumberVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE_NUMBER",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Service number instance.");
-        CompositeField serviceNameVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE_NAME",
+        CompositeField serviceNameVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE_NAME",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
                 true, true, "Service name constant.");
 
         file.addClassVariable(true, true, StdStrings.PUBLIC, _serviceNumberVar, false, String.valueOf(service.getNumber()));
-        file.addClassVariable(true, true, StdStrings.PUBLIC, serviceNumberVar, false, "(_" + serviceVar + "_SERVICE_NUMBER)");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, serviceNumberVar, false, "(_" + serviceCAPS + "_SERVICE_NUMBER)");
         file.addClassVariable(true, true, StdStrings.PUBLIC, serviceNameVar, false, "(\"" + serviceName + "\")");
 
         // Generate the operations:
@@ -167,6 +169,43 @@ public class JavaServiceInfo {
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, serviceKeyType, false, false,
                 "new org.ccsds.moims.mo.mal.ServiceKey(" + args + ")", false);
 
+        List<String> elementInstantiations = new LinkedList<>();
+
+        if ((service.getDataTypes() != null) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
+            for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
+                String typeName = "";
+                boolean isAbstract = false;
+                if (oType instanceof EnumerationType) {
+                    typeName = ((EnumerationType) oType).getName();
+                } else if (oType instanceof CompositeType) {
+                    typeName = ((CompositeType) oType).getName();
+                    isAbstract = (null == ((CompositeType) oType).getShortFormPart());
+                }
+
+                if (!isAbstract) {
+                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), typeName));
+                    String text = "new " + clsName + "()";
+                    if (oType instanceof EnumerationType) {
+                        text = clsName + ".fromOrdinal(0)";
+                    }
+
+                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), typeName + "List"));
+                    elementInstantiations.add(text);
+                    elementInstantiations.add("new " + lclsName + "()");
+                }
+            }
+        }
+
+        StringBuilder buf = new StringBuilder();
+        for (String objectCall : elementInstantiations) {
+            buf.append("\n        ").append(objectCall).append(",");
+        }
+        CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE_ELEMENTS",
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Element", false),
+                false, true, "Area elements.");
+        file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, objectInstVar,
+                false, true, buf.toString(), false);
+
         // Generate the MALOperation list
         CompositeField operationsType = generator.createCompositeElementsDetails(file, false, "OPERATIONS",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALOperation[]", false),
@@ -188,15 +227,15 @@ public class JavaServiceInfo {
             SupportedFeatures features = eService.getFeatures();
 
             if (features != null) {
-                if (null != features.getObjects()) {
+                if (features.getObjects() != null) {
                     for (ModelObjectType obj : features.getObjects().getObject()) {
-                        createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj, false);
+                        createComObjectHelperDetails(file, comObjectCalls, ns, serviceCAPS, obj, false);
                     }
                 }
 
                 if (features.getEvents() != null) {
                     for (ModelObjectType obj : features.getEvents().getEvent()) {
-                        createComObjectHelperDetails(file, comObjectCalls, ns, serviceVar, obj, true);
+                        createComObjectHelperDetails(file, comObjectCalls, ns, serviceCAPS, obj, true);
                     }
                 }
             }
@@ -205,23 +244,23 @@ public class JavaServiceInfo {
         boolean hasCOMObjects = !comObjectCalls.isEmpty();
 
         if (hasCOMObjects) {
-            StringBuilder buf = new StringBuilder();
+            StringBuilder buffer = new StringBuilder();
             for (String objectCall : comObjectCalls) {
-                buf.append("\n        ").append(objectCall).append("_OBJECT,");
+                buffer.append("\n        ").append(objectCall).append("_OBJECT,");
             }
 
-            CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, "COM_OBJECTS",
+            CompositeField typeCOMObject = generator.createCompositeElementsDetails(file, false, "COM_OBJECTS",
                     TypeUtils.createTypeReference(StdStrings.COM, null, "COMObject", false),
                     false, true, "Object instance.");
-            file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, objectInstVar,
-                    false, true, buf.toString(), false);
+            file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, typeCOMObject,
+                    false, true, buffer.toString(), false);
         }
 
         // Constructor - shouldn't it be started with the constructor method?
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
                 null, null, null, null, null);
         String ending = hasCOMObjects ? ", COM_OBJECTS)" : ")";
-        method.addLine("super(SERVICE_KEY, " + serviceVar + "_SERVICE_NAME" + ", OPERATIONS" + ending);
+        method.addLine("super(SERVICE_KEY, " + serviceCAPS + "_SERVICE_NAME, " + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending);
         method.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
@@ -252,7 +291,8 @@ public class JavaServiceInfo {
         file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectNameVar, false,
                 "(\"" + obj.getName() + "\")");
         file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectTypeVar, false,
-                "(" + areaHelperObject + "_NUMBER, " + serviceVar + "_SERVICE_NUMBER, " + areaHelperObject + "_VERSION, " + objNameCaps + "_OBJECT_NUMBER)");
+                "(" + areaHelperObject + "_NUMBER, " + serviceVar + "_SERVICE_NUMBER, "
+                + areaHelperObject + "_VERSION, " + objNameCaps + "_OBJECT_NUMBER)");
 
         boolean hasRelated = null != obj.getRelatedObject();
         boolean hasSource = null != obj.getSourceObject();

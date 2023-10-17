@@ -28,7 +28,6 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
-import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.AttributeType;
@@ -58,7 +57,7 @@ public class JavaHelpers {
         ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();
-        String serviceVar = serviceName.toUpperCase();
+        String serviceCAPS = serviceName.toUpperCase();
 
         file.addPackageStatement(area, service, null);
 
@@ -87,8 +86,8 @@ public class JavaHelpers {
             }
         }
 
-        CompositeField serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceVar + "_SERVICE",
-                TypeUtils.createTypeReference(area.getName(), service.getName(), service.getName() + JavaServiceInfo.SERVICE_INFO, false),
+        CompositeField serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE",
+                TypeUtils.createTypeReference(area.getName(), service.getName(), serviceName + JavaServiceInfo.SERVICE_INFO, false),
                 false, true, "Service singleton instance.");
 
         file.addClassVariable(true, false, StdStrings.PUBLIC, serviceInstVar, true, "()");
@@ -109,71 +108,12 @@ public class JavaHelpers {
         method.addLine("  " + hlp + ".init(elementsRegistry);", false);
         method.addLine("}", false);
 
-        method.addMethodWithDependencyStatement(generator.createMethodCall(prefix + ".addService(" + serviceVar + "_SERVICE)"), prefix, true);
+        method.addMethodWithDependencyStatement(generator.createMethodCall(prefix + ".addService(" + serviceCAPS + "_SERVICE)"), prefix, true);
 
-        List<String> typeCalls = new LinkedList<>();
-        List<String> callableHashMap = new LinkedList<>();
+        method.addLine("elementsRegistry.registerElementsForService(" + serviceName + "Helper" + "." + serviceCAPS + "_SERVICE)");
 
-        if ((null != service.getDataTypes()) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
-            for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
-                String typeName = "";
-                boolean isAbstract = false;
-                if (oType instanceof EnumerationType) {
-                    typeName = ((EnumerationType) oType).getName();
-                } else if (oType instanceof CompositeType) {
-                    typeName = ((CompositeType) oType).getName();
-                    isAbstract = (null == ((CompositeType) oType).getShortFormPart());
-                }
-
-                if (!isAbstract) {
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), typeName));
-                    String text = "new " + clsName + "()";
-                    if (oType instanceof EnumerationType) {
-                        text = clsName + ".fromOrdinal(0)";
-                    }
-
-                    GeneratorConfiguration config = generator.getConfig();
-                    String factoryName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), typeName + "Factory"));
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), typeName + "List"));
-                    String lfactoryName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), typeName + "ListFactory"));
-                    typeCalls.add(clsName + config.getNamingSeparator() + "SHORT_FORM, new " + factoryName + "()");
-                    typeCalls.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
-                    callableHashMap.add(clsName + config.getNamingSeparator() + "SHORT_FORM, () -> " + text);
-                    callableHashMap.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
-                }
-            }
-        }
-
-        /*
-        if (typeCalls.size() > 0) {
-            method.addLine("long timestamp_1 = System.currentTimeMillis()");
-
-            for (String typeCall : typeCalls) {
-                method.addLine(createMethodCall("elementsRegistry.registerElementFactory(" + typeCall + ")"));
-            }
-
-            method.addLine("timestamp_1 = System.currentTimeMillis() - timestamp_1");
-        }
-         */
-        if (!callableHashMap.isEmpty()) {
-            // method.addLine("long timestamp_2 = System.currentTimeMillis()");
-
-            for (String typeCall : callableHashMap) {
-                method.addLine("elementsRegistry.addCallableElement(" + typeCall + ")");
-            }
-
-            // method.addLine("timestamp_2 = System.currentTimeMillis() - timestamp_2");
-        }
-
-        /*
-        // Measure performance of Factories vs. callables
-        if (typeCalls.size() > 0 && callableHashMap.size() > 0) {
-            method.addLine("java.util.logging.Logger.getLogger(" + service.getName()
-                    + "Helper.class.getName()).log(java.util.logging.Level.INFO, \"\\nTime 1: \" + timestamp_1 + \"\\nTime 2: \" + timestamp_2 + \"\\nHow many: \" + elementsRegistry.howMany())");
-        }
-         */
         // register error numbers
-        if ((null != service.getErrors()) && !service.getErrors().getError().isEmpty()) {
+        if ((service.getErrors() != null) && !service.getErrors().getError().isEmpty()) {
             String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
 
             for (ErrorDefinitionType error : service.getErrors().getError()) {
@@ -201,11 +141,11 @@ public class JavaHelpers {
 
     public void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
         generator.getLog().info(" > Creating area helper class: " + area.getName());
-        ClassWriter file = generator.createClassFile(areaFolder, area.getName() + "Helper");
+        ClassWriterProposed file = generator.createClassFile(areaFolder, area.getName() + "Helper");
 
         String areaName = area.getName();
-        String areaNameCaps = area.getName().toUpperCase();
-        String areaNumber = areaNameCaps + "_AREA_NUMBER";
+        String areaNameCAPS = area.getName().toUpperCase();
+        String areaNumber = areaNameCAPS + "_AREA_NUMBER";
 
         file.addPackageStatement(area, null, null);
 
@@ -220,16 +160,16 @@ public class JavaHelpers {
         CompositeField areaNumberVar = generator.createCompositeElementsDetails(file, false, areaNumber,
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Area number instance.");
-        CompositeField areaNameVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_NAME",
+        CompositeField areaNameVar = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_NAME",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
                 true, false, "Area name constant.");
-        CompositeField _areaVersionVar = generator.createCompositeElementsDetails(file, false, "_" + areaNameCaps + "_AREA_VERSION",
+        CompositeField _areaVersionVar = generator.createCompositeElementsDetails(file, false, "_" + areaNameCAPS + "_AREA_VERSION",
                 TypeUtils.createTypeReference(null, null, "short", false),
                 false, false, "Area version literal.");
-        CompositeField areaVersionVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA_VERSION",
+        CompositeField areaVersionVar = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_VERSION",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
                 true, false, "Area version instance.");
-        CompositeField areaVar = generator.createCompositeElementsDetails(file, false, areaNameCaps + "_AREA",
+        CompositeField areaVar = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALArea", false),
                 false, true, "Area singleton instance.");
 
@@ -239,9 +179,59 @@ public class JavaHelpers {
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaNumberVar, false, "(_" + areaNumber + ")");
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaNameVar, false, "(\"" + areaName + "\")");
         file.addClassVariable(true, true, StdStrings.PUBLIC, _areaVersionVar, false, String.valueOf(area.getVersion()));
-        file.addClassVariable(true, true, StdStrings.PUBLIC, areaVersionVar, false, "(_" + areaNameCaps + "_AREA_VERSION)");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, areaVersionVar, false, "(_" + areaNameCAPS + "_AREA_VERSION)");
 
-        String areaObjectInitialValue = generator.createAreaHelperClassInitialValue(areaNameCaps, area.getVersion());
+        List<String> elementInstantiations = new LinkedList<>();
+
+        if ((area.getDataTypes() != null) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
+            for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
+                GeneratorConfiguration config = generator.getConfig();
+
+                if (oType instanceof AttributeType) {
+                    AttributeType dt = (AttributeType) oType;
+                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, StdStrings.ATTRIBUTE));
+                    AttributeTypeDetails details = generator.getAttributeDetails(area.getName(), dt.getName());
+                    String theType;
+
+                    if (details.isNativeType()) {
+                        theType = generator.convertClassName(generator.createElementType(file, StdStrings.MAL, null, StdStrings.UNION)) + "(" + details.getDefaultValue() + ")";
+                    } else {
+                        theType = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()) + "()");
+                    }
+
+                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    elementInstantiations.add("new " + theType);
+                    elementInstantiations.add("new " + lclsName + "()");
+                } else if (oType instanceof CompositeType) {
+                    CompositeType dt = (CompositeType) oType;
+
+                    if (null != dt.getShortFormPart()) {
+                        String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
+                        String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                        elementInstantiations.add("new " + clsName + "()");
+                        elementInstantiations.add("new " + lclsName + "()");
+                    }
+                } else if (oType instanceof EnumerationType) {
+                    EnumerationType dt = (EnumerationType) oType;
+                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
+                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    elementInstantiations.add(clsName + ".fromOrdinal(0)");
+                    elementInstantiations.add("new " + lclsName + "()");
+                }
+            }
+        }
+
+        StringBuilder buf = new StringBuilder();
+        for (String objectCall : elementInstantiations) {
+            buf.append("\n        ").append(objectCall).append(",");
+        }
+        CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_ELEMENTS",
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Element", false),
+                false, true, "Area elements.");
+        file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, objectInstVar,
+                false, true, buf.toString(), false);
+
+        String areaObjectInitialValue = generator.createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
         file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
         // create error numbers
@@ -258,91 +248,21 @@ public class JavaHelpers {
             }
         }
 
-        List<String> typeCalls = new LinkedList<>();
-        List<String> callableHashMap = new LinkedList<>();
-
-        if ((null != area.getDataTypes()) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
-            for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
-                GeneratorConfiguration config = generator.getConfig();
-
-                if (oType instanceof AttributeType) {
-                    AttributeType dt = (AttributeType) oType;
-
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, StdStrings.ATTRIBUTE));
-                    String factoryName = generator.convertClassName(generator.createElementType(file, area.getName(), null, config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), dt.getName() + "Factory"));
-
-                    AttributeTypeDetails details = generator.getAttributeDetails(area.getName(), dt.getName());
-                    String theType;
-
-                    if (details.isNativeType()) {
-                        theType = generator.convertClassName(generator.createElementType(file, StdStrings.MAL, null, StdStrings.UNION)) + "(" + details.getDefaultValue() + ")";
-                    } else {
-                        theType = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()) + "()");
-                    }
-
-                    String attributeClsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
-                    String lfactoryName = generator.convertClassName(generator.createElementType(file, area.getName(), null, config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), dt.getName() + "ListFactory"));
-                    typeCalls.add(clsName + config.getNamingSeparator() + dt.getName().toUpperCase() + "_SHORT_FORM, new " + attributeClsName + "()");
-                    typeCalls.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
-
-                    callableHashMap.add(clsName + config.getNamingSeparator() + dt.getName().toUpperCase() + "_SHORT_FORM, () -> new " + theType);
-                    callableHashMap.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
-                } else if (oType instanceof CompositeType) {
-                    CompositeType dt = (CompositeType) oType;
-
-                    if (null != dt.getShortFormPart()) {
-                        String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                        String factoryName = generator.convertClassName(generator.createElementType(file, area.getName(), null, config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), dt.getName() + "Factory"));
-                        String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
-                        String lfactoryName = generator.convertClassName(generator.createElementType(file, area.getName(), null, config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), dt.getName() + "ListFactory"));
-                        typeCalls.add(clsName + config.getNamingSeparator() + "SHORT_FORM, new " + factoryName + "()");
-                        typeCalls.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
-                        callableHashMap.add(clsName + config.getNamingSeparator() + "SHORT_FORM, () -> new " + clsName + "()");
-                        callableHashMap.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
-                    }
-                } else if (oType instanceof EnumerationType) {
-                    EnumerationType dt = (EnumerationType) oType;
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                    String factoryName = generator.convertClassName(generator.createElementType(file, area.getName(), null, config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), dt.getName() + "Factory"));
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
-                    String lfactoryName = generator.convertClassName(generator.createElementType(file, area.getName(), null, config.getStructureFolder() + config.getNamingSeparator() + config.getFactoryFolder(), dt.getName() + "ListFactory"));
-                    typeCalls.add(clsName + config.getNamingSeparator() + "SHORT_FORM, new " + factoryName + "()");
-                    typeCalls.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, new " + lfactoryName + "()");
-                    callableHashMap.add(clsName + config.getNamingSeparator() + "SHORT_FORM, () -> " + clsName + ".fromOrdinal(0)");
-                    callableHashMap.add(lclsName + config.getNamingSeparator() + "SHORT_FORM, () -> new " + lclsName + "()");
-                }
-            }
-        }
-
         String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
         MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
                 true, null, "init", Arrays.asList(eleFactory), throwsMALException,
                 "Registers all aspects of this area with the provided element factory", null,
                 Arrays.asList(throwsMALException + " If cannot initialise this helper."));
-        method.addLine(generator.convertToNamespace(factoryType + ".registerArea(" + areaNameCaps + "_AREA)"));
-
-        /*
-        if (0 < typeCalls.size()) {
-            for (String typeCall : typeCalls) {
-                method.addLine(createMethodCall("elementsRegistry.registerElementFactory(" + typeCall + ")"));
-            }
-        }
-         */
-        if (!callableHashMap.isEmpty()) {
-            for (String typeCall : callableHashMap) {
-                method.addLine("elementsRegistry.addCallableElement(" + typeCall + ")");
-            }
-        }
+        method.addLine(generator.convertToNamespace(factoryType + ".registerArea(" + areaNameCAPS + "_AREA)"));
+        method.addLine("elementsRegistry.registerElementsForArea(" + area.getName() + "Helper" + "." + areaNameCAPS + "_AREA)");
 
         // register error numbers
         if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
                 String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
-                method.addLine(generator.convertToNamespace(
-                        factoryType + ".registerError("
+                method.addLine(generator.convertToNamespace(factoryType + ".registerError("
                         + areaNumber + ", "
-                        + areaNameCaps + "_AREA_VERSION, "
+                        + areaNameCAPS + "_AREA_VERSION, "
                         + errorNameCaps + "_ERROR_NUMBER, "
                         + "new " + identifierType + "(\"" + error.getName() + "\"))"));
             }
