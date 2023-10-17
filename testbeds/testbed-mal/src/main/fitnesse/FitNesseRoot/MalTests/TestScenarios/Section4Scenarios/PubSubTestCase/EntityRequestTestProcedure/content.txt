@@ -69,13 +69,18 @@ The consumer checks that the expected keys are received and only them (see table
 !*> Sub scenario definitions
 |scenario| entity request | with shared broker |
 |ensure |prepare test to use the following subscription key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
-|ensure |subscribe with key names | A.[null].[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null] |
-|ensure |subscribe with key names | A.*.[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null] |
-|ensure |subscribe with key names | A.*.*.*| and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
-|ensure |subscribe with key names | A.2.[null].[null] | and select keys | [null] | and expected key values | A.2.[null].[null] |
-|ensure |subscribe with key names | A.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null] |
-|ensure |subscribe with key names | *.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
-|ensure |subscribe with key names | B.*.*.* | and select keys | [null] | and expected key values | B.[null].[null].[null] |
+|ensure |subscribe to key values | A.[null].[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null] |
+|ensure |subscribe to key values | A.*.[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null] |
+|ensure |subscribe to key values | A.*.*.*| and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
+|ensure |subscribe to key values | A.2.[null].[null] | and select keys | [null] | and expected key values | A.2.[null].[null] |
+|ensure |subscribe to key values | A.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null] |
+|ensure |subscribe to key values | *.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
+|ensure |subscribe to key values | B.*.*.* | and select keys | [null] | and expected key values | B.[null].[null].[null] |
+|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K1.K2.K3.K4 | and expected key values | A.2.[null].[null] |
+|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K1.K2.K3 | and expected key values | A.2.[null] |
+|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K1.K2 | and expected key values | A.2 |
+|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K4.K3.K2.K1 | and expected key values | [null].[null].2.A |
+|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K4.K3.K1 | and expected key values | [null].[null].A |
 |ensure |publish deregister |
 ***********!
 

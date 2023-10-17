@@ -81,7 +81,6 @@ public class EntityRequestTestProcedure extends LoggingBase {
 
     private IPTestStub ipTest;
 
-    // TODO: rename to: prepare test to use the following subsctiption key values
     public boolean prepareTestToUseTheFollowingSubscriptionKeyValuesAndSharedBroker(
             String entities, String sharedBroker) throws Exception {
         logMessage("EntityRequestTestProcedure.initiatePublisherWithEntitiesAndSharedBroker({"
@@ -121,19 +120,9 @@ public class EntityRequestTestProcedure extends LoggingBase {
         ArrayList<NullableAttributeList> allKeyValues = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(s, " ,");
         while (st.hasMoreTokens()) {
-            allKeyValues.add(parse4KeyValues(st.nextToken()));
+            allKeyValues.add(parseKeyValues(st.nextToken()));
         }
         return allKeyValues;
-    }
-
-    public static NullableAttributeList parse4KeyValues(String s) {
-        StringTokenizer st = new StringTokenizer(s, ".");
-        NullableAttributeList k = new NullableAttributeList();
-        k.add(new NullableAttribute(parseStringKeyValue(st.nextToken())));
-        k.add(new NullableAttribute(parseNumberKeyValue(st.nextToken())));
-        k.add(new NullableAttribute(parseNumberKeyValue(st.nextToken())));
-        k.add(new NullableAttribute(parseNumberKeyValue(st.nextToken())));
-        return k;
     }
 
     public static NullableAttributeList parseKeyValues(String s) {
@@ -162,6 +151,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
+    @Deprecated
     public static Union parseNumberKeyValue(String s) {
         if (s.equals("[null]")) {
             return null;
@@ -172,13 +162,18 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    public boolean subscribeWithKeyNamesAndSelectKeysAndExpectedKeyValues(String keyValues,
+    public boolean subscribeToKeyValuesAndSelectKeysAndExpectedKeyValues(String keyValues,
             String selectedKeys, String expectedEntities) throws Exception {
         logMessage("EntityRequestTestProcedure.subscribeToEntityKeyValuesAndExpectedEntities({"
-                + keyValues + "},{" + expectedEntities + "})");
+                + keyValues + "},{" + selectedKeys + "},{" + expectedEntities + "})");
 
         ArrayList<NullableAttributeList> expectedKeyValues = parseAllKeyValues(expectedEntities);
-        NullableAttributeList values = parse4KeyValues(keyValues);
+        NullableAttributeList values = parseKeyValues(keyValues);
+        IdentifierList sKeys = null;
+
+        if (selectedKeys != null && !selectedKeys.equals("[null]")) {
+            sKeys = parseKeyNames(selectedKeys);
+        }
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1,
@@ -190,7 +185,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         filters.add(new SubscriptionFilter(Helper.key4,
                 new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(3).getValue()))));
 
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, sKeys, filters);
 
         MonitorListener listener = new MonitorListener();
 
