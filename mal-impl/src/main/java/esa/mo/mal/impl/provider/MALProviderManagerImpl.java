@@ -36,15 +36,15 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
  */
 public class MALProviderManagerImpl implements MALProviderManager, MALCloseable {
 
-    private final MALContextImpl impl;
+    private final MALContextImpl contextImpl;
 
     /**
      * Creates a provider manager.
      *
-     * @param impl The MAL implementation.
+     * @param contextImpl The MAL implementation.
      */
-    public MALProviderManagerImpl(final MALContextImpl impl) {
-        this.impl = impl;
+    public MALProviderManagerImpl(final MALContextImpl contextImpl) {
+        this.contextImpl = contextImpl;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
         return new MALProviderImpl(this,
-                impl,
+                contextImpl,
                 localName,
                 protocol,
                 service,
@@ -88,7 +88,7 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
         return new MALProviderImpl(this,
-                impl,
+                contextImpl,
                 endPoint,
                 service,
                 authenticationId,

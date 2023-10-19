@@ -128,7 +128,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
     private MALBrokerBinding createSharedErrorBroker(String brokerName,
             Map<Object, Object> properties) throws MALException {
         ErrorBrokerHandler brokerHandler = new ErrorBrokerHandler();
-        MALBroker broker = brokerManager.createBroker(brokerHandler);
+        MALBroker broker = brokerManager.createBroker();
         MALBrokerBinding sharedBrokerBinding = brokerManager.createBrokerBinding(
                 broker, brokerName, protocol,
                 Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,

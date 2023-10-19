@@ -45,18 +45,6 @@ public interface MALBrokerManager {
     MALBroker createBroker() throws MALException;
 
     /**
-     * Creates a broker using a supplied broker handler.
-     *
-     * @param handler The handler to use, must not be null.
-     * @return The new MALBroker.
-     * @throws java.lang.IllegalArgumentException If the argument is NULL
-     * @throws MALException If an error occurs or if the MALBrokerManager is
-     * closed
-     */
-    @Deprecated
-    MALBroker createBroker(MALBrokerHandler handler) throws MALException;
-
-    /**
      * The method binds a shared MAL level broker to a particular transport or
      * creates a transport level broker if no MAL level broker is supplied.
      *

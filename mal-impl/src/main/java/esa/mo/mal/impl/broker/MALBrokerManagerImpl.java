@@ -62,11 +62,6 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
     }
 
     @Override
-    public MALBroker createBroker(final MALBrokerHandler handler) throws MALException {
-        return new MALBrokerImpl((MALBrokerHandlerImpl) handler);
-    }
-
-    @Override
     public synchronized MALBrokerBinding createBrokerBinding(
             final MALBroker optionalMALBroker,
             final String localName,

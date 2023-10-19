@@ -51,15 +51,6 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
     }
 
     /**
-     * Constructor
-     *
-     * @param handler MAL broker handler
-     */
-    MALBrokerImpl(MALBrokerHandlerImpl handler) {
-        this.handler = handler;
-    }
-
-    /**
      * Returns the broker handler for this broker.
      *
      * @return the handler.
