@@ -32,7 +32,6 @@ import java.util.logging.Level;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 
@@ -52,9 +51,8 @@ public class TCPIPMessage extends GENMessage {
     }
 
     public TCPIPMessage(boolean wrapBodyParts, TCPIPMessageHeader header, Map qosProperties,
-            MALOperation operation, MALElementStreamFactory encFactory,
-            Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
+            MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
+        super(wrapBodyParts, header, qosProperties, encFactory, body);
     }
 
     /**

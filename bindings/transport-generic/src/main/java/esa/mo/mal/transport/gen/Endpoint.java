@@ -131,7 +131,7 @@ public class Endpoint implements MALEndpoint {
                             isErrorMessage,
                             supplements,
                             qosProperties),
-                    qosProperties, null, transport.getStreamFactory(), body);
+                    qosProperties, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }
@@ -169,7 +169,7 @@ public class Endpoint implements MALEndpoint {
                             isErrorMessage,
                             supplements,
                             qosProperties),
-                    qosProperties, null, transport.getStreamFactory(), body);
+                    qosProperties, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }

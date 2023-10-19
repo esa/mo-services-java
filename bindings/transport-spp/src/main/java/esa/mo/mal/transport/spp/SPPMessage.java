@@ -58,8 +58,6 @@ public class SPPMessage extends GENMessage {
      * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
-     * @param operation The details of the operation being encoding, can be
-     * null.
      * @param encFactory The encoding factory.
      * @param body the body of the message.
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
@@ -68,9 +66,8 @@ public class SPPMessage extends GENMessage {
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
             final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
             boolean wrapBodyParts, MALMessageHeader header, Map qosProperties,
-            MALOperation operation, MALElementStreamFactory encFactory,
-            Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
+            MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
+        super(wrapBodyParts, header, qosProperties, encFactory, body);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;

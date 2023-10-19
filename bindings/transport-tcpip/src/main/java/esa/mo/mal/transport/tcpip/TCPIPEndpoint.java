@@ -61,7 +61,7 @@ public class TCPIPEndpoint extends Endpoint {
                 isErrorMessage, supplements, qosProperties);
         try {
             return new TCPIPMessage(false, (TCPIPMessageHeader) hdr, qosProperties,
-                    null, transport.getStreamFactory(), body);
+                    transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);
         }

@@ -127,7 +127,7 @@ public class SPPEndpoint extends Endpoint {
                     hdr.getConfiguration(),
                     getMessageSegmentCounter(hdr),
                     false, hdr,
-                    qosProperties, null, transport.getStreamFactory(), body);
+                    qosProperties, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }
@@ -168,7 +168,7 @@ public class SPPEndpoint extends Endpoint {
             return new SPPMessage(
                     ((SPPBaseTransport) transport).getHeaderStreamFactory(),
                     hdr.getConfiguration(), getMessageSegmentCounter(hdr),
-                    false, hdr, qosProperties, null,
+                    false, hdr, qosProperties,
                     transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);

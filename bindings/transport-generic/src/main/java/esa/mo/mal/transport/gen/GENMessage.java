@@ -61,8 +61,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
-     * @param operation The details of the operation being encoding, can be
-     * null.
      * @param encFactory The stream factory to use for decoding.
      * @param body the body of the message.
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
@@ -71,7 +69,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     public GENMessage(final boolean wrapBodyParts,
             final MALMessageHeader header,
             final Map qosProperties,
-            final MALOperation operation,
             final MALElementStreamFactory encFactory,
             final Object... body) throws MALInteractionException {
         this.header = header;

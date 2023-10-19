@@ -87,7 +87,7 @@ public class ZMTPEndpoint extends Endpoint {
                     qosProperties);
             return new ZMTPMessage(
                     ((ZMTPTransport) transport).getHeaderStreamFactory(),
-                    wrapBodyParts, hdr, qosProperties, null,
+                    wrapBodyParts, hdr, qosProperties,
                     transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
@@ -127,7 +127,7 @@ public class ZMTPEndpoint extends Endpoint {
                     qosProperties);
             return new ZMTPMessage(
                     ((ZMTPTransport) transport).getHeaderStreamFactory(),
-                    wrapBodyParts, hdr, qosProperties, null,
+                    wrapBodyParts, hdr, qosProperties,
                     transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
