@@ -70,6 +70,6 @@
         <module>api-com</module>
         <module>api-common</module>
         <module>api-mc</module>
-        <!-- <module>api-mps</module> -->
+        <module>api-mps</module>
     </modules>
 </project>
