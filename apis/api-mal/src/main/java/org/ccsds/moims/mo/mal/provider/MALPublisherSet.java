@@ -40,26 +40,21 @@ public class MALPublisherSet {
     private final Set<MALPublisher> subpublishers = new HashSet<>();
     private final MALPubSubOperation op;
     private final IdentifierList domain;
-    private final Identifier networkZone;
     private final SessionType sessionType;
     private final Identifier sessionName;
     private final QoSLevel remotePublisherQos;
     private final Map remotePublisherQosProps;
-    private final UInteger remotePublisherPriority;
 
     /**
      * Constructor.
      *
      * @param op PUBLISH-SUBSCRIBE operation
      * @param domain Domain of the PUBLISH messages
-     * @param networkZone Network zone of the PUBLISH messages
      * @param sessionType Session type of the PUBLISH messages
      * @param sessionName Session name of the PUBLISH messages
      * @param remotePublisherQos QoS level of the PUBLISH messages, may be null.
      * @param remotePublisherQosProps QoS properties of the PUBLISH messages,
      * may be null.
-     * @param remotePublisherPriority Priority of the PUBLISH messages, may be
-     * null.
      * @throws java.lang.IllegalArgumentException If the parameters or ‘domain’
      * or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ are NULL
      * @throws MALException If an error occurs.
@@ -67,32 +62,26 @@ public class MALPublisherSet {
     public MALPublisherSet(
             final MALPubSubOperation op,
             final IdentifierList domain,
-            final Identifier networkZone,
             final SessionType sessionType,
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
-            final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority)
+            final Map remotePublisherQosProps)
             throws java.lang.IllegalArgumentException, MALException {
         this.op = op;
         this.domain = domain;
-        this.networkZone = networkZone;
         this.sessionType = sessionType;
         this.sessionName = sessionName;
         this.remotePublisherQos = remotePublisherQos;
         this.remotePublisherQosProps = remotePublisherQosProps;
-        this.remotePublisherPriority = remotePublisherPriority;
     }
 
     void createPublisher(final MALProvider provider) throws java.lang.IllegalArgumentException, MALException {
         final MALPublisher pub = provider.createPublisher(op,
                 domain,
-                networkZone,
                 sessionType,
                 sessionName,
                 remotePublisherQos,
                 remotePublisherQosProps,
-                remotePublisherPriority,
                 null);
         subpublishers.add(pub);
     }
