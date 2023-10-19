@@ -54,6 +54,7 @@ public class MALSubmitOperation extends MALOperation {
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
      * @param capabilitySet Capability set of the operation.
@@ -61,12 +62,13 @@ public class MALSubmitOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALSubmitOperation(final UShort number,
+    public MALSubmitOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
             final UShort capabilitySet,
             final OperationField[] submitStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, InteractionType.SUBMIT, capabilitySet);
+        super(serviceKey, number, name, InteractionType.SUBMIT, capabilitySet);
 
         this.submitStage = submitStage;
     }

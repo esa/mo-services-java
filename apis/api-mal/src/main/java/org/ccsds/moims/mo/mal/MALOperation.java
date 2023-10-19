@@ -31,22 +31,24 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public abstract class MALOperation {
 
+    private final ServiceKey serviceKey;
     private final Identifier name;
     private final UShort number;
     private final InteractionType interactionType;
     private final UShort capabilitySet;
-    private MALService service;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
      * @param interactionType Interaction type of the operation
      * @param capabilitySet Capability set of the operation.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
-    public MALOperation(final UShort number,
+    public MALOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
             final InteractionType interactionType,
             final UShort capabilitySet)
@@ -57,10 +59,20 @@ public abstract class MALOperation {
                 || (capabilitySet == null)) {
             throw new IllegalArgumentException("Supplied arguments must not be NULL");
         }
+        this.serviceKey = serviceKey;
         this.name = name;
         this.number = number;
         this.interactionType = interactionType;
         this.capabilitySet = capabilitySet;
+    }
+
+    /**
+     * Returns the Service Key.
+     *
+     * @return The Service Key.
+     */
+    public ServiceKey getServiceKey() {
+        return serviceKey;
     }
 
     /**
@@ -98,21 +110,6 @@ public abstract class MALOperation {
      */
     public boolean isPubSub() {
         return interactionType == InteractionType.PUBSUB;
-    }
-
-    /**
-     * Returns the operation service.
-     *
-     * @return The operation service.
-     */
-    @Deprecated
-    public MALService getService() {
-        return service;
-    }
-
-    @Deprecated
-    public void setService(final MALService service) throws java.lang.IllegalArgumentException {
-        this.service = service;
     }
 
     /**

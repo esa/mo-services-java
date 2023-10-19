@@ -71,6 +71,7 @@ public class MALProgressOperation extends MALOperation {
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
      * @param capabilitySet Capability set of the operation.
@@ -83,14 +84,15 @@ public class MALProgressOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALProgressOperation(final UShort number,
+    public MALProgressOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
             final UShort capabilitySet,
             final OperationField[] progressStage,
             final OperationField[] progressAckStage,
             final OperationField[] progressUpdateStage,
             final OperationField[] progressResponseStage) throws java.lang.IllegalArgumentException {
-        super(number, name, InteractionType.PROGRESS, capabilitySet);
+        super(serviceKey, number, name, InteractionType.PROGRESS, capabilitySet);
 
         this.progressStage = progressStage;
         this.progressAckStage = progressAckStage;

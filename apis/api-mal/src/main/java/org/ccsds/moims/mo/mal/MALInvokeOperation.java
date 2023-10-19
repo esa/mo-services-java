@@ -61,6 +61,7 @@ public class MALInvokeOperation extends MALOperation {
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
      * @param capabilitySet Capability set of the operation.
@@ -71,14 +72,15 @@ public class MALInvokeOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALInvokeOperation(final UShort number,
+    public MALInvokeOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
             final UShort capabilitySet,
             final OperationField[] invokeStage,
             final OperationField[] invokeAckStage,
             final OperationField[] invokeResponseStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, InteractionType.INVOKE, capabilitySet);
+        super(serviceKey, number, name, InteractionType.INVOKE, capabilitySet);
 
         this.invokeStage = invokeStage;
         this.invokeAckStage = invokeAckStage;

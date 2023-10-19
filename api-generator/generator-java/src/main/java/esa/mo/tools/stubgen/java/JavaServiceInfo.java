@@ -69,9 +69,7 @@ public class JavaServiceInfo {
 
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
-
         file.addPackageStatement(area, service, null);
-        String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
 
         // Appends the class name
         if (service instanceof ExtendedServiceType) {
@@ -96,6 +94,17 @@ public class JavaServiceInfo {
         file.addClassVariable(true, true, StdStrings.PUBLIC, _serviceNumberVar, false, String.valueOf(service.getNumber()));
         file.addClassVariable(true, true, StdStrings.PUBLIC, serviceNumberVar, false, "(_" + serviceCAPS + "_SERVICE_NUMBER)");
         file.addClassVariable(true, true, StdStrings.PUBLIC, serviceNameVar, false, "(\"" + serviceName + "\")");
+
+        // Generate ServiceKey:
+        CompositeField serviceKeyType = generator.createCompositeElementsDetails(file, false, "SERVICE_KEY",
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.ServiceKey", false),
+                false, false, "The service key of this service.");
+
+        String args = "\n            new org.ccsds.moims.mo.mal.structures.UShort(" + area.getNumber() + "),"
+                + "\n            new org.ccsds.moims.mo.mal.structures.UOctet(" + area.getVersion() + "),"
+                + "\n            " + serviceCAPS + "_SERVICE_NUMBER";
+        file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, serviceKeyType, false,
+                false, "new org.ccsds.moims.mo.mal.ServiceKey(" + args + ")", false);
 
         // Generate the operations:
         String operations = "";
@@ -123,9 +132,9 @@ public class JavaServiceInfo {
                 PubSubOperationType lop = (PubSubOperationType) op.getOriginalOp();
                 AnyTypeReference subsKeys = lop.getMessages().getSubscriptionKeys();
 
-                if (null != subsKeys) {
+                if (subsKeys != null) {
                     List<TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());
-                    if (null != types && !types.isEmpty()) {
+                    if (types != null && !types.isEmpty()) {
                         String prefix = "";
                         for (TypeRef type : types) {
                             if (type.isField()) {
@@ -157,17 +166,6 @@ public class JavaServiceInfo {
             operations += (operations.isEmpty()) ? "" : ",\n        ";
             operations += operationName;
         }
-
-        // Generate ServiceKey:
-        CompositeField serviceKeyType = generator.createCompositeElementsDetails(file, false, "SERVICE_KEY",
-                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.ServiceKey", false),
-                false, false, "The service key of this service.");
-
-        String args = "new org.ccsds.moims.mo.mal.structures.UShort(" + area.getNumber() + "), "
-                + "new org.ccsds.moims.mo.mal.structures.UShort(" + service.getNumber() + "), "
-                + "new org.ccsds.moims.mo.mal.structures.UOctet(" + area.getVersion() + ")";
-        file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, serviceKeyType, false, false,
-                "new org.ccsds.moims.mo.mal.ServiceKey(" + args + ")", false);
 
         List<String> elementInstantiations = new LinkedList<>();
 
@@ -313,6 +311,7 @@ public class JavaServiceInfo {
         String initNewLine = "\n            ";
         // Operation Number
         List<String> opArgs = new LinkedList<>();
+        opArgs.add("SERVICE_KEY");
         opArgs.add(op.getName().toUpperCase() + "_OP_NUMBER");
         opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
         // opArgs.add(initNewLine + "" + op.getReplay());

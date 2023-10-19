@@ -147,6 +147,7 @@ public class MALPubSubOperation extends MALOperation {
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
      * @param capabilitySet Capability set of the operation.
@@ -155,12 +156,13 @@ public class MALPubSubOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALPubSubOperation(final UShort number,
+    public MALPubSubOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
             final UShort capabilitySet,
             final OperationField[] fields)
             throws java.lang.IllegalArgumentException {
-        super(number, name, InteractionType.PUBSUB, capabilitySet);
+        super(serviceKey, number, name, InteractionType.PUBSUB, capabilitySet);
 
         OperationField[] publishFields = new OperationField[fields.length + 1];
         OperationField[] notifyFields = new OperationField[fields.length + 2];

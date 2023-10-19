@@ -44,6 +44,7 @@ public class MALSendOperation extends MALOperation {
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
      * @param capabilitySet Capability set of the operation.
@@ -51,12 +52,13 @@ public class MALSendOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALSendOperation(final UShort number,
+    public MALSendOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
             final UShort capabilitySet,
             final OperationField[] sendStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, InteractionType.SEND, capabilitySet);
+        super(serviceKey, number, name, InteractionType.SEND, capabilitySet);
         this.sendStage = sendStage;
     }
 

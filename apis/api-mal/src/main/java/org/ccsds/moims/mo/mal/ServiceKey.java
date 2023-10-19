@@ -34,38 +34,38 @@ public class ServiceKey {
     private final UShort areaNumber;
 
     /**
+     * Area version.
+     */
+    private final UOctet areaVersion;
+
+    /**
      * Service number.
      */
     private final UShort serviceNumber;
 
     /**
-     * Service version.
-     */
-    private final UOctet serviceVersion;
-
-    /**
      * Initializes the ServiceKey class.
      *
      * @param areaNumber The area number of the service.
+     * @param areaVersion The area version of the service.
      * @param serviceNumber The service number of the service.
-     * @param serviceVersion The service version of the service.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
-    public ServiceKey(final UShort areaNumber, final UShort serviceNumber,
-            final UOctet serviceVersion) throws IllegalArgumentException {
+    public ServiceKey(final UShort areaNumber, final UOctet areaVersion,
+            final UShort serviceNumber) throws IllegalArgumentException {
         if (areaNumber == null) {
             throw new IllegalArgumentException("The areaNumber argument cannot be null!");
+        }
+        if (areaVersion == null) {
+            throw new IllegalArgumentException("The areaVersion argument cannot be null!");
         }
         if (serviceNumber == null) {
             throw new IllegalArgumentException("The serviceNumber argument cannot be null!");
         }
-        if (serviceVersion == null) {
-            throw new IllegalArgumentException("The serviceVersion argument cannot be null!");
-        }
 
         this.areaNumber = areaNumber;
+        this.areaVersion = areaVersion;
         this.serviceNumber = serviceNumber;
-        this.serviceVersion = serviceVersion;
     }
 
     /**
@@ -78,6 +78,15 @@ public class ServiceKey {
     }
 
     /**
+     * Returns the area version of the service.
+     *
+     * @return The area version of the service.
+     */
+    public UOctet getAreaVersion() {
+        return areaVersion;
+    }
+
+    /**
      * Returns the service number of the service.
      *
      * @return The service number of the service.
@@ -85,14 +94,4 @@ public class ServiceKey {
     public UShort getServiceNumber() {
         return serviceNumber;
     }
-
-    /**
-     * Returns the service version of the service.
-     *
-     * @return The service version of the service.
-     */
-    public UOctet getServiceVersion() {
-        return serviceVersion;
-    }
-
 }

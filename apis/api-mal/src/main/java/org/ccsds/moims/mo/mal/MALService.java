@@ -80,7 +80,6 @@ public class MALService {
             throw new IllegalArgumentException("Operation argument must not be NULL");
         }
 
-        operation.setService(this);
         operationsByNumber.put(operation.getNumber().getValue(), operation);
     }
 
@@ -112,7 +111,7 @@ public class MALService {
      * @return The version number.
      */
     public UOctet getServiceVersion() {
-        return serviceKey.getServiceVersion();
+        return serviceKey.getAreaVersion();
     }
 
     /**
