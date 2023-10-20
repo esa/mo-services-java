@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * Extends the MALElementOutputStream interface to enable aware transport access
  * to the encoded data stream.
  */
-public abstract class GENElementOutputStream implements MALElementOutputStream {
+public abstract class ElementOutputStream implements MALElementOutputStream {
 
     private final OutputStream dos;
     private Encoder enc = null;
@@ -43,7 +43,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
      *
      * @param os Output stream to write to.
      */
-    protected GENElementOutputStream(final OutputStream os) {
+    protected ElementOutputStream(final OutputStream os) {
         this.dos = os;
     }
 
@@ -78,7 +78,7 @@ public abstract class GENElementOutputStream implements MALElementOutputStream {
                 }
             }
         } catch (MALException ex) {
-            Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(ElementOutputStream.class.getName()).log(Level.SEVERE,
                     "The following field could not be encoded: " + field.getFieldName(), ex);
             throw ex;
         }

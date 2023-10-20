@@ -20,12 +20,12 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import org.ccsds.moims.mo.mal.encoding.GENElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.ElementInputStream;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
-public abstract class BaseBinaryElementInputStream extends GENElementInputStream {
+public abstract class BaseBinaryElementInputStream extends ElementInputStream {
 
     /**
      * Sub class constructor.

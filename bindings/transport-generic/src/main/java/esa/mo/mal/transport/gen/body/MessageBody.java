@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.encoding.GENElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.ElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -135,8 +135,8 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
     @Override
     public MALEncodedBody getEncodedBody() throws MALException {
-        if (!decodedBody && (encBodyElements instanceof GENElementInputStream)) {
-            byte[] rd = ((GENElementInputStream) encBodyElements).getRemainingEncodedData();
+        if (!decodedBody && (encBodyElements instanceof ElementInputStream)) {
+            byte[] rd = ((ElementInputStream) encBodyElements).getRemainingEncodedData();
 
             if ((encBodyBytes != null) && (encBodyBytes.available() > 0)) {
                 byte[] c = new byte[rd.length + encBodyBytes.available()];

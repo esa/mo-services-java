@@ -22,12 +22,12 @@ package esa.mo.mal.encoder.string;
 
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
-import org.ccsds.moims.mo.mal.encoding.GENElementOutputStream;
+import org.ccsds.moims.mo.mal.encoding.ElementOutputStream;
 
 /**
  * Implements the MALElementOutputStream interface for String encodings.
  */
-public class StringElementOutputStream extends GENElementOutputStream {
+public class StringElementOutputStream extends ElementOutputStream {
 
     /**
      * Constructor.

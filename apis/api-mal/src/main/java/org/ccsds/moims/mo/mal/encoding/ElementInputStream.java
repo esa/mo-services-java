@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * Extends the MALElementInputStream interface to enable aware transport access
  * to the encoded data stream.
  */
-public abstract class GENElementInputStream implements MALElementInputStream {
+public abstract class ElementInputStream implements MALElementInputStream {
 
     protected final Decoder dec;
 
@@ -41,7 +41,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
      *
      * @param pdec Decoder to use.
      */
-    protected GENElementInputStream(Decoder pdec) {
+    protected ElementInputStream(Decoder pdec) {
         this.dec = pdec;
     }
 
@@ -68,7 +68,7 @@ public abstract class GENElementInputStream implements MALElementInputStream {
                 }
             }
         } catch (MALException ex) {
-            Logger.getLogger(GENElementOutputStream.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(ElementOutputStream.class.getName()).log(Level.SEVERE,
                     "The following field could not be decoded: " + field.getFieldName(), ex);
             throw ex;
         }
