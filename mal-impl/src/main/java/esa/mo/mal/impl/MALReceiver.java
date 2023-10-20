@@ -214,7 +214,7 @@ public class MALReceiver implements MALMessageListener {
             }
         } catch (MALInteractionException ex) {
             // try to determine address info if null
-            if (null == address) {
+            if (address == null) {
                 address = lookupAddress(callingEndpoint, msg);
             }
 

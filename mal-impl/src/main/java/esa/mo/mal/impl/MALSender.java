@@ -604,11 +604,12 @@ public class MALSender {
                 throw new MALException("Return message was null!");
             }
 
-            // handle possible return error
+            // Case when we receive an Error message back on the return message:
             if (rtn.getHeader().getIsErrorMessage()) {
                 if (rtn.getBody() instanceof MALErrorBody) {
-                    MOErrorException error = ((MALErrorBody) rtn.getBody()).getError();
-                    MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
+                    MALErrorBody errorBody = (MALErrorBody) rtn.getBody();
+                    MOErrorException error = errorBody.getError();
+                    MALContextFactoryImpl.LOGGER.log(Level.FINE,
                             "Something went wrong!", error);
                     throw new MALInteractionException(error);
                 }
