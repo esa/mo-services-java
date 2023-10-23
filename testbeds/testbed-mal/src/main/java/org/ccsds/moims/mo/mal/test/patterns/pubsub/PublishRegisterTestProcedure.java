@@ -98,7 +98,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
     }
 
     public boolean publishRegisterWithKeyNames(String entities) throws Exception {
-        LoggingBase.logMessage("PublishRegisterTestProcedure.publishRegisterWithTheEntities("
+        LoggingBase.logMessage("PublishRegisterTestProcedure.publishRegisterWithKeyNames("
                 + entities + ')');
         publishRegistered = true;
 
@@ -122,7 +122,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
     }
 
     public boolean publishWithSubscriptionKeyValuesAndExpectError(String entityKeyValue, String error) throws Exception {
-        LoggingBase.logMessage("PublishRegisterTestProcedure.publishWithEntityAndExpectError("
+        LoggingBase.logMessage("PublishRegisterTestProcedure.publishWithSubscriptionKeyValuesAndExpectError("
                 + entityKeyValue + ',' + error + ')');
         listener.clear();
 
