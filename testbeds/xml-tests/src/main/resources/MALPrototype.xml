@@ -739,16 +739,32 @@
                                comment="This operation checks that multiple types can be sent and received explicitly">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="UOctet" />
-                            <smc:type area="MAL" name="UShort" />
-                            <smc:type area="MAL" name="UInteger" />
-                            <smc:type area="MAL" name="ULong" />
+                            <smc:field name = "in1" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UOctet" />
+                           	</smc:field>
+                            <smc:field name = "in2" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UShort" />
+                           	</smc:field>
+                            <smc:field name = "in3" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UInteger" />
+                           	</smc:field>
+                            <smc:field name = "in4" canBeNull ="true" comment = "">
+                            	<smc:type area="MAL" name="ULong" />
+                           	</smc:field>
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="UOctet" />
-                            <smc:type area="MAL" name="UShort" />
-                            <smc:type area="MAL" name="UInteger" />
-                            <smc:type area="MAL" name="ULong" />
+                            <smc:field name = "out1" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UOctet" />
+                           	</smc:field>
+                            <smc:field name = "out2" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UShort" />
+                           	</smc:field>
+                            <smc:field name = "out3" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UInteger" />
+                           	</smc:field>
+                            <smc:field name = "out4" canBeNull ="true" comment = "">
+                            	<smc:type area="MAL" name="ULong" />
+                           	</smc:field>
                         </smc:response>
                     </smc:messages>
                     <smc:errors>

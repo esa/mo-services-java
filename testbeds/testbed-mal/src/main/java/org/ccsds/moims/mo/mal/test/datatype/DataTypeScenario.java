@@ -432,14 +432,14 @@ public class DataTypeScenario extends LoggingBase {
             TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
                     TestData.testUOctet, TestData.testUShort,
                     TestData.testUInteger, TestData.testULong);
-            rv = subMultiTest(TestData.testMultiReturnExplicit.get_UOctet0(),
-                    tv.get_UOctet0(), null, "explicit Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.get_UShort1(),
-                    tv.get_UShort1(), rv, "explicit Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.get_UInteger2(),
-                    tv.get_UInteger2(), rv, "explicit Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnExplicit.get_ULong3(),
-                    tv.get_ULong3(), rv, "explicit Multi return part 4");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getOut1(),
+                    tv.getOut1(), null, "explicit Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getOut2(),
+                    tv.getOut2(), rv, "explicit Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getOut3(),
+                    tv.getOut3(), rv, "explicit Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnExplicit.getOut4(),
+                    tv.getOut4(), rv, "explicit Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "explicit Multi return");
         }
@@ -505,14 +505,14 @@ public class DataTypeScenario extends LoggingBase {
             TestExplicitMultiReturnResponse tv = getDataTestStub().testExplicitMultiReturn(
                     TestData.testUOctet, TestData.testUShort,
                     TestData.testUInteger, null);
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement0(),
-                    tv.getBodyElement0(), null, "null Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement1(),
-                    tv.getBodyElement1(), rv, "null Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement2(),
-                    tv.getBodyElement2(), rv, "null Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnNull.getBodyElement3(),
-                    tv.getBodyElement3(), rv, "null Multi return part 4");
+            rv = subMultiTest(TestData.testMultiReturnNull.getOut1(),
+                    tv.getOut1(), null, "null Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnNull.getOut2(),
+                    tv.getOut2(), rv, "null Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnNull.getOut3(),
+                    tv.getOut3(), rv, "null Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnNull.getOut4(),
+                    tv.getOut4(), rv, "null Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subSingleTestExceptionHandler(ex, "null Multi return");
         }
