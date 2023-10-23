@@ -96,7 +96,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
                 PRIORITY, new NamedValueList(), shared).getStub();
 
         AttributeList keyValues = new AttributeList();
-        keyValues.add("myValue");
+        keyValues.add(new Identifier("myValue"));
 
         updateList = new TestUpdateList();
         updateList.add(new TestUpdate(new Integer(0)));
