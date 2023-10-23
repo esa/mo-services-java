@@ -21,7 +21,18 @@
 !*< Hidden
 !define TEST_SYSTEM {slim}
 
-*******!
-!3 Test case: all patterns except Pub/Sub
+|Import|
+|org.ccsds.moims.mo.mal.test.datatype|
 
-A single test procedure is defined and executed multiple times to cover all the tested behaviours.
+*!
+!4 MO Object test procedure
+
+The test procedure does the following actions:
+ 1 Call the objectAssertionsAreChecked operation provided by the !-DataTest-! service provider.
+ 2 Let the provider check a list of assertions related to the MO Object concept.
+ 3 Check the return value which confirms the validation of those assertions.
+
+
+|script| data type scenario|
+|note| MO Object test|
+|check| object assertions are checked | OK|

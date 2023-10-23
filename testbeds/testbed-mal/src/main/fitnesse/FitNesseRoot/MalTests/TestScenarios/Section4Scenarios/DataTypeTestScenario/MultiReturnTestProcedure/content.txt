@@ -1,0 +1,47 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.datatype|
+
+*!
+!4 Multi return test procedure
+
+The test procedure does the following actions:
+ 1 Call a specific operation provided by the !-DataTest-! service provider with a set of statically defined values.
+ 2 Check that no error is raised by the provider, especially DATA_ERROR and BAD_ENCODING, meaning that the provider received the right values.
+ 3 Check the return values which must equal to the original values.
+
+The test operation of the !-DataTest-! service declares 4 input parameters and 4 return parameters. The objective is not to test all data types, as this has already been done with the ExplicitTypesTestProcedure. The objective is to check various use cases when the data is not the single return parameter. A specific operation is defined for each use case as the type of the declared parameter is important.
+The tested use cases include:
+ 1 a set of explicitely defined types
+ 2 a set of parameters with the last one declared as Element
+ 3 a set of parameters with the 2nd and 3rd ones declared as Element
+ 4 a set of parameters including a NULL value
+
+|script| data type scenario|
+|note| Multi return test|
+|check| explicit multi return works| OK|
+|check| abstract multi return works | OK|
+|check| inner abstract multi return works | OK|
+|check| multi return with nulls work| OK|

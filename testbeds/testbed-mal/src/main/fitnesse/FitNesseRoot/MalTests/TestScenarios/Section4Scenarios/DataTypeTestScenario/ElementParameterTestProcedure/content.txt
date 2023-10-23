@@ -1,0 +1,56 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.datatype|
+
+*!
+!4 Element parameter test procedure
+
+The test procedure does the following actions:
+ 1 Call the generic testData operation provided by the !-DataTest-! service provider with a statically defined value.
+ 2 Check that no error is raised by the provider, especially DATA_ERROR and BAD_ENCODING, meaning that the provider received the right value.
+ 3 Check the return value which must equal to the original value.
+
+The generic testData operation of the !-DataTest-! service is defined as: Element testData(Element).
+
+A list of MAL data structure instances is statically defined according to the following constraints:
+ * All the data types shall be instantiated at least once.
+ * Enumerations shall be instantiated once for each enumerated value.
+ * Abstract types need to be extended by a concrete type for the test
+ * The value Null shall belong to the list
+ * The value Null shall be inserted into a Composite structure
+
+This data list is statically known by the !-DataTest-! service provider and consumer.
+The consumer takes the data from the list one by one, in the same order, and applies the test procedure.
+
+|script| data type scenario|
+|note| Element parameter test|
+|check| attribute types work| OK|
+|check| enumerations work| OK|
+|check| complete composites work | OK|
+|check| abstract composites work | OK|
+|check| lists work | OK|
+|check| nulls work|OK|
+|check| composites with null work| OK|
+|check| polymorphic types work | OK|

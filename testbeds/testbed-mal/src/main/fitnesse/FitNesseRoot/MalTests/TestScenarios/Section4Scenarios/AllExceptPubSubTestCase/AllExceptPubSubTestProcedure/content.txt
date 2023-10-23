@@ -25,18 +25,47 @@
 |org.ccsds.moims.mo.mal.test.patterns|
 
 *******!
-!4 Test procedure: <ip>/<qos>/<session>/<transition list id>
-The test procedure does the following actions:
- 1 Call the operation <ip> provided by the IPTest service with the parameters passed to the test procedures: 'ip', 'qos', 'session' and 'transition list id'.
+!4 Test procedure: all patterns except Pub/Sub
+The test procedure iterates over the following actions:
+ 1 Call the proper pattern type operation provided by the IPTest service with the parameters passed to the test procedure.
  2 Wait for the expected transitions to be done, except the faulty ones that are ignored.
  3 Check the message headers
  4 Check the transitions
 
 It is necessary to go through all the transitions of the IP state charts, the faulty transitions are underlined.
-In the faulty case, the field 'errorCode' of the IPTestTransition is set to the value INCORRECT_STATE otherwise it
-is set to "-1". The field 'Transition list id' is used to identify the test procedure.
+In the faulty case, the field 'errorCode' of the IPTestTransition is set to the value INCORRECT_STATE otherwise it is set to "-1".
 
-The transitions are checked by ensuring that the faulty messages are not received by the consumer.
+The test procedure relies on parameterized FitNesse sub scenarios in order to iterate through all the tested behaviours.
+
+The consumer initiates the patterns by calling the following operations provided by the service IPTest:
+ * testSubmit
+ * request
+ * invoke
+ * progress
+Those operations accept a single IPTestDefinition parameter. This parameter is notably used by the provider to execute a predefined behaviour.
+Variants of those operations are defined by the service IPTest, with an empty body for the OUT messages, or with an additional parameter in the body of the initial IN message:
+ * submitMulti
+ * testRequestEmptyBody, requestMulti
+ * testInvokeEmptyBody, invokeMulti
+ * testProgressEmptyBody, progressMulti
+Those additional operations implement the same behaviour than the regular ones, with the same IPTestDefinition parameter.
+All those operations shall be called in the FitNesse sub scenario named !-PatternWithSupplementsAndTransitionsAndBehaviourIdTest-!.
+This sub scenario shall be executed several times for each tested behaviour, with additional environment parameters, in a sub scenario named !-TestInteractionPatternWithTransitionsAndBehaviourId-!.
+
+The possible values of the sub scenario parameters are:
+-!|Comment|
+|parameter|values|comment|
+|interaction pattern|Submit, Request, Invoke, Progress|name of the tested IP|
+|transitions|{_M_}*,{M}*,{_M_}*, with M in ACK, ACK_ERROR, UPDATE, UPDATE_ERROR, RESPONSE, RESPONSE_ERROR|list of expected messages to be sent by the provider according to the tested behaviour, starting with a list of initial faulty messages sent by the testbed, followed by the list of regular messages sent by the provider, followed by a list of final faulty messages sent by the testbed|
+|behaviour id|numeric|numeric identifier used by the consumer and the provider to perform actions specific to the tested behaviour|
+|supplements|Empty, Full|environment parameter used to set the supplements header field, either empty or with a full set of various attribute types|
+
+The 'transitions' parameter describes the MAL messages exchanged from the provider MAL to the consumer MAL. It is used by the consumer to check the correctness of the indications it receives according to the test procedure.
+The 'behaviour id' parameter is used by the provider to actually send the messages expected by the test procedure.
+
+The transitions are checked by ensuring that the consumer receives proper indications, even when the consumer MAL receives faulty messages.
+
+
 
 !*> Sub scenario definitions
 |scenario| pattern | interaction | with supplements| supplements | and transitions | trans | and behaviour id | id | test |

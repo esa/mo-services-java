@@ -49,7 +49,7 @@ This framework supports the use of a shared broker. However, this feature is rar
 Errors with encoding/transport may result from the shared broker configuration.
 
 !*> Sub scenario definitions
-|scenario| publish register | with shared broker |
+|scenario| publish register with shared broker | shared |
 |ensure |use shared broker | @shared |
 |ensure |publish with subscription key values | A | and expect error | true |
 |ensure |publish register with key names  | K1 |
@@ -96,5 +96,5 @@ Errors with encoding/transport may result from the shared broker configuration.
 ***********!
 
 |script| publish register test procedure |
-|publish register | false |
-|publish register | true |
+|publish register with shared broker | false |
+|publish register with shared broker | true |

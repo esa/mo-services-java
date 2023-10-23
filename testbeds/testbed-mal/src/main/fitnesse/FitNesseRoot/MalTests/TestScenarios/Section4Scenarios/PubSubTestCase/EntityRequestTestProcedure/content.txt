@@ -67,7 +67,7 @@ The consumer does the following actions:
 The consumer checks that the expected keys are received and only them (see table below).
 
 !*> Sub scenario definitions
-|scenario| entity request | with shared broker |
+|scenario| entity request with shared broker | shared |
 |ensure |prepare test to use the following subscription key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
 |ensure |subscribe to key values | A.[null].[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null] |
 |ensure |subscribe to key values | A.*.[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null] |
@@ -85,5 +85,5 @@ The consumer checks that the expected keys are received and only them (see table
 ***********!
 
 |script| entity request test procedure |
-|entity request | false |
-|entity request | true |
+|entity request with shared broker | false |
+|entity request with shared broker | true |
