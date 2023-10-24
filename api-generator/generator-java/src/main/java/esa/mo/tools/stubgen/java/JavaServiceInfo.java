@@ -67,6 +67,9 @@ public class JavaServiceInfo {
         generator.getLog().info(" > Creating ServiceInfo class: " + service.getName());
         ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
+        // construct area helper class name and variable
+        String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
+        String namespace = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
         file.addPackageStatement(area, service, null);
@@ -99,9 +102,8 @@ public class JavaServiceInfo {
         CompositeField serviceKeyType = generator.createCompositeElementsDetails(file, false, "SERVICE_KEY",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.ServiceKey", false),
                 false, false, "The service key of this service.");
-
-        String args = "\n            new org.ccsds.moims.mo.mal.structures.UShort(" + area.getNumber() + "),"
-                + "\n            new org.ccsds.moims.mo.mal.structures.UOctet(" + area.getVersion() + "),"
+        String args = "\n            " + namespace + "_NUMBER,"
+                + "\n            " + namespace + "_VERSION,"
                 + "\n            " + serviceCAPS + "_SERVICE_NUMBER";
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, serviceKeyType, false,
                 false, "new org.ccsds.moims.mo.mal.ServiceKey(" + args + ")", false);
@@ -211,10 +213,6 @@ public class JavaServiceInfo {
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, operationsType, false, false,
                 "new org.ccsds.moims.mo.mal.MALOperation[]{" + operations + "}", false);
 
-        // construct area helper class name and variable
-        String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
-        String ns = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
-
         List<String> comObjectCalls = new ArrayList();
 
         // auto-generate helper object for the COM extra features
@@ -227,13 +225,13 @@ public class JavaServiceInfo {
             if (features != null) {
                 if (features.getObjects() != null) {
                     for (ModelObjectType obj : features.getObjects().getObject()) {
-                        createComObjectHelperDetails(file, comObjectCalls, ns, serviceCAPS, obj, false);
+                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, false);
                     }
                 }
 
                 if (features.getEvents() != null) {
                     for (ModelObjectType obj : features.getEvents().getEvent()) {
-                        createComObjectHelperDetails(file, comObjectCalls, ns, serviceCAPS, obj, true);
+                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, true);
                     }
                 }
             }
