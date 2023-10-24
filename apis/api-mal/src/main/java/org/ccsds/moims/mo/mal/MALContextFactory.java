@@ -79,7 +79,9 @@ public abstract class MALContextFactory {
     }
 
     /**
-     * Registers an Error number to an Error name.
+     * Registers an Error number to an Error name. This method will be removed
+     * in the future as it is not used anywhere other than in the init methods.
+     * This slows down start-up and does not add value.
      *
      * @param areaNumber The Area number.
      * @param areaVersion The Area version.
@@ -88,6 +90,7 @@ public abstract class MALContextFactory {
      * @throws java.lang.IllegalArgumentException if either is null.
      * @throws MALException If already registered the number.
      */
+    @Deprecated
     public static void registerError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber,
             Identifier errorName) throws java.lang.IllegalArgumentException, MALException {
         if (areaNumber == null || areaVersion == null || errorNumber == null || errorName == null) {
@@ -161,13 +164,16 @@ public abstract class MALContextFactory {
     }
 
     /**
-     * Look up an error name from its number.
+     * Look up an error name from its number. This method will be removed in the
+     * future because it is not being used anywhere and having a HashMap costs
+     * memory and time during start-up.
      *
      * @param areaNumber The Area number.
      * @param areaVersion The Area version.
      * @param errorNumber The error name.
      * @return The error number or null if not found.
      */
+    @Deprecated
     public static Identifier lookupError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber) {
         Long key = generateKey(areaNumber, areaVersion, errorNumber);
         return ERRORS.get(key);
