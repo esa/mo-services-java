@@ -310,7 +310,7 @@ public class JavaServiceInfo {
         // Operation Number
         List<String> opArgs = new LinkedList<>();
         opArgs.add("SERVICE_KEY");
-        opArgs.add(op.getName().toUpperCase() + "_OP_NUMBER");
+        opArgs.add(initNewLine + op.getName().toUpperCase() + "_OP_NUMBER");
         opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
         // opArgs.add(initNewLine + "" + op.getReplay());
         opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");

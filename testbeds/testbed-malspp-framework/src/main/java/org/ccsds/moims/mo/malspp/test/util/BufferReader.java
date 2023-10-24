@@ -83,12 +83,6 @@ public class BufferReader {
                 TimeScalesFactory.getTAI());
 
         // Initialize BigEnumeration data type
-        /*
-        MALContextFactory.getElementsRegistry().registerElementFactory(
-                LargeEnumeration.SHORT_FORM, new LargeEnumerationFactory());
-        MALContextFactory.getElementsRegistry().registerElementFactory(
-                MediumEnumeration.SHORT_FORM, new MediumEnumerationFactory());
-         */
         MALContextFactory.getElementsRegistry().addCallableElement(
                 LargeEnumeration.SHORT_FORM, () -> new LargeEnumeration(0));
 
