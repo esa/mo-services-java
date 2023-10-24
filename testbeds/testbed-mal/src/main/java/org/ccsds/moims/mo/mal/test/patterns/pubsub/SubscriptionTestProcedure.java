@@ -122,7 +122,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
         logMessage("SubscriptionTestProcedure.reregister()");
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(new Identifier("A"))));
         Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.asyncMonitorRegister(subscription, listener);
@@ -141,7 +141,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
         updateHeaderList.add(new UpdateHeader(new Identifier("source"),
                 HeaderTestProcedure.DOMAIN,
-                (new AttributeList("A")).getAsNullableAttributeList()
+                (new AttributeList(new Identifier("A"))).getAsNullableAttributeList()
         ));
 
         TestUpdateList updateList = new TestUpdateList();
