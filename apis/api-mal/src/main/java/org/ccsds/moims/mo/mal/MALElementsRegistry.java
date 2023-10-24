@@ -42,7 +42,7 @@ public class MALElementsRegistry {
      * @param absoluteSFP The absolute short form part.
      * @param callable The method with the generation of the Element.
      */
-    public synchronized void addCallableElement(Long absoluteSFP, Callable<Element> callable) {
+    public void addCallableElement(Long absoluteSFP, Callable<Element> callable) {
         ELEMENTS.put(absoluteSFP, callable);
     }
 
@@ -149,7 +149,7 @@ public class MALElementsRegistry {
         }
     }
 
-    public void registerElementsForArea(MALArea malArea) {
+    public synchronized void registerElementsForArea(MALArea malArea) {
         Element[] elements = malArea.getElements();
 
         for (Element element : elements) {
@@ -157,7 +157,7 @@ public class MALElementsRegistry {
         }
     }
 
-    public void registerElementsForService(MALService malService) {
+    public synchronized void registerElementsForService(MALService malService) {
         Element[] elements = malService.getElements();
 
         for (Element element : elements) {
