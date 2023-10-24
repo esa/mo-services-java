@@ -44,9 +44,9 @@ public class MALSender {
     /**
      * Constructor
      *
-     * @param securityManager   Security Manager
-     * @param imap              Interaction Consumers
-     * @param psmap             Interaction PubSub Map
+     * @param securityManager Security Manager
+     * @param imap Interaction Consumers
+     * @param psmap Interaction PubSub Map
      */
     MALSender(final MALAccessControl securityManager,
             final InteractionConsumerMap imap, final InteractionPubSubMap psmap) {
@@ -526,11 +526,10 @@ public class MALSender {
             final MALMessageHeader srcHdr,
             final UOctet rspnInteractionStage,
             final MALException error) {
-        Union wrap = new Union(error.getLocalizedMessage());
         return initiateReturnError(msgAddress,
                 srcHdr,
                 rspnInteractionStage,
-                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, wrap));
+                new InternalException(error.getLocalizedMessage()));
     }
 
     /**
@@ -614,9 +613,8 @@ public class MALSender {
                     throw new MALInteractionException(error);
                 }
 
-                throw new MALInteractionException(new MOErrorException(
-                        MALHelper.BAD_ENCODING_ERROR_NUMBER,
-                        new Union("Return message marked as error but did not contain a MALException")));
+                throw new MALInteractionException(new BadEncodingException(
+                        "Return message marked as error but did not contain a MALException"));
             }
 
             return rtn.getBody(); // All Good!

@@ -23,8 +23,8 @@ package esa.mo.mal.impl.interactionpatterns;
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.IncorrectStateException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -76,8 +76,7 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
                     }
                 } else {
                     finished = true;
-                    MOErrorException incorrectStateError = new MOErrorException(
-                            MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+                    MOErrorException incorrectStateError = new IncorrectStateException(
                             "The received message is not a PROGRESS_ACK_STAGE!");
                     listener.progressAckErrorReceived(header, incorrectStateError, qos);
                 }
@@ -107,8 +106,7 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
             }
 
             // If it is not ACK, PROGRESS, nor RESPONSE, then something went wrong!
-            MOErrorException incorrectStateError = new MOErrorException(
-                    MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+            MOErrorException incorrectStateError = new IncorrectStateException(
                     "The received message is not a PROGRESS_ACK_STAGE, nor PROGRESS_UPDATE_STAGE, nor PROGRESS_RESPONSE_STAGE!");
             listener.progressUpdateErrorReceived(header, incorrectStateError, qos);
         } catch (MALException ex) {

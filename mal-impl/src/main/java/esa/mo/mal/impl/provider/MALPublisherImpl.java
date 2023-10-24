@@ -124,8 +124,7 @@ public class MALPublisherImpl implements MALPublisher {
 
         if (tid == null) {
             // this means that we haven't successfully registered, need to throw an exception
-            throw new MALInteractionException(new MOErrorException(
-                    MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+            throw new MALInteractionException(new IncorrectStateException(null));
 
         }
 

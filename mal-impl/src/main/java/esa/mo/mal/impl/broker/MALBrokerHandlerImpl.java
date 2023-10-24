@@ -32,10 +32,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.IncorrectStateException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -210,8 +210,7 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
             String msg = "Provider not registered! Please register the provider"
                     + " (with PUBLISH_REGISTER) before publishing!";
             MALBrokerImpl.LOGGER.warning(msg);
-            throw new MALInteractionException(new MOErrorException(
-                    MALHelper.INCORRECT_STATE_ERROR_NUMBER, msg));
+            throw new MALInteractionException(new IncorrectStateException(msg));
         }
 
         final UpdateHeader updateHeader = publishBody.getUpdateHeader();
@@ -240,8 +239,7 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
                     + "\nkeyValues: " + keyValues.toString();
 
             MALBrokerImpl.LOGGER.warning(txt);
-            throw new MALInteractionException(new MOErrorException(
-                    MALHelper.UNKNOWN_ERROR_NUMBER, null));
+            throw new MALInteractionException(new UnknownException(null));
         }
 
         // Prepare the Key-Value list
@@ -265,8 +263,7 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
                 notifyMessages.addAll(list);
             } catch (MALException ex) {
                 MALBrokerImpl.LOGGER.warning(ex.getMessage());
-                throw new MALInteractionException(new MOErrorException(
-                        MALHelper.UNKNOWN_ERROR_NUMBER, null));
+                throw new MALInteractionException(new UnknownException(null));
             }
         }
 

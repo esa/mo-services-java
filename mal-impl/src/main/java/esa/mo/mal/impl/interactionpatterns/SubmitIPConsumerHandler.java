@@ -23,8 +23,8 @@ package esa.mo.mal.impl.interactionpatterns;
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.IncorrectStateException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
@@ -102,8 +102,7 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
             }
         } else {
             logUnexpectedTransitionError(interactionType, interactionStage);
-            throw new MALInteractionException(new MOErrorException(
-                    MALHelper.INCORRECT_STATE_ERROR_NUMBER, null));
+            throw new MALInteractionException(new IncorrectStateException(null));
         }
 
         try {

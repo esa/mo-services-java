@@ -24,10 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -199,7 +198,7 @@ public class Endpoint implements MALEndpoint {
             internalCloseMultiSendHandle(multiSendHandle, msgList);
         } catch (Exception ex) {
             exceptions.add(new MALTransmitErrorException(null,
-                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, new Union(ex.getMessage())),
+                    new InternalException(ex.getMessage()),
                     null));
         }
 

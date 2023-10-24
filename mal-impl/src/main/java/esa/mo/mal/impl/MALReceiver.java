@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -54,11 +53,11 @@ public class MALReceiver implements MALMessageListener {
     /**
      * Constructor
      *
-     * @param sender            Sender
-     * @param securityManager   Security manager
-     * @param imap              Interaction consumers
-     * @param psmap             Interaction PuSub map
-     * @param brokers           Brokers
+     * @param sender Sender
+     * @param securityManager Security manager
+     * @param imap Interaction consumers
+     * @param psmap Interaction PuSub map
+     * @param brokers Brokers
      */
     MALReceiver(final MALSender sender,
             final MALAccessControl securityManager,
@@ -251,9 +250,9 @@ public class MALReceiver implements MALMessageListener {
     /**
      * Adds a provider endpoint to the MAL receiver.
      *
-     * @param localURI  Local URI
-     * @param service   Endpoint service
-     * @param address   Endpoint address
+     * @param localURI Local URI
+     * @param service Endpoint service
+     * @param address Endpoint address
      */
     public void addProviderEndpoint(final String localURI,
             final MALService service, final Address address) {
@@ -269,8 +268,8 @@ public class MALReceiver implements MALMessageListener {
     /**
      * Removes a provider endpoint from the MAL receiver.
      *
-     * @param localURI  Local URI
-     * @param service   Endpoint Service
+     * @param localURI Local URI
+     * @param service Endpoint Service
      */
     public void removeProviderEndpoint(final String localURI, final MALService service) {
         final EndPointPair key = new EndPointPair(localURI, service);
@@ -357,10 +356,7 @@ public class MALReceiver implements MALMessageListener {
             }
         } catch (MALException ex) {
             try {
-                interaction.sendError(new MOErrorException(
-                        MALHelper.INTERNAL_ERROR_NUMBER,
-                        new Union(ex.getLocalizedMessage())
-                ));
+                interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             } catch (MALException noex) {
                 // this exception cannot actually be thrown in this 
                 // implementation, therefore we can safely ignore it
@@ -385,10 +381,7 @@ public class MALReceiver implements MALMessageListener {
             }
         } catch (MALException ex) {
             try {
-                interaction.sendError(new MOErrorException(
-                        MALHelper.INTERNAL_ERROR_NUMBER,
-                        new Union(ex.getLocalizedMessage())
-                ));
+                interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             } catch (MALException noex) {
                 // this exception cannot actually be thrown in this 
                 // implementation, therefore we can safely ignore it
@@ -420,19 +413,13 @@ public class MALReceiver implements MALMessageListener {
                 sender.returnError(address,
                         msg.getHeader(),
                         MALPubSubOperation.REGISTER_ACK_STAGE,
-                        new MOErrorException(
-                                MALHelper.BAD_ENCODING_ERROR_NUMBER,
-                                new Union("Body of register message must be of type Subscription")
-                        ));
+                        new BadEncodingException("Body of register message must be of type Subscription"));
             }
         } else {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.REGISTER_ACK_STAGE,
-                    new MOErrorException(
-                            MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
-                            new Union("Broker unknown at this address")
-                    ));
+                    new DestinationUnknownException("Broker unknown at this address"));
         }
     }
 
@@ -441,7 +428,7 @@ public class MALReceiver implements MALMessageListener {
         // find relevant broker
         final MALBrokerBindingImpl brokerHandler = brokers.get(msg.getHeader().getTo().getValue());
 
-        if (null != brokerHandler) {
+        if (brokerHandler != null) {
             if (msg.getBody() instanceof MALPublishRegisterBody) {
                 // update register list
                 final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
@@ -459,19 +446,13 @@ public class MALReceiver implements MALMessageListener {
                 sender.returnError(address,
                         msg.getHeader(),
                         MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
-                        new MOErrorException(
-                                MALHelper.BAD_ENCODING_ERROR_NUMBER,
-                                new Union("Body of publish register message must be of type EntityKeyList")
-                        ));
+                        new BadEncodingException("Body of publish register message must be of type MALPublishRegisterBody"));
             }
         } else {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.PUBLISH_REGISTER_ACK_STAGE,
-                    new MOErrorException(
-                            MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
-                            new Union("Broker unknown at this address")
-                    ));
+                    new DestinationUnknownException("Broker unknown at this address"));
         }
     }
 
@@ -523,19 +504,13 @@ public class MALReceiver implements MALMessageListener {
                     sender.returnError(address,
                             msg.getHeader(),
                             MALPubSubOperation.PUBLISH_STAGE,
-                            new MOErrorException(
-                                    MALHelper.BAD_ENCODING_ERROR_NUMBER,
-                                    new Union("Body of publish message must be of type UpdateList")
-                            ));
+                            new BadEncodingException("Body of publish message must be of type MALPublishBody"));
                 }
             } else {
                 sender.returnError(address,
                         msg.getHeader(),
                         MALPubSubOperation.PUBLISH_STAGE,
-                        new MOErrorException(
-                                MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
-                                new Union("Broker unknown at this address")
-                        ));
+                        new DestinationUnknownException("Broker unknown at this address"));
             }
         }
     }
@@ -609,10 +584,7 @@ public class MALReceiver implements MALMessageListener {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.DEREGISTER_ACK_STAGE,
-                    new MOErrorException(
-                            MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
-                            new Union("Broker unknown at this address")
-                    ));
+                    new DestinationUnknownException("Broker unknown at this address"));
         }
     }
 
@@ -638,10 +610,7 @@ public class MALReceiver implements MALMessageListener {
             sender.returnError(address,
                     msg.getHeader(),
                     MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE,
-                    new MOErrorException(
-                            MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
-                            new Union("Broker unknown at this address")
-                    ));
+                    new DestinationUnknownException("Broker unknown at this address"));
         }
     }
 

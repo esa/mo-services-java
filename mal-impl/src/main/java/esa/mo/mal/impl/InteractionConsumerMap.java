@@ -35,7 +35,6 @@ import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -61,11 +60,12 @@ public class InteractionConsumerMap {
     /**
      * Creates a new transaction.
      *
-     * @param interactionType   The interaction type.
-     * @param syncOperation     Sync Operation
-     * @param listener          The MAL interaction listener
-     * @return                  The transaction id.
-     * @throws MALInteractionException When the interaction type is not supported.
+     * @param interactionType The interaction type.
+     * @param syncOperation Sync Operation
+     * @param listener The MAL interaction listener
+     * @return The transaction id.
+     * @throws MALInteractionException When the interaction type is not
+     * supported.
      */
     public Long createTransaction(final int interactionType, final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
@@ -95,12 +95,7 @@ public class InteractionConsumerMap {
                     handler = new PubSubIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 default:
-                    throw new MALInteractionException(
-                            new MOErrorException(
-                                    MALHelper.INTERNAL_ERROR_NUMBER,
-                                    new Union("Pattern not supported")
-                            )
-                    );
+                    throw new MALInteractionException(new InternalException("Pattern not supported"));
             }
 
             if (handler != null) {
@@ -122,7 +117,7 @@ public class InteractionConsumerMap {
      * Creates a publish-subscribe transaction
      *
      * @param syncOperation The sync operation.
-     * @param listener  The MAL interaction listener.
+     * @param listener The MAL interaction listener.
      * @return The transaction id.
      */
     public Long createPubSubTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
@@ -150,7 +145,8 @@ public class InteractionConsumerMap {
      * @param oTransId The transaction id.
      * @param listener The MAL interaction listener.
      * @throws MALException When the transaction is already in use.
-     * @throws MALInteractionException When the interaction type is not supported.
+     * @throws MALInteractionException When the interaction type is not
+     * supported.
      */
     public void continueTransaction(final int interactionType,
             final UOctet lastInteractionStage, final Long oTransId,
@@ -180,12 +176,7 @@ public class InteractionConsumerMap {
                     handler = new PubSubIPConsumerHandler(responseHolder);
                     break;
                 default:
-                    throw new MALInteractionException(
-                            new MOErrorException(
-                                    MALHelper.INTERNAL_ERROR_NUMBER,
-                                    new Union("Pattern not supported")
-                            )
-                    );
+                    throw new MALInteractionException(new InternalException("Pattern not supported"));
             }
 
             transactions.put(oTransId, handler);
@@ -266,9 +257,9 @@ public class InteractionConsumerMap {
     /**
      * Handles a MAL message error.
      *
-     * @param hdr   MAL message header.
-     * @param err   MAL error exception
-     * @param qosMap    QoS level.
+     * @param hdr MAL message header.
+     * @param err MAL error exception
+     * @param qosMap QoS level.
      */
     public void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap) {
         final Long id = hdr.getTransactionId();

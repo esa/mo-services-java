@@ -25,7 +25,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.DeliveryTimedoutException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
@@ -143,8 +143,7 @@ public class InteractionTimeout {
                                 + "set to: " + timeout + " ms";
 
                         try {
-                            MOErrorException error
-                                    = new MOErrorException(MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, msg);
+                            MOErrorException error = new DeliveryTimedoutException(msg);
                             handler.handleError(null, error, null);
                         } catch (Exception ex) {
                             // Do not allow to kill the thread

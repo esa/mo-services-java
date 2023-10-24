@@ -35,6 +35,8 @@ import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.NotFoundException;
+import org.ccsds.moims.mo.mal.UnsupportedAreaException;
+import org.ccsds.moims.mo.mal.UnsupportedServiceException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -404,8 +406,7 @@ public class MALMessageHeader {
         MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getServiceVersion());
 
         if (malArea == null) {
-            throw new NotFoundException(new MOErrorException(
-                    MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER,
+            throw new NotFoundException(new UnsupportedAreaException(
                     "Operation for unknown area/version received ("
                     + this.getServiceArea() + ", " + this.getServiceVersion() + ")"));
         }
@@ -413,8 +414,7 @@ public class MALMessageHeader {
         MALService malService = malArea.getServiceByNumber(this.getService());
 
         if (malService == null) {
-            throw new NotFoundException(new MOErrorException(
-                    MALHelper.UNSUPPORTED_SERVICE_ERROR_NUMBER,
+            throw new NotFoundException(new UnsupportedServiceException(
                     "Service for unknown area/version/service received ("
                     + this.getServiceArea() + ", " + this.getServiceVersion()
                     + ", " + this.getService() + ")"));
@@ -423,8 +423,7 @@ public class MALMessageHeader {
         MALOperation op = malService.getOperationByNumber(this.getOperation());
 
         if (op == null) {
-            throw new NotFoundException(new MOErrorException(
-                    MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER,
+            throw new NotFoundException(new UnsupportedOperationException(
                     "Operation for unknown area/version/service/op received ("
                     + this.getServiceArea() + ", " + this.getServiceVersion() + ", "
                     + this.getService() + ", " + this.getOperation() + ")"));

@@ -36,9 +36,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.DeliveryFailedException;
+import org.ccsds.moims.mo.mal.DestinationUnknownException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -196,13 +196,13 @@ public class RMITransport extends Transport<byte[], byte[]> {
         } catch (NotBoundException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                    new DestinationUnknownException(null),
                     null);
 
         } catch (IOException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MOErrorException(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
+                    new DeliveryFailedException(null),
                     null);
         }
     }

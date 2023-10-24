@@ -404,8 +404,7 @@ public abstract class Transport<I, O> implements MALTransport {
 
         if (header.getTo() == null || header.getTo().getValue() == null) {
             throw new MALTransmitErrorException(header,
-                    new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
-                            "URI To field must not be null"), qosProperties);
+                    new DestinationUnknownException("URI To field must not be null"), qosProperties);
         }
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
@@ -423,7 +422,7 @@ public abstract class Transport<I, O> implements MALTransport {
 
             // if local then just send internally
             receiveIncomingMessage(new IncomingMessageHolder(
-                            header.getTransactionId(), msg, new PacketToString(null)));
+                    header.getTransactionId(), msg, new PacketToString(null)));
         } else {
             try {
                 LOGGER.log(Level.FINE,
@@ -442,10 +441,8 @@ public abstract class Transport<I, O> implements MALTransport {
                 if (!Boolean.TRUE.equals(outgoingPacket.getResult())) {
                     // data was not sent succesfully, throw an exception for the
                     // higher MAL layers
-                    throw new MALTransmitErrorException(
-                            header,
-                            new MOErrorException(MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null),
-                            null);
+                    throw new MALTransmitErrorException(header,
+                            new DeliveryFailedException(null), null);
                 }
 
                 LOGGER.log(Level.FINE,
@@ -455,16 +452,12 @@ public abstract class Transport<I, O> implements MALTransport {
                 throw e;
             } catch (InterruptedException e) {
                 LOGGER.log(Level.SEVERE, "Interrupted while waiting for data reply", e);
-                throw new MALTransmitErrorException(
-                        header,
-                        new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
-                        null);
+                throw new MALTransmitErrorException(header,
+                        new InternalException(null), null);
             } catch (Exception t) {
                 LOGGER.log(Level.SEVERE, "Could not send message!", t);
-                throw new MALTransmitErrorException(
-                        header,
-                        new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
-                        null);
+                throw new MALTransmitErrorException(header,
+                        new InternalException(null), null);
             }
         }
     }
@@ -844,14 +837,14 @@ public abstract class Transport<I, O> implements MALTransport {
                             "Could not connect to: " + remoteRootURI, e);
 
                     throw new MALTransmitErrorException(msg.getHeader(),
-                            new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                            new DestinationUnknownException(null),
                             null);
                 }
             } else if (sender == null && !connectWhenConsumerOffline) {
                 LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and "
                         + "the connectWhenConsumerOffline property prevents establishing a new one");
                 throw new MALTransmitErrorException(msg.getHeader(),
-                        new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null),
+                        new DestinationUnknownException(null),
                         null);
             }
         }
@@ -958,8 +951,7 @@ public abstract class Transport<I, O> implements MALTransport {
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "Could not encode message!", ex);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MOErrorException(MALHelper.BAD_ENCODING_ERROR_NUMBER, null),
-                    null);
+                    new BadEncodingException(null), null);
         }
     }
 

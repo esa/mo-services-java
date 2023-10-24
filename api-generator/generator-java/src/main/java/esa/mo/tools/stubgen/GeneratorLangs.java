@@ -1058,8 +1058,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Send\")";
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
-                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1086,12 +1086,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Submit\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
-                + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))"), ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
-                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1122,12 +1122,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Request\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
-                + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))"), ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
-                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1154,12 +1154,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Invoke\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError(new "
-                + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))"), ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
-                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1185,16 +1185,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("  default:", false);
         ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Progress\")";
-        method.addMethodWithDependencyStatement(
-                createMethodCall("    interaction.sendError(new "
-                        + convertToNamespace(stdError + "("
-                                + errorCodeAsReference(file, ns) + ", "
-                                + "new " + malString) + unkErrorMsg + "))"),
-                ns + stdErrorNs, true);
+        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
-                + "(new " + convertToNamespace(stdError + "(" + errorCodeAsReference(file, ns) + ", "
-                        + "new " + malString) + unkErrorMsg + "))",
-                ns + stdErrorNs, true);
+                + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
+                + unkErrorMsg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 

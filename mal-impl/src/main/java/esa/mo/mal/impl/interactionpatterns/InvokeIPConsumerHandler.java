@@ -23,8 +23,8 @@ package esa.mo.mal.impl.interactionpatterns;
 import esa.mo.mal.impl.MALContextFactoryImpl;
 import java.util.Map;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.IncorrectStateException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -76,8 +76,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
                     }
                 } else {
                     finished = true;
-                    MOErrorException incorrectStateError = new MOErrorException(
-                            MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+                    MOErrorException incorrectStateError = new IncorrectStateException(
                             "The received message is not an INVOKE_ACK_STAGE!");
                     listener.invokeAckErrorReceived(header, incorrectStateError, qos);
                 }
@@ -97,8 +96,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
             }
 
             // If it is not ACK, nor RESPONSE, then something went wrong!
-            MOErrorException incorrectStateError = new MOErrorException(
-                    MALHelper.INCORRECT_STATE_ERROR_NUMBER,
+            MOErrorException incorrectStateError = new IncorrectStateException(
                     "The received message is not an INVOKE_ACK_STAGE, nor INVOKE_RESPONSE_STAGE!");
             listener.invokeResponseErrorReceived(header, incorrectStateError, qos);
         } catch (MALException ex) {
