@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.com.support;
+package org.ccsds.moims.mo.com.test.util;
 
 import org.ccsds.moims.mo.com.structures.ObjectType;
 

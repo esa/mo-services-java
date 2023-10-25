@@ -20,7 +20,7 @@
  */
 package esa.mo.com.test.archive;
 
-import esa.mo.com.support.ComStructureHelper;
+import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.Iterator;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;

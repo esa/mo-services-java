@@ -20,7 +20,7 @@
  */
 package org.ccsds.moims.mo.com.test.activity;
 
-import esa.mo.com.support.ComStructureHelper;
+import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.*;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
