@@ -22,6 +22,7 @@ package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorLangs;
+import static esa.mo.tools.stubgen.GeneratorLangs.PROVIDER_FOLDER;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
@@ -46,6 +47,7 @@ import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -253,11 +255,25 @@ public class JavaServiceInfo {
         }
 
         // Constructor - shouldn't it be started with the constructor method?
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
+        MethodWriter constructor = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
                 null, null, null, null, null);
         String ending = hasCOMObjects ? ", COM_OBJECTS)" : ")";
-        method.addLine("super(SERVICE_KEY, " + serviceCAPS + "_SERVICE_NAME, " + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending);
+        constructor.addLine("super(SERVICE_KEY, " + serviceCAPS + "_SERVICE_NAME, "
+                + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending);
+        constructor.addMethodCloseStatement();
+
+        // Add the MALArea getArea() method
+        CompositeField opType = generator.createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALArea", false),
+                false, true, null);
+        MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, opType, "getArea", null, null,
+                "Returns the corresponding MALArea from this service.",
+                "Returns the corresponding MALArea from this service.", null);
+
+        method.addLine("    return " + namespace, true);
         method.addMethodCloseStatement();
+
         file.addClassCloseStatement();
         file.flush();
     }

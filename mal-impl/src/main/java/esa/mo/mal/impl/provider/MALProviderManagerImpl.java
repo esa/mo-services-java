@@ -23,6 +23,7 @@ package esa.mo.mal.impl.provider;
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
@@ -60,6 +61,9 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
             final Boolean isPublisher,
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
         return new MALProviderImpl(this,
                 contextImpl,
                 localName,
@@ -87,6 +91,9 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
             final Boolean isPublisher,
             final URI sharedBrokerUri,
             final NamedValueList supplements) throws MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
         return new MALProviderImpl(this,
                 contextImpl,
                 endPoint,

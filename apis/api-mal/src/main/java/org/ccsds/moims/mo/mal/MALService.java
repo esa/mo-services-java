@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  * The MALService class represents the specification of a service.
  */
-public class MALService {
+public abstract class MALService {
 
     /**
      * Number representing a non-existent service.
@@ -136,4 +136,6 @@ public class MALService {
     public Element[] getElements() {
         return elements;
     }
+
+    public abstract MALArea getArea();
 }

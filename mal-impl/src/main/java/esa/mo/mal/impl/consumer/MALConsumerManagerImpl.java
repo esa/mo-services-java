@@ -23,6 +23,7 @@ package esa.mo.mal.impl.consumer;
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
@@ -60,6 +61,9 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
             final Map qosProps,
             final UInteger priority,
             final NamedValueList supplements) throws MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
         return new MALConsumerImpl(impl,
                 localName,
                 uriTo,
@@ -91,6 +95,9 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
             final UInteger priority,
             final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
         return new MALConsumerImpl(impl,
                 endPoint,
                 uriTo,

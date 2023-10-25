@@ -83,11 +83,8 @@ public class BufferReader {
                 TimeScalesFactory.getTAI());
 
         // Initialize BigEnumeration data type
-        MALContextFactory.getElementsRegistry().addCallableElement(
-                LargeEnumeration.SHORT_FORM, () -> new LargeEnumeration(0));
-
-        MALContextFactory.getElementsRegistry().addCallableElement(
-                MediumEnumeration.SHORT_FORM, () -> new MediumEnumeration(0));
+        MALContextFactory.getElementsRegistry().addElement(new LargeEnumeration(0));
+        MALContextFactory.getElementsRegistry().addElement(new MediumEnumeration(0));
     }
 
     private static AbsoluteDate fineTimeMalJavaApiEpoch;

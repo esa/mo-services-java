@@ -39,11 +39,15 @@ public class MALElementsRegistry {
     /**
      * Adds an Element to the map of Elements.
      *
-     * @param absoluteSFP The absolute short form part.
-     * @param callable The method with the generation of the Element.
+     * @param element The Element to be added.
+     * @return True if already previously loaded else false.
      */
-    public void addCallableElement(Long absoluteSFP, Callable<Element> callable) {
-        ELEMENTS.put(absoluteSFP, callable);
+    public boolean addElement(Element element) {
+        Long absoluteSFP = element.getShortForm();
+        Callable<Element> callable = () -> element.createElement();
+
+        Callable<Element> previous = ELEMENTS.put(absoluteSFP, callable);
+        return previous != null; // Not the first time?
     }
 
     /**
@@ -153,7 +157,9 @@ public class MALElementsRegistry {
         Element[] elements = malArea.getElements();
 
         for (Element element : elements) {
-            this.addCallableElement(element.getShortForm(), () -> element.createElement());
+            if (this.addElement(element)) {
+                break;
+            }
         }
     }
 
@@ -161,7 +167,19 @@ public class MALElementsRegistry {
         Element[] elements = malService.getElements();
 
         for (Element element : elements) {
-            this.addCallableElement(element.getShortForm(), () -> element.createElement());
+            if (this.addElement(element)) {
+                break;
+            }
         }
+    }
+
+    public void loadServiceAndAreaElements(MALService service) {
+        // Load the elements here:
+        MALElementsRegistry elementsRegistry = MALContextFactory.getElementsRegistry();
+        elementsRegistry.registerElementsForArea(MALHelper.MAL_AREA);
+        elementsRegistry.registerElementsForService(service);
+
+        // The Top-level Area loading also needs to be loaded
+        elementsRegistry.registerElementsForArea(service.getArea());
     }
 }
