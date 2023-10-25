@@ -185,7 +185,11 @@ public class DocxBaseWriter extends AbstractWriter {
         StringBuilder buf = new StringBuilder();
 
         for (int i = 0; i < types.size(); i++) {
-            boolean nullable = types.get(i).getFieldRef().isCanBeNull();
+            // default value
+            boolean nullable = true;
+            if (types.get(i).isField()) {
+              nullable = types.get(i).getFieldRef().isCanBeNull();
+            }
             buf.append("<w:r><w:t>");
             buf.append(nullable ? "Yes" : "No");
             buf.append("</w:t></w:r>");
