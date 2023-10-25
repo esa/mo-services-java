@@ -181,5 +181,12 @@ public class MALElementsRegistry {
 
         // The Top-level Area loading also needs to be loaded
         elementsRegistry.registerElementsForArea(service.getArea());
+        try {
+            service.getArea().addService(service);
+            org.ccsds.moims.mo.mal.MALContextFactory.registerArea(service.getArea());
+        } catch (MALException ex) {
+            Logger.getLogger(MALElementsRegistry.class.getName()).log(
+                    Level.SEVERE, "Something went wrong!", ex);
+        }
     }
 }

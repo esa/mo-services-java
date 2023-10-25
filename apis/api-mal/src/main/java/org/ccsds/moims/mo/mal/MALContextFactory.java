@@ -54,8 +54,8 @@ public abstract class MALContextFactory {
      * @throws MALException If area number already registered to a different
      * MALArea instance.
      */
-    public static void registerArea(final MALArea area) throws IllegalArgumentException, MALException {
-        if (null == area) {
+    public static void registerArea(final MALArea area) throws MALException {
+        if (area == null) {
             throw new IllegalArgumentException("NULL area argument");
         }
 
@@ -64,7 +64,7 @@ public abstract class MALContextFactory {
         final VersionizedAreaNumber verArea = new VersionizedAreaNumber(num, ver);
         final MALArea currentMapping = VERSIONIZED_AREA_NUMBER_MAP.get(verArea);
 
-        if ((null != currentMapping) && (currentMapping != area)) {
+        if ((currentMapping != null) && (currentMapping != area)) {
             throw new MALException("MALArea already registered with a different instance");
         }
 
