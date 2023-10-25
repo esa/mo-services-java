@@ -178,7 +178,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         if (isProposed) {
-            file.append(makeLine(1, "@org.ccsds.moims.mo.com.Proposed", false));
+            file.append(makeLine(1, "@Deprecated", false));
         }
         file.append(makeLine(1, buf.toString(), true));
         file.append(getLineSeparator());
