@@ -127,14 +127,6 @@ public class JavaHelpers {
         }
 
         method.addMethodCloseStatement();
-
-        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
-                true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException,
-                "Registers all aspects of this service with the provided element factory and any referenced areas/services.",
-                null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
-        method.addLine("init(elementsRegistry)");
-        method.addMethodCloseStatement();
-
         file.addClassCloseStatement();
         file.flush();
     }
@@ -278,7 +270,7 @@ public class JavaHelpers {
 
         for (ServiceType service : area.getService()) {
             String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
-            String ns = generator.convertToNamespace(helperType + ".deepInit(elementsRegistry)");
+            String ns = generator.convertToNamespace(helperType + ".init(elementsRegistry)");
             method.addMethodWithDependencyStatement(ns, ns, true);
         }
 
