@@ -181,7 +181,7 @@ public class JavaHelpers {
         file.addClassVariable(true, true, StdStrings.PUBLIC, _areaVersionVar, false, String.valueOf(area.getVersion()));
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaVersionVar, false, "(_" + areaNameCAPS + "_AREA_VERSION)");
 
-        List<String> elementInstantiations = new LinkedList<>();
+        List<String> elementList = new LinkedList<>();
 
         if ((area.getDataTypes() != null) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
             for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
@@ -200,34 +200,34 @@ public class JavaHelpers {
                     }
 
                     String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
-                    elementInstantiations.add("new " + theType);
-                    elementInstantiations.add("new " + lclsName + "()");
+                    elementList.add("new " + theType);
+                    elementList.add("new " + lclsName + "()");
                 } else if (oType instanceof CompositeType) {
                     CompositeType dt = (CompositeType) oType;
 
                     if (null != dt.getShortFormPart()) {
                         String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
                         String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
-                        elementInstantiations.add("new " + clsName + "()");
-                        elementInstantiations.add("new " + lclsName + "()");
+                        elementList.add("new " + clsName + "()");
+                        elementList.add("new " + lclsName + "()");
                     }
                 } else if (oType instanceof EnumerationType) {
                     EnumerationType dt = (EnumerationType) oType;
                     String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
                     String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
-                    elementInstantiations.add(clsName + ".fromOrdinal(0)");
-                    elementInstantiations.add("new " + lclsName + "()");
+                    elementList.add(clsName + ".fromOrdinal(0)");
+                    elementList.add("new " + lclsName + "()");
                 }
             }
         }
 
         StringBuilder buf = new StringBuilder();
-        for (String objectCall : elementInstantiations) {
+        for (String objectCall : elementList) {
             buf.append("\n        ").append(objectCall).append(",");
         }
         CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_ELEMENTS",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Element", false),
-                false, true, "Area elements.");
+                false, true, "Area Elements.");
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, objectInstVar,
                 false, true, buf.toString(), false);
 
