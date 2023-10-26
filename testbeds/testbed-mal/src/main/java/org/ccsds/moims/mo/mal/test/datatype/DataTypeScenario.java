@@ -28,6 +28,7 @@ import java.util.Vector;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.CompositeList;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -424,7 +425,7 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public String explicitMultiReturnWorks() throws MALInteractionException, MALException {
-        String rv;
+        String rv = null;
 
         logMessage("Starting multi return data test...");
         try {
@@ -433,7 +434,7 @@ public class DataTypeScenario extends LoggingBase {
                     TestData.testUOctet, TestData.testUShort,
                     TestData.testUInteger, TestData.testULong);
             rv = subMultiTest(TestData.testMultiReturnExplicit.getOut1(),
-                    tv.getOut1(), null, "explicit Multi return part 1");
+                    tv.getOut1(), rv, "explicit Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnExplicit.getOut2(),
                     tv.getOut2(), rv, "explicit Multi return part 2");
             rv = subMultiTest(TestData.testMultiReturnExplicit.getOut3(),
@@ -441,15 +442,39 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(TestData.testMultiReturnExplicit.getOut4(),
                     tv.getOut4(), rv, "explicit Multi return part 4");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "explicit Multi return");
+            rv = subMultiTestExceptionHandler(ex, rv, "explicit Multi return");
         }
         logMessage("Finished multi return data test");
 
         return rv;
     }
 
+    public String explicitAttributeTypesWork() throws MALInteractionException, MALException {
+        String rv = null;
+
+        logMessage("Starting explicit Attribute types data test...");
+        Vector testdata = TestData.testAttributes;
+        DataTestStub stub = getDataTestStub();
+        for (int i = 0; i < testdata.size(); i++) {
+            Attribute testValue = (Attribute) testdata.get(i);
+            String msg = "explicit Attribute types part " + i;
+            try {
+                Attribute rspnValue = stub.testMalAttribute(testValue);
+                rv = subMultiTest(testValue, rspnValue, rv, msg);
+                logMessage("Test step passed: " + i);
+            } catch (MALInteractionException ex) {
+                rv = subMultiTestExceptionHandler(ex, rv, msg);
+            }
+
+            logMessage("Test step passed: " + i);
+        }
+        logMessage("Finished explicit Attribute types data test");
+
+        return rv;
+    }
+
     public String abstractMultiReturnWorks() throws MALInteractionException, MALException {
-        String rv;
+        String rv = null;
 
         logMessage("Starting abstract multi return data test...");
         try {
@@ -457,7 +482,7 @@ public class DataTypeScenario extends LoggingBase {
                     TestData.testUOctet, TestData.testUShort,
                     TestData.testUInteger, TestData.testULong);
             rv = subMultiTest(TestData.testMultiReturnAbstract.get_UOctet0(),
-                    tv.get_UOctet0(), null, "abstract Multi return part 1");
+                    tv.get_UOctet0(), rv, "abstract Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnAbstract.get_UShort1(),
                     tv.get_UShort1(), rv, "abstract Multi return part 2");
             rv = subMultiTest(TestData.testMultiReturnAbstract.get_UInteger2(),
@@ -465,7 +490,7 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(TestData.testMultiReturnAbstract.get_Element3(),
                     tv.get_Element3(), rv, "abstract Multi return part 4");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "abstract Multi return");
+            rv = subMultiTestExceptionHandler(ex, rv, "abstract Multi return");
         }
         logMessage("Finished abstract multi return data test");
 
@@ -473,7 +498,7 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public String innerAbstractMultiReturnWorks() throws MALInteractionException, MALException {
-        String rv;
+        String rv = null;
 
         logMessage("Starting abstract multi return data test...");
         try {
@@ -481,7 +506,7 @@ public class DataTypeScenario extends LoggingBase {
                     TestData.testUOctet, TestData.testULong,
                     TestData.testUShort, TestData.testUInteger);
             rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UOctet0(),
-                    tv.get_UOctet0(), null, "inner abstract Multi return part 1");
+                    tv.get_UOctet0(), rv, "inner abstract Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element1(),
                     tv.get_Element1(), rv, "inner abstract Multi return part 2");
             rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element2(),
@@ -489,7 +514,7 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UInteger3(),
                     tv.get_UInteger3(), rv, "inner abstract Multi return part 4");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "inner abstract Multi return");
+            rv = subMultiTestExceptionHandler(ex, rv, "inner abstract Multi return");
         }
         logMessage("Finished inner abstract multi return data test");
 
@@ -497,7 +522,7 @@ public class DataTypeScenario extends LoggingBase {
     }
 
     public String multiReturnWithNullsWork() throws MALInteractionException, MALException {
-        String rv;
+        String rv = null;
 
         logMessage("Starting multi return null data test...");
         try {
@@ -506,7 +531,7 @@ public class DataTypeScenario extends LoggingBase {
                     TestData.testUOctet, TestData.testUShort,
                     TestData.testUInteger, null);
             rv = subMultiTest(TestData.testMultiReturnNull.getOut1(),
-                    tv.getOut1(), null, "null Multi return part 1");
+                    tv.getOut1(), rv, "null Multi return part 1");
             rv = subMultiTest(TestData.testMultiReturnNull.getOut2(),
                     tv.getOut2(), rv, "null Multi return part 2");
             rv = subMultiTest(TestData.testMultiReturnNull.getOut3(),
@@ -514,7 +539,7 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(TestData.testMultiReturnNull.getOut4(),
                     tv.getOut4(), rv, "null Multi return part 4");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "null Multi return");
+            rv = subMultiTestExceptionHandler(ex, rv, "null Multi return");
         }
         logMessage("Finished multi return null data test");
 
@@ -538,7 +563,7 @@ public class DataTypeScenario extends LoggingBase {
         // The only acceptable concrete type defined by the MAL specification is the
         // List<Element> MAL type, which is mapped as the HeterogeneousList Java type.
         // Any List<ConcreteType> must be converted prior to the call.
-        String rv;
+        String rv = null;
         AbstractCompositeList res;
         try {
             // homogeneous concrete list type List<StructureWithAbstractField>
@@ -548,14 +573,14 @@ public class DataTypeScenario extends LoggingBase {
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
             res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
             rv = subMultiTest(abstractList,
-                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
+                    res, rv, "testStructureWithAbstractFieldSingleTypedList1");
             // heterogeneous concrete list type List<Element>
             abstractList = TestData.testAbstractCompositeMultipleTypedList;
             res = getDataTestStub().testPolymorphicAbstractCompositeList(abstractList);
             rv = subMultiTest(abstractList,
                     res, rv, "testAbstractCompositeMultipleTypedList");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "polymorphicAbstractCompositeListsWork");
+            rv = subMultiTestExceptionHandler(ex, rv, "polymorphicAbstractCompositeListsWork");
         }
         logMessage("Finished polymorphic AbstractComposite list parameter test");
         return rv;
@@ -584,7 +609,7 @@ public class DataTypeScenario extends LoggingBase {
 
             res = getDataTestStub().testPolymorphicMalCompositeList(abstractList);
             rv = subMultiTest(abstractList,
-                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
+                    res, rv, "testStructureWithAbstractFieldSingleTypedList1");
             // heterogeneous concrete list type List<Element>
             // The current mapping requires to use the CompositeList type at the API level
             // instead of the HeterogeneousList type which maps the List<Element> type required at the MAL level.
@@ -601,7 +626,7 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(compositeList,
                     res, rv, "testAbstractCompositeMultipleTypedList");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "polymorphicMalCompositeListsWork");
+            rv = subMultiTestExceptionHandler(ex, rv, "polymorphicMalCompositeListsWork");
         }
         logMessage("Finished polymorphic MAL Composite list parameter test");
         return rv;
@@ -616,7 +641,7 @@ public class DataTypeScenario extends LoggingBase {
         // The only acceptable concrete type defined by the MAL specification is the
         // List<Element> MAL type, which is mapped as the HeterogeneousList Java type.
         // Any List<ConcreteType> must be converted prior to the call.
-        String rv;
+        String rv = null;
         ElementList res;
         try {
             // homogeneous concrete list type List<StructureWithAbstractField>
@@ -624,7 +649,7 @@ public class DataTypeScenario extends LoggingBase {
             abstractList.addAll(TestData.testStructureWithAbstractFieldSingleTypedList1);
             res = getDataTestStub().testPolymorphicMalElementList(abstractList);
             rv = subMultiTest(abstractList,
-                    res, null, "testStructureWithAbstractFieldSingleTypedList1");
+                    res, rv, "testStructureWithAbstractFieldSingleTypedList1");
             // heterogeneous concrete list type List<Element>
             // The current mapping requires to use the HeterogeneousList type at the API level.
             // The variable is an AbstractCompositeList, which extends HeterogeneousList, so a Java typecast applies.
@@ -637,7 +662,7 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(TestData.testAbstractCompositeMultipleTypedList,
                     res, rv, "polymorphicMalElementListsWork");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "polymorphicMalElementListsWork");
+            rv = subMultiTestExceptionHandler(ex, rv, "polymorphicMalElementListsWork");
         }
         logMessage("Finished polymorphic MAL Element list parameter test");
         return rv;
@@ -666,7 +691,7 @@ public class DataTypeScenario extends LoggingBase {
             rv = subMultiTest(TestData.testGarage.getCarsAsObjects(),
                     res.get_ObjectRefList3(), rv, "polymorphicObjectRefTypesWork param 4");
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "polymorphicObjectRefTypesWork");
+            rv = subMultiTestExceptionHandler(ex, rv, "polymorphicObjectRefTypesWork");
         }
         logMessage("Finished polymorphic ObjectRef types parameter test");
         return rv;
@@ -762,7 +787,7 @@ public class DataTypeScenario extends LoggingBase {
                     "Latest object version, field windows");
 
         } catch (MALInteractionException ex) {
-            rv = subSingleTestExceptionHandler(ex, "Object assertions are checked test");
+            rv = subMultiTestExceptionHandler(ex, rv, "Object assertions are checked test");
         }
         logMessage("Finished Object assertions are checked test");
         return rv;
@@ -854,6 +879,16 @@ public class DataTypeScenario extends LoggingBase {
         }
 
         throw ex;
+    }
+
+    protected String subMultiTestExceptionHandler(MALInteractionException ex,
+            String previousResult, String testMsg) throws MALInteractionException {
+        String result = subSingleTestExceptionHandler(ex, testMsg);
+        if ((previousResult == null) || ("OK".equals(previousResult))) {
+            return result;
+        }
+
+        return previousResult;
     }
 
     protected static File createTempFile(String prefix) {

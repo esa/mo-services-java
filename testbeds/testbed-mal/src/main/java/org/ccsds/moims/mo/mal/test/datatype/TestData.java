@@ -134,7 +134,11 @@ public abstract class TestData {
         testAttributes.add(testIdentifier);
         testAttributes.add(testTime);
         testAttributes.add(testURI);
-        //testAttributes.add(testBlob);
+        testAttributes.add(testBlob);
+        testAttributes.add(testUOctet);
+        testAttributes.add(testUShort);
+        testAttributes.add(testUInteger);
+        testAttributes.add(testULong);
 
         // union attribute types
         testAttributes.add(new Union(testBoolean));

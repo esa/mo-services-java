@@ -58,3 +58,4 @@ The test operation of the !-DataTest-! service is specific to the tested type T.
 |check| explicit ULong type works| OK|
 |check| explicit UShort type works| OK|
 |check| explicit Object Ref type works| OK|
+|check| explicit Attribute types work| OK|
