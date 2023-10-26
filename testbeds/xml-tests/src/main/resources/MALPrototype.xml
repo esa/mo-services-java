@@ -171,7 +171,7 @@
             </smc:capabilitySet>
             <smc:capabilitySet number="103">
                 <smc:sendIP name="sendMulti" number="113" supportInReplay="false"
-                            comment="This operation cleans the assertions table and check that the header of the received message is the same as the one expected (see 4.1.1).">
+                            comment="This operation duplicates the send operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:send>
                             <smc:type area="MALPrototype" name="IPTestDefinition" />
@@ -182,7 +182,7 @@
                 </smc:sendIP>
                 <smc:submitIP name="submitMulti" number="114"
                               supportInReplay="false"
-                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                              comment="This operation duplicates the testSubmit operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:submit>
                             <smc:type area="MALPrototype" name="IPTestDefinition" />
@@ -197,7 +197,7 @@
                 </smc:submitIP>
                 <smc:requestIP name="requestMulti" number="115"
                                supportInReplay="false"
-                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                               comment="This operation duplicates the request operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MALPrototype" name="IPTestDefinition" />
@@ -239,7 +239,7 @@
                 </smc:invokeIP>
                 <smc:progressIP name="progressMulti" number="117"
                                 supportInReplay="false"
-                                comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
+                                comment="This operation duplicates the progress operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:progress>
                             <smc:type area="MALPrototype" name="IPTestDefinition" />
@@ -266,7 +266,7 @@
                 </smc:progressIP>
                 <smc:pubsubIP name="monitorMulti" number="118"
                               supportInReplay="false"
-                              comment="This operation initiates a Pub/Sub interaction. It is not implemented by the service provider but by a broker.">
+                              comment="This operation duplicates the monitor operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:publishNotify>
                             <smc:type area="MALPrototype" name="TestUpdate" />
@@ -296,7 +296,7 @@
                 </smc:requestIP>
                 <smc:invokeIP name="testInvokeEmptyBody" number="121"
                               supportInReplay="false"
-                              comment="This operation checks that an empty body can be sent and received explicitly for a request pattern">
+                              comment="This operation checks that an empty body can be sent and received explicitly for an Invoke pattern">
                     <smc:messages>
                         <smc:invoke>
                             <smc:type area="MALPrototype"
@@ -310,7 +310,7 @@
                 </smc:invokeIP>
                 <smc:progressIP name="testProgressEmptyBody" number="122"
                                 supportInReplay="false"
-                                comment="This operation checks that an empty body can be sent and received explicitly for a request pattern">
+                                comment="This operation checks that an empty body can be sent and received explicitly for a Progress pattern">
                     <smc:messages>
                         <smc:progress>
                             <smc:type area="MALPrototype"
@@ -816,7 +816,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testMalAttribute" number="125"
                                supportInReplay="false"
-                               comment="This operation checks that a MAL::Attribute can be sent and received explicitly">
+                               comment="This operation checks that a MAL::Attribute can be sent and received as an abstract Attribute">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Attribute" />
@@ -834,7 +834,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testMalComposite" number="126"
                                supportInReplay="false"
-                               comment="This operation checks that a MAL::Composite can be sent and received explicitly">
+                               comment="This operation checks that a Composite can be sent and received as a MAL Composite. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Composite" />
@@ -852,7 +852,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testAbstractComposite" number="127"
                                supportInReplay="false"
-                               comment="This operation checks that an abstract Composite can be sent and received explicitly">
+                               comment="This operation checks that a Composite can be sent and received as an abstract Composite. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MALPrototype" name="TestPublish" />
@@ -870,7 +870,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testMalAttributeList" number="128"
                                supportInReplay="false"
-                               comment="This operation checks that a list of MAL::Attribute can be sent and received explicitly">
+                               comment="This operation checks that a list of MAL::Attribute can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MAL" name="Attribute" />
@@ -888,7 +888,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testMalElementList" number="129"
                                supportInReplay="false"
-                               comment="This operation checks that a list of MAL::Element can be sent and received explicitly">
+                               comment="This operation checks that a list of MAL::Element can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MAL" name="Element" />
@@ -906,7 +906,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testMalCompositeList" number="130"
                                supportInReplay="false"
-                               comment="This operation checks that a list of MAL::Composite can be sent and received explicitly">
+                               comment="This operation checks that a list of MAL::Composite can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MAL" name="Composite" />
@@ -924,7 +924,7 @@
                 </smc:requestIP>
                 <smc:requestIP name="testAbstractCompositeList" number="131"
                                supportInReplay="false"
-                               comment="This operation checks that a list of abstract composite can be sent and received explicitly">
+                               comment="This operation checks that a list of abstract composite can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MALPrototype" name="TestPublish" />
@@ -1726,7 +1726,7 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="Auto" comment="An abstract object type for cars.">
+            <smc:composite name="Auto" comment="An abstract object type for cars. This type and all derived types are notably used in the Polymorphic types test procedure related to ObjectRef.">
                 <smc:extends>
                     <smc:type area="MAL" name="Object" />
                 </smc:extends>
@@ -1750,7 +1750,7 @@
                     <smc:type area="MALPrototype" name="Auto" />
                 </smc:extends>
             </smc:composite>
-            <smc:composite name="Garage" shortFormPart="122" comment="The object representing a Garage with multiple references to cars.">
+            <smc:composite name="Garage" shortFormPart="122" comment="The object representing a Garage with multiple references and lists of references to cars.">
                 <smc:extends>
                     <smc:type area="MAL" name="Object" />
                 </smc:extends>
@@ -1773,7 +1773,7 @@
                     <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="TestObjectBase" comment="">
+            <smc:composite name="TestObjectBase" comment="An abstract MO Object structure.">
                 <smc:extends>
                     <smc:type area="MAL" name="Object" />
                 </smc:extends>
@@ -1784,7 +1784,7 @@
                     <smc:type area="MAL" name="Integer" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="TestObject" shortFormPart="20" comment="">
+            <smc:composite name="TestObject" shortFormPart="20" comment="A concrete MO Object structure which does not extend directly the MAL Object type.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="TestObjectBase" />
                 </smc:extends>
@@ -1795,7 +1795,7 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="TestBody" shortFormPart="123" comment="An abstract composite example.">
+            <smc:composite name="TestBody" shortFormPart="123" comment="An concrete composite example used to build complex composite structures.">
                 <smc:extends>
                     <smc:type area="MAL" name="Composite" />
                 </smc:extends>
@@ -1806,7 +1806,7 @@
                     <smc:type area="MAL" name="Integer" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="AbstractComposite" comment="An abstract composite example.">
+            <smc:composite name="AbstractComposite" comment="An abstract composite example. This type and all derived types are notably used in the Polymorphic types test procedure.">
                 <smc:extends>
                     <smc:type area="MAL" name="Composite" />
                 </smc:extends>
@@ -1817,7 +1817,7 @@
                     <smc:type area="MAL" name="Integer" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="ComplexStructure" shortFormPart="345" comment="A concrete composite example extending an Abstract composite.">
+            <smc:composite name="ComplexStructure" shortFormPart="345" comment="A concrete composite example extending an Abstract composite with some common fields.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="AbstractComposite" />
                 </smc:extends>
@@ -1831,12 +1831,12 @@
                     <smc:type area="MALPrototype" name="TestBody" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="BasicAbstractComposite" shortFormPart="346" comment="A concrete composite example extending an Abstract composite.">
+            <smc:composite name="BasicAbstractComposite" shortFormPart="346" comment="A concrete composite example extending an Abstract composite with no field.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="AbstractComposite" />
                 </smc:extends>
             </smc:composite>
-            <smc:composite name="StructureWithAbstractField" shortFormPart="347" comment="A concrete composite example extending an Abstract composite.">
+            <smc:composite name="StructureWithAbstractField" shortFormPart="347" comment="A concrete composite example extending an Abstract composite with a field which is itself an Abstract composite, allowing for defining complex instances.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="AbstractComposite" />
                 </smc:extends>
