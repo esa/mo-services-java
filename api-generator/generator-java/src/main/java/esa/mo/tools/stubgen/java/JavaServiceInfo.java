@@ -22,7 +22,6 @@ package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorLangs;
-import static esa.mo.tools.stubgen.GeneratorLangs.PROVIDER_FOLDER;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
@@ -47,7 +46,6 @@ import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -104,9 +102,7 @@ public class JavaServiceInfo {
         CompositeField serviceKeyType = generator.createCompositeElementsDetails(file, false, "SERVICE_KEY",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.ServiceKey", false),
                 false, false, "The service key of this service.");
-        String args = "\n            " + namespace + "_NUMBER,"
-                + "\n            " + namespace + "_VERSION,"
-                + "\n            " + serviceCAPS + "_SERVICE_NUMBER";
+        String args = "\n            " + area.getNumber() + "," + area.getVersion() + "," + serviceCAPS + "_SERVICE_NUMBER";
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, serviceKeyType, false,
                 false, "new org.ccsds.moims.mo.mal.ServiceKey(" + args + ")", false);
 
@@ -227,13 +223,13 @@ public class JavaServiceInfo {
             if (features != null) {
                 if (features.getObjects() != null) {
                     for (ModelObjectType obj : features.getObjects().getObject()) {
-                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, false);
+                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, false, area);
                     }
                 }
 
                 if (features.getEvents() != null) {
                     for (ModelObjectType obj : features.getEvents().getEvent()) {
-                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, true);
+                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, true, area);
                     }
                 }
             }
@@ -271,15 +267,15 @@ public class JavaServiceInfo {
                 "Returns the corresponding MALArea from this service.",
                 "Returns the corresponding MALArea from this service.", null);
 
-        method.addLine("    return " + namespace, true);
+        method.addLine("return " + namespace, true);
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();
         file.flush();
     }
 
-    protected void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls,
-            String areaHelperObject, String serviceVar, ModelObjectType obj, boolean isEvent) throws IOException {
+    private void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls,
+            String areaHelperObject, String serviceVar, ModelObjectType obj, boolean isEvent, AreaType area) throws IOException {
         String objNameCaps = obj.getName().toUpperCase();
         comObjectCalls.add(objNameCaps);
 
@@ -303,8 +299,10 @@ public class JavaServiceInfo {
         file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectNameVar, false,
                 "(\"" + obj.getName() + "\")");
         file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectTypeVar, false,
-                "(" + areaHelperObject + "_NUMBER, " + serviceVar + "_SERVICE_NUMBER, "
-                + areaHelperObject + "_VERSION, " + objNameCaps + "_OBJECT_NUMBER)");
+                "(new org.ccsds.moims.mo.mal.structures.UShort(" + area.getNumber() + "), "
+                + serviceVar + "_SERVICE_NUMBER, "
+                + "new org.ccsds.moims.mo.mal.structures.UOctet(" + area.getVersion() + "), "
+                + objNameCaps + "_OBJECT_NUMBER)");
 
         boolean hasRelated = null != obj.getRelatedObject();
         boolean hasSource = null != obj.getSourceObject();

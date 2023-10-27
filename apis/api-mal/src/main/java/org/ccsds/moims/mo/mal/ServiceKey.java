@@ -69,6 +69,19 @@ public class ServiceKey {
     }
 
     /**
+     * Initializes the ServiceKey class.
+     *
+     * @param areaNumber The area number of the service.
+     * @param areaVersion The area version of the service.
+     * @param serviceNumber The service number of the service.
+     * @throws java.lang.IllegalArgumentException If any argument is null.
+     */
+    public ServiceKey(final int areaNumber, final int areaVersion,
+            final UShort serviceNumber) throws IllegalArgumentException {
+        this(new UShort(areaNumber), new UOctet(areaVersion), serviceNumber);
+    }
+
+    /**
      * Returns the area number of the service.
      *
      * @return The area number of the service.

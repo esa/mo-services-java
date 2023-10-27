@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 public abstract class COMService extends MALService {
 
     private final Map<Integer, COMObject> objectsByNumber = new HashMap<>();
+    private final COMObject[] comObjects;
 
     public COMService(final ServiceKey serviceKey, final Identifier serviceName,
             final Element[] elements, final MALOperation[] operations) {
@@ -47,10 +48,7 @@ public abstract class COMService extends MALService {
     public COMService(final ServiceKey serviceKey, final Identifier serviceName,
             final Element[] elements, final MALOperation[] operations, final COMObject[] comObjects) {
         super(serviceKey, serviceName, elements, operations);
-
-        for (COMObject comObject : comObjects) {
-            objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);
-        }
+        this.comObjects = new COMObject[0];
     }
 
     /**
@@ -60,6 +58,11 @@ public abstract class COMService extends MALService {
      * @return The found operation or null.
      */
     public COMObject getObjectByNumber(final UShort opNumber) {
+        if (objectsByNumber.isEmpty()) {
+            for (COMObject comObject : comObjects) {
+                objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);
+            }
+        }
         return objectsByNumber.get(opNumber.getValue());
     }
 
@@ -69,6 +72,11 @@ public abstract class COMService extends MALService {
      * @return The set of objects or an empty array if none defined.
      */
     public COMObject[] getObjects() {
+        if (objectsByNumber.isEmpty()) {
+            for (COMObject comObject : comObjects) {
+                objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);
+            }
+        }
         return (COMObject[]) Arrays.asList(objectsByNumber.values()).toArray();
     }
 }

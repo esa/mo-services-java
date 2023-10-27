@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.test.activity.MonitorEventPublisherSkeleton;
 import org.ccsds.moims.mo.com.test.util.COMInterceptor;
 import org.ccsds.moims.mo.com.test.util.MALPublishInteractionListenerImpl;
-import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementStub;
@@ -48,6 +47,7 @@ import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.consumer.ArchiveTestStub;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
@@ -88,16 +88,15 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     protected void initHelpers() throws MALException {
-        org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
-        ArchiveHelper.init(MALContextFactory.getElementsRegistry());
-        EventHelper.init(MALContextFactory.getElementsRegistry());
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.loadServiceAndAreaElements(ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE);
+        registry.loadServiceAndAreaElements(ArchiveHelper.ARCHIVE_SERVICE);
+        registry.loadServiceAndAreaElements(EventHelper.EVENT_SERVICE);
 
-        COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
-        EventTestHelper.init(MALContextFactory.getElementsRegistry());
-        ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
+        registry.loadServiceAndAreaElements(ActivityTestHelper.ACTIVITYTEST_SERVICE);
+        registry.loadServiceAndAreaElements(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE);
+        registry.loadServiceAndAreaElements(EventTestHelper.EVENTTEST_SERVICE);
+        registry.loadServiceAndAreaElements(ArchiveTestHelper.ARCHIVETEST_SERVICE);
 
         TransportInterceptor.instance().setEndpointSendInterceptor(new COMInterceptor());
     }

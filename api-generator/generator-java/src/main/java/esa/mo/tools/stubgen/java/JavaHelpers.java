@@ -28,7 +28,6 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
-import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.AttributeType;
 import esa.mo.xsd.CompositeType;
@@ -37,7 +36,6 @@ import esa.mo.xsd.ErrorDefinitionType;
 import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -96,6 +94,7 @@ public class JavaHelpers {
         String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
         String prefix = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
 
+        /*
         MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
                 false, true, null, "init", Arrays.asList(eleFactory), throwsMALException,
                 "Registers all aspects of this service with the provided element factory",
@@ -127,6 +126,7 @@ public class JavaHelpers {
         }
 
         method.addMethodCloseStatement();
+         */
         file.addClassCloseStatement();
         file.flush();
     }
@@ -223,6 +223,23 @@ public class JavaHelpers {
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, objectInstVar,
                 false, true, buf.toString(), false);
 
+        StringBuilder buf_2 = new StringBuilder();
+        for (ServiceType service : area.getService()) {
+            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
+            String ns = generator.convertToNamespace(helperType) + "." + service.getName().toUpperCase() + "_SERVICE";
+//            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "ServiceInfo()");
+//            String ns = "new " + generator.convertToNamespace(helperType);
+
+//            String name = service.getName().toLowerCase() + "."
+//                    + service.getName().toLowerCase() + "." + service.getName().toUpperCase() + "_SERVICE";
+            buf_2.append("\n        ").append(ns).append(",");
+        }
+        CompositeField areaServices = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_SERVICES",
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALService", false),
+                false, true, "Services in this Area.");
+        file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, areaServices,
+                false, true, buf_2.toString(), false);
+
         String areaObjectInitialValue = generator.createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
         file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
@@ -240,6 +257,7 @@ public class JavaHelpers {
             }
         }
 
+        /*
         String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
         MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
                 true, null, "init", Arrays.asList(eleFactory), throwsMALException,
@@ -261,7 +279,9 @@ public class JavaHelpers {
         }
 
         method.addMethodCloseStatement();
+         */
 
+ /*
         method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
                 true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException,
                 "Registers all aspects of this area with the provided element factory and any referenced areas and contained services.",
@@ -275,6 +295,7 @@ public class JavaHelpers {
         }
 
         method.addMethodCloseStatement();
+         */
         file.addClassCloseStatement();
         file.flush();
     }

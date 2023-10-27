@@ -59,6 +59,7 @@ import org.ccsds.moims.mo.comprototype1.COMPrototype1Helper;
 import org.ccsds.moims.mo.comprototype1.test1.Test1ServiceInfo;
 import org.ccsds.moims.mo.comprototype1.test2.Test2ServiceInfo;
 import org.ccsds.moims.mo.comprototype2.COMPrototype2Helper;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
@@ -128,8 +129,6 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
     // identifier wildcard used in vaious checks
     private final static Identifier IDENTIFIER_WILDCARD = new Identifier("*");
 
-    private final MALElementsRegistry registry = new MALElementsRegistry();
-
     // Enum used to classify filter
     private enum FilterType {
         NUMERIC, DOUBLE, STRING, BLOB, INVALID
@@ -153,14 +152,11 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         final UOctet VERSION1 = new UOctet((short) 1);
         final UOctet VERSION2 = new UOctet((short) 2);
         // initialise element factory
-        try {
-            MALHelper.deepInit(registry);
-            COMPrototypeHelper.deepInit(registry);
-            COMPrototype1Helper.deepInit(registry);
-            COMPrototype2Helper.deepInit(registry);
-        } catch (Exception ex) {
-            Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.loadFullArea(COMPrototypeHelper.COMPROTOTYPE_AREA);
+        registry.loadFullArea(COMPrototype1Helper.COMPROTOTYPE1_AREA);
+        registry.loadFullArea(COMPrototype2Helper.COMPROTOTYPE2_AREA);
 
         MALObjectTypeRegistry factory = MALObjectTypeRegistry.inst();
 
@@ -1037,6 +1033,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
         try {
             Long spf = element.getShortForm();
+            MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
             return (ElementList) registry.createElement(spf);
         } catch (Exception ex1) {
             Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE,

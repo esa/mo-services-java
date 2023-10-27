@@ -77,14 +77,6 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     protected void initHelpers() throws MALException {
-        MALPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-        IPTestHelper.init(MALContextFactory.getElementsRegistry());
-        DataTestHelper.init(MALContextFactory.getElementsRegistry());
-        ErrorTestHelper.init(MALContextFactory.getElementsRegistry());
-        IPTest2Helper.init(MALContextFactory.getElementsRegistry());
-        MALPrototype2Helper.init(MALContextFactory.getElementsRegistry());
-        org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementsRegistry());
-
         TransportInterceptor.instance().setEndpointSendInterceptor(new MALTestEndPointSendInterceptor());
     }
 

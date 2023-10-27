@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.test.suite;
 import java.io.Writer;
 
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -86,13 +87,14 @@ public class TestServiceProvider extends BaseTestServiceProvider {
     }
 
     protected void initHelpers() throws MALException {
-        MALPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-        IPTestHelper.init(MALContextFactory.getElementsRegistry());
-        DataTestHelper.init(MALContextFactory.getElementsRegistry());
-        ErrorTestHelper.init(MALContextFactory.getElementsRegistry());
-        IPTest2Helper.init(MALContextFactory.getElementsRegistry());
-        MALPrototype2Helper.init(MALContextFactory.getElementsRegistry());
-        org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementsRegistry());
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.registerElementsForArea(MALPrototypeHelper.MALPROTOTYPE_AREA);
+        registry.loadServiceAndAreaElements(IPTestHelper.IPTEST_SERVICE);
+        registry.loadServiceAndAreaElements(DataTestHelper.DATATEST_SERVICE);
+        registry.loadServiceAndAreaElements(ErrorTestHelper.ERRORTEST_SERVICE);
+        registry.loadServiceAndAreaElements(IPTest2Helper.IPTEST2_SERVICE);
+        registry.registerElementsForArea(MALPrototype2Helper.MALPROTOTYPE2_AREA);
+        registry.loadServiceAndAreaElements(IPTestHelper.IPTEST_SERVICE);
 
         TransportInterceptor.instance().setEndpointSendInterceptor(new MALTestEndPointSendInterceptor());
     }

@@ -93,10 +93,6 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
             mal = malFactory.createMALContext(System.getProperties());
             providerMgr = mal.createProviderManager();
 
-            MALHelper.init(MALContextFactory.getElementsRegistry());
-            MALDemoHelper.init(MALContextFactory.getElementsRegistry());
-            BasicMonitorHelper.init(MALContextFactory.getElementsRegistry());
-
             startServices(null);
             running = true;
 

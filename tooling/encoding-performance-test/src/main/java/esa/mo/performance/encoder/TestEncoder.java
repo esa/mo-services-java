@@ -98,7 +98,6 @@ public class TestEncoder {
         }
 
         System.out.println("Creating objects");
-        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementsRegistry());
 
         MALMessageHeader header = new MALMessageHeader(
                 new Identifier("from"),

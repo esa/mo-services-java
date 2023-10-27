@@ -387,7 +387,7 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     public String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
         return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, "
-                + areaVar + "_AREA_VERSION, " + areaVar + "_AREA_ELEMENTS)";
+                + areaVar + "_AREA_VERSION, " + areaVar + "_AREA_ELEMENTS, " + areaVar + "_AREA_SERVICES)";
     }
 
     @Override

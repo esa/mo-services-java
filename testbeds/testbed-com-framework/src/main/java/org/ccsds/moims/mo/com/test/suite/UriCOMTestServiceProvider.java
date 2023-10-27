@@ -24,12 +24,12 @@ import java.util.List;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.event.EventHelper;
-import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
 import org.ccsds.moims.mo.comprototype.activitytest.ActivityTestHelper;
 import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestHelper;
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -48,16 +48,15 @@ public abstract class UriCOMTestServiceProvider extends BaseTestServiceProvider 
     }
 
     protected void initHelpers() throws MALException {
-        org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
-        ArchiveHelper.init(MALContextFactory.getElementsRegistry());
-        EventHelper.init(MALContextFactory.getElementsRegistry());
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.loadServiceAndAreaElements(ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE);
+        registry.loadServiceAndAreaElements(ArchiveHelper.ARCHIVE_SERVICE);
+        registry.loadServiceAndAreaElements(EventHelper.EVENT_SERVICE);
 
-        COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
-        ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
-        EventTestHelper.init(MALContextFactory.getElementsRegistry());
+        registry.loadServiceAndAreaElements(ActivityTestHelper.ACTIVITYTEST_SERVICE);
+        registry.loadServiceAndAreaElements(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE);
+        registry.loadServiceAndAreaElements(EventTestHelper.EVENTTEST_SERVICE);
+        registry.loadServiceAndAreaElements(ArchiveTestHelper.ARCHIVETEST_SERVICE);
     }
 
     protected void createProviders() throws MALException {

@@ -153,6 +153,11 @@ public class MALElementsRegistry {
         }
     }
 
+    /**
+     * Registers the Elements for a certain area.
+     *
+     * @param malArea The Area with the Elements to be registered.
+     */
     public synchronized void registerElementsForArea(MALArea malArea) {
         Element[] elements = malArea.getElements();
 
@@ -163,6 +168,11 @@ public class MALElementsRegistry {
         }
     }
 
+    /**
+     * Registers the Elements for a certain service.
+     *
+     * @param malService The Service with the Elements to be registered.
+     */
     public synchronized void registerElementsForService(MALService malService) {
         Element[] elements = malService.getElements();
 
@@ -173,6 +183,11 @@ public class MALElementsRegistry {
         }
     }
 
+    /**
+     * Loads the Elements for a certain service and its respective Area.
+     *
+     * @param service The Service to be loaded.
+     */
     public void loadServiceAndAreaElements(MALService service) {
         // Load the elements here:
         MALElementsRegistry elementsRegistry = MALContextFactory.getElementsRegistry();
@@ -182,11 +197,21 @@ public class MALElementsRegistry {
         // The Top-level Area loading also needs to be loaded
         elementsRegistry.registerElementsForArea(service.getArea());
         try {
-            service.getArea().addService(service);
             org.ccsds.moims.mo.mal.MALContextFactory.registerArea(service.getArea());
         } catch (MALException ex) {
             Logger.getLogger(MALElementsRegistry.class.getName()).log(
                     Level.SEVERE, "Something went wrong!", ex);
+        }
+    }
+
+    /**
+     * Loads the Area Elements and all the Service Elements in that Area.
+     *
+     * @param area The Area to be loaded.
+     */
+    public void loadFullArea(MALArea area) {
+        for (MALService service : area.getServices()) {
+            loadServiceAndAreaElements(service);
         }
     }
 }

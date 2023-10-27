@@ -133,9 +133,19 @@ public abstract class MALService {
         return operationsByNumber.get(opNumber.getValue());
     }
 
+    /**
+     * Returns the Elements of this service.
+     *
+     * @return The Elements of this service.
+     */
     public Element[] getElements() {
         return elements;
     }
 
+    /**
+     * Returns the top-level Area of this service.
+     *
+     * @return The top-level Area of this service.
+     */
     public abstract MALArea getArea();
 }
