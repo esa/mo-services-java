@@ -5,7 +5,7 @@ These Release Notes include a short summary of the updates done for each version
 The different versions and respective updates are the following:
 
 ### Version 10 (expected: End of 2023)
-* Full alignment of the MAL API and implementation to the latest MAL Standard book (MAL Book: 521.0-B-3) expected to be relased soon
+* Full alignment of the MAL API and MAL Impl to the MAL Standard book version 521.0-B-3
 * Adds more tests to the MAL Testbed project
 * Removal of unused classes and refactoring old code
 * Adds yaml workflows for building the project and running the testbeds for different LTS Java versions (8, 11, 17, 21)
