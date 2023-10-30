@@ -608,7 +608,7 @@ public class MALSender {
                 if (rtn.getBody() instanceof MALErrorBody) {
                     MALErrorBody errorBody = (MALErrorBody) rtn.getBody();
                     MOErrorException error = errorBody.getError();
-                    MALContextFactoryImpl.LOGGER.log(Level.FINE,
+                    MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
                             "Something went wrong!", error);
                     throw new MALInteractionException(error);
                 }
