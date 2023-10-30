@@ -208,5 +208,8 @@ public class MALPublisherSet {
      */
     public void close() throws MALException {
         //ToDo
+        for (MALPublisher p : subpublishers) {
+            p.close();
+        }
     }
 }
