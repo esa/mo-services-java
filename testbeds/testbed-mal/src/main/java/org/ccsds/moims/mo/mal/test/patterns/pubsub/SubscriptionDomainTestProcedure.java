@@ -114,13 +114,16 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
             UpdateHeaderList uhl = new UpdateHeaderList();
             uhl.add(updateHeader);
             updateHeaderList[i] = uhl;
-
-            UInteger expectedErrorCode = new UInteger(999);
-            TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL,
-                    PRIORITY, publishDomainIds[i], HeaderTestProcedure.NETWORK_ZONE, SESSION,
-                    SESSION_NAME, false, keyNames, Helper.get1TestKeyType(), expectedErrorCode);
-            ipTestForPublish.publishRegister(testPublishRegister);
         }
+        
+        // a single PublishRegister should be done, as only the last one shall be effective
+        // there is a single provider, all the messages but the first shall be seen as reregistration messages
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL,
+                PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, SESSION,
+                SESSION_NAME, false, keyNames, Helper.get1TestKeyType(), expectedErrorCode);
+        ipTestForPublish.publishRegister(testPublishRegister);
+        
         return true;
     }
 
@@ -176,7 +179,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
         for (int i = 0; i < publishDomainIds.length; i++) {
             UInteger expectedErrorCode = new UInteger(999);
             TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL, PRIORITY,
-                    publishDomainIds[i], HeaderTestProcedure.NETWORK_ZONE, SESSION,
+                    HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, SESSION,
                     SESSION_NAME, false, updateHeaderList[i], updateList,
                     null, expectedErrorCode, Boolean.FALSE, null);
             ipTestForPublish.publishUpdates(testPublishUpdate);

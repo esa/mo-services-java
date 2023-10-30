@@ -42,6 +42,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -162,9 +163,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
         UInteger errorCode = new UInteger(999);
         IdentifierList keyNames = Helper.get1TestKey();
+        AttributeTypeList keyTypes = Helper.get1TestKeyType();
         TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, Helper.get1TestKeyType(), errorCode);
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, keyTypes, errorCode);
         ipTest.publishRegister(testPublishRegister);
         return true;
     }
@@ -213,7 +215,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ConsumerContext consumerContext = new ConsumerContext(listener);
 
         logMessage("new consumer context");
-        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker), consumerContext);
+        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain), consumerContext);
 
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
 
@@ -286,9 +288,14 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 Boolean.FALSE,
                 new NamedValueList());
 
+        // The CNES implementation of an internal broker shares the endpoint of the provider.
+        // As the definition of the supplements field is attached to the endpoint at endpoint creation
+        // (this is a testbed policy), then we cannot differenciate the supplements field value
+        // from the broker and from the provider. The check must then be restricted as
+        // this is not a MAL issue.
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorRegisterAckHeader,
-                expectedMonitorRegisterAckHeader);
+                expectedMonitorRegisterAckHeader, true);
 
         return true;
     }
@@ -337,7 +344,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         updates.add(update4);
 
         ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         if (cc == null) {
             logMessage("The consumer context has not been found.");
@@ -348,7 +355,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         UInteger errorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName,
                 false, updateHeaders, updates, keyValues, errorCode, Boolean.FALSE, null);
         ipTest.publishUpdates(testPublishUpdate);
@@ -370,7 +377,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         ipTest = ipTestConsumer.getStub();
 
-        ConsumerKey consumerKey = new ConsumerKey(qosLevel, sessionType, sharedBroker);
+        ConsumerKey consumerKey = new ConsumerKey(qosLevel, sessionType, sharedBroker, domain);
         ConsumerContext cc = (ConsumerContext) consumerContexts.get(consumerKey);
 
         if (cc == null) {
@@ -404,9 +411,14 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
+        // The CNES implementation of an internal broker shares the endpoint of the provider.
+        // As the definition of the supplements field is attached to the endpoint at endpoint creation
+        // (this is a testbed policy), then we cannot differenciate the supplements field value
+        // from the broker and from the provider. The check must then be restricted as
+        // this is not a MAL issue.
         AssertionHelper.checkHeader("PubSub.checkNotifyHeader", assertions,
                 monitorNotifyHeader,
-                expectedMonitorNotifyHeader);
+                expectedMonitorNotifyHeader, true);
 
         return true;
     }
@@ -426,7 +438,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
 
         ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
 
@@ -497,7 +509,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         updates.add(update);
 
         ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         if (cc == null) {
             logMessage("The consumer context has not been found.");
@@ -513,7 +525,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         // extra information no longer exists in the new book!
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos,
                 HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
                 session,
                 sessionName, false, updateHeaders,
@@ -541,7 +553,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
 
         ConsumerContext consumerContext
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         if (consumerContext == null) {
             logMessage("The consumer context has not been found.");
@@ -614,9 +626,14 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 Boolean.FALSE,
                 new NamedValueList());
 
+        // The CNES implementation of an internal broker shares the endpoint of the provider.
+        // As the definition of the supplements field is attached to the endpoint at endpoint creation
+        // (this is a testbed policy), then we cannot differenciate the supplements field value
+        // from the broker and from the provider. The check must then be restricted as
+        // this is not a MAL issue.
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorDeregisterAckHeader,
-                expectedMonitorDeregisterAckHeader);
+                expectedMonitorDeregisterAckHeader, true);
 
         return true;
     }
@@ -637,7 +654,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
         UInteger errorCode = new UInteger(999);
         TestPublishDeregister testPublishDeregister = new TestPublishDeregister(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
                 errorCode);
         ipTest.publishDeregister(testPublishDeregister);
@@ -663,7 +680,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         list.add(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_KEY_VALUE);
         UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
         TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
                 list, Helper.get1TestKeyType(), errorCode);
         ipTest.publishRegister(testPublishRegister);
@@ -698,7 +715,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ConsumerContext consumerContext = new ConsumerContext(listener);
 
         logMessage("new consumer context");
-        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker),
+        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain),
                 consumerContext);
 
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
@@ -877,19 +894,22 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         private String qosLevel;
         private String sessionType;
         private String sharedBroker;
+        private int domain;
 
-        public ConsumerKey(String qosLevel, String sessionType, String sharedBroker) {
+        public ConsumerKey(String qosLevel, String sessionType, String sharedBroker, int domain) {
             super();
             this.qosLevel = qosLevel;
             this.sessionType = sessionType;
             this.sharedBroker = sharedBroker;
+            this.domain = domain;
         }
 
         @Override
         public int hashCode() {
             return qosLevel.hashCode()
                     + sessionType.hashCode()
-                    + sharedBroker.hashCode();
+                    + sharedBroker.hashCode()
+                    + domain;
         }
 
         @Override
@@ -905,6 +925,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 if (!sk.sharedBroker.equals(sharedBroker)) {
                     return false;
                 }
+                if (sk.domain != domain) {
+                  return false;
+              }
                 return true;
             } else {
                 return false;
