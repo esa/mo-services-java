@@ -190,12 +190,11 @@ public class MALElementsRegistry {
      */
     public void loadServiceAndAreaElements(MALService service) {
         // Load the elements here:
-        MALElementsRegistry elementsRegistry = MALContextFactory.getElementsRegistry();
-        elementsRegistry.registerElementsForArea(MALHelper.MAL_AREA);
-        elementsRegistry.registerElementsForService(service);
+        this.registerElementsForArea(MALHelper.MAL_AREA);
+        this.registerElementsForService(service);
 
         // The Top-level Area loading also needs to be loaded
-        elementsRegistry.registerElementsForArea(service.getArea());
+        this.registerElementsForArea(service.getArea());
         try {
             org.ccsds.moims.mo.mal.MALContextFactory.registerArea(service.getArea());
         } catch (MALException ex) {
