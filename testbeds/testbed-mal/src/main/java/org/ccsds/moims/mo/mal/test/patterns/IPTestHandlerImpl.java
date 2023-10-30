@@ -541,8 +541,13 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         Boolean.TRUE,
                         new NamedValueList());
 
+                // The CNES implementation of an internal broker shares the endpoint of the provider.
+                // As the definition of the supplements field is attached to the endpoint at endpoint creation
+                // (this is a testbed policy), then we cannot differenciate the supplements field value
+                // from the broker and from the provider. The check must then be restricted as
+                // this is not a MAL issue.
                 AssertionHelper.checkHeader("PubSub.checkPublishErrorHeader",
-                        assertions, publishHeader, expectedPublishErrorHeader);
+                        assertions, publishHeader, expectedPublishErrorHeader, true);
 
                 error = listener.getError();
                 expectedErrorCode = publishUpdate.getErrorCode();
