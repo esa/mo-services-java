@@ -273,7 +273,7 @@ public class ActivityRelayNode {
                 COMHelper._COM_AREA_VERSION,
                 0)
         ));
-        keyValues.add(new Long(instIdBaseOffset + (instanceIdentifier++)));
+        keyValues.add(new Union(new Long(instIdBaseOffset + (instanceIdentifier++))));
         keyValues.add(new Union(ActivityTestHandlerImpl.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
                 ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,

@@ -325,11 +325,11 @@ public class ConnectionConsumer {
         AttributeList list1 = new AttributeList();
         list1.add(key1);
         AttributeList list2 = new AttributeList();
-        list2.add(key2);
+        list2.addAsJavaType(key2);
         AttributeList list3 = new AttributeList();
-        list3.add(key3);
+        list3.addAsJavaType(key3);
         AttributeList list4 = new AttributeList();
-        list4.add(key4);
+        list4.addAsJavaType(key4);
         filters.add(new SubscriptionFilter(new Identifier("key1"), list1));
         filters.add(new SubscriptionFilter(new Identifier("key2"), list2));
         filters.add(new SubscriptionFilter(new Identifier("key3"), list3));

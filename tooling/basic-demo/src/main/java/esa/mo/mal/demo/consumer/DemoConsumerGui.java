@@ -162,7 +162,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             SubscriptionFilterList subList = new SubscriptionFilterList();
 
             for (int i = 0; i < (labels.length / 2); i++) {
-                att.add(String.valueOf(i));
+                att.addAsJavaType(String.valueOf(i));
                 subList.add(new SubscriptionFilter(new Identifier("key" + i), att));
             }
 
@@ -174,7 +174,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             SubscriptionFilterList subList1 = new SubscriptionFilterList();
 
             for (int i = 0; i < labels.length; i++) {
-                att1.add(String.valueOf(i));
+                att1.addAsJavaType(String.valueOf(i));
                 subList1.add(new SubscriptionFilter(new Identifier("key" + i), att1));
             }
 

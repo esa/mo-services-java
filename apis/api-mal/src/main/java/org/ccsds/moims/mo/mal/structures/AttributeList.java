@@ -21,11 +21,6 @@
 package org.ccsds.moims.mo.mal.structures;
 
 import java.util.ArrayList;
-import org.ccsds.moims.mo.mal.MALDecoder;
-import org.ccsds.moims.mo.mal.MALEncoder;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 
 /**
  * The Attributes list. The added and removed objects to this class might or
@@ -33,7 +28,7 @@ import org.ccsds.moims.mo.mal.MALListEncoder;
  * to be able to handle each case when trying to encode and when passing the
  * values to the user.
  */
-public class AttributeList extends java.util.ArrayList<Object> implements Element {
+public class AttributeList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
 
     /**
      * Default constructor.
@@ -44,7 +39,37 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
      */
     public AttributeList(Object attribute) {
         super();
-        super.add(attribute);
+        super.add((Element) Attribute.javaType2Attribute(attribute));
+    }
+
+    /**
+     * Adds an element to the list and checks if the type is correct.
+     *
+     * @param element The element to be added.
+     * @return The success status.
+     */
+    @Override
+    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+        if (element != null && !(element instanceof Attribute)) {
+            throw new java.lang.ClassCastException("The added element does not extend the type: Attribute");
+        }
+        return super.add(element);
+    }
+
+    /**
+     * Adds an element to the list. The element will be converted to Attribute
+     * in case it is a native Java Type (E.g. Integer, Long, etc).
+     *
+     * @param element The element to be added.
+     * @return The success status.
+     */
+    public boolean addAsJavaType(Object element) {
+        Object att = Attribute.javaType2Attribute(element);
+        if (att instanceof Attribute) {
+            this.add((Attribute) att);
+            return true;
+        }
+        throw new IllegalArgumentException("The added argument could not be converted to a MAL Attribute!");
     }
 
     /**
@@ -59,33 +84,7 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
         return new AttributeList();
     }
 
-    @Override
-    public Long getShortForm() {
-        throw new UnsupportedOperationException("This method should never be called!");
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        throw new UnsupportedOperationException("This method should never be called!");
-    }
-
-    @Override
-    public Object get(int index) {
+    public Object getAsJavaType(int index) {
         return Attribute.attribute2JavaType(super.get(index));
     }
 
@@ -109,31 +108,5 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
             attributes.add((Attribute) Attribute.javaType2Attribute(obj));
         }
         return attributes;
-    }
-
-    @Override
-    public void encode(MALEncoder encoder) throws MALException {
-        MALListEncoder listEncoder = encoder.createListEncoder(this);
-        for (int i = 0; i < size(); i++) {
-            Object objToEncode = super.get(i);
-            if (!(objToEncode instanceof Attribute)) {
-                objToEncode = Attribute.javaType2Attribute(objToEncode);
-            }
-            listEncoder.encodeNullableAttribute((Attribute) objToEncode);
-        }
-        listEncoder.close();
-    }
-
-    @Override
-    public Element decode(MALDecoder decoder) throws MALException {
-        MALListDecoder listDecoder = decoder.createListDecoder(this);
-        int decodedSize = listDecoder.size();
-        if (decodedSize > 0) {
-            ensureCapacity(decodedSize);
-        }
-        while (listDecoder.hasNext()) {
-            add(Attribute.attribute2JavaType(listDecoder.decodeNullableAttribute()));
-        }
-        return this;
     }
 }

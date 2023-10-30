@@ -38,6 +38,7 @@ public class CompositeList extends org.ccsds.moims.mo.mal.structures.Heterogeneo
      * @param element The element to be added.
      * @return The success status.
      */
+    @Override
     public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
         if (element != null && !(element instanceof Composite)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: Composite");
