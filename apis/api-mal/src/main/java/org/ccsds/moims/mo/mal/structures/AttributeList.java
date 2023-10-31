@@ -43,6 +43,13 @@ public class AttributeList extends org.ccsds.moims.mo.mal.structures.Heterogeneo
     }
 
     /**
+     * Default constructor.
+     */
+    public AttributeList() {
+        super();
+    }
+
+    /**
      * Adds an element to the list and checks if the type is correct.
      *
      * @param element The element to be added.
@@ -70,13 +77,6 @@ public class AttributeList extends org.ccsds.moims.mo.mal.structures.Heterogeneo
             return true;
         }
         throw new IllegalArgumentException("The added argument could not be converted to a MAL Attribute!");
-    }
-
-    /**
-     * Default constructor.
-     */
-    public AttributeList() {
-        super();
     }
 
     @Override
