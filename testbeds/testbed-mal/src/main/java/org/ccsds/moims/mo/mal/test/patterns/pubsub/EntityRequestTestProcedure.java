@@ -129,7 +129,8 @@ public class EntityRequestTestProcedure extends LoggingBase {
         StringTokenizer st = new StringTokenizer(s, ".");
         NullableAttributeList k = new NullableAttributeList();
         while (st.hasMoreTokens()) {
-            k.add(new NullableAttribute(parseStringKeyValue(st.nextToken())));
+            Identifier keyValue = parseStringKeyValue(st.nextToken());
+            k.add(new NullableAttribute(keyValue));
         }
         return k;
     }
@@ -176,14 +177,18 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1,
-                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(0).getValue()))));
-        filters.add(new SubscriptionFilter(Helper.key2,
-                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(1).getValue()))));
-        filters.add(new SubscriptionFilter(Helper.key3,
-                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(2).getValue()))));
-        filters.add(new SubscriptionFilter(Helper.key4,
-                new AttributeList((Attribute) Attribute.javaType2Attribute(values.get(3).getValue()))));
+        Identifier v0 = (Identifier) values.get(0).getValue();
+        Identifier v1 = (Identifier) values.get(1).getValue();
+        Identifier v2 = (Identifier) values.get(2).getValue();
+        Identifier v3 = (Identifier) values.get(3).getValue();
+        AttributeList aList0 = v0.isWildcard() ? new AttributeList() : new AttributeList((Attribute) Attribute.javaType2Attribute(v0));
+        AttributeList aList1 = v1.isWildcard() ? new AttributeList() : new AttributeList((Attribute) Attribute.javaType2Attribute(v1));
+        AttributeList aList2 = v2.isWildcard() ? new AttributeList() : new AttributeList((Attribute) Attribute.javaType2Attribute(v2));
+        AttributeList aList3 = v3.isWildcard() ? new AttributeList() : new AttributeList((Attribute) Attribute.javaType2Attribute(v3));
+        filters.add(new SubscriptionFilter(Helper.key1, aList0));
+        filters.add(new SubscriptionFilter(Helper.key2, aList1));
+        filters.add(new SubscriptionFilter(Helper.key3, aList2));
+        filters.add(new SubscriptionFilter(Helper.key4, aList3));
 
         Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, sKeys, filters);
 

@@ -130,6 +130,11 @@ public final class SingleSubscription {
                     continue; // This is not the key name that we want...
                 }
 
+                // If the list of values is empty, then it means "Match All"!
+                if (filter.getValues().isEmpty()) {
+                    continue;
+                }
+
                 boolean matchedORed = false; //ORed
 
                 // We need to match at least one of the values!
