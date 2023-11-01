@@ -28,7 +28,7 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 
 /**
- * The polymorphic list allows elements of different types to be added on the
+ * The HeterogeneousList allows elements of different types to be added on the
  * same list.
  */
 public class HeterogeneousList extends java.util.ArrayList<Element> implements ElementList<Element> {
@@ -37,16 +37,6 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
     // it is not backwards compatible and it breaks the COM Archive query operation.
     // Note: All the testbeds are passing even when the enforcement is enabled!
     private final static boolean ENFORCE_NON_NULLABLE_ENTRIES = false;
-
-    /**
-     * Default constructor.
-     *
-     * @param element An element to be added to the list.
-     */
-    public HeterogeneousList(Element element) {
-        super();
-        this.add(element);
-    }
 
     /**
      * Default constructor.

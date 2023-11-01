@@ -44,21 +44,26 @@ At first, publishRegister() is called to instantiate the broker with four subscr
 
 This test checks that the subscription requests are correctly interpreted by the broker, in particular the expression used to define the expected entities.
 A list of subscription key values is defined:
- * A.[null].[null].[null]
- * A.2.[null].[null]
- * A.2.3.[null]
+ * A.0.0.0
+ * A.2.0.0
+ * A.2.3.0
  * A.2.3.4
- * B.[null].[null].[null]
- * Q.2.3.[null]
+ * B.0.0.0
+ * Q.2.3.0
 
-A list of subscription request expressions is defined:
- * A.[null].[null].[null]
- * A.*.[null].[null]
+A list of subscription key values to match is defined:
+ * A.0.0.0
+ * A.*.0.0
  * A.*.*.*
- * A.2.[null].[null]
- * A.2.*.[null]
- * *.2.*.[null]
+ * A.2.0.0
+ * A.2.*.0
+ * *.2.*.0
  * B.*.*.*
+ * A.0.0.0 (select keys: K1.K2.K3.K4)
+ * A.0.0.0 (select keys: K1.K2.K3)
+ * A.0.0.0 (select keys: K1.K2)
+ * A.0.0.0 (select keys: K4.K3.K2.K1)
+ * A.0.0.0 (select keys: K4.K3.K1)
 
 The consumer does the following actions:
  * Creation of one subscription for each expression and registration.
@@ -68,19 +73,19 @@ The consumer checks that the expected keys are received and only them (see table
 
 !*> Sub scenario definitions
 |scenario| entity request with shared broker | shared |
-|ensure |prepare test to use the following subscription key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
-|ensure |subscribe to key values | A.[null].[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null] |
-|ensure |subscribe to key values | A.*.[null].[null] | and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null] |
-|ensure |subscribe to key values | A.*.*.*| and select keys | [null] | and expected key values | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
-|ensure |subscribe to key values | A.2.[null].[null] | and select keys | [null] | and expected key values | A.2.[null].[null] |
-|ensure |subscribe to key values | A.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null] |
-|ensure |subscribe to key values | *.2.*.[null] | and select keys | [null] | and expected key values | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
-|ensure |subscribe to key values | B.*.*.* | and select keys | [null] | and expected key values | B.[null].[null].[null] |
-|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K1.K2.K3.K4 | and expected key values | A.2.[null].[null] |
-|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K1.K2.K3 | and expected key values | A.2.[null] |
-|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K1.K2 | and expected key values | A.2 |
-|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K4.K3.K2.K1 | and expected key values | [null].[null].2.A |
-|ensure |subscribe to key values | A.2.[null].[null] | and select keys | K4.K3.K1 | and expected key values | [null].[null].A |
+|ensure |prepare test to use the following subscription key values | A.0.0.0,A.2.0.0,A.2.3.0,A.2.3.4,B.0.0.0,Q.2.3.0 | and shared broker | @shared |
+|ensure |subscribe to key values | A.0.0.0 | and select keys | [null] | and expected key values | A.0.0.0 |
+|ensure |subscribe to key values | A.*.0.0 | and select keys | [null] | and expected key values | A.0.0.0,A.2.0.0 |
+|ensure |subscribe to key values | A.*.*.*| and select keys | [null] | and expected key values | A.0.0.0,A.2.0.0,A.2.3.0,A.2.3.4 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | [null] | and expected key values | A.2.0.0 |
+|ensure |subscribe to key values | A.2.*.0 | and select keys | [null] | and expected key values | A.2.0.0,A.2.3.0 |
+|ensure |subscribe to key values | *.2.*.0 | and select keys | [null] | and expected key values | A.2.0.0,A.2.3.0,Q.2.3.0 |
+|ensure |subscribe to key values | B.*.*.* | and select keys | [null] | and expected key values | B.0.0.0 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K1.K2.K3.K4 | and expected key values | A.2.0.0 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K1.K2.K3 | and expected key values | A.2.0 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K1.K2 | and expected key values | A.2 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K4.K3.K2.K1 | and expected key values | 0.0.2.A |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K4.K3.K1 | and expected key values | 0.0.A |
 |ensure |publish deregister |
 ***********!
 
