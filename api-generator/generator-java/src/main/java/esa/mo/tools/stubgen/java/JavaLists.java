@@ -192,7 +192,7 @@ public class JavaLists {
         method = generator.encodeMethodOpen(file);
         method.addLine("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
         method.addLine("for (int i = 0; i < size(); i++) {", false);
-        method.addLine("  listEncoder.encodeNullable" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
+        method.addLine("  listEncoder.encode" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
         method.addLine("}", false);
         method.addLine("listEncoder.close()");
         method.addMethodCloseStatement();
@@ -208,7 +208,7 @@ public class JavaLists {
         method.addLine("    ensureCapacity(decodedSize)");
         method.addLine("}", false);
         method.addLine("while (listDecoder.hasNext()) {", false);
-        method.addLine("    add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall()
+        method.addLine("    add(" + listElement.getDecodeCast() + "listDecoder.decode" + listElement.getDecodeCall()
                 + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
         method.addLine("}", false);
         method.addLine("return this");
