@@ -132,25 +132,6 @@ public class JavaLists {
                 true, true, null);
         String fqSrcTypeName = generator.createElementType(file, area, service, srcTypeName);
 
-        /*
-        TypeReference superTypeReference = new TypeReference();
-        superTypeReference.setArea(StdStrings.MAL);
-
-        if (generator.isAttributeType(srcType)) {
-            superTypeReference.setName(StdStrings.ATTRIBUTE);
-        } else if (generator.isEnum(srcType)) {
-            superTypeReference.setName(StdStrings.ENUMERATION);
-        } else {
-            superTypeReference.setName(StdStrings.COMPOSITE);
-        }
-
-        CompositeField listSuperElement = generator.createCompositeElementsDetails(file, false, null,
-                superTypeReference, true, true, "List element.");
-        String sElement = listSuperElement.getTypeName();
-        if (sElement.contains("Attribute")) {
-            sElement = sElement.replace("Attribute", "Homogeneous"); // Needs to be replaced for Attributes
-        }
-        */
         String sElement = "org.ccsds.moims.mo.mal.structures.Homogeneous";
         file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",
                 sElement + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
@@ -178,7 +159,7 @@ public class JavaLists {
                         false, false, "The ArrayList that is used for initialization."),
                 false, null, "Constructor that uses an ArrayList for initialization.", null);
         method.addLine("for(" + fqSrcTypeName + " element : elementList) {", false);
-        method.addLine("    super.add(element)");
+        method.addLine("    this.add(element)");
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
