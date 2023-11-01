@@ -33,6 +33,11 @@ import org.ccsds.moims.mo.mal.MALListEncoder;
  */
 public class HeterogeneousList extends java.util.ArrayList<Element> implements ElementList<Element> {
 
+    // The enforcement of non-nullable entries is hard-coded to be disabled because
+    // it is not backwards compatible and it breaks the COM Archive query operation.
+    // Note: All the testbeds are passing even when the enforcement is enabled!
+    private final static boolean ENFORCE_NON_NULLABLE_ENTRIES = false;
+
     /**
      * Default constructor.
      *
@@ -40,7 +45,7 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
      */
     public HeterogeneousList(Element element) {
         super();
-        super.add(element);
+        this.add(element);
     }
 
     /**
@@ -102,7 +107,11 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
             if (!(entry instanceof Element)) {
                 entry = Attribute.javaType2Attribute(entry);
             }
-            listEncoder.encodeNullableAbstractElement((Element) entry);
+            if (ENFORCE_NON_NULLABLE_ENTRIES) {
+                listEncoder.encodeAbstractElement((Element) entry);
+            } else {
+                listEncoder.encodeNullableAbstractElement((Element) entry);
+            }
         }
         listEncoder.close();
     }
@@ -115,8 +124,28 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
             ensureCapacity(decodedSize);
         }
         while (listDecoder.hasNext()) {
-            add((Element) listDecoder.decodeNullableAbstractElement());
+            if (ENFORCE_NON_NULLABLE_ENTRIES) {
+                add((Element) listDecoder.decodeAbstractElement());
+            } else {
+                add((Element) listDecoder.decodeNullableAbstractElement());
+            }
         }
         return this;
+    }
+
+    /**
+     * Adds an element to the list and checks if the type is correct.
+     *
+     * @param element The element to be added.
+     * @return The success status.
+     */
+    @Override
+    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+        if (ENFORCE_NON_NULLABLE_ENTRIES) {
+            if (element == null) {
+                throw new java.lang.IllegalArgumentException("The added element cannot be NULL!");
+            }
+        }
+        return super.add(element);
     }
 }

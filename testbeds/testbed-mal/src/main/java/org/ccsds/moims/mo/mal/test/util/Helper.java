@@ -36,11 +36,9 @@ public final class Helper {
 
     private static final Attribute valueA = new Union("A");
     private static final Attribute value0 = new Union(0L);
-    private static final Attribute valueNull = null;
 
     public static final AttributeList valuesA = new AttributeList(valueA);
     public static final AttributeList values0 = new AttributeList(value0);
-    public static final AttributeList valuesNull = new AttributeList(valueNull);
 
     public static NamedValueList supplementsEmpty;
     public static NamedValueList supplementsFull;

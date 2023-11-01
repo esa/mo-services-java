@@ -419,12 +419,13 @@ public class ArchiveScenario {
     }
 
     public boolean addNullQueryFilter() {
-        compositeFilterSetList.add(null);
+        compositeFilterSetList = null;
         return true;
     }
 
     public boolean addNullCompositeFilterSet() {
-        compositeFilterSetList.add(null);
+        //compositeFilterSetList = null;
+        compositeFilterSetList.add(new CompositeFilterSet(new CompositeFilterList()));
         return true;
     }
 
