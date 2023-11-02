@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
-    <smc:area name="MALPrototype" number="100" version="1">
-        <smc:service name="IPTest" number="1">
+    <smc:area name="MALPrototype" number="100" version="1"
+              comment="The MALPrototype area defines data types, services and operations used to test the proper implementation of the MAL requirements.">
+        <smc:service name="IPTest" number="1"
+        			 comment="This service aims at testing each Interaction Pattern (IP). It provides one operation for Send, Submit, Request, Invoke and Progress. The input parameter is an IPTestDefinition that contains:
+
+- The parameters used by the consumer in order to initiate the interaction. These parameters enable the provider to check whether the received message header is correct or not.
+
+- A list of interaction transitions expected by the consumer.
+
+An operation 'getResult' is provided in order to enable the consumer to get:
+
+- the interaction transaction identifier
+
+- and the assertions evaluated on the provider side during an interaction.
+
+Finally four operations 'monitor', 'publishUpdates' and 'publishError' are provided in order to test the Pub/Sub interaction.">
             <smc:capabilitySet number="100">
                 <smc:sendIP name="send" number="100" supportInReplay="false"
                             comment="This operation cleans the assertions table and check that the header of the received message is the same as the one expected (see 4.1.1).">
@@ -16,7 +30,7 @@
                 </smc:sendIP>
                 <smc:submitIP name="testSubmit" number="101"
                               supportInReplay="false"
-                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:submit>
                             <smc:type area="MALPrototype"
@@ -31,7 +45,7 @@
                 </smc:submitIP>
                 <smc:requestIP name="request" number="102"
                                supportInReplay="false"
-                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MALPrototype"
@@ -49,7 +63,7 @@
                 </smc:requestIP>
                 <smc:invokeIP name="invoke" number="103"
                               supportInReplay="false"
-                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
+                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:invoke>
                             <smc:type area="MALPrototype"
@@ -70,7 +84,7 @@
                 </smc:invokeIP>
                 <smc:progressIP name="progress" number="104"
                                 supportInReplay="false"
-                                comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
+                                comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:progress>
                             <smc:type area="MALPrototype"
@@ -327,7 +341,10 @@
             </smc:capabilitySet>
 
         </smc:service>
-        <smc:service name="DataTest" number="2">
+        <smc:service name="DataTest" number="2"
+                     comment="This service aims at testing the data structures.
+                     
+It provides an operation 'testData' that enables to transmit any Element to the provider and check that it is well interpreted by the provider.">
             <smc:capabilitySet number="100">
                 <smc:submitIP name="setTestDataOffset" number="99"
                               supportInReplay="false"
@@ -340,7 +357,7 @@
                 </smc:submitIP>
                 <smc:requestIP name="testData" number="100"
                                supportInReplay="false"
-                               comment="The 'testData' operation allows a consumer to check that a data is correctly decoded on the provider side. The provider needs to statically know the list of data that the consumer is going to send. The consumer selects the data in the same order as the list and calls the operation 'testData'. The provider keeps the index of the currently selected data from the static list. When the operation 'testData' is called, the provider checks that the received data is equal to the selected data from the list. If the equality test fails, then the error DATA_ERROR is raised otherwise the provider returns the sent data.">
+                               comment="The 'testData' operation allows a consumer to check that a data is correctly decoded on the provider side, then that the same data sent back by the provider is correctly decoded on the consumer side. The provider needs to statically know the list of data that the consumer is going to send. The consumer selects the data in the same order as the list and calls the operation 'testData'. The provider keeps the index of the currently selected data from the static list. When the operation 'testData' is called, the provider checks that the received data is equal to the selected data from the list. If the equality test fails, then the error DATA_ERROR is raised, otherwise the provider returns the decoded data. When the consumer receives the returned data, it checks that this data is equal to the original data it sent.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Element" />
@@ -1146,7 +1163,8 @@
                 </smc:requestIP>
             </smc:capabilitySet>
         </smc:service>
-        <smc:service name="ErrorTest" number="3">
+        <smc:service name="ErrorTest" number="3"
+                     comment="This service aims at testing the MAL errors. It doesn't need to be implemented as it is only used on the consumer side to make the transport layer raise errors (see section 3.3).">
             <smc:capabilitySet number="100">
                 <smc:requestIP name="testDeliveryFailed" number="100"
                                supportInReplay="false"
