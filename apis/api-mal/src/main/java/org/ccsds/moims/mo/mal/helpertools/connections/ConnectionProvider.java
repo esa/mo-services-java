@@ -53,6 +53,8 @@ public class ConnectionProvider {
     private MALProvider secondaryMALServiceProvider = null;
     private final SingleConnectionDetails primaryConnectionDetails = new SingleConnectionDetails();
     private SingleConnectionDetails secondaryConnectionDetails = null;
+    private static final ServicesConnectionDetails globalProvidersDetailsPrimary = new ServicesConnectionDetails();
+    private static final ServicesConnectionDetails globalProvidersDetailsSecondary = new ServicesConnectionDetails();
 
     /**
      * Getter for the primaryConnectionDetails object.
@@ -79,6 +81,26 @@ public class ConnectionProvider {
      */
     public SingleConnectionDetails getSecondaryConnectionDetails() {
         return secondaryConnectionDetails;
+    }
+
+    /**
+     * Get primary connection interface details of all providers in the
+     * application.
+     *
+     * @return Primary connection details of all providers in the application.
+     */
+    public static ServicesConnectionDetails getGlobalProvidersDetailsPrimary() {
+        return globalProvidersDetailsPrimary;
+    }
+
+    /**
+     * Get secondary connection interface details of all providers in the
+     * application.
+     *
+     * @return Secondary connection details of all providers in the application.
+     */
+    public static ServicesConnectionDetails getGlobalProvidersDetailsSecondary() {
+        return globalProvidersDetailsSecondary;
     }
 
     /**

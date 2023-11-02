@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * The class responsible for starting the MAL layer and takes care of
@@ -57,6 +58,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class ConnectionConsumer {
 
     private final ConfigurationConsumer configuration = new ConfigurationConsumer();
+    private final Random random = new Random();
     private MALContextFactory malFactory;
     private MALContext mal;
     private MALConsumerManager consumerMgr;
@@ -129,6 +131,29 @@ public class ConnectionConsumer {
     }
 
     /**
+     * Starts the MALConsumer and creates the MAL consumer for the provided
+     * URIs, domain and authenticationId.
+     *
+     * @param uriP The service provider URI
+     * @param uriB The broker URI
+     * @param domain The service domain
+     * @param malService Definition of the consumed service
+     * @param authenticationId authenticationId of the logged in user
+     * @param localNamePrefix the prefix for the local name of the consumer
+     * @return The MALConsumer
+     * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
+     * the initialization of the MAL
+     * @throws java.net.MalformedURLException when the MALconsumer is not
+     * initialized correctly
+     */
+    public MALConsumer startService(final URI uriP, final URI uriB, final IdentifierList domain,
+            final MALService malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
+            MalformedURLException {
+        this.startMAL();
+        return this.createMALconsumer(uriP, uriB, domain, malService, authenticationId, localNamePrefix);
+    }
+
+    /**
      * Creates the MAL consumer for the provided URIs and domain.
      *
      * @param uriP The service provider URI
@@ -141,9 +166,30 @@ public class ConnectionConsumer {
      * @throws java.net.MalformedURLException when the MALconsumer is not
      * initialized correctly
      */
-    public MALConsumer createMALconsumer(final URI uriP, final URI uriB,
-            final IdentifierList domain, final MALService malService)
-            throws MALException, MalformedURLException {
+    public MALConsumer createMALconsumer(final URI uriP, final URI uriB, final IdentifierList domain,
+            final MALService malService) throws MALException, MalformedURLException {
+
+        return createMALconsumer(uriP, uriB, domain, malService, null, null);
+    }
+
+    /**
+     * Creates the MAL consumer for the provided URIs and domain.
+     *
+     * @param uriP The service provider URI
+     * @param uriB The broker URI
+     * @param domain The service domain
+     * @param malService Definition of the consumed service
+     * @param authenticationId authenticationId of the logged in user
+     * @param localNamePrefix the prefix for the local name of the consumer
+     * @return The MALConsumer
+     * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
+     * the initialization of the MAL
+     * @throws java.net.MalformedURLException when the MALconsumer is not
+     * initialized correctly
+     */
+    public MALConsumer createMALconsumer(final URI uriP, final URI uriB, final IdentifierList domain,
+            final MALService malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
+            MalformedURLException {
 
         Properties props = new Properties();
         props.putAll(System.getProperties());
@@ -171,19 +217,20 @@ public class ConnectionConsumer {
      * @param uriP The service provider URI
      * @param uriB The broker URI
      * @param domain The service domain
-     * @param qosLevels The QoS levels
-     * @param priorityLevels The priority levels.
+     * @param qosLevels
+     * @param priorityLevels
      * @param malService Definition of the consumed service
+     * @param authenticationId authenticationId of the logged in user
+     * @param localNamePrefix the prefix for the local name of the consumer
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
      * @throws java.net.MalformedURLException when the MALconsumer is not
      * initialized correctly
      */
-    public MALConsumer startService(final URI uriP, final URI uriB,
-            final IdentifierList domain, final QoSLevelList qosLevels,
-            final UInteger priorityLevels, final MALService malService)
-            throws MALException, MalformedURLException {
+    public MALConsumer startService(final URI uriP, final URI uriB, final IdentifierList domain,
+            final QoSLevelList qosLevels, final UInteger priorityLevels, final MALService malService,
+            final Blob authenticationId, final String localNamePrefix) throws MALException, MalformedURLException {
 
         this.startMAL();
         QoSLevel qosLevel = QoSLevel.BESTEFFORT;  // Worst case scenario
@@ -197,11 +244,11 @@ public class ConnectionConsumer {
         Properties props = new Properties();
         props.putAll(System.getProperties());
 
-        tmConsumer = consumerMgr.createConsumer((String) null,
+        tmConsumer = consumerMgr.createConsumer(getLocalName(localNamePrefix),
                 uriP,
                 uriB,
                 malService,
-                new Blob("".getBytes()),
+                getAuthenticationId(authenticationId),
                 domain,
                 configuration.getNetwork(),
                 configuration.getSession(),
@@ -212,6 +259,14 @@ public class ConnectionConsumer {
                 null);
 
         return tmConsumer;
+    }
+
+    private Blob getAuthenticationId(Blob authenticationId) {
+        return authenticationId == null ? new Blob("".getBytes()) : authenticationId;
+    }
+
+    private String getLocalName(String localNamePrefix) {
+        return localNamePrefix == null ? null : localNamePrefix + "_" + random.nextInt();
     }
 
     /**
@@ -299,6 +354,27 @@ public class ConnectionConsumer {
     public static Subscription subscriptionKeys(final Identifier subscriptionId,
             final SubscriptionFilterList filters) {
         return new Subscription(subscriptionId, null, null, filters);
+    }
+
+    /**
+     * Returns a subscription object with the entity keys field set as the
+     * provided keys
+     *
+     * @param key1 First key
+     * @param key2 Second key
+     * @param key3 Third key
+     * @param key4 Fourth key
+     * @return The subscription object
+     */
+    public static Subscription subscriptionKeys(final Identifier key1,
+            final Long key2, final Long key3, final Long key4) {
+        final Identifier subscriptionId = new Identifier("SUB");
+        SubscriptionFilterList subkeys = new SubscriptionFilterList();
+        subkeys.add(new SubscriptionFilter(new Identifier("key1"), new AttributeList(key1)));
+        subkeys.add(new SubscriptionFilter(new Identifier("key2"), new AttributeList(new Union(key2))));
+        subkeys.add(new SubscriptionFilter(new Identifier("key3"), new AttributeList(new Union(key3))));
+        subkeys.add(new SubscriptionFilter(new Identifier("key4"), new AttributeList(new Union(key4))));
+        return ConnectionConsumer.subscriptionKeys(subscriptionId, subkeys);
     }
 
     /**

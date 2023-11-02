@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
 
@@ -112,4 +113,16 @@ public abstract class ConsumerServiceImpl {
      */
     public abstract Object getStub();
 
+    public Blob getAuthenticationId() {
+        if (null != tmConsumer) {
+            return tmConsumer.getAuthenticationId();
+        }
+        return null;
+    }
+
+    public void setAuthenticationId(Blob authenticationId) {
+        if (null != tmConsumer) {
+            tmConsumer.setAuthenticationId(null == authenticationId ? new Blob("".getBytes()) : authenticationId);
+        }
+    }
 }
