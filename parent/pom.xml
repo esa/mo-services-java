@@ -120,6 +120,11 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-common</artifactId>
+                <version>${esa.api.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-mc</artifactId>
                 <version>${esa.api.mc.version}</version>
             </dependency>
