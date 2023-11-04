@@ -53,8 +53,9 @@ An !-ErrorTest-! consumer is created. Each operation raising a transport error i
 |ensure |raise error | DESTINATION_LOST |
 |ensure |raise error | ENCRYPTION_FAIL |
 |ensure |raise error | UNSUPPORTED_AREA |
+|ensure |raise error | UNSUPPORTED_AREA_VERSION |
+|ensure |raise error | UNSUPPORTED_SERVICE |
 |ensure |raise error | UNSUPPORTED_OPERATION |
-|ensure |raise error | UNSUPPORTED_VERSION |
 |ensure |raise error | BAD_ENCODING |
 |ensure |raise error | UNKNOWN |
 

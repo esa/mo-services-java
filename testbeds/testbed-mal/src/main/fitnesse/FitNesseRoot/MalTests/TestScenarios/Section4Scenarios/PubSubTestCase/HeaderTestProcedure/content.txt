@@ -66,8 +66,7 @@ Some headers are only checked with a shared broker:
  The Notify Error is injected through the test transport module.
  
  The provider assertions are described in the IPTest service specification (section 5.1).
- The consumer assertions are described in annex B.
-
+ 
 !*> Sub scenario definitions
 |scenario| test publish register with shared broker | shared |
 |ensure |initiate publish register with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |

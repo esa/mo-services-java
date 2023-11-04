@@ -98,8 +98,13 @@ public class ErrorTestHandlerImpl extends ErrorTestInheritanceSkeleton {
                 MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
     }
 
-    public Element testUnsupportedVersion(Element _Element, MALInteraction interaction) throws MALInteractionException {
+    public Element testUnsupportedAreaVersion(Element _Element, MALInteraction interaction) throws MALInteractionException {
         throw new MALInteractionException(new MOErrorException(
                 MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER, null));
+    }
+
+    public Element testUnsupportedService(Element _Element, MALInteraction interaction) throws MALInteractionException {
+        throw new MALInteractionException(new MOErrorException(
+                MALHelper.UNSUPPORTED_SERVICE_ERROR_NUMBER, null));
     }
 }

@@ -1283,7 +1283,7 @@ It provides an operation 'testData' that enables to transmit any Element to the 
                     </smc:messages>
 
                 </smc:requestIP>
-                <smc:requestIP name="testUnsupportedVersion"
+                <smc:requestIP name="testUnsupportedAreaVersion"
                                number="109" supportInReplay="false"
                                comment="This operation does nothing. Actually the error is raised by the transport layer before the provider is invoked.">
                     <smc:messages>
@@ -1338,6 +1338,19 @@ It provides an operation 'testData' that enables to transmit any Element to the 
                 <smc:requestIP name="testAuthorizationFailure"
                                number="113" supportInReplay="false"
                                comment="This operation does nothing. Actually the error is raised by the MAL layer before the provider is invoked.">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MAL" name="Element" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MAL" name="Element" />
+                        </smc:response>
+                    </smc:messages>
+
+                </smc:requestIP>
+                <smc:requestIP name="testUnsupportedService"
+                               number="114" supportInReplay="false"
+                               comment="This operation does nothing. Actually the error is raised by the transport layer before the provider is invoked.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Element" />

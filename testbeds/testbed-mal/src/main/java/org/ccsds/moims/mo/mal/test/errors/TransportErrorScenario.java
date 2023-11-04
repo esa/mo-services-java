@@ -91,11 +91,14 @@ public class TransportErrorScenario {
                 case (int) MALHelper._UNSUPPORTED_AREA_ERROR_NUMBER:
                     errorTest.testUnsupportedArea(body);
                     break;
+                case (int) MALHelper._UNSUPPORTED_SERVICE_ERROR_NUMBER:
+                    errorTest.testUnsupportedService(body);
+                    break;
                 case (int) MALHelper._UNSUPPORTED_OPERATION_ERROR_NUMBER:
                     errorTest.testUnsupportedOperation(body);
                     break;
                 case (int) MALHelper._UNSUPPORTED_AREA_VERSION_ERROR_NUMBER:
-                    errorTest.testUnsupportedVersion(body);
+                    errorTest.testUnsupportedAreaVersion(body);
                     break;
                 case (int) MALHelper._BAD_ENCODING_ERROR_NUMBER:
                     errorTest.testBadEncoding(body);

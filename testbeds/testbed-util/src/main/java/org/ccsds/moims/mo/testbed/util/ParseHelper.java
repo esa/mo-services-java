@@ -52,8 +52,9 @@ public class ParseHelper {
     public static final String DESTINATION_LOST_ERROR = "DESTINATION_LOST";
     public static final String ENCRYPTION_FAIL_ERROR = "ENCRYPTION_FAIL";
     public static final String UNSUPPORTED_AREA_ERROR = "UNSUPPORTED_AREA";
+    public static final String UNSUPPORTED_SERVICE_ERROR = "UNSUPPORTED_SERVICE";
     public static final String UNSUPPORTED_OPERATION_ERROR = "UNSUPPORTED_OPERATION";
-    public static final String UNSUPPORTED_VERSION_ERROR = "UNSUPPORTED_VERSION";
+    public static final String UNSUPPORTED_AREA_VERSION_ERROR = "UNSUPPORTED_AREA_VERSION";
     public static final String AUTHENTICATION_FAIL_ERROR = "AUTHENTICATION_FAIL";
     public static final String AUTHORISATION_FAIL_ERROR = "AUTHORISATION_FAIL";
     public static final String BAD_ENCODING_ERROR = "BAD_ENCODING";
@@ -121,9 +122,11 @@ public class ParseHelper {
             return MALHelper.ENCRYPTION_FAIL_ERROR_NUMBER;
         } else if (UNSUPPORTED_AREA_ERROR.equals(error)) {
             return MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER;
+        } else if (UNSUPPORTED_SERVICE_ERROR.equals(error)) {
+            return MALHelper.UNSUPPORTED_SERVICE_ERROR_NUMBER;
         } else if (UNSUPPORTED_OPERATION_ERROR.equals(error)) {
             return MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER;
-        } else if (UNSUPPORTED_VERSION_ERROR.equals(error)) {
+        } else if (UNSUPPORTED_AREA_VERSION_ERROR.equals(error)) {
             return MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER;
         } else if (BAD_ENCODING_ERROR.equals(error)) {
             return MALHelper.BAD_ENCODING_ERROR_NUMBER;
@@ -156,9 +159,11 @@ public class ParseHelper {
         } else if (MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER.equals(error)) {
             return UNSUPPORTED_AREA_ERROR;
         } else if (MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER.equals(error)) {
+            return UNSUPPORTED_SERVICE_ERROR;
+        } else if (MALHelper.UNSUPPORTED_SERVICE_ERROR_NUMBER.equals(error)) {
             return UNSUPPORTED_OPERATION_ERROR;
         } else if (MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER.equals(error)) {
-            return UNSUPPORTED_VERSION_ERROR;
+            return UNSUPPORTED_AREA_VERSION_ERROR;
         } else if (MALHelper.BAD_ENCODING_ERROR_NUMBER.equals(error)) {
             return BAD_ENCODING_ERROR;
         } else if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(error)) {
