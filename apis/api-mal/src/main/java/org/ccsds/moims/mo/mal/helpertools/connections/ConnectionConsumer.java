@@ -414,4 +414,16 @@ public class ConnectionConsumer {
         return new Subscription(subId, null, null, filters);
     }
 
+    public Blob getAuthenticationId() {
+        if (null != tmConsumer) {
+            return tmConsumer.getAuthenticationId();
+        }
+        return null;
+    }
+
+    public void setAuthenticationId(Blob authenticationId) {
+        if (null != tmConsumer) {
+            tmConsumer.setAuthenticationId(getAuthenticationId(authenticationId));
+        }
+    }
 }
