@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -161,7 +162,8 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
         Object bodyPart = messageParts[index];
 
-        // Up-cast the List if it is a heterogeneous list! Upcasting...
+        // Downcast the List to the provided (specialized) type if
+        // it is a Heterogeneous list! Downcasting...
         if (element != null && bodyPart instanceof HeterogeneousList) {
             for (Element entry : (HeterogeneousList) bodyPart) {
                 ((HeterogeneousList) element).add(entry);
@@ -265,7 +267,10 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
     protected void encodeBodyPart(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc, final boolean wrapBodyParts,
-            final Object o, final OperationField field) throws MALException {
+            final Object obj, final OperationField field) throws MALException {
+        // Attempt to convert if not Element
+        Object o = (obj instanceof Element) ? obj : Attribute.javaType2Attribute(obj);
+
         // if it is already an encoded element then just write it directly
         if (o instanceof MALEncodedElement) {
             enc.writeElement(((MALEncodedElement) o).getEncodedElement(), field);
