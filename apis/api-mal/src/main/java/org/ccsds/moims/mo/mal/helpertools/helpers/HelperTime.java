@@ -21,9 +21,12 @@
 package org.ccsds.moims.mo.mal.helpertools.helpers;
 
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
@@ -66,6 +69,26 @@ public class HelperTime {
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(date);
+    }
+
+    /**
+     * Converts a readable time string to a MAL FineTime data type.
+     *
+     * @param time The readable time string. Expected format is
+     * {@value #DATE_PATTERN}.
+     * @return The MAL FineTime object or null if ParseException occurred
+     */
+    public static FineTime readableString2FineTime(String time) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        Date date;
+        try {
+            date = format.parse(time);
+        } catch (ParseException e) {
+            Logger.getLogger(HelperTime.class.getName()).log(Level.SEVERE,
+                    String.format("Error while parsing %s", time), e);
+            return null;
+        }
+        return new FineTime(date.getTime() * ONE_MILLION);
     }
 
     /**
