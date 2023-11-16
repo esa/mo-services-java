@@ -404,8 +404,9 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * PROGRESS. PUBSUB is not supported. A MAL implementation layer has to
      * support PUBSUB itself.
      *
-     * @param type
-     * @return
+     * @param type The interaction Type.
+     * @return true if the provided interaction pattern is supported, false
+     * otherwise.
      */
     @Override
     public boolean isSupportedInteractionType(final InteractionType type) {
@@ -415,8 +416,8 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
     /**
      * The MAL TCPIP binding supports all QoS levels.
      *
-     * @param qos
-     * @return
+     * @param qos The qos level.
+     * @return true if the provided qos is supported, false otherwise.
      */
     @Override
     public boolean isSupportedQoSLevel(final QoSLevel qos) {
@@ -427,7 +428,7 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * Close all pollers and socket connections and then close the transport
      * itself.
      *
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @throws org.ccsds.moims.mo.mal.MALException if could not be closed.
      */
     @Override
     public void close() throws MALException {
@@ -510,8 +511,8 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * If this is a provider, the host and port as defined in the configuration
      * file are used.
      *
-     * @return
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @return the created transport address.
+     * @throws org.ccsds.moims.mo.mal.MALException if something went wrong.
      */
     @Override
     protected String createTransportAddress() throws MALException {
@@ -547,9 +548,10 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * Binding specification. The body is decoded using whatever we have
      * selected.
      *
-     * @param packetInfo
-     * @return
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @param packetInfo The packet information.
+     * @return The decoded TCPIPMessage to be passed upwards.
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be
+     * decoded.
      */
     public GENMessage createMessage(final TCPIPPacketInfoHolder packetInfo) throws MALException {
         String serviceDelimStr = Character.toString(serviceDelim);
@@ -704,6 +706,11 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
         return "127.0.0.1";
     }
 
+    /**
+     * Returns the service delimiter.
+     *
+     * @return The service delimiter.
+     */
     public char getServiceDelim() {
         return this.serviceDelim;
     }

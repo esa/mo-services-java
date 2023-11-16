@@ -22,8 +22,6 @@ package esa.mo.navigator.parsers;
 
 import de.dlr.gsoc.mcds.mosdl.loaders.XmlSpecLoader;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -49,8 +47,8 @@ public class ParserXML {
      *
      * @param text The text
      * @return The parsed Data
-     * @throws javax.xml.bind.JAXBException
-     * @throws org.xml.sax.SAXException
+     * @throws javax.xml.bind.JAXBException if the text could not be parsed.
+     * @throws org.xml.sax.SAXException if the Schema could not be parsed.
      */
     public static SpecificationType parseXML(String text) throws JAXBException, SAXException {
         JAXBContext jaxbContext = JAXBContext.newInstance(SpecificationType.class);

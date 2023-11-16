@@ -34,7 +34,7 @@ import esa.mo.mal.transport.gen.ReceptionHandler;
 /**
  * Factory class for SPPMessage decoders.
  *
- * @param <I>
+ * @param <I> The type of the incoming messages.
  */
 public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, List<ByteBuffer>> {
 
@@ -48,7 +48,7 @@ public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, Lis
      * Implementation of the GENIncomingMessageDecoder class for newly arrived
      * MAL Messages in SPPMessage format.
      *
-     * @param <I>
+     * @param <I> The type of the incoming messages.
      */
     public static final class SPPMessageDecoder<I> implements GENIncomingMessageDecoder {
 

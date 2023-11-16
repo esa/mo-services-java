@@ -121,7 +121,7 @@ public class ConnectionProvider {
      * @param serviceName Name of the service
      * @param malService MAL service
      * @param handler The handler of the interaction
-     * @return
+     * @return The MAL provider
      * @throws MALException On error.
      */
     public MALProvider startService(String serviceName, MALService malService,
@@ -137,7 +137,7 @@ public class ConnectionProvider {
      * @param malService MAL service
      * @param isPublisher Boolean flag to define if the service has PUB-SUB
      * @param handler The handler of the interaction
-     * @return
+     * @return The MAL provider
      * @throws MALException On error.
      */
     public MALProvider startService(String serviceName, MALService malService,

@@ -60,7 +60,7 @@ public class GeneratorXML extends XmlGenerator {
      *
      * @param spec The specification
      * @return The parsed Data
-     * @throws java.io.IOException
+     * @throws java.io.IOException if the specification could not be marshaled.
      */
     public static String generateXML(SpecificationType spec) throws IOException {
         try {

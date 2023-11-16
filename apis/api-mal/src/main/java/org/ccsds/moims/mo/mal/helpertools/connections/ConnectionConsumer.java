@@ -217,8 +217,8 @@ public class ConnectionConsumer {
      * @param uriP The service provider URI
      * @param uriB The broker URI
      * @param domain The service domain
-     * @param qosLevels
-     * @param priorityLevels
+     * @param qosLevels The qos levels
+     * @param priorityLevels The priority levels
      * @param malService Definition of the consumed service
      * @param authenticationId authenticationId of the logged in user
      * @param localNamePrefix the prefix for the local name of the consumer

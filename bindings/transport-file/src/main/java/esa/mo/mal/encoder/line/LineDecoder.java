@@ -727,7 +727,7 @@ public class LineDecoder implements MALDecoder {
     }
 
     /**
-     *
+     * The BufferHolder holds a string buffer.
      */
     protected static class BufferHolder {
 
@@ -737,8 +737,8 @@ public class LineDecoder implements MALDecoder {
 
         /**
          *
-         * @param buf
-         * @param offset
+         * @param buf The buffer string.
+         * @param offset The offset to be used.
          */
         public BufferHolder(final String buf, final int offset) {
             this.buf = buf;

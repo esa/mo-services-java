@@ -47,7 +47,7 @@ public interface MALTransport {
      * @param localName Name of the endpoint
      * @param qosProperties QoS properties to be used when creating the
      * MALEndpoint
-     * @param supplements
+     * @param supplements The supplements of the endpoint
      * @return The new endpoint.
      * @throws MALException If the MALTransport is closed
      */

@@ -32,7 +32,7 @@ import esa.mo.mal.transport.gen.ReceptionHandler;
 /**
  *
  * @author Rian van Gijlswijk
- * @param <O>
+ * @param <O> The type of the outgoing messages.
  *
  */
 public class TCPIPMessageDecoderFactory<O> implements MessageDecoderFactory<TCPIPPacketInfoHolder, O> {
@@ -43,11 +43,20 @@ public class TCPIPMessageDecoderFactory<O> implements MessageDecoderFactory<TCPI
         return new TCPIPMessageDecoder((TCPIPTransport) transport, packetInfo);
     }
 
+    /**
+     * The TCPIPMessageDecoder to decode the message.
+     */
     public static final class TCPIPMessageDecoder implements GENIncomingMessageDecoder {
 
         private final TCPIPTransport transport;
         private final TCPIPPacketInfoHolder packetInfo;
 
+        /**
+         * The constructor for this class.
+         *
+         * @param transport The transport.
+         * @param packetInfo The packet information.
+         */
         public TCPIPMessageDecoder(TCPIPTransport transport, TCPIPPacketInfoHolder packetInfo) {
             this.transport = transport;
             this.packetInfo = packetInfo;

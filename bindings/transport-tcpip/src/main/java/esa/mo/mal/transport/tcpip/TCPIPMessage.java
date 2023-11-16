@@ -109,7 +109,7 @@ public class TCPIPMessage extends GENMessage {
      * Ok for debugging but don't put it nowhere near the final code.
      * Performance!
      *
-     * @return
+     * @return the string representation of the body of the message.
      */
     public String bodytoString() {
         if (this.body != null) {

@@ -40,7 +40,7 @@ public class IncomingMessageDispatcher implements Runnable {
     /**
      * Constructor
      *
-     * @param transport
+     * @param transport The transport to be used.
      * @param malMsg The MAL message.
      */
     public IncomingMessageDispatcher(final Transport transport, final IncomingMessageHolder malMsg) {

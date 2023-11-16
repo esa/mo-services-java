@@ -57,6 +57,7 @@ public class SPPMessageHeader extends MALMessageHeader {
     /**
      * Constructor.
      *
+     * @param secondaryDecoder The secondary stream factory to encode.
      * @param configuration The SPP configuration to use for this message header
      * @param forceTC Should the SPP TC field value be forced. Used in TC to TC
      * situations.
@@ -80,6 +81,7 @@ public class SPPMessageHeader extends MALMessageHeader {
     /**
      * Constructor.
      *
+     * @param secondaryDecoder The secondary stream factory to encode.
      * @param configuration
      * @param forceTC Should the SPP TC field value be forced. Used in TC to TC
      * situations.

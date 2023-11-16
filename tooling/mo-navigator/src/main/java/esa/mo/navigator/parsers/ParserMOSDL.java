@@ -43,7 +43,7 @@ public class ParserMOSDL {
      *
      * @param text The text
      * @return The parsed Data
-     * @throws java.io.IOException
+     * @throws java.io.IOException if the text could not be parsed.
      */
     public static SpecificationType parseMOSDL(String text) throws IOException {
         // Find and replace! Java comments style to the classic Stefan style

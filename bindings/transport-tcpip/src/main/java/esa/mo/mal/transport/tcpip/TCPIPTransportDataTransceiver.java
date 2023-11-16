@@ -55,7 +55,7 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
      * Constructor.
      *
      * @param socket the TCPIP socket.
-     * @param localPort
+     * @param localPort the local port.
      * @throws IOException if there is an error.
      */
     public TCPIPTransportDataTransceiver(Socket socket, int localPort) throws IOException {
@@ -76,8 +76,8 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
     /**
      * Send an encoded message out over the socket
      *
-     * @param packetData The encoded message to send
-     * @throws java.io.IOException
+     * @param packetData The encoded message to send.
+     * @throws java.io.IOException if the packet data could not be written.
      */
     @Override
     public void sendEncodedMessage(OutgoingMessageHolder packetData) throws IOException {
@@ -103,8 +103,8 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
      * and one for client-side, while still being compliant with the MAL
      * restriction that every client/provider has exactly one unique address.
      *
-     * @return
-     * @throws java.io.IOException
+     * @return The read packet from the socket.
+     * @throws java.io.IOException if the message could not be read.
      */
     @Override
     public TCPIPPacketInfoHolder readEncodedMessage() throws IOException {

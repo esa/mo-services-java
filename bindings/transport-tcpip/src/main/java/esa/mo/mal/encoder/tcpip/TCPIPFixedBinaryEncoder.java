@@ -172,8 +172,8 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
         /**
          * Encode a varint using a split binary encoding algorithm
          *
-         * @param value
-         * @throws IOException
+         * @param value  The value to be encoded.
+         * @throws IOException if the value cannot be written.
          */
         public void addUnsignedVarint4(int value) throws IOException {
 

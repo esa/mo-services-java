@@ -459,11 +459,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             file.append(makeLine(tabCount, "/**", false));
 
             for (String comment : comments) {
-                if (!comment.contains("<T>")) {
-                    comment = comment.replaceAll("<", "_");
-                    comment = comment.replaceAll(">", "_");
-                }
-                // comment = comment.replace("\n", "\n     * ");
+                // Clean up tags like "<T>"
+                comment = comment.replaceAll("<", "_");
+                comment = comment.replaceAll(">", "_");
                 file.append(makeLine(tabCount, " * " + comment, false));
             }
             file.append(makeLine(tabCount, " */", false));
