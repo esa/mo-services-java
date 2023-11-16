@@ -54,12 +54,16 @@ Release to Maven Central
 ```
 mvn clean deploy -P release
 ```
+* Note 1: On some Windows machines sometimes the command does not go through. Workaround: Use an Ubuntu VM
+* Note 2: The command might fail in the end because the Nexus Repository is slow with the checks. Wait and check the progress on the Nexus Repository Manager website mentioned below. Eventually, the status will change from open to closed. After this occurs, the software can then be released, check the next step.
 
 3. Inspect the staging repository in the Nexus Repository Manager [here][oss]
     * Release it if everything looks alright 
     * Or Drop it if there are errors
 
-4. Tag the release in GitHub
+4. Tag the release in GitHub  (tag name example: release-10.0)
+
+5. Create a Pull Request from the new version branch to master. Please squash it.
 
 
 Extra
