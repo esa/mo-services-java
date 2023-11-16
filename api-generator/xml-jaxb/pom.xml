@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0-SNAPSHOT</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>xml-jaxb</artifactId>
-    <version>10.0-SNAPSHOT</version>
+    <version>10.0</version>
     <packaging>jar</packaging>
   
     <name>ESA MO JAXB classes for MO XML files</name>
@@ -80,12 +80,12 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-prototypes</artifactId>
-            <version>10.0-SNAPSHOT</version>
+            <version>10.0</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-standards</artifactId>
-            <version>10.0-SNAPSHOT</version>
+            <version>10.0</version>
         </dependency>
     </dependencies>
 

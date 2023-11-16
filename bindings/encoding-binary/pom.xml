@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0-SNAPSHOT</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>encoding-binary</artifactId>
     <packaging>jar</packaging>
-    <version>10.0-SNAPSHOT</version>
+    <version>10.0</version>
 
     <name>ESA MO Encoder - Binary</name>
     <description>A simple Java binary encoder for the CCSDS MAL</description>

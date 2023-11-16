@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0-SNAPSHOT</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transport-tcpip</artifactId>
     <packaging>jar</packaging>
-    <version>10.0-SNAPSHOT</version>
+    <version>10.0</version>
 
     <name>ESA MO Transport - TCP/IP</name>
     <description>A Java TCP/IP transport for CCSDS MAL</description>
