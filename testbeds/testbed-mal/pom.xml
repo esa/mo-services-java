@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>10.0</version>
+        <version>10.1-SNAPSHOT</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-mal</artifactId>
     <packaging>jar</packaging>
-    <version>10.0</version>
+    <version>10.1-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed for MAL</name>
 
     <organization>
@@ -89,7 +89,7 @@
   
     <properties>
         <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
-        <esa.mal.test_api.version>10.0</esa.mal.test_api.version>
+        <esa.mal.test_api.version>10.1-SNAPSHOT</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     </properties>
   
