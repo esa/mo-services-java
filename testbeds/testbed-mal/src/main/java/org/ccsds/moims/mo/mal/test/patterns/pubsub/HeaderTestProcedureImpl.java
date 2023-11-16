@@ -40,12 +40,16 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -65,23 +69,25 @@ import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
-import org.ccsds.moims.mo.testbed.transport.TestMessageHeader;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.ParseHelper;
 
+/**
+ * This is the Consumer
+ */
 public class HeaderTestProcedureImpl extends LoggingBase {
 
     protected LocalMALInstance.IPTestConsumer ipTestConsumer;
@@ -137,14 +143,15 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTestConsumer = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, qos,
-                HeaderTestProcedure.PRIORITY, shared);
+                HeaderTestProcedure.NETWORK_ZONE,
+                session, sessionName, qos,
+                HeaderTestProcedure.PRIORITY, new NamedValueList(), shared);
     }
 
     public boolean initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
-            String sessionType, String sharedBroker, int domain)
-            throws Exception {
-        logMessage("initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
+            String sessionType, String sharedBroker, int domain) throws Exception {
+        logMessage("initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain("
+                + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
         QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -156,9 +163,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
         UInteger errorCode = new UInteger(999);
         IdentifierList keyNames = Helper.get1TestKey();
+        AttributeTypeList keyTypes = Helper.get1TestKeyType();
         TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, errorCode);
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, keyNames, keyTypes, errorCode);
         ipTest.publishRegister(testPublishRegister);
         return true;
     }
@@ -184,9 +192,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         return uris;
     }
 
-    public boolean initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
-        logMessage("initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
+    public boolean initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
+            String sessionType, String sharedBroker, int domain) throws Exception {
+        logMessage("initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain("
+                + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
         QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -199,13 +208,14 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.getDomain(domain), filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.getDomain(domain), null, filters);
         MonitorListener listener = new MonitorListener();
 
         ConsumerContext consumerContext = new ConsumerContext(listener);
 
         logMessage("new consumer context");
-        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker), consumerContext);
+        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain), consumerContext);
 
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
 
@@ -223,17 +233,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             listener.monitorRegisterCond.reset();
         }
 
-        TestMessageHeader expectedMonitorRegisterHeader = new TestMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
+        MALMessageHeader expectedMonitorRegisterHeader = new MALMessageHeader(
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 new Time(timeBeforeRegister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._REGISTER_STAGE),
                 null, // transaction id not checked here (see below)
@@ -241,7 +245,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessage registerMsg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
         MALMessageHeader monitorRegisterHeader = registerMsg.getHeader();
@@ -268,17 +273,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
-        TestMessageHeader expectedMonitorRegisterAckHeader = new TestMessageHeader(
-                uris.broker,
+        MALMessageHeader expectedMonitorRegisterAckHeader = new MALMessageHeader(
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(timeBeforeRegister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._REGISTER_ACK_STAGE),
                 transactionId,
@@ -286,11 +285,17 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
+        // The CNES implementation of an internal broker shares the endpoint of the provider.
+        // As the definition of the supplements field is attached to the endpoint at endpoint creation
+        // (this is a testbed policy), then we cannot differenciate the supplements field value
+        // from the broker and from the provider. The check must then be restricted as
+        // this is not a MAL issue.
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorRegisterAckHeader,
-                expectedMonitorRegisterAckHeader);
+                expectedMonitorRegisterAckHeader, true);
 
         return true;
     }
@@ -301,7 +306,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
     public boolean initiatePublishWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
             String sessionType, String sharedBroker, int domain) throws Exception {
-        logMessage("initiatePublishWithQosAndSessionAndSharedBrokerAndDomain(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
+        logMessage("initiatePublishWithQosAndSessionAndSharedBrokerAndDomain("
+                + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
         QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
@@ -313,7 +319,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
 
         IdentifierList d = HeaderTestProcedure.getDomain(domain);
-        AttributeList keyValues = new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME);
+        NullableAttributeList keyValues = new NullableAttributeList();
+        keyValues.add(new NullableAttribute(HeaderTestProcedure.RIGHT_KEY_NAME));
 
         UpdateHeader updateHeader1 = new UpdateHeader(new Identifier("source"), d, keyValues);
         TestUpdate update1 = new TestUpdate(1);
@@ -337,7 +344,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         updates.add(update4);
 
         ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         if (cc == null) {
             logMessage("The consumer context has not been found.");
@@ -347,8 +354,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         cc.setPublishTimeStamp(new Time(System.currentTimeMillis()));
 
         UInteger errorCode = new UInteger(999);
-        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false, updateHeaders, updates, keyValues, errorCode, Boolean.FALSE, null);
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos,
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE, session, sessionName,
+                false, updateHeaders, updates, keyValues, errorCode, Boolean.FALSE, null);
         ipTest.publishUpdates(testPublishUpdate);
 
         return true;
@@ -368,8 +377,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         ipTest = ipTestConsumer.getStub();
 
-        ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+        ConsumerKey consumerKey = new ConsumerKey(qosLevel, sessionType, sharedBroker, domain);
+        ConsumerContext cc = (ConsumerContext) consumerContexts.get(consumerKey);
 
         if (cc == null) {
             logMessage("The consumer context has not been found.");
@@ -379,17 +388,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
         Blob brokerAuthId = HeaderTestProcedure.getBrokerAuthId(shared);
 
-        TestMessageHeader expectedMonitorNotifyHeader = new TestMessageHeader(
-                uris.broker,
+        MALMessageHeader expectedMonitorNotifyHeader = new MALMessageHeader(
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 cc.getPublishTimeStamp(),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
                 cc.getTransactionId(),
@@ -397,7 +400,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessageHeader monitorNotifyHeader = cc.getListener().getMonitorNotifyHeader();
 
@@ -407,9 +411,14 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
+        // The CNES implementation of an internal broker shares the endpoint of the provider.
+        // As the definition of the supplements field is attached to the endpoint at endpoint creation
+        // (this is a testbed policy), then we cannot differenciate the supplements field value
+        // from the broker and from the provider. The check must then be restricted as
+        // this is not a MAL issue.
         AssertionHelper.checkHeader("PubSub.checkNotifyHeader", assertions,
                 monitorNotifyHeader,
-                expectedMonitorNotifyHeader);
+                expectedMonitorNotifyHeader, true);
 
         return true;
     }
@@ -429,23 +438,17 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
 
         ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
 
         Blob brokerAuthId = HeaderTestProcedure.getBrokerAuthId(shared);
 
-        TestMessageHeader expectedMonitorNotifyErrorHeader = new TestMessageHeader(
-                uris.broker,
+        MALMessageHeader expectedMonitorNotifyErrorHeader = new MALMessageHeader(
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 cc.getPublishTimeStamp(),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._NOTIFY_STAGE),
                 cc.getTransactionId(),
@@ -453,13 +456,13 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.TRUE);
+                Boolean.TRUE,
+                new NamedValueList());
 
         TestEndPoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
-        MALMessage notifyMessage = ep.createTestMessage(
-                expectedMonitorNotifyErrorHeader,
-                new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
+        MALMessage notifyMessage = ep.createTestMessage(expectedMonitorNotifyErrorHeader,
+                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
 
         // Inject the Notify error message
         ep.receive(notifyMessage);
@@ -480,6 +483,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
     public boolean initiatePublishErrorWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
             String sessionType, String sharedBroker, int domain) throws Exception {
+        LoggingBase.logMessage("\n\n------------- Consumer Side -------------\n");
         logMessage("initiatePublishErrorWithQosAndSession(" + qosLevel + ',' + sessionType + ',' + sharedBroker + ',' + domain + ')');
         resetAssertions();
 
@@ -491,9 +495,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         ipTest = ipTestConsumer.getStub();
 
-        AttributeList keyValues = new AttributeList(HeaderTestProcedure.WRONG_KEY_NAME);
-        keyValues.add(new Identifier("OneMoreValueToForceUnknownError"));
-        UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), HeaderTestProcedure.getDomain(domain), keyValues);
+        NullableAttributeList keyValues = new NullableAttributeList();
+        keyValues.add(new NullableAttribute(HeaderTestProcedure.WRONG_KEY_NAME));
+        keyValues.add(new NullableAttribute(new Identifier("OneMoreValueToForceUnknownError")));
+        UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.getDomain(domain), keyValues);
         TestUpdate update = new TestUpdate(1);
 
         UpdateHeaderList updateHeaders = new UpdateHeaderList();
@@ -503,7 +509,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         updates.add(update);
 
         ConsumerContext cc
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         if (cc == null) {
             logMessage("The consumer context has not been found.");
@@ -517,10 +523,15 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         // failedKeyValues.add(new Identifier("myvalu"));
         // Failed failedKeyValues should be null because the 
         // extra information no longer exists in the new book!
-        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos, HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain), HeaderTestProcedure.NETWORK_ZONE, session,
-                sessionName, false, updateHeaders, updates, keyValues, errorCode,
+        TestPublishUpdate testPublishUpdate = new TestPublishUpdate(qos,
+                HeaderTestProcedure.PRIORITY,
+                HeaderTestProcedure.DOMAIN,
+                HeaderTestProcedure.NETWORK_ZONE,
+                session,
+                sessionName, false, updateHeaders,
+                updates, keyValues, errorCode,
                 Boolean.FALSE, null);
+
         ipTest.publishUpdates(testPublishUpdate);
 
         return true;
@@ -542,7 +553,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
 
         ConsumerContext consumerContext
-                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker));
+                = (ConsumerContext) consumerContexts.get(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain));
 
         if (consumerContext == null) {
             logMessage("The consumer context has not been found.");
@@ -565,17 +576,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             consumerContext.listener.monitorDeregisterCond.reset();
         }
 
-        TestMessageHeader expectedDemonitorRegisterHeader = new TestMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
+        MALMessageHeader expectedDemonitorRegisterHeader = new MALMessageHeader(
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                uris.broker,
+                new Identifier(uris.broker.getValue()),
                 new Time(timeBeforeDeregister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._DEREGISTER_STAGE),
                 null, // transaction id not checked here (see below)
@@ -583,7 +588,8 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
         MALMessage deregisterMsg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
         MALMessageHeader monitorDeregisterHeader = deregisterMsg.getHeader();
@@ -605,17 +611,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
-        TestMessageHeader expectedMonitorDeregisterAckHeader = new TestMessageHeader(
-                uris.broker,
+        MALMessageHeader expectedMonitorDeregisterAckHeader = new MALMessageHeader(
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(timeBeforeDeregister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 new UOctet(MALPubSubOperation._DEREGISTER_ACK_STAGE),
                 transactionId,
@@ -623,11 +623,17 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+                Boolean.FALSE,
+                new NamedValueList());
 
+        // The CNES implementation of an internal broker shares the endpoint of the provider.
+        // As the definition of the supplements field is attached to the endpoint at endpoint creation
+        // (this is a testbed policy), then we cannot differenciate the supplements field value
+        // from the broker and from the provider. The check must then be restricted as
+        // this is not a MAL issue.
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorDeregisterAckHeader,
-                expectedMonitorDeregisterAckHeader);
+                expectedMonitorDeregisterAckHeader, true);
 
         return true;
     }
@@ -648,7 +654,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         ipTest = ipTestConsumer.getStub();
         UInteger errorCode = new UInteger(999);
         TestPublishDeregister testPublishDeregister = new TestPublishDeregister(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
                 errorCode);
         ipTest.publishDeregister(testPublishDeregister);
@@ -674,9 +680,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         list.add(HeaderTestProcedure.PUBLISH_REGISTER_ERROR_KEY_VALUE);
         UInteger errorCode = MALHelper.INTERNAL_ERROR_NUMBER;
         TestPublishRegister testPublishRegister = new TestPublishRegister(qos,
-                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.getDomain(domain),
+                HeaderTestProcedure.PRIORITY, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, session, sessionName, false,
-                list, errorCode);
+                list, Helper.get1TestKeyType(), errorCode);
         ipTest.publishRegister(testPublishRegister);
         return true;
     }
@@ -700,13 +706,16 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(HeaderTestProcedure.RIGHT_KEY_NAME)));
 
         Subscription subscription = new Subscription(
-                HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID, HeaderTestProcedure.getDomain(domain), filters);
+                HeaderTestProcedure.REGISTER_ERROR_SUBSCRIPTION_ID,
+                HeaderTestProcedure.getDomain(domain),
+                null,
+                filters);
         MonitorListener listener = new MonitorListener();
 
         ConsumerContext consumerContext = new ConsumerContext(listener);
 
         logMessage("new consumer context");
-        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker),
+        consumerContexts.put(new ConsumerKey(qosLevel, sessionType, sharedBroker, domain),
                 consumerContext);
 
         FileBasedDirectory.URIpair uris = getProviderURIs(shared);
@@ -741,17 +750,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             return false;
         }
 
-        TestMessageHeader expectedMonitorRegisterErrorHeader = new TestMessageHeader(
-                uris.broker,
+        MALMessageHeader expectedMonitorRegisterErrorHeader = new MALMessageHeader(
+                new Identifier(uris.broker.getValue()),
                 brokerAuthId,
-                ipTestConsumer.getConsumer().getURI(),
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
                 new Time(timeBeforeRegister),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.getDomain(domain),
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 InteractionType.PUBSUB,
                 MALPubSubOperation.REGISTER_ACK_STAGE,
                 monitorRegisterHeader.getTransactionId(),
@@ -759,12 +762,13 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
                 IPTestServiceInfo.MONITOR_OP.getNumber(),
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.TRUE);
+                Boolean.TRUE,
+                new NamedValueList());
 
         AssertionHelper.checkHeader(procedureName, assertions,
                 monitorRegisterErrorHeader, expectedMonitorRegisterErrorHeader);
 
-        MALStandardError monitorRegisterError = listener.getMonitorRegisterError();
+        MOErrorException monitorRegisterError = listener.getMonitorRegisterError();
 
         assertions.add(new Assertion(procedureName,
                 "Error received", (monitorRegisterError != null)));
@@ -793,7 +797,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         private MALMessageHeader monitorRegisterErrorHeader;
 
-        private MALStandardError monitorRegisterError;
+        private MOErrorException monitorRegisterError;
 
         @Override
         public synchronized void monitorRegisterAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
@@ -803,7 +807,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         @Override
         public synchronized void monitorRegisterErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             monitorRegisterErrorHeader = msgHeader;
             monitorRegisterError = error;
             monitorRegisterCond.set();
@@ -811,15 +815,15 @@ public class HeaderTestProcedureImpl extends LoggingBase {
 
         @Override
         public synchronized void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
             monitorNotifyHeader = msgHeader;
             monitorNotifyCond.set();
         }
 
         @Override
         public synchronized void monitorNotifyErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             monitorNotifyErrorHeader = msgHeader;
             monitorNotifyErrorCond.set();
         }
@@ -848,11 +852,11 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             this.monitorRegisterErrorHeader = monitorRegisterErrorHeader;
         }
 
-        public MALStandardError getMonitorRegisterError() {
+        public MOErrorException getMonitorRegisterError() {
             return monitorRegisterError;
         }
 
-        public void setMonitorRegisterError(MALStandardError monitorRegisterError) {
+        public void setMonitorRegisterError(MOErrorException monitorRegisterError) {
             this.monitorRegisterError = monitorRegisterError;
         }
 
@@ -890,19 +894,22 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         private String qosLevel;
         private String sessionType;
         private String sharedBroker;
+        private int domain;
 
-        public ConsumerKey(String qosLevel, String sessionType, String sharedBroker) {
+        public ConsumerKey(String qosLevel, String sessionType, String sharedBroker, int domain) {
             super();
             this.qosLevel = qosLevel;
             this.sessionType = sessionType;
             this.sharedBroker = sharedBroker;
+            this.domain = domain;
         }
 
         @Override
         public int hashCode() {
             return qosLevel.hashCode()
                     + sessionType.hashCode()
-                    + sharedBroker.hashCode();
+                    + sharedBroker.hashCode()
+                    + domain;
         }
 
         @Override
@@ -918,6 +925,9 @@ public class HeaderTestProcedureImpl extends LoggingBase {
                 if (!sk.sharedBroker.equals(sharedBroker)) {
                     return false;
                 }
+                if (sk.domain != domain) {
+                  return false;
+              }
                 return true;
             } else {
                 return false;
@@ -958,11 +968,10 @@ public class HeaderTestProcedureImpl extends LoggingBase {
             this.transactionId = transactionId;
         }
 
-        public void checkTransactionIdUniqueness(
-                String procedureName,
-                Long transactionId) {
+        public void checkTransactionIdUniqueness(String procedureName, Long transactionId) {
             Assertion tidAssertion = new Assertion(procedureName,
-                    "Transaction identifier uniqueness: " + transactionId, (transactionIds.indexOf(transactionId) == -1));
+                    "Transaction identifier uniqueness: " + transactionId,
+                    (transactionIds.indexOf(transactionId) == -1));
             transactionIds.addElement(transactionId);
             assertions.add(tidAssertion);
         }

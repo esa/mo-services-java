@@ -42,26 +42,30 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 public class TestTransport implements MALTransport {
 
-    private MALTransport delegate;
+    private final MALTransport delegate;
 
     public TestTransport(MALTransport delegate) throws MALException {
         this.delegate = delegate;
     }
 
+    @Override
     public void close() throws MALException {
         delegate.close();
     }
 
-    public MALEndpoint createEndpoint(String localName, Map qosProperties) throws MALException {
-        TestEndPoint ep = new TestEndPoint(delegate.createEndpoint(localName, qosProperties));
+    @Override
+    public MALEndpoint createEndpoint(String localName, Map qosProperties, NamedValueList supplements) throws MALException {
+        TestEndPoint ep = new TestEndPoint(delegate.createEndpoint(localName, qosProperties, supplements));
         TransportInterceptor.instance().addEndPoint(ep);
         return ep;
     }
 
+    @Override
     public void deleteEndpoint(String name) throws MALException {
         delegate.deleteEndpoint(name);
     }
 
+    @Override
     public boolean isSupportedInteractionType(InteractionType type) {
         TransportInterceptor.instance().incrementSupportedIpRequestCount(type);
         boolean isSupported = delegate.isSupportedInteractionType(type);
@@ -69,6 +73,7 @@ public class TestTransport implements MALTransport {
         return isSupported;
     }
 
+    @Override
     public boolean isSupportedQoSLevel(QoSLevel qos) {
         TransportInterceptor.instance().incrementSupportedQoSRequestCount(qos);
         boolean isSupported = delegate.isSupportedQoSLevel(qos);
@@ -76,6 +81,7 @@ public class TestTransport implements MALTransport {
         return isSupported;
     }
 
+    @Override
     public MALBrokerBinding createBroker(String localName, Blob authenticationId,
             QoSLevel[] expectedQos, UInteger priorityLevelNumber, Map qosProperties)
             throws MALException {
@@ -83,16 +89,19 @@ public class TestTransport implements MALTransport {
                 priorityLevelNumber, qosProperties);
     }
 
+    @Override
     public MALBrokerBinding createBroker(MALEndpoint endPoint, Blob authenticationId,
             QoSLevel[] expectedQos, UInteger priorityLevelNumber, Map qosProperties) throws MALException {
         return delegate.createBroker(endPoint, authenticationId, expectedQos,
                 priorityLevelNumber, qosProperties);
     }
 
+    @Override
     public MALEndpoint getEndpoint(URI uri) throws java.lang.IllegalArgumentException, MALException {
         return delegate.getEndpoint(uri);
     }
 
+    @Override
     public MALEndpoint getEndpoint(String localName) throws java.lang.IllegalArgumentException, MALException {
         return delegate.getEndpoint(localName);
     }

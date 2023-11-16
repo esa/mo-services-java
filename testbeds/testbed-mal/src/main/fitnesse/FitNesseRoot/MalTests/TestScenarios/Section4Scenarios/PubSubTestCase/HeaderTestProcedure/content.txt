@@ -40,20 +40,18 @@
 *******!
 !4 Test procedure: header
 This test procedure checks the MAL message header in every stage of the Pub/Sub interaction.
-It is executed once for each !-QoS-! level, session. 
-The session name depends on the session type. If the session type is Live, the name is 'LIVE'. If the session type is Replay, the name is 'R1'. If the session type is Simulation, the name is 'S1'.
+
+It defines 2 sub-scenarios. The !-testFirstPublishRegister-! sub-scenario executes a complete !-PubSub-! IP with 1 consumer and 1 provider.
+The !-detailedPubSubIP-! sub-scenario checks all possible messages with 1 provider and 4 consumers.
 
 The consumer creates subscriptions from the following parameters:
  * subscription identifier: 'sub1'
  * authentication identifier: '0x00,0x01'
- * priority: 1
- * domain: 'Test,Domain'
- * networkZone: '!-NetworkZone-!'
- * entity expression: 'A,null,null,null'
- * only on change: false
+ * domain: 'Test,Domain[1-4]'
+ * filters expression: 'A,null,null,null'
  
 All the tests are executed once with a private broker and a second time with a shared one.
-The shared broker is created one the consumer side because. In this way, it enables the test to intercept the messages going out of the provider's publisher.
+The shared broker is created on the consumer side. In this way, it enables the test to intercept the messages going out of the provider's publisher.
 
 Some headers are only checked with a shared broker:
  * Publish
@@ -63,214 +61,143 @@ Some headers are only checked with a shared broker:
  * Publish Deregister
  * Publish Deregister ack
  
- The Publish Error is triggered by publishing an entity that has not been registered: 'B,null,null,null'.
- The Publish Register Error is triggered by registering an entity which key is recognized by the test transport.
+ The Publish Error is triggered by publishing a key that has not been registered: 'OneMoreValueToForceUnknownError'.
+ The Publish Register Error is triggered by registering with a key which is recognized by the test transport.
  The Notify Error is injected through the test transport module.
  
  The provider assertions are described in the IPTest service specification (section 5.1).
- The consumer assertions are described in annex B.
-
+ 
 !*> Sub scenario definitions
-|scenario| publish register | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate publish register with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test publish register with shared broker | shared |
+|ensure |initiate publish register with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 
-|scenario| publish register | sess | and shared broker | shared |
-|publish register | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|publish register | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|publish register | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|publish register | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
 
-|scenario| test publish register and shared broker | shared |
-|publish register | Live | and shared broker | @shared |
-|publish register | Simulation | and shared broker | @shared |
-|publish register | Replay | and shared broker | @shared |
-
-
-|scenario| register | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate register with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test register with domain | domain | and shared broker | shared |
+|ensure |initiate register with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the consumer assertions|
 
-|scenario| register | sess | and shared broker | shared |
-|register | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|register | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|register | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|register | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test register and shared broker | shared |
-|register | Live | and shared broker | @shared |
-|register | Simulation | and shared broker | @shared |
-|register | Replay | and shared broker | @shared |
+|scenario| test register with shared broker | shared |
+|test register with domain | 1 | and shared broker | @shared |
+|test register with domain | 2 | and shared broker | @shared |
+|test register with domain | 3 | and shared broker | @shared |
+|test register with domain | 4 | and shared broker | @shared |
 
 
-|scenario| publish | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate publish with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test publish with domain | domain | and shared broker | shared |
+|ensure |initiate publish with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 
-|scenario| publish | sess | and shared broker | shared |
-|publish | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|publish | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|publish | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|publish | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test publish and shared broker | shared |
-|publish | Live | and shared broker | @shared |
-|publish | Simulation | and shared broker | @shared |
-|publish | Replay | and shared broker | @shared |
+|scenario| test publish with shared broker | shared |
+|test publish with domain | 1 | and shared broker | @shared |
+|test publish with domain | 2 | and shared broker | @shared |
+|test publish with domain | 3 | and shared broker | @shared |
+|test publish with domain | 4 | and shared broker | @shared |
 
 
-|scenario| notify | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |get notify with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test notify with domain | domain | and shared broker | shared |
+|ensure |get notify with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 |ensure |the consumer assertions|
 
-|scenario| notify | sess | and shared broker | shared |
-|notify | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|notify | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|notify | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|notify | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test notify and shared broker | shared |
-|notify | Live | and shared broker | @shared |
-|notify | Simulation | and shared broker | @shared |
-|notify | Replay | and shared broker | @shared |
+|scenario| test notify with shared broker | shared |
+|test notify with domain | 1 | and shared broker | @shared |
+|test notify with domain | 2 | and shared broker | @shared |
+|test notify with domain | 3 | and shared broker | @shared |
+|test notify with domain | 4 | and shared broker | @shared |
 
 
-|scenario| notify error | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate notify error with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test notify error with domain | domain | and shared broker | shared |
+|ensure |initiate notify error with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the consumer assertions|
 
-|scenario| notify error | sess | and shared broker | shared |
-|notify error | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|notify error | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|notify error | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|notify error | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test notify error and shared broker | shared |
-|notify error | Live | and shared broker | @shared |
-|notify error | Simulation | and shared broker | @shared |
-|notify error | Replay | and shared broker | @shared |
+|scenario| test notify error with shared broker | shared |
+|test notify error with domain | 1 | and shared broker | @shared |
+|test notify error with domain | 2 | and shared broker | @shared |
+|test notify error with domain | 3 | and shared broker | @shared |
+|test notify error with domain | 4 | and shared broker | @shared |
 
 
-|scenario| publishError | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate publish error with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test publishError with domain | domain | and shared broker | shared |
+|ensure |initiate publish error with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 
-|scenario| publishError | sess | and shared broker | shared |
-|publishError | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|publishError | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|publishError | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|publishError | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test publishError and shared broker | shared |
-|publishError | Live | and shared broker | @shared |
-|publishError | Simulation | and shared broker | @shared |
-|publishError | Replay | and shared broker | @shared |
+|scenario| test publishError with shared broker | shared |
+|test publishError with domain | 1 | and shared broker | @shared |
+|test publishError with domain | 2 | and shared broker | @shared |
+|test publishError with domain | 3 | and shared broker | @shared |
+|test publishError with domain | 4 | and shared broker | @shared |
 
 
-|scenario| deregister | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate deregister with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test deregister with domain | domain | and shared broker | shared |
+|ensure |initiate deregister with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the consumer assertions|
 
-|scenario| deregister | sess | and shared broker | shared |
-|deregister | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|deregister | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|deregister | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|deregister | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test deregister and shared broker | shared |
-|deregister | Live | and shared broker | @shared |
-|deregister | Simulation | and shared broker | @shared |
-|deregister | Replay | and shared broker | @shared |
+|scenario| test deregister with shared broker | shared |
+|test deregister with domain | 1 | and shared broker | @shared |
+|test deregister with domain | 2 | and shared broker | @shared |
+|test deregister with domain | 3 | and shared broker | @shared |
+|test deregister with domain | 4 | and shared broker | @shared |
 
 
-|scenario| publishDeregister | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate publishDeregister with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test publishDeregister with shared broker | shared |
+|ensure |initiate publishDeregister with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 
-|scenario| publishDeregister | sess | and shared broker | shared |
-|publishDeregister | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|publishDeregister | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|publishDeregister | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|publishDeregister | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
 
-|scenario| test publishDeregister and shared broker | shared |
-|publishDeregister | Live | and shared broker | @shared |
-|publishDeregister | Simulation | and shared broker | @shared |
-|publishDeregister | Replay | and shared broker | @shared |
-
-
-|scenario| publish register error | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate publish register error with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test publish register error with shared broker | shared |
+|ensure |initiate publish register error with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 
-|scenario| publish register error | sess | and shared broker | shared |
-|publish register error | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|publish register error | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|publish register error | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|publish register error | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
 
-|scenario| test publish register error and shared broker | shared |
-|publish register error | Live | and shared broker | @shared |
-|publish register error | Simulation | and shared broker | @shared |
-|publish register error | Replay | and shared broker | @shared |
-
-
-|scenario| register error | qos | and session | sess | and shared broker | shared | and domain | domain |
-|ensure |initiate register error with qos | @qos | and session | @sess | and shared broker | @shared | and domain | @domain |
+|scenario| test register error with domain | domain | and shared broker | shared |
+|ensure |initiate register error with qos | Assured | and session | Live | and shared broker | @shared | and domain | @domain |
 |ensure |Call the operation getResult|
 |ensure |the consumer assertions|
 
-|scenario| register error | sess | and shared broker | shared |
-|register error | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|register error | Assured | and session | @sess | and shared broker | @shared | and domain | 2 |
-|register error | Queued | and session | @sess | and shared broker | @shared | and domain | 3 |
-|register error | Timely | and session | @sess | and shared broker | @shared | and domain | 4 |
-
-|scenario| test register error and shared broker | shared |
-|register error | Live | and shared broker | @shared |
-|register error | Simulation | and shared broker | @shared |
-|register error | Replay | and shared broker | @shared |
+|scenario| test register error with shared broker | shared |
+|test register error with domain | 1 | and shared broker | @shared |
+|test register error with domain | 2 | and shared broker | @shared |
+|test register error with domain | 3 | and shared broker | @shared |
+|test register error with domain | 4 | and shared broker | @shared |
 
 
-|scenario| first publish register | sess | and shared broker | shared |
-|ensure |initiate publish register with qos | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish register with qos | Assured | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish register with qos | Queued | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish register with qos | Timely | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate register with qos | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate register with qos | Assured | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate register with qos | Queued | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate register with qos | Timely | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish with qos | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish with qos | Assured | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish with qos | Queued | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish with qos | Timely | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish error with qos | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish error with qos | Assured | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish error with qos | Queued | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish error with qos | Timely | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate deregister with qos | Best Effort | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate deregister with qos | Assured | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate deregister with qos | Queued | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate deregister with qos | Timely | and session | @sess | and shared broker | @shared | and domain | 1 |
-|ensure |initiate publish deregister with qos | Assured | and session | @sess | and shared broker | @shared | and domain | 1 |
+|scenario| test first publish register with shared broker | shared |
+|ensure |initiate publish register with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
+|ensure |initiate register with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
+|ensure |initiate publish with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
+|ensure |initiate publish error with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
+|ensure |initiate deregister with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
+|ensure |initiate publish deregister with qos | Assured | and session | Live | and shared broker | @shared | and domain | 1 |
 |ensure |Call the operation getResult|
 |ensure |the provider assertions|
 
-|scenario| test first publish register and shared broker | shared |
-|first publish register | Live | and shared broker | @shared |
-|first publish register | Simulation | and shared broker | @shared |
-|first publish register | Replay | and shared broker | @shared |
+|scenario| test detailed Pub Sub IP with shared broker | shared |
+|test publish register with shared broker | @shared |
+|test register with shared broker | @shared |
+|test publish with shared broker | @shared |
+|test notify with shared broker | @shared |
+|test publishError with shared broker | @shared |
+|test notify error with shared broker | @shared |
+|test deregister with shared broker | @shared |
+|test publishDeregister with shared broker | @shared |
+|test publish register error with shared broker | @shared |
+|test register error with shared broker | @shared |
+
+# Note that the scenario includes a notify error line followed by a deregister lined |
+# This is illegal because a NOTIFY_ERROR leads to a final state
+# and the DEREGISTER should not be received
+# However both implementations pass this test !
+
 ***********!
 
 |script| header test procedure |
@@ -278,59 +205,14 @@ Some headers are only checked with a shared broker:
 |create fixture single instance|
 
 |script| header test procedure |
-|note| test publish register |
-|test publish register and shared broker | false |
-|test publish register and shared broker | true |
-
-|script| header test procedure |
-|note| test register |
-|test register and shared broker | false |
-|test register and shared broker | true |
-
-|script| header test procedure |
-|note| test publish |
-|test publish and shared broker | false |
-|test publish and shared broker | true |
-
-|script| header test procedure |
-|note| test notify |
-|test notify and shared broker | false |
-|test notify and shared broker | true |
-
-|script| header test procedure |
-|note| test notify error |
-|test notify error and shared broker | false |
-|test notify error and shared broker | true |
-
-|script| header test procedure |
-|note| test publishError |
-|test publishError and shared broker | false |
-|test publishError and shared broker | true |
-
-|script| header test procedure |
-|note| test deregister |
-|test deregister and shared broker | false |
-|test deregister and shared broker | true |
-
-|script| header test procedure |
-|note| test publishDeregister |
-|test publishDeregister and shared broker | false |
-|test publishDeregister and shared broker | true |
-
-|script| header test procedure |
-|note| test publish register error |
-|test publish register error and shared broker | true |
-|test publish register error and shared broker | true |
-
-|script| header test procedure |
-|note| test register error |
-|test register error and shared broker | false |
-|test register error and shared broker | true |
-
-|script| header test procedure |
 |note| first publish register |
-|test first publish register and shared broker | false |
-|test first publish register and shared broker | true |
+|test first publish register with shared broker | false |
+|test first publish register with shared broker | true |
+
+|script| header test procedure |
+|note| detailed Pub Sub IP |
+|test detailed Pub Sub IP with shared broker | false |
+|test detailed Pub Sub IP with shared broker | true |
 
 |script| header test procedure |
 |note| clean up the test instance |

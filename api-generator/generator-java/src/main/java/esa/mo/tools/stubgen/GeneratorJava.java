@@ -20,11 +20,11 @@
  */
 package esa.mo.tools.stubgen;
 
-import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
+import esa.mo.tools.stubgen.java.JavaClassWriter;
+import esa.mo.tools.stubgen.java.JavaCompositeFields;
+import esa.mo.tools.stubgen.java.JavaLists;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
-import esa.mo.tools.stubgen.specification.OperationSummary;
-import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
@@ -33,7 +33,6 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.AreaType;
-import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
@@ -98,7 +97,6 @@ public class GeneratorJava extends GeneratorLangs {
         super.init(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
         setRequiresDefaultConstructors(Boolean.valueOf(extraProperties.get("java.requiresDefaultConstructors")));
-        setSupportFullyPolymorphicTypes(Boolean.valueOf(extraProperties.get("java.supportFullyPolymorphicTypes")));
 
         addAttributeType(StdStrings.MAL, StdStrings.BLOB, false, "Blob", "");
         addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "Boolean.FALSE");
@@ -134,7 +132,7 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     public void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher publisher) throws IOException {
-        getLog().info("Creating publisher class " + fqPublisherName);
+        getLog().info(" > Creating Publisher class: " + fqPublisherName);
 
         String publisherName = fqPublisherName.substring(fqPublisherName.lastIndexOf('.') + 1);
         ClassWriter file = createClassFile(destinationFolderName, fqPublisherName.replace('.', '/'));
@@ -157,20 +155,24 @@ public class GeneratorJava extends GeneratorLangs {
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, publisherName,
                 createCompositeElementsDetails(file, false, "publisherSet",
                         TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),
-                        false, true, "publisherSet The set of broker connections to use when registering and publishing."),
+                        false, true, "The set of broker connections to use when registering and publishing."),
                 false, null, "Creates an instance of this class using the supplied publisher set.", null);
         method.addLine("this.publisherSet = publisherSet");
         method.addMethodCloseStatement();
 
-        CompositeField keyList = createCompositeElementsDetails(file, false, "keys",
+        CompositeField keyNamesList = createCompositeElementsDetails(file, false, "keyNames",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
-                true, true, "keys The keys to use in the method");
+                true, true, "The key names to use in the method");
+        CompositeField keyTypesList = createCompositeElementsDetails(file, false, "keyTypes",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "AttributeType", true),
+                true, true, "The key types to use in the method");
         CompositeField psListener = createCompositeElementsDetails(file, false, "listener",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublishInteractionListener", false),
                 false, true,
-                "listener The listener object to use for callback from the publisher");
+                "The listener object to use for callback from the publisher");
         List<CompositeField> argPSListenerList = new LinkedList<>();
-        argPSListenerList.add(keyList);
+        argPSListenerList.add(keyNamesList);
+        argPSListenerList.add(keyTypesList);
         argPSListenerList.add(psListener);
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "register", argPSListenerList, throwsExceptions,
@@ -178,7 +180,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.register(keys, listener)");
+        method.addLine("publisherSet.register(keyNames, keyTypes, listener)");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -187,18 +189,18 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.asyncRegister(keys, listener)");
+        method.addLine("publisherSet.asyncRegister(keyNames, keyTypes, listener)");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
-        argList.add(createCompositeElementsDetails(file, true, "updateHeaderList",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", true), true, true,
-                "updateHeaderList The headers of the updates being added"));
-        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes(), true));
+        argList.add(createCompositeElementsDetails(file, true, "updateHeader",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
+                true, true, "The headers of the updates being added"));
+        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes()));
 
         String argNameList = "";
 
-        if (1 < argList.size()) {
+        if (argList.size() > 1) {
             List<String> strList = new LinkedList<>();
 
             for (int i = 1; i < argList.size(); i++) {
@@ -214,7 +216,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.publish(updateHeaderList" + argNameList + ")");
+        method.addLine("publisherSet.publish(updateHeader" + argNameList + ")");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -246,193 +248,15 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void createListClass(File folder, AreaType area, ServiceType service,
+    public void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
+        JavaLists javaLists = new JavaLists(this);
+
         if (isAbstract) {
-            createAbstractListClass(folder, area, service, srcTypeName);
+            javaLists.createHeterogeneousListClass(folder, area, service, srcTypeName);
         } else {
-            createConcreteListClass(folder, area, service, srcTypeName, shortFormPart);
+            javaLists.createHomogeneousListClass(folder, area, service, srcTypeName, shortFormPart);
         }
-    }
-
-    /**
-     * Creates a list for an abstract type.
-     *
-     * @param folder The base folder to create the list in.
-     * @param area The Area of the list.
-     * @param service The service of the list.
-     * @param srcTypeName The name of the element in the list.
-     * @throws IOException if there is a problem writing the file.
-     */
-    protected void createAbstractListClass(File folder, AreaType area,
-            ServiceType service, String srcTypeName) throws IOException {
-        String listName = srcTypeName + "List";
-
-        getLog().info("Creating list interface " + listName);
-
-        InterfaceWriter file = createInterfaceFile(folder, listName);
-
-        file.addPackageStatement(area, service, getConfig().getStructureFolder());
-
-        TypeReference typeRef = TypeUtils.createTypeReference(area.getName(), (null == service) ? null : service.getName(), srcTypeName, false);
-        TypeReference superTypeReference = getCompositeElementSuperType(typeRef);
-        String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
-
-        if (null == superTypeReference) {
-            superTypeReference = new TypeReference();
-            superTypeReference.setArea(StdStrings.MAL);
-            String name = (isComposite(typeRef)) ? StdStrings.COMPOSITE : StdStrings.ELEMENT;
-            superTypeReference.setName(name);
-        }
-
-        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null,
-                superTypeReference, true, true, "List element.");
-
-        file.addInterfaceOpenStatement(listName + "<T extends " + fqSrcTypeName + ">",
-                listSuperElement.getTypeName() + "List<T>",
-                "List class for " + srcTypeName + "." + file.getLineSeparator() + " * @param <T> The type of this list must extend " + srcTypeName);
-        file.addInterfaceCloseStatement();
-
-        file.flush();
-    }
-
-    /**
-     * Creates a list for an abstract type.
-     *
-     * @param folder The base folder to create the list in.
-     * @param area The Area of the list.
-     * @param service The service of the list.
-     * @param srcTypeName The name of the element in the list.
-     * @param shortFormPart The short form part of the contained element.
-     * @throws IOException if there is a problem writing the file.
-     */
-    protected void createConcreteListClass(File folder, AreaType area, ServiceType service,
-            String srcTypeName, Long shortFormPart) throws IOException {
-        String listName = srcTypeName + "List";
-
-        TypeReference srcType = new TypeReference();
-        srcType.setArea(area.getName());
-        if (null != service) {
-            srcType.setService(service.getName());
-        }
-
-        srcType.setName(srcTypeName);
-        getLog().info("Creating list class " + listName);
-        ClassWriter file = createClassFile(folder, listName);
-
-        file.addPackageStatement(area, service, getConfig().getStructureFolder());
-
-        CompositeField elementType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
-                true, true, null);
-        String fqSrcTypeName = createElementType(file, area, service, srcTypeName);
-
-        TypeReference superTypeReference = getCompositeElementSuperType(srcType);
-        if (null == superTypeReference) {
-            superTypeReference = new TypeReference();
-            superTypeReference.setArea(StdStrings.MAL);
-            if (isAttributeType(srcType)) {
-                superTypeReference.setName(StdStrings.ATTRIBUTE);
-            } else if (isEnum(srcType)) {
-                superTypeReference.setName(StdStrings.ENUMERATION);
-            } else {
-                superTypeReference.setName(StdStrings.COMPOSITE);
-            }
-        }
-
-        CompositeField listSuperElement = createCompositeElementsDetails(file, false, null,
-                superTypeReference, true, true, "List element.");
-        String sElement = listSuperElement.getTypeName();
-        if (sElement.contains("Attribute")) {
-            sElement = sElement.replace("Attribute", "Element"); // Needs to be replaced for Attributes
-        }
-
-        file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",
-                sElement + "List<" + fqSrcTypeName + ">", "List class for " + srcTypeName + ".");
-
-        CompositeField listElement = createCompositeElementsDetails(file, true, null,
-                srcType, true, true, "List element.");
-
-        addTypeShortFormDetails(file, area, service, -shortFormPart);
-
-        // create blank constructor
-        file.addConstructorDefault(listName);
-
-        // create initial size contructor
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName,
-                createCompositeElementsDetails(file, false, "initialCapacity",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, "initialCapacity the required initial capacity."),
-                true, null, "Constructor that initialises the capacity of the list.", null);
-        method.addMethodCloseStatement();
-
-        // create contructor with ArrayList 
-        method = file.addConstructor(StdStrings.PUBLIC, listName,
-                createCompositeElementsDetails(file, false, "elementList",
-                        TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false),
-                        false, false, "The ArrayList that is used for initialization."),
-                false, null, "Constructor that uses an ArrayList for initialization.", null);
-        method.addLine("for(" + fqSrcTypeName + " element : elementList) {", false);
-        method.addLine("    super.add(element)");
-        method.addLine("}", false);
-        method.addMethodCloseStatement();
-
-        List<CompositeField> argList = new LinkedList<>();
-        argList.add(createCompositeElementsDetails(file, true, "element", srcType, true, true, "List element."));
-        TypeReference type = new TypeReference();
-        type.setName("boolean");
-        CompositeField rtype = createCompositeElementsDetails(file, false, "element", type, false, true, "List element.");
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, rtype, "add", argList, null,
-                "Adds an element to the list and checks if it is not null.", "The success status.", null);
-        /*
-        method.addMethodStatement("if (element == null) {", false);
-        method.addMethodStatement("  throw new IllegalArgumentException(\"The added argument cannot be null!\")");
-        method.addMethodStatement("}", false);
-         */
-        method.addLine("return super.add(element)");
-        method.addMethodCloseStatement();
-
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
-                true, elementType, "createElement", null, null,
-                "Creates an instance of this type using the default constructor. It is a generic factory method.",
-                "A new instance of this type with default field values.", null);
-        method.addLine("return new " + listName + "()");
-        method.addMethodCloseStatement();
-
-        // create encode method
-        method = encodeMethodOpen(file);
-        method.addLine("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
-        method.addLine("for (int i = 0; i < size(); i++) {", false);
-        method.addLine("  listEncoder.encodeNullable" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
-        method.addLine("}", false);
-        method.addLine("listEncoder.close()");
-        method.addMethodCloseStatement();
-
-        // create decode method
-        method = decodeMethodOpen(file, elementType);
-        method.addLine("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
-        method.addLine("int decodedSize = listDecoder.size()");
-        method.addLine("if (decodedSize > 0) {", false);
-        method.addLine("  ensureCapacity(decodedSize)");
-        method.addLine("}", false);
-        method.addLine("while (listDecoder.hasNext()) {", false);
-        method.addLine("  add(" + listElement.getDecodeCast() + "listDecoder.decodeNullable" + listElement.getDecodeCall()
-                + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
-        method.addLine("}", false);
-        method.addLine("return this");
-        method.addMethodCloseStatement();
-
-        addShortFormMethods(file);
-
-        file.addClassCloseStatement();
-
-        file.flush();
-
-        srcType.setList(Boolean.TRUE);
-        CompositeField listType = createCompositeElementsDetails(file, false, null,
-                srcType, true, true, "List element.");
-        createFactoryClass(folder, area, service, listName, listType, false, false);
     }
 
     @Override
@@ -451,7 +275,7 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     protected void createAreaFolderComment(File structureFolder, AreaType area) throws IOException {
         String cmt = area.getComment();
-        if (null == cmt) {
+        if (cmt == null) {
             cmt = "The " + area.getName() + " area.";
         }
 
@@ -483,7 +307,7 @@ public class GeneratorJava extends GeneratorLangs {
             AreaType area, ServiceType service) throws IOException {
         String basePackageName = getConfig().getAreaPackage(area.getName());
         String packageName = basePackageName + "." + area.getName().toLowerCase();
-        if (null != service) {
+        if (service != null) {
             packageName += "." + service.getName().toLowerCase();
         }
 
@@ -530,7 +354,6 @@ public class GeneratorJava extends GeneratorLangs {
     protected void createFolderComment(File structureFolder, AreaType area,
             ServiceType service, String extraPackage, String comment) throws IOException {
         ClassWriter file = createClassFile(structureFolder, JAVA_PACKAGE_COMMENT_FILE_NAME);
-
         createFolderComment(file, area, service, extraPackage, comment);
     }
 
@@ -550,91 +373,21 @@ public class GeneratorJava extends GeneratorLangs {
         file.addStatement(comment);
         file.addStatement("*/");
         file.addPackageStatement(area, service, extraPackage);
-
         file.flush();
     }
 
     @Override
-    protected CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
+    public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
-        CompositeField ele;
-
-        String typeName = elementType.getName();
-
-        if (checkType && !super.isKnownType(elementType)) {
-            getLog().warn("Unknown type (" + new TypeKey(elementType)
-                    + ") is being referenced as field (" + fieldName + ")");
-        }
-
-        if (elementType.isList()) {
-//      if (StdStrings.XML.equals(elementType.getArea()))
-//      {
-//        throw new IllegalArgumentException("XML type of (" + elementType.getService() 
-//                + ":" + elementType.getName() + ") with maxOccurrs <> 1 is not permitted");
-//      }
-//      else
-            {
-                String fqTypeName;
-                if (isAttributeNativeType(elementType)) {
-                    fqTypeName = createElementType((LanguageWriter) file, StdStrings.MAL, null, typeName + "List");
-                } else {
-                    fqTypeName = createElementType((LanguageWriter) file, elementType, true) + "List";
-                }
-
-                String newCall = null;
-                String encCall = null;
-                if (!isAbstract(elementType) || isFullyPolymorphic()) {
-                    newCall = "new " + fqTypeName + "()";
-                    encCall = StdStrings.ELEMENT;
-                }
-
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, encCall, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, newCall, comment);
-            }
-        } else if (isAttributeType(elementType)) {
-            AttributeTypeDetails details = getAttributeDetails(elementType);
-            String fqTypeName = createElementType((LanguageWriter) file, elementType, isStructure);
-            ele = new CompositeField(details.getTargetType(), elementType, fieldName, elementType.isList(),
-                    canBeNull, false, typeName, "", typeName, false, "new " + fqTypeName + "()", comment);
-        } else {
-            TypeReference elementTypeIndir = elementType;
-
-            // have to work around the fact that JAXB does not replicate the XML type name into Java in all cases
-            if (StdStrings.XML.equalsIgnoreCase(elementType.getArea())) {
-                elementTypeIndir = TypeUtils.createTypeReference(elementType.getArea(),
-                        elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
-            }
-
-            String fqTypeName = createElementType((LanguageWriter) file, elementTypeIndir, isStructure);
-
-            if (isEnum(elementType)) {
-                EnumerationType typ = getEnum(elementType);
-                String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, firstEle, comment);
-            } else if (StdStrings.ATTRIBUTE.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ATTRIBUTE, "(" + fqTypeName + ") ",
-                        StdStrings.ATTRIBUTE, false, "", comment);
-            } else if (StdStrings.ELEMENT.equals(typeName)) {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, false, "", comment);
-            } else {
-                ele = new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
-                        canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",
-                        StdStrings.ELEMENT, true, "new " + fqTypeName + "()", comment);
-            }
-        }
-
-        return ele;
+        JavaCompositeFields javaComposites = new JavaCompositeFields(this);
+        return javaComposites.createCompositeElementsDetails((LanguageWriter) file,
+                checkType, fieldName, elementType, isStructure, canBeNull, comment);
     }
 
     @Override
-    protected String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
-        return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, new org.ccsds.moims.mo.mal.structures.UOctet((short) " + areaVersion + "))";
+    public String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
+        return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, "
+                + areaVar + "_AREA_VERSION, " + areaVar + "_AREA_ELEMENTS, " + areaVar + "_AREA_SERVICES)";
     }
 
     @Override
@@ -648,39 +401,17 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected String getRegisterMethodName() {
+    public String getRegisterMethodName() {
         return "register";
     }
 
     @Override
-    protected String getDeregisterMethodName() {
+    public String getDeregisterMethodName() {
         return "deregister";
     }
 
     @Override
-    protected String getEnumValueCompare(String lhs, String rhs) {
-        return lhs + ".equals(" + rhs + ")";
-    }
-
-    @Override
-    protected String getEnumEncoderValue(long maxValue) {
-        String enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UInteger(ordinal.longValue())";
-        if (maxValue < 256) {
-            enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue())";
-        } else if (maxValue < 65536) {
-            enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UShort(ordinal.intValue())";
-        }
-
-        return enumEncoderValue;
-    }
-
-    @Override
-    protected String getEnumDecoderValue(long maxValue) {
-        return ".getValue()";
-    }
-
-    @Override
-    protected String getNullValue() {
+    public String getNullValue() {
         return "null";
     }
 
@@ -702,7 +433,7 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected String addressOf(String type) {
+    public String addressOf(String type) {
         return type;
     }
 
@@ -722,12 +453,12 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected ClassWriterProposed createClassFile(File folder, String className) throws IOException {
+    public ClassWriterProposed createClassFile(File folder, String className) throws IOException {
         return new JavaClassWriter(folder, className, this);
     }
 
     @Override
-    protected ClassWriter createClassFile(String destinationFolderName, String className) throws IOException {
+    public ClassWriter createClassFile(String destinationFolderName, String className) throws IOException {
         return new JavaClassWriter(destinationFolderName, className, this);
     }
 

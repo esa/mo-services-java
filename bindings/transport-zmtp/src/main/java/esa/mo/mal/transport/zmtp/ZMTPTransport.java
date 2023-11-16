@@ -21,13 +21,11 @@
 package esa.mo.mal.transport.zmtp;
 
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
-import esa.mo.mal.transport.gen.GENEndpoint;
+import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.receivers.GENIncomingByteMessageDecoderFactory;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -50,6 +48,9 @@ import java.net.URISyntaxException;
 import java.util.Random;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import esa.mo.mal.transport.gen.sending.MessageSender;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * The ZMTP MAL Transport implementation.
@@ -105,7 +106,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
  * (uses bidirectional TCP/IP communication).
  *
  */
-public class ZMTPTransport extends GENTransport<byte[], byte[]> {
+public class ZMTPTransport extends Transport<byte[], byte[]> {
 
     public static final int ZMTP_COMMUNICATION_PATTERN_P2P = 1;
     public static final int ZMTP_COMMUNICATION_PATTERN_MULTICAST = 2;
@@ -177,7 +178,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
     /**
      * Decoder factory used to create decoder instances.
      */
-    protected GENIncomingByteMessageDecoderFactory decoderFactory;
+    protected ByteMessageDecoderFactory decoderFactory;
 
     /**
      * Selector of encoding for MAL message body transmitted over ZMTP.
@@ -197,12 +198,12 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
     public ZMTPTransport(final String protocol, final boolean supportsRouting,
             final MALTransportFactory factory, final java.util.Map properties,
             final ZMTPURIMapping uriMapping) throws MALException {
-        super(protocol, supportsRouting, false, factory, properties);
+        super(protocol, '/', supportsRouting, false, factory, properties);
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 
         hdrStreamFactory = new ZMTPHeaderStreamFactory(this);
-        decoderFactory = new GENIncomingByteMessageDecoderFactory();
+        decoderFactory = new ByteMessageDecoderFactory();
         bodyEncodingSelector = new ZMTPEncodingSelector();
         bodyEncodingSelector.init(properties);
 
@@ -344,7 +345,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
     }
 
     @Override
-    protected GENMessageSender createMessageSender(GENMessage msg,
+    protected MessageSender createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException {
         return createMessageSender(remoteRootURI);
     }
@@ -379,7 +380,7 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
         // now full message including body
         try {
             return new ZMTPMessage(hdrStreamFactory, wrapBodyParts, false,
-                    (GENMessageHeader) dummyMessage.getHeader(), qosProperties,
+                    (MALMessageHeader) dummyMessage.getHeader(), qosProperties,
                     dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
                     getBodyEncodingSelector().getDecoderStreamFactory(header));
         } catch (MALException ex) {
@@ -393,14 +394,14 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
     }
 
     @Override
-    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
             String destinationRootURI,
             String destinationURI,
             Object multiSendHandle,
             boolean lastForHandle,
             String targetURI,
             GENMessage msg) throws Exception {
-        return new GENOutgoingMessageHolder<byte[]>(10,
+        return new OutgoingMessageHolder<byte[]>(10,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,
@@ -415,8 +416,8 @@ public class ZMTPTransport extends GENTransport<byte[], byte[]> {
     }
 
     @Override
-    protected GENEndpoint internalCreateEndpoint(final String localName,
-            final String routingName, final Map properties) throws MALException {
+    protected Endpoint internalCreateEndpoint(final String localName,
+            final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new ZMTPEndpoint(this, defaultConfiguration, localName,
                 routingName, uriBase + routingName, wrapBodyParts, properties);
     }

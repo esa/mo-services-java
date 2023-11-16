@@ -21,10 +21,10 @@
 package esa.mo.mal.impl.consumer;
 
 import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.MessageDetails;
-import esa.mo.mal.impl.MessageSend;
+import esa.mo.mal.impl.MessageTarget;
+import esa.mo.mal.impl.MALSender;
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
@@ -40,14 +40,31 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  * Implementation of the MALConsumer interface. Delegates most of the work to
  * the MessageSend class.
  */
-class MALConsumerImpl extends MALClose implements MALConsumer {
+public class MALConsumerImpl implements MALConsumer, MALCloseable {
 
-    private final MessageSend sender;
-    private final MessageDetails details;
+    private final MALSender sender;
+    private final MessageTarget messageTarget;
     private MALTransmitErrorListener transmissionListener;
 
+    /**
+     * Constructor.
+     * @param impl MAL Context implementation.
+     * @param localName Local name.
+     * @param uriTo Receiver URI.
+     * @param brokerUri Broker URI.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID.
+     * @param domain Domain.
+     * @param networkZone Network zone.
+     * @param sessionType Session type.
+     * @param sessionName Session name.
+     * @param qosLevel QoS level.
+     * @param qosProps QoS Properties.
+     * @param priority Priority.
+     * @param supplements MAL Supplements.
+     * @throws MALException on error.
+     */
     MALConsumerImpl(final MALContextImpl impl,
-            final MALConsumerManagerImpl parent,
             final String localName,
             final URI uriTo,
             final URI brokerUri,
@@ -59,44 +76,52 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final Identifier sessionName,
             final QoSLevel qosLevel,
             final Map qosProps,
-            final UInteger priority) throws MALException {
-        super(parent);
-
-        if (null == domain) {
+            final UInteger priority,
+            NamedValueList supplements) throws MALException {
+        if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
 
         this.sender = impl.getSendingInterface();
 
-        final MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
-                .createEndpoint(localName, qosProps);
+        MALEndpoint ep = TransportSingleton.instance(uriTo, impl.getInitialProperties())
+                .createEndpoint(localName, qosProps, supplements);
 
-        if (null == ep) {
+        if (ep == null) {
             // transport was unable to create the end point for us, need to throw an exception
             throw new MALException("Unable to create transport endpoint for URI: " + uriTo);
         }
 
         ep.setMessageListener(impl.getReceivingInterface());
 
-        this.details = new MessageDetails(ep,
-                ep.getURI(),
+        this.messageTarget = new MessageTarget(ep,
                 uriTo,
                 brokerUri,
-                service,
                 authenticationId,
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                qosLevel,
-                qosProps,
-                priority);
+                qosProps);
 
         ep.startMessageDelivery();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param impl MAL Context Implementation.
+     * @param endPoint MAL Endpoint
+     * @param uriTo Receiver URI.
+     * @param brokerUri Broker URI.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID
+     * @param domain Domain.
+     * @param networkZone Network zone.
+     * @param sessionType Session Type.
+     * @param sessionName Session Name.
+     * @param qosLevel QoS level.
+     * @param qosProps QoS properties.
+     * @param priority Priority.
+     * @throws MALException on error
+     */
     MALConsumerImpl(final MALContextImpl impl,
-            final MALConsumerManagerImpl parent,
             final MALEndpoint endPoint,
             final URI uriTo,
             final URI brokerUri,
@@ -109,9 +134,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final QoSLevel qosLevel,
             final Map qosProps,
             final UInteger priority) throws MALException {
-        super(parent);
-
-        if (null == domain) {
+        if (domain == null) {
             throw new IllegalArgumentException("Domain argument must not be null");
         }
 
@@ -119,54 +142,48 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
 
         endPoint.setMessageListener(impl.getReceivingInterface());
 
-        this.details = new MessageDetails(endPoint,
-                endPoint.getURI(),
+        this.messageTarget = new MessageTarget(endPoint,
                 uriTo,
                 brokerUri,
-                service,
                 authenticationId,
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                qosLevel,
-                qosProps,
-                priority);
+                qosProps);
     }
 
     @Override
     public URI getURI() {
-        return details.endpoint.getURI();
+        return messageTarget.getEndpoint().getURI();
     }
 
     @Override
     public Blob getAuthenticationId() {
-        return details.authenticationId;
+        return messageTarget.getAuthenticationId();
     }
 
     @Override
     public Blob setAuthenticationId(Blob newAuthenticationId) {
-        Blob previous = details.authenticationId;
-        details.authenticationId = newAuthenticationId;
+        Blob previous = messageTarget.getAuthenticationId();
+        messageTarget.setAuthenticationId(newAuthenticationId);
         return previous;
     }
 
     @Override
     public MALMessage send(final MALSendOperation op, final Object... requestBody)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        return sender.onewayInteraction(details, null, op, null, requestBody);
+        return sender.onewayInteraction(messageTarget, null, op,
+                MALSendOperation.SEND_STAGE, requestBody);
     }
 
     @Override
     public MALMessage send(final MALSendOperation op, final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.onewayInteraction(details, null, op, null, body);
+        return sender.onewayInteraction(messageTarget, null, op,
+                MALSendOperation.SEND_STAGE, body);
     }
 
     @Override
     public void submit(final MALSubmitOperation op, final Object... requestBody)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        sender.synchronousInteraction(details,
+        sender.synchronousInteraction(messageTarget,
                 op,
                 MALSubmitOperation.SUBMIT_STAGE,
                 (MALInteractionListener) null,
@@ -176,7 +193,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
     @Override
     public void submit(final MALSubmitOperation op, final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        sender.synchronousInteraction(details,
+        sender.synchronousInteraction(messageTarget,
                 op,
                 MALSubmitOperation.SUBMIT_STAGE,
                 (MALInteractionListener) null,
@@ -186,7 +203,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
     @Override
     public MALMessageBody request(final MALRequestOperation op, final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.synchronousInteraction(details,
+        return sender.synchronousInteraction(messageTarget,
                 op,
                 MALRequestOperation.REQUEST_STAGE,
                 (MALInteractionListener) null,
@@ -196,7 +213,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
     @Override
     public MALMessageBody request(final MALRequestOperation op, final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.synchronousInteraction(details,
+        return sender.synchronousInteraction(messageTarget,
                 op,
                 MALRequestOperation.REQUEST_STAGE,
                 (MALInteractionListener) null,
@@ -208,7 +225,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.synchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
+        return sender.synchronousInteraction(messageTarget, op,
+                MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
     }
 
     @Override
@@ -216,7 +234,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.synchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, body);
+        return sender.synchronousInteraction(messageTarget, op,
+                MALInvokeOperation.INVOKE_STAGE, listener, body);
     }
 
     @Override
@@ -224,7 +243,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.synchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
+        return sender.synchronousInteraction(messageTarget, op,
+                MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
     }
 
     @Override
@@ -232,7 +252,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.synchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, body);
+        return sender.synchronousInteraction(messageTarget, op,
+                MALProgressOperation.PROGRESS_STAGE, listener, body);
     }
 
     @Override
@@ -240,14 +261,14 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final Subscription subscription,
             final MALInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        sender.register(details, op, subscription, listener);
+        sender.register(messageTarget, op, subscription, listener);
     }
 
     @Override
     public void deregister(final MALPubSubOperation op,
             final IdentifierList unsubscription)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        sender.deregister(details, op, unsubscription);
+        sender.deregister(messageTarget, op, unsubscription);
     }
 
     @Override
@@ -255,7 +276,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALSubmitOperation.SUBMIT_STAGE, listener, requestBody);
     }
 
     @Override
@@ -263,7 +285,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALSubmitOperation.SUBMIT_STAGE, listener, body);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALSubmitOperation.SUBMIT_STAGE, listener, body);
     }
 
     @Override
@@ -271,7 +294,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, requestBody);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALRequestOperation.REQUEST_STAGE, listener, requestBody);
     }
 
     @Override
@@ -279,7 +303,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALRequestOperation.REQUEST_STAGE, listener, body);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALRequestOperation.REQUEST_STAGE, listener, body);
     }
 
     @Override
@@ -287,7 +312,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALInvokeOperation.INVOKE_STAGE, listener, requestBody);
     }
 
     @Override
@@ -295,7 +321,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALInvokeOperation.INVOKE_STAGE, listener, body);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALInvokeOperation.INVOKE_STAGE, listener, body);
     }
 
     @Override
@@ -303,7 +330,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final Object... requestBody)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALProgressOperation.PROGRESS_STAGE, listener, requestBody);
     }
 
     @Override
@@ -311,7 +339,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final MALInteractionListener listener,
             final MALEncodedBody body)
             throws IllegalArgumentException, MALInteractionException, MALException {
-        return sender.asynchronousInteraction(details, op, MALProgressOperation.PROGRESS_STAGE, listener, body);
+        return sender.asynchronousInteraction(messageTarget, op,
+                MALProgressOperation.PROGRESS_STAGE, listener, body);
     }
 
     @Override
@@ -319,7 +348,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final Subscription subscription,
             final MALInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        return sender.registerAsync(details, op, subscription, listener);
+        return sender.registerAsync(messageTarget, op, subscription, listener);
     }
 
     @Override
@@ -327,7 +356,7 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
             final IdentifierList unsubscription,
             final MALInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        return sender.deregisterAsync(details, op, unsubscription, listener);
+        return sender.deregisterAsync(messageTarget, op, unsubscription, listener);
     }
 
     @Override
@@ -351,10 +380,8 @@ class MALConsumerImpl extends MALClose implements MALConsumer {
     }
 
     @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
-
-        details.endpoint.stopMessageDelivery();
-        details.endpoint.close();
+    public void close() throws MALException {
+        messageTarget.getEndpoint().stopMessageDelivery();
+        messageTarget.getEndpoint().close();
     }
 }

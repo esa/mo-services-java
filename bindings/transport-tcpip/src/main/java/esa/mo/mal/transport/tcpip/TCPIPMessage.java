@@ -20,24 +20,20 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryEncoder;
+import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
+import esa.mo.mal.transport.gen.GENMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.logging.Level;
 import java.util.Map;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-
-import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
-import java.util.logging.Level;
 
 /**
  * This TCPIP implementation of MAL Message provides encoding methods for
@@ -49,15 +45,14 @@ import java.util.logging.Level;
 public class TCPIPMessage extends GENMessage {
 
     public TCPIPMessage(boolean wrapBodyParts,
-            GENMessageHeader header, Map qosProperties, byte[] packet,
+            TCPIPMessageHeader header, Map qosProperties, byte[] packet,
             MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, true, header, qosProperties, packet, encFactory);
+        super(wrapBodyParts, false, header, qosProperties, packet, encFactory);
     }
 
-    public TCPIPMessage(boolean wrapBodyParts, GENMessageHeader header, Map qosProperties,
-            MALOperation operation,
+    public TCPIPMessage(boolean wrapBodyParts, TCPIPMessageHeader header, Map qosProperties,
             MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, operation, encFactory, body);
+        super(wrapBodyParts, header, qosProperties, encFactory, body);
     }
 
     /**
@@ -74,20 +69,18 @@ public class TCPIPMessage extends GENMessage {
      * @throws MALException if encoding failed
      */
     public void encodeMessage(final MALElementStreamFactory bodyStreamFactory,
-            final OutputStream lowLevelOutputStream)
-            throws MALException {
-        // encode header and body using TCPIPEncoder class
+            final OutputStream lowLevelOutputStream) throws MALException {
+        // Header must always be TCPIP Fixed Binary
         ByteArrayOutputStream hdrBaos = new ByteArrayOutputStream();
+        TCPIPFixedBinaryEncoder encoder = new TCPIPFixedBinaryEncoder(hdrBaos);
+        ((TCPIPMessageHeader) header).encode(encoder);
+
+        // Encode Body using the selected Encoding
         ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
         MALElementOutputStream bodyEncoder = bodyStreamFactory.createOutputStream(bodyBaos);
-        // Header must be always Fixed Binary
-        final MALElementStreamFactory headerStreamFactory = new TCPIPFixedBinaryStreamFactory();
-
-        super.encodeMessage(headerStreamFactory, headerStreamFactory.createOutputStream(hdrBaos),
-                hdrBaos, true);
         super.encodeMessage(bodyStreamFactory, bodyEncoder, bodyBaos, false);
 
-        // overwrite bodysize parameter in the header
+        // Overwrite bodysize parameter in the Header
         byte[] hdrBuf = hdrBaos.toByteArray();
         ByteBuffer b = ByteBuffer.allocate(4);
         b.order(ByteOrder.BIG_ENDIAN);
@@ -100,7 +93,7 @@ public class TCPIPMessage extends GENMessage {
                 lowLevelOutputStream.write(bodyBaos.toByteArray());
             }
         } catch (IOException e) {
-            RLOGGER.log(Level.WARNING, 
+            RLOGGER.log(Level.WARNING,
                     "An IOException was thrown during message encoding!", e);
             throw new MALException(e.getMessage());
         }
@@ -108,15 +101,15 @@ public class TCPIPMessage extends GENMessage {
 
     @Override
     public String toString() {
-        return "TCPIPMessage {URIFrom:" + header.getURIFrom()
-                + "URITo:" + header.getURITo() + "}";
+        return "TCPIPMessage {URIFrom:" + header.getFrom()
+                + "URITo:" + header.getTo() + "}";
     }
 
     /**
      * Ok for debugging but don't put it nowhere near the final code.
      * Performance!
      *
-     * @return
+     * @return the string representation of the body of the message.
      */
     public String bodytoString() {
         if (this.body != null) {

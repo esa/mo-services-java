@@ -22,7 +22,7 @@ package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.MALContextImpl;
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
@@ -38,7 +39,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Implements the MALBrokerManager interface.
  */
-public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
+public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
 
     private final MALContextImpl impl;
     private final Map<String, MALBrokerBindingImpl> brokerBindingMap;
@@ -49,23 +50,15 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
      * @param impl MAL implementation.
      * @param brokerBindingMap Broker binding map.
      */
-    public MALBrokerManagerImpl(final MALContextImpl impl, 
+    public MALBrokerManagerImpl(final MALContextImpl impl,
             final Map<String, MALBrokerBindingImpl> brokerBindingMap) {
-        super(impl);
-
         this.impl = impl;
         this.brokerBindingMap = brokerBindingMap;
     }
 
     @Override
     public synchronized MALBroker createBroker() throws MALException {
-        return (MALBroker) addChild(new MALBrokerImpl(this));
-    }
-
-    @Override
-    public MALBroker createBroker(final MALBrokerHandler handler) 
-            throws IllegalArgumentException, MALException {
-        return (MALBroker) addChild(new MALBrokerImpl(this, handler));
+        return new MALBrokerImpl();
     }
 
     @Override
@@ -76,7 +69,8 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
             final Blob authenticationId,
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
-            final Map qosProperties) throws MALException {
+            final Map qosProperties,
+            final NamedValueList supplements) throws MALException {
         MALBrokerBinding retVal = null;
 
         MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
@@ -90,20 +84,21 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
                     priorityLevelNumber,
                     qosProperties);
 
-            if (null != retVal) {
-                retVal = (MALBrokerBinding) addChild(new MALBrokerBindingTransportWrapper(tparent, retVal));
+            if (retVal != null) {
+                return retVal;
             }
         }
 
-        if (null == retVal) {
-            retVal = (MALBrokerBinding) addChild(new MALBrokerBindingImpl(tparent,
+        if (retVal == null) {
+            retVal = new MALBrokerBindingImpl(tparent,
                     impl,
                     localName,
                     protocol,
                     authenticationId,
                     expectedQos,
                     priorityLevelNumber,
-                    qosProperties));
+                    supplements,
+                    qosProperties);
             ((MALBrokerBindingImpl) retVal).init();
             brokerBindingMap.put(retVal.getURI().getValue(), (MALBrokerBindingImpl) retVal);
         }
@@ -118,7 +113,8 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
             final Blob authenticationId,
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
-            final Map qosProperties) 
+            final Map qosProperties,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
         MALBrokerBinding retVal = null;
 
@@ -133,19 +129,20 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
                     priorityLevelNumber,
                     qosProperties);
 
-            if (null != retVal) {
-                retVal = (MALBrokerBinding) addChild(new MALBrokerBindingTransportWrapper(tparent, retVal));
+            if (retVal != null) {
+                return retVal;
             }
         }
 
-        if (null == retVal) {
-            retVal = (MALBrokerBinding) addChild(new MALBrokerBindingImpl(tparent,
+        if (retVal == null) {
+            retVal = new MALBrokerBindingImpl(tparent,
                     impl,
                     endPoint,
                     authenticationId,
                     expectedQos,
                     priorityLevelNumber,
-                    qosProperties));
+                    supplements,
+                    qosProperties);
             ((MALBrokerBindingImpl) retVal).init();
             brokerBindingMap.put(retVal.getURI().getValue(), (MALBrokerBindingImpl) retVal);
         }
@@ -154,10 +151,11 @@ public class MALBrokerManagerImpl extends MALClose implements MALBrokerManager {
     }
 
     @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
+    public void close() throws MALException {
+        for (MALBrokerBindingImpl broker : brokerBindingMap.values()) {
+            broker.close();
+        }
 
-        // we are closing this so make sure the broker binding map shared with out MAL context is empty too.
         brokerBindingMap.clear();
     }
 }

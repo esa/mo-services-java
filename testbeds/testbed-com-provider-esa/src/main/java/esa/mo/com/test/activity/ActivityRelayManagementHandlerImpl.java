@@ -57,7 +57,8 @@ public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementI
 
     public void createRelay(String name, String relayTo, MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:createRelay " + name + ":" + relayTo);
-        ActivityRelayNode node = new ActivityRelayNode(testService, this, testService.getProtocol(), name, relayTo);
+        ActivityRelayNode node = new ActivityRelayNode(testService, this,
+                testService.getProtocol(), name, relayTo);
         LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:createRelay complete");
 
         node.init();
@@ -67,7 +68,8 @@ public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementI
         initialRelay = node;
     }
 
-    public void passToRelay(String relayName, StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void passToRelay(String relayName, StringList _StringList0,
+            MALInteraction interaction) throws MALInteractionException, MALException {
         ActivityRelayNode relay;
 
         if (null == relayName) {

@@ -84,7 +84,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableDouble(final Double value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeDouble(value);
             } else {
                 outputStream.writeIsNull();
@@ -108,7 +108,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableInteger(final Integer value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeInteger(value);
             } else {
                 outputStream.writeIsNull();
@@ -132,7 +132,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableLong(final Long value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeLong(value);
             } else {
                 outputStream.writeIsNull();
@@ -156,7 +156,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableOctet(final Byte value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeOctet(value);
             } else {
                 outputStream.writeIsNull();
@@ -180,7 +180,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableShort(final Short value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeShort(value);
             } else {
                 outputStream.writeIsNull();
@@ -204,7 +204,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableUInteger(final UInteger value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeUInteger(value);
             } else {
                 outputStream.writeIsNull();
@@ -228,7 +228,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableULong(final ULong value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeULong(value);
             } else {
                 outputStream.writeIsNull();
@@ -252,7 +252,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableUOctet(final UOctet value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeUOctet(value);
             } else {
                 outputStream.writeIsNull();
@@ -276,7 +276,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableUShort(final UShort value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeUShort(value);
             } else {
                 outputStream.writeIsNull();
@@ -300,8 +300,8 @@ public abstract class Encoder implements MALListEncoder {
     @Override
     public void encodeNullableURI(final URI value) throws MALException {
         try {
-            if ((value != null) && (null != value.getValue())) {
-                outputStream.writeNotNull();
+            if ((value != null) && (value.getValue() != null)) {
+                outputStream.writeIsNotNull();
                 encodeURI(value);
             } else {
                 outputStream.writeIsNull();
@@ -326,7 +326,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableIdentifier(final Identifier value) throws MALException {
         try {
             if ((value != null) && (null != value.getValue())) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeIdentifier(value);
             } else {
                 outputStream.writeIsNull();
@@ -350,7 +350,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableString(final String value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeString(value);
             } else {
                 outputStream.writeIsNull();
@@ -374,7 +374,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableBoolean(final Boolean value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeBoolean(value);
             } else {
                 outputStream.writeIsNull();
@@ -398,7 +398,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableTime(final Time value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeTime(value);
             } else {
                 outputStream.writeIsNull();
@@ -422,7 +422,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableFineTime(final FineTime value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeFineTime(value);
             } else {
                 outputStream.writeIsNull();
@@ -453,7 +453,7 @@ public abstract class Encoder implements MALListEncoder {
             if ((value != null)
                     && ((value.isURLBased() && (null != value.getURL()))
                     || (!value.isURLBased() && (null != value.getValue())))) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeBlob(value);
             } else {
                 outputStream.writeIsNull();
@@ -477,7 +477,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableDuration(final Duration value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeDuration(value);
             } else {
                 outputStream.writeIsNull();
@@ -486,16 +486,21 @@ public abstract class Encoder implements MALListEncoder {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
-    
+
     @Override
     public void encodeObjectRef(final ObjectRef value) throws IllegalArgumentException, MALException {
         try {
             checkForNull(value);
-            outputStream.writeString(value.getDomain());
-            outputStream.writeString(value.getArea().getValue());
-            outputStream.writeString(value.getType().getValue());
+            int length = value.getDomain().size();
+            outputStream.writeUnsignedInt(length);
+
+            for (int i = 0; i < length; i++) {
+                outputStream.writeString(value.getDomain().get(i).getValue());
+            }
+
+            outputStream.writeSignedLong(value.getabsoluteSFP());
             outputStream.writeString(value.getKey().getValue());
-            outputStream.writeUnsignedLong32(value.getObjectVersion().getValue());
+            outputStream.writeSignedLong(value.getObjectVersion().getValue());
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
@@ -505,7 +510,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableObjectRef(final ObjectRef value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeObjectRef(value);
             } else {
                 outputStream.writeIsNull();
@@ -529,7 +534,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableFloat(final Float value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeFloat(value);
             } else {
                 outputStream.writeIsNull();
@@ -554,7 +559,7 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableAttribute(final Attribute value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 encodeAttribute(value);
             } else {
                 outputStream.writeIsNull();
@@ -563,7 +568,7 @@ public abstract class Encoder implements MALListEncoder {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
-    
+
     @Override
     public void encodeElement(final Element value) throws MALException {
         checkForNull(value);
@@ -574,7 +579,28 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeNullableElement(final Element value) throws MALException {
         try {
             if (value != null) {
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
+                value.encode(this);
+            } else {
+                outputStream.writeIsNull();
+            }
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
+
+    @Override
+    public void encodeAbstractElement(final Element value) throws MALException {
+        encodeLong(value.getShortForm());
+        value.encode(this);
+    }
+
+    @Override
+    public void encodeNullableAbstractElement(final Element value) throws MALException {
+        try {
+            if (value != null) {
+                outputStream.writeIsNotNull();
+                encodeLong(value.getShortForm());
                 value.encode(this);
             } else {
                 outputStream.writeIsNull();
@@ -612,11 +638,11 @@ public abstract class Encoder implements MALListEncoder {
      * Allows the encoding for the type of an abstract element to be over-ridded
      *
      * @param value The type to encode
-     * @param withNull If true encode a isNull field
+     * @param isNullable If true encode a isNull field
      * @throws MALException if there is an error
      */
-    public void encodeAbstractElementType(final Long value, boolean withNull) throws MALException {
-        if (withNull) {
+    public void encodeAbstractElementSFP(final Long value, boolean isNullable) throws MALException {
+        if (isNullable) {
             encodeNullableLong(value);
         } else {
             encodeLong(value);
@@ -642,8 +668,8 @@ public abstract class Encoder implements MALListEncoder {
      * @throws MALException if value is NULL
      */
     protected void checkForNull(Object value) throws MALException {
-        if (null == value) {
-            throw new MALException("Null value supplied in a non-nullable field");
+        if (value == null) {
+            throw new MALException("Null value supplied in a non-nullable field!");
         }
     }
 }

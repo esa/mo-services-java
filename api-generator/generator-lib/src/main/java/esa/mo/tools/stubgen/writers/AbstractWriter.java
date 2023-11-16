@@ -62,7 +62,7 @@ public abstract class AbstractWriter implements TargetWriter {
      * @param addSemi True if a trailing semicolon is required.
      * @return the created string.
      */
-    public String makeLine(int tabCount, String statement, boolean addSemi) {
+    protected String makeLine(int tabCount, String statement, boolean addSemi) {
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < tabCount; i++) {
             buf.append("    ");

@@ -35,104 +35,121 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * The interaction map is responsible for maintaining the information pertaining
  * to PubSub interactions for a MAL instance.
  */
-class InteractionPubSubMap {
+public class InteractionPubSubMap {
 
-    private final Map<StringPair, MALPublishInteractionListener> publisherMap = new HashMap<>();
-    private final Map<String, Map<String, MALInteractionListener>> errorMap = new HashMap<>();
+    private final Map<String, MALPublishInteractionListener> publisherMap = new HashMap<>();
+    private final Map<String, Map<String, MALInteractionListener>> notifyListenersMap = new HashMap<>();
     private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<>();
 
-    public void registerPublishListener(final MessageDetails details, final MALPublishInteractionListener listener) {
-        final StringPair id = new StringPair(details.uriFrom.getValue(), createProviderKey(details));
-
+    /**
+     * Registers a publish listener.
+     *
+     * @param uriFrom Publisher URI.
+     * @param listener The MAL publish interaction listener.
+     */
+    public void registerPublishListener(final String uriFrom, final MALPublishInteractionListener listener) {
         synchronized (publisherMap) {
-            publisherMap.put(id, listener);
-            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Adding publisher: {0}", id);
+            publisherMap.put(uriFrom, listener);
+            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Adding publisher: {0}", uriFrom);
         }
     }
 
-    public MALPublishInteractionListener getPublishListener(final URI uri, final MALMessageHeader mshHdr) {
-        final StringPair id = new StringPair(uri.getValue(), createProviderKey(mshHdr));
+    public MALPublishInteractionListener getPublishListener(final Identifier uri, final MALMessageHeader mshHdr) {
         MALPublishInteractionListener list;
 
         synchronized (publisherMap) {
-            list = publisherMap.get(id);
+            list = publisherMap.get(uri.getValue());
         }
 
         if (list != null) {
-            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Getting publisher: {0}", id);
+            MALContextFactoryImpl.LOGGER.log(Level.FINE, "Getting publisher: {0}", uri.getValue());
         }
 
         return list;
     }
 
+    /**
+     * Logs all publish listeners.
+     */
     public void listPublishListeners() {
         StringBuilder str = new StringBuilder();
         str.append("listPublishListeners()\n");
-        
+
         synchronized (publisherMap) {
             str.append("Starting dump of publisher map\n");
 
-            for (StringPair e : publisherMap.keySet()) {
+            for (String e : publisherMap.keySet()) {
                 str.append("  >> ").append(e).append("\n");
             }
         }
         synchronized (notifyMap) {
             str.append("Starting dump of error map\n");
-            
-            for (String e : errorMap.keySet()) {
+
+            for (String e : notifyListenersMap.keySet()) {
                 str.append("  >> ").append(e).append("\n");
             }
 
             str.append("Starting dump of notify map\n");
-            
+
             for (StringPair e : notifyMap.keySet()) {
                 str.append("  >> ").append(e).append("\n");
             }
         }
-        
+
         MALContextFactoryImpl.LOGGER.info(str.toString());
     }
 
-    public MALPublishInteractionListener getPublishListenerAndRemove(final URI uri, final MessageDetails details) {
-        final StringPair id = new StringPair(uri.getValue(), createProviderKey(details));
+    /**
+     * Returns the MAL publish interaction listener and removes it from the publisher list.
+     *
+     * @param uri The MAL publish interaction listener URI.
+     * @return The MAL publish interaction listener.
+     */
+    public MALPublishInteractionListener getPublishListenerAndRemove(final URI uri) {
+        final String id = uri.getValue();
         MALPublishInteractionListener list;
 
         synchronized (publisherMap) {
             list = publisherMap.remove(id);
         }
 
-        if (null != list) {
+        if (list != null) {
             MALContextFactoryImpl.LOGGER.log(Level.FINE, "Removing publisher: {0}", id);
         }
 
         return list;
     }
 
-    public void registerNotifyListener(final MessageDetails details,
-            final Subscription subscription,
-            final MALInteractionListener list) {
-        final String uri = details.endpoint.getURI().getValue();
+    /**
+     * Registers a notify listener.
+     *
+     * @param uri   The URI.
+     * @param subscription  The subscription.
+     * @param list The MAL interaction listeners.
+     */
+    public void registerNotifyListener(final String uri,
+            final Subscription subscription, final MALInteractionListener list) {
         final String subId = subscription.getSubscriptionId().getValue();
         final StringPair id = new StringPair(uri, subId);
 
         synchronized (notifyMap) {
             notifyMap.put(id, list);
-            Map<String, MALInteractionListener> ent = errorMap.get(uri);
+            Map<String, MALInteractionListener> listeners = notifyListenersMap.get(uri);
 
-            if (null == ent) {
-                ent = new HashMap<>();
-                errorMap.put(uri, ent);
+            if (listeners == null) {
+                listeners = new HashMap<>();
+                notifyListenersMap.put(uri, listeners);
             }
 
             MALContextFactoryImpl.LOGGER.log(Level.FINE,
                     "PubSubMap({0}), adding notify handler: {1} : {2} : {3}",
                     new Object[]{this, uri, subId, list}
             );
-            ent.put(subId, list);
+            listeners.put(subId, list);
         }
     }
 
-    public MALInteractionListener getNotifyListener(final URI uri, final Identifier subscription) {
+    public MALInteractionListener getNotifyListener(final Identifier uri, final Identifier subscription) {
         final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
         MALContextFactoryImpl.LOGGER.log(Level.FINE,
@@ -156,13 +173,18 @@ class InteractionPubSubMap {
         return null;
     }
 
-    public Map<String, MALInteractionListener> getNotifyListenersAndRemove(final URI uriValue) {
+    /**
+     * Returns a MAP representation of the notified listeners and removes them.
+     *
+     * @param uri The URI.
+     * @return The notified listeners.
+     */
+    public Map<String, MALInteractionListener> getNotifyListenersAndRemove(final String uri) {
         synchronized (notifyMap) {
-            final String uri = uriValue.getValue();
-            final Map<String, MALInteractionListener> ent = errorMap.get(uri);
+            final Map<String, MALInteractionListener> listeners = notifyListenersMap.get(uri);
 
-            if (ent != null) {
-                for (Map.Entry<String, MALInteractionListener> e : ent.entrySet()) {
+            if (listeners != null) {
+                for (Map.Entry<String, MALInteractionListener> e : listeners.entrySet()) {
                     MALContextFactoryImpl.LOGGER.log(Level.FINE,
                             "PubSubMap({0}), removing notify handler: {1} : *",
                             new Object[]{this, uri}
@@ -171,15 +193,18 @@ class InteractionPubSubMap {
                 }
             }
 
-            return ent;
+            return listeners;
         }
     }
 
-    public void deregisterNotifyListener(final MessageDetails details,
-            final IdentifierList unsubscriptions) {
+    /**
+     * Removes the notified listeners.
+     *
+     * @param uri    The URI.
+     * @param unsubscriptions  Notified listeners to unsubscribe.
+     */
+    public void deregisterNotifyListener(final String uri, final IdentifierList unsubscriptions) {
         synchronized (notifyMap) {
-            final String uri = details.endpoint.getURI().getValue();
-
             for (Identifier unsubscription : unsubscriptions) {
                 final String unsubId = unsubscription.getValue();
                 final StringPair id = new StringPair(uri, unsubId);
@@ -191,34 +216,16 @@ class InteractionPubSubMap {
                     );
                     notifyMap.remove(id);
 
-                    final Map<String, MALInteractionListener> ent = errorMap.get(uri);
-                    if (null != ent) {
-                        ent.remove(unsubId);
+                    final Map<String, MALInteractionListener> listeners = notifyListenersMap.get(uri);
+                    if (listeners != null) {
+                        listeners.remove(unsubId);
 
-                        if (ent.isEmpty()) {
-                            errorMap.remove(uri);
+                        if (listeners.isEmpty()) {
+                            notifyListenersMap.remove(uri);
                         }
                     }
                 }
             }
         }
-    }
-
-    private static String createProviderKey(final MessageDetails details) {
-        final StringBuilder buf = new StringBuilder();
-        buf.append(details.sessionType).append(':');
-        buf.append(details.sessionName).append(':');
-        buf.append(details.networkZone).append(':');
-        buf.append(details.domain);
-        return buf.toString();
-    }
-
-    private static String createProviderKey(final MALMessageHeader details) {
-        final StringBuilder buf = new StringBuilder();
-        buf.append(details.getSession()).append(':');
-        buf.append(details.getSessionName()).append(':');
-        buf.append(details.getNetworkZone()).append(':');
-        buf.append(details.getDomain());
-        return buf.toString();
     }
 }

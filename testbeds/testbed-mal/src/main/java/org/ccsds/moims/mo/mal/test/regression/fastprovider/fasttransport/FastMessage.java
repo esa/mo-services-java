@@ -41,18 +41,22 @@ public class FastMessage implements MALMessage {
         this.body = header.getIsErrorMessage() ? new FastErrorBody(body) : new FastBody(body);
     }
 
+    @Override
     public MALMessageHeader getHeader() {
         return header;
     }
 
+    @Override
     public MALMessageBody getBody() {
         return body;
     }
 
+    @Override
     public Map getQoSProperties() {
         return qoSProperties;
     }
 
+    @Override
     public void free() throws MALException {
     }
 }

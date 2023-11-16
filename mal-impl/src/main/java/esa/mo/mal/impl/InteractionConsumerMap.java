@@ -20,14 +20,13 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.state.BaseOperationHandler;
-import esa.mo.mal.impl.state.RequestOperationHandler;
-import esa.mo.mal.impl.state.InvokeOperationHandler;
-import esa.mo.mal.impl.state.MessageHandlerDetails;
-import esa.mo.mal.impl.state.OperationResponseHolder;
-import esa.mo.mal.impl.state.SubmitOperationHandler;
-import esa.mo.mal.impl.state.PubSubOperationHandler;
-import esa.mo.mal.impl.state.ProgressOperationHandler;
+import esa.mo.mal.impl.interactionpatterns.IPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.RequestIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.InvokeIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.OperationResponseHolder;
+import esa.mo.mal.impl.interactionpatterns.SubmitIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.PubSubIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.ProgressIPConsumerHandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,7 +35,6 @@ import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -52,20 +50,29 @@ import org.ccsds.moims.mo.mal.transport.*;
  */
 public class InteractionConsumerMap {
 
-    private final Map<Long, BaseOperationHandler> transMap = new HashMap<>();
+    private final Map<Long, IPConsumerHandler> transactions = new HashMap<>();
 
     private final Map<Long, OperationResponseHolder> syncOpResponseMap = new HashMap<>();
 
     // This object will be shared across. It is thread-safe, so can be static!
     private final static InteractionTimeout INTERACTION_TIMEOUT = new InteractionTimeout();
 
-    public Long createTransaction(final int interactionType,
-            final boolean syncOperation,
+    /**
+     * Creates a new transaction.
+     *
+     * @param interactionType The interaction type.
+     * @param syncOperation Sync Operation
+     * @param listener The MAL interaction listener
+     * @return The transaction id.
+     * @throws MALInteractionException When the interaction type is not
+     * supported.
+     */
+    public Long createTransaction(final int interactionType, final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
-        synchronized (transMap) {
+        synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
-            BaseOperationHandler handler = null;
+            IPConsumerHandler handler = null;
             OperationResponseHolder responseHandler = new OperationResponseHolder(listener);
 
             switch (interactionType) {
@@ -73,31 +80,26 @@ public class InteractionConsumerMap {
                     // do nothing as no handler is required for SEND interaction
                     break;
                 case InteractionType._SUBMIT_INDEX:
-                    handler = new SubmitOperationHandler(syncOperation, responseHandler);
+                    handler = new SubmitIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._REQUEST_INDEX:
-                    handler = new RequestOperationHandler(syncOperation, responseHandler);
+                    handler = new RequestIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._INVOKE_INDEX:
-                    handler = new InvokeOperationHandler(syncOperation, responseHandler);
+                    handler = new InvokeIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._PROGRESS_INDEX:
-                    handler = new ProgressOperationHandler(syncOperation, responseHandler);
+                    handler = new ProgressIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 case InteractionType._PUBSUB_INDEX:
-                    handler = new PubSubOperationHandler(syncOperation, responseHandler);
+                    handler = new PubSubIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 default:
-                    throw new MALInteractionException(
-                            new MALStandardError(
-                                    MALHelper.INTERNAL_ERROR_NUMBER,
-                                    new Union("Pattern not supported")
-                            )
-                    );
+                    throw new MALInteractionException(new InternalException("Pattern not supported"));
             }
 
-            if (null != handler) {
-                transMap.put(oTransId, handler);
+            if (handler != null) {
+                transactions.put(oTransId, handler);
                 INTERACTION_TIMEOUT.insertInQueue(handler);
 
                 if (syncOperation) {
@@ -111,12 +113,19 @@ public class InteractionConsumerMap {
         }
     }
 
-    public Long createTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
-        synchronized (transMap) {
+    /**
+     * Creates a publish-subscribe transaction
+     *
+     * @param syncOperation The sync operation.
+     * @param listener The MAL interaction listener.
+     * @return The transaction id.
+     */
+    public Long createPubSubTransaction(final boolean syncOperation, final MALPublishInteractionListener listener) {
+        synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
 
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
-            transMap.put(oTransId, new PubSubOperationHandler(syncOperation, responseHolder));
+            transactions.put(oTransId, new PubSubIPConsumerHandler(syncOperation, responseHolder));
 
             if (syncOperation) {
                 synchronized (syncOpResponseMap) {
@@ -128,123 +137,137 @@ public class InteractionConsumerMap {
         }
     }
 
+    /**
+     * Continues a transaction.
+     *
+     * @param interactionType Interaction type.
+     * @param lastInteractionStage The last interaction state.
+     * @param oTransId The transaction id.
+     * @param listener The MAL interaction listener.
+     * @throws MALException When the transaction is already in use.
+     * @throws MALInteractionException When the interaction type is not
+     * supported.
+     */
     public void continueTransaction(final int interactionType,
-            final UOctet lastInteractionStage,
-            final Long oTransId,
+            final UOctet lastInteractionStage, final Long oTransId,
             final MALInteractionListener listener) throws MALException, MALInteractionException {
-        synchronized (transMap) {
-            if (transMap.containsKey(oTransId)) {
+        synchronized (transactions) {
+            if (transactions.containsKey(oTransId)) {
                 throw new MALException("Transaction Id already in use and cannot be continued");
             }
 
-            BaseOperationHandler handler = null;
+            IPConsumerHandler handler = null;
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
 
             switch (interactionType) {
                 case InteractionType._SUBMIT_INDEX:
-                    handler = new SubmitOperationHandler(responseHolder);
+                    handler = new SubmitIPConsumerHandler(responseHolder);
                     break;
                 case InteractionType._REQUEST_INDEX:
-                    handler = new RequestOperationHandler(responseHolder);
+                    handler = new RequestIPConsumerHandler(responseHolder);
                     break;
                 case InteractionType._INVOKE_INDEX:
-                    handler = new InvokeOperationHandler(lastInteractionStage, responseHolder);
+                    handler = new InvokeIPConsumerHandler(false, responseHolder);
                     break;
                 case InteractionType._PROGRESS_INDEX:
-                    handler = new ProgressOperationHandler(lastInteractionStage, responseHolder);
+                    handler = new ProgressIPConsumerHandler(false, responseHolder);
                     break;
                 case InteractionType._PUBSUB_INDEX:
-                    handler = new PubSubOperationHandler(responseHolder);
+                    handler = new PubSubIPConsumerHandler(responseHolder);
                     break;
                 default:
-                    throw new MALInteractionException(
-                            new MALStandardError(
-                                    MALHelper.INTERNAL_ERROR_NUMBER,
-                                    new Union("Pattern not supported")
-                            )
-                    );
+                    throw new MALInteractionException(new InternalException("Pattern not supported"));
             }
 
-            transMap.put(oTransId, handler);
+            transactions.put(oTransId, handler);
         }
     }
 
+    /**
+     * Waits for a response message.
+     *
+     * @param id The transaction id.
+     * @return MAL response message.
+     * @throws MALInteractionException When something goes wrong.
+     * @throws MALException When something goes wrong.
+     */
     public MALMessage waitForResponse(final Long id) throws MALInteractionException, MALException {
         OperationResponseHolder holder = null;
 
         synchronized (syncOpResponseMap) {
-            if (syncOpResponseMap.containsKey(id)) {
-                holder = syncOpResponseMap.get(id);
-            } else {
-                MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "No key found in service maps to wait for response! {0}", id);
-            }
+            holder = syncOpResponseMap.get(id);
         }
 
-        if (holder != null) { // Wait until ready...
-            holder.waitForResponseSignal();
-
-            // delete entry from trans map
-            synchronized (syncOpResponseMap) {
-                MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                        "Removing handler from sync service map: {0}", id);
-                syncOpResponseMap.remove(id);
-            }
-
-            synchronized (holder) {
-                return holder.getResult(); // must have value now
-            }
+        if (holder == null) {
+            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                    "No key found in service maps to wait for response! {0}", id);
+            return null;
         }
 
-        return null;
+        // Wait until ready...
+        holder.waitForResponseSignal();
+
+        // delete entry from synchronous Operation Responses map
+        synchronized (syncOpResponseMap) {
+            MALContextFactoryImpl.LOGGER.log(Level.FINE,
+                    "Removing handler from sync service map: {0}", id);
+            syncOpResponseMap.remove(id);
+        }
+
+        return holder.getResult(); // must have value now
     }
 
+    /**
+     * Handles a MAL stage.
+     *
+     * @param msg The MAL message.
+     * @throws MALInteractionException When the message could not be handled.
+     * @throws MALException When no handler was found for the transaction id.
+     */
     public void handleStage(final MALMessage msg) throws MALInteractionException, MALException {
         final Long id = msg.getHeader().getTransactionId();
-        BaseOperationHandler handler = null;
-        MessageHandlerDetails dets = null;
+        IPConsumerHandler handler;
 
-        synchronized (transMap) {
-            if (transMap.containsKey(id)) {
-                handler = transMap.get(id);
-            } else {
-                MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                        "The transaction handler could not be found for transactionId: {0}"
-                        + "\nMessage header: {1}\n"
-                        + "This error usually happens because the messages "
+        synchronized (transactions) {
+            handler = transactions.get(id);
+
+            if (handler == null) {
+                String txt = "The transaction handler could not be found for transactionId: "
+                        + id + "\nMessage header: " + msg.getHeader()
+                        + "\n This error usually happens because the messages "
                         + "are being received out-of-order in the MAL layer. "
                         + "The problem is typically in the transport layer "
-                        + "and usually is related with threading.",
-                        new Object[]{id, msg.getHeader()}
-                );
+                        + "and usually is related with threading.";
+
+                MALContextFactoryImpl.LOGGER.log(Level.WARNING, txt);
+                throw new MALException(txt);
             }
 
-            if (null != handler) {
-                dets = handler.handleStage(msg);
+            handler.handleStage(msg);
 
-                // delete entry from trans map
-                if (handler.finished()) {
-                    MALContextFactoryImpl.LOGGER.log(Level.FINE,
-                            "Removing handler from service maps: {0}", id);
-                    transMap.remove(id);
-                }
-            }
-        }
-
-        if (null != handler) {
-            synchronized (handler) {
-                handler.processStage(dets);
+            // delete entry from trans map
+            if (handler.finished()) {
+                MALContextFactoryImpl.LOGGER.log(Level.FINE, "The transaction is "
+                        + "finished! Removing handler with transactionId: {0}", id);
+                transactions.remove(id);
             }
         }
     }
 
-    public void handleError(final MALMessageHeader hdr, final MALStandardError err, final Map qosMap) {
+    /**
+     * Handles a MAL message error.
+     *
+     * @param hdr MAL message header.
+     * @param err MAL error exception
+     * @param qosMap QoS level.
+     */
+    public void handleError(final MALMessageHeader hdr, final MOErrorException err, final Map qosMap) {
         final Long id = hdr.getTransactionId();
-        BaseOperationHandler handler = null;
+        IPConsumerHandler handler = null;
 
-        synchronized (transMap) {
-            if (transMap.containsKey(id)) {
-                handler = transMap.get(id);
+        synchronized (transactions) {
+            if (transactions.containsKey(id)) {
+                handler = transactions.get(id);
             } else {
                 MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                         "No key found in service maps to get listener! {0} {1}",
@@ -252,15 +275,15 @@ public class InteractionConsumerMap {
                 );
             }
 
-            if (null != handler) {
+            if (handler != null) {
                 // delete entry from trans map
                 MALContextFactoryImpl.LOGGER.log(Level.FINE,
                         "Removing handler from service maps: {0}", id);
-                transMap.remove(id);
+                transactions.remove(id);
             }
         }
 
-        if (null != handler) {
+        if (handler != null) {
             synchronized (handler) {
                 handler.handleError(hdr, err, qosMap);
             }

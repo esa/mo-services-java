@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.test.suite;
 import java.io.Writer;
 
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -37,6 +38,7 @@ import org.ccsds.moims.mo.mal.test.patterns.IPTestFromArea2HandlerImpl;
 import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.IPTestHandlerWithSharedBroker;
 import org.ccsds.moims.mo.mal.test.transport.MALTestEndPointSendInterceptor;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
 import org.ccsds.moims.mo.malprototype.datatest.DataTestServiceInfo;
@@ -85,13 +87,14 @@ public class TestServiceProvider extends BaseTestServiceProvider {
     }
 
     protected void initHelpers() throws MALException {
-        MALPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-        IPTestHelper.init(MALContextFactory.getElementsRegistry());
-        DataTestHelper.init(MALContextFactory.getElementsRegistry());
-        ErrorTestHelper.init(MALContextFactory.getElementsRegistry());
-        IPTest2Helper.init(MALContextFactory.getElementsRegistry());
-        MALPrototype2Helper.init(MALContextFactory.getElementsRegistry());
-        org.ccsds.moims.mo.malprototype2.iptest.IPTestHelper.init(MALContextFactory.getElementsRegistry());
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.registerElementsForArea(MALPrototypeHelper.MALPROTOTYPE_AREA);
+        registry.loadServiceAndAreaElements(IPTestHelper.IPTEST_SERVICE);
+        registry.loadServiceAndAreaElements(DataTestHelper.DATATEST_SERVICE);
+        registry.loadServiceAndAreaElements(ErrorTestHelper.ERRORTEST_SERVICE);
+        registry.loadServiceAndAreaElements(IPTest2Helper.IPTEST2_SERVICE);
+        registry.registerElementsForArea(MALPrototype2Helper.MALPROTOTYPE2_AREA);
+        registry.loadServiceAndAreaElements(IPTestHelper.IPTEST_SERVICE);
 
         TransportInterceptor.instance().setEndpointSendInterceptor(new MALTestEndPointSendInterceptor());
     }
@@ -120,6 +123,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider erprovider = defaultProviderMgr.createProvider(
@@ -134,6 +138,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
+                null,
                 null);
 
         MALProvider ipprovider = defaultProviderMgr.createProvider(
@@ -148,7 +153,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                null);
+                null,
+                Helper.supplementsIPTestProvider);
 
         FileBasedDirectory.storePrivateBrokerAuthenticationId(
                 ipprovider.getBrokerAuthenticationId());
@@ -166,7 +172,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                sharedBrokerUriPair.broker);
+                sharedBrokerUriPair.broker,
+                null);
         FileBasedDirectory.storeURI(IP_TEST_PROVIDER_WITH_SHARED_BROKER_NAME,
                 ipproviderSharedBroker.getURI(), ipproviderSharedBroker.getBrokerURI());
 
@@ -182,7 +189,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                sharedBrokerUriPair.broker);
+                sharedBrokerUriPair.broker,
+                null);
 
         MALProvider ipFromArea2provider = defaultProviderMgr.createProvider(
                 IP_TEST_PROVIDER_FROM_AREA2_NAME,
@@ -196,6 +204,7 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
+                null,
                 null);
 
         MALProvider ip2provider = defaultProviderMgr.createProvider(
@@ -210,7 +219,8 @@ public class TestServiceProvider extends BaseTestServiceProvider {
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.TRUE, // isPublisher
-                sharedBrokerUriPair.broker);
+                sharedBrokerUriPair.broker,
+                null);
 
         FileBasedDirectory.storePrivateBrokerAuthenticationId(
                 ipprovider.getBrokerAuthenticationId());

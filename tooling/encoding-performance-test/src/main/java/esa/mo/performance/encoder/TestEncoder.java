@@ -27,9 +27,7 @@ import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -55,7 +53,7 @@ public class TestEncoder {
 
         Object testXMLComposite = TestStructureBuilder.createTestXMLComposite(now, pktsPerReport, paramsPerPkt);
 
-        results.add(new Results("esa.mo.performance.encoder.TestXMLStreamFactory", false, false, testXMLComposite, testXMLComposite));
+        results.add(new Results("esa.mo.performance.encoder.TestXMLStreamFactory", false, false, (Element) testXMLComposite, (Element) testXMLComposite));
         //results.add(new Results("esa.mo.mal.encoder.line.LineStreamFactory", false, true, size));
         results.add(new Results("esa.mo.mal.encoder.string.StringStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
         //results.add(new Results("fr.cnes.maljoram.malencoding.JORAMElementStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
@@ -63,7 +61,7 @@ public class TestEncoder {
         results.add(new Results("esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
         results.add(new Results("esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory", false, false, pktsPerReport, paramsPerPkt, timestamp));
 
-        results.add(new Results("esa.mo.performance.encoder.TestXMLStreamFactory", true, false, testXMLComposite, testXMLComposite));
+        results.add(new Results("esa.mo.performance.encoder.TestXMLStreamFactory", true, false, (Element) testXMLComposite, (Element) testXMLComposite));
         //results.add(new Results("esa.mo.mal.encoder.line.LineStreamFactory", true, false, size));
         results.add(new Results("esa.mo.mal.encoder.string.StringStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
         //results.add(new Results("fr.cnes.maljoram.malencoding.JORAMElementStreamFactory", true, false, pktsPerReport, paramsPerPkt, timestamp));
@@ -100,24 +98,12 @@ public class TestEncoder {
         }
 
         System.out.println("Creating objects");
-        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementsRegistry());
 
-        IdentifierList domain = new IdentifierList();
-        domain.add(new Identifier("ccsds"));
-        domain.add(new Identifier("mission"));
-        domain.add(null);
-        Identifier nz = new Identifier("network");
-        MALEncodingContext ctx = new MyMALContext(new DUMMYMessageHeader(
-                new URI("from"),
+        MALMessageHeader header = new MALMessageHeader(
+                new Identifier("from"),
                 new Blob("".getBytes()),
-                new URI("to"),
+                new Identifier("to"),
                 new Time(12345678),
-                QoSLevel.ASSURED,
-                new UInteger(1),
-                domain,
-                nz,
-                SessionType.LIVE,
-                new Identifier("LIVE"),
                 InteractionType.SEND,
                 new UOctet((short) 0),
                 Long.MIN_VALUE,
@@ -125,7 +111,9 @@ public class TestEncoder {
                 PerfTestHelper.PERFTEST_SERVICE.getServiceNumber(),
                 PerfTestHelper.PERFTEST_SERVICE.SEND_OP_NUMBER,
                 PerfTestHelper.PERFTEST_SERVICE.getServiceVersion(),
-                Boolean.FALSE), PerfTestHelper.PERFTEST_SERVICE.SEND_OP, 0, null, null);
+                Boolean.FALSE, new NamedValueList());
+
+        MALEncodingContext ctx = new MALEncodingContext(header);
 
         System.out.println("Running tests");
         for (Results result : results) {
@@ -153,8 +141,8 @@ public class TestEncoder {
     }
 
     protected static void check(Results result, MALElementStreamFactory streamFactory,
-            int count, boolean testDecode, boolean dumpBuf, Object testComposite,
-            Object blankComposite, MALEncodingContext ctx) throws Exception {
+            int count, boolean testDecode, boolean dumpBuf, Element testComposite,
+            Element blankComposite, MALEncodingContext ctx) throws Exception {
         System.out.println("Testing  : " + result.encoderName);
 
         ByteArrayOutputStream baos = testEncoder(result, streamFactory, count, dumpBuf, testComposite, ctx);
@@ -181,7 +169,7 @@ public class TestEncoder {
 
     protected static ByteArrayOutputStream testEncoder(Results result,
             MALElementStreamFactory streamFactory, int count, boolean dumpBuf,
-            Object testComposite, MALEncodingContext ctx) throws Exception {
+            Element testComposite, MALEncodingContext ctx) throws Exception {
         ByteArrayOutputStream baos = null;
 
         System.out.println("Starting encoding...");
@@ -190,7 +178,7 @@ public class TestEncoder {
             baos = new ByteArrayOutputStream();
             MALElementOutputStream encoder = streamFactory.createOutputStream(baos);
 
-            encoder.writeElement(testComposite, ctx);
+            encoder.writeElement(testComposite, ctx.getOperationFields()[0]);
             encoder.flush();
             encoder.close();
         }
@@ -224,7 +212,7 @@ public class TestEncoder {
             ByteArrayInputStream bais = new ByteArrayInputStream(bbuf);
             MALElementInputStream decoder = streamFactory.createInputStream(bais);
 //      MALElementInputStream decoder = streamFactory.createInputStream(bbuf, 0);
-            rv = decoder.readElement(blankComposite, ctx);
+            rv = decoder.readElement((Element) blankComposite, ctx.getOperationFields()[0]);
             decoder.close();
         }
         long stopTime = System.nanoTime();
@@ -272,8 +260,8 @@ public class TestEncoder {
         final String factoryClassName;
         final boolean compress;
         final boolean dump;
-        final Object objectToEncode;
-        final Object blankToEncode;
+        final Element objectToEncode;
+        final Element blankToEncode;
         final boolean compareable;
         MALElementStreamFactory factory;
         String encoderName;
@@ -283,7 +271,7 @@ public class TestEncoder {
         boolean decodedCorrectly = false;
 
         public Results(String factoryClassName, boolean compress, boolean dump,
-                Object objectToEncode, Object blankToEncode) {
+                Element objectToEncode, Element blankToEncode) {
             this.factoryClassName = factoryClassName;
             this.compress = compress;
             this.dump = dump;
@@ -300,64 +288,6 @@ public class TestEncoder {
             this.objectToEncode = TestStructureBuilder.createTestMALComposite(timestamp, pktsPerReport, paramsPerPkt);
             this.blankToEncode = new Report();
             this.compareable = true;
-        }
-    }
-
-    protected static class MyMALContext extends MALEncodingContext {
-
-        public MyMALContext(MALMessageHeader header, MALOperation operation,
-                int bodyElementIndex, Map endpointQosProperties, Map messageQosProperties) {
-            super(header, operation, bodyElementIndex, endpointQosProperties, messageQosProperties);
-        }
-
-        @Override
-        public int getBodyElementIndex() {
-            return super.getBodyElementIndex();
-        }
-
-        @Override
-        public Map getEndpointQosProperties() {
-            return super.getEndpointQosProperties();
-        }
-
-        @Override
-        public MALMessageHeader getHeader() {
-            return super.getHeader();
-        }
-
-        @Override
-        public Map getMessageQosProperties() {
-            return super.getMessageQosProperties();
-        }
-
-        @Override
-        public MALOperation getOperation() {
-            return super.getOperation();
-        }
-
-        @Override
-        public void setBodyElementIndex(int bodyElementIndex) {
-            super.setBodyElementIndex(bodyElementIndex);
-        }
-
-        @Override
-        public void setEndpointQosProperties(Map endpointQosProperties) {
-            super.setEndpointQosProperties(endpointQosProperties);
-        }
-
-        @Override
-        public void setHeader(MALMessageHeader header) {
-            super.setHeader(header);
-        }
-
-        @Override
-        public void setMessageQosProperties(Map messageQosProperties) {
-            super.setMessageQosProperties(messageQosProperties);
-        }
-
-        @Override
-        public void setOperation(MALOperation operation) {
-            super.setOperation(operation);
         }
     }
 }

@@ -38,6 +38,8 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -51,11 +53,11 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class TransmitMultipleTestProcedure {
@@ -82,17 +84,18 @@ public class TransmitMultipleTestProcedure {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false).getStub();
 
         ipTest2 = LocalMALInstance.instance().newIPTestStub(null,
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false).getStub();
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, values));
-        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
         return true;
     }
 
@@ -107,7 +110,7 @@ public class TransmitMultipleTestProcedure {
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         NETWORK_ZONE, SESSION, SESSION_NAME, false,
-                        keyNames, expectedErrorCode);
+                        keyNames, Helper.get1TestKeyType(), expectedErrorCode);
         ipTest1.publishRegister(testPublishRegister);
 
         listener1 = new MonitorListener();
@@ -117,14 +120,15 @@ public class TransmitMultipleTestProcedure {
         ipTest2.monitorRegister(subscription, listener2);
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, values.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
 
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, 
+                SESSION, SESSION_NAME, false, updateHeaderList,
                 updateList, null, expectedErrorCode, false, null);
         ipTest1.testMultipleNotify(testPublishUpdate);
 

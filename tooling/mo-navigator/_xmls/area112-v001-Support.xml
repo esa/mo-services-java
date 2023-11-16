@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:mal="http://www.ccsds.org/schema/ServiceSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <mal:area name="Support" number="112" version="1" comment="The Support area provides a set of services for supporting services in other areas.">
+        <mal:service name="Discovery" number="1" comment="The Discovery service allows service providers to publish information about which services they provide and consumers to discover service provider address and capability information.&#13;&#10;Service provider information is made available using the Discovery service publishProvider operation and removed using the withdrawProvider operation.&#13;&#10;The lookupProvider operation provides the ability for consumers to query the Discovery service based on a filter such as required service capability.&#13;&#10;Finally, a provider may supply its set of service specification XML files when publishing its capabilities. This allows consumers that are able to process MO service XML files obtain the files for further processing. It is expected that this would be used to either ensure that no modifications have been made by a provider to a standard service or, in the case of a consumer that is able to dynamically interact with new service specifications, obtain the service specification to allow interaction with that new service.">
+            <mal:capabilitySet number="1">
+                <mal:requestIP name="lookupProvider" number="1" supportInReplay="true" comment="The lookup operation allows a service consumer to query the Discovery service to return a list of service providers that match the requested criteria. If no match is found, then an empty list is returned.&#13;&#10;&#13;&#10;NOTE: The various filters that may be specified as part of this operation are combined using AND logic.">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="filter" comment="The filter field shall define the lookup query and be used to match details previously published using the publishProvider operation, the specifics of the ServiceFilter fields are defined in the following requirements.&#13;&#10;If the serviceProviderId field is NULL then all service provider identifiers shall be matched.&#13;&#10;If the final identifier of the domain field of the filter is the wildcard '*', then all sub-domains shall be searched for matches. See R[2] section 3.5.6.5.g.&#13;&#10;If the wildcard is used in any other part of the domain other than the final one then an INVALID error shall be returned.&#13;&#10;If the domain field is NULL then all domains shall be matched.&#13;&#10;If the network field is NULL then all networks shall be matched.&#13;&#10;If the sessionType field is NULL then all session types shall be matched.&#13;&#10;If the sessionName field is NULL then all session names shall be matched.&#13;&#10;The serviceKey field shall be used to match against ServiceKey fields held in the PublishDetails used to publish a specific provider.&#13;&#10;If the serviceKey field is NULL then all areas, services and versions shall be matched.&#13;&#10;If the area field is the wildcard '0' then all areas names shall be matched.&#13;&#10;If the service field is the wildcard '0' then all services shall be matched.&#13;&#10;If the version field is the wildcard '0' then all area versions shall be matched.&#13;&#10;If the requiredCapabilitySets field is NULL or an empty list then all service capability sets shall be matched.">
+                                <mal:type area="Support" service="Discovery" name="ServiceFilter"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="matchingProviders" comment="The operation shall return a list of service providers that match the filter.&#13;&#10;If no service providers match the supplied filter then an empty list shall be returned.">
+                                <mal:type list="true" area="Support" service="Discovery" name="ProviderSummary"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="Invalid domain filter value.">
+                            <mal:type area="COM" name="INVALID"/>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:requestIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="2">
+                <mal:requestIP name="publishProvider" number="2" supportInReplay="false" comment="The publishProvider operation adds a new or updates an existing entry in the list of service providers held in the Discovery service.">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="newProviderDetails" comment="The newProviderDetails field shall hold the provider details of the service to be added or updated in the Discovery service.&#13;&#10;If any of the fields of the newProviderDetails domain/sessionName/network fields are either empty or contain the wildcard '*' an INVALID error shall be returned.&#13;&#10;If the providerId field of the PublishDetails structure is empty or contains the wildcard '*' an INVALID error shall be returned.&#13;&#10;For each contained ServiceKey structure if the area/service/version fields contain '0' then an INVALID error shall be returned.&#13;&#10;For each contained supportedCapabilitySets list if the list is empty or contains '0' then an INVALID error shall be returned.&#13;&#10;If the supportedLevels list is empty or the priorityLevels field is '0' for each contained AddressDetails structure found either within the ProviderDetails or the inner ServiceCapability structures then an INVALID error shall be returned.&#13;&#10;If an error is being returned then no changes shall be made.">
+                                <mal:type area="Support" service="Discovery" name="PublishDetails"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="providerObjId" comment="If the providerId field of the PublishDetails structure matches an existing ServiceProvider COM object, the operation shall update the existing details of that provider.&#13;&#10;If the providerId field of the PublishDetails structure does not match an existing ServiceProvider COM object, then the operation shall create a new ServiceProvider COM object to represent the new service provider.&#13;&#10;A new ProviderCapabilities COM object shall be created to store the capabilities of the provider.&#13;&#10;The created objects should be stored in the COM archive by the Discovery service provider.&#13;&#10;The operation shall return the COM object instance identifiers of the ServiceProvider and ProviderCapabilities COM objects representing the provider.">
+                                <mal:type area="MAL" name="Long"/>
+                            </mal:field>
+                            <mal:field name="capabilitiesObjId">
+                                <mal:type area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="Submitted values are invalid.">
+                            <mal:type area="COM" name="INVALID"/>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:requestIP>
+                <mal:submitIP name="withdrawProvider" number="3" supportInReplay="false" comment="The withdrawProvider operation removes an existing entry from the list of service providers held in the Discovery service. If no match is found for the withdraw request, then nothing is changed.">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="providerObjId" comment="The providerObjId field shall hold the object instance identifier for the ServiceProvider COM object to remove from the Discovery service.&#13;&#10;If the supplied identifier is '0' an INVALID error shall be returned.&#13;&#10;If the supplied identifier does not match an existing ServiceProvider COM object then an UNKNOWN error shall be returned.&#13;&#10;If an error is being returned then no changes shall be made.&#13;&#10;The matched provider shall be removed from the Discovery service.">
+                                <mal:type area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="Provider to withdraw was not found.">
+                            <mal:type area="MAL" name="UNKNOWN"/>
+                        </mal:errorRef>
+                        <mal:errorRef comment="Submitted values are invalid.">
+                            <mal:type area="COM" name="INVALID"/>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:submitIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="3">
+                <mal:requestIP name="getServiceXML" number="4" supportInReplay="false" comment="The getServiceXML operation returns the list of XML files that were submitted by the service provider by the publishProvider operation.&#13;&#10;If no files were supplied then this operation returns an empty list.">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="providerObjId" comment="The providerObjId field shall hold the COM object instance identifier for the ServiceProvider to obtain the service XML for.&#13;&#10;If the supplied instance identifier is '0' an INVALID error shall be returned.&#13;&#10;If the supplied identifier does not match an existing ServiceProvider COM object then an UNKNOWN error shall be returned.">
+                                <mal:type area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="xmlFiles" comment="The list of XML files supplied during the publishProvider operation for the matched provider shall be returned.&#13;&#10;If no XML files were supplied by the provider then an empty list shall be returned.">
+                                <mal:type list="true" area="MAL" name="File"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="Submitted values are invalid.">
+                            <mal:type area="COM" name="INVALID"/>
+                        </mal:errorRef>
+                        <mal:errorRef comment="Provider was not found.">
+                            <mal:type area="MAL" name="UNKNOWN"/>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:requestIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="4" comment="">
+                <mal:pubsubIP name="heartbeat" number="1" supportInReplay="false" comment="The heartbeat operation allows a provider to periodically send a heartbeat to the consumers.">
+                    <mal:messages>
+                        <mal:publishNotify>
+                            <mal:field name="period">
+                                <mal:type area="MAL" name="Duration"/>
+                            </mal:field>
+                        </mal:publishNotify>
+                    </mal:messages>
+                </mal:pubsubIP>
+            </mal:capabilitySet>
+            <mal:dataTypes>
+                <mal:composite name="ProviderDetails" shortFormPart="1" comment="The ProviderDetails structure holds information about a provider of a service and its capabilities. The structure contains a list of AddressDetails structures which should be used when the individual services listed by the provider do not supply address information. A provider may support more than one transport technology and therefore can be reached using more than one address.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="serviceCapabilities" canBeNull="false" comment="The service capabilities supported by this service provider">
+                        <mal:type list="true" area="Support" service="Discovery" name="ServiceCapability"/>
+                    </mal:field>
+                    <mal:field name="providerAddresses" canBeNull="false" comment="List of addresses for all services of this service provider unless service specific addresses are supplied in the serviceCapabilities field. If all address information is supplied in the serviceCapabilities field this list should be zero length.">
+                        <mal:type list="true" area="Support" service="Discovery" name="AddressDetails"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="ServiceCapability" shortFormPart="2" comment="The ServiceCapability structure holds information about a service and the capabilities offered by a provider.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="serviceKey" canBeNull="false" comment="The area, service, and version fields.">
+                        <mal:type area="Common" name="ServiceKey"/>
+                    </mal:field>
+                    <mal:field name="supportedCapabilitySets" comment="The supported capability set numbers for this service provider. If NULL then all capability sets supported.">
+                        <mal:type list="true" area="MAL" name="UShort"/>
+                    </mal:field>
+                    <mal:field name="serviceProperties" comment="Allows the passing of deployment specific service properties.">
+                        <mal:type list="true" area="MAL" name="NamedValue"/>
+                    </mal:field>
+                    <mal:field name="serviceAddresses" comment="Optional set of address details for this specific service which shall be used instead of the provider ones when accessing this service. If all address information is supplied in the containing ProviderDetails structure field this list should be replaced with a NULL.">
+                        <mal:type list="true" area="Support" service="Discovery" name="AddressDetails"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="AddressDetails" shortFormPart="4" comment="The AddressDetails structure holds all information required by the Discovery service about a service providers URI and attributes relating to QoS.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="supportedLevels" canBeNull="false" comment="The set of possible QoS levels this service can provide.">
+                        <mal:type list="true" area="MAL" name="QoSLevel"/>
+                    </mal:field>
+                    <mal:field name="QoSproperties" canBeNull="false" comment="Any QoS properties relevant to this address URIs and the specified transport.">
+                        <mal:type list="true" area="MAL" name="NamedValue"/>
+                    </mal:field>
+                    <mal:field name="priorityLevels" canBeNull="false" comment="The number of QoS priority levels that this provider supports.">
+                        <mal:type area="MAL" name="UInteger"/>
+                    </mal:field>
+                    <mal:field name="serviceURI" comment="The Service URI that identifies the physical location of this service. NULL if represents a shared data provider (Broker).">
+                        <mal:type area="MAL" name="URI"/>
+                    </mal:field>
+                    <mal:field name="brokerURI" comment="The broker URI that identifies the physical location of the publish and subscribe interface. NULL if service does not use publish and subscribe operations or if a shared broker is to be used.">
+                        <mal:type area="MAL" name="URI"/>
+                    </mal:field>
+                    <mal:field name="brokerProviderObjInstId" comment="The object instance identifier of a ServiceProvider COM object that is the shared broker used by this provider.">
+                        <mal:type area="MAL" name="Long"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="ProviderSummary" shortFormPart="5" comment="The ProviderSummary structure holds information about a provider of a service and its capabilities.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="providerKey" canBeNull="false" comment="The COM object key of this service provider">
+                        <mal:type area="COM" name="ObjectKey"/>
+                    </mal:field>
+                    <mal:field name="providerId" canBeNull="false" comment="The id of this service provider.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="providerDetails" canBeNull="false" comment="The service capabilities supported by this provider">
+                        <mal:type area="Support" service="Discovery" name="ProviderDetails"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="PublishDetails" shortFormPart="6" comment="The PublishDetails structure holds all the required information to publish new service provider details.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="providerId" canBeNull="false" comment="The unique service provider id; allows multiple service providers of the same service type to coexist in the Discovery service.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="domain" canBeNull="false" comment="The domain of the provider.">
+                        <mal:type list="true" area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="sessionType" canBeNull="false" comment="The type of session of the provider.">
+                        <mal:type area="MAL" name="SessionType"/>
+                    </mal:field>
+                    <mal:field name="sourceSessionName" comment="If this is part of a replay session, this field holds the session name of the source session. NULL otherwise">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="network" canBeNull="false" comment="The network of the provider.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="providerDetails" canBeNull="false" comment="The new service provider details.">
+                        <mal:type area="Support" service="Discovery" name="ProviderDetails"/>
+                    </mal:field>
+                    <mal:field name="serviceXML" comment="The optional XML files to associate with this provider.">
+                        <mal:type list="true" area="MAL" name="File"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="ServiceFilter" shortFormPart="7" comment="The ServiceFilter structure holds all information required by the Discovery service for service lookup operation. The field filters are AND'd together.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="serviceProviderId" comment="The required service provider. Can be NULL in which case matches all values.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="domain" comment="The domain to query. Can be NULL in which case matches all values.">
+                        <mal:type list="true" area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="network" comment="The network to match. Can be NULL in which case matches all values.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="sessionType" comment="The session type to match. Can be NULL in which case matches all values.">
+                        <mal:type area="MAL" name="SessionType"/>
+                    </mal:field>
+                    <mal:field name="sessionName" comment="The session name to match. Can be NULL in which case matches all values.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="serviceKey" comment="The service to filter on, values can be NULL which matches all values.">
+                        <mal:type area="Common" name="ServiceKey"/>
+                    </mal:field>
+                    <mal:field name="requiredCapabilitySets" comment="List of required capability sets. If NULL then matches any.">
+                        <mal:type list="true" area="MAL" name="UShort"/>
+                    </mal:field>
+                </mal:composite>
+            </mal:dataTypes>
+        </mal:service>
+        <mal:service name="Persistance" number="2" comment="The Archive service provides a basic interface to a standard archiving function. It follows the basic CRUD principles and allows simple querying of the archive. It provides operations to add new objects to an archive, delete objects from an archive, update existing objects in an archive, and also query the content of the archive.&#13;&#10;The query operation provides a basic querying ability, allowing a consumer to filter on fields from the object headers (such as domain etc) and also filter on the body of the object if it uses the MAL data type specification.&#13;&#10;The query operation is extensible but the extensions would be outside this standard.&#13;&#10;Finally, a consumer of the archive can monitor it for changes by subscribing for archive events from the event service. Any change to the archive is published using the event service if it is supported by an implementation.">
+            <mal:capabilitySet number="1">
+                <mal:invokeIP name="retrieve" number="1" supportInReplay="false" comment="Retrieves a set of objects identified by their object instance identifier.">
+                    <mal:messages>
+                        <mal:invoke>
+                            <mal:field name="objType" comment="The first part of the request shall contain the type of the object required.&#13;&#10;If any of the fields of the object type contains the wildcard value of '0' then an INVALID error shall be returned.&#13;&#10;The second part of the request shall contain the domain to match.&#13;&#10;If the domain contains the wildcard value of '*' then an INVALID error shall be returned.&#13;&#10;The third part of the request shall contain the list of object instance identifiers to match.&#13;&#10;If the object instance identifier list contains the wildcard value '0' then all object instances shall be matched.&#13;&#10;If any explicitly requested object cannot be matched then an UNKNOWN error shall be returned.">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="domain">
+                                <mal:type list="true" area="MAL" name="Identifier"/>
+                            </mal:field>
+                            <mal:field name="objInstIds">
+                                <mal:type list="true" area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:invoke>
+                        <mal:acknowledgement/>
+                        <mal:response>
+                            <mal:field name="objDetails" comment="The response shall contain the set of matched objects.&#13;&#10;The first returned list shall contain the matched object instance identifiers and object details of the matched objects.&#13;&#10;The second returned list shall contain the object bodies ordered identically to the first list unless no body for the object is declared in the service specification, in which case a NULL replaces the complete list.&#13;&#10;There shall be an entry in each returned list for each matched object.&#13;&#10;When no objects have been matched only a response with NULL for each part of the response shall be returned.&#13;&#10;The ordering of the returned objects is not specified and implementation specific.&#13;&#10;If ordering of the returned objects is required then the query operation should be used instead.">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveDetails"/>
+                            </mal:field>
+                            <mal:field name="objBodies">
+                                <mal:type list="true" area="MAL" name="Element"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="The request contains a wildcard value in either the object type field or the domain.">
+                            <mal:type area="COM" name="INVALID"/>
+                        </mal:errorRef>
+                        <mal:errorRef comment="One or more of the requested objects specified in the operation do not exist and therefore cannot be found.">
+                            <mal:type area="MAL" name="UNKNOWN"/>
+                            <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:invokeIP>
+                <mal:progressIP name="query" number="2" supportInReplay="true" comment="Retrieves a set of object instance identifiers, and optionally the object bodies, from a list of supplied queries. The PROGRESS interaction pattern is used as the returned set of data may be quite large and this allows it to be split over several MAL messages.">
+                    <mal:messages>
+                        <mal:progress>
+                            <mal:field name="returnBody" comment="The first part of the request shall contain a Boolean that if set to TRUE requests that the body of the objects is returned otherwise only the ObjectType and ArchiveDetails shall be returned and the returned list of the bodies of the objects shall be replaced with a NULL.&#13;&#10;The second part of the request shall contain the type of the object required.&#13;&#10;Each part of the object type may contain the wildcard value of '0'.&#13;&#10;The third and fourth parts of the request shall contain the queries to evaluate.&#13;&#10;A single query shall be formed by the combination of an ArchiveQuery from the first list and a QueryFilter from the second list.&#13;&#10;The two lists shall be ordered identically so that the query and the filter parts can be matched together.&#13;&#10;If a query does not contain a QueryFilter part then that entry in the QueryFilter list shall be replaced with a NULL value.&#13;&#10;If the request does not contain any QueryFilters then the complete list may be replaced with a NULL.&#13;&#10;The size of the two lists must be the same unless the complete second list is replaced with a NULL otherwise an INVALID error shall be raised.&#13;&#10;For each query, the ArchiveQuery and the QueryFilter shall contain the COM object fields to filter on.&#13;&#10;The ArchiveQuery may contain the wildcard value of NULL on each of the fields.&#13;&#10;If an ArchiveQuery contains an end time but no start time then it shall match the single object that has a timestamp closest to, but not greater than, the end time field.&#13;&#10;The end time field may specify a time in the future.&#13;&#10;If the sortFieldName of the ArchiveQuery does not reference a defined field then an INVALID error shall be returned.&#13;&#10;Each query shall be evaluated separately from each other, the filter of one query will not affect the filter of another. This forms a logical OR operation.&#13;&#10;If the QueryFilter contains an error then an INVALID error shall be returned. The definition of erroneous values are filter specific and defined in the relevant filter structure specification.">
+                                <mal:type area="MAL" name="Boolean"/>
+                            </mal:field>
+                            <mal:field name="objType">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="archiveQuery">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveQuery"/>
+                            </mal:field>
+                            <mal:field name="queryFilter">
+                                <mal:type list="true" area="Support" service="Persistance" name="QueryFilter"/>
+                            </mal:field>
+                        </mal:progress>
+                        <mal:acknowledgement/>
+                        <mal:update>
+                            <mal:field name="objType">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="domain">
+                                <mal:type list="true" area="MAL" name="Identifier"/>
+                            </mal:field>
+                            <mal:field name="objDetails">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveDetails"/>
+                            </mal:field>
+                            <mal:field name="objBodies">
+                                <mal:type list="true" area="MAL" name="Element"/>
+                            </mal:field>
+                        </mal:update>
+                        <mal:response>
+                            <mal:field name="objType" comment="The updates and the responses shall contain the set of matched objects.&#13;&#10;If a wildcard was used in the ObjectType part of the request then the updates and response shall contain the ObjectType of each matched object.&#13;&#10;If there was not any wildcards in the ObjectType part of the request the ObjectType in the updates and response shall be replaced by a NULL.&#13;&#10;The first returned list shall contain the domain of the objects being returned.&#13;&#10;If multiple ObjectTypes or domains have been matched then multiple Update message may be returned.&#13;&#10;There shall be an entry in the second and third lists for each matched object.&#13;&#10;The second returned list shall contain the archive details stored for the matched objects.&#13;&#10;If the initial Boolean of the request was True the third returned list shall contain the bodies of the objects.&#13;&#10;If the initial Boolean of the request was NULL or False the third returned list shall be replaced by a NULL.&#13;&#10;The returned lists shall be sorted based on the sorting options specified in ArchiveQuery.&#13;&#10;Each domain/object type pair shall be sorted separately from other domain/object type pairs, there is no requirement for sorting to be applied across domain/object type pairs.&#13;&#10;When the field being sorted on contains a NULL value, or does not exist in the matched object (due to a containing composite being NULL), these entries shall be added to the end of the returned list in the order that they are matched.&#13;&#10;When no objects have been matched only a response with NULL for each part of the response shall be returned.">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="domain">
+                                <mal:type list="true" area="MAL" name="Identifier"/>
+                            </mal:field>
+                            <mal:field name="objDetails">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveDetails"/>
+                            </mal:field>
+                            <mal:field name="objBodies">
+                                <mal:type list="true" area="MAL" name="Element"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="One or more of the query filters supplied contains an invalid value.">
+                            <mal:type area="COM" name="INVALID"/>
+                            <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:progressIP>
+                <mal:invokeIP name="count" number="3" supportInReplay="true" comment="Counts the set of objects based on a supplied query.">
+                    <mal:messages>
+                        <mal:invoke>
+                            <mal:field name="objType" comment="The ObjectType, ArchiveQuery and QueryFilter parts of the request shall be populated exactly the same as for the query operation.">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="archiveQuery">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveQuery"/>
+                            </mal:field>
+                            <mal:field name="queryFilter">
+                                <mal:type list="true" area="Support" service="Persistance" name="QueryFilter"/>
+                            </mal:field>
+                        </mal:invoke>
+                        <mal:acknowledgement/>
+                        <mal:response>
+                            <mal:field name="counts" comment="The response shall contain the count of matched objects.&#13;&#10;There shall be an entry in each returned list for each entry in the request list.&#13;&#10;The returned lists shall be ordered the same as the request query lists so that the response can be matched to the corresponding request.">
+                                <mal:type list="true" area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="One or more of the query filters supplied contains an invalid value.">
+                            <mal:type area="COM" name="INVALID"/>
+                            <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:invokeIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="2">
+                <mal:requestIP name="store" number="4" supportInReplay="false" comment="Stores new objects in the archive and causes an ObjectStored event to be published by the archive.&#13;&#10;When new objects are being stored in an archive by a service provider the archive service provider is capable of allocating an unused object instance identifier for the objects being stored. The returned object instance identifier should be used by the service provider for identifying the object instances to its consumer to ensure that only a single object instance identifier is used for each object instance.">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="returnObjInstIds" comment="The first part of the request indicates whether the operation should return the object instance identifiers used, if TRUE it shall return them, otherwise it returns NULL.&#13;&#10;The second part of the request shall contain the type of object being stored.&#13;&#10;The third part of the request shall contain the domain of the objects being stored.&#13;&#10;The fourth part of the request shall contain the list of archive details to use, one for each object being stored.&#13;&#10;If the object instance identifier supplied in the archive details is set to 0 then the store operation shall allocate a new and unused object instance identifier.&#13;&#10;If the object instance identifier supplied in the archive details is not set to 0 and is currently used in the archive then a DUPLICATE error is returned and no objects from the request shall be stored.&#13;&#10;The fifth part of the request shall contain the list of objects to store.&#13;&#10;The fourth and fifth list must be the same size as there is only one entry in each for each object to be stored. If they differ in size an INVALID error is returned with the extra error information integer giving the index of the list entry without a matching entry in the other list.&#13;&#10;An INVALID error shall be returned if a wildcard value of '0' is used in the object type.&#13;&#10;An INVALID error shall be returned if a wildcard value of '*' is used in the domain identifier list.&#13;&#10;An INVALID error shall be returned if the values of '0', '*', or NULL are used in the network, timestamp or provider fields of the archive details except for the object instance identifier.&#13;&#10;The type of the body of the object should be checked against the declared type in the relevant service specification, if different an INVALID error is raised.&#13;&#10;If any error is returned then the store operation shall be rolled back and nothing is stored as a result of the operation.">
+                                <mal:type area="MAL" name="Boolean"/>
+                            </mal:field>
+                            <mal:field name="objType">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="domain">
+                                <mal:type list="true" area="MAL" name="Identifier"/>
+                            </mal:field>
+                            <mal:field name="objDetails">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveDetails"/>
+                            </mal:field>
+                            <mal:field name="objBodies">
+                                <mal:type list="true" area="MAL" name="Element"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="objInstIds" comment="The response shall contain the set of new object instance identifiers if the request supplied an initial TRUE Boolean value, otherwise it returns NULL.&#13;&#10;The returned list shall be ordered identically to the submitted list so that the returned object instance identifiers can be mapped to the correct objects.">
+                                <mal:type list="true" area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="One or more of the objects being stored has supplied an object instance identifier that is already in use in the archive.">
+                            <mal:type area="COM" name="DUPLICATE"/>
+                            <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef comment="One or more of the objects being stored contains an invalid value.">
+                            <mal:type area="COM" name="INVALID"/>
+                            <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:requestIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="3">
+                <mal:submitIP name="update" number="5" supportInReplay="false" comment="Updates an object (or set of objects), causes an ObjectUpdated event to be published by the archive.">
+                    <mal:messages>
+                        <mal:submit>
+                            <mal:field name="objType" comment="The first part of the request shall contain the type of object being updated.&#13;&#10;The second part of the request shall contain the domain of the objects being updated.&#13;&#10;The third part of the request shall contain the list of ArchiveDetails.&#13;&#10;The object instance identifier contained in the ArchiveDetails, combined with the object type and domain from the request, shall be used to match objects.&#13;&#10;If requested object cannot be matched then an UNKNOWN error shall be returned and nothing will be updated.&#13;&#10;The remainder of the ArchiveDetails shall be used to update the matched objects.&#13;&#10;The fourth part of the request shall contain the list of objects to replace the matched objects with.&#13;&#10;No wildcard values shall be accepted in the object type, the domain, and the object instance identifier, an INVALID error is returned in this case and no objects are updated.">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="domain">
+                                <mal:type list="true" area="MAL" name="Identifier"/>
+                            </mal:field>
+                            <mal:field name="objDetails">
+                                <mal:type list="true" area="Support" service="Persistance" name="ArchiveDetails"/>
+                            </mal:field>
+                            <mal:field name="objBodies">
+                                <mal:type list="true" area="MAL" name="Element"/>
+                            </mal:field>
+                        </mal:submit>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="One or more of the requested objects specified in the operation do not exist and therefore cannot be found.">
+                            <mal:type area="MAL" name="UNKNOWN"/>
+                            <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef comment="One or more of the objects being updated contains a wildcard value in the object identifier fields.">
+                            <mal:type area="COM" name="INVALID"/>
+                            <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:submitIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="4">
+                <mal:requestIP name="delete" number="6" supportInReplay="false" comment="Deletes an object (or set of objects) and causes an ObjectDeleted event to be published by the archive.">
+                    <mal:messages>
+                        <mal:request>
+                            <mal:field name="objType" comment="The first part of the request shall contain the type of object to match and is not permitted to contain the wildcard value.&#13;&#10;The second part of the request shall contain the domain of the objects to match and is not permitted to contain the wildcard value.&#13;&#10;If either the first or second part contain a wildcard value then an INVALID error shall be returned and no object deleted.&#13;&#10;The third part of the request shall contain the list of object instance identifiers to match.&#13;&#10;If the object instance identifier list contains the wildcard value '0' then all object instances shall be matched.&#13;&#10;If any explicitly requested object cannot be matched then an UNKNOWN error shall be returned and nothing will be deleted.&#13;&#10;The matched objects shall be deleted from the archive.">
+                                <mal:type area="COM" name="ObjectType"/>
+                            </mal:field>
+                            <mal:field name="domain">
+                                <mal:type list="true" area="MAL" name="Identifier"/>
+                            </mal:field>
+                            <mal:field name="objInstIds">
+                                <mal:type list="true" area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:request>
+                        <mal:response>
+                            <mal:field name="deletedObjInstIds" comment="The response shall contain the set of object instance identifiers of the deleted objects.">
+                                <mal:type list="true" area="MAL" name="Long"/>
+                            </mal:field>
+                        </mal:response>
+                    </mal:messages>
+                    <mal:errors>
+                        <mal:errorRef comment="One or more of the requested objects specified in the operation do not exist and therefore cannot be found.">
+                            <mal:type area="MAL" name="UNKNOWN"/>
+                            <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                                <mal:type list="true" area="MAL" name="UInteger"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef comment="The supplied object type or domain contains a wildcard value.">
+                            <mal:type area="COM" name="INVALID"/>
+                        </mal:errorRef>
+                    </mal:errors>
+                </mal:requestIP>
+            </mal:capabilitySet>
+            <mal:dataTypes>
+                <mal:enumeration name="ExpressionOperator" shortFormPart="5" comment="The ExpressionOperator enumeration holds a set of possible expression operators.">
+                    <mal:item value="EQUAL" nvalue="1" comment="Checks for equality."/>
+                    <mal:item value="DIFFER" nvalue="2" comment="Checks for difference (not equal)."/>
+                    <mal:item value="GREATER" nvalue="3" comment="Checks for greater than."/>
+                    <mal:item value="GREATER_OR_EQUAL" nvalue="4" comment="Checks for greater than or equal to."/>
+                    <mal:item value="LESS" nvalue="5" comment="Checks for less than."/>
+                    <mal:item value="LESS_OR_EQUAL" nvalue="6" comment="Checks for less than or equal to."/>
+                    <mal:item value="CONTAINS" nvalue="7" comment="Case sensitive containment test (String types only)"/>
+                    <mal:item value="ICONTAINS" nvalue="8" comment="Case insensitive containment test (String types only)."/>
+                </mal:enumeration>
+                <mal:composite name="QueryFilter" comment="The base structure for archive filters."/>
+                <mal:composite name="ArchiveDetails" shortFormPart="1" comment="The ArchiveDetails structure is used to hold information about a single entry in an Archive.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="instId" canBeNull="false" comment="The object instance identifier of the archived object.">
+                        <mal:type area="MAL" name="Long"/>
+                    </mal:field>
+                    <mal:field name="details" canBeNull="false" comment="The details of the Object.">
+                        <mal:type area="COM" name="ObjectDetails"/>
+                    </mal:field>
+                    <mal:field name="network" comment="The network zone of the object.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="timestamp" comment="The time the object was created.">
+                        <mal:type area="MAL" name="FineTime"/>
+                    </mal:field>
+                    <mal:field name="provider" comment="The component that created the object (a component may be anything from an onboard equipment to a software process on the ground).">
+                        <mal:type area="MAL" name="URI"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="ArchiveQuery" shortFormPart="2" comment="The ArchiveQuery structure is used to specify filters on the common parts of an object in an archive.">
+                    <mal:extends>
+                        <mal:type area="MAL" name="Composite"/>
+                    </mal:extends>
+                    <mal:field name="domain" comment="Only the objects whose domain matches the provided domain will be returned. The domain field supports the wildcard value of '*' only in the last part of the domain. If NULL then all domains shall be matched.">
+                        <mal:type list="true" area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="network" comment="Optional network zone. Only the objects whose network zone matches the provided value will be returned. If NULL then all values will be matched.">
+                        <mal:type area="MAL" name="Identifier"/>
+                    </mal:field>
+                    <mal:field name="provider" comment="Optional provider. Only the objects whose provider URI matches the provided provider URI will be returned. If NULL then all values will be matched.">
+                        <mal:type area="MAL" name="URI"/>
+                    </mal:field>
+                    <mal:field name="related" canBeNull="false" comment="Object instance identifier of the related Object. Only the objects whose related Object matches the provided related Object will be returned unless the '0' wildcard value is supplied.">
+                        <mal:type area="MAL" name="Long"/>
+                    </mal:field>
+                    <mal:field name="source" comment="Optional source. Only the objects whose source matches the provided source will be returned. The fields of the ObjectId may contain the wildcard values ('0' for numeric fields, '*' for Identifier fields). If NULL then all values will be matched.">
+                        <mal:type area="COM" name="ObjectId"/>
+                    </mal:field>
+                    <mal:field name="startTime" comment="Optional start time. Only the objects whose timestamp is equal or greater than the provided start time will be returned. If NULL then no start time shall be applied.">
+                        <mal:type area="MAL" name="FineTime"/>
+                    </mal:field>
+                    <mal:field name="endTime" comment="Optional end time. Only the objects whose timestamp is equal or less than the provided end time will be returned. If NULL then no end time will be applied.">
+                        <mal:type area="MAL" name="FineTime"/>
+                    </mal:field>
+                    <mal:field name="sortOrder" comment="If set to TRUE then returned values shall be sorted in ascending order, if FALSE then in descending order. If NULL then no sorting shall be applied.">
+                        <mal:type area="MAL" name="Boolean"/>
+                    </mal:field>
+                    <mal:field name="sortFieldName" comment="If the returned values are to be sorted because the sortOrder field is not NULL then this field may contain the name of the field in the object body (MAL::Composite) to sort against. If the object body is not a composite but an Attribute or Enumeration then to sort on the values an empty string of &quot;&quot; should be used. Enumerations are sorted on their ordinal. If this field is NULL then the objects shall be sorted on the COM object timestamp. The field follows the naming convention of CompositeFilter::fieldName. If the field points to a composite, list, abstract type (including Attribute) or Blob then no sorting shall be applied.">
+                        <mal:type area="MAL" name="String"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="CompositeFilter" shortFormPart="3" comment="The CompositeFilter allows an archive query to specify a filter based on the content of the body of an object if that body is specified using the MAL data type specification.">
+                    <mal:field name="fieldName" canBeNull="false" comment="The name of the field in the object body (MAL::Composite) to match against. It is specified by referring to the name of the field. If the field does not exist in the Composite then the filter shall evaluate to false. If the field is nested inside another Composite, it can be referenced by separating the field names by a '.' character; for example the field 'instId' or the source of an ArchiveDetails composite would be referenced using &quot;details.source.key.instId&quot;. If the body is not a Composite but an Attribute or Enumeration then it can be referred to by using a blank (&quot;&quot;) string value here. Accessing values from lists is not supported by this method.">
+                        <mal:type area="MAL" name="String"/>
+                    </mal:field>
+                    <mal:field name="type" canBeNull="false" comment="The type of the filter to apply.">
+                        <mal:type area="Support" service="Persistance" name="ExpressionOperator"/>
+                    </mal:field>
+                    <mal:field name="fieldValue" comment="The value to compare with. The type of the suppied value and the matched field mst be the same. Must not contain NULL for expression operators CONTAINS, ICONTAINS, GREATER, GREATER_OR_EQUAL, LESS, or LESS_OR_EQUAL otherwise an INVALID error should be returned. Must contain a UInteger ordinal value if the field being matched is an Enumeration. Blob fields can only be used with EQUAL/DIFFER. Must contain a String value if operator is CONTAINS or ICONTAINS otherwise an INVALID error should be returned.">
+                        <mal:type area="MAL" name="Attribute"/>
+                    </mal:field>
+                </mal:composite>
+                <mal:composite name="CompositeFilterSet" shortFormPart="4" comment="Contains a list of CompositeFilters that are AND'd together to form a more complex filter.">
+                    <mal:extends>
+                        <mal:type area="Support" service="Persistance" name="QueryFilter"/>
+                    </mal:extends>
+                    <mal:field name="filters" canBeNull="false" comment="The list of filters to apply.">
+                        <mal:type list="true" area="Support" service="Persistance" name="CompositeFilter"/>
+                    </mal:field>
+                </mal:composite>
+            </mal:dataTypes>
+        </mal:service>
+        <mal:dataTypes>
+            <mal:composite name="ObjectType" shortFormPart="1" comment="The ObjectType structure uniquely identifies the type of an object. It is the combination of the area number, service number, area version, and service object type number. The combined parts are able to fit inside a MAL::Long (for implementations that prefer to index on a single numeric field rather than a structure).">
+                <mal:extends>
+                    <mal:type area="MAL" name="Composite"/>
+                </mal:extends>
+                <mal:field name="area" canBeNull="false" comment="Area Number where the object type is defined. Must not be '0' for values as this is the wildcard.">
+                    <mal:type area="MAL" name="UShort"/>
+                </mal:field>
+                <mal:field name="service" canBeNull="false" comment="Service Number of the service where the object type is defined. Must not be '0' for values as this is the wildcard.">
+                    <mal:type area="MAL" name="UShort"/>
+                </mal:field>
+                <mal:field name="version" canBeNull="false" comment="Area Version of the service where the object type is defined. Must not be '0' for values as this is the wildcard.">
+                    <mal:type area="MAL" name="UOctet"/>
+                </mal:field>
+                <mal:field name="number" canBeNull="false" comment="The service specific object number. Must not be '0' for values as this is the wildcard.">
+                    <mal:type area="MAL" name="UShort"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite name="ObjectKey" shortFormPart="2" comment="The ObjectKey structure combines a domain and an object instance identifier such that it identifies the instance of an object for a specific domain.">
+                <mal:extends>
+                    <mal:type area="MAL" name="Composite"/>
+                </mal:extends>
+                <mal:field name="domain" canBeNull="false" comment="The domain of the object instance.">
+                    <mal:type list="true" area="MAL" name="Identifier"/>
+                </mal:field>
+                <mal:field name="instId" canBeNull="false" comment="The unique identifier of the object instance. Must not be '0' for values as this is the wildcard.">
+                    <mal:type area="MAL" name="Long"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite name="ObjectId" shortFormPart="3" comment="The ObjectId structure combines an object type and an object key such that it identifies the instance and type of an object for a specific domain.">
+                <mal:extends>
+                    <mal:type area="MAL" name="Composite"/>
+                </mal:extends>
+                <mal:field name="type" canBeNull="false" comment="The fully qualified unique identifier of the type.">
+                    <mal:type area="COM" name="ObjectType"/>
+                </mal:field>
+                <mal:field name="key" canBeNull="false" comment="The combination of the object domain and object instance identifier.">
+                    <mal:type area="COM" name="ObjectKey"/>
+                </mal:field>
+            </mal:composite>
+            <mal:composite name="ObjectDetails" shortFormPart="4" comment="The ObjectDetails type is used to hold the extra information associated with an object instance, namely the related and source links.">
+                <mal:extends>
+                    <mal:type area="MAL" name="Composite"/>
+                </mal:extends>
+                <mal:field name="related" comment="Contains the object instance identifier of a related object (e.g. the ActionDefinition that an Action uses). This is service specific. The ObjectType of the related object is specified in the service specification. The related object must exist in the same domain as this object.">
+                    <mal:type area="MAL" name="Long"/>
+                </mal:field>
+                <mal:field name="source" comment="An object which is at the origin of the object creation (e.g. the procedure from which an action was triggered).">
+                    <mal:type area="COM" name="ObjectId"/>
+                </mal:field>
+            </mal:composite>
+        </mal:dataTypes>
+        <mal:errors>
+            <mal:error name="ThisIsAnError" number="1" comment="Operation specific"/>
+            <mal:error name="DUPLICATE" number="70001" comment="Operation specific"/>
+        </mal:errors>
+    </mal:area>
+</mal:specification>

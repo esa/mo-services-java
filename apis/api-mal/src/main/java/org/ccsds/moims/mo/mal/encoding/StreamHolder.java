@@ -174,7 +174,7 @@ public abstract class StreamHolder {
      *
      * @throws IOException is there is a problem adding the value to the stream.
      */
-    public abstract void writeNotNull() throws IOException;
+    public abstract void writeIsNotNull() throws IOException;
 
     /**
      * Adds an is Null flag value to the output stream.

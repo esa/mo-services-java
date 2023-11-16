@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transport-generic</artifactId>
     <packaging>jar</packaging>
-    <version>9.0</version>
+    <version>10.0</version>
 
     <name>ESA MO Transport - Generic Framework</name>
     <description>A base Java framework for CCSDS MAL transports</description>

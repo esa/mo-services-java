@@ -18,13 +18,13 @@
   
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>parent</artifactId>
-        <version>9.0</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <artifactId>testbed-pom</artifactId>
+        <version>10.0</version>
+        <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>test-apis</artifactId>
-    <version>9.0</version>
+    <version>10.0</version>
     <packaging>pom</packaging>
     <name>CCSDS MOIMS MO Testbed APIs</name>
 

@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.util.GENMessagePoller;
+import esa.mo.mal.transport.gen.util.MessagePoller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -83,7 +83,7 @@ public class TCPIPServerConnectionListener extends Thread {
                 // handle socket in separate thread
                 TCPIPTransportDataTransceiver tc = transport.createDataTransceiver(socket);
 
-                GENMessagePoller poller = new GENMessagePoller(
+                MessagePoller poller = new MessagePoller(
                         transport, tc, tc, new TCPIPMessageDecoderFactory());
                 pollerThreads.add(poller);
                 poller.start();

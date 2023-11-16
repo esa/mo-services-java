@@ -38,23 +38,25 @@ import java.util.Vector;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -87,7 +89,7 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), shared).getStub();
 
         IdentifierList keyNames = new IdentifierList();
         keyNames.add(Helper.key1);
@@ -96,7 +98,8 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
         TestPublishRegister testPublishRegister
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
-                        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, keyNames,
+                        HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME,
+                        false, keyNames, Helper.get1TestKeyType(),
                         expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
@@ -110,12 +113,12 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), shared).getStub();
         consumers.addElement(newIPTest);
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("*")));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
 
         MonitorListener listener = new MonitorListener();
         listeners.addElement(listener);
@@ -127,9 +130,10 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
     public boolean publish() throws Exception {
         logMessage("SubscriptionIdTestProcedure.publish()");
 
+        AttributeList att = new AttributeList(new Identifier("value"));
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
         updateHeaderList.add(new UpdateHeader(new Identifier("source"),
-                HeaderTestProcedure.DOMAIN, new AttributeList("value")));
+                HeaderTestProcedure.DOMAIN, att.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
@@ -137,7 +141,8 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+                SESSION, SESSION_NAME, false, updateHeaderList,
+                updateList, null, expectedErrorCode, false, null);
 
         ipTest.publishUpdates(testPublishUpdate);
         return true;
@@ -174,7 +179,7 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
                 listener.monitorCond.reset();
             }
 
-            if (listener.getNotifiedUpdateHeaders().size() != 1) {
+            if (listener.getNotifiedUpdateHeader() == null) {
                 return false;
             }
         }
@@ -185,30 +190,30 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
 
         private final BooleanCondition monitorCond = new BooleanCondition();
 
-        private UpdateHeaderList notifiedUpdateHeaders;
+        private UpdateHeader notifiedUpdateHeader;
 
-        private TestUpdateList notifiedUpdates;
+        private TestUpdate notifiedUpdate;
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            notifiedUpdateHeaders = updateHeaderList;
-            notifiedUpdates = updateList;
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
+            notifiedUpdateHeader = updateHeader;
+            notifiedUpdate = update;
             monitorCond.set();
         }
 
         public void reset() {
-            notifiedUpdateHeaders = null;
-            notifiedUpdates = null;
+            notifiedUpdateHeader = null;
+            notifiedUpdate = null;
         }
 
-        public TestUpdateList getNotifiedUpdates() {
-            return notifiedUpdates;
+        public UpdateHeader getNotifiedUpdateHeader() {
+            return notifiedUpdateHeader;
         }
 
-        public UpdateHeaderList getNotifiedUpdateHeaders() {
-            return notifiedUpdateHeaders;
+        public TestUpdate getNotifiedUpdate() {
+            return notifiedUpdate;
         }
     }
 }

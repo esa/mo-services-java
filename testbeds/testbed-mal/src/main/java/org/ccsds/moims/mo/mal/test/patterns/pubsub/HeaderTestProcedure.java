@@ -46,9 +46,7 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 public class HeaderTestProcedure extends LoggingBase {
 
     public static final IdentifierList DOMAIN = getDomain(0);
-    public static final Blob AUTHENTICATION_ID = new Blob(new byte[]{
-        0x00, 0x01
-    });
+    public static final Blob AUTHENTICATION_ID = new Blob(new byte[]{0x00, 0x01});
     public static final Identifier NETWORK_ZONE = new Identifier("NetworkZone");
     public static final UInteger PRIORITY = new UInteger(1);
     public static final Identifier RIGHT_KEY_NAME = new Identifier("A");
@@ -75,8 +73,7 @@ public class HeaderTestProcedure extends LoggingBase {
     }
 
     public boolean initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
-            String sessionType, String sharedBroker, int domain)
-            throws Exception {
+            String sessionType, String sharedBroker, int domain) throws Exception {
         return realInstance.initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 
@@ -88,8 +85,8 @@ public class HeaderTestProcedure extends LoggingBase {
         return realInstance.theProviderAssertions();
     }
 
-    public boolean initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
+    public boolean initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(String qosLevel,
+            String sessionType, String sharedBroker, int domain) throws Exception {
         return realInstance.initiateRegisterWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 
@@ -118,26 +115,22 @@ public class HeaderTestProcedure extends LoggingBase {
     }
 
     public boolean initiateDeregisterWithQosAndSessionAndSharedBrokerAndDomain(
-            String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
+            String qosLevel, String sessionType, String sharedBroker, int domain) throws Exception {
         return realInstance.initiateDeregisterWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 
     public boolean initiatePublishDeregisterWithQosAndSessionAndSharedBrokerAndDomain(
-            String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
+            String qosLevel, String sessionType, String sharedBroker, int domain) throws Exception {
         return realInstance.initiatePublishDeregisterWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 
     public boolean initiatePublishRegisterErrorWithQosAndSessionAndSharedBrokerAndDomain(
-            String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
+            String qosLevel, String sessionType, String sharedBroker, int domain) throws Exception {
         return realInstance.initiatePublishRegisterErrorWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 
     public boolean initiateRegisterErrorWithQosAndSessionAndSharedBrokerAndDomain(
-            String qosLevel, String sessionType, String sharedBroker, int domain)
-            throws Exception {
+            String qosLevel, String sessionType, String sharedBroker, int domain) throws Exception {
         return realInstance.initiateRegisterErrorWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 

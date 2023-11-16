@@ -37,12 +37,14 @@ import java.util.HashMap;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
 import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
@@ -58,12 +60,14 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
 
     private Long transactionId;
 
+    @Override
     public void handleDeregister(MALInteraction interaction, MALDeregisterBody body)
             throws MALInteractionException, MALException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void handlePublish(MALInteraction interaction, MALPublishBody body)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage("ErrorBrokerHandler.handlePublish(" + interaction.getMessageHeader() + ')');
@@ -76,42 +80,57 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
         } catch (InterruptedException e) {
         }
 
-        binding.sendNotifyError(interaction.getOperation(), subscriberUri, transactionId,
+        MALMessageHeader header = interaction.getMessageHeader();
+        binding.sendNotifyError(
+                header.getServiceArea(),
+                header.getService(),
+                header.getOperation(),
+                header.getServiceVersion(),
+                subscriberUri,
+                transactionId,
                 interaction.getMessageHeader().getDomain(),
                 interaction.getMessageHeader().getNetworkZone(),
                 interaction.getMessageHeader().getSession(),
                 interaction.getMessageHeader().getSessionName(),
-                interaction.getMessageHeader().getQoSlevel(), new HashMap(0),
+                interaction.getMessageHeader().getQoSlevel(),
+                new HashMap(0),
                 interaction.getMessageHeader().getPriority(),
-                new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
+                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
+                new NamedValueList()
+        );
     }
 
+    @Override
     public void handlePublishDeregister(MALInteraction interaction)
             throws MALInteractionException, MALException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void handlePublishRegister(MALInteraction interaction,
             MALPublishRegisterBody body) throws MALInteractionException, MALException {
-        throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
+        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
     }
 
+    @Override
     public void handleRegister(MALInteraction interaction, MALRegisterBody body)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage("ErrorBrokerHandler.handleRegister(" + interaction.getMessageHeader() + ')');
         if (body.getSubscription().getSubscriptionId().getValue().equals(SUBSCRIPTION_RAISING_ERROR)) {
-            throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
         } else {
-            subscriberUri = interaction.getMessageHeader().getURIFrom();
+            subscriberUri = interaction.getMessageHeader().getFromURI();
             transactionId = interaction.getMessageHeader().getTransactionId();
         }
     }
 
+    @Override
     public void malFinalize(MALBrokerBinding binding) {
 
     }
 
+    @Override
     public void malInitialize(MALBrokerBinding binding) {
         this.binding = binding;
     }

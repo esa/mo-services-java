@@ -20,23 +20,19 @@
  */
 package esa.mo.mal.transport.jms;
 
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
  */
-public class JMSMessageHeader extends GENMessageHeader {
+public class JMSMessageHeader extends MALMessageHeader {
 
     public JMSMessageHeader(MALMessageHeader srcHeader, JMSUpdate update) {
-        super(srcHeader.getURIFrom(), srcHeader.getAuthenticationId(),
-                srcHeader.getURITo(), srcHeader.getTimestamp(),
-                srcHeader.getQoSlevel(), srcHeader.getPriority(),
-                update.getDomain(), update.getNetwork(), srcHeader.getSession(),
-                srcHeader.getSessionName(), srcHeader.getInteractionType(),
-                srcHeader.getInteractionStage(), srcHeader.getTransactionId(),
-                update.getServiceArea(), update.getService(),
-                update.getOperation(), srcHeader.getAreaVersion(),
-                srcHeader.getIsErrorMessage());
+        super(srcHeader.getFrom(), srcHeader.getAuthenticationId(),
+                srcHeader.getTo(), srcHeader.getTimestamp(),
+                srcHeader.getInteractionType(), srcHeader.getInteractionStage(),
+                srcHeader.getTransactionId(), update.getServiceArea(), update.getService(),
+                update.getOperation(), srcHeader.getServiceVersion(),
+                srcHeader.getIsErrorMessage(), srcHeader.getSupplements());
     }
 }

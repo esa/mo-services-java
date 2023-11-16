@@ -88,7 +88,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         try {
             if (value != null) {
                 // encode presence flag
-                outputStream.writeNotNull();
+                outputStream.writeIsNotNull();
                 // encode element as String
                 encodeString(value);
             } else {
@@ -156,7 +156,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         }
 
         @Override
-        public void writeNotNull() throws IOException {
+        public void writeIsNotNull() throws IOException {
             setBit(bitIndex);
             ++bitIndex;
         }

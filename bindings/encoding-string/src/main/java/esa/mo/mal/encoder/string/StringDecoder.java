@@ -267,37 +267,37 @@ public class StringDecoder extends Decoder {
         }
 
         private String removeFirst() throws MALException {
-            String rv;
+            String str;
 
             final int index = findNextOffset();
 
             // No more chars
             if (-1 == index) {
-                rv = buf.substring(offset, buf.length());
+                str = buf.substring(offset, buf.length());
                 offset = buf.length();
             } else {
-                rv = buf.substring(offset, index);
+                str = buf.substring(offset, index);
                 offset = index + 1;
             }
 
-            return rv.replace(STR_DELIM_ESC, STR_DELIM)
+            return str.replace(STR_DELIM_ESC, STR_DELIM)
                     .replace(STR_NULL_ESC, STR_NULL)
                     .replace(STR_ESC_ESC, STR_ESC);
         }
 
         private String peekNext() throws MALException {
-            String rv;
+            String str;
 
             final int index = findNextOffset();
 
             // No more chars
             if (-1 == index) {
-                rv = buf.substring(offset, buf.length());
+                str = buf.substring(offset, buf.length());
             } else {
-                rv = buf.substring(offset, index);
+                str = buf.substring(offset, index);
             }
 
-            return rv;
+            return str;
         }
 
         private void popNext() throws MALException {

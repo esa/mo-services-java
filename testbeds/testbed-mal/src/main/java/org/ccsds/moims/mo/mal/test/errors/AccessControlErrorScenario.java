@@ -64,7 +64,7 @@ public class AccessControlErrorScenario extends LoggingBase {
         } catch (MALInteractionException ex) {
             lastError = ex;
 
-            if (ex.getStandardError().getErrorNumber().getValue() == MALHelper._AUTHENTICATION_FAIL_ERROR_NUMBER) {
+            if (ex.getStandardError().getErrorNumber().getValue() == MALHelper._AUTHENTICATION_FAILED_ERROR_NUMBER) {
                 return true;
             }
 

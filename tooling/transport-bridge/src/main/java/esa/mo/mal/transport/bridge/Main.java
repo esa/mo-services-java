@@ -26,7 +26,9 @@ import java.net.MalformedURLException;
 import java.util.Map;
 import java.util.Properties;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -76,7 +78,7 @@ public class Main {
 
     protected static MALEndpoint createEndpoint(String protocol, MALTransport trans) throws Exception {
         System.out.println("Creating end point for transport " + protocol);
-        MALEndpoint ep = trans.createEndpoint("BRIDGE", null);
+        MALEndpoint ep = trans.createEndpoint("BRIDGE", null, new NamedValueList());
 
         System.out.println("Transport " + protocol + " URI is " + ep.getURI().getValue());
 
@@ -129,19 +131,22 @@ public class Main {
             this.destination = destination;
         }
 
+        @Override
         public void onInternalError(MALEndpoint callingEndpoint, Throwable err) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void onTransmitError(MALEndpoint callingEndpoint,
-                MALMessageHeader srcMessageHeader, MALStandardError err, Map qosMap) {
+                MALMessageHeader srcMessageHeader, MOErrorException err, Map qosMap) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void onMessage(MALEndpoint callingEndpoint, MALMessage srcMessage) {
             try {
                 System.out.println("Received message from: "
-                        + srcMessage.getHeader().getURIFrom().getValue());
+                        + srcMessage.getHeader().getFrom().getValue());
 
                 // copy source message into destination message format
                 MALMessage dMsg = cloneForwardMessage(destination, srcMessage);
@@ -153,6 +158,7 @@ public class Main {
             }
         }
 
+        @Override
         public void onMessages(MALEndpoint callingEndpoint, MALMessage[] srcMessageList) {
             try {
                 MALMessage[] dMsgList = new MALMessage[srcMessageList.length];
@@ -172,37 +178,33 @@ public class Main {
         MALMessageHeader sourceHdr = srcMessage.getHeader();
         MALMessageBody body = srcMessage.getBody();
 
-        System.out.println("cloneForwardMessage from : " + sourceHdr.getURIFrom()
-                + "    :    " + sourceHdr.getURITo());
-        String endpointUriPart = sourceHdr.getURITo().getValue();
+        System.out.println("cloneForwardMessage from : " + sourceHdr.getFrom()
+                + "    :    " + sourceHdr.getTo());
+        String endpointUriPart = sourceHdr.getTo().getValue();
         final int iSecond = endpointUriPart.indexOf("@");
         endpointUriPart = endpointUriPart.substring(iSecond + 1, endpointUriPart.length());
         URI to = new URI(endpointUriPart);
-        URI from = new URI(destination.getURI().getValue() + "@" + sourceHdr.getURIFrom().getValue());
+        Identifier from = new Identifier(destination.getURI().getValue() + "@" + sourceHdr.getFrom().getValue());
         System.out.println("cloneForwardMessage      : " + from + "    :    " + to);
 
         MALMessage destMessage = destination.createMessage(
                 sourceHdr.getAuthenticationId(),
                 to,
                 sourceHdr.getTimestamp(),
-                sourceHdr.getQoSlevel(),
-                sourceHdr.getPriority(),
-                sourceHdr.getDomain(),
-                sourceHdr.getNetworkZone(),
-                sourceHdr.getSession(),
-                sourceHdr.getSessionName(),
                 sourceHdr.getInteractionType(),
                 sourceHdr.getInteractionStage(),
                 sourceHdr.getTransactionId(),
                 sourceHdr.getServiceArea(),
                 sourceHdr.getService(),
                 sourceHdr.getOperation(),
-                sourceHdr.getAreaVersion(),
+                sourceHdr.getServiceVersion(),
                 sourceHdr.getIsErrorMessage(),
+                sourceHdr.getSupplements(),
                 srcMessage.getQoSProperties(),
-                body.getEncodedBody());
+                body.getEncodedBody()
+        );
 
-        destMessage.getHeader().setURIFrom(from);
+        destMessage.getHeader().setFrom(from);
 
         return destMessage;
     }

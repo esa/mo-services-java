@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.malspp.test.suite;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
@@ -36,11 +36,11 @@ import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressMultiInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.TestInvokeEmptyBodyInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.TestProgressEmptyBodyInteraction;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malspp.test.segmentation.MalSppSegmentationTest;
 import org.ccsds.moims.mo.malspp.test.sppinterceptor.SPPInterceptorSocket;
 
@@ -135,7 +135,7 @@ public class IPSegmentationTestHandlerImpl extends IPTestInheritanceSkeleton {
                 throw new Exception("Not a valid procedure name.");
             }
         } catch (Exception ex) {
-            throw new MALInteractionException(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, ex.toString()));
+            throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, ex.toString()));
         }
     }
 
@@ -154,7 +154,7 @@ public class IPSegmentationTestHandlerImpl extends IPTestInheritanceSkeleton {
         } else if (identifier.equals("B")) {
             progressB = interaction;
         } else {
-            interaction.sendError(new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, "Invalid identifier " + identifier));
+            interaction.sendError(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, "Invalid identifier " + identifier));
         }
         interaction.sendAcknowledgement(null, null);
     }

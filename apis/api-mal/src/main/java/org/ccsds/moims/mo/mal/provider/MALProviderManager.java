@@ -23,10 +23,7 @@ package org.ccsds.moims.mo.mal.provider;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
@@ -53,6 +50,7 @@ public interface MALProviderManager {
      * @param isPublisher Specifies whether the provider is a PUBLISH-SUBSCRIBE
      * publisher or not
      * @param sharedBrokerUri URI of the shared broker to be used
+     * @param supplements Set of optional named values
      * @return The new provider.
      * @throws java.lang.IllegalArgumentException If the parameters ‘protocol’
      * or or ‘service’ or ‘authenticationId’ or ‘handler’ or ‘expectedQoS’ or
@@ -70,7 +68,8 @@ public interface MALProviderManager {
             UInteger priorityLevelNumber,
             Map defaultQoSProperties,
             Boolean isPublisher,
-            URI sharedBrokerUri)
+            URI sharedBrokerUri,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**
@@ -89,6 +88,7 @@ public interface MALProviderManager {
      * @param isPublisher Specifies whether the provider is a PUBLISH-SUBSCRIBE
      * publisher or not
      * @param sharedBrokerUri URI of the shared broker to be used
+     * @param supplements Set of optional named values
      * @return The new provider.
      * @throws java.lang.IllegalArgumentException If the parameters ‘endpoint’
      * or or ‘service’ or ‘authenticationId’ or ‘handler’ or ‘expectedQoS’ or
@@ -105,7 +105,8 @@ public interface MALProviderManager {
             UInteger priorityLevelNumber,
             Map defaultQoSProperties,
             Boolean isPublisher,
-            URI sharedBrokerUri)
+            URI sharedBrokerUri,
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**

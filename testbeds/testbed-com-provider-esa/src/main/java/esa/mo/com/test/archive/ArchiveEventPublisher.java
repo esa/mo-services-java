@@ -20,20 +20,16 @@
  */
 package esa.mo.com.test.archive;
 
-import esa.mo.com.support.ComStructureHelper;
+import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.Iterator;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
-import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
@@ -44,6 +40,8 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -57,7 +55,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
@@ -107,6 +104,7 @@ public class ArchiveEventPublisher {
                 new UInteger(1),
                 null,
                 true,
+                null,
                 null);
         LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store URI");
         FileBasedDirectory.storeURI(ARCHIVE_EVENT_NAME,
@@ -131,8 +129,14 @@ public class ArchiveEventPublisher {
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
 
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+
         PublisherListener publisherListener = new PublisherListener();
-        monitorEventPublisher.register(keys, publisherListener);
+        monitorEventPublisher.register(keys, keyTypes, publisherListener);
 
     }
 
@@ -177,7 +181,6 @@ public class ArchiveEventPublisher {
     updateHeader.setTimestamp(timestamp);
          */
 
-        UpdateHeader updateHeader = new UpdateHeader();
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(eventObjectNumber.toString()));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
@@ -196,10 +199,8 @@ public class ArchiveEventPublisher {
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
-        updateHeader.setKeyValues(keyValues);
-        updateHeader.setDomain(domain);
-        updateHeader.setSource(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()));
-        return updateHeader;
+        return new UpdateHeader(new Identifier(EventServiceInfo.EVENT_SERVICE_NAME.getValue()),
+                domain, keyValues.getAsNullableAttributeList());
     }
 
     /**
@@ -210,13 +211,9 @@ public class ArchiveEventPublisher {
      * @param objectType
      * @param instanceId
      */
-    private void setObjectId(ObjectId objectId, IdentifierList domain, ObjectType objectType, Long instanceId) {
-        objectId.setType(objectType);
-
-        ObjectKey key = new ObjectKey();
-        key.setDomain(domain);
-        key.setInstId(instanceId);
-        objectId.setKey(key);
+    private ObjectId setObjectId(IdentifierList domain, ObjectType objectType, Long instanceId) {
+        ObjectKey key = new ObjectKey(domain, instanceId);
+        return new ObjectId(objectType, key);
     }
 
     /**
@@ -237,7 +234,8 @@ public class ArchiveEventPublisher {
         Archive.inst().add(
                 new ObjectType(COMHelper.COM_AREA_NUMBER, ArchiveServiceInfo.ARCHIVE_SERVICE_NUMBER, COMHelper.COM_AREA_VERSION, objectNumber),
                 eventDomainId,
-                new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())), null);
+                new ArchiveDetails(instId, objDetails, NETWORK, new FineTime(timestamp.getValue()), new URI(source.getValue())),
+                null);
     }
 
     /**
@@ -257,28 +255,19 @@ public class ArchiveEventPublisher {
             LongList instIds) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":publishStoreEvents:" + objectType
                 + ":" + domain + ":" + instIds);
-        ObjectDetailsList objDetailsList = new ObjectDetailsList();
-        UpdateHeaderList updateHeaderList = new UpdateHeaderList();
+
         Iterator<Long> instIt = instIds.iterator();
         while (instIt.hasNext()) {
-            ObjectDetails objDetails = new ObjectDetails();
-            // Set source 
-            ObjectId source = new ObjectId();
-            setObjectId(source, eventDomainId,
-                    objectType, instIt.next());
-            objDetails.setSource(source);
-            objDetailsList.add(objDetails);
+            ObjectId source = setObjectId(eventDomainId, objectType, instIt.next());
+            ObjectDetails objDetails = new ObjectDetails(null, source);
 
             UpdateHeader uh = setUpdateHeader(objectNumber, objectType);
-            updateHeaderList.add(uh);
-            // elementList.add(null);
             storeEvent(objectType, eventDomainId, eventInstCount, Time.now(), uh.getSource(), objDetails, objectNumber);
+
+            monitorEventPublisher.publish(uh, objDetails, null);
+
+            LoggingBase.logMessage(CLS + ":publishEvents:RET:" + uh + ":" + objDetails + ":");
         }
-
-        monitorEventPublisher.publish(updateHeaderList, objDetailsList, null);
-
-        LoggingBase.logMessage(CLS + ":publishEvents:RET:" + updateHeaderList
-                + ":" + objDetailsList + ":");
     }
 
     /**
@@ -286,18 +275,22 @@ public class ArchiveEventPublisher {
      */
     public class PublisherListener implements MALPublishInteractionListener {
 
+        @Override
         public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
             LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
         }
 
+        @Override
         public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
             LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
         }
 
+        @Override
         public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
             LoggingBase.logMessage(CLS + ":publishRegisterAckReceived");
         }

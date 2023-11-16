@@ -78,7 +78,7 @@ public class AppGUI extends javax.swing.JFrame {
         this.setTitle(AppGUI.FRAME_NAME);
 
         this.prepareTopBar();
-        this.bottomPanel.setVisible(false);
+        this.bottomPanel.setVisible(true);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -89,7 +89,8 @@ public class AppGUI extends javax.swing.JFrame {
             }
         });
 
-        middlePanel.add(new MiddlePanel());
+        middlePanel.add(new MiddlePanel(statusLabel));
+        statusLabel.setText("Ready!");
     }
 
     private void closeApplication() {
@@ -119,17 +120,13 @@ public class AppGUI extends javax.swing.JFrame {
         topLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // aboutFrame.displayWindow();
             }
         });
-
-        topRightCornerLabel.setText("César Coelho");
 
         cornerPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         cornerPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //aboutFrame.displayWindow();
             }
         });
         
@@ -195,8 +192,9 @@ public class AppGUI extends javax.swing.JFrame {
         bottomPanel.setName("bottomPanel"); // NOI18N
         bottomPanel.setLayout(new java.awt.BorderLayout());
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         statusLabel.setText("A status bar");
+        statusLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
         statusLabel.setName("statusLabel"); // NOI18N
         statusLabel.setPreferredSize(new java.awt.Dimension(298, 40));
         bottomPanel.add(statusLabel, java.awt.BorderLayout.CENTER);

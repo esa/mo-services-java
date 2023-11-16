@@ -37,10 +37,11 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -57,8 +58,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.malspp.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
@@ -194,7 +195,9 @@ public class MalSppPatternTest extends PatternTest {
                 HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                session, sessionName,
+                session,
+                sessionName,
+                null,
                 new IPTestTransitionList(),
                 new Time(System.currentTimeMillis()));
 
@@ -330,7 +333,8 @@ public class MalSppPatternTest extends PatternTest {
         return spacePacketCheck.packetDataLengthIsLengthOfPacketDataFieldMinusOne();
     }
 
-    private MALMessage createMessage(URI uriTo, MALEndpoint ep, InteractionType type, UOctet stage, UShort operation, QoSLevel qos, SessionType session) throws Exception {
+    private MALMessage createMessage(URI uriTo, MALEndpoint ep, InteractionType type,
+            UOctet stage, UShort operation, QoSLevel qos, SessionType session) throws Exception {
         Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
         Long transId = 0L;
         try {
@@ -342,20 +346,15 @@ public class MalSppPatternTest extends PatternTest {
                 TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
                 uriTo,
                 new Time(System.currentTimeMillis()),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
                 type,
                 stage,
                 transId,
                 MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestHelper.IPTEST_SERVICE_NUMBER,
+                IPTestHelper.IPTEST_SERVICE.IPTEST_SERVICE_NUMBER,
                 operation,
                 MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
                 Boolean.FALSE,
+                new NamedValueList(),
                 null, // qos proerties
                 new Object[]{null} // body
         );
@@ -377,28 +376,28 @@ public class MalSppPatternTest extends PatternTest {
             msg = createMessage(uriTo, ep,
                     InteractionType.SUBMIT,
                     MALSubmitOperation.SUBMIT_STAGE,
-                    IPTestHelper.TESTSUBMIT_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.TESTSUBMIT_OP_NUMBER,
                     qos, session
             );
         } else if ("REQUEST".equalsIgnoreCase(pattern)) {
             msg = createMessage(uriTo, ep,
                     InteractionType.REQUEST,
                     MALRequestOperation.REQUEST_STAGE,
-                    IPTestHelper.REQUEST_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.REQUEST_OP_NUMBER,
                     qos, session
             );
         } else if ("INVOKE".equalsIgnoreCase(pattern)) {
             msg = createMessage(uriTo, ep,
                     InteractionType.INVOKE,
                     MALInvokeOperation.INVOKE_STAGE,
-                    IPTestHelper.INVOKE_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.INVOKE_OP_NUMBER,
                     qos, session
             );
         } else if ("PROGRESS".equalsIgnoreCase(pattern)) {
             msg = createMessage(uriTo, ep,
                     InteractionType.PROGRESS,
                     MALProgressOperation.PROGRESS_STAGE,
-                    IPTestHelper.PROGRESS_OP_NUMBER,
+                    IPTestHelper.IPTEST_SERVICE.PROGRESS_OP_NUMBER,
                     qos, session
             );
         }
@@ -418,7 +417,7 @@ public class MalSppPatternTest extends PatternTest {
 
     public String receivedMessageBodyContainsError() throws Exception {
         if (rcvdMsg.getBody() instanceof MALErrorBody) {
-            MALStandardError error = ((MALErrorBody) rcvdMsg.getBody()).getError();
+            MOErrorException error = ((MALErrorBody) rcvdMsg.getBody()).getError();
             if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
                 return "destination unknown";
             } else {
@@ -429,7 +428,7 @@ public class MalSppPatternTest extends PatternTest {
     }
 
     public String receivedMessageMalHeaderFieldUriFromIs() {
-        return rcvdMsg.getHeader().getURIFrom().toString();
+        return rcvdMsg.getHeader().getFrom().getValue();
     }
 
     public int bufferRemainingSizeIs() {

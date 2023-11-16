@@ -82,6 +82,8 @@ public class LineEncoder {
      * @param name Field name
      * @param declaredType Declare field type
      * @param value field value s * @throws MALException on error.
+     * @throws org.ccsds.moims.mo.mal.MALException if the field could not be
+     * encoded.
      */
     public void internalEncodeField(final boolean isAbstract, final String name,
             final Class declaredType, final Object value) throws MALException {
@@ -342,7 +344,7 @@ public class LineEncoder {
         }
     }
 
-    private void encodeList(final boolean isAbstract, final String name, 
+    private void encodeList(final boolean isAbstract, final String name,
             final List value) throws MALException {
         boolean namePushed = pushName(name);
 
@@ -368,7 +370,7 @@ public class LineEncoder {
         encodeInteger(name, value.getOrdinal());
     }
 
-    private void encodeComposite(final boolean isAbstract, final String name, 
+    private void encodeComposite(final boolean isAbstract, final String name,
             final Class cls, final Composite value) throws MALException {
         boolean namePushed = pushName(name);
 
@@ -390,7 +392,7 @@ public class LineEncoder {
                 try {
                     Method method = cls.getDeclaredMethod("get" + preCap(field.getName()));
 
-                    encodeField(field.getName(), field.getType(), 
+                    encodeField(field.getName(), field.getType(),
                             method.invoke(value, (Object[]) null));
                 } catch (Exception ex) {
                     // nothing

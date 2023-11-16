@@ -34,6 +34,7 @@ package org.ccsds.moims.mo.mal.test.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -79,7 +80,7 @@ public class SupportedQosTestProcedure extends LoggingBase {
                     HeaderTestProcedure.AUTHENTICATION_ID,
                     HeaderTestProcedure.DOMAIN,
                     HeaderTestProcedure.NETWORK_ZONE,
-                    SESSION, SESSION_NAME, qos, PRIORITY, false);
+                    SESSION, SESSION_NAME, qos, PRIORITY, new NamedValueList(), false);
         } catch (MALException ex) {
             // it may throw an exception
         }

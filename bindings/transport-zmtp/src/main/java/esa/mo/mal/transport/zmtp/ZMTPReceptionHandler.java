@@ -20,16 +20,16 @@
  */
 package esa.mo.mal.transport.zmtp;
 
-import esa.mo.mal.transport.gen.GENReceptionHandler;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
+import esa.mo.mal.transport.gen.sending.MessageSender;
+import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  *
  * @author Dominik Marszk
  */
-public class ZMTPReceptionHandler implements GENReceptionHandler {
+public class ZMTPReceptionHandler implements ReceptionHandler {
 
     /**
      * Reference to the parent transport.
@@ -50,15 +50,18 @@ public class ZMTPReceptionHandler implements GENReceptionHandler {
         this.transport = transport;
     }
 
+    @Override
     public String getRemoteURI() {
         return remoteURI;
     }
 
+    @Override
     public void setRemoteURI(String newURI) {
         remoteURI = newURI;
     }
 
-    public GENMessageSender getMessageSender() {
+    @Override
+    public MessageSender getMessageSender() {
         // Message Sender is instantiated by transport for each URL when it is needed
         if (sender == null) {
             try {
@@ -70,6 +73,7 @@ public class ZMTPReceptionHandler implements GENReceptionHandler {
         return sender;
     }
 
+    @Override
     public void close() {
         // If there's associated sender, close it
         if (sender != null) {

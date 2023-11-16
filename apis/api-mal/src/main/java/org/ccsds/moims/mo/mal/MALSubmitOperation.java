@@ -47,29 +47,28 @@ public class MALSubmitOperation extends MALOperation {
      */
     public static final UOctet SUBMIT_ACK_STAGE = new UOctet(_SUBMIT_ACK_STAGE);
 
-    private final MALOperationStage submitStage;
-    private static final MALOperationStage SUBMIT_ACK_OPERATION_STAGE
-            = new MALOperationStage(SUBMIT_ACK_STAGE, new Object[0], new Object[0]);
+    private static final OperationField[] SUBMIT_ACK_OPERATION_STAGE = new OperationField[0];
+
+    private final OperationField[] submitStage;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param submitStage The stage information for the SUBMIT stage.
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALSubmitOperation(final UShort number,
+    public MALSubmitOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage submitStage)
+            final OperationField[] submitStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.SUBMIT, capabilitySet);
+        super(serviceKey, number, name, InteractionType.SUBMIT, capabilitySet);
 
         this.submitStage = submitStage;
     }
@@ -83,8 +82,7 @@ public class MALSubmitOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

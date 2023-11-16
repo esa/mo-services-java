@@ -20,38 +20,37 @@
  */
 package esa.mo.mal.impl;
 
+import esa.mo.mal.impl.accesscontrol.EchoSecurityManager;
 import esa.mo.mal.impl.broker.MALBrokerBindingImpl;
 import esa.mo.mal.impl.broker.MALBrokerManagerImpl;
 import esa.mo.mal.impl.consumer.MALConsumerManagerImpl;
 import esa.mo.mal.impl.provider.MALProviderManagerImpl;
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControlFactory;
-import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 
 /**
  * Implementation of the MALContext.
  */
-public class MALContextImpl extends MALClose implements MALContext {
+public class MALContextImpl implements MALContext, MALCloseable {
 
-    private final Map initialProperties;
-    private final MALAccessControl securityManager;
+    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
     private final InteractionConsumerMap icmap = new InteractionConsumerMap();
     private final InteractionPubSubMap ipsmap = new InteractionPubSubMap();
-    private final Map<String, MALBrokerBindingImpl> brokerBindingMap = new HashMap<>();
-    private final MessageReceive receiver;
-    private final MessageSend sender;
+    private final MALAccessControl securityManager;
+    private final MALReceiver receiver;
+    private final Map initialProperties;
+    private final MALSender sender;
 
     /**
      * Constructor.
@@ -62,32 +61,31 @@ public class MALContextImpl extends MALClose implements MALContext {
      */
     public MALContextImpl(final MALAccessControlFactory securityFactory, 
             final Map properties) throws MALException {
-        super(null);
         initialProperties = properties;
 
         if (securityFactory != null) {
             securityManager = securityFactory.createAccessControl(initialProperties);
         } else {
-            securityManager = new NullSecurityManager();
+            securityManager = new EchoSecurityManager();
         }
 
-        sender = new MessageSend(securityManager, icmap, ipsmap);
-        receiver = new MessageReceive(sender, securityManager, icmap, ipsmap, brokerBindingMap);
+        sender = new MALSender(securityManager, icmap, ipsmap);
+        receiver = new MALReceiver(sender, securityManager, icmap, ipsmap, brokerBindingMap);
     }
 
     @Override
     public MALConsumerManager createConsumerManager() throws MALException {
-        return (MALConsumerManager) addChild(new MALConsumerManagerImpl(this));
+        return new MALConsumerManagerImpl(this);
     }
 
     @Override
     public MALProviderManager createProviderManager() throws MALException {
-        return (MALProviderManager) addChild(new MALProviderManagerImpl(this));
+        return new MALProviderManagerImpl(this);
     }
 
     @Override
     public MALBrokerManager createBrokerManager() throws MALException {
-        return (MALBrokerManager) addChild(new MALBrokerManagerImpl(this, brokerBindingMap));
+        return new MALBrokerManagerImpl(this, brokerBindingMap);
     }
 
     @Override
@@ -107,7 +105,6 @@ public class MALContextImpl extends MALClose implements MALContext {
 
     @Override
     public void close() throws MALException {
-        super.close();
         esa.mo.mal.impl.transport.TransportSingleton.close();
     }
 
@@ -125,7 +122,7 @@ public class MALContextImpl extends MALClose implements MALContext {
      *
      * @return The sender.
      */
-    public MessageSend getSendingInterface() {
+    public MALSender getSendingInterface() {
         return sender;
     }
 
@@ -134,7 +131,7 @@ public class MALContextImpl extends MALClose implements MALContext {
      *
      * @return The receiver.
      */
-    public MessageReceive getReceivingInterface() {
+    public MALReceiver getReceivingInterface() {
         return receiver;
     }
 
@@ -145,13 +142,5 @@ public class MALContextImpl extends MALClose implements MALContext {
      */
     public MALAccessControl getSecurityManager() {
         return securityManager;
-    }
-
-    private static final class NullSecurityManager implements MALAccessControl {
-
-        @Override
-        public MALMessage check(final MALMessage msg) throws IllegalArgumentException, MALCheckErrorException {
-            return msg;
-        }
     }
 }

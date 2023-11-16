@@ -48,8 +48,8 @@ import org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList;
 import org.ccsds.moims.mo.com.archive.structures.CompositeFilter;
 import org.ccsds.moims.mo.com.archive.structures.CompositeFilterList;
 import org.ccsds.moims.mo.com.archive.structures.CompositeFilterSet;
-import org.ccsds.moims.mo.com.archive.structures.CompositeFilterSetList;
 import org.ccsds.moims.mo.com.archive.structures.ExpressionOperator;
+import org.ccsds.moims.mo.com.archive.structures.QueryFilterList;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
@@ -68,13 +68,15 @@ import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayloadL
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
@@ -120,7 +122,7 @@ public class ArchiveScenario {
 
     private TestArchiveAdapter archiveAdapter;
 
-    private MALStandardError returnedError;
+    private MOErrorException returnedError;
 
     private UIntegerList invalidQueryIndexes;
 
@@ -134,7 +136,7 @@ public class ArchiveScenario {
 
     private ArchiveQueryList archiveQueryList;
 
-    private CompositeFilterSetList compositeFilterSetList;
+    private QueryFilterList compositeFilterSetList;
 
     private CompositeFilterSet compositeFilterSet;
 
@@ -210,7 +212,7 @@ public class ArchiveScenario {
     }
 
     public boolean resetCompositeFilterSetList() {
-        compositeFilterSetList = new CompositeFilterSetList();
+        compositeFilterSetList = new QueryFilterList();
         return true;
     }
 
@@ -230,7 +232,9 @@ public class ArchiveScenario {
 
     public boolean resetObjectType(int typeNumber) {
         objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER,
-                ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER, COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(typeNumber));
+                ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NUMBER,
+                COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION,
+                new UShort(typeNumber));
         return true;
     }
 
@@ -294,7 +298,8 @@ public class ArchiveScenario {
     }
 
     public boolean addArchiveDetailsWithInstanceIdAndNetworkAndTimestamp(long instanceId, String network, String timestamp) {
-        return addArchiveDetailsWithInstanceIdAndNetworkAndTimestampAndProviderUri(instanceId, network, timestamp, DEFAULT_PROVIDER_URI);
+        return addArchiveDetailsWithInstanceIdAndNetworkAndTimestampAndProviderUri(instanceId,
+                network, timestamp, DEFAULT_PROVIDER_URI);
     }
 
     public boolean addArchiveDetailsWithInstanceIdAndNetworkAndTimestampAndProviderUri(
@@ -325,13 +330,14 @@ public class ArchiveScenario {
         return true;
     }
 
-    public boolean addArchiveQueryWithDomainAndSortingOrderAndField(String filterDomainToParse, String sortingOrderToParse, String fieldNameToParse) {
+    public boolean addArchiveQueryWithDomainAndSortingOrderAndField(String filterDomainToParse,
+            String sortingOrderToParse, String fieldNameToParse) {
         IdentifierList filterDomain = new IdentifierList();
         parseDomain(filterDomainToParse, filterDomain);
         Boolean sortingOrder = COMParseHelper.parseBoolean(sortingOrderToParse);
         String fieldName = COMParseHelper.parseString(fieldNameToParse);
-        ArchiveQuery archiveQuery = new ArchiveQuery(filterDomain,
-                null, null, 0L, null, null, null, sortingOrder, fieldName);
+        ArchiveQuery archiveQuery = new ArchiveQuery(filterDomain, null,
+                null, 0L, null, null, null, sortingOrder, fieldName);
         archiveQueryList.add(archiveQuery);
         return true;
     }
@@ -413,12 +419,13 @@ public class ArchiveScenario {
     }
 
     public boolean addNullQueryFilter() {
-        compositeFilterSetList.add(null);
+        compositeFilterSetList = null;
         return true;
     }
 
     public boolean addNullCompositeFilterSet() {
-        compositeFilterSetList.add(null);
+        //compositeFilterSetList = null;
+        compositeFilterSetList.add(new CompositeFilterSet(new CompositeFilterList()));
         return true;
     }
 
@@ -634,10 +641,16 @@ public class ArchiveScenario {
         duplicateStoreIndexes = null;
 
         ElementList specificList = getObjectList();
+        HeterogeneousList objs = null;
+
+        if (specificList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(specificList);
+        }
 
         try {
             returnedInstanceIds = LocalMALInstance.instance().archiveStub().store(
-                    returnInstanceIds, objectType, domain, archiveDetailsList, specificList);
+                    returnInstanceIds, objectType, domain, archiveDetailsList, objs);
         } catch (MALInteractionException exc) {
             onStoreError(exc.getStandardError());
         }
@@ -647,7 +660,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onStoreError(MALStandardError error) {
+    private void onStoreError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -672,10 +685,16 @@ public class ArchiveScenario {
         unknownUpdateIndexes = null;
 
         ElementList specificList = getObjectList();
+        HeterogeneousList objs = null;
+
+        if (specificList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(specificList);
+        }
 
         try {
             LocalMALInstance.instance().archiveStub().update(
-                    objectType, domain, archiveDetailsList, specificList);
+                    objectType, domain, archiveDetailsList, objs);
         } catch (MALInteractionException exc) {
             onUpdateError(exc.getStandardError());
         }
@@ -684,7 +703,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onUpdateError(MALStandardError error) {
+    private void onUpdateError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -725,7 +744,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onDeleteError(MALStandardError error) {
+    private void onDeleteError(MOErrorException error) {
         returnedError = error;
         if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -806,7 +825,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onRetrieveError(MALStandardError error) {
+    private void onRetrieveError(MOErrorException error) {
         returnedError = error;
         if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -846,7 +865,7 @@ public class ArchiveScenario {
     entityRequestList.add(entityRequest);
          */
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(ARCHIVE_EVENT_SUBSCRIPTION, domain, filters);
+        Subscription subscription = new Subscription(ARCHIVE_EVENT_SUBSCRIPTION, domain, null, filters);
         try {
             LoggingBase.logMessage("subscribeToArchiveEvents:: calling monitorEventRegister");
             LocalMALInstance.instance().archiveEventStub()
@@ -907,7 +926,7 @@ public class ArchiveScenario {
     }
 
     public boolean selectedNotifiedObjectNumberIs(String objectNumber) {
-        return selectedNotifiedUpdateHeader.getKeyValues().get(0).equals(new Identifier(objectNumber));
+        return selectedNotifiedUpdateHeader.getKeyValues().get(0).getValue().equals(new Identifier(objectNumber));
     }
 
     public boolean queriedArchiveDetailsListIsEqualToLocalList() {
@@ -1133,7 +1152,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onQueryError(MALStandardError error) {
+    private void onQueryError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -1170,7 +1189,7 @@ public class ArchiveScenario {
         return true;
     }
 
-    private void onCountError(MALStandardError error) {
+    private void onCountError(MOErrorException error) {
         returnedError = error;
         if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
             Object extraInfo = returnedError.getExtraInformation();
@@ -1203,12 +1222,15 @@ public class ArchiveScenario {
         }
     }
 
-    private void addAllInQueriedObjectList(ElementList objectList) {
+    private void addAllInQueriedObjectList(HeterogeneousList objectList) {
         if (objectList != null) {
             if (queriedObjectList == null) {
                 queriedObjectList = new ArrayList();
             }
-            queriedObjectList.addAll(objectList);
+
+            for (int i = 0; i < objectList.size(); i++) {
+                queriedObjectList.add(Attribute.attribute2JavaType(objectList.get(i)));
+            }
         }
     }
 
@@ -1255,7 +1277,7 @@ public class ArchiveScenario {
 
         @Override
         public void retrieveResponseReceived(MALMessageHeader msgHeader,
-                ArchiveDetailsList archiveDetailsList, ElementList objectList,
+                ArchiveDetailsList archiveDetailsList, HeterogeneousList objectList,
                 Map qosProperties) {
             retrievedArchiveDetailsList = archiveDetailsList;
             retrievedObjectList = objectList;
@@ -1264,7 +1286,7 @@ public class ArchiveScenario {
 
         @Override
         public void retrieveResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onRetrieveError(error);
             countDownLatch.countDown();
         }
@@ -1272,7 +1294,7 @@ public class ArchiveScenario {
         @Override
         public void queryResponseReceived(MALMessageHeader msgHeader,
                 ObjectType objectType, IdentifierList domain, ArchiveDetailsList archiveDetailsList,
-                ElementList objectList, Map qosProperties) {
+                HeterogeneousList objectList, Map qosProperties) {
             LoggingBase.logMessage("queryResponseReceived=" + objectType + ":" + archiveDetailsList + ")");
 
             // TODO: check object type and domain
@@ -1288,7 +1310,7 @@ public class ArchiveScenario {
         @Override
         public void queryUpdateReceived(MALMessageHeader msgHeader,
                 ObjectType objectType, IdentifierList domain, ArchiveDetailsList archiveDetailsList,
-                ElementList objectList, Map qosProperties) {
+                HeterogeneousList objectList, Map qosProperties) {
             LoggingBase.logMessage("queryUpdateReceived=" + objectType + ":" + archiveDetailsList + ")");
 
             // TODO: check object type and domain
@@ -1301,21 +1323,21 @@ public class ArchiveScenario {
 
         @Override
         public void queryResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onQueryError(error);
             countDownLatch.countDown();
         }
 
         @Override
         public void queryUpdateErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onQueryError(error);
             countDownLatch.countDown();
         }
 
         @Override
         public void countResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             onCountError(error);
             countDownLatch.countDown();
         }
@@ -1341,30 +1363,29 @@ public class ArchiveScenario {
 
         @Override
         public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             // TODO Auto-generated method stub
             super.monitorEventNotifyErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                ObjectDetailsList monitorEventUpdateList1,
-                ElementList monitorEventUpdateList2, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                ObjectDetails monitorEventUpdate,
+                Element monitorEventUpdate2, Map qosProperties) {
 
-            LoggingBase.logMessage("monitorEventNotifyReceived::" + updateHeaderList);
-            notifiedUpdateHeaderList.addAll(updateHeaderList);
-            if (monitorEventUpdateList1 != null) {
-                notifiedObjectDetailsList.addAll(monitorEventUpdateList1);
+            LoggingBase.logMessage("monitorEventNotifyReceived::" + updateHeader);
+
+            notifiedUpdateHeaderList.add(updateHeader);
+            if (monitorEventUpdate != null) {
+                notifiedObjectDetailsList.add(monitorEventUpdate);
             }
-            if (monitorEventUpdateList2 != null) {
-                notifiedEventBodyList.addAll(monitorEventUpdateList2);
-                LoggingBase.logMessage("monitorEventNotifyReceived::Body:" + monitorEventUpdateList2);
+            if (monitorEventUpdate2 != null) {
+                notifiedEventBodyList.add(monitorEventUpdate2);
+                LoggingBase.logMessage("monitorEventNotifyReceived::Body:" + monitorEventUpdate2);
             } else {
                 LoggingBase.logMessage("monitorEventNotifyReceived::Body:NULL");
             }
         }
-
     }
-
 }

@@ -47,10 +47,11 @@ public interface MALTransport {
      * @param localName Name of the endpoint
      * @param qosProperties QoS properties to be used when creating the
      * MALEndpoint
+     * @param supplements The supplements of the endpoint
      * @return The new endpoint.
      * @throws MALException If the MALTransport is closed
      */
-    MALEndpoint createEndpoint(String localName, Map qosProperties) throws MALException;
+    MALEndpoint createEndpoint(String localName, Map qosProperties, NamedValueList supplements) throws MALException;
 
     /**
      * Returns the reference of a MALEndpoint from its local name

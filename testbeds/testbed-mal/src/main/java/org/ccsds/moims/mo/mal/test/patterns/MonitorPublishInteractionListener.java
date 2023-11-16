@@ -32,64 +32,64 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
-public class MonitorPublishInteractionListener implements
-        MALPublishInteractionListener {
+public class MonitorPublishInteractionListener implements MALPublishInteractionListener {
 
     public BooleanCondition cond = new BooleanCondition();
 
-    private Long publishRegisterTransactionId;
-    private QoSLevel publishRegisterQoSLevel;
-    private UInteger publishRegisterPriority;
-
+    private final HashMap<String, Long> publishRegisterTransactionIds = new HashMap<>();
+    private String key = "default";
     private MALMessageHeader header;
-    private MALStandardError error;
+    private MOErrorException error;
 
-    public synchronized void publishRegisterAckReceived(MALMessageHeader header, Map props)
-            throws MALException {
-        LoggingBase.logMessage("MonitorPublishInteractionListener.publishRegisterAckReceived("
-                + header + ')');
+    @Override
+    public synchronized void publishRegisterAckReceived(MALMessageHeader header, Map props) throws MALException {
+        LoggingBase.logMessage("MonitorPublishInteractionListener.publishRegisterAckReceived(" + header + ')');
         this.header = header;
-        if (publishRegisterTransactionId == null) {
-            LoggingBase.logMessage("MonitorPublishInteractionListener.acknowledgementReceived, setting transaction id: " + header.getTransactionId() + ')');
-            publishRegisterTransactionId = header.getTransactionId();
-            publishRegisterQoSLevel = header.getQoSlevel();
-            publishRegisterPriority = header.getPriority();
+        Long tranId = publishRegisterTransactionIds.get(key);
+        if (tranId == null) {
+            LoggingBase.logMessage("MonitorPublishInteractionListener.acknowledgementReceived,"
+                    + " setting transaction id: " + header.getTransactionId() + ')');
+            publishRegisterTransactionIds.put(key, header.getTransactionId());
+            //publishRegisterTransactionId = header.getTransactionId();
         }
         cond.set();
     }
 
-    public synchronized void publishDeregisterAckReceived(MALMessageHeader header, Map props)
-            throws MALException {
+    @Override
+    public synchronized void publishDeregisterAckReceived(MALMessageHeader header, Map props) throws MALException {
         this.header = header;
         cond.set();
     }
 
-    public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body,
-            Map props) throws MALException {
+    public void setKey(String value) {
+        this.key = value;
+    }
+
+    @Override
+    public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map props) throws MALException {
         errorReceived(header, body.getError());
     }
 
-    public void publishErrorReceived(MALMessageHeader header, MALErrorBody body,
-            Map props) throws MALException {
+    @Override
+    public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map props) throws MALException {
         errorReceived(header, body.getError());
     }
 
     private synchronized void errorReceived(MALMessageHeader header,
-            MALStandardError error) throws MALException {
-        LoggingBase.logMessage("MonitorPublishInteractionListener.errorReceived("
-                + header + ',' + error + ')');
+            MOErrorException error) throws MALException {
+        LoggingBase.logMessage("MonitorPublishInteractionListener.errorReceived:"
+                + "\nHeader: " + header + "\nError: " + error + ')');
         this.header = header;
         this.error = error;
         cond.set();
@@ -99,7 +99,7 @@ public class MonitorPublishInteractionListener implements
         return header;
     }
 
-    public MALStandardError getError() {
+    public MOErrorException getError() {
         return error;
     }
 
@@ -107,26 +107,16 @@ public class MonitorPublishInteractionListener implements
         this.header = header;
     }
 
-    public void setError(MALStandardError error) {
+    public void setError(MOErrorException error) {
         this.error = error;
     }
 
-    public Long getPublishRegisterTransactionId() {
-        return publishRegisterTransactionId;
+    public Long getPublishRegisterTransactionId(String key) {
+        return publishRegisterTransactionIds.get(key);
     }
 
-    public QoSLevel getPublishRegisterQoSLevel() {
-        return publishRegisterQoSLevel;
-    }
-
-    public UInteger getPublishRegisterPriority() {
-        return publishRegisterPriority;
-    }
-
+    @Override
     public String toString() {
-        return '(' + super.toString()
-                + ",publishRegisterTransactionId=" + publishRegisterTransactionId
-                + ",publishRegisterQoSLevel=" + publishRegisterQoSLevel
-                + ",publishRegisterPriority=" + publishRegisterPriority + ')';
+        return '(' + super.toString() + ')';
     }
 }

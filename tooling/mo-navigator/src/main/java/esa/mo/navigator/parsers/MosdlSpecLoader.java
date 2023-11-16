@@ -195,7 +195,7 @@ public class MosdlSpecLoader implements SpecLoader {
             "Blob", "Boolean", "Double", "Duration", "FineTime", "Float",
             "Identifier", "Integer", "Long", "Octet", "Short", "String",
             "Time", "UInteger", "ULong", "UOctet", "URI", "UShort",
-            "Attribute", "Composite", "Element"
+            "Attribute", "Composite", "Element", "Object"
         };
         private static final String DOC_TOKEN = "\"\"\"";
         private static final String LINE_DOC_TOKEN = "///";
@@ -754,7 +754,12 @@ public class MosdlSpecLoader implements SpecLoader {
 
         @Override
         public void exitOperation(MOSDLParser.OperationContext ctx) {
-            currentOperation.setComment(currentOpDoc.getOperationDoc());
+            if (currentOperation == null) {
+                int lineNumber = ctx.getStart().getLine();
+                throw new NullPointerException(String.valueOf(lineNumber));
+            }
+            String comment = currentOpDoc.getOperationDoc();
+            currentOperation.setComment(comment);
             CapabilitySetType cs = currentCapabilitySet;
             if (null == cs) {
                 // if operation defined outside of capability set, put it in its own cap set

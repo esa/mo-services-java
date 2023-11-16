@@ -59,11 +59,12 @@ import org.ccsds.moims.mo.comprototype1.COMPrototype1Helper;
 import org.ccsds.moims.mo.comprototype1.test1.Test1ServiceInfo;
 import org.ccsds.moims.mo.comprototype1.test2.Test2ServiceInfo;
 import org.ccsds.moims.mo.comprototype2.COMPrototype2Helper;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
@@ -72,6 +73,7 @@ import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
@@ -95,7 +97,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
     private final TestServiceProvider testService;
     private Archive archive;
-    long lastInstanceId;
+    private long lastInstanceId;
     private final String CLS = "ArchiveHandlerImpl:";
     ArchiveEventPublisher archiveEventPublisher;
     // Event object numbers
@@ -127,8 +129,6 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
     // identifier wildcard used in vaious checks
     private final static Identifier IDENTIFIER_WILDCARD = new Identifier("*");
 
-    private final MALElementsRegistry registry = new MALElementsRegistry();
-
     // Enum used to classify filter
     private enum FilterType {
         NUMERIC, DOUBLE, STRING, BLOB, INVALID
@@ -143,7 +143,6 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         this.testService = testService;
         init();
         archive = Archive.inst();
-
     }
 
     /**
@@ -153,14 +152,11 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         final UOctet VERSION1 = new UOctet((short) 1);
         final UOctet VERSION2 = new UOctet((short) 2);
         // initialise element factory
-        try {
-            MALHelper.deepInit(registry);
-            COMPrototypeHelper.deepInit(registry);
-            COMPrototype1Helper.deepInit(registry);
-            COMPrototype2Helper.deepInit(registry);
-        } catch (Exception ex) {
-            Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.loadFullArea(COMPrototypeHelper.COMPROTOTYPE_AREA);
+        registry.loadFullArea(COMPrototype1Helper.COMPROTOTYPE1_AREA);
+        registry.loadFullArea(COMPrototype2Helper.COMPROTOTYPE2_AREA);
 
         MALObjectTypeRegistry factory = MALObjectTypeRegistry.inst();
 
@@ -246,7 +242,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         }
         if (!errorList.isEmpty()) {
             LoggingBase.logMessage(CLS + "checkAllInstancesExist:throw Ex " + errorList);
-            throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, errorList));
+            throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, errorList));
         }
         LoggingBase.logMessage(CLS + " checkAllInstancesExist RET:" + instIds);
     }
@@ -378,7 +374,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             }
         } else {
             // NULL value not supported for numeric
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
 
@@ -428,7 +424,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             }
         } else {
             // NULL value not supported for numeric
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
 
@@ -472,7 +468,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                 if (!(stringVal == null || stringFilterVal == null)) {
                     bMatch = stringVal.contains(stringFilterVal);
                 } else if (stringFilterVal == null) {
-                    throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+                    throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                             null));
                 } else {
                     bMatch = false;
@@ -482,7 +478,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                 if (!(stringVal == null || stringFilterVal == null)) {
                     bMatch = stringVal.toUpperCase().contains(stringFilterVal.toUpperCase());
                 } else if (stringFilterVal == null) {
-                    throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+                    throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                             null));
                 } else {
                     bMatch = false;
@@ -493,7 +489,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             case ExpressionOperator._LESS_INDEX:
             case ExpressionOperator._LESS_OR_EQUAL_INDEX:
                 if (stringFilterVal == null) {
-                    throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+                    throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                             null));
                 } else {
                     bMatch = false;
@@ -532,7 +528,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             default:
                 LoggingBase.logMessage(CLS + ":matchesFilter:Operator not suppported for blob:"
                         + operator);
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                         null));
 
         }
@@ -552,7 +548,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                 || compositeFilter.getType() == ExpressionOperator.ICONTAINS)
                 && (!(compositeFilter.getFieldValue() instanceof Union)
                 || ((Union) compositeFilter.getFieldValue()).getStringValue() == null)) {
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
     }
@@ -674,10 +670,10 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             LoggingBase.logMessage(CLS + ":matchesFilter:class cast exception - filter not expected type:"
                     + compositeFilter);
             if (obj.getElement() != null) {
-                LoggingBase.logMessage(CLS + ":matchesFilter:object ele class" + obj.getElement().getClass());
+                LoggingBase.logMessage(CLS + ":matchesFilter:object ele class " + obj.getElement().getClass());
             }
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
-                    null));
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
+                    ex.toString()));
         }
         if (bMatch) {
             if (filterType == FilterType.NUMERIC) {
@@ -857,7 +853,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             Collections.sort(nonNullObjs, sorter);
             if (sorter.sortFailed()) {
                 LoggingBase.logMessage(CLS + ":sortObjects:Sort failed");
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                         null));
             } else {
                 // Combine sorted & non-sorted objects
@@ -958,6 +954,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         LoggingBase.logMessage(CLS + ":returnQueryResults:" + objLists.size());
         ArchiveDetailsList archiveDetailsList;
         ElementList elementList = null;
+        HeterogeneousList objs = null;
 
         if (objLists.isEmpty()) {
             // No Matches
@@ -979,29 +976,44 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
                 // Loop through each object and populate archive details & element
                 Iterator<Archive.ArchiveObject> objsIt = nextList.iterator();
+
                 while (objsIt.hasNext()) {
                     Archive.ArchiveObject nextObj = objsIt.next();
-
                     archiveDetailsList.add(nextObj.getArchiveDetails());
+
                     if (elementList != null) {
                         elementList.add(nextObj.getElement());
                     }
                 }
+
                 if (!returnObjectType) {
                     objectType = null;
                 }
+
                 if (listsIt.hasNext()) {
                     LoggingBase.logMessage(CLS + ":returnQueryResults:send update: " + archiveDetailsList.size() + ":" + archiveDetailsList);
                     if (elementList != null) {
                         LoggingBase.logMessage(CLS + ":returnQueryResults:send update elementList" + elementList.size() + ":" + elementList);
                     }
-                    interaction.sendUpdate(objectType, domain, archiveDetailsList, elementList);
+
+                    if (elementList != null) {
+                        objs = new HeterogeneousList();
+                        objs.addAll(elementList);
+                    }
+
+                    interaction.sendUpdate(objectType, domain, archiveDetailsList, objs);
                 } else {
                     LoggingBase.logMessage(CLS + ":returnQueryResults:send response: " + archiveDetailsList.size() + ":" + archiveDetailsList);
                     if (elementList != null) {
                         LoggingBase.logMessage(CLS + ":returnQueryResults:send update elementList" + elementList.size() + ":" + elementList);
                     }
-                    interaction.sendResponse(objectType, domain, archiveDetailsList, elementList);
+
+                    if (elementList != null) {
+                        objs = new HeterogeneousList();
+                        objs.addAll(elementList);
+                    }
+
+                    interaction.sendResponse(objectType, domain, archiveDetailsList, objs);
                 }
                 waitForShortTime();
             }
@@ -1021,6 +1033,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
         try {
             Long spf = element.getShortForm();
+            MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
             return (ElementList) registry.createElement(spf);
         } catch (Exception ex1) {
             Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE,
@@ -1054,13 +1067,13 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      of '0' then an INVALID error shall be returned. */
         if (containsWildcard(objectType)) {
             LoggingBase.logMessage(CLS + ":retrieve:Raise ERR - objectType");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         // Check clause If the domain contains the wildcard value of '*' then an INVALID error shall be returned..
         if (containsWildcard(domain)) {
             LoggingBase.logMessage(CLS + ":retrieve:Raise ERR - domain");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         if (instIds.contains(new Long(0))) {
@@ -1087,7 +1100,14 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             elementList = null;
         }
 
-        interaction.sendResponse(archiveDetailsList, elementList);
+        HeterogeneousList objs = null;
+
+        if (elementList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(elementList);
+        }
+
+        interaction.sendResponse(archiveDetailsList, objs);
         LoggingBase.logMessage(CLS + ":retrieve RET");
     }
 
@@ -1124,7 +1144,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         if ((queryFilterList != null && archiveQueryList != null)
                 && (queryFilterList.size() != archiveQueryList.size())) {
             LoggingBase.logMessage(CLS + ":query:Filter List error throw exception");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         // Apply each archive query & filter
@@ -1150,7 +1170,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         }
         // If any failures occured generate exception with failure list
         if (!failedQueries.isEmpty()) {
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     failedQueries));
         }
         // In the returned values, objectType is not required if the query objectType contains no Wildcards
@@ -1194,7 +1214,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         if ((queryFilterList != null && archiveQueryList != null)
                 && (queryFilterList.size() != archiveQueryList.size())) {
             LoggingBase.logMessage(CLS + ":query:Filter List error throw exception");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         // Retieve objects on which we will perform a query
@@ -1223,7 +1243,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         }
         // If any failures occured generate exception with failure list
         if (!failedQueries.isEmpty()) {
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     failedQueries));
         }
 
@@ -1288,7 +1308,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     if (archiveDetailsList.get(j).getInstId() == instId) {
                         LoggingBase.logMessage(CLS + ":checkInstIdDuplicates:Raise ERR - ");
                         errorList.add(new UInteger(i));
-                        throw new MALInteractionException(new MALStandardError(DUPLICATE_ERROR_NUMBER, errorList));
+                        throw new MALInteractionException(new MOErrorException(DUPLICATE_ERROR_NUMBER, errorList));
                     }
 
                 }
@@ -1324,20 +1344,20 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         UIntegerList errorList = new UIntegerList();
         // Check clause (h) - The fourth and fifth list must be the same size 
         if (archiveDetailsList == null || (elementList != null && archiveDetailsList.size() != elementList.size())) {
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     new UInteger(archiveDetailsList.size())));
         }
         // Check clause (i) An INVALID error shall be returned if a wildcard value of '0' is detected in the object type.
         if (objectType.getArea().getValue() == 0 || objectType.getService().getValue() == 0
                 || objectType.getVersion().getValue() == 0 || objectType.getNumber().getValue() == 0) {
             if (containsWildcard(objectType)) {
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+                throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                         null));
             }
         }
         // Check clause (j) An INVALID error shall be returned if a wildcard value of '*' is detcted in the domain identifier list.
         if (containsWildcard(domain)) {
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
 
@@ -1354,19 +1374,19 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             if (archiveDetails.getNetwork() == null || archiveDetails.getNetwork().equals(IDENTIFIER_WILDCARD)) {
                 errorList.add(new UInteger(i));
                 LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - Network");
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, errorList));
+                throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER, errorList));
             }
 
             if (archiveDetails.getTimestamp() == null || archiveDetails.getTimestamp().getValue() == 0) {
                 errorList.add(new UInteger(i));
                 LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - Timestamp");
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, errorList));
+                throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER, errorList));
             }
 
             if (archiveDetails.getProvider() == null) {
                 LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - Provider");
                 errorList.add(new UInteger(i));
-                throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER, errorList));
+                throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER, errorList));
             }
 
             // Check clause (f) instId aready used
@@ -1374,7 +1394,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             if (!setInstId && archive.contains(objectType, domain, instId)) {
                 LoggingBase.logMessage(CLS + ":checkStoreValidity:Raise ERR - InstId");
                 errorList.add(new UInteger(i));
-                throw new MALInteractionException(new MALStandardError(DUPLICATE_ERROR_NUMBER, errorList));
+                throw new MALInteractionException(new MOErrorException(DUPLICATE_ERROR_NUMBER, errorList));
             }
 
         }
@@ -1397,30 +1417,40 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     @Override
     public LongList store(Boolean setInstId, ObjectType objectType, IdentifierList domain,
-            ArchiveDetailsList archiveDetailsList, ElementList elementList, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            ArchiveDetailsList archiveDetailsList, HeterogeneousList elementList,
+            MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":Store " + " ObjectType" + ":" + objectType + ":archiveDetails:" + archiveDetailsList);
         LongList instIds = new LongList();
         LongList retVal = null;
 
         try {
             checkStoreValidity(setInstId, objectType, domain, archiveDetailsList, elementList);
+            ArchiveDetailsList newArcDetails = new ArchiveDetailsList();
+
             for (int i = 0; i < archiveDetailsList.size(); i++) {
                 if (archiveDetailsList.get(i).getInstId() == 0) {
-                    archiveDetailsList.get(i).setInstId((++lastInstanceId));
+                    ArchiveDetails newDetails = new ArchiveDetails((++lastInstanceId),
+                            archiveDetailsList.get(i).getDetails(),
+                            archiveDetailsList.get(i).getNetwork(),
+                            archiveDetailsList.get(i).getTimestamp(),
+                            archiveDetailsList.get(i).getProvider());
+
+                    newArcDetails.add(newDetails);
                     instIds.add(new Long(lastInstanceId));
                 } else {
                     instIds.add(archiveDetailsList.get(i).getInstId());
                     if (archiveDetailsList.get(i).getInstId() > lastInstanceId) {
                         lastInstanceId = archiveDetailsList.get(i).getInstId();
                     }
-                }
-                if (elementList != null) {
-                    archive.add(objectType, domain, archiveDetailsList.get(i), elementList.get(i));
-                } else {
-                    archive.add(objectType, domain, archiveDetailsList.get(i), null);
+                    newArcDetails.add(archiveDetailsList.get(i));
                 }
             }
+
+            for (int i = 0; i < newArcDetails.size(); i++) {
+                Object element = (elementList != null) ? elementList.get(i) : null;
+                archive.add(objectType, domain, newArcDetails.get(i), element);
+            }
+
         } catch (MALInteractionException malEx) {
             throw malEx;
         } catch (Exception ex) {
@@ -1453,7 +1483,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     @Override
     public void update(ObjectType objectType, IdentifierList domain,
-            ArchiveDetailsList archiveDetailsList, ElementList elementList, MALInteraction interaction)
+            ArchiveDetailsList archiveDetailsList, HeterogeneousList elementList, MALInteraction interaction)
             throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + ":update ObjectType:" + objectType + ":Domain:"
                 + domain + ":archiveDetailsList:" + archiveDetailsList + ":elementList:" + elementList);
@@ -1462,13 +1492,13 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         // Check clause If any of the fields of the object type contains the wildcard value of '0' then an INVALID error shall be returned.
         if (containsWildcard(objectType)) {
             LoggingBase.logMessage(CLS + ":update:Raise ERR - objectType");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         // Check clause If the domain contains the wildcard value of '*' then an INVALID error shall be returned..
         if (containsWildcard(domain)) {
             LoggingBase.logMessage(CLS + ":update:Raise ERR - domain");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         if (instIds.contains(new Long(0))) {
@@ -1479,7 +1509,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     errorList.add(new UInteger(i));
                 }
             }
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     errorList));
         }
         // Perfrom retrieve to check specified objects exist
@@ -1515,13 +1545,13 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         // Check clause If any of the fields of the object type contains the wildcard value of '0' then an INVALID error shall be returned.
         if (containsWildcard(objectType)) {
             LoggingBase.logMessage(CLS + ":delete:Raise ERR - objectType");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         // Check clause If the domain contains the wildcard value of '*' then an INVALID error shall be returned..
         if (containsWildcard(domain)) {
             LoggingBase.logMessage(CLS + ":delete:Raise ERR - domain");
-            throw new MALInteractionException(new MALStandardError(INVALID_ERROR_NUMBER,
+            throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                     null));
         }
         if (instIds.contains(new Long(0))) {

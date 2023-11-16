@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -41,13 +42,16 @@ import org.fife.ui.rtextarea.RTextArea;
  */
 public class MiddlePanel extends javax.swing.JPanel {
 
+    private final JLabel statusBar;
     private final static String DEFAULT_XMLS_DIR = "_xmls";
     private File currentFolder;
 
     /**
      * Creates new form MiddlePanel
+     * @param statusBar The status bar to report status information.
      */
-    public MiddlePanel() {
+    public MiddlePanel(JLabel statusBar) {
+        this.statusBar = statusBar;
         initComponents();
         tabsServices.removeAll();
 
@@ -108,12 +112,14 @@ public class MiddlePanel extends javax.swing.JPanel {
         save.addActionListener((new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                statusBar.setText("Saving...");
                 AreaTabbedPane pane = (AreaTabbedPane) tabsServices.getSelectedComponent();
 
                 try {  // Save the current edited xml
                     String filepath = pane.getFilepath();
                     String text = pane.getXMLText();
                     FileSupport.writeFile(filepath, text);
+                    statusBar.setText("Saved on folder: " + filepath);
                 } catch (IOException ex) {
                     Logger.getLogger(MiddlePanel.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -38,6 +38,8 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
@@ -46,46 +48,42 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 public class AssertionHelper {
 
     /**
-     * Check the equality of all the MAL message header fields. The field
+     * Check the equality of all the MAL message header fields.The field
      * 'transactionId' is not checked if the interaction type and stages are: -
      * Submit, Request, Invoke, Progress: initiation stage - Pub/Sub:
      * REGISTER_STAGE, DEREGISTER_STAGE, PUBLISH_REGISTER_STAGE,
      * PUBLISH_DEREGISTER_STAGE
      *
+     * @param procedureName
      * @param assertions
      * @param expectedHeader
      * @param header
+     * @param limited if TRUE do not check the authenticationId and supplements fields
      */
     public static void checkHeader(String procedureName,
             AssertionList assertions, MALMessageHeader header,
-            MALMessageHeader expectedHeader) {
+            MALMessageHeader expectedHeader, boolean limited) {
         if ((null == header) || (null == expectedHeader)) {
             checkEquality(procedureName, assertions, "Header", header, expectedHeader);
         } else {
             checkEquality(procedureName, assertions, "Area", header.getServiceArea(),
                     expectedHeader.getServiceArea());
-            checkEquality(procedureName, assertions, "AuthenticationId", header
-                    .getAuthenticationId(), expectedHeader.getAuthenticationId());
-            checkEquality(procedureName, assertions, "Domain", header.getDomain(),
-                    expectedHeader.getDomain());
+            if (!limited)
+                checkEquality(procedureName, assertions, "AuthenticationId", header
+                        .getAuthenticationId(), expectedHeader.getAuthenticationId());
             checkEquality(procedureName, assertions, "InteractionType", header
                     .getInteractionType(), expectedHeader.getInteractionType());
             checkEquality(procedureName, assertions, "InteractionStage", header
                     .getInteractionStage(), expectedHeader.getInteractionStage());
             checkEquality(procedureName, assertions, "IsError", header
                     .getIsErrorMessage(), expectedHeader.getIsErrorMessage());
-            checkEquality(procedureName, assertions, "NetworkZone", header
-                    .getNetworkZone(), expectedHeader.getNetworkZone());
+            if (!limited)
+                checkEquality(procedureName, assertions, "Supplements",
+                        header.getSupplements(), expectedHeader.getSupplements());
             checkEquality(procedureName, assertions, "Operation",
                     header.getOperation(), expectedHeader.getOperation());
-            checkEquality(procedureName, assertions, "QoSLevel", header.getQoSlevel(),
-                    expectedHeader.getQoSlevel());
             checkEquality(procedureName, assertions, "Service", header.getService(),
                     expectedHeader.getService());
-            checkEquality(procedureName, assertions, "Session", header.getSession(),
-                    expectedHeader.getSession());
-            checkEquality(procedureName, assertions, "SessionName", header
-                    .getSessionName(), expectedHeader.getSessionName());
             checkTimestamp(procedureName, assertions, header.getTimestamp(),
                     expectedHeader.getTimestamp());
 
@@ -109,15 +107,33 @@ public class AssertionHelper {
                 checkEquality(procedureName, assertions, "TransactionId", header
                         .getTransactionId(), expectedHeader.getTransactionId());
             }
-            checkEquality(procedureName, assertions, "URIfrom", header.getURIFrom(),
-                    expectedHeader.getURIFrom());
-            checkEquality(procedureName, assertions, "URIto", header.getURITo(),
-                    expectedHeader.getURITo());
-            checkEquality(procedureName, assertions, "Version", header.getAreaVersion(),
-                    expectedHeader.getAreaVersion());
+            checkEquality(procedureName, assertions, "From", header.getFrom(),
+                    expectedHeader.getFrom());
+            checkEquality(procedureName, assertions, "To", header.getTo(),
+                    expectedHeader.getTo());
+            checkEquality(procedureName, assertions, "Version", header.getServiceVersion(),
+                    expectedHeader.getServiceVersion());
         }
     }
 
+    /**
+     * Check the equality of all the MAL message header fields.The field
+     * 'transactionId' is not checked if the interaction type and stages are: -
+     * Submit, Request, Invoke, Progress: initiation stage - Pub/Sub:
+     * REGISTER_STAGE, DEREGISTER_STAGE, PUBLISH_REGISTER_STAGE,
+     * PUBLISH_DEREGISTER_STAGE
+     *
+     * @param procedureName
+     * @param assertions
+     * @param expectedHeader
+     * @param header
+     */
+    public static void checkHeader(String procedureName,
+            AssertionList assertions, MALMessageHeader header,
+            MALMessageHeader expectedHeader) {
+        checkHeader(procedureName, assertions, header, expectedHeader, false);
+    }
+    
     public static void checkEquality(String procedureName,
             AssertionList assertions, String fieldName,
             Object field, Object expectedField) {
@@ -125,11 +141,29 @@ public class AssertionHelper {
         if (expectedField == null) {
             res = (field == null);
         } else {
-            res = expectedField.equals(field);
+            // if checking for supplements, they may be in a different order
+            if (field.getClass().getName() == NamedValueList.class.getName() && expectedField.getClass().getName() == NamedValueList.class.getName()) {
+                res = checkSupplementEquality(NamedValueList.class.cast(field), NamedValueList.class.cast(expectedField));
+            }
+            else {
+                res = expectedField.equals(field);
+            }
         }
         Assertion assertion = new Assertion(procedureName, "Check header field '"
                 + fieldName + "': " + toString(field) + " == " + toString(expectedField), res);
         assertions.add(assertion);
+    }
+
+    private static boolean checkSupplementEquality(NamedValueList supplements, NamedValueList expectedSupplements) {
+        if (supplements.size() != expectedSupplements.size()) {
+            return false;
+        }
+        for (NamedValue namedValue : supplements){
+            if (!expectedSupplements.contains(namedValue)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String toString(Object field) {
@@ -187,11 +221,11 @@ public class AssertionHelper {
                     + indent(assertion.getProcedureName(), 40) + " | "
                     + assertion.getInfo()
                     + indent(assertion.getInfo(), 70) + " | ";
-            if (!assertion.getResult().booleanValue()) {
+            if (assertion.getResult()) {
+                LoggingBase.logMessage(msg + "OK");
+            } else {
                 LoggingBase.logMessage(msg + "FAILED");
                 res = false;
-            } else {
-                LoggingBase.logMessage(msg + "OK");
             }
         }
         return res;

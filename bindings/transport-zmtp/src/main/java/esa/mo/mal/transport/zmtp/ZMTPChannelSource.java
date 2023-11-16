@@ -20,11 +20,11 @@
  */
 package esa.mo.mal.transport.zmtp;
 
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.io.IOException;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * This class implements the low level data (MAL Message) transport protocol. In
@@ -35,7 +35,7 @@ import org.zeromq.ZMsg;
  * in the ZMTPTransport.
  *
  */
-public class ZMTPChannelSource implements GENMessageSender<byte[]> {
+public class ZMTPChannelSource implements MessageSender<byte[]> {
 
     /**
      * Reference to a ZMQ socket produced by the OPEN primitive
@@ -52,7 +52,7 @@ public class ZMTPChannelSource implements GENMessageSender<byte[]> {
     }
 
     @Override
-    public void sendEncodedMessage(GENOutgoingMessageHolder<byte[]> packetData) throws IOException {
+    public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         ZMsg outMsg = new ZMsg();
         outMsg.add(packetData.getEncodedMessage());
         outMsg.send(socket, true);

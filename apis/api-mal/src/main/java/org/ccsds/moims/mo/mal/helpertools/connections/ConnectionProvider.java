@@ -53,6 +53,8 @@ public class ConnectionProvider {
     private MALProvider secondaryMALServiceProvider = null;
     private final SingleConnectionDetails primaryConnectionDetails = new SingleConnectionDetails();
     private SingleConnectionDetails secondaryConnectionDetails = null;
+    private static final ServicesConnectionDetails globalProvidersDetailsPrimary = new ServicesConnectionDetails();
+    private static final ServicesConnectionDetails globalProvidersDetailsSecondary = new ServicesConnectionDetails();
 
     /**
      * Getter for the primaryConnectionDetails object.
@@ -82,6 +84,26 @@ public class ConnectionProvider {
     }
 
     /**
+     * Get primary connection interface details of all providers in the
+     * application.
+     *
+     * @return Primary connection details of all providers in the application.
+     */
+    public static ServicesConnectionDetails getGlobalProvidersDetailsPrimary() {
+        return globalProvidersDetailsPrimary;
+    }
+
+    /**
+     * Get secondary connection interface details of all providers in the
+     * application.
+     *
+     * @return Secondary connection details of all providers in the application.
+     */
+    public static ServicesConnectionDetails getGlobalProvidersDetailsSecondary() {
+        return globalProvidersDetailsSecondary;
+    }
+
+    /**
      * Returns the connection details of the inter-process communication (ipc).
      * This is usually the "secondary" connection but if we only have a
      * "primary" connection then this is the one to be returned.
@@ -99,7 +121,7 @@ public class ConnectionProvider {
      * @param serviceName Name of the service
      * @param malService MAL service
      * @param handler The handler of the interaction
-     * @return
+     * @return The MAL provider
      * @throws MALException On error.
      */
     public MALProvider startService(String serviceName, MALService malService,
@@ -115,7 +137,7 @@ public class ConnectionProvider {
      * @param malService MAL service
      * @param isPublisher Boolean flag to define if the service has PUB-SUB
      * @param handler The handler of the interaction
-     * @return
+     * @return The MAL provider
      * @throws MALException On error.
      */
     public MALProvider startService(String serviceName, MALService malService,
@@ -154,7 +176,8 @@ public class ConnectionProvider {
                 new UInteger(1),
                 props,
                 isPublisher,
-                sharedBrokerURI);
+                sharedBrokerURI,
+                null);
 
         IntegerList serviceKey = new IntegerList();
         serviceKey.add((int) malService.getAreaNumber().getValue()); // Area
@@ -201,7 +224,8 @@ public class ConnectionProvider {
                     new UInteger(1),
                     props,
                     isPublisher,
-                    sharedBrokerURI);
+                    sharedBrokerURI,
+                    null);
 
             secondaryConnectionDetails.setProviderURI(serviceProvider2.getURI());
             secondaryConnectionDetails.setBrokerURI(serviceProvider2.getBrokerURI());

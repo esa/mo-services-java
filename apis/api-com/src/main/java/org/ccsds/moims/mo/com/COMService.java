@@ -20,44 +20,35 @@
  */
 package org.ccsds.moims.mo.com;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
- * This class is deprecated. It is only here for backward compatibility with
- * the old MAL.
+ * This class is deprecated. It is only here for backward compatibility with the
+ * old MAL.
  */
 @Deprecated
-public class COMService extends MALService {
+public abstract class COMService extends MALService {
 
     private final Map<Integer, COMObject> objectsByNumber = new HashMap<>();
-    private final Map<String, COMObject> objectsByName = new HashMap<>();
+    private final COMObject[] comObjects;
 
-    public COMService(final ServiceKey serviceKey, final Identifier serviceName, final ArrayList<MALOperation> operations) {
-        super(serviceKey, serviceName, operations);
+    public COMService(final ServiceKey serviceKey, final Identifier serviceName,
+            final Element[] elements, final MALOperation[] operations) {
+        this(serviceKey, serviceName, elements, operations, new COMObject[0]);
     }
 
-    public COMService(final ServiceKey serviceKey, final Identifier serviceName, final MALOperation[] operations) {
-        super(serviceKey, serviceName, operations);
-    }
-
-    /**
-     * Adds a COM object to this service specification.
-     *
-     * @param object The new object to add.
-     * @throws java.lang.IllegalArgumentException If the argument is null.
-     */
-    @Proposed
-    public void addCOMObject(COMObject object) throws java.lang.IllegalArgumentException {
-        objectsByNumber.put(object.getObjectType().getNumber().getValue(), object);
-        objectsByName.put(object.getObjectName().getValue(), object);
+    public COMService(final ServiceKey serviceKey, final Identifier serviceName,
+            final Element[] elements, final MALOperation[] operations, final COMObject[] comObjects) {
+        super(serviceKey, serviceName, elements, operations);
+        this.comObjects = new COMObject[0];
     }
 
     /**
@@ -67,17 +58,12 @@ public class COMService extends MALService {
      * @return The found operation or null.
      */
     public COMObject getObjectByNumber(final UShort opNumber) {
+        if (objectsByNumber.isEmpty()) {
+            for (COMObject comObject : comObjects) {
+                objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);
+            }
+        }
         return objectsByNumber.get(opNumber.getValue());
-    }
-
-    /**
-     * Return an object identified by its name.
-     *
-     * @param opName The name of the object.
-     * @return The found operation or null.
-     */
-    public COMObject getObjectByName(final Identifier opName) {
-        return objectsByName.get(opName.getValue());
     }
 
     /**
@@ -86,6 +72,11 @@ public class COMService extends MALService {
      * @return The set of objects or an empty array if none defined.
      */
     public COMObject[] getObjects() {
-        return (COMObject[]) Arrays.asList(objectsByName.values()).toArray();
+        if (objectsByNumber.isEmpty()) {
+            for (COMObject comObject : comObjects) {
+                objectsByNumber.put(comObject.getObjectType().getNumber().getValue(), comObject);
+            }
+        }
+        return (COMObject[]) Arrays.asList(objectsByNumber.values()).toArray();
     }
 }

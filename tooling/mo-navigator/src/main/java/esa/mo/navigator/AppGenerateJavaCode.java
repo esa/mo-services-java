@@ -90,9 +90,7 @@ public class AppGenerateJavaCode {
             timestamp = System.currentTimeMillis() - timestamp;
             Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.INFO,
                     "Success! Generated the code in " + timestamp + " miliseconds!");
-        } catch (IOException ex) {
-            Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
+        } catch (IOException | JAXBException ex) {
             Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

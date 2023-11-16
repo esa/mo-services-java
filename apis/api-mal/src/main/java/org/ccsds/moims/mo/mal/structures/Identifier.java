@@ -31,8 +31,8 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Identifier implements Attribute {
 
+    private static final long serialVersionUID = Attribute.IDENTIFIER_SHORT_FORM;
     public final static String WILDCARD = "*";
-
     private final String value;
 
     /**
@@ -48,7 +48,7 @@ public class Identifier implements Attribute {
      * @param value Value to initialise with.
      */
     public Identifier(final String value) {
-        if (null == value) {
+        if (value == null) {
             Logger.getLogger(Identifier.class.getName()).log(
                     Level.WARNING,
                     "The Identifier has been initialized with an invalid null "
@@ -78,11 +78,6 @@ public class Identifier implements Attribute {
         return WILDCARD.equals(value);
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(String value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.IDENTIFIER_SHORT_FORM;
@@ -141,5 +136,4 @@ public class Identifier implements Attribute {
     public String toString() {
         return value;
     }
-    private static final long serialVersionUID = Attribute.IDENTIFIER_SHORT_FORM;
 }

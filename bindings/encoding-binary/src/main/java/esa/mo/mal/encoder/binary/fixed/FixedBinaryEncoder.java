@@ -144,7 +144,7 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
                         + valueBytes.length + " bytes, value = " + value + ")");
             }
             java.nio.ByteBuffer buf = java.nio.ByteBuffer.allocate(8);
-            buf.position(8 - arrayLength);
+            ((java.nio.Buffer) buf).position(8 - arrayLength);
             write(buf.put(valueBytes, arrayOffset, arrayLength).array());
         }
 

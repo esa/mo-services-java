@@ -21,17 +21,15 @@
 package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-
-import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 
 /**
  * TCPIP Message header encoder
@@ -41,18 +39,21 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
  */
 public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
-    public TCPIPFixedBinaryEncoder(final OutputStream os,
-            final BinaryTimeHandler timeHandler) {
+    private static final long MAX_STRING_LENGTH = 2 * (long) Integer.MAX_VALUE + 1;
+    private static final BinaryTimeHandler tHandler = new BinaryTimeHandler();
+
+    public TCPIPFixedBinaryEncoder(final OutputStream os, final BinaryTimeHandler timeHandler) {
         super(new TCPIPStreamHolder(os), timeHandler);
     }
 
-    @Override
-    public MALListEncoder createListEncoder(List list)
-            throws IllegalArgumentException, MALException {
+    public TCPIPFixedBinaryEncoder(final OutputStream os) {
+        super(new TCPIPStreamHolder(os), tHandler);
+    }
 
+    @Override
+    public MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException {
         // encode number of elements
         encodeUInteger(new UInteger(list.size()));
-
         return this;
     }
 
@@ -67,8 +68,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeString(String val) throws MALException {
-
-        long MAX_STRING_LENGTH = 2 * (long) Integer.MAX_VALUE + 1;
         byte[] output = val.getBytes(UTF8_CHARSET);
 
         if (output.length > MAX_STRING_LENGTH) {
@@ -91,7 +90,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      * @throws MALException if it cannot be encoded.
      */
     public void encodeMALLong(Long value) throws MALException {
-
         try {
             outputStream.writeSignedLong(value);
         } catch (IOException ex) {
@@ -108,7 +106,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeUInteger(final UInteger value) throws MALException {
-
         try {
             ((TCPIPStreamHolder) outputStream).addUnsignedVarint4((int) value.getValue());
         } catch (IOException ex) {
@@ -124,7 +121,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeNullableIdentifier(final Identifier value) throws MALException {
-
         if (value != null) {
             // encode presence flag
             encodeBoolean(true);
@@ -144,7 +140,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeIdentifier(final Identifier value) throws MALException {
-
         encodeString(value.getValue());
     }
 
@@ -156,9 +151,7 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
      */
     @Override
     public void encodeBlob(final Blob value) throws MALException {
-
         byte[] byteValue = value.getValue();
-
         encodeUInteger(new UInteger(byteValue.length));
 
         if (value.getLength() > 0) {
@@ -179,8 +172,8 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
         /**
          * Encode a varint using a split binary encoding algorithm
          *
-         * @param value
-         * @throws IOException
+         * @param value  The value to be encoded.
+         * @throws IOException if the value cannot be written.
          */
         public void addUnsignedVarint4(int value) throws IOException {
 

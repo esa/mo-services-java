@@ -35,6 +35,7 @@ package org.ccsds.moims.mo.mal.test.transport;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -43,7 +44,7 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 
 public class ReceiveTestProcedure {
@@ -65,7 +66,8 @@ public class ReceiveTestProcedure {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL,
+                PRIORITY, new NamedValueList(), false).getStub();
         return true;
     }
 

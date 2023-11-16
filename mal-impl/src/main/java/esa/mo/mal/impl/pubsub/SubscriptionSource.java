@@ -30,8 +30,9 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 
@@ -40,8 +41,9 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
  */
 public class SubscriptionSource {
 
+    // Subscriptions from the this consumer by subscriptionId
     private final HashMap<String, Subscriptions> subs = new HashMap<>();
-    private final ArrayList<SubscriptionConsumer> required = new ArrayList<>();
+    private final ArrayList<SingleSubscription> required = new ArrayList<>();
     private final NotifyMessageHeader msgHeaderDetails;
     private final String signatureURI;
     private int commsErrorCount = 0;
@@ -52,15 +54,8 @@ public class SubscriptionSource {
      * @param hdr The message header of the subscription message.
      */
     public SubscriptionSource(final MALMessageHeader hdr) {
-        this.signatureURI = hdr.getURIFrom().getValue();
-        msgHeaderDetails = new NotifyMessageHeader(
-                hdr.getURIFrom(),
-                hdr.getTransactionId(),
-                hdr.getSession(),
-                hdr.getSessionName(),
-                hdr.getQoSlevel(),
-                null,
-                hdr.getPriority());
+        this.signatureURI = hdr.getFrom().getValue();
+        msgHeaderDetails = new NotifyMessageHeader(hdr.getFrom(), hdr.getTransactionId(), null);
     }
 
     /**
@@ -86,10 +81,18 @@ public class SubscriptionSource {
         commsErrorCount = 0;
     }
 
+    /**
+     * States if this consumer source is active or not.
+     *
+     * @return boolean value if the source is required or not.
+     */
     public boolean active() {
         return !required.isEmpty();
     }
 
+    /**
+     * Logs the START and END consumer and the required subscriptions.
+     */
     public void report() {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  START Consumer ( {0} )", signatureURI);
         MALBrokerImpl.LOGGER.log(Level.FINE, "   Required: {0}", required.size());
@@ -103,6 +106,12 @@ public class SubscriptionSource {
         return signatureURI;
     }
 
+    /**
+     * Adds a subscription to the consumer.
+     *
+     * @param srcHdr    Source MAL message header.
+     * @param subscription  Subscription.
+     */
     public void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription) {
         final String subId = subscription.getSubscriptionId().getValue();
         Subscriptions sub = subs.get(subId);
@@ -110,31 +119,52 @@ public class SubscriptionSource {
             sub = new Subscriptions(subId);
             subs.put(subId, sub);
         }
-        sub.setIds(subscription.getDomain(), srcHdr, subscription.getFilters());
+        sub.setIds(subscription.getDomain(), srcHdr, subscription.getFilters(), subscription.getSelectedKeys());
         updateIds();
     }
 
-    public NotifyMessageSet generateNotifyList(final MALMessageHeader srcHdr,
-            final UpdateHeaderList updateHeaderList,
-            final MALPublishBody publishBody,
-            IdentifierList keyNames) throws MALException {
-        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SimComSource : {0}", signatureURI);
+    /**
+     * Creates the list of Notify messages to be sent.
+     *
+     * @param srcHdr The source Header.
+     * @param publishBody The publish body.
+     * @param updateKeyValues The provider Update key values.
+     * @return the list of Notify messages.
+     * @throws MALException if one of the Notify messages could not be
+     * generated.
+     */
+    public List<NotifyMessage> generateNotifyMessagesIfMatch(final MALMessageHeader srcHdr,
+            final MALPublishBody publishBody, UpdateKeyValues updateKeyValues) throws MALException {
+        MALBrokerImpl.LOGGER.log(Level.FINE, "Checking SubscriptionSource: {0}", signatureURI);
 
-        final IdentifierList srcDomainId = srcHdr.getDomain();
-        final List<NotifyMessageBody> msgs = new LinkedList<>();
+        final UpdateHeader updateHeader = publishBody.getUpdateHeader();
+        IdentifierList srcDomainId = updateHeader.getDomain();
+        Object[] updateObjects = publishBody.getUpdateObjects();
+        final List<NotifyMessage> notifyMsgs = new LinkedList<>();
 
+        // Iterate through all existing subscriptions from this consumer
         for (Subscriptions sub : subs.values()) {
-            NotifyMessageBody subUpdate = sub.generateNotifyMessage(
-                    srcHdr, srcDomainId, updateHeaderList, publishBody, keyNames);
+            if (sub.matchesAnySubscription(updateKeyValues)) {
+                // Create a Notify message for this consumer because at least one
+                // of the subscriptions matched the published Update Key-values
+                NullableAttributeList notifyValues = updateKeyValues.generateNotifyKeyValues(sub.getSelectedKeys());
+                UpdateHeader strippedUpdateHeader = new UpdateHeader(updateHeader.getSource(),
+                        updateHeader.getDomain(), notifyValues);
 
-            if (subUpdate != null) {
-                msgs.add(subUpdate);
+                NotifyMessageBody body = new NotifyMessageBody(sub.getSubscriptionId(),
+                        strippedUpdateHeader, updateObjects, srcHdr, srcDomainId);
+                notifyMsgs.add(new NotifyMessage(msgHeaderDetails, body));
             }
         }
 
-        return (msgs.isEmpty()) ? null : new NotifyMessageSet(msgHeaderDetails, msgs);
+        return notifyMsgs;
     }
 
+    /**
+     * Removes a subscription from the consumer.
+     *
+     * @param subscriptionIds The subscription IDs
+     */
     public void removeSubscriptions(final IdentifierList subscriptionIds) {
         if (null != subscriptionIds) {
             for (Identifier id : subscriptionIds) {

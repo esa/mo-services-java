@@ -157,7 +157,7 @@ public abstract class StubUtils {
             String ext) throws IOException {
         File file = new File(folder, name + "." + ext);
         file.createNewFile();
-        
+
         if (!file.exists()) {
             throw new IOException("Unable to create file: " + file.getPath());
         }
@@ -177,7 +177,7 @@ public abstract class StubUtils {
         String prefix = (parentFolder != null) ? parentFolder.getPath() + File.separator : "";
         File folder = new File(prefix + name.toLowerCase());
         folder.mkdirs();
-        
+
         if (!folder.exists()) {
             throw new FileNotFoundException("Failed to create directory: " + folder.getPath());
         }
@@ -230,7 +230,7 @@ public abstract class StubUtils {
      * @return the concatenated string or null.
      */
     public static String conditionalAdd(String prefix, String cond) {
-        if ((null != cond) && (0 < cond.length())) {
+        if ((cond != null) && (cond.length() > 0)) {
             return prefix + cond;
         }
 
@@ -248,8 +248,8 @@ public abstract class StubUtils {
         StringBuilder buf = new StringBuilder("");
 
         for (String str : args) {
-            if ((null != str) && !str.isEmpty()) {
-                if (preArgs || (0 < buf.length())) {
+            if ((str != null) && !str.isEmpty()) {
+                if (preArgs || (buf.length() > 0)) {
                     buf.append(", ");
                 }
                 buf.append(str);
@@ -278,11 +278,11 @@ public abstract class StubUtils {
      */
     public static List<CompositeField> concatenateArguments(CompositeField firstArg,
             List<CompositeField>... args) {
-        List<CompositeField> lst = new LinkedList<CompositeField>();
+        List<CompositeField> lst = new LinkedList<>();
         lst.add(firstArg);
 
-        for (List<CompositeField> elem : args) {
-            lst.addAll(elem);
+        for (List<CompositeField> fields : args) {
+            lst.addAll(fields);
         }
 
         return lst;
@@ -300,8 +300,5 @@ public abstract class StubUtils {
         firstArg.addAll(Arrays.asList(args));
 
         return firstArg;
-    }
-
-    private StubUtils() {
     }
 }

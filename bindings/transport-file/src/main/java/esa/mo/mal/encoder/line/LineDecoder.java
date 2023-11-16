@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
@@ -369,7 +370,7 @@ public class LineDecoder implements MALDecoder {
 
         return null;
     }
-    
+
     @Override
     public ObjectRef decodeObjectRef() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -590,6 +591,42 @@ public class LineDecoder implements MALDecoder {
         return null;
     }
 
+    @Override
+    public Element decodeAbstractElement() throws IllegalArgumentException, MALException {
+        String sfpString = removeFirst();
+        Long sfp = internalDecodeLong(sfpString);
+        pushBack(sfpString);
+
+        try {
+            Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+            return type.decode(this);
+        } catch (Exception ex) {
+            throw new MALException("The Element could not be created!", ex);
+        }
+    }
+
+    @Override
+    public Element decodeNullableAbstractElement() throws IllegalArgumentException, MALException {
+        final String strVal = removeFirst();
+
+        // Check if object is not null...
+        if (!strVal.equals(STR_NULL)) {
+            String sfpString = removeFirst();
+            Long sfp = internalDecodeLong(sfpString);
+            pushBack(sfpString);
+            pushBack(strVal);
+
+            try {
+                Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+                return type.decode(this);
+            } catch (Exception ex) {
+                throw new MALException("The Element could not be created!", ex);
+            }
+        }
+
+        return null;
+    }
+
     private void pushBack(String value) {
         sourceBuffer.head = value;
     }
@@ -683,14 +720,14 @@ public class LineDecoder implements MALDecoder {
         final int len = s.length();
         final byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) 
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
                     + Character.digit(s.charAt(i + 1), 16));
         }
         return data;
     }
 
     /**
-     *
+     * The BufferHolder holds a string buffer.
      */
     protected static class BufferHolder {
 
@@ -700,8 +737,8 @@ public class LineDecoder implements MALDecoder {
 
         /**
          *
-         * @param buf
-         * @param offset
+         * @param buf The buffer string.
+         * @param offset The offset to be used.
          */
         public BufferHolder(final String buf, final int offset) {
             this.buf = buf;

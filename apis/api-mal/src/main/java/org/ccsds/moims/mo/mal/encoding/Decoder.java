@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -28,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -140,11 +142,17 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public ObjectRef decodeObjectRef() throws MALException {
-        return new ObjectRef(sourceBuffer.readString(),
+        IdentifierList decodedDomain = new IdentifierList();
+        int length = sourceBuffer.readUnsignedInt();
+
+        for (int i = 0; i < length; i++) {
+            decodedDomain.add(new Identifier(sourceBuffer.readString()));
+        }
+
+        return new ObjectRef(decodedDomain,
+                sourceBuffer.readSignedLong(),
                 new Identifier(sourceBuffer.readString()),
-                new Identifier(sourceBuffer.readString()),
-                new Identifier(sourceBuffer.readString()),
-                new UInteger(sourceBuffer.readUnsignedLong32())
+                new UInteger(sourceBuffer.readSignedLong())
         );
     }
 
@@ -392,15 +400,41 @@ public abstract class Decoder implements MALDecoder {
         return null;
     }
 
+    @Override
+    public Element decodeAbstractElement() throws MALException {
+        Long sfp = decodeLong();
+        try {
+            Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+            return type.decode(this);
+        } catch (Exception ex) {
+            throw new MALException("The Element could not be created!", ex);
+        }
+    }
+
+    @Override
+    public Element decodeNullableAbstractElement() throws MALException {
+        if (sourceBuffer.readIsNotNull()) {
+            Long sfp = decodeLong();
+            try {
+                Element type = MALContextFactory.getElementsRegistry().createElement(sfp);
+                return type.decode(this);
+            } catch (Exception ex) {
+                throw new MALException("The Element could not be created!", ex);
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Allows the decoding for the type of an abstract element to be over-ridded
      *
-     * @param withNull If true encode a isNull field
+     * @param isNullable If true encode a isNull field
      * @return The type to decode
      * @throws MALException if there is an error
      */
-    public Long decodeAbstractElementType(boolean withNull) throws MALException {
-        if (withNull) {
+    public Long decodeAbstractElementSFP(boolean isNullable) throws MALException {
+        if (isNullable) {
             return decodeNullableLong();
         }
 

@@ -33,7 +33,7 @@
 package org.ccsds.moims.mo.testbed.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
@@ -41,9 +41,9 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 public class TestErrorBody implements MALErrorBody {
 
-    private UInteger errorNumber;
+    private final UInteger errorNumber;
 
-    private Object extraInformation;
+    private final Object extraInformation;
 
     public TestErrorBody(UInteger errorNumber, Object extraInformation) {
         this.errorNumber = errorNumber;
@@ -54,8 +54,8 @@ public class TestErrorBody implements MALErrorBody {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Object getBodyElement(int index, Object element)
-            throws IllegalArgumentException, MALException {
+    @Override
+    public Object getBodyElement(int index, Object element) throws IllegalArgumentException, MALException {
         switch (index) {
             case 0:
                 return errorNumber;
@@ -66,16 +66,19 @@ public class TestErrorBody implements MALErrorBody {
         }
     }
 
+    @Override
     public int getElementCount() {
         return 2;
     }
 
+    @Override
     public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
         throw new MALException("Invalid call");
     }
 
-    public MALStandardError getError() throws MALException {
-        return new MALStandardError(errorNumber, extraInformation);
+    @Override
+    public MOErrorException getError() throws MALException {
+        return new MOErrorException(errorNumber, extraInformation);
     }
 
     @Override
@@ -84,6 +87,7 @@ public class TestErrorBody implements MALErrorBody {
                 + extraInformation + "]";
     }
 
+    @Override
     public MALEncodedBody getEncodedBody() throws MALException {
         throw new MALException("Not implemented");
     }

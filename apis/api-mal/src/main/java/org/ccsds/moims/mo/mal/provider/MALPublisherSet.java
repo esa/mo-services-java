@@ -37,67 +37,52 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
  */
 public class MALPublisherSet {
 
-    private final MALProviderSet providerSet;
     private final Set<MALPublisher> subpublishers = new HashSet<>();
     private final MALPubSubOperation op;
     private final IdentifierList domain;
-    private final Identifier networkZone;
     private final SessionType sessionType;
     private final Identifier sessionName;
     private final QoSLevel remotePublisherQos;
     private final Map remotePublisherQosProps;
-    private final UInteger remotePublisherPriority;
 
     /**
      * Constructor.
      *
-     * @param providerSet MALProviderSet that owns this MALPublisherSet
      * @param op PUBLISH-SUBSCRIBE operation
      * @param domain Domain of the PUBLISH messages
-     * @param networkZone Network zone of the PUBLISH messages
      * @param sessionType Session type of the PUBLISH messages
      * @param sessionName Session name of the PUBLISH messages
      * @param remotePublisherQos QoS level of the PUBLISH messages, may be null.
      * @param remotePublisherQosProps QoS properties of the PUBLISH messages,
      * may be null.
-     * @param remotePublisherPriority Priority of the PUBLISH messages, may be
-     * null.
-     * @throws java.lang.IllegalArgumentException If the parameters
-     * ‘providerSet’ or ‘domain’ or ‘networkZone’ or ‘sessionType’ or
-     * ‘sessionName’ are NULL
+     * @throws java.lang.IllegalArgumentException If the parameters or ‘domain’
+     * or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ are NULL
      * @throws MALException If an error occurs.
      */
-    public MALPublisherSet(final MALProviderSet providerSet,
+    public MALPublisherSet(
             final MALPubSubOperation op,
             final IdentifierList domain,
-            final Identifier networkZone,
             final SessionType sessionType,
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
-            final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority) 
+            final Map remotePublisherQosProps)
             throws java.lang.IllegalArgumentException, MALException {
-        this.providerSet = providerSet;
         this.op = op;
         this.domain = domain;
-        this.networkZone = networkZone;
         this.sessionType = sessionType;
         this.sessionName = sessionName;
         this.remotePublisherQos = remotePublisherQos;
         this.remotePublisherQosProps = remotePublisherQosProps;
-        this.remotePublisherPriority = remotePublisherPriority;
     }
 
-    void createPublisher(final MALProvider provider)
-            throws java.lang.IllegalArgumentException, MALException {
+    void createPublisher(final MALProvider provider) throws java.lang.IllegalArgumentException, MALException {
         final MALPublisher pub = provider.createPublisher(op,
                 domain,
-                networkZone,
                 sessionType,
                 sessionName,
                 remotePublisherQos,
                 remotePublisherQosProps,
-                remotePublisherPriority);
+                null);
         subpublishers.add(pub);
     }
 
@@ -110,17 +95,24 @@ public class MALPublisherSet {
      * The method synchronously registers through all the MALPublishers of this
      * MALPublisherSet.
      *
-     * @param keys Keys of the subscriptions that are to be published
+     * @param keyNames Key Names of the subscriptions that are to be published
+     * @param keyTypes Key Types of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * ERROR
      * @throws java.lang.IllegalArgumentException If entityKeyList is null.
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public void register(final IdentifierList keys, final MALPublishInteractionListener listener)
+    public void register(final IdentifierList keyNames, final AttributeTypeList keyTypes,
+            final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        for (MALPublisher p : subpublishers) {
-            p.register(keys, listener);
+        if (keyNames.size() != keyTypes.size()) {
+            throw new IllegalArgumentException("The size of keyNames (" + keyNames.size()
+                    + ") is different from the size of the keyTypes (" + keyTypes.size() + ")!");
+        }
+
+        for (MALPublisher publisher : subpublishers) {
+            publisher.register(keyNames, keyTypes, listener);
         }
     }
 
@@ -128,21 +120,21 @@ public class MALPublisherSet {
      * The method ‘publish’ publishes updates through all the MALPublishers of
      * this MALPublisherSet.
      *
-     * @param updateHeaderList Published UpdateHeaders
-     * @param updateLists Lists of updates to be published
+     * @param updateHeader Published UpdateHeader.
+     * @param updateValues The published values of the Update message.
      * @return The message sent.
-     * @throws java.lang.IllegalArgumentException If updateHeaderList is null.
+     * @throws java.lang.IllegalArgumentException If updateHeader is null.
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public MALMessage publish(final UpdateHeaderList updateHeaderList, final java.util.List... updateLists)
+    public MALMessage publish(final UpdateHeader updateHeader, final Object... updateValues)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        MALMessage rv = null;
+        MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.publish(updateHeaderList, updateLists);
+            msg = p.publish(updateHeader, updateValues);
         }
 
-        return rv;
+        return msg;
     }
 
     /**
@@ -162,7 +154,8 @@ public class MALPublisherSet {
      * The method asynchronously registers through all the MALPublishers of this
      * MALPublisherSet.
      *
-     * @param keys Keys of the subscriptions that are to be published
+     * @param keyNames Key Names of the subscriptions that are to be published
+     * @param keyTypes Key Types of the subscriptions that are to be published
      * @param listener Listener in charge of receiving the messages PUBLISH
      * REGISTER ACK, PUBLISH REGISTER ERROR and PUBLISH ERROR
      * @return The message sent.
@@ -171,14 +164,20 @@ public class MALPublisherSet {
      * @throws MALInteractionException If thrown by the contained MALPublishers.
      * @throws MALException If thrown by the contained MALPublishers.
      */
-    public MALMessage asyncRegister(final IdentifierList keys, final MALPublishInteractionListener listener)
+    public MALMessage asyncRegister(final IdentifierList keyNames, final AttributeTypeList keyTypes,
+            final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        MALMessage rv = null;
-        for (MALPublisher p : subpublishers) {
-            rv = p.asyncRegister(keys, listener);
+        if (keyNames.size() != keyTypes.size()) {
+            throw new IllegalArgumentException("The size of keyNames (" + keyNames.size()
+                    + ") is different from the size of the keyTypes (" + keyTypes.size() + ")!");
         }
 
-        return rv;
+        MALMessage msg = null;
+        for (MALPublisher p : subpublishers) {
+            msg = p.asyncRegister(keyNames, keyTypes, listener);
+        }
+
+        return msg;
     }
 
     /**
@@ -194,12 +193,12 @@ public class MALPublisherSet {
      */
     public MALMessage asyncDeregister(final MALPublishInteractionListener listener)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException {
-        MALMessage rv = null;
+        MALMessage msg = null;
         for (MALPublisher p : subpublishers) {
-            rv = p.asyncDeregister(listener);
+            msg = p.asyncDeregister(listener);
         }
 
-        return rv;
+        return msg;
     }
 
     /**
@@ -209,5 +208,8 @@ public class MALPublisherSet {
      */
     public void close() throws MALException {
         //ToDo
+        for (MALPublisher p : subpublishers) {
+            p.close();
+        }
     }
 }

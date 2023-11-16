@@ -210,7 +210,8 @@ public class GeneratorXsd extends GeneratorDocument {
     }
 
     @Override
-    protected CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType, String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
+    public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
+            String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
         CompositeField ele;
         String typeName = elementType.getName();
         if (isAttributeType(elementType)) {

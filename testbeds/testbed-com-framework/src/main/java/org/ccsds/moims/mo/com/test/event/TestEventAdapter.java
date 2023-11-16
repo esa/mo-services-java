@@ -21,17 +21,16 @@
 package org.ccsds.moims.mo.com.test.event;
 
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
+import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 class TestEventAdapter extends EventAdapter {
 
-    private EventDetailsList eventDetailsList;
+    private final EventDetailsList eventDetailsList;
 
     public TestEventAdapter(EventDetailsList eventDetailsList) {
         this.eventDetailsList = eventDetailsList;
@@ -58,22 +57,21 @@ class TestEventAdapter extends EventAdapter {
      */
     @Override
     public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-            UpdateHeaderList headerList, ObjectDetailsList objectDetailsList,
-            ElementList elementList, java.util.Map qosProperties) {
+            UpdateHeader updateHeader, ObjectDetails objectDetails,
+            Element element, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
         boolean success = false;
 
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + _Identifier0);
-        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + headerList);
-        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetailsList);
-        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + elementList);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + updateHeader);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetails);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + element);
 
-        Identifier objectNumber = (Identifier) headerList.get(0).getKeyValues().get(0);
-        Identifier uri = headerList.get(0).getSource();
+        Identifier objectNumber = (Identifier) updateHeader.getKeyValues().get(0).getValue();
+        Identifier uri = updateHeader.getSource();
         String strObjectNumber = objectNumber.toString();
-        eventDetailsList.add(new EventDetails(
-                headerList.get(0), objectDetailsList.get(0), (Element) elementList.get(0)));
+        eventDetailsList.add(new EventDetails(updateHeader, objectDetails, (Element) element));
     }
 
     /**
@@ -96,7 +94,7 @@ class TestEventAdapter extends EventAdapter {
      * @param qosProperties The QoS properties associated with the message.
      */
     public void monitorEventRegisterErrorReceived(MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+            org.ccsds.moims.mo.mal.MOErrorException error, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventRegisterErrorReceived - ERROR");
     }
 
@@ -120,7 +118,7 @@ class TestEventAdapter extends EventAdapter {
      * @param qosProperties The QoS properties associated with the message.
      */
     public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MALStandardError error, java.util.Map qosProperties) {
+            org.ccsds.moims.mo.mal.MOErrorException error, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorEventDeregisterAckReceived - ERROR");
     }
 }

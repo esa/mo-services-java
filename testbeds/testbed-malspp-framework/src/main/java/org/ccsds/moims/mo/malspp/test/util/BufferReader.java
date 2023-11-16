@@ -49,9 +49,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.malspp.test.datatype.LargeEnumeration;
-import org.ccsds.moims.mo.malspp.test.datatype.LargeEnumerationFactory;
 import org.ccsds.moims.mo.malspp.test.datatype.MediumEnumeration;
-import org.ccsds.moims.mo.malspp.test.datatype.MediumEnumerationFactory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.orekit.data.DataProvidersManager;
 import org.orekit.data.DirectoryCrawler;
@@ -85,17 +83,8 @@ public class BufferReader {
                 TimeScalesFactory.getTAI());
 
         // Initialize BigEnumeration data type
-        /*
-        MALContextFactory.getElementsRegistry().registerElementFactory(
-                LargeEnumeration.SHORT_FORM, new LargeEnumerationFactory());
-        MALContextFactory.getElementsRegistry().registerElementFactory(
-                MediumEnumeration.SHORT_FORM, new MediumEnumerationFactory());
-         */
-        MALContextFactory.getElementsRegistry().addCallableElement(
-                LargeEnumeration.SHORT_FORM, () -> new LargeEnumeration(0));
-
-        MALContextFactory.getElementsRegistry().addCallableElement(
-                MediumEnumeration.SHORT_FORM, () -> new MediumEnumeration(0));
+        MALContextFactory.getElementsRegistry().addElement(new LargeEnumeration(0));
+        MALContextFactory.getElementsRegistry().addElement(new MediumEnumeration(0));
     }
 
     private static AbsoluteDate fineTimeMalJavaApiEpoch;

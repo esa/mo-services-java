@@ -28,27 +28,25 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
-import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.suite.TestServiceProvider;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionType;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
-import org.ccsds.moims.mo.testbed.transport.TestMessageHeader;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
-import org.ccsds.moims.mo.testbed.util.ParseHelper;
 
 /**
  *
@@ -64,178 +62,194 @@ public class PatternTest {
      * Allows a subclass to override the consumer, for example by interacting
      * with another service provider and with specific QoS properties.
      *
-     * @param session
-     * @param sessionName
-     * @param qos
+     * @param supplements
      * @throws Exception
      */
-    protected void initConsumer(SessionType session, Identifier sessionName, QoSLevel qos) throws Exception {
+    protected void initConsumer(String supplements) throws Exception {
+        NamedValueList supplementsValue = Helper.parseSupplements(supplements);
         ipTestConsumer = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
-                qos,
+                SessionType.LIVE,
+                new Identifier(supplements),
+                QoSLevel.BESTEFFORT,
                 HeaderTestProcedure.PRIORITY,
+                supplementsValue,
                 false);
     }
 
-    public boolean patternInitiationForWithMultiWithEmptyBodyAndQosAndSessionAndTransistionsAndBehaviourIdTest(
-            String pattern, boolean callMultiVersion, boolean callEmptyVersion, String qosLevel,
-            String sessionType, String[] transistions, int procedureId) throws Exception {
-        LoggingBase.logMessage("PatternTest(" + pattern + ", " + callMultiVersion + ", " + qosLevel + ", " + sessionType + ", " + procedureId + ")");
+    private boolean isFinalTransition(String pattern, IPTestTransitionType transition) {
+        if (IPTestTransitionType.ACK.equals(transition) && !"SUBMIT".equalsIgnoreCase(pattern)
+                || IPTestTransitionType.UPDATE.equals(transition)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean patternInitiationForWithMultiWithEmptyBodyAndSupplementsAndTransitionsAndBehaviourIdTest(
+            String pattern, boolean callMultiVersion, boolean callEmptyVersion, String supplements,
+            String[] transitions, int procedureId) throws Exception {
+        LoggingBase.logMessage("PatternTest(" + pattern + ", " + callMultiVersion + ", " + supplements + ", " + procedureId + ")");
         resetAssertions();
 
-        QoSLevel qos = ParseHelper.parseQoSLevel(qosLevel);
-        SessionType session = ParseHelper.parseSessionType(sessionType);
-        Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
+        NamedValueList supplementsValue = Helper.parseSupplements(supplements);
 
-        initConsumer(session, sessionName, qos);
+        initConsumer(supplements);
         IPTestStub ipTest = ipTestConsumer.getStub();
-
         ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
-        MALMessageHeader expectedInitialHeader = new TestMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
-                HeaderTestProcedure.AUTHENTICATION_ID,
-                ipTestConsumer.getConsumer().getURI(),
-                new Time(System.currentTimeMillis()),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
-                InteractionType.PUBSUB,
-                new UOctet(MALPubSubOperation._REGISTER_STAGE),
-                null, // transaction id not checked here (see below)
-                MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
-                IPTestServiceInfo.MONITOR_OP.getNumber(),
-                MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
-
-        MALMessageHeader expectedFinalHeader = new TestMessageHeader(
-                ipTestConsumer.getConsumer().getURI(),
-                TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
-                ipTestConsumer.getConsumer().getURI(),
-                new Time(System.currentTimeMillis()),
-                qos,
-                HeaderTestProcedure.PRIORITY,
-                HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE,
-                session,
-                sessionName,
-                InteractionType.PUBSUB,
-                new UOctet(MALPubSubOperation._REGISTER_STAGE),
-                null, // transaction id not checked here (see below)
-                MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
-                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
-                IPTestServiceInfo.MONITOR_OP.getNumber(),
-                MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
-                Boolean.FALSE);
+        // The tests were not passing because the timestamps
+        // need to be before the: IPTestDefinition testDef
+        long time_1 = System.currentTimeMillis();
+        long time_2 = System.currentTimeMillis();
 
         IPTestTransitionList transList = new IPTestTransitionList();
         List initialFaultyTransList = new LinkedList();
         List finalFaultyTransList = new LinkedList();
 
         boolean seenGoodTransition = false;
+        boolean seenFinalTransition = false;
+        boolean incompleteIP = false;
         int expectedTransitionCount = 0;
-        for (String trans : transistions) {
+        for (String trans : transitions) {
             IPTestTransitionType transition = IPTestTransitionTypeFromString(trans);
 
             if (trans.startsWith("_")) {
                 if (seenGoodTransition) {
                     finalFaultyTransList.add(transition);
                 } else {
-                    ++expectedTransitionCount;
                     initialFaultyTransList.add(transition);
                 }
-
-                // there should be no more transitions after a faulty one
-                break;
-            } else {
-                if (initialFaultyTransList.isEmpty()) {
-                    seenGoodTransition = true;
+                if (!seenFinalTransition) {
                     ++expectedTransitionCount;
+                    if (seenGoodTransition) {
+                        incompleteIP = true;
+                    }
+                    // there should be no more transitions after a faulty one
+                    seenFinalTransition = true;
+                }
+            } else {
+                seenGoodTransition = true;
+                if (!seenFinalTransition) {
+                    ++expectedTransitionCount;
+                    if (isFinalTransition(pattern, transition)) {
+                        seenFinalTransition = true;
+                    }
                 }
             }
 
             transList.add(new IPTestTransition(transition, null));
         }
 
+        LoggingBase.logMessage("Transitions count = " + expectedTransitionCount
+                + " (" + initialFaultyTransList.size() + "-" + finalFaultyTransList.size()
+                + "/" + transitions.length + ") incompleteIP=" + incompleteIP);
+
         IPTestDefinition testDef = new IPTestDefinition(String.valueOf(procedureId),
                 ipTestConsumer.getConsumer().getURI(),
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                qos,
+                QoSLevel.BESTEFFORT,
                 HeaderTestProcedure.PRIORITY,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                session, sessionName,
+                SessionType.LIVE, null,
+                supplementsValue,
                 transList,
                 new Time(System.currentTimeMillis()));
 
         ResponseListener monitor = new ResponseListener("PatternTest", expectedTransitionCount);
 
         setupInitialFaultyTransitions(initialFaultyTransList);
+        InteractionType interactionType = InteractionType.PUBSUB;
+        UOctet interactionStage = new UOctet(MALPubSubOperation._REGISTER_STAGE);
+        UShort operation = IPTestServiceInfo.MONITOR_OP.getNumber();
 
         if ("SUBMIT".equalsIgnoreCase(pattern)) {
-            expectedInitialHeader.setInteractionType(InteractionType.SUBMIT);
-            expectedInitialHeader.setInteractionStage(MALSubmitOperation.SUBMIT_STAGE);
+            interactionType = InteractionType.SUBMIT;
+            interactionStage = MALSubmitOperation.SUBMIT_STAGE;
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestServiceInfo.SUBMITMULTI_OP.getNumber());
+                operation = IPTestServiceInfo.SUBMITMULTI_OP.getNumber();
             } else {
-                expectedInitialHeader.setOperation(IPTestServiceInfo.TESTSUBMIT_OP.getNumber());
+                operation = IPTestServiceInfo.TESTSUBMIT_OP.getNumber();
             }
             testSubmit(monitor, ipTest, callMultiVersion, testDef);
         } else if ("REQUEST".equalsIgnoreCase(pattern)) {
-            expectedInitialHeader.setInteractionType(InteractionType.REQUEST);
-            expectedInitialHeader.setInteractionStage(MALRequestOperation.REQUEST_STAGE);
+            interactionType = InteractionType.REQUEST;
+            interactionStage = MALRequestOperation.REQUEST_STAGE;
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestServiceInfo.REQUESTMULTI_OP.getNumber());
+                operation = IPTestServiceInfo.REQUESTMULTI_OP.getNumber();
             } else {
                 if (callEmptyVersion) {
-                    expectedInitialHeader.setOperation(IPTestServiceInfo.TESTREQUESTEMPTYBODY_OP.getNumber());
+                    operation = IPTestServiceInfo.TESTREQUESTEMPTYBODY_OP.getNumber();
                 } else {
-                    expectedInitialHeader.setOperation(IPTestServiceInfo.REQUEST_OP.getNumber());
+                    operation = IPTestServiceInfo.REQUEST_OP.getNumber();
                 }
             }
             testRequest(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
         } else if ("INVOKE".equalsIgnoreCase(pattern)) {
-            expectedInitialHeader.setInteractionType(InteractionType.INVOKE);
-            expectedInitialHeader.setInteractionStage(MALInvokeOperation.INVOKE_STAGE);
+            interactionType = InteractionType.INVOKE;
+            interactionStage = MALInvokeOperation.INVOKE_STAGE;
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestServiceInfo.INVOKEMULTI_OP.getNumber());
+                operation = IPTestServiceInfo.INVOKEMULTI_OP.getNumber();
             } else {
                 if (callEmptyVersion) {
-                    expectedInitialHeader.setOperation(IPTestServiceInfo.TESTINVOKEEMPTYBODY_OP.getNumber());
+                    operation = IPTestServiceInfo.TESTINVOKEEMPTYBODY_OP.getNumber();
                 } else {
-                    expectedInitialHeader.setOperation(IPTestServiceInfo.INVOKE_OP.getNumber());
+                    operation = IPTestServiceInfo.INVOKE_OP.getNumber();
                 }
             }
+
             testInvoke(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
         } else if ("PROGRESS".equalsIgnoreCase(pattern)) {
-            expectedInitialHeader.setInteractionType(InteractionType.PROGRESS);
-            expectedInitialHeader.setInteractionStage(MALProgressOperation.PROGRESS_STAGE);
+            interactionType = InteractionType.PROGRESS;
+            interactionStage = MALProgressOperation.PROGRESS_STAGE;
             if (callMultiVersion) {
-                expectedInitialHeader.setOperation(IPTestServiceInfo.PROGRESSMULTI_OP.getNumber());
+                operation = IPTestServiceInfo.PROGRESSMULTI_OP.getNumber();
             } else {
                 if (callEmptyVersion) {
-                    expectedInitialHeader.setOperation(IPTestServiceInfo.TESTPROGRESSEMPTYBODY_OP.getNumber());
+                    operation = IPTestServiceInfo.TESTPROGRESSEMPTYBODY_OP.getNumber();
                 } else {
-                    expectedInitialHeader.setOperation(IPTestServiceInfo.PROGRESS_OP.getNumber());
+                    operation = IPTestServiceInfo.PROGRESS_OP.getNumber();
                 }
             }
             testProgress(monitor, ipTest, callMultiVersion, callEmptyVersion, testDef);
         }
 
-        MALMessageHeader msgHeader = addInitialHeaderAssertions(expectedInitialHeader);
+        MALMessage msg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
+        MALMessageHeader msgHeader = msg.getHeader();
 
-        expectedFinalHeader.setInteractionType(expectedInitialHeader.getInteractionType());
-        expectedFinalHeader.setOperation(expectedInitialHeader.getOperation());
-        expectedFinalHeader.setURIFrom(msgHeader.getURITo());
-        expectedFinalHeader.setTransactionId(msgHeader.getTransactionId());
+        MALMessageHeader expectedInitialHeader = new MALMessageHeader(
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
+                HeaderTestProcedure.AUTHENTICATION_ID,
+                msgHeader.getTo(),
+                new Time(time_1),
+                interactionType,
+                interactionStage,
+                null, // transaction id not checked here (see below)
+                MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                operation,
+                MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
+                Boolean.FALSE,
+                supplementsValue);
+
+        AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
+
+        MALMessageHeader expectedFinalHeader = new MALMessageHeader(
+                msgHeader.getTo(),
+                TestServiceProvider.IP_TEST_AUTHENTICATION_ID,
+                new Identifier(ipTestConsumer.getConsumer().getURI().getValue()),
+                new Time(time_2),
+                interactionType,
+                interactionStage,
+                msgHeader.getTransactionId(),
+                MALPrototypeHelper.MALPROTOTYPE_AREA_NUMBER,
+                IPTestServiceInfo.IPTEST_SERVICE_NUMBER,
+                expectedInitialHeader.getOperation(),
+                MALPrototypeHelper.MALPROTOTYPE_AREA.getVersion(),
+                Boolean.FALSE,
+                Helper.supplementsIPTestProvider);
 
         sendInitialFaultyTransitions(initialFaultyTransList, expectedFinalHeader);
 
@@ -243,14 +257,29 @@ public class PatternTest {
 
         try {
             LoggingBase.logMessage("PatternTest.waiting for responses");
-            retVal = monitor.cond.waitFor(10000);
+            retVal = monitor.cond.waitFor(1000);
         } catch (InterruptedException ex) {
             // do nothing, we are expecting this
         }
 
         LoggingBase.logMessage("PatternTest.waiting(" + retVal + ")");
+        if (incompleteIP) {
+            // some tests include a list of standard messages which do not complete the IP
+            // the IP is then completed with a final error message
+            // the testbed does not handle cleanly this case, which explains why the previous
+            // waitFor function ends in timeout
+            retVal = true;
+        }
         if (retVal) {
             sendFinalFaultyTransitions(finalFaultyTransList, expectedFinalHeader);
+            if (incompleteIP) {
+                // wait for the final message to be processed
+                try {
+                    LoggingBase.logMessage("PatternTest.waiting for final message");
+                    retVal = monitor.cond.waitFor(1000);
+                } catch (InterruptedException ex) {
+                }
+            }
 
             if ("SUBMIT".equalsIgnoreCase(pattern)) {
                 retVal = addSubmitReturnAssertions(monitor, procedureId, expectedFinalHeader);
@@ -280,17 +309,43 @@ public class PatternTest {
         }
     }
 
+    private MALMessageHeader generateHeaderWithInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage) {
+        return generateHeaderWithInteractionStage(expectedFinalHeader, interactionStage, expectedFinalHeader.getIsErrorMessage());
+    }
+
+    private MALMessageHeader generateHeaderWithIsError(MALMessageHeader expectedFinalHeader, Boolean isError) {
+        return generateHeaderWithInteractionStage(expectedFinalHeader, expectedFinalHeader.getInteractionStage(), isError);
+    }
+
+    private MALMessageHeader generateHeaderWithInteractionStage(MALMessageHeader expectedFinalHeader, UOctet interactionStage, Boolean isError) {
+        return new MALMessageHeader(
+                expectedFinalHeader.getFrom(),
+                expectedFinalHeader.getAuthenticationId(),
+                expectedFinalHeader.getTo(),
+                expectedFinalHeader.getTimestamp(),
+                expectedFinalHeader.getInteractionType(),
+                interactionStage,
+                expectedFinalHeader.getTransactionId(),
+                expectedFinalHeader.getServiceArea(),
+                expectedFinalHeader.getService(),
+                expectedFinalHeader.getOperation(),
+                expectedFinalHeader.getServiceVersion(),
+                isError,
+                expectedFinalHeader.getSupplements());
+    }
+
     private boolean addSubmitReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
         MALMessageHeader msgHeaderFinal = null;
+        Boolean isError = expectedFinalHeader.getIsErrorMessage();
 
         if ((1 == procedureId) || (3 == procedureId)) {
             msgHeaderFinal = monitor.submitAckReceivedMsgHeader;
         } else if ((2 == procedureId) || (4 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            isError = Boolean.TRUE;
             msgHeaderFinal = monitor.submitErrorReceivedMsgHeader;
         }
 
-        expectedFinalHeader.setInteractionStage(MALSubmitOperation.SUBMIT_ACK_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALSubmitOperation.SUBMIT_ACK_STAGE, isError);
         AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
 
         LoggingBase.logMessage("PatternTest.testSubmit(" + msgHeaderFinal + ")");
@@ -314,15 +369,16 @@ public class PatternTest {
 
     private boolean addRequestReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
         MALMessageHeader msgHeaderFinal = null;
+        Boolean isError = expectedFinalHeader.getIsErrorMessage();
 
         if ((1 == procedureId) || (3 == procedureId)) {
             msgHeaderFinal = monitor.requestResponseReceivedMsgHeader;
         } else if ((2 == procedureId) || (4 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            isError = Boolean.TRUE;
             msgHeaderFinal = monitor.requestErrorReceivedMsgHeader;
         }
 
-        expectedFinalHeader.setInteractionStage(MALRequestOperation.REQUEST_RESPONSE_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALRequestOperation.REQUEST_RESPONSE_STAGE, isError);
         AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
 
         LoggingBase.logMessage("PatternTest.testRequest(" + msgHeaderFinal + ")");
@@ -330,7 +386,8 @@ public class PatternTest {
         return (null != msgHeaderFinal);
     }
 
-    private void testInvoke(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
+    private void testInvoke(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion,
+            boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
         LoggingBase.logMessage("PatternTest.testInvoke(" + callMultiVersion + ")");
 
         if (callMultiVersion) {
@@ -345,44 +402,60 @@ public class PatternTest {
     }
 
     private boolean addInvokeReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
-        expectedFinalHeader.setInteractionStage(MALInvokeOperation.INVOKE_ACK_STAGE);
-
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_ACK_STAGE);
         MALMessageHeader msgHeaderAck;
-        MALMessageHeader msgHeaderFinal;
+        boolean limitedCheck = false;
 
         if ((3 == procedureId) || (6 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
         } else if (7 == procedureId) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
-            expectedFinalHeader.setInteractionStage(MALInvokeOperation.INVOKE_RESPONSE_STAGE);
+            // the former version of the testbed expects a RESPONSE_ERROR message,
+            // which is actually the initial faulty message sent by the test case
+            // however when the MAL receives a RESPONSE_ERROR, it should not pass it to the consumer
+            // as this violates the rules of the Invoke IP.
+            // The MAL should then issue an ACK_ERROR indication, with an INCORRECT_STATE error
+            // as specified in section 3.3.6.
+            limitedCheck = true;
+        } else if (8 == procedureId) {
+            msgHeaderAck = monitor.invokeAckReceivedMsgHeader;
+            // the former version of the testbed includes a bug that handles the[ACK,_ACK_] as a [_ACK_,ACK].
+            // This test case should receive a regular ACK, followed by a RESPONSE_ERROR.
         } else {
             msgHeaderAck = monitor.invokeAckReceivedMsgHeader;
         }
 
-        AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader);
-
-        expectedFinalHeader.setInteractionStage(MALInvokeOperation.INVOKE_RESPONSE_STAGE);
+        AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader, limitedCheck);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
+        MALMessageHeader msgHeaderFinal;
 
         if ((2 == procedureId) || (5 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if ((1 == procedureId) || (4 == procedureId)) {
             msgHeaderFinal = monitor.invokeResponseReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
+        } else if (8 == procedureId) {
+            msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
+            // The header will be unchanged. However, the error field shall
+            // contain an INCORRECT_STATE error as specified in section 3.3.6.
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_ACK_STAGE);
+            AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader, true);
         } else {
             // this is so that we return true on return
             msgHeaderFinal = msgHeaderAck;
         }
 
-        LoggingBase.logMessage("PatternTest.testInvoke(" + msgHeaderAck + "," + msgHeaderFinal + ")");
+        LoggingBase.logMessage("PatternTest.addInvokeReturnAssertions(\n" + msgHeaderAck + " ,\n" + msgHeaderFinal + ")");
 
         return (null != msgHeaderFinal);
     }
 
-    private void testProgress(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion, boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
+    private void testProgress(ResponseListener monitor, IPTestStub ipTest, boolean callMultiVersion,
+            boolean callEmptyVersion, IPTestDefinition testDef) throws Exception {
         LoggingBase.logMessage("PatternTest.testProgress(" + callMultiVersion + ")");
 
         synchronized (monitor) {
@@ -399,37 +472,55 @@ public class PatternTest {
     }
 
     private boolean addProgressReturnAssertions(ResponseListener monitor, int procedureId, MALMessageHeader expectedFinalHeader) throws Exception {
-        expectedFinalHeader.setInteractionStage(MALProgressOperation.PROGRESS_ACK_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_ACK_STAGE);
 
         MALMessageHeader msgHeaderAck;
         MALMessageHeader msgHeaderUpdate1;
         MALMessageHeader msgHeaderUpdate2;
         MALMessageHeader msgHeaderFinal = null;
+        boolean limitedCheck = false;
 
-        if ((3 == procedureId) || (9 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+        if ((3 == procedureId) || (15 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-        } else if ((10 == procedureId) || (11 == procedureId) || (12 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+        } else if ((10 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.FALSE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-            if (12 == procedureId) {
-                expectedFinalHeader.setInteractionStage(MALProgressOperation.PROGRESS_RESPONSE_STAGE);
-            } else {
-                expectedFinalHeader.setInteractionStage(MALProgressOperation.PROGRESS_UPDATE_STAGE);
-            }
+        } else if ((11 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
+            msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
+        } else if ((12 == procedureId)) {
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.FALSE);
+            msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
+            // The header will be unchanged. However, the error field shall
+            // contain an INCORRECT_STATE error as specified in section 3.3.6.
+            limitedCheck = true;
         } else {
             msgHeaderAck = monitor.progressAckReceivedMsgHeader;
         }
 
-        AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader);
+        AssertionHelper.checkHeader("PatternTest.checkAckHeader", assertions, msgHeaderAck, expectedFinalHeader, limitedCheck);
 
-        expectedFinalHeader.setInteractionStage(MALProgressOperation.PROGRESS_UPDATE_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
 
         if ((4 == procedureId) || (5 == procedureId) || ((13 <= procedureId) && (14 >= procedureId))) {
             msgHeaderUpdate1 = monitor.progressUpdate1ReceivedMsgHeader;
             msgHeaderUpdate2 = monitor.progressUpdate2ReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkUpdate1Header", assertions, msgHeaderUpdate1, expectedFinalHeader);
             AssertionHelper.checkHeader("PatternTest.checkUpdate2Header", assertions, msgHeaderUpdate2, expectedFinalHeader);
+        } else if (9 == procedureId) {
+            LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader");
+            msgHeaderUpdate1 = monitor.progressUpdateErrorReceivedMsgHeader;
+            LoggingBase.logMessage("get monitor.progressUpdateErrorReceivedMsgHeader: " + msgHeaderUpdate1);
+            expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_ACK_STAGE);
+            // The header will be unchanged. However, the error field shall
+            // contain an INCORRECT_STATE error as specified in section 3.3.6.
+            AssertionHelper.checkHeader("PatternTest.checkUpdate1Header", assertions, msgHeaderUpdate1, expectedFinalHeader, true);
+            // this is so that we return true on return
+            msgHeaderUpdate2 = msgHeaderAck;
         } else {
             // this is so that we return true on return
             msgHeaderUpdate1 = msgHeaderAck;
@@ -437,15 +528,15 @@ public class PatternTest {
         }
 
         if ((5 == procedureId) || (13 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressUpdateErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         }
 
-        expectedFinalHeader.setInteractionStage(MALProgressOperation.PROGRESS_RESPONSE_STAGE);
+        expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
 
         if ((2 == procedureId) || (6 == procedureId) || (8 == procedureId) || (14 == procedureId)) {
-            expectedFinalHeader.setIsErrorMessage(Boolean.TRUE);
+            expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
         } else if ((1 == procedureId) || (4 == procedureId) || (7 == procedureId)) {
@@ -479,14 +570,14 @@ public class PatternTest {
     }
 
     private void setupInitialFaultyTransitions(List initialFaultyTransList) {
-        if (0 < initialFaultyTransList.size()) {
+        if (!initialFaultyTransList.isEmpty()) {
             LoggingBase.logMessage("PatternTest.setupInitialFaultyTransitions blocking incoming messages to set up faulty initial messages");
             ep.blockReceivedMessages();
         }
     }
 
     private void sendInitialFaultyTransitions(List initialFaultyTransList, MALMessageHeader hdr) throws Exception {
-        if (0 < initialFaultyTransList.size()) {
+        if (!initialFaultyTransList.isEmpty()) {
             for (int i = 0; i < initialFaultyTransList.size(); i++) {
                 IPTestTransitionType transition = (IPTestTransitionType) initialFaultyTransList.get(i);
 
@@ -499,7 +590,7 @@ public class PatternTest {
     }
 
     private void sendFinalFaultyTransitions(List finalFaultyTransList, MALMessageHeader hdr) throws Exception {
-        if (0 < finalFaultyTransList.size()) {
+        if (!finalFaultyTransList.isEmpty()) {
             for (int i = 0; i < finalFaultyTransList.size(); i++) {
                 IPTestTransitionType transition = (IPTestTransitionType) finalFaultyTransList.get(i);
 
@@ -508,47 +599,34 @@ public class PatternTest {
         }
     }
 
-    private MALMessageHeader addInitialHeaderAssertions(MALMessageHeader expectedInitialHeader) {
-        MALMessage msg = TransportInterceptor.instance().getLastSentMessage(ipTestConsumer.getConsumer().getURI());
-        MALMessageHeader msgHeader = msg.getHeader();
-
-        expectedInitialHeader.setURITo(msgHeader.getURITo());
-
-        AssertionHelper.checkHeader("PatternTest.checkHeader", assertions, msgHeader, expectedInitialHeader);
-
-        return msgHeader;
-    }
-
     private void transmitBrokenMessage(MALMessageHeader srcHdr, IPTestTransitionType transitionType) throws Exception {
         boolean isError = false;
 
-        if ((IPTestTransitionType.ACK_ERROR == transitionType) || (IPTestTransitionType.UPDATE_ERROR == transitionType) || (IPTestTransitionType.RESPONSE_ERROR == transitionType)) {
+        if ((IPTestTransitionType.ACK_ERROR == transitionType)
+                || (IPTestTransitionType.UPDATE_ERROR == transitionType)
+                || (IPTestTransitionType.RESPONSE_ERROR == transitionType)) {
             isError = true;
         }
 
-        MALMessageHeader brokenHeader = new TestMessageHeader(srcHdr.getURIFrom(),
+        MALMessageHeader brokenHeader = new MALMessageHeader(
+                srcHdr.getFrom(),
                 srcHdr.getAuthenticationId(),
-                srcHdr.getURITo(),
+                srcHdr.getTo(),
                 srcHdr.getTimestamp(),
-                srcHdr.getQoSlevel(),
-                srcHdr.getPriority(),
-                srcHdr.getDomain(),
-                srcHdr.getNetworkZone(),
-                srcHdr.getSession(),
-                srcHdr.getSessionName(),
                 srcHdr.getInteractionType(),
                 transitionTypeToInteractionStage(transitionType, srcHdr.getInteractionType()),
                 srcHdr.getTransactionId(),
                 srcHdr.getServiceArea(),
                 srcHdr.getService(),
                 srcHdr.getOperation(),
-                srcHdr.getAreaVersion(),
-                isError);
+                srcHdr.getServiceVersion(),
+                isError,
+                srcHdr.getSupplements());
 
         MALMessage brokenMessage;
         if (isError) {
             brokenMessage = ep.createTestMessage(brokenHeader,
-                    new MALStandardError(MALHelper.INTERNAL_ERROR_NUMBER, null), new HashMap());
+                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new HashMap());
         } else {
             brokenMessage = ep.createTestMessage(brokenHeader, (Element) null, new HashMap());
         }
@@ -628,19 +706,19 @@ public class PatternTest {
         public MALMessageHeader progressUpdate2ReceivedMsgHeader = null;
         public MALMessageHeader progressResponseReceivedMsgHeader = null;
         public MALMessageHeader submitErrorReceivedMsgHeader = null;
-        public MALStandardError submitErrorReceivedError = null;
+        public MOErrorException submitErrorReceivedError = null;
         public MALMessageHeader requestErrorReceivedMsgHeader = null;
-        public MALStandardError requestErrorReceivedError = null;
+        public MOErrorException requestErrorReceivedError = null;
         public MALMessageHeader invokeAckErrorReceivedMsgHeader = null;
-        public MALStandardError invokeAckErrorReceivedError = null;
+        public MOErrorException invokeAckErrorReceivedError = null;
         public MALMessageHeader invokeResponseErrorReceivedMsgHeader = null;
-        public MALStandardError invokeResponseErrorReceivedError = null;
+        public MOErrorException invokeResponseErrorReceivedError = null;
         public MALMessageHeader progressAckErrorReceivedMsgHeader = null;
-        public MALStandardError progressAckErrorReceivedError = null;
+        public MOErrorException progressAckErrorReceivedError = null;
         public MALMessageHeader progressUpdateErrorReceivedMsgHeader = null;
-        public MALStandardError progressUpdateErrorReceivedError = null;
+        public MOErrorException progressUpdateErrorReceivedError = null;
         public MALMessageHeader progressResponseErrorReceivedMsgHeader = null;
-        public MALStandardError progressResponseErrorReceivedError = null;
+        public MOErrorException progressResponseErrorReceivedError = null;
         int receivedMessages = 0;
         final String loggingName;
         final int expectedMessages;
@@ -677,7 +755,7 @@ public class PatternTest {
 
         @Override
         public synchronized void testSubmitErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -687,7 +765,7 @@ public class PatternTest {
         }
 
         @Override
-        public void submitMultiErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void submitMultiErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             testSubmitErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -712,7 +790,7 @@ public class PatternTest {
 
         @Override
         public synchronized void requestErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -722,12 +800,12 @@ public class PatternTest {
         }
 
         @Override
-        public void requestMultiErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void requestMultiErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             requestErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testRequestEmptyBodyErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testRequestEmptyBodyErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             requestErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -752,7 +830,7 @@ public class PatternTest {
 
         @Override
         public synchronized void invokeAckErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -762,12 +840,12 @@ public class PatternTest {
         }
 
         @Override
-        public void invokeMultiAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeMultiAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeAckErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testInvokeEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testInvokeEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeAckErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -792,7 +870,7 @@ public class PatternTest {
 
         @Override
         public synchronized void invokeResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -802,12 +880,12 @@ public class PatternTest {
         }
 
         @Override
-        public void invokeMultiResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeMultiResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testInvokeEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testInvokeEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             invokeResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -832,7 +910,7 @@ public class PatternTest {
 
         @Override
         public synchronized void progressAckErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -842,12 +920,12 @@ public class PatternTest {
         }
 
         @Override
-        public void progressMultiAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressMultiAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressAckErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testProgressEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testProgressEmptyBodyAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressAckErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -876,7 +954,7 @@ public class PatternTest {
 
         @Override
         public synchronized void progressUpdateErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -886,12 +964,12 @@ public class PatternTest {
         }
 
         @Override
-        public void progressMultiUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressMultiUpdateErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressUpdateErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testProgressEmptyBodyUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testProgressEmptyBodyUpdateErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressUpdateErrorReceived(msgHeader, error, qosProperties);
         }
 
@@ -916,7 +994,7 @@ public class PatternTest {
 
         @Override
         public synchronized void progressResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             checkTransactionId(msgHeader);
 
             ++receivedMessages;
@@ -926,19 +1004,21 @@ public class PatternTest {
         }
 
         @Override
-        public void progressMultiResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressMultiResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
         @Override
-        public void testProgressEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testProgressEmptyBodyResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             progressResponseErrorReceived(msgHeader, error, qosProperties);
         }
 
         protected void checkTransactionId(MALMessageHeader msgHeader) {
             LoggingBase.logMessage(loggingName + " received T[" + msgHeader.getTransactionId()
-                    + " : " + msgHeader.getInteractionType().getOrdinal() + " : "
-                    + msgHeader.getInteractionStage().getValue() + "]");
+                    + " : " + msgHeader.getInteractionType().getOrdinal()
+                    + " : " + msgHeader.getInteractionStage().getValue()
+                    + " : " + msgHeader.getIsErrorMessage()
+                    + "]");
         }
     }
 }

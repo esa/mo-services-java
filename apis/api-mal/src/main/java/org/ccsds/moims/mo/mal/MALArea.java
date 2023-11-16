@@ -20,11 +20,9 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -34,22 +32,25 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALArea {
 
+    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
     private final UShort number;
     private final Identifier name;
     private final UOctet version;
-    private final ArrayList<MALService> services = new ArrayList<>();
-    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
+    private final Element[] elements;
+    private final MALService[] services;
 
     /**
      * MALArea constructor.
      *
-     * @param number The number of the area.
-     * @param name The name of the area.
-     * @param version The area version.
+     * @param number The number of the Area.
+     * @param name The name of the Area.
+     * @param version The Area version.
+     * @param elements The elements in this Area.
+     * @param services The services in this Area.
      * @throws IllegalArgumentException If either argument is null.
      */
-    public MALArea(final UShort number, final Identifier name, final UOctet version)
-            throws java.lang.IllegalArgumentException {
+    public MALArea(UShort number, Identifier name, UOctet version,
+            Element[] elements, MALService[] services) {
         if (number == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
@@ -63,6 +64,8 @@ public class MALArea {
         this.number = number;
         this.name = name;
         this.version = version;
+        this.elements = elements;
+        this.services = services;
     }
 
     /**
@@ -97,7 +100,7 @@ public class MALArea {
      *
      * @return The services in this MAL Area.
      */
-    public final ArrayList<MALService> getServices() {
+    public final MALService[] getServices() {
         return services;
     }
 
@@ -108,27 +111,21 @@ public class MALArea {
      * @return The found service or null if not found.
      */
     public synchronized MALService getServiceByNumber(final UShort serviceNumber) {
+        if (serviceNumbers.isEmpty()) {
+            for (MALService service : services) {
+                serviceNumbers.put(service.getServiceNumber().getValue(), service);
+            }
+        }
+
         return serviceNumbers.get(serviceNumber.getValue());
     }
 
     /**
-     * Adds a service to this Area.
+     * Returns the elements in this Area.
      *
-     * @param service The MALService object to add.
-     * @throws IllegalArgumentException Thrown if argument is NULL.
-     * @throws MALException Thrown if service is already contained.
+     * @return The elements in this Area.
      */
-    public synchronized void addService(final MALService service) throws IllegalArgumentException, MALException {
-        if (!serviceNumbers.containsKey(service.getServiceNumber().getValue())) {
-            //service.setArea(this);
-            services.add(service);
-            serviceNumbers.put(service.getServiceNumber().getValue(), service);
-            //serviceNames.put(service.getName().getValue(), service);
-        } else {
-            // throw new MALException("Service already included in area");
-            // Just log a message instead of throwing an exception!
-            Logger.getLogger(MALArea.class.getName()).log(Level.WARNING,
-                    "Service already included in area! Service: {0}", service.getName());
-        }
+    public Element[] getElements() {
+        return elements;
     }
 }

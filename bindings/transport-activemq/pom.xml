@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transport-activemq</artifactId>
     <packaging>jar</packaging>
-    <version>9.0</version>
+    <version>10.0</version>
 
     <name>ESA MO Transport - ActiveMQ JMS</name>
     <description>A Java JMS transport for CCSDS MAL based on Apache ActiveMQ</description>

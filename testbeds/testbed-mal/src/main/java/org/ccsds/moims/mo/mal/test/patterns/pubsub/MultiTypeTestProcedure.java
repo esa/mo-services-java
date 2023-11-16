@@ -40,11 +40,11 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -78,14 +78,14 @@ public class MultiTypeTestProcedure extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), shared).getStub();
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true,
-                        Helper.get1TestKey(), expectedErrorCode);
+                        Helper.get1TestKey(), Helper.get1TestKeyType(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         return true;
@@ -98,14 +98,15 @@ public class MultiTypeTestProcedure extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), shared).getStub();
         consumers.addElement(newIPTest);
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         AttributeList values = new AttributeList(A_KEY_VALUE);
         filters.add(new SubscriptionFilter(Helper.key1, values));
 
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
 
         MonitorListener listener = new MonitorListener();
         listeners.addElement(listener);
@@ -117,8 +118,10 @@ public class MultiTypeTestProcedure extends LoggingBase {
     public boolean publish() throws Exception {
         logMessage("MultiTypeTestProcedure.publish()");
 
+        AttributeList values = new AttributeList(A_KEY_VALUE);
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(A_KEY_VALUE)));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, values.getAsNullableAttributeList()));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(new Integer(0)));
@@ -151,7 +154,8 @@ public class MultiTypeTestProcedure extends LoggingBase {
         TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
                 QOS_LEVEL, PRIORITY,
                 HeaderTestProcedure.DOMAIN,
-                HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, true, expectedErrorCode);
+                HeaderTestProcedure.NETWORK_ZONE, SESSION,
+                SESSION_NAME, true, expectedErrorCode);
         ipTest.publishDeregister(testPublishDeregister);
         return true;
     }
@@ -165,7 +169,7 @@ public class MultiTypeTestProcedure extends LoggingBase {
                 listener.monitorCond.reset();
             }
 
-            if (listener.getNotifiedUpdateHeaders().size() != 1) {
+            if (listener.getNotifiedUpdateHeader() == null) {
                 return false;
             }
         }
@@ -175,36 +179,36 @@ public class MultiTypeTestProcedure extends LoggingBase {
     static class MonitorListener extends IPTestAdapter {
 
         private final BooleanCondition monitorCond = new BooleanCondition();
-        private UpdateHeaderList notifiedUpdateHeaders;
-        private TestUpdateList notifiedUpdates;
-        private ElementList notifiedElementUpdates;
+        private UpdateHeader notifiedUpdateHeader;
+        private TestUpdate notifiedUpdate;
+        private Element notifiedElementUpdate;
 
         @Override
         public void monitorMultiNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, ElementList _ElementList3, Map qosProperties) {
-            notifiedUpdateHeaders = updateHeaderList;
-            notifiedUpdates = updateList;
-            notifiedElementUpdates = _ElementList3;
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Element _Element, Map qosProperties) {
+            notifiedUpdateHeader = updateHeader;
+            notifiedUpdate = update;
+            notifiedElementUpdate = _Element;
             monitorCond.set();
         }
 
         public void reset() {
-            notifiedUpdateHeaders = null;
-            notifiedUpdates = null;
-            notifiedElementUpdates = null;
+            notifiedUpdateHeader = null;
+            notifiedUpdate = null;
+            notifiedElementUpdate = null;
         }
 
-        public TestUpdateList getNotifiedUpdates() {
-            return notifiedUpdates;
+        public UpdateHeader getNotifiedUpdateHeader() {
+            return notifiedUpdateHeader;
         }
 
-        public ElementList getNotifiedElementUpdates() {
-            return notifiedElementUpdates;
+        public TestUpdate getNotifiedUpdate() {
+            return notifiedUpdate;
         }
 
-        public UpdateHeaderList getNotifiedUpdateHeaders() {
-            return notifiedUpdateHeaders;
+        public Element getNotifiedElementUpdate() {
+            return notifiedElementUpdate;
         }
     }
 }

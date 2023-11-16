@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -29,11 +29,11 @@ import org.ccsds.moims.mo.mal.MALException;
  *
  * @param <T> The type of the MO Object.
  */
-public class ObjectRef<T> implements Attribute {
+public class ObjectRef<T extends Element> implements Attribute {
 
-    private final String domain;
-    private final Identifier area;
-    private final Identifier type;
+    private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
+    private final IdentifierList domain;
+    private final Long absoluteSFP;
     private final Identifier key;
     private final UInteger objectVersion;
 
@@ -41,27 +41,21 @@ public class ObjectRef<T> implements Attribute {
      * Default constructor.
      */
     public ObjectRef() {
-        this.domain = "";
-        this.area = new Identifier();
-        this.type = new Identifier();
-        this.key = new Identifier();
-        this.objectVersion = new UInteger();
+        this(new IdentifierList(), 0L, new Identifier(), new UInteger());
     }
 
     /**
      * Constructor.
      *
      * @param domain The domain.
-     * @param area The area.
-     * @param type The type.
+     * @param absoluteSFP The absolute short form part.
      * @param key The key.
      * @param objectVersion The object version.
      */
-    public ObjectRef(final String domain, final Identifier area, final Identifier type,
+    public ObjectRef(final IdentifierList domain, final Long absoluteSFP,
             final Identifier key, final UInteger objectVersion) {
         this.domain = domain;
-        this.area = area;
-        this.type = type;
+        this.absoluteSFP = absoluteSFP;
         this.key = key;
         this.objectVersion = objectVersion;
     }
@@ -76,26 +70,17 @@ public class ObjectRef<T> implements Attribute {
      *
      * @return the domain.
      */
-    public String getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
     /**
-     * Returns the area.
+     * Returns the absoluteSFP.
      *
-     * @return the area.
+     * @return the absoluteSFP.
      */
-    public Identifier getArea() {
-        return area;
-    }
-
-    /**
-     * Returns the type.
-     *
-     * @return the type.
-     */
-    public Identifier getType() {
-        return type;
+    public Long getabsoluteSFP() {
+        return absoluteSFP;
     }
 
     /**
@@ -166,10 +151,7 @@ public class ObjectRef<T> implements Attribute {
         if (!domain.equals(((ObjectRef) obj).getDomain())) {
             return false;
         }
-        if (!area.equals(((ObjectRef) obj).getArea())) {
-            return false;
-        }
-        if (!type.equals(((ObjectRef) obj).getType())) {
+        if (!absoluteSFP.equals(((ObjectRef) obj).getabsoluteSFP())) {
             return false;
         }
         if (!key.equals(((ObjectRef) obj).getKey())) {
@@ -183,15 +165,13 @@ public class ObjectRef<T> implements Attribute {
 
     @Override
     public int hashCode() {
-        return domain.hashCode() + area.hashCode() + type.hashCode()
+        return domain.hashCode() + absoluteSFP.hashCode()
                 + key.hashCode() + objectVersion.hashCode();
     }
 
     @Override
     public String toString() {
-        return String.valueOf(domain) + ":" + String.valueOf(area) + ":"
-                + String.valueOf(type) + ":" + String.valueOf(key) + ":"
-                + String.valueOf(objectVersion) + ":";
+        return String.valueOf(domain) + ":" + String.valueOf(absoluteSFP) + ":"
+                + String.valueOf(key) + ":" + String.valueOf(objectVersion) + ":";
     }
-    private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
 }

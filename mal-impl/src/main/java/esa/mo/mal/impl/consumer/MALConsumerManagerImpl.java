@@ -21,8 +21,9 @@
 package esa.mo.mal.impl.consumer;
 
 import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
@@ -33,7 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 /**
  * Implements the MALConsumerManager interface.
  */
-public class MALConsumerManagerImpl extends MALClose implements MALConsumerManager {
+public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable {
 
     private final MALContextImpl impl;
 
@@ -43,8 +44,6 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
      * @param impl MAL implementation.
      */
     public MALConsumerManagerImpl(final MALContextImpl impl) {
-        super(impl);
-
         this.impl = impl;
     }
 
@@ -60,9 +59,12 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             final Identifier sessionName,
             final QoSLevel qosLevel,
             final Map qosProps,
-            final UInteger priority) throws MALException {
-        return (MALConsumer) addChild(new MALConsumerImpl(impl,
-                this,
+            final UInteger priority,
+            final NamedValueList supplements) throws MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
+        return new MALConsumerImpl(impl,
                 localName,
                 uriTo,
                 brokerUri,
@@ -74,7 +76,8 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
                 sessionName,
                 qosLevel,
                 qosProps,
-                priority));
+                priority,
+                supplements);
     }
 
     @Override
@@ -89,10 +92,13 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
             final Identifier sessionName,
             final QoSLevel qosLevel,
             final Map qosProps,
-            final UInteger priority) 
+            final UInteger priority,
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
-        return (MALConsumer) addChild(new MALConsumerImpl(impl,
-                this,
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
+        return new MALConsumerImpl(impl,
                 endPoint,
                 uriTo,
                 brokerUri,
@@ -104,6 +110,12 @@ public class MALConsumerManagerImpl extends MALClose implements MALConsumerManag
                 sessionName,
                 qosLevel,
                 qosProps,
-                priority));
+                priority);
     }
+
+    @Override
+    public void close() throws MALException {
+        impl.close();
+    }
+
 }

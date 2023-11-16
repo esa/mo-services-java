@@ -76,8 +76,6 @@ public class TestMAL {
         MALProviderManager providerMgr = mal.createProviderManager();
         MALConsumerManager consumerMgr = mal.createConsumerManager();
 
-        org.ccsds.moims.mo.perftest.PerfTestHelper.deepInit(MALContextFactory.getElementsRegistry());
-
         Date now = new Date();
         Time timestamp = new Time(now.getTime());
 
@@ -94,7 +92,8 @@ public class TestMAL {
                 new UInteger(1),
                 System.getProperties(),
                 false,
-                null);
+                null,
+                new NamedValueList());
 
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("ccsds"));
@@ -112,7 +111,8 @@ public class TestMAL {
                 new Identifier("LIVE"),
                 QoSLevel.ASSURED,
                 System.getProperties(),
-                new UInteger(0));
+                new UInteger(0),
+                null);
 
         PerfTestStub testService = new PerfTestStub(serviceConsumer);
 

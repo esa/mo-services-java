@@ -37,13 +37,10 @@ import javax.xml.bind.Unmarshaller;
 /**
  * Small helper class to load in MO XML specifications via JAXB
  */
-public abstract class XmlHelper {
+public class XmlHelper {
 
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.xsd");
     private static JAXBContext jc = null;
-
-    private XmlHelper() {
-    }
 
     public static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(
             final File directory) throws IOException, JAXBException {
@@ -53,7 +50,7 @@ public abstract class XmlHelper {
             return specList;
         }
 
-        final File xmlFiles[] = directory.listFiles();
+        final File[] xmlFiles = directory.listFiles();
 
         for (File file : xmlFiles) {
             if (file.isFile()) {
@@ -74,6 +71,11 @@ public abstract class XmlHelper {
                             "(3) Exception thrown during the processing of XML file: {0}",
                             file.getAbsolutePath());
                     throw ex;
+                } catch (Exception ex) {
+                    LOGGER.log(Level.WARNING,
+                            "(4) Exception thrown during the processing of XML file: {0}",
+                            file.getAbsolutePath());
+                    throw ex;
                 }
             }
         }
@@ -89,8 +91,9 @@ public abstract class XmlHelper {
 
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
         final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-        return new AbstractMap.SimpleEntry<>((SpecificationType) rootElement.getValue(),
-                new XmlSpecification(is, rootElement));
+        SpecificationType specType = (SpecificationType) rootElement.getValue();
+        XmlSpecification xmlSpec = new XmlSpecification(is, rootElement);
+        return new AbstractMap.SimpleEntry<>(specType, xmlSpec);
     }
 
     public final static class XmlSpecification {

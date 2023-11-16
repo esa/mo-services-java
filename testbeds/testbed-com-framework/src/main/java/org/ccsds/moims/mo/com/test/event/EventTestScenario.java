@@ -33,11 +33,13 @@ import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.LongList;
@@ -153,7 +155,7 @@ public class EventTestScenario extends LoggingBase {
      */
     public long createInstanceOfObjectAInDomainWithDescription(String domain, String description) throws Exception {
         logMessage(loggingClassName + ":createInstanceOfObjectAInDomainWithDescription domain = "
-                + domain + " desc = " + description);
+                + domain + " description = " + description);
         long retValue = LocalMALInstance.instance().eventTestStub().createinstance(
                 COMTestHelper.TEST_OBJECT_A, domain, description, null);
 
@@ -273,15 +275,9 @@ public class EventTestScenario extends LoggingBase {
         final IdentifierList domain = new IdentifierList();
         domain.add(new Identifier(strDomain));
         EventStub evStub = LocalMALInstance.instance().eventStub(domain);
-        /*
-    EntityKeyList ekl = new EntityKeyList();
-    EntityRequestList erl = new EntityRequestList();
-    ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
-    erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-         */
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
+        Subscription sub = new Subscription(new Identifier("SubA"), null, null, filters);
         evStub.monitorEventRegister(sub, testEventAdapter);
         eventDomain = strDomain;
         logMessage(loggingClassName + ":registerForEvents Complete");
@@ -318,12 +314,12 @@ public class EventTestScenario extends LoggingBase {
      */
     public String creationEventReceivedForObjectInDomainWithInstanceIdentifier(
             String sourceObject, String sourceDomain, String sourceInstId) throws Exception {
-        logMessage(loggingClassName + ":creationEventReceivedForObjectInDomainWithInstanceIdentifier "
-                + sourceObject + " " + sourceDomain + " " + sourceInstId);
+        logMessage(loggingClassName + ":creationEventReceivedForObjectInDomainWithInstanceIdentifier"
+                + " sourceObject=" + sourceObject + " sourceDomain=" + sourceDomain + " sourceInstId=" + sourceInstId);
         waitForReasonableAmountOfTime();   // Allow time for incoming events
+        String objNo = objToObjectNo(sourceObject);
         return eventDetailsList.eventExists(COMTestHelper.TEST_OBJECT_CREATION_NO,
-                objToObjectNo(sourceObject), sourceDomain, sourceInstId);
-
+                objNo, sourceDomain, sourceInstId);
     }
 
     /**
@@ -408,7 +404,6 @@ public class EventTestScenario extends LoggingBase {
         logMessage(loggingClassName + ":creationEventElementValidForObject " + instIndex + " " + description);
         return eventDetailsList.get(Integer.parseInt(instIndex)).creationElementValid(
                 COMTestHelper.TEST_OBJECT_CREATION_NO, description, true);
-
     }
 
     /**
@@ -570,7 +565,9 @@ public class EventTestScenario extends LoggingBase {
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent" + instIndex);
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
-        boolean bMatch = archiveDetails.getInstId().equals(ev.updateHeader.getKeyValues().get(2));
+        Attribute attVal = ev.updateHeader.getKeyValues().get(2).getValue();
+        Long myLong1 = (Long) Attribute.attribute2JavaType(attVal);
+        boolean bMatch = archiveDetails.getInstId().equals(myLong1);
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
         return bMatch;
     }
@@ -597,7 +594,8 @@ public class EventTestScenario extends LoggingBase {
         LoggingBase.logMessage("ArchiveScenario.retrieveArchiveEntryForEvent()");
         boolean bRetrieveValid = false;
         // Get the events
-        EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
+        Integer id = Integer.valueOf(instIndex);
+        EventDetails ev = eventDetailsList.get(id);
         // reset the previous results
         retrievedArchiveDetailsList = null;
         retrievedObjectList = null;
@@ -607,11 +605,12 @@ public class EventTestScenario extends LoggingBase {
             IdentifierList domainId = new IdentifierList();
             domainId.add(new Identifier(eventDomain));
             // Set instance
-            Long instanceId = (Long) ev.getUpdateHeader().getKeyValues().get(2);
+            Attribute attVal = ev.getUpdateHeader().getKeyValues().get(2).getValue();
+            Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
             LongList instanceIdsToRetrieve = new LongList();
             instanceIdsToRetrieve.add(instanceId);
             // Set Object Type
-            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).toString());
+            Integer objectNumber = Integer.decode(ev.getUpdateHeader().getKeyValues().get(0).getValue().toString());
             objectType = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(objectNumber));
             LocalMALInstance.instance().archiveStub().retrieve(objectType, domainId,
@@ -641,7 +640,7 @@ public class EventTestScenario extends LoggingBase {
     }
 
     public void waitForReasonableAmountOfTime() throws Exception {
-        Thread.sleep(100);
+        Thread.sleep(500);
     }
 
     /**
@@ -653,7 +652,7 @@ public class EventTestScenario extends LoggingBase {
 
         @Override
         public void retrieveResponseReceived(MALMessageHeader msgHeader,
-                ArchiveDetailsList archiveDetailsList, ElementList objectList,
+                ArchiveDetailsList archiveDetailsList, HeterogeneousList objectList,
                 Map qosProperties) {
             LoggingBase.logMessage("TestArchiveAdapter::retrieveResponseReceived=" + archiveDetailsList);
             retrievedArchiveDetailsList = archiveDetailsList;
@@ -663,7 +662,7 @@ public class EventTestScenario extends LoggingBase {
 
         @Override
         public void retrieveResponseErrorReceived(MALMessageHeader msgHeader,
-                MALStandardError error, Map qosProperties) {
+                MOErrorException error, Map qosProperties) {
             countDownLatch.countDown();
         }
 

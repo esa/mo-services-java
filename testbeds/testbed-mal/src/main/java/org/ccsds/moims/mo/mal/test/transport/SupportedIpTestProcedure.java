@@ -34,6 +34,7 @@ package org.ccsds.moims.mo.mal.test.transport;
 
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -76,7 +77,7 @@ public class SupportedIpTestProcedure extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false);
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false);
         return true;
     }
 

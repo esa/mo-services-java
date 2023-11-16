@@ -41,8 +41,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 
 /**
  *
@@ -113,7 +113,8 @@ class MonitorEventDetails {
         updateHeader = aUpdateHeader;
         objectDetails = aObjectDetails;
         element = aElement;
-        objectNumber = new Integer((aUpdateHeader.getKeyValues().get(0)).toString()).intValue();
+        Attribute attVal = aUpdateHeader.getKeyValues().get(0).getValue();
+        objectNumber = new Integer(attVal.toString()).intValue();
 
         // If source is a relay remove any prefix 
         if (source.indexOf("Relay") != -1) {
@@ -176,26 +177,37 @@ class MonitorEventDetails {
      (int) updateHeader.getKey().getFirstSubKey(),
      objectNumber, bValid); */
         // Second Sub Key = event object type (3 sub-fields)
+
+        Attribute attVal = updateHeader.getKeyValues().get(1).getValue();
+        Long myLong1 = (Long) Attribute.attribute2JavaType(attVal);
+
         bValid = COMChecker.equalsCheck(strObject,
                 "Header.Key.Second",
-                (Long) updateHeader.getKeyValues().get(1),
+                myLong1,
                 COMTestHelper.getActivityObjectTypeAsKey(0),
                 bValid);
         // Third Sub Key = event object instance identifier
-        updateHeader.getKeyValues().get(2);
+
         // Third sub key is event instance identifier check = TBC - just need to ensure it is unique
-        bInstIdValid = InstIdLists.inst().add(objectNumber,
-                new Long((Long) updateHeader.getKeyValues().get(2)));
+        Attribute attVal2 = updateHeader.getKeyValues().get(2).getValue();
+        Long myLong2 = (Long) Attribute.attribute2JavaType(attVal2);
+
+        bInstIdValid = InstIdLists.inst().add(objectNumber, myLong2);
         if (!bInstIdValid) {
             bValid = false;
-            COMChecker.recordError(strObject,
-                    "InstId - " + updateHeader.getKeyValues().get(2) + "not unique for object " + objectNumber);
+            COMChecker.recordError(strObject, "InstId - "
+                    + updateHeader.getKeyValues().get(2).getValue()
+                    + "not unique for object " + objectNumber);
         }
         // Fourth Sub Key = event source object type (4 sub-fields)
+        Attribute attVal3 = updateHeader.getKeyValues().get(3).getValue();
+        Long myLong3 = (Long) Attribute.attribute2JavaType(attVal3);
+
         bValid = COMChecker.equalsCheck(strObject,
                 "Header.Key.Fourth",
-                (Long) updateHeader.getKeyValues().get(3),
-                COMTestHelper.getActivityObjectTypeAsKey(COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY), bValid);
+                myLong3,
+                COMTestHelper.getActivityObjectTypeAsKey(COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY),
+                bValid);
         // Check source URI
         bValid = bValid && uriValid(new URI(updateHeader.getSource().getValue()), relays);
 
@@ -235,10 +247,11 @@ class MonitorEventDetails {
             // If type valid check fields
             if (bKeyValid) {
                 LoggingBase.logMessage("MonitorEventDetailsList:KEY = " + objectDetails.getSource().getKey());
+                /*
                 bTypeValid = COMChecker.equalsCheck(strObject, "Source.Key.Domain",
                         objectDetails.getSource().getKey().getDomain().toString(),
-                        hdr.getDomain().toString(), bTypeValid);
-
+                        new IdentifierList().toString(), bTypeValid);
+                 */
                 LoggingBase.logMessage("ActivityTestRelayHandlerImpl:Trans ID - " + strObject
                         + objectDetails.getSource().getKey().getInstId());
 

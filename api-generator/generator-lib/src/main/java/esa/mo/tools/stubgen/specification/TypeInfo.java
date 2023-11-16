@@ -35,6 +35,7 @@ public class TypeInfo {
     private final boolean nativeType;
     private final String malShortFormField;
     private final String malVersionField;
+    private final boolean canBeNull;
 
     /**
      * Constructor.
@@ -48,10 +49,12 @@ public class TypeInfo {
      * type.
      * @param malShortFormField The short form field value for the type.
      * @param versionInfo The version information for the type.
+     * @param canBeNull The canBeNull flag for the type.
      */
     public TypeInfo(TypeReference sourceType, String fieldName,
             String fieldComment, String actualMalType, String targetType,
-            boolean isNative, String malShortFormField, String versionInfo) {
+            boolean isNative, String malShortFormField, String versionInfo,
+            boolean canBeNull) {
         this.sourceType = sourceType;
         this.fieldName = fieldName;
         this.fieldComment = fieldComment;
@@ -60,6 +63,7 @@ public class TypeInfo {
         this.nativeType = isNative;
         this.malShortFormField = malShortFormField;
         this.malVersionField = versionInfo;
+        this.canBeNull = canBeNull;
     }
 
     /**
@@ -132,6 +136,15 @@ public class TypeInfo {
      */
     public String getMalVersionField() {
         return malVersionField;
+    }
+
+    /**
+     * Returns the canBeNull value.
+     *
+     * @return the canBeNull value.
+     */
+    public boolean getCanBeNull() {
+        return canBeNull;
     }
 
     @Override

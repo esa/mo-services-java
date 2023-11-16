@@ -21,7 +21,7 @@
 package org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
@@ -34,11 +34,12 @@ public class FastErrorBody extends FastBody implements MALErrorBody {
         super(body);
     }
 
-    public MALStandardError getError() throws MALException {
-        if (1 < body.length) {
-            return new MALStandardError((UInteger) body[0], body[1]);
+    @Override
+    public MOErrorException getError() throws MALException {
+        if (body.length > 1) {
+            return new MOErrorException((UInteger) body[0], body[1]);
         } else {
-            return new MALStandardError((UInteger) body[0], null);
+            return new MOErrorException((UInteger) body[0], null);
         }
     }
 }

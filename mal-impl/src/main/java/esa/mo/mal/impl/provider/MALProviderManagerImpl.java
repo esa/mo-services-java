@@ -21,34 +21,31 @@
 package esa.mo.mal.impl.provider;
 
 import esa.mo.mal.impl.MALContextImpl;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
+import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
  * Implementation of the MALProviderManager interface.
  */
-public class MALProviderManagerImpl extends MALClose implements MALProviderManager {
+public class MALProviderManagerImpl implements MALProviderManager, MALCloseable {
 
-    private final MALContextImpl impl;
+    private final MALContextImpl contextImpl;
 
     /**
      * Creates a provider manager.
      *
-     * @param impl The MAL implementation.
+     * @param contextImpl The MAL implementation.
      */
-    public MALProviderManagerImpl(final MALContextImpl impl) {
-        super(impl);
-        this.impl = impl;
+    public MALProviderManagerImpl(final MALContextImpl contextImpl) {
+        this.contextImpl = contextImpl;
     }
 
     @Override
@@ -62,9 +59,13 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
-        return (MALProvider) addChild(new MALProviderImpl(this,
-                impl,
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
+        return new MALProviderImpl(this,
+                contextImpl,
                 localName,
                 protocol,
                 service,
@@ -74,7 +75,8 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
                 priorityLevelNumber,
                 defaultQoSProperties,
                 isPublisher,
-                sharedBrokerUri));
+                sharedBrokerUri,
+                supplements);
     }
 
     @Override
@@ -87,9 +89,13 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
             final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
-        return (MALProvider) addChild(new MALProviderImpl(this,
-                impl,
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
+        // Load the elements here:
+        MALContextFactory.getElementsRegistry().loadServiceAndAreaElements(service);
+
+        return new MALProviderImpl(this,
+                contextImpl,
                 endPoint,
                 service,
                 authenticationId,
@@ -98,6 +104,11 @@ public class MALProviderManagerImpl extends MALClose implements MALProviderManag
                 priorityLevelNumber,
                 defaultQoSProperties,
                 isPublisher,
-                sharedBrokerUri));
+                sharedBrokerUri,
+                supplements);
+    }
+
+    @Override
+    public void close() throws MALException {
     }
 }

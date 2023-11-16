@@ -32,6 +32,8 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class URI implements Attribute {
 
+    private static final long serialVersionUID = Attribute.URI_SHORT_FORM;
+
     /**
      * Map of cachedRootURIs. This associates a full URI to its root URI.
      */
@@ -53,7 +55,7 @@ public class URI implements Attribute {
      * @param value Value to initialise with.
      */
     public URI(final String value) {
-        if (null == value) {
+        if (value == null) {
             Logger.getLogger(URI.class.getName()).log(
                     Level.WARNING,
                     "The URI has been initialized with an invalid null value. "
@@ -130,11 +132,6 @@ public class URI implements Attribute {
         return index;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(String value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.URI_SHORT_FORM;
@@ -188,5 +185,4 @@ public class URI implements Attribute {
     public String toString() {
         return value;
     }
-    private static final long serialVersionUID = Attribute.URI_SHORT_FORM;
 }

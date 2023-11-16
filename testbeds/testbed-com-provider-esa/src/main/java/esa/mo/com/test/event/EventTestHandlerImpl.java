@@ -20,7 +20,7 @@
  */
 package esa.mo.com.test.event;
 
-import esa.mo.com.support.ComStructureHelper;
+import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
 import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
@@ -31,7 +31,6 @@ import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.EventServiceInfo;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.structures.ObjectType;
@@ -54,11 +53,15 @@ import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -70,7 +73,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.testbed.util.FileBasedDirectory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
@@ -192,6 +194,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
                 new UInteger(1),
                 null,
                 true,
+                null,
                 null);
         LoggingBase.logMessage(CLS + ":createMonitorEventPublisher - calling store UI");
         FileBasedDirectory.storeURI(EventServiceInfo.EVENT_SERVICE_NAME.getValue(), malProvider.getURI(), malProvider.getBrokerURI());
@@ -215,7 +218,13 @@ public class EventTestHandlerImpl implements EventTestHandler {
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
 
-        monitorEventPublisher.register(keys, publisherListener);
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+
+        monitorEventPublisher.register(keys, keyTypes, publisherListener);
 
     }
 
@@ -237,36 +246,20 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
         // Produce ObjectCreationList
         ObjectCreationList ocl = new ObjectCreationList();
-        ObjectCreation oc = new ObjectCreation();
-        oc.setSuccess(success);
-        oc.setDescription(description);
+        ObjectCreation oc = new ObjectCreation(success, description);
         ocl.add(oc);
 
-        // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-
-        // Set source 
         ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
-        objDetails.setSource(source);
-        // Set related (if supplied)
-        if (relatedInstId != null) {
-            objDetails.setRelated(relatedInstId);
-        }
+        ObjectDetails objDetails = new ObjectDetails(relatedInstId, source);
 
-        odl.add(objDetails);
         // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
-        UpdateHeader uh = new UpdateHeader();
-        setUpdateHeader(uh, TEST_OBJECT_CREATION_NO, sourceInstId);
-        uhl.add(uh);
+        UpdateHeader uh = generateUpdateHeader(TEST_OBJECT_CREATION_NO, sourceInstId);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, ocl);
+        monitorEventPublisher.publish(uh, objDetails, oc);
 
         // Write the event to the archive
         storeInArchive(objDetails, uh, ocl, TEST_OBJECT_CREATION_NO);
-
     }
 
     protected void publishTestObjectDeletion(String sourceDomain,
@@ -276,31 +269,25 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
         // Produce ObjectDeletionList
         ObjectDeletionList odl = new ObjectDeletionList();
-        ObjectDeletion od = new ObjectDeletion();
-        od.setDescription(testObjectDetailsList.get((int) (sourceInstId - 1)).description);
+        ObjectDeletion od = new ObjectDeletion(testObjectDetailsList.get((int) (sourceInstId - 1)).description);
         odl.add(od);
 
         // Produce ObjectDetails 
-        ObjectDetailsList objDetailsList = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-
-        // Set source 
+        ObjectDetails objDetails;
         ObjectId source = setObjectId(sourceDomain, sourceObjectNumber, sourceInstId);
-        objDetails.setSource(source);
+
         // Set related (if supplied)
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
-            objDetails.setRelated(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId);
+            objDetails = new ObjectDetails(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId, source);
+        } else {
+            objDetails = new ObjectDetails(null, source);
         }
 
-        objDetailsList.add(objDetails);
         // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
-        UpdateHeader uh = new UpdateHeader();
-        setUpdateHeader(uh, TEST_OBJECT_DELETION_NO, sourceInstId);
-        uhl.add(uh);
+        UpdateHeader uh = generateUpdateHeader(TEST_OBJECT_DELETION_NO, sourceInstId);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, objDetailsList, odl);
+        monitorEventPublisher.publish(uh, objDetails, od);
 
         // Write the event to the archive
         storeInArchive(objDetails, uh, odl, TEST_OBJECT_DELETION_NO);
@@ -310,20 +297,28 @@ public class EventTestHandlerImpl implements EventTestHandler {
     protected void storeInArchive(ObjectDetails objDetails, UpdateHeader updateHeader,
             ElementList elementList, String objectNumber) throws MALInteractionException, MALException {
         ArchiveDetailsList archiveDetailsList = new ArchiveDetailsList();
-        archiveDetailsList.add(new ArchiveDetails((Long) updateHeader.getKeyValues().get(2), objDetails, NETWORK,
+        Attribute attVal = updateHeader.getKeyValues().get(2).getValue();
+        Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
+        archiveDetailsList.add(new ArchiveDetails(instanceId, objDetails, NETWORK,
                 FineTime.now(), new URI(updateHeader.getSource().getValue())));
 
         // Domain is TBD
 //        final IdentifierList domain = new IdentifierList();
 //        domain.add(new Identifier("esa"));
 //        domain.add(new Identifier("mission"));
+        HeterogeneousList objs = null;
+
+        if (elementList != null) {
+            objs = new HeterogeneousList();
+            objs.addAll(elementList);
+        }
+
         archiveStub().store(Boolean.FALSE,
                 new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER, EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
                         COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, new UShort(Integer.parseInt(objectNumber))),
                 eventDomainId,
                 archiveDetailsList,
-                elementList);
-
+                objs);
     }
 
     protected void publishTestObjectUpdate(long sourceInstId,
@@ -332,61 +327,43 @@ public class EventTestHandlerImpl implements EventTestHandler {
             MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + "publishTestObjectUpdate malInter = " + interaction);
 
+        UpdateComposite uComposite = null;
+        if (uOctetField != null || octetField != null || doubleField != null) {
+            uComposite = new UpdateComposite(uOctetField, octetField, doubleField);
+        }
+
+        ObjectUpdate ou = new ObjectUpdate(enumField, durationField, numericListField, uComposite);
+
         // Produce ObjectUpdateList
         ObjectUpdateList oul = new ObjectUpdateList();
-        ObjectUpdate ou = new ObjectUpdate();
-        ou.setDurationField(durationField);
-        ou.setEnumField(enumField);
-        ou.setNumericListField(numericListField);
-        if (uOctetField != null || octetField != null || doubleField != null) {
-            ou.setCompositeField(new UpdateComposite(uOctetField, octetField, doubleField));
-        }
         oul.add(ou);
 
         // Produce ObjectDetails 
         short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
         String domain = testObjectDetailsList.get((int) (sourceInstId - 1)).domain;
-        ObjectDetailsList objDetailsList = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-        // Set source 
         ObjectId source = setObjectId(domain, sourceObjectNumber, sourceInstId);
-        objDetails.setSource(source);
+        Long related = null;
+
         // Set related (if supplied)
         if (testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId != null) {
-            objDetails.setRelated(testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId);
+            related = testObjectDetailsList.get((int) (sourceInstId - 1)).parentInstId;
         }
-        objDetailsList.add(objDetails);
+
+        ObjectDetails objDetails = new ObjectDetails(related, source);
 
         // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
-        UpdateHeader uh = new UpdateHeader();
-        setUpdateHeader(uh, TEST_OBJECT_UPDATE_NO, sourceInstId);
-        uhl.add(uh);
+        UpdateHeader uh = generateUpdateHeader(TEST_OBJECT_UPDATE_NO, sourceInstId);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, objDetailsList, oul);
+        monitorEventPublisher.publish(uh, objDetails, ou);
 
         // Write the event to the archive
         storeInArchive(objDetails, uh, oul, TEST_OBJECT_UPDATE_NO);
 
     }
 
-    private void setUpdateHeader(UpdateHeader updateHeader, String eventObjectNumber, /* String domain, short objectNumber, */ long sourceInstId) {
+    private UpdateHeader generateUpdateHeader(String eventObjectNumber, long sourceInstId) {
         short sourceObjectNumber = testObjectDetailsList.get((int) (sourceInstId - 1)).objectNumber;
-        /*
-    final EntityKey ekey = new EntityKey(
-            new Identifier(eventObjectNumber),
-            generateSubKey(COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER,
-                    EventTestHelper._EVENTTEST_SERVICE_NUMBER, COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION, 0),
-            new Long(eventInstCount++),
-            generateSubKey(COMPrototypeHelper._COMPROTOTYPE_AREA_NUMBER, EventTestHelper._EVENTTEST_SERVICE_NUMBER,
-                    COMPrototypeHelper._COMPROTOTYPE_AREA_VERSION, sourceObjectNumber));
-    final Time timestamp = new Time(System.currentTimeMillis());
-    updateHeader.setKey(ekey);
-    updateHeader.setSourceURI(new URI(EventTestHelper.EVENTTEST_SERVICE_NAME.toString()));
-    updateHeader.setUpdateType(UpdateType.DELETION);
-    updateHeader.setTimestamp(timestamp);
-         */
 
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(eventObjectNumber));
@@ -406,27 +383,23 @@ public class EventTestHandlerImpl implements EventTestHandler {
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
-        updateHeader.setKeyValues(keyValues);
-        updateHeader.setDomain(domain);
-        updateHeader.setSource(new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()));
+        UpdateHeader uh = new UpdateHeader(
+                new Identifier(EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue()),
+                domain, keyValues.getAsNullableAttributeList());
+        return uh;
     }
 
     private ObjectId setObjectId(String domain, short objectNumber, long instanceId) {
-        ObjectId objectId = new ObjectId();
-        ObjectType type = new ObjectType();
-        type.setArea(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER);
-        type.setService(EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER);
-        type.setVersion(COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION);
-        type.setNumber(new UShort(objectNumber));
-        objectId.setType(type);
+        ObjectType type = new ObjectType(COMPrototypeHelper.COMPROTOTYPE_AREA_NUMBER,
+                EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER,
+                COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION,
+                new UShort(objectNumber));
 
-        ObjectKey key = new ObjectKey();
         final IdentifierList domainIdent = new IdentifierList();
         domainIdent.add(new Identifier(domain));
-        key.setDomain(domainIdent);
-        key.setInstId(instanceId);
-        objectId.setKey(key);
-        return objectId;
+
+        ObjectKey key = new ObjectKey(domainIdent, instanceId);
+        return new ObjectId(type, key);
     }
 
     public synchronized ArchiveStub archiveStub() throws MALException {
@@ -448,7 +421,9 @@ public class EventTestHandlerImpl implements EventTestHandler {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveStub = new ArchiveStub(consumer);
         }

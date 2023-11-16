@@ -36,60 +36,54 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALOperation;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class TestEndPoint implements MALEndpoint {
 
-    private MALEndpoint delegate;
+    private final MALEndpoint delegate;
     private ReceivedMessageInterceptor receivedMessageInterceptor;
 
     TestEndPoint(MALEndpoint delegate) {
         this.delegate = delegate;
     }
 
+    @Override
     public void startMessageDelivery() throws MALException {
         delegate.startMessageDelivery();
     }
 
+    @Override
     public void close() throws MALException {
         delegate.close();
     }
 
+    @Override
     public MALMessage createMessage(Blob authenticationId, URI uRITo,
-            Time timestamp, QoSLevel qoSlevel, UInteger priority,
-            IdentifierList domain, Identifier networkZone, SessionType session,
-            Identifier sessionName, InteractionType interactionType,
+            Time timestamp, InteractionType interactionType,
             UOctet interactionStage, Long transactionId, UShort serviceArea,
             UShort service, UShort operation, UOctet serviceVersion,
-            Boolean isErrorMessage, Map qosProperties, Object... body)
-            throws MALException {
-        return delegate.createMessage(authenticationId, uRITo, timestamp, qoSlevel,
-                priority, domain, networkZone, session, sessionName, interactionType,
-                interactionStage, transactionId, serviceArea, service, operation,
-                serviceVersion, isErrorMessage, qosProperties, body);
+            Boolean isErrorMessage, NamedValueList supplements,
+            Map qosProperties, Object... body) throws MALException {
+        return delegate.createMessage(authenticationId, uRITo, timestamp,
+                interactionType, interactionStage, transactionId, serviceArea,
+                service, operation, serviceVersion,
+                isErrorMessage, supplements, qosProperties, body);
     }
 
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel,
-            UInteger priority, IdentifierList domain, Identifier networkZone, SessionType session,
-            Identifier sessionName, Long transactionId, Boolean isErrorMessage, MALOperation op,
-            UOctet interactionStage, Map qosProperties, Object... body) throws IllegalArgumentException, MALException {
-        return delegate.createMessage(authenticationId, uriTo, timestamp, qosLevel,
-                priority, domain, networkZone, session, sessionName,
-                transactionId, isErrorMessage, op, interactionStage, qosProperties, body);
-    }
-
+    @Override
     public String getLocalName() {
         return delegate.getLocalName();
     }
 
+    @Override
     public URI getURI() {
         return delegate.getURI();
     }
 
+    @Override
     public void sendMessage(MALMessage msg) throws MALTransmitErrorException, MALException {
         TransportInterceptor.instance().messageSent(msg);
 
@@ -104,34 +98,27 @@ public class TestEndPoint implements MALEndpoint {
                 msg.getHeader().getInteractionType());
     }
 
-    public static MALMessageHeader createErrorHeader(
-            MALMessageHeader initialHeader,
-            Blob authId,
-            UOctet stage) {
-        TestMessageHeader res = new TestMessageHeader(
-                initialHeader.getURITo(),
+    public static MALMessageHeader createErrorHeader(MALMessageHeader initialHeader,
+            Blob authId, UOctet stage) {
+        MALMessageHeader res = new MALMessageHeader(
+                initialHeader.getTo(),
                 authId,
-                initialHeader.getURIFrom(),
+                initialHeader.getFrom(),
                 Time.now(),
-                initialHeader.getQoSlevel(),
-                initialHeader.getPriority(),
-                initialHeader.getDomain(),
-                initialHeader.getNetworkZone(),
-                initialHeader.getSession(),
-                initialHeader.getSessionName(),
                 initialHeader.getInteractionType(),
                 stage,
                 initialHeader.getTransactionId(),
                 initialHeader.getServiceArea(),
                 initialHeader.getService(),
                 initialHeader.getOperation(),
-                initialHeader.getAreaVersion(),
-                Boolean.TRUE);
+                initialHeader.getServiceVersion(),
+                Boolean.TRUE,
+                initialHeader.getSupplements());
         return res;
     }
 
-    public void sendMessages(MALMessage[] messages)
-            throws MALTransmitMultipleErrorException, MALException {
+    @Override
+    public void sendMessages(MALMessage[] messages) throws MALTransmitMultipleErrorException, MALException {
         if (null != TransportInterceptor.instance().getEndpointSendInterceptor()) {
             TransportInterceptor.instance().getEndpointSendInterceptor().sendMessages(this, messages);
         }
@@ -146,6 +133,7 @@ public class TestEndPoint implements MALEndpoint {
         TransportInterceptor.instance().incrementTransmitMultipleResponseCount();
     }
 
+    @Override
     public void setMessageListener(MALMessageListener listener) throws MALException {
         this.receivedMessageInterceptor = new ReceivedMessageInterceptor(listener);
         delegate.setMessageListener(receivedMessageInterceptor);
@@ -156,11 +144,11 @@ public class TestEndPoint implements MALEndpoint {
     }
 
     public MALMessage createTestMessage(MALMessageHeader header, Identifier id,
-            UpdateHeaderList updateHeaders, List[] updateLists, Map props) {
-        return new TestMessage(header, new TestNotifyBody(id, updateHeaders, updateLists), props);
+            UpdateHeader updateHeader, Object[] updateObjects, Map props) {
+        return new TestMessage(header, new TestNotifyBody(id, updateHeader, updateObjects), props);
     }
 
-    public MALMessage createTestMessage(MALMessageHeader header, MALStandardError error, Map props) {
+    public MALMessage createTestMessage(MALMessageHeader header, MOErrorException error, Map props) {
         return new TestMessage(header, new TestErrorBody(error.getErrorNumber(), error.getExtraInformation()), props);
     }
 
@@ -222,14 +210,17 @@ public class TestEndPoint implements MALEndpoint {
             }
         }
 
+        @Override
         public void onInternalError(MALEndpoint callingEndpoint, Throwable error) {
             error.printStackTrace();
         }
 
-        public void onTransmitError(MALEndpoint callingEndpoint, MALMessageHeader srcMessageHeader, MALStandardError err, Map qosMap) {
+        @Override
+        public void onTransmitError(MALEndpoint callingEndpoint, MALMessageHeader srcMessageHeader, MOErrorException err, Map qosMap) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void onMessage(MALEndpoint callingEndpoint, MALMessage msg) {
             boolean selfProcess = false;
 
@@ -246,6 +237,7 @@ public class TestEndPoint implements MALEndpoint {
             }
         }
 
+        @Override
         public void onMessages(MALEndpoint callingEndpoint, MALMessage[] messages) {
             boolean selfProcess = false;
 
@@ -281,9 +273,9 @@ public class TestEndPoint implements MALEndpoint {
 
     static class TestMessage implements MALMessage {
 
-        private MALMessageHeader header;
-        private MALMessageBody body;
-        private Map props;
+        private final MALMessageHeader header;
+        private final MALMessageBody body;
+        private final Map props;
 
         public TestMessage(MALMessageHeader header, MALMessageBody body, Map props) {
             super();
@@ -292,52 +284,48 @@ public class TestEndPoint implements MALEndpoint {
             this.props = props;
         }
 
+        @Override
         public void free() throws MALException {
             // Do nothing
         }
 
+        @Override
         public MALMessageHeader getHeader() {
             return header;
         }
 
+        @Override
         public Map getQoSProperties() {
             return props;
         }
 
+        @Override
         public MALMessageBody getBody() {
             return body;
         }
 
         @Override
         public String toString() {
-            return "TestMessage [header=" + header + ", body=" + body + ", props="
-                    + props + "]";
+            return "TestMessage [header=" + header
+                    + ", body=" + body + ", props=" + props + "]";
         }
     }
 
+    @Override
     public void stopMessageDelivery() throws MALException {
         delegate.stopMessageDelivery();
     }
 
-    public MALMessage createMessage(Blob arg0, URI arg1, Time arg2,
-            QoSLevel arg3, UInteger arg4, IdentifierList arg5, Identifier arg6,
-            SessionType arg7, Identifier arg8, Long arg9, Boolean arg10,
-            MALOperation arg11, UOctet arg12, Map arg13, MALEncodedBody arg14)
-            throws IllegalArgumentException, MALException {
-        return delegate.createMessage(arg0, arg1, arg2, arg3,
-                arg4, arg5, arg6, arg7, arg8, arg9,
-                arg10, arg11, arg12, arg13, arg14);
-    }
-
-    public MALMessage createMessage(Blob arg0, URI arg1, Time arg2,
-            QoSLevel arg3, UInteger arg4, IdentifierList arg5, Identifier arg6,
-            SessionType arg7, Identifier arg8, InteractionType arg9, UOctet arg10,
-            Long arg11, UShort arg12, UShort arg13, UShort arg14, UOctet arg15,
-            Boolean arg16, Map arg17, MALEncodedBody arg18)
-            throws IllegalArgumentException, MALException {
-        return delegate.createMessage(arg0, arg1, arg2, arg3,
-                arg4, arg5, arg6, arg7, arg8, arg9,
-                arg10, arg11, arg12, arg13,
-                arg14, arg15, arg16, arg17, arg18);
+    @Override
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            InteractionType interactionType, UOctet interactionStage, Long transactionId,
+            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
+            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
+            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
+        return delegate.createMessage(authenticationId, uriTo, timestamp,
+                interactionType, interactionStage, transactionId,
+                serviceAreaNumber, serviceNumber, operationNumber,
+                areaVersion, isErrorMessage, supplements,
+                qosProperties, body);
     }
 }

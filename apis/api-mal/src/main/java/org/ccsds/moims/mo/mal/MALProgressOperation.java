@@ -63,18 +63,17 @@ public class MALProgressOperation extends MALOperation {
      */
     public static final UOctet PROGRESS_RESPONSE_STAGE = new UOctet(_PROGRESS_RESPONSE_STAGE);
 
-    private final MALOperationStage progressStage;
-    private final MALOperationStage progressAckStage;
-    private final MALOperationStage progressUpdateStage;
-    private final MALOperationStage progressResponseStage;
+    private final OperationField[] progressStage;
+    private final OperationField[] progressAckStage;
+    private final OperationField[] progressUpdateStage;
+    private final OperationField[] progressResponseStage;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param progressStage The stage information for the PROGRESS stage.
      * @param progressAckStage The stage information for the PROGRESS_ACK stage.
@@ -85,15 +84,15 @@ public class MALProgressOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALProgressOperation(final UShort number,
+    public MALProgressOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage progressStage,
-            final MALOperationStage progressAckStage,
-            final MALOperationStage progressUpdateStage,
-            final MALOperationStage progressResponseStage) throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.PROGRESS, capabilitySet);
+            final OperationField[] progressStage,
+            final OperationField[] progressAckStage,
+            final OperationField[] progressUpdateStage,
+            final OperationField[] progressResponseStage) throws java.lang.IllegalArgumentException {
+        super(serviceKey, number, name, InteractionType.PROGRESS, capabilitySet);
 
         this.progressStage = progressStage;
         this.progressAckStage = progressAckStage;
@@ -110,7 +109,7 @@ public class MALProgressOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

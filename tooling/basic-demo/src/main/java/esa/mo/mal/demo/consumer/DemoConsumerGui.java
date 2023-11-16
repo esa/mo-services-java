@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -48,7 +49,6 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.maldemo.MALDemoHelper;
 import org.ccsds.moims.mo.maldemo.basicmonitor.BasicMonitorHelper;
@@ -57,7 +57,6 @@ import org.ccsds.moims.mo.maldemo.basicmonitor.consumer.BasicMonitorStub;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicComposite;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicEnum;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicUpdate;
-import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicUpdateList;
 
 /**
  * This class provides a simple form for the control of the consumer.
@@ -153,21 +152,21 @@ public class DemoConsumerGui extends javax.swing.JFrame {
         domain.add(new Identifier("mission"));
 
         final Identifier subscriptionId = new Identifier("SUB");
-        
+
         // set up the wildcard subscription
-        subRequestWildcard = new Subscription(subscriptionId, domain, null);
+        subRequestWildcard = new Subscription(subscriptionId, domain, null, null);
 
         // set up the named first half subscription
         {
             AttributeList att = new AttributeList();
             SubscriptionFilterList subList = new SubscriptionFilterList();
-            
+
             for (int i = 0; i < (labels.length / 2); i++) {
-                att.add(String.valueOf(i));
+                att.addAsJavaType(String.valueOf(i));
                 subList.add(new SubscriptionFilter(new Identifier("key" + i), att));
             }
 
-            subRequestHalf = new Subscription(subscriptionId, domain, subList);
+            subRequestHalf = new Subscription(subscriptionId, domain, null, subList);
         }
         // set up the named all subscription
         {
@@ -175,11 +174,11 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             SubscriptionFilterList subList1 = new SubscriptionFilterList();
 
             for (int i = 0; i < labels.length; i++) {
-                att1.add(String.valueOf(i));
+                att1.addAsJavaType(String.valueOf(i));
                 subList1.add(new SubscriptionFilter(new Identifier("key" + i), att1));
             }
 
-            subRequestAll = new Subscription(subscriptionId, domain, subList1);
+            subRequestAll = new Subscription(subscriptionId, domain, null, subList1);
         }
     }
 
@@ -188,10 +187,6 @@ public class DemoConsumerGui extends javax.swing.JFrame {
 
         malFactory = MALContextFactory.newFactory();
         mal = malFactory.createMALContext(System.getProperties());
-
-        MALHelper.init(MALContextFactory.getElementsRegistry());
-        MALDemoHelper.init(MALContextFactory.getElementsRegistry());
-        BasicMonitorHelper.init(MALContextFactory.getElementsRegistry());
 
         consumerMgr = mal.createConsumerManager();
 
@@ -241,7 +236,8 @@ public class DemoConsumerGui extends javax.swing.JFrame {
                 sessionName,
                 QoSLevel.ASSURED,
                 System.getProperties(),
-                new UInteger(0));
+                new UInteger(0),
+                null);
 
         demoService = new BasicMonitorStub(tmConsumer);
     }
@@ -249,12 +245,12 @@ public class DemoConsumerGui extends javax.swing.JFrame {
     private static void loadURIs() throws MalformedURLException {
         final java.util.Properties sysProps = System.getProperties();
 
-        final String configFile = System.getProperty("providerURI.properties", 
+        final String configFile = System.getProperty("providerURI.properties",
                 "demoServiceURI.properties");
 
         final java.io.File file = new java.io.File(configFile);
         if (file.exists()) {
-            sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), 
+            sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(),
                     "providerURI.properties"));
         }
 
@@ -265,35 +261,23 @@ public class DemoConsumerGui extends javax.swing.JFrame {
 
         @Override
         public void monitorNotifyReceived(final MALMessageHeader msgHeader,
-                final Identifier lIdentifier,
-                final UpdateHeaderList lUpdateHeaderList,
-                final BasicUpdateList lBasicUpdateList,
-                final Map qosp) {
-            LOGGER.log(Level.INFO, "Received update list of size : {0}", 
-                    lBasicUpdateList.size());
+                final Identifier lIdentifier, final UpdateHeader updateHeader,
+                final BasicUpdate updateValue, final Map qosp) {
+            LOGGER.log(Level.INFO, "Received update message!");
+
             final long iDiff = System.currentTimeMillis() - msgHeader.getTimestamp().getValue();
+            NullableAttributeList lst = updateHeader.getKeyValues();
+            final String name = ((Identifier) lst.get(0).getValue()).getValue();
 
-            for (int i = 0; i < lBasicUpdateList.size(); i++) {
-                final UpdateHeader updateHeader = lUpdateHeaderList.get(i);
-                final BasicUpdate updateValue = lBasicUpdateList.get(i);
-                AttributeList lst = updateHeader.getKeyValues();
-                
-                if (lst.isEmpty()){
-                    continue;
+            try {
+                final int index = Integer.parseInt(name);
+
+                if ((0 <= index) && (index < labels.length)) {
+                    labels[index].setNewValue(updateValue.getCounter(), iDiff);
                 }
-                    
-                final String name = ((Identifier) lst.get(0)).getValue();
-
-                try {
-                    final int index = Integer.parseInt(name);
-
-                    if ((0 <= index) && (index < labels.length)) {
-                        labels[index].setNewValue(updateValue.getCounter(), iDiff);
-                    }
-                } catch (NumberFormatException ex) {
-                    LOGGER.log(Level.WARNING, 
-                            "Error decoding update with name: {0}", name);
-                }
+            } catch (NumberFormatException ex) {
+                LOGGER.log(Level.WARNING,
+                        "Error decoding update with name: {0}", name);
             }
         }
     }

@@ -20,13 +20,13 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.state.BaseOperationHandler;
+import esa.mo.mal.impl.interactionpatterns.IPConsumerHandler;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.DeliveryTimedoutException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 
 /**
  * The InteractionTimeout class is responsible for maintaining a queue of
@@ -42,7 +42,7 @@ public class InteractionTimeout {
      * The queue that holds a set of entries with the time when interaction was
      * started and the respective operation handler.
      */
-    private final LinkedBlockingQueue<SimpleEntry<Long, BaseOperationHandler>> queue
+    private final LinkedBlockingQueue<SimpleEntry<Long, IPConsumerHandler>> queue
             = new LinkedBlockingQueue<>();
 
     // Defines if this object has been initialized
@@ -54,6 +54,9 @@ public class InteractionTimeout {
     // The timeout in milliseconds
     private long timeout = 0;
 
+    /**
+     * Constructor.
+     */
     public InteractionTimeout() {
         // For testing purposes, one can use:
         // System.setProperty(PROP_INTERACTION_TIMEOUT, "1000"); // in ms
@@ -91,7 +94,12 @@ public class InteractionTimeout {
         initialized = true;
     }
 
-    public synchronized void insertInQueue(BaseOperationHandler handler) {
+    /**
+     * Inserts a consumer handler into the message queue.
+     *
+     * @param handler The IP consumer handler.
+     */
+    public synchronized void insertInQueue(IPConsumerHandler handler) {
         if (!initialized) {
             Logger.getLogger(InteractionTimeout.class.getName()).log(
                     Level.FINE, "Initializing Interaction Timeout Thread...");
@@ -107,10 +115,10 @@ public class InteractionTimeout {
         return new Thread(() -> {
             while (true) {
                 try {
-                    SimpleEntry<Long, BaseOperationHandler> entry = queue.take();
+                    SimpleEntry<Long, IPConsumerHandler> entry = queue.take();
                     long timeoutAt = entry.getKey() + timeout;
                     long sleepFor = timeoutAt - System.currentTimeMillis();
-                    
+
                     // If the timeout was not reached yet
                     // then we sleep until we reach it
                     if (sleepFor > 0) {
@@ -121,31 +129,27 @@ public class InteractionTimeout {
                                     Level.SEVERE, "Something went wrong...", ex);
                         }
                     }
-                    
-                    BaseOperationHandler handler = entry.getValue();
-                    
+
+                    IPConsumerHandler handler = entry.getValue();
+
                     // Is the interaction still pending?
                     if (!handler.finished()) {
                         // Then we must trigger an Exception!
                         Logger.getLogger(InteractionTimeout.class.getName()).log(
                                 Level.FINE, "Timeout triggered!");
-                        
+
                         String msg = "The interaction timeout in the MAL "
                                 + "was triggered! The timeout is currently "
                                 + "set to: " + timeout + " ms";
-                        
-                            try {
-                                handler.handleError(
-                                        null,
-                                        new MALStandardError(
-                                                MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER,
-                                                msg),
-                                        null);
-                            } catch (Exception ex) {
-                                // Do not allow to kill the thread
-                                Logger.getLogger(InteractionTimeout.class.getName()).log(
+
+                        try {
+                            MOErrorException error = new DeliveryTimedoutException(msg);
+                            handler.handleError(null, error, null);
+                        } catch (Exception ex) {
+                            // Do not allow to kill the thread
+                            Logger.getLogger(InteractionTimeout.class.getName()).log(
                                     Level.SEVERE, "MAL error handler threw an exception!", ex);
-                            }
+                        }
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(InteractionTimeout.class.getName()).log(

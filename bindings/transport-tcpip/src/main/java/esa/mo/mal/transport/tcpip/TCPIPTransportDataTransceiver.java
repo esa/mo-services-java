@@ -20,9 +20,8 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.MessagePoller.GENMessageReceiver;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -33,6 +32,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.structures.URI;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * This class implements the low level data (MAL Message) transport protocol.
@@ -41,7 +41,7 @@ import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
  *
  * This class manages both the transmitting and receiving of messages.
  */
-public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPacketInfoHolder>, GENMessageSender {
+public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPacketInfoHolder>, MessageSender {
 
     private boolean closed = false;
     private final static int HEADER_SIZE = 23;
@@ -55,7 +55,7 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
      * Constructor.
      *
      * @param socket the TCPIP socket.
-     * @param localPort
+     * @param localPort the local port.
      * @throws IOException if there is an error.
      */
     public TCPIPTransportDataTransceiver(Socket socket, int localPort) throws IOException {
@@ -76,11 +76,11 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
     /**
      * Send an encoded message out over the socket
      *
-     * @param packetData The encoded message to send
-     * @throws java.io.IOException
+     * @param packetData The encoded message to send.
+     * @throws java.io.IOException if the packet data could not be written.
      */
     @Override
-    public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException {
+    public void sendEncodedMessage(OutgoingMessageHolder packetData) throws IOException {
         if (!closed) {
             socketWriteIf.write((byte[]) packetData.getEncodedMessage());
             socketWriteIf.flush();
@@ -103,8 +103,8 @@ public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPa
      * and one for client-side, while still being compliant with the MAL
      * restriction that every client/provider has exactly one unique address.
      *
-     * @return
-     * @throws java.io.IOException
+     * @return The read packet from the socket.
+     * @throws java.io.IOException if the message could not be read.
      */
     @Override
     public TCPIPPacketInfoHolder readEncodedMessage() throws IOException {

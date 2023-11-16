@@ -24,7 +24,6 @@ import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 import esa.mo.mal.encoder.binary.variable.VariableBinaryDecoder;
 import esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.util.Date;
 import java.util.logging.Level;
@@ -38,11 +37,12 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * An implementation of the message header interface for SPP.
  */
-public class SPPMessageHeader extends GENMessageHeader {
+public class SPPMessageHeader extends MALMessageHeader {
 
     private final Boolean forceTC;
     private final int primaryApidQualifier;
@@ -57,6 +57,7 @@ public class SPPMessageHeader extends GENMessageHeader {
     /**
      * Constructor.
      *
+     * @param secondaryDecoder The secondary stream factory to encode.
      * @param configuration The SPP configuration to use for this message header
      * @param forceTC Should the SPP TC field value be forced. Used in TC to TC
      * situations.
@@ -80,6 +81,7 @@ public class SPPMessageHeader extends GENMessageHeader {
     /**
      * Constructor.
      *
+     * @param secondaryDecoder The secondary stream factory to encode.
      * @param configuration
      * @param forceTC Should the SPP TC field value be forced. Used in TC to TC
      * situations.
@@ -91,12 +93,6 @@ public class SPPMessageHeader extends GENMessageHeader {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -106,18 +102,18 @@ public class SPPMessageHeader extends GENMessageHeader {
      * @param operation Operation number
      * @param serviceVersion Service version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The supplements
      */
     public SPPMessageHeader(final MALElementStreamFactory secondaryDecoder,
             SPPConfiguration configuration, Boolean forceTC, int primaryApidQualifier,
-            SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, URI uriFrom,
-            Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority,
-            IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName,
+            SPPURIRepresentation uriRep, SPPSourceSequenceCounter ssCounter, Identifier uriFrom,
+            Blob authenticationId, Identifier uriTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, Long transactionId,
             UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion,
-            Boolean isErrorMessage) {
-        super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone,
-                session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service,
-                operation, serviceVersion, isErrorMessage);
+            Boolean isErrorMessage, NamedValueList supplements) {
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
+                interactionStage, transactionId, serviceArea, service,
+                operation, serviceVersion, isErrorMessage, supplements);
 
         this.secondaryFactory = secondaryDecoder;
         this.forceTC = forceTC;
@@ -125,12 +121,6 @@ public class SPPMessageHeader extends GENMessageHeader {
         this.primaryApidQualifier = primaryApidQualifier;
         this.uriRepresentation = uriRep;
         this.ssCounter = ssCounter;
-    }
-
-    @Override
-    public Element createElement() {
-        return new SPPMessageHeader(null, configuration, forceTC, primaryApidQualifier,
-                uriRepresentation, ssCounter);
     }
 
     @Override
@@ -142,14 +132,14 @@ public class SPPMessageHeader extends GENMessageHeader {
 
         if (0 == pktType) {
             //TM
-            primaryApid = uriRepresentation.getApid(URIFrom);
-            secondaryApidQualifier = uriRepresentation.getQualifier(URITo);
-            secondaryApid = uriRepresentation.getApid(URITo);
+            primaryApid = uriRepresentation.getApid(from);
+            secondaryApidQualifier = uriRepresentation.getQualifier(to);
+            secondaryApid = uriRepresentation.getApid(to);
         } else {
             // TC
-            primaryApid = uriRepresentation.getApid(URITo);
-            secondaryApidQualifier = uriRepresentation.getQualifier(URIFrom);
-            secondaryApid = uriRepresentation.getApid(URIFrom);
+            primaryApid = uriRepresentation.getApid(to);
+            secondaryApidQualifier = uriRepresentation.getQualifier(from);
+            secondaryApid = uriRepresentation.getApid(from);
         }
 
         // CCSDS packet header
@@ -167,23 +157,23 @@ public class SPPMessageHeader extends GENMessageHeader {
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(areaVersion);
+        encoder.encodeUOctet(serviceVersion);
         encoder.encodeUShort(new UShort(
                 getErrorFlag(isErrorMessage) | getQoSLevelBits() | getSessionBits() | secondaryApid));
         encoder.encodeUShort(new UShort(secondaryApidQualifier));
         encoder.encodeLong(transactionId);
 
-        boolean hasFromSubId = uriRepresentation.hasSubId(URIFrom);
-        boolean hasToSubId = uriRepresentation.hasSubId(URITo);
+        boolean hasFromSubId = uriRepresentation.hasSubId(from);
+        boolean hasToSubId = uriRepresentation.hasSubId(to);
 
         encoder.encodeUOctet(new UOctet((short) configuration.getFlags(hasFromSubId, hasToSubId)));
 
         if (configuration.isSrcSubId() && hasFromSubId) {
-            encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(URIFrom)));
+            encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(from)));
         }
 
         if (configuration.isDstSubId() && hasToSubId) {
-            encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(URITo)));
+            encoder.encodeUOctet(new UOctet(uriRepresentation.getSubId(to)));
         }
 
         if (0xC000 != segmentFlags) {
@@ -199,14 +189,16 @@ public class SPPMessageHeader extends GENMessageHeader {
                     fixedEncoder.getTimeHandler());
         }
 
+        /*
         if (configuration.isPriority()) {
             usurperEncoder.encodeUInteger(priority);
         }
-
+         */
         if (configuration.isTimestamp()) {
             usurperEncoder.encodeTime(timestamp);
         }
 
+        /*
         if (configuration.isNetwork()) {
             usurperEncoder.encodeIdentifier(networkZone);
         }
@@ -218,14 +210,14 @@ public class SPPMessageHeader extends GENMessageHeader {
         if (configuration.isDomain()) {
             usurperEncoder.encodeElement(domain);
         }
-
+         */
         if (configuration.isAuth()) {
             usurperEncoder.encodeBlob(authenticationId);
         }
     }
 
     @Override
-    public Element decode(final MALDecoder decoder) throws MALException {
+    public SPPMessageHeader decode(final MALDecoder decoder) throws MALException {
         // CCSDS packet header
         final int ccsdsHdrPt1 = decoder.decodeUShort().getValue();
         final int ccsdsHdrPt2 = decoder.decodeUShort().getValue();
@@ -238,7 +230,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        areaVersion = decoder.decodeUOctet();
+        serviceVersion = decoder.decodeUOctet();
         final int moHdrPt1 = decoder.decodeUShort().getValue();
         int apidQualifier = decoder.decodeUShort().getValue();
         transactionId = decoder.decodeLong();
@@ -269,16 +261,19 @@ public class SPPMessageHeader extends GENMessageHeader {
                     fixedDecoder.getTimeHandler());
         }
 
+        /*
         if (0 != (flags & 0x20)) {
             priority = usurperDecoder.decodeUInteger();
         } else {
             priority = new UInteger(0);
         }
+         */
         if (0 != (flags & 0x10)) {
             timestamp = usurperDecoder.decodeTime();
         } else {
             timestamp = new Time(new Date().getTime());
         }
+        /*
         if (0 != (flags & 0x08)) {
             networkZone = usurperDecoder.decodeIdentifier();
         } else {
@@ -294,6 +289,7 @@ public class SPPMessageHeader extends GENMessageHeader {
         } else {
             domain = new IdentifierList();
         }
+         */
         if (0 != (flags & 0x01)) {
             authenticationId = usurperDecoder.decodeBlob();
         } else {
@@ -320,60 +316,16 @@ public class SPPMessageHeader extends GENMessageHeader {
             destApid = (short) (moHdrPt1 & 0x7FF);
         }
 
-        URIFrom = uriRepresentation.getURI(sourceQualifier, sourceApid, sourceSubId);
-        URITo = uriRepresentation.getURI(destQualifier, destApid, destSubId);
+        from = uriRepresentation.getURI(sourceQualifier, sourceApid, sourceSubId);
+        to = uriRepresentation.getURI(destQualifier, destApid, destSubId);
 
-        QoSlevel = QoSLevel.fromOrdinal((moHdrPt1 & 0x6000) >> 13);
-        session = SessionType.fromOrdinal((moHdrPt1 & 0x1800) >> 11);
+        // QoSlevel = QoSLevel.fromOrdinal((moHdrPt1 & 0x6000) >> 13);
+        // session = SessionType.fromOrdinal((moHdrPt1 & 0x1800) >> 11);
         interactionType = getInteractionType(sduType);
         interactionStage = getInteractionStage(sduType);
         isErrorMessage = 0 != (moHdrPt1 & 0x8000);
 
         return this;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder str = new StringBuilder("SPPMessageHeader{");
-        str.append("URIFrom=");
-        str.append(URIFrom);
-        str.append(", authenticationId=");
-        str.append(authenticationId);
-        str.append(", URITo=");
-        str.append(URITo);
-        str.append(", timestamp=");
-        str.append(timestamp);
-        str.append(", QoSlevel=");
-        str.append(QoSlevel);
-        str.append(", priority=");
-        str.append(priority);
-        str.append(", domain=");
-        str.append(domain);
-        str.append(", networkZone=");
-        str.append(networkZone);
-        str.append(", session=");
-        str.append(session);
-        str.append(", sessionName=");
-        str.append(sessionName);
-        str.append(", interactionType=");
-        str.append(interactionType);
-        str.append(", interactionStage=");
-        str.append(interactionStage);
-        str.append(", transactionId=");
-        str.append(transactionId);
-        str.append(", serviceArea=");
-        str.append(serviceArea);
-        str.append(", service=");
-        str.append(service);
-        str.append(", operation=");
-        str.append(operation);
-        str.append(", serviceVersion=");
-        str.append(areaVersion);
-        str.append(", isErrorMessage=");
-        str.append(isErrorMessage);
-        str.append('}');
-
-        return str.toString();
     }
 
     public SPPConfiguration getConfiguration() {
@@ -389,30 +341,32 @@ public class SPPMessageHeader extends GENMessageHeader {
     }
 
     protected int getQoSLevelBits() {
-        return QoSlevel.getOrdinal() << 13;
+        // return QoSlevel.getOrdinal() << 13;
+        return 1 << 13;
     }
 
     protected int getSessionBits() {
-        return session.getOrdinal() << 11;
+        // return session.getOrdinal() << 11;
+        return 1 << 11;
     }
 
     public int getApidQualifier() {
         if (0 == getPacketType()) {
             //TM
-            return uriRepresentation.getQualifier(URIFrom);
+            return uriRepresentation.getQualifier(from);
         } else {
             // TC
-            return uriRepresentation.getQualifier(URITo);
+            return uriRepresentation.getQualifier(to);
         }
     }
 
     public short getApid() {
         if (0 == getPacketType()) {
             //TM
-            return uriRepresentation.getApid(URIFrom);
+            return uriRepresentation.getApid(from);
         } else {
             // TC
-            return uriRepresentation.getApid(URITo);
+            return uriRepresentation.getApid(to);
         }
     }
 
@@ -616,7 +570,7 @@ public class SPPMessageHeader extends GENMessageHeader {
                 return MALPubSubOperation.PUBLISH_DEREGISTER_ACK_STAGE;
         }
 
-        LOGGER.log(Level.WARNING, 
+        LOGGER.log(Level.WARNING,
                 "SPPMessageHeader: Unknown sdu value recieved during decoding of {0}",
                 sduType);
         return null;

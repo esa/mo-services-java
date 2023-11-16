@@ -124,7 +124,7 @@ public class TCPIPClientSocketsManager {
     /**
      * Return a string representation of the current connection pool
      *
-     * @return
+     * @return the string representation of the local sockets.
      */
     @Override
     public synchronized String toString() {

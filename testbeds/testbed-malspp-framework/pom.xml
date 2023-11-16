@@ -40,14 +40,14 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>testbed-malspp-framework</artifactId>
     <packaging>jar</packaging>
-    <version>9.0</version>
+    <version>10.0</version>
     <name>CCSDS MOIMS MO Testbed Framework for MAL/SPP Binding </name>
 
     <organization>
@@ -95,9 +95,9 @@
     </developers>
   
     <properties>
-        <ccsds.testbed.mal.version>9.0</ccsds.testbed.mal.version>
-        <ccsds.testbed.util.spp.version>9.0</ccsds.testbed.util.spp.version>
-        <esa.mal.test_api.version>9.0</esa.mal.test_api.version>
+        <ccsds.testbed.mal.version>10.0</ccsds.testbed.mal.version>
+        <ccsds.testbed.util.spp.version>10.0</ccsds.testbed.util.spp.version>
+        <esa.mal.test_api.version>10.0</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
         <orekit.version>6.1</orekit.version>
         <monolog.version>5.2.0</monolog.version>

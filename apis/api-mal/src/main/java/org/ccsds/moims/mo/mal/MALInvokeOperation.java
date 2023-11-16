@@ -54,17 +54,16 @@ public class MALInvokeOperation extends MALOperation {
      * MAL UOctet representing the INVOKE_RESPONSE stage.
      */
     public static final UOctet INVOKE_RESPONSE_STAGE = new UOctet(_INVOKE_RESPONSE_STAGE);
-    private final MALOperationStage invokeStage;
-    private final MALOperationStage invokeAckStage;
-    private final MALOperationStage invokeResponseStage;
+    private final OperationField[] invokeStage;
+    private final OperationField[] invokeAckStage;
+    private final OperationField[] invokeResponseStage;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param invokeStage The stage information for the INVOKE stage.
      * @param invokeAckStage The stage information for the INVOKE_ACK stage.
@@ -73,15 +72,15 @@ public class MALInvokeOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALInvokeOperation(final UShort number,
+    public MALInvokeOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage invokeStage,
-            final MALOperationStage invokeAckStage,
-            final MALOperationStage invokeResponseStage)
+            final OperationField[] invokeStage,
+            final OperationField[] invokeAckStage,
+            final OperationField[] invokeResponseStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.INVOKE, capabilitySet);
+        super(serviceKey, number, name, InteractionType.INVOKE, capabilitySet);
 
         this.invokeStage = invokeStage;
         this.invokeAckStage = invokeAckStage;
@@ -97,8 +96,7 @@ public class MALInvokeOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

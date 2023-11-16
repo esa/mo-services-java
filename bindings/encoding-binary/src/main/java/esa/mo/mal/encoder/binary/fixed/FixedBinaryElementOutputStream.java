@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.binary.fixed;
 
+import esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
 
@@ -27,7 +28,7 @@ import org.ccsds.moims.mo.mal.encoding.Encoder;
  * Implements the MALElementOutputStream interface for a fixed length binary
  * encoding.
  */
-public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementOutputStream {
+public class FixedBinaryElementOutputStream extends BaseBinaryElementOutputStream {
 
     /**
      * 16-bit length field encoding enabled
@@ -43,8 +44,7 @@ public class FixedBinaryElementOutputStream extends esa.mo.mal.encoder.binary.ba
      * assumed to be 32-bit.
      */
     public FixedBinaryElementOutputStream(final java.io.OutputStream os,
-            final BinaryTimeHandler timeHandler,
-            final boolean shortLengthField) {
+            final BinaryTimeHandler timeHandler, final boolean shortLengthField) {
         super(os, timeHandler);
         this.shortLengthField = shortLengthField;
     }

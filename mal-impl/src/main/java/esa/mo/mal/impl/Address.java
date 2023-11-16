@@ -22,7 +22,6 @@ package esa.mo.mal.impl;
 
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
 /**
@@ -34,10 +33,6 @@ public final class Address {
      * The endpoint to use with this Address.
      */
     private final MALEndpoint endpoint;
-    /**
-     * The URI that this Address represents.
-     */
-    private final URI uri;
     /**
      * The authentication Id of this Address.
      */
@@ -51,39 +46,17 @@ public final class Address {
      * Constructor.
      *
      * @param endpoint Endpoint.
-     * @param uri URI.
      * @param authenticationId Authentication identifier.
      * @param handler Interaction handler.
      */
-    public Address(final MALEndpoint endpoint,
-            final URI uri,
-            final Blob authenticationId,
-            final MALInteractionHandler handler) {
+    public Address(MALEndpoint endpoint, Blob authenticationId, MALInteractionHandler handler) {
         this.endpoint = endpoint;
-        this.uri = uri;
         this.authenticationId = authenticationId;
         this.handler = handler;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param endpoint Endpoint.
-     * @param authenticationId Authentication identifier.
-     * @param handler Interaction handler.
-     */
-    public Address(final MALEndpoint endpoint,
-            final Blob authenticationId,
-            final MALInteractionHandler handler) {
-        this(endpoint, endpoint.getURI(), authenticationId, handler);
-    }
-
     public MALEndpoint getEndpoint() {
         return endpoint;
-    }
-
-    public URI getURI() {
-        return uri;
     }
 
     public Blob getAuthenticationId() {
@@ -92,5 +65,10 @@ public final class Address {
 
     public MALInteractionHandler getHandler() {
         return handler;
+    }
+
+    @Override
+    public String toString() {
+        return "Address(uri=" + endpoint.getURI() + " - authenticationId=" + authenticationId + ")";
     }
 }

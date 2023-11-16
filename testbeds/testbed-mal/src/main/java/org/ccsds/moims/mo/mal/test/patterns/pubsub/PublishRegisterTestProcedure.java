@@ -35,8 +35,12 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -46,14 +50,15 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -67,7 +72,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
 
     public static final Identifier SUBSCRIPTION_ID = new Identifier("PublishRegisterSubscription");
 
-    private boolean shared;
+    private boolean withSharedBroker;
 
     private IPTestStub ipTest;
 
@@ -80,47 +85,52 @@ public class PublishRegisterTestProcedure extends LoggingBase {
     public boolean useSharedBroker(String sharedBroker) throws Exception {
         LoggingBase.logMessage("PublishRegisterTestProcedure.useSharedBroker("
                 + sharedBroker + ')');
-        shared = Boolean.parseBoolean(sharedBroker);
+        withSharedBroker = Boolean.parseBoolean(sharedBroker);
 
         ipTest = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), withSharedBroker).getStub();
 
         listener = new MonitorListener();
         return true;
     }
 
-    public boolean publishRegisterWithTheEntities(String entities) throws Exception {
-        LoggingBase.logMessage("PublishRegisterTestProcedure.publishRegisterWithTheEntities("
+    public boolean publishRegisterWithKeyNames(String entities) throws Exception {
+        LoggingBase.logMessage("PublishRegisterTestProcedure.publishRegisterWithKeyNames("
                 + entities + ')');
         publishRegistered = true;
 
         // Add the Key Names
         IdentifierList myKeys = EntityRequestTestProcedure.parseKeyNames(entities);
+        AttributeTypeList keyTypes = new AttributeTypeList();
+
+        for (Identifier k : myKeys) {
+            keyTypes.add(AttributeType.IDENTIFIER);
+        }
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-                        myKeys, expectedErrorCode);
+                        myKeys, keyTypes, expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         return true;
     }
 
-    public boolean publishWithEntityAndExpectError(String entityKeyValue, String error) throws Exception {
-        LoggingBase.logMessage("PublishRegisterTestProcedure.publishWithEntityAndExpectError("
+    public boolean publishWithSubscriptionKeyValuesAndExpectError(String entityKeyValue, String error) throws Exception {
+        LoggingBase.logMessage("PublishRegisterTestProcedure.publishWithSubscriptionKeyValuesAndExpectError("
                 + entityKeyValue + ',' + error + ')');
         listener.clear();
 
-        AttributeList values = EntityRequestTestProcedure.parseKeyValues(entityKeyValue);
+        NullableAttributeList values = EntityRequestTestProcedure.parseKeyValues(entityKeyValue);
 
         // Empty filters list because we don't want any filter
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
         ipTest.monitorRegister(subscription, listener);
 
         boolean expectError = Boolean.parseBoolean(error);
@@ -132,7 +142,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
         updateList.add(new TestUpdate(new Integer(0)));
 
         UInteger expectedErrorCode;
-        AttributeList failedEntityKeys;
+        NullableAttributeList failedEntityKeys;
         if (expectError) {
             expectedErrorCode = MALHelper.UNKNOWN_ERROR_NUMBER;
             // failedEntityKeys = values;
@@ -200,12 +210,14 @@ public class PublishRegisterTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate updateList, Map qosProperties) {
             LoggingBase.logMessage("PublishRegisterTestProcedure.MonitorListener.monitorNotifyReceived: "
             );
-            notifiedUpdateHeaders = updateHeaderList;
-            notifiedUpdates = updateList;
+            notifiedUpdateHeaders = new UpdateHeaderList();
+            notifiedUpdateHeaders.add(updateHeader);
+            notifiedUpdates = new TestUpdateList();
+            notifiedUpdates.add(updateList);
         }
 
         public TestUpdateList getNotifiedUpdates() {

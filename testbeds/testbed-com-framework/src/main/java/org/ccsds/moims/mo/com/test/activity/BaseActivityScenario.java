@@ -21,7 +21,7 @@
 package org.ccsds.moims.mo.com.test.activity;
 
 import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -39,7 +39,7 @@ public abstract class BaseActivityScenario extends LoggingBase {
     protected final String loggingClassName;
     protected final Identifier ALL_ID = new Identifier("*");
     protected final Integer ALL_INT = 0;
-    protected MALStandardError lastError = null;
+    protected MOErrorException lastError = null;
 
     public BaseActivityScenario(String loggingClassName) {
         this.loggingClassName = loggingClassName;

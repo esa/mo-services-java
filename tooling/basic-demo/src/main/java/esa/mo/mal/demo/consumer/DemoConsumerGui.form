@@ -194,7 +194,6 @@
             <EtchetBorder bevelType="0"/>
           </Border>
         </Property>
-        <Property name="floatable" type="boolean" value="false"/>
         <Property name="rollover" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="jToolBar1" noResource="true"/>
       </Properties>

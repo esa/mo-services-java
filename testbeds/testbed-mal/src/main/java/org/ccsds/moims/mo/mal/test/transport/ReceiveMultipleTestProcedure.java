@@ -39,6 +39,9 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -54,10 +57,10 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.transport.TestEndPoint;
 import org.ccsds.moims.mo.testbed.transport.TransportInterceptor;
@@ -86,13 +89,13 @@ public class ReceiveMultipleTestProcedure {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, false);
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false);
         ipTest = ipTestConsumer.getStub();
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(value)));
 
-        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.monitorRegister(subscription, listener);
 
@@ -110,11 +113,14 @@ public class ReceiveMultipleTestProcedure {
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-                        keyNames, expectedErrorCode);
+                        keyNames, Helper.get1TestKeyType(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
+        NullableAttributeList atts = new NullableAttributeList();
+        atts.add(new NullableAttribute(value));
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList(value)));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, atts));
 
         TestUpdateList testUpdateList = new TestUpdateList();
         testUpdateList.add(new TestUpdate(0));
@@ -146,8 +152,8 @@ public class ReceiveMultipleTestProcedure {
         MALMessage notifyMessage = ep.createTestMessage(
                 listener.getLastNotifyHeader(),
                 HeaderTestProcedure.SUBSCRIPTION_ID,
-                new UpdateHeaderList(),
-                new List[]{new TestUpdateList()}, new Hashtable());
+                new UpdateHeader(),
+                new Object[]{new TestUpdate()}, new Hashtable());
         LoggingBase.logMessage("notifyMessage = " + notifyMessage);
 
         // Reinject it twice (cloning is useless)
@@ -177,7 +183,7 @@ public class ReceiveMultipleTestProcedure {
         private int notifyCount;
 
         MonitorListener() {
-            notifyHeaders = new ArrayList<MALMessageHeader>();
+            notifyHeaders = new ArrayList<>();
             notifyCount = 1;
         }
 
@@ -187,9 +193,9 @@ public class ReceiveMultipleTestProcedure {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            LoggingBase.logMessage("monitorNotifyReceived(" + msgHeader + ',' + updateHeaderList + ')');
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
+            LoggingBase.logMessage("monitorNotifyReceived(" + msgHeader + ',' + updateHeader + ')');
             notifyHeaders.add(msgHeader);
             if (notifyHeaders.size() == notifyCount) {
                 cond.set();

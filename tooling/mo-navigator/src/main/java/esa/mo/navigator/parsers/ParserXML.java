@@ -22,8 +22,6 @@ package esa.mo.navigator.parsers;
 
 import de.dlr.gsoc.mcds.mosdl.loaders.XmlSpecLoader;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -49,30 +47,22 @@ public class ParserXML {
      *
      * @param text The text
      * @return The parsed Data
-     * @throws javax.xml.bind.JAXBException
+     * @throws javax.xml.bind.JAXBException if the text could not be parsed.
+     * @throws org.xml.sax.SAXException if the Schema could not be parsed.
      */
-    public static SpecificationType parseXML(String text) throws JAXBException {
-        JAXBContext jaxbContext;
-        try {
-            jaxbContext = JAXBContext.newInstance(SpecificationType.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            boolean validate = false;
+    public static SpecificationType parseXML(String text) throws JAXBException, SAXException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(SpecificationType.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        boolean validate = false;
 
-            if (validate) {
-                SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                Schema schema = schemaFactory.newSchema(XmlSpecLoader.class.getResource(SERVICE_SCHEMA_RESOURCE));
-                jaxbUnmarshaller.setSchema(schema);
-            }
-
-            StreamSource streamSource = new StreamSource(new StringReader(text));
-            return (SpecificationType) ((JAXBElement) jaxbUnmarshaller.unmarshal(streamSource)).getValue();
-        } catch (JAXBException ex) {
-            Logger.getLogger(ParserXML.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(ParserXML.class.getName()).log(Level.SEVERE, null, ex);
+        if (validate) {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = schemaFactory.newSchema(XmlSpecLoader.class.getResource(SERVICE_SCHEMA_RESOURCE));
+            jaxbUnmarshaller.setSchema(schema);
         }
-        
-        return null;
+
+        StreamSource streamSource = new StreamSource(new StringReader(text));
+        return (SpecificationType) ((JAXBElement) jaxbUnmarshaller.unmarshal(streamSource)).getValue();
     }
 
 }

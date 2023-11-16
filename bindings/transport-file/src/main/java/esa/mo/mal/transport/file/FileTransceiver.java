@@ -20,9 +20,8 @@
  */
 package esa.mo.mal.transport.file;
 
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENMessagePoller.GENMessageReceiver;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.MessagePoller.GENMessageReceiver;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,11 +36,12 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.Iterator;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * File transmitter and receiver. Used by the GEN message poller class.
  */
-public class FileTransceiver implements GENMessageReceiver<InputStream>, GENMessageSender {
+public class FileTransceiver implements GENMessageReceiver<InputStream>, MessageSender {
 
     private final Path incomingDirectory;
     private final Path outgoingDirectory;
@@ -76,7 +76,7 @@ public class FileTransceiver implements GENMessageReceiver<InputStream>, GENMess
     }
 
     @Override
-    public void sendEncodedMessage(GENOutgoingMessageHolder packetData) throws IOException {
+    public void sendEncodedMessage(OutgoingMessageHolder packetData) throws IOException {
         // create tmp file name
         String tmpname = FileTransport.FILE_PREFIX
                 + packetData.getDestinationURI().substring(7)

@@ -34,14 +34,13 @@ import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
-import esa.mo.mal.transport.gen.GENEndpoint;
+import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 
 /**
  *
  */
-public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
+public class JMSEndpoint extends Endpoint implements MALEndpoint {
 
     public static final String DOM_PROPERTY = "DOM";
     public static final String NET_PROPERTY = "NET";
@@ -75,7 +74,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
      */
     public JMSEndpoint(final JMSTransport transport, final String localName,
             final String routingName, String baseuri, Session qs, Queue q) throws Exception {
-        super(transport, localName, routingName, baseuri + q.getQueueName(), false);
+        super(transport, localName, routingName, baseuri + q.getQueueName(), false, new NamedValueList());
 
         this.jtransport = transport;
         this.qs = qs;
@@ -198,7 +197,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
                         break;
                     }
                     default: {
-                        throw new UnsupportedOperationException(
+                        throw new java.lang.UnsupportedOperationException(
                                 "JMS should not be sending this PubSub message stage.: "
                                 + msg.getHeader().getInteractionStage().getValue());
                     }
@@ -219,7 +218,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         } catch (Exception e) {
             JMSTransport.RLOGGER.log(Level.WARNING, "JMS Error occurred {0}", e);
 
-            throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
+            throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
                     MALHelper.INTERNAL_ERROR_NUMBER, new Union(e.getMessage())), null);
         }
     }
@@ -228,7 +227,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             MALInteractionException {
         // get components parts of messsage
         Subscription subscription = (Subscription) msg.getBody().getBodyElement(0, new Subscription());
-        final String strURL = msg.getHeader().getURITo().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -242,14 +241,12 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         } else {
             try {
                 // get the queue
-                String exchangeName = providerExchangeName
-                        + ":" + msg.getHeader().getSession().toString()
-                        + ":" + msg.getHeader().getSessionName();
+                String exchangeName = providerExchangeName;
                 Topic dest = jtransport.getAdministrator().getTopic(lqs, exchangeName);
 
                 handler = new JMSConsumeHandler(this, interruption, qs, dest, subscriptionKey,
                         msg.getHeader().getServiceArea(), msg.getHeader().getService(),
-                        msg.getHeader().getOperation(), msg.getHeader().getAreaVersion());
+                        msg.getHeader().getOperation(), msg.getHeader().getServiceVersion());
                 consumeHandlerMap.put(subscriptionKey, handler);
             } catch (NameNotFoundException e) {
                 JMSTransport.RLOGGER.log(Level.WARNING,
@@ -302,7 +299,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
         if (null == details) {
             JMSTransport.RLOGGER.warning("JMS : ERR Provider not known");
             throw new MALInteractionException(
-                    new MALStandardError(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)
+                    new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)
             );
         }
 
@@ -316,7 +313,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
             throws MALException, MALInteractionException {
         // get components parts of messsage
         IdentifierList subList = (IdentifierList) msg.getBody().getBodyElement(0, new IdentifierList());
-        final String strURL = msg.getHeader().getURITo().getValue();
+        final String strURL = msg.getHeader().getTo().getValue();
         final int iSecond = strURL.indexOf(JMSTransport.JMS_SERVICE_DELIM);
         final String providerExchangeName = strURL.substring(iSecond + 1);
 
@@ -347,7 +344,7 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
 
         JMSPublishHandler hdlr = publishHandlerMap.remove(createProviderKey(msg.getHeader()));
         if (null != hdlr) {
-            returnMsg.getHeader().setQoSlevel(hdlr.getRegisterQoS());
+            //returnMsg.getHeader().setQoSlevel(hdlr.getRegisterQoS());
             JMSTransport.RLOGGER.log(Level.FINE,
                     "Removing JMS publisher details: {0}", msg.getHeader());
         }
@@ -381,53 +378,37 @@ public class JMSEndpoint extends GENEndpoint implements MALEndpoint {
     public static void writeListElement(int index, List srcList,
             MALElementOutputStream enc) throws MALException {
         Object e = srcList.get(index);
-        List l = (List) ((Element) srcList).createElement();
+        ElementList l = (ElementList) ((Element) srcList).createElement();
         l.add(e);
         enc.writeElement(l, null);
     }
 
-    static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError) {
+    static MALMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError) {
         return createReturnHeader(sourceMessage, isError,
                 (short) (sourceMessage.getHeader().getInteractionStage().getValue() + 1));
     }
 
-    static GENMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
-        GENMessageHeader hdr = new GENMessageHeader();
+    static MALMessageHeader createReturnHeader(MALMessage sourceMessage, boolean isError, short stage) {
         MALMessageHeader srcHdr = sourceMessage.getHeader();
-
-        hdr.setURIFrom(srcHdr.getURITo());
-        hdr.setURITo(srcHdr.getURIFrom());
-        hdr.setAuthenticationId(new Blob(JMSTransport.authId));
-        hdr.setTimestamp(new Time(new java.util.Date().getTime()));
-        hdr.setQoSlevel(srcHdr.getQoSlevel());
-        hdr.setPriority(srcHdr.getPriority());
-        hdr.setDomain(srcHdr.getDomain());
-        hdr.setNetworkZone(srcHdr.getNetworkZone());
-        hdr.setSession(srcHdr.getSession());
-        hdr.setSessionName(srcHdr.getSessionName());
-        hdr.setInteractionType(srcHdr.getInteractionType());
-        hdr.setInteractionStage(new UOctet(stage));
-        hdr.setTransactionId(srcHdr.getTransactionId());
-        hdr.setServiceArea(srcHdr.getServiceArea());
-        hdr.setService(srcHdr.getService());
-        hdr.setOperation(srcHdr.getOperation());
-        hdr.setAreaVersion(srcHdr.getAreaVersion());
-        hdr.setIsErrorMessage(isError);
-
-        return hdr;
+        return new MALMessageHeader(
+                srcHdr.getTo(),
+                new Blob(JMSTransport.authId),
+                srcHdr.getFrom(),
+                Time.now(),
+                srcHdr.getInteractionType(),
+                new UOctet(stage),
+                srcHdr.getTransactionId(),
+                srcHdr.getServiceArea(),
+                srcHdr.getService(),
+                srcHdr.getOperation(),
+                srcHdr.getServiceVersion(),
+                isError,
+                srcHdr.getSupplements());
     }
 
     private static String createProviderKey(MALMessageHeader details) {
         StringBuilder buf = new StringBuilder();
-
-        buf.append(details.getSession());
-        buf.append(':');
-        buf.append(details.getSessionName());
-        buf.append(':');
-        buf.append(details.getNetworkZone());
-        buf.append(':');
-        buf.append(details.getDomain());
-
+        buf.append(details.getFrom());
         return buf.toString();
     }
 

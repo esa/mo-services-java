@@ -22,10 +22,8 @@ package esa.mo.mal.transport.zmtp;
 
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderDecoder;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderEncoder;
-import esa.mo.mal.transport.gen.GENMessageHeader;
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import org.ccsds.moims.mo.mal.MALDecoder;
@@ -37,23 +35,19 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
  * @author Dominik Marszk
  */
-public class ZMTPMessageHeader extends GENMessageHeader {
+public class ZMTPMessageHeader extends MALMessageHeader {
 
     /**
      * Logger.
@@ -114,12 +108,6 @@ public class ZMTPMessageHeader extends GENMessageHeader {
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
      * @param timestamp Timestamp of the message
-     * @param qosLevel QoS level of the message
-     * @param priority Priority of the message
-     * @param domain Domain of the service provider
-     * @param networkZone Network zone of the service provider
-     * @param session Session of the service provider
-     * @param sessionName Session name of the service provider
      * @param interactionType Interaction type of the operation
      * @param interactionStage Interaction stage of the interaction
      * @param transactionId Transaction identifier of the interaction, may be
@@ -129,24 +117,19 @@ public class ZMTPMessageHeader extends GENMessageHeader {
      * @param operation Operation number
      * @param serviceVersion Service version number
      * @param isErrorMessage Flag indicating if the message conveys an error
+     * @param supplements The supplements
      */
-    public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport, URI uriFrom,
-            Blob authenticationId, URI uriTo, Time timestamp, QoSLevel qosLevel, UInteger priority,
-            IdentifierList domain, Identifier networkZone, SessionType session, Identifier sessionName,
+    public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport,
+            Identifier uriFrom, Blob authenticationId, Identifier uriTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, Long transactionId,
             UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion,
-            Boolean isErrorMessage) {
-        super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority, domain, networkZone,
-                session, sessionName, interactionType, interactionStage, transactionId, serviceArea, service,
-                operation, serviceVersion, isErrorMessage);
+            Boolean isErrorMessage, NamedValueList supplements) {
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
+                interactionStage, transactionId, serviceArea, service,
+                operation, serviceVersion, isErrorMessage, supplements);
 
         this.configuration = configuration;
         this.transport = transport;
-    }
-
-    @Override
-    public Element createElement() {
-        return new ZMTPMessageHeader(configuration, null);
     }
 
     @Override
@@ -160,21 +143,24 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(areaVersion);
+        encoder.encodeUOctet(serviceVersion);
         encoder.encodeUOctet(new UOctet((short) (getErrorBit() | getQoSLevelBits() | getSessionBits())));
         encoder.encodeLong(transactionId);
         encoder.encodeUOctet(new UOctet((short) (getEncodingIdBits() | configuration.getFlags())));
-        encoder.encodeURI(URIFrom);
-        encoder.encodeURI(URITo);
+        encoder.encodeIdentifier(from);
+        encoder.encodeIdentifier(to);
         if (getEncodingId() == 3) {
             encoder.encodeUOctet(new UOctet(getEncodingExtendedId()));
         }
+        /*
         if (configuration.isPriorityFlag()) {
             encoder.encodeVariableUInteger(priority);
         }
+         */
         if (configuration.isTimestampFlag()) {
             encoder.encodeTime(timestamp);
         }
+        /*
         if (configuration.isNetworkFlag()) {
             encoder.encodeIdentifier(networkZone);
         }
@@ -184,13 +170,14 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         if (configuration.isDomainFlag()) {
             encoder.encodeElement(domain);
         }
+         */
         if (configuration.isAuthFlag()) {
             encoder.encodeBlob(authenticationId);
         }
     }
 
     @Override
-    public Element decode(final MALDecoder hdrDecoder) throws MALException {
+    public ZMTPMessageHeader decode(final MALDecoder hdrDecoder) throws MALException {
         if (!(hdrDecoder instanceof ZMTPHeaderDecoder)) {
             throw new MALException("Expected ZMTPHeaderDecoder as a decoder");
         }
@@ -209,32 +196,35 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        areaVersion = decoder.decodeUOctet();
+        serviceVersion = decoder.decodeUOctet();
 
         final short moHdrPt1 = decoder.decodeUOctet().getValue();
         extractError(moHdrPt1);
-        extractQoSLevel(moHdrPt1);
-        extractSession(moHdrPt1);
+        //extractQoSLevel(moHdrPt1);
+        //extractSession(moHdrPt1);
 
         transactionId = decoder.decodeLong();
         short flags = decoder.decodeUOctet().getValue();
         extractEncodingId(flags);
-        URIFrom = decoder.decodeURI();
-        URITo = decoder.decodeURI();
+        from = decoder.decodeIdentifier();
+        to = decoder.decodeIdentifier();
 
         if (getEncodingId() == 3) {
             setEncodingExtendedId(decoder.decodeUOctet().getValue());
         }
+        /*
         if (0 != (flags & 0x20)) {
             priority = decoder.decodeVariableUInteger();
         } else {
             priority = new UInteger(0);
         }
+         */
         if (0 != (flags & 0x10)) {
             timestamp = decoder.decodeTime();
         } else {
             timestamp = new Time(new Date().getTime());
         }
+        /*
         if (0 != (flags & 0x08)) {
             networkZone = decoder.decodeIdentifier();
         } else {
@@ -255,6 +245,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
                 domain.add(new Identifier(defaultDomainTokenizer.nextToken()));
             }
         }
+         */
         if (0 != (flags & 0x01)) {
             authenticationId = decoder.decodeBlob();
         } else if (configuration.getDefaultAuth().length() > 0) {
@@ -345,6 +336,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         isErrorMessage = (0 != (moHdrErrQosSess & 0x80));
     }
 
+    /*
     protected void extractQoSLevel(final short moHdrErrQosSess) {
         QoSlevel = QoSLevel.fromOrdinal((moHdrErrQosSess >> 4) & 0x7);
     }
@@ -352,7 +344,7 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     protected void extractSession(final short moHdrErrQosSess) {
         session = SessionType.fromOrdinal(moHdrErrQosSess & 0x0F);
     }
-
+     */
     protected short getErrorBit() {
         if (isErrorMessage) {
             return 0x80;
@@ -361,11 +353,13 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     }
 
     protected short getQoSLevelBits() {
-        return (short) ((QoSlevel.getOrdinal() & 0x7) << 4);
+        // return (short) ((QoSlevel.getOrdinal() & 0x7) << 4);
+        return (short) ((1 & 0x7) << 4);
     }
 
     protected short getSessionBits() {
-        return (short) ((session.getOrdinal() & 0xF));
+        // return (short) ((session.getOrdinal() & 0xF));
+        return (short) ((1 & 0xF));
     }
 
     public short getEncodingExtendedId() {
@@ -384,25 +378,13 @@ public class ZMTPMessageHeader extends GENMessageHeader {
     public String toString() {
         final StringBuilder str = new StringBuilder("ZMTPMessageHeader{");
         str.append("URIFrom=");
-        str.append(URIFrom);
+        str.append(from);
         str.append(", authenticationId=");
         str.append(authenticationId);
         str.append(", URITo=");
-        str.append(URITo);
+        str.append(to);
         str.append(", timestamp=");
         str.append(timestamp);
-        str.append(", QoSlevel=");
-        str.append(QoSlevel);
-        str.append(", priority=");
-        str.append(priority);
-        str.append(", domain=");
-        str.append(domain);
-        str.append(", networkZone=");
-        str.append(networkZone);
-        str.append(", session=");
-        str.append(session);
-        str.append(", sessionName=");
-        str.append(sessionName);
         str.append(", interactionType=");
         str.append(interactionType);
         str.append(", interactionStage=");
@@ -416,9 +398,11 @@ public class ZMTPMessageHeader extends GENMessageHeader {
         str.append(", operation=");
         str.append(operation);
         str.append(", serviceVersion=");
-        str.append(areaVersion);
+        str.append(serviceVersion);
         str.append(", isErrorMessage=");
         str.append(isErrorMessage);
+        str.append(", supplements=");
+        str.append(supplements);
         str.append('}');
 
         return str.toString();

@@ -20,8 +20,10 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryEncoder;
+import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import java.util.logging.Level;
-
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
@@ -31,23 +33,15 @@ import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
-import esa.mo.mal.transport.gen.GENMessageHeader;
-
-import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
-
-public class TCPIPMessageHeader extends GENMessageHeader {
+public class TCPIPMessageHeader extends MALMessageHeader {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,22 +62,20 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     public TCPIPMessageHeader() {
     }
 
-    public TCPIPMessageHeader(URI uriFrom, URI uriTo) {
-        this.URIFrom = uriFrom;
-        this.URITo = uriTo;
+    public TCPIPMessageHeader(Identifier uriFrom, Identifier uriTo) {
+        this.from = uriFrom;
+        this.to = uriTo;
     }
 
-    public TCPIPMessageHeader(URI uriFrom, String serviceFrom,
-            Blob authenticationId, URI uriTo, String serviceTo, Time timestamp,
-            QoSLevel qosLevel, UInteger priority, IdentifierList domain,
-            Identifier networkZone, SessionType session,
-            Identifier sessionName, InteractionType interactionType,
-            UOctet interactionStage, Long transactionId, UShort serviceArea,
-            UShort service, UShort operation, UOctet serviceVersion,
-            Boolean isErrorMessage) {
-        super(uriFrom, authenticationId, uriTo, timestamp, qosLevel, priority,
-                domain, networkZone, session, sessionName, interactionType, interactionStage,
-                transactionId, serviceArea, service, operation, serviceVersion, isErrorMessage);
+    public TCPIPMessageHeader(Identifier uriFrom, String serviceFrom,
+            Blob authenticationId, Identifier uriTo, String serviceTo, Time timestamp,
+            InteractionType interactionType, UOctet interactionStage,
+            Long transactionId, UShort serviceArea, UShort service,
+            UShort operation, UOctet serviceVersion,
+            Boolean isErrorMessage, NamedValueList supplements) {
+        super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
+                interactionStage, transactionId, serviceArea, service,
+                operation, serviceVersion, isErrorMessage, supplements);
         this.serviceFrom = serviceFrom;
         this.serviceTo = serviceTo;
     }
@@ -92,7 +84,8 @@ public class TCPIPMessageHeader extends GENMessageHeader {
         return bodyLength;
     }
 
-    public void setBodyLength(int bodyLength) {
+    @Deprecated
+    private void setBodyLength(int bodyLength) {
         this.bodyLength = bodyLength;
     }
 
@@ -100,41 +93,233 @@ public class TCPIPMessageHeader extends GENMessageHeader {
         return serviceFrom;
     }
 
-    public void setServiceFrom(String serviceFrom) {
-        this.serviceFrom = serviceFrom;
-    }
-
     public String getServiceTo() {
         return serviceTo;
-    }
-
-    public void setServiceTo(String serviceTo) {
-        this.serviceTo = serviceTo;
     }
 
     public byte[] getRemainingEncodedData() {
         return remainingEncodedData;
     }
 
-    public void setRemainingEncodedData(byte[] remainingEncodedData) {
-        this.remainingEncodedData = remainingEncodedData;
-    }
-
     public short getEncodingId() {
         return encodingId;
     }
 
-    public void setEncodingId(short encodingId) {
+    @Deprecated
+    private void setEncodingId(short encodingId) {
         this.encodingId = encodingId;
     }
 
+    @Deprecated
+    private void setInteractionType(short sduType) {
+        interactionType = getInteractionType(sduType);
+    }
+
+    @Deprecated
+    private void setInteractionStage(short sduType) {
+        interactionStage = getInteractionStage(sduType);
+    }
+
     @Override
-    public Element decode(final MALDecoder decoder) throws MALException {
-        return this;
+    public TCPIPMessageHeader decode(final MALDecoder dec) throws MALException {
+        short versionAndSDU = dec.decodeUOctet().getValue();
+        short sduType = (short) (versionAndSDU & 0x1f);
+
+        this.serviceArea = new UShort(dec.decodeShort());
+        this.service = new UShort(dec.decodeShort());
+        this.operation = new UShort(dec.decodeShort());
+        this.serviceVersion = dec.decodeUOctet();
+
+        short parts = dec.decodeUOctet().getValue();
+        this.isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
+        //QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
+        //SessionType session = SessionType.fromOrdinal(parts & 0xF);
+        this.transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
+
+        short flags = dec.decodeUOctet().getValue(); // flags
+        boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
+        boolean destinationIdFlag = (((flags & 0x40) >> 6) == 0x1);
+        //boolean priorityFlag = (((flags & 0x20) >> 5) == 0x1);
+        boolean timestampFlag = (((flags & 0x10) >> 4) == 0x1);
+        //boolean networkZoneFlag = (((flags & 0x8) >> 3) == 0x1);
+        //boolean sessionNameFlag = (((flags & 0x4) >> 2) == 0x1);
+        //boolean domainFlag = (((flags & 0x2) >> 1) == 0x1);
+        boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
+
+        this.encodingId = dec.decodeUOctet().getValue();
+        this.bodyLength = (int) dec.decodeInteger();
+        Identifier uriFrom = this.getFrom();
+        Identifier uriTo = this.getTo();
+
+        if (sourceIdFlag) {
+            String sourceId = dec.decodeString();
+            if (isURI(sourceId)) {
+                uriFrom = new Identifier(sourceId);
+            } else {
+                uriFrom = new Identifier(this.getFrom() + sourceId);
+            }
+        }
+        if (destinationIdFlag) {
+            String destinationId = dec.decodeString();
+            if (isURI(destinationId)) {
+                uriTo = new Identifier(destinationId);
+            } else {
+                uriTo = new Identifier(this.getTo() + destinationId);
+            }
+        }
+
+        //UInteger priority = (priorityFlag) ? dec.decodeUInteger() : null;
+        this.timestamp = (timestampFlag) ? dec.decodeTime() : this.getTimestamp();
+        //Identifier networkZone = (networkZoneFlag) ? dec.decodeIdentifier() : null;
+        //Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : null;
+        //IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : null;
+        this.authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
+        //NamedValueList supplements = (NamedValueList) dec.decodeNullableElement(new NamedValueList());
+
+        TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, this.getServiceFrom(),
+                authenticationId, uriTo, this.getServiceTo(), timestamp,
+                null, null, transactionId, serviceArea,
+                service, operation, serviceVersion, isErrorMessage, new NamedValueList());
+
+        header.setInteractionType(sduType);
+        header.setInteractionStage(sduType);
+        header.setEncodingId(encodingId);
+        header.setBodyLength(bodyLength);
+
+        header.decodedHeaderBytes = ((TCPIPFixedBinaryDecoder) dec).getBufferOffset();
+        header.versionNumber = (versionAndSDU >> 0x5);
+
+        // debug information
+        /*
+		RLOGGER.log(Level.FINEST, "Decoded header:");
+		RLOGGER.log(Level.FINEST, "----------------------------------");
+		RLOGGER.log(Level.FINEST, header.toString());
+		RLOGGER.log(Level.FINEST, "Decoded header bytes:");
+		RLOGGER.log(Level.FINEST, header.decodedHeaderBytes + "");
+		RLOGGER.log(Level.FINEST, "----------------------------------");
+         */
+        return header;
+        // return this;
+    }
+
+    /**
+     * Is @param a URI?
+     *
+     * @param uri
+     * @return
+     */
+    private boolean isURI(String uri) {
+        return uri.startsWith("maltcp://");
     }
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
+        // version number & sdu type
+        TCPIPFixedBinaryEncoder enc = (TCPIPFixedBinaryEncoder) encoder;
+        byte versionAndSDU = (byte) (this.versionNumber << 5 | this.getSDUType());
+
+        enc.encodeUOctet(new UOctet(versionAndSDU));
+        enc.encodeShort((short) this.getServiceArea().getValue());
+        enc.encodeShort((short) this.getService().getValue());
+        enc.encodeShort((short) this.getOperation().getValue());
+        enc.encodeUOctet(this.getServiceVersion());
+
+        /*
+        short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)
+                | (header.getQoSlevel().getOrdinal() << 4)
+                | header.getSession().getOrdinal());
+         */
+        short parts = (short) (((this.getIsErrorMessage() ? 0x1 : 0x0) << 7)
+                | (1 << 4)
+                | 1);
+
+        enc.encodeUOctet(new UOctet(parts));
+        enc.encodeMALLong(this.getTransactionId());
+
+        // set flags
+        enc.encodeUOctet(getFlags(this));
+        // set encoding id
+        enc.encodeUOctet(new UOctet(this.getEncodingId()));
+
+        // preset body length. Allocate four bytes.
+        enc.encodeInteger(0);
+
+        // encode rest of header
+        if (!this.getServiceFrom().isEmpty()) {
+            enc.encodeString(this.getFrom().toString());
+        }
+        if (!this.getServiceTo().isEmpty()) {
+            enc.encodeString(this.getTo().toString());
+        }
+        /*
+        if (header.getPriority() != null) {
+            enc.encodeUInteger(header.getPriority());
+        }
+         */
+        if (this.getTimestamp() != null) {
+            enc.encodeTime(this.getTimestamp());
+        }
+        /*
+        if (header.getNetworkZone() != null) {
+            enc.encodeIdentifier(header.getNetworkZone());
+        }
+        if (header.getSessionName() != null) {
+            enc.encodeIdentifier(header.getSessionName());
+        }
+        if (header.getDomain() != null && header.getDomain().size() > 0) {
+            header.getDomain().encode(enc);
+        }
+         */
+        if (this.getAuthenticationId() != null && this.getAuthenticationId().getLength() > 0) {
+            enc.encodeBlob(this.getAuthenticationId());
+        }
+        /*
+        if (header.getSupplements() != null) {
+            header.getSupplements().encode(enc);
+        }
+         */
+    }
+
+    /**
+     * Set a byte which flags the optional fields that are set in the header.
+     *
+     * @param header
+     * @return
+     */
+    private UOctet getFlags(TCPIPMessageHeader header) {
+
+        short result = 0;
+        if (!header.getServiceFrom().isEmpty()) {
+            result |= (0x1 << 7);
+        }
+        if (!header.getServiceTo().isEmpty()) {
+            result |= (0x1 << 6);
+        }
+        /*
+        if (header.getPriority() != null) {
+            result |= (0x1 << 5);
+        }
+         */
+        if (header.getTimestamp() != null) {
+            result |= (0x1 << 4);
+        }
+        /*
+        if (header.getNetworkZone() != null) {
+            result |= (0x1 << 3);
+        }
+        if (header.getSessionName() != null) {
+            result |= (0x1 << 2);
+        }
+        if (header.getDomain() != null && header.getDomain().size() > 0) {
+            result |= (0x1 << 1);
+        }
+         */
+
+        if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
+            result |= 0x1;
+        }
+
+        return new UOctet(result);
     }
 
     public short getSDUType() {
@@ -202,7 +387,6 @@ public class TCPIPMessageHeader extends GENMessageHeader {
     }
 
     protected InteractionType getInteractionType(short sduType) {
-
         switch (sduType) {
             case 0:
                 return InteractionType.SEND;
@@ -280,62 +464,26 @@ public class TCPIPMessageHeader extends GENMessageHeader {
         return null;
     }
 
-    public void setInteractionType(short sduType) {
-        interactionType = getInteractionType(sduType);
-    }
-
-    public void setInteractionStage(short sduType) {
-        interactionStage = getInteractionStage(sduType);
-    }
-
     @Override
     public String toString() {
         final StringBuilder str = new StringBuilder("TCPIPMessageHeader{");
-
-        str.append("BodyLength=");
-        str.append(bodyLength);
-        str.append(", VersionNumber=");
-        str.append(versionNumber);
-        str.append(", SDUType=");
-        str.append(", serviceArea=");
-        str.append(serviceArea);
-        str.append(", service=");
-        str.append(service);
-        str.append(", operation=");
-        str.append(operation);
-        str.append(", areaVersion=");
-        str.append(areaVersion);
-        str.append(", isErrorMessage=");
-        str.append(isErrorMessage);
-        str.append(", QoSlevel=");
-        str.append(QoSlevel);
-        str.append(", session=");
-        str.append(session);
-        str.append(", transactionId=");
-        str.append(transactionId);
-        str.append(", priority=");
-        str.append(priority);
-        str.append(", timestamp=");
-        str.append(timestamp);
-        str.append(", networkZone=");
-        str.append(networkZone);
-        str.append(", sessionName=");
-        str.append(sessionName);
-        str.append(", domain=");
-        str.append(domain);
-        str.append(", authenticationId=");
-        str.append(authenticationId);
-        str.append(", URIFrom=");
-        str.append(URIFrom);
-        str.append(", URITo=");
-        str.append(URITo);
-        str.append(", interactionType=");
-        str.append(interactionType);
-        str.append(", interactionStage=");
-        str.append(interactionStage);
+        str.append("BodyLength=").append(bodyLength);
+        str.append(", VersionNumber=").append(versionNumber);
+        str.append(", SDUType=").append(getSDUType());
+        str.append(", serviceArea=").append(serviceArea);
+        str.append(", service=").append(service);
+        str.append(", operation=").append(operation);
+        str.append(", serviceVersion=").append(serviceVersion);
+        str.append(", isErrorMessage=").append(isErrorMessage);
+        str.append(", transactionId=").append(transactionId);
+        str.append(", timestamp=").append(timestamp);
+        str.append(", authenticationId=").append(authenticationId);
+        str.append(", URIFrom=").append(from);
+        str.append(", URITo=").append(to);
+        str.append(", interactionType=").append(interactionType);
+        str.append(", interactionStage=").append(interactionStage);
+        str.append(", supplements=").append(supplements);
         str.append('}');
-
         return str.toString();
     }
-
 }

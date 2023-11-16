@@ -31,42 +31,48 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public abstract class MALOperation {
 
-    private MALService service;
+    private final ServiceKey serviceKey;
     private final Identifier name;
     private final UShort number;
-    private final Boolean replayable;
     private final InteractionType interactionType;
     private final UShort capabilitySet;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param interactionType Interaction type of the operation
      * @param capabilitySet Capability set of the operation.
      * @throws java.lang.IllegalArgumentException If any argument is null.
      */
-    public MALOperation(final UShort number,
+    public MALOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final InteractionType interactionType,
             final UShort capabilitySet)
             throws java.lang.IllegalArgumentException {
         if ((number == null)
                 || (name == null)
-                || (replayable == null)
                 || (interactionType == null)
                 || (capabilitySet == null)) {
             throw new IllegalArgumentException("Supplied arguments must not be NULL");
         }
+        this.serviceKey = serviceKey;
         this.name = name;
         this.number = number;
-        this.replayable = replayable;
         this.interactionType = interactionType;
         this.capabilitySet = capabilitySet;
+    }
+
+    /**
+     * Returns the Service Key.
+     *
+     * @return The Service Key.
+     */
+    public ServiceKey getServiceKey() {
+        return serviceKey;
     }
 
     /**
@@ -97,25 +103,13 @@ public abstract class MALOperation {
     }
 
     /**
-     * Returns whether the operation is replayable.
+     * Returns if it is a PUB-SUB Interaction Pattern operation.
      *
-     * @return Whether the operation is replayable.
+     * @return True if it is a PUB-SUB Interaction Pattern operation. False
+     * otherwise.
      */
-    public Boolean isReplayable() {
-        return replayable;
-    }
-
-    /**
-     * Returns the operation service.
-     *
-     * @return The operation service.
-     */
-    public MALService getService() {
-        return service;
-    }
-
-    void setService(final MALService service) throws java.lang.IllegalArgumentException {
-        this.service = service;
+    public boolean isPubSub() {
+        return interactionType == InteractionType.PUBSUB;
     }
 
     /**
@@ -135,5 +129,5 @@ public abstract class MALOperation {
      * @throws java.lang.IllegalArgumentException if the supplied argument is
      * null or stage does not exist for this pattern.
      */
-    public abstract MALOperationStage getOperationStage(UOctet stageNumber) throws java.lang.IllegalArgumentException;
+    public abstract OperationField[] getFieldsOnStage(UOctet stageNumber) throws java.lang.IllegalArgumentException;
 }

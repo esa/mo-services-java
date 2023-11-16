@@ -35,7 +35,7 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.jms.JMSAbstractAdministrator;
 import esa.mo.mal.transport.jms.JMSTransport;
 import java.util.logging.Level;
@@ -49,7 +49,7 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator {
     private String brokerURL = "localhost";
 
     public ActiveMQAdministrator() {
-        GENTransport.LOGGER.info("JMS: Creating ActiveMQ Administrator");
+        Transport.LOGGER.info("JMS: Creating ActiveMQ Administrator");
     }
 
     @Override
@@ -166,11 +166,11 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator {
             String[] sig, String verb) throws IOException {
         if (null != conn) {
             try {
-                GENTransport.LOGGER.log(Level.INFO, "{0}ing new topic: [{1}]", 
+                Transport.LOGGER.log(Level.INFO, "{0}ing new topic: [{1}]", 
                         new Object[]{verb, topicName});
                 ObjectName brokerObjName = new ObjectName(brokerNameQuery);
                 conn.invoke(brokerObjName, operationName, params, sig);
-                GENTransport.LOGGER.log(Level.INFO, "Topic [{0}] has been {1}ed", 
+                Transport.LOGGER.log(Level.INFO, "Topic [{0}] has been {1}ed", 
                         new Object[]{topicName, verb});
             } catch (MalformedObjectNameException e) {
                 // TODO Auto-generated catch block
@@ -189,7 +189,7 @@ public class ActiveMQAdministrator extends JMSAbstractAdministrator {
                 e.printStackTrace();
             }
         } else {
-            GENTransport.LOGGER.log(Level.WARNING,
+            Transport.LOGGER.log(Level.WARNING,
                     "Unable to {0}e topic: [{1}] as no connection to JMX configured", 
                     new Object[]{verb, topicName});
         }

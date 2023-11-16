@@ -40,15 +40,33 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
  */
 public class MALProviderImpl extends ServiceComponentImpl implements MALProvider {
 
-    private final Map<String, MALPublisher> publishers = new HashMap<>();
-    private final boolean isPublisher;
+    private final Map<String, MALPublisher> pubsubPublishers = new HashMap<>();
+    private final boolean withPubSub;
     private final URI sharedBrokerUri;
     private final MALBrokerBinding localBrokerBinding;
     private final URI localBrokerUri;
     private MALTransmitErrorListener listener;
 
+    /**
+     * Constructor
+     *
+     * @param parent MAL provider manager implementation.
+     * @param contextImpl MAL context implementation.
+     * @param localName Local Name.
+     * @param protocol Protocol.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID.
+     * @param handler MAL interaction handler.
+     * @param expectedQos Expected QoS.
+     * @param priorityLevelNumber Priority level.
+     * @param defaultQoSProperties Default QoS properties.
+     * @param withPubSub With PubSub or not.
+     * @param sharedBrokerUri Shared broker URI.
+     * @param supplements MAL Supplements.
+     * @throws MALException on error.
+     */
     MALProviderImpl(final MALProviderManagerImpl parent,
-            final MALContextImpl impl,
+            final MALContextImpl contextImpl,
             final String localName,
             final String protocol,
             final MALService service,
@@ -57,34 +75,37 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
-            final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
-        super(parent,
-                impl,
+            final Boolean withPubSub,
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
+        super(
+                contextImpl,
                 localName,
                 protocol,
                 service,
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
+                supplements,
                 defaultQoSProperties,
                 handler);
 
-        this.isPublisher = isPublisher;
+        this.withPubSub = withPubSub;
         this.sharedBrokerUri = sharedBrokerUri;
 
-        if (this.isPublisher) {
+        if (this.withPubSub) {
             this.handler.malInitialize(this);
 
             if (this.sharedBrokerUri == null) {
-                this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(
+                this.localBrokerBinding = contextImpl.createBrokerManager().createBrokerBinding(
                         null,
                         localName + "InternalBroker",
                         protocol,
                         authenticationId,
                         expectedQos,
                         priorityLevelNumber,
-                        defaultQoSProperties);
+                        defaultQoSProperties,
+                        null);
                 this.localBrokerUri = this.localBrokerBinding.getURI();
             } else {
                 this.localBrokerBinding = null;
@@ -96,8 +117,24 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
         }
     }
 
+    /**
+     * Constructor
+     *
+     * @param parent MAL provider manager implementation.
+     * @param contextImpl MAL context implementation.
+     * @param service MAL Service.
+     * @param authenticationId Authentication ID.
+     * @param handler MAL interaction handler.
+     * @param expectedQos Expected QoS.
+     * @param priorityLevelNumber Priority level.
+     * @param defaultQoSProperties Default QoS properties.
+     * @param withPubSub With PubSub or not.
+     * @param sharedBrokerUri Shared broker URI.
+     * @param supplements MAL Supplements.
+     * @throws MALException on error.
+     */
     MALProviderImpl(final MALProviderManagerImpl parent,
-            final MALContextImpl impl,
+            final MALContextImpl contextImpl,
             final MALEndpoint endPoint,
             final MALService service,
             final Blob authenticationId,
@@ -105,32 +142,35 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final QoSLevel[] expectedQos,
             final UInteger priorityLevelNumber,
             final Map defaultQoSProperties,
-            final Boolean isPublisher,
-            final URI sharedBrokerUri) throws MALException {
-        super(parent,
-                impl,
+            final Boolean withPubSub,
+            final URI sharedBrokerUri,
+            final NamedValueList supplements) throws MALException {
+        super(
+                contextImpl,
                 endPoint,
                 service,
                 authenticationId,
                 expectedQos,
                 priorityLevelNumber,
+                supplements,
                 defaultQoSProperties,
                 handler);
 
-        this.isPublisher = isPublisher;
+        this.withPubSub = withPubSub;
         this.sharedBrokerUri = sharedBrokerUri;
 
-        if (this.isPublisher) {
+        if (this.withPubSub) {
             this.handler.malInitialize(this);
 
             if (this.sharedBrokerUri == null) {
-                this.localBrokerBinding = impl.createBrokerManager().createBrokerBinding(
-                        impl.createBrokerManager().createBroker(),
+                this.localBrokerBinding = contextImpl.createBrokerManager().createBrokerBinding(
+                        contextImpl.createBrokerManager().createBroker(),
                         endPoint,
                         authenticationId,
                         expectedQos,
                         priorityLevelNumber,
-                        defaultQoSProperties);
+                        defaultQoSProperties,
+                        null);
                 this.localBrokerUri = this.localBrokerBinding.getURI();
             } else {
                 this.localBrokerBinding = null;
@@ -144,7 +184,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     @Override
     public boolean isPublisher() {
-        return isPublisher;
+        return withPubSub;
     }
 
     @Override
@@ -155,33 +195,18 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     @Override
     public synchronized MALPublisher createPublisher(final MALPubSubOperation op,
             final IdentifierList domain,
-            final Identifier networkZone,
             final SessionType sessionType,
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
             final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority)
+            final NamedValueList supplements)
             throws IllegalArgumentException, MALException {
-        final String key = this.createPublisherKey(op,
-                domain,
-                networkZone,
-                sessionType,
-                sessionName,
-                remotePublisherQos,
-                remotePublisherPriority);
-        MALPublisher pub = publishers.get(key);
+        String key = this.createPublisherKey(op, domain, sessionType, sessionName, remotePublisherQos);
+        MALPublisher pub = pubsubPublishers.get(key);
 
-        if (null == pub) {
-            pub = new MALPublisherImpl(this,
-                    sendHandler,
-                    op, domain,
-                    networkZone,
-                    sessionType,
-                    sessionName,
-                    remotePublisherQos,
-                    remotePublisherQosProps,
-                    remotePublisherPriority);
-            publishers.put(key, pub);
+        if (pub == null) {
+            pub = new MALPublisherImpl(this, sendHandler, op, remotePublisherQosProps);
+            pubsubPublishers.put(key, pub);
         }
 
         return pub;
@@ -207,7 +232,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     @Override
     public Blob setBrokerAuthenticationId(Blob newAuthenticationId) {
-        if (isPublisher() && (null == sharedBrokerUri)) {
+        if (isPublisher() && (sharedBrokerUri == null)) {
             return this.localBrokerBinding.setAuthenticationId(newAuthenticationId);
         }
 
@@ -226,14 +251,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     @Override
     public void close() throws MALException {
-        super.close();
-
         this.handler.malFinalize(this);
-    }
-
-    @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
 
         if (localBrokerBinding != null) {
             localBrokerBinding.close();
@@ -242,19 +260,15 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
 
     private String createPublisherKey(final MALPubSubOperation op,
             final IdentifierList domain,
-            final Identifier networkZone,
             final SessionType sessionType,
             final Identifier sessionName,
-            final QoSLevel remotePublisherQos,
-            final UInteger remotePublisherPriority) {
+            final QoSLevel remotePublisherQos) {
         final StringBuilder buf = new StringBuilder();
-        buf.append(op.getNumber()).append(":");
-        buf.append(domain).append(":");
-        buf.append(networkZone).append(":");
-        buf.append(sessionType).append(":");
-        buf.append(sessionName).append(":");
-        buf.append(remotePublisherQos).append(":");
-        buf.append(remotePublisherPriority).append(":");
+        buf.append(op.getNumber());
+        buf.append(":").append(domain);
+        buf.append(":").append(sessionType);
+        buf.append(":").append(sessionName);
+        buf.append(":").append(remotePublisherQos);
         return buf.toString();
     }
 }

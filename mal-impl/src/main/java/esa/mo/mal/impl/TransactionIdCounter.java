@@ -48,6 +48,11 @@ public class TransactionIdCounter {
     private static long partAB = recalculatePartAB(); // Time with Randomness
     private static final AtomicLong transactionCounter = new AtomicLong(0);
 
+    /**
+     * Increases part C of the transaction id. Resets the counter and recalculates part A and B if the maximum offset is reached.
+     *
+     * @return the new transaction id
+     */
     public static synchronized Long nextTransactionId() {
         long counter = transactionCounter.incrementAndGet();
 
@@ -59,6 +64,11 @@ public class TransactionIdCounter {
         return partAB + transactionCounter.get();
     }
 
+    /**
+     * Recalculates part A and B of the transaction id.
+     *
+     * @return new part A and B
+     */
     private static long recalculatePartAB() {
         partAB = (System.currentTimeMillis() - MAL_EPOCH) << 24; // Time
         partAB += ((System.nanoTime()) & RANDOM_MASK) << 16; // Randomness

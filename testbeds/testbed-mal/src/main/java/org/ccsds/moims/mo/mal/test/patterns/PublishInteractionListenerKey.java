@@ -36,8 +36,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 
-;
-
+@Deprecated
 public class PublishInteractionListenerKey {
 
     private IdentifierList domain;

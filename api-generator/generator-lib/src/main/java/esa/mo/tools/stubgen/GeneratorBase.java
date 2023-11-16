@@ -32,7 +32,7 @@ import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -259,7 +259,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
     @Override
     public boolean isAttributeNativeType(TypeReference type) {
-        return isAttributeType(type) && (getAttributeDetails(type).isNativeType());
+        return isAttributeType(type) && getAttributeDetails(type).isNativeType();
     }
 
     /**
@@ -273,7 +273,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             type = type.substring(0, type.indexOf('<'));
         }
         NativeTypeDetails rType = nativeTypesMap.get(type);
-        if (null == rType) {
+        if (rType == null) {
             rType = new NativeTypeDetails("<Unknown native type of " + type + ">", false, false, null);
         }
         return rType;
@@ -286,11 +286,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return true if a known type.
      */
     public boolean isKnownType(TypeReference type) {
-        boolean knownType = false;
-        if (allTypesMap.containsKey(new TypeKey(type))) {
-            knownType = true;
-        }
-        return knownType;
+        return allTypesMap.containsKey(new TypeKey(type));
     }
 
     /**
@@ -314,10 +310,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the details if found, otherwise null.
      */
     public CompositeType getCompositeDetails(TypeReference type) {
-        if (null != type) {
-            return compositeTypesMap.get(new TypeKey(type));
+        if (type == null) {
+            return null;
         }
-        return null;
+
+        return compositeTypesMap.get(new TypeKey(type));
     }
 
     /**
@@ -363,6 +360,23 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         return createElementType(file, areaName, serviceName, config.getStructureFolder(), type);
     }
 
+    public static String extractTypeFromObjectRef(String type) {
+        if (!type.contains(StdStrings.OBJECTREF)) {
+            return type;
+        }
+        if (type.contains(StdStrings.OBJECTREF + "<") || type.contains(StdStrings.OBJECTREF + "List<")) {
+            return type.substring(type.indexOf('<') + 1, type.indexOf('>'));
+        }
+        if (type.contains(StdStrings.OBJECTREF + "(") || type.contains(StdStrings.OBJECTREF + "List(")) {
+            return type.substring(type.indexOf('(') + 1, type.indexOf(')'));
+        }
+        return type;
+    }
+
+    public static boolean isObjectRef(String type) {
+        return !extractTypeFromObjectRef(type).equals(type);
+    }
+
     /**
      * Creates the full name of a type from the supplied details.
      *
@@ -380,13 +394,20 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             return type;
         }
 
-        String retVal = "";
-
-        if (type.contains("ObjectRef<")) {
-            String internalType = type.substring(type.indexOf('<') + 1, type.indexOf('>'));
+        if (type.contains("ObjectRef<") || type.contains("ObjectRef(")) {
+            String internalType = extractTypeFromObjectRef(type);
             internalType = createElementType(file, area, service, extraPackageLevel, internalType);
             return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
         }
+
+        if (type.contains("ObjectRefList<") || type.contains("ObjectRefList(")) {
+            // String internalType = extractTypeFromObjectRef(type);
+            // internalType = createElementType(file, area, service, extraPackageLevel, internalType);
+            // return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList<" + internalType + ">");
+            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList");
+        }
+
+        String retVal = "";
 
         if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
             AttributeTypeDetails details = getAttributeDetails(area, type);
@@ -397,11 +418,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             } else {
                 retVal += config.getAreaPackage(area) + area.toLowerCase() + config.getNamingSeparator();
 
-                if (null != service) {
+                if (service != null) {
                     retVal += service.toLowerCase() + config.getNamingSeparator();
                 }
 
-                if ((null != extraPackageLevel) && (0 < extraPackageLevel.length())) {
+                if (extraPackageLevel != null && extraPackageLevel.length() > 0) {
                     retVal += extraPackageLevel + config.getNamingSeparator();
                 }
 
@@ -435,8 +456,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param name The name of the type.
      * @param details The new details.
      */
-    protected void addAttributeType(final String area, final String name,
-            AttributeTypeDetails details) {
+    protected void addAttributeType(final String area, final String name, AttributeTypeDetails details) {
         attributeTypesMap.put(new TypeKey(area, null, name), details);
     }
 
@@ -451,9 +471,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param defaultValue An example of a default value.
      */
     protected void addAttributeType(final String area, final String name,
-            final boolean isNativeType,
-            final String targetType,
-            final String defaultValue) {
+            final boolean isNativeType, final String targetType, final String defaultValue) {
         attributeTypesMap.put(new TypeKey(area, null, name),
                 new AttributeTypeDetails(this, name, isNativeType, targetType, defaultValue));
     }
@@ -509,11 +527,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type the composite to inspect.
      * @return a list of the element details to populate.
      */
-    protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file,
-            TypeReference type) {
+    protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file, TypeReference type) {
         List<CompositeField> lst = new LinkedList<>();
 
-        if ((type != null) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
+        if (type != null && !StdStrings.COMPOSITE.equals(type.getName())) {
             if (StdStrings.MOOBJECT.equals(type.getName())) {
                 TypeReference typeReference = TypeUtils.createTypeReference("MAL", null, "ObjectIdentity", false);
 
@@ -529,10 +546,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
 
             CompositeType theType = compositeTypesMap.get(new TypeKey(type));
-            String typeName = type.getName();
 
-            if (null == theType) {
-                throw new IllegalStateException("Unknown super type of (" + typeName + ") for composite");
+            if (theType == null) {
+                String typeName = type.getName();
+                throw new IllegalStateException("Unknown composite super type: " + typeName);
             }
 
             // first looks for super types of this one and add their details
@@ -564,10 +581,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * type Composite.
      */
     protected TypeReference getCompositeElementSuperType(TypeReference type) {
-        if ((null != type) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
+        if ((type != null) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
             CompositeType theType = compositeTypesMap.get(new TypeKey(type));
 
-            if ((null != theType) && (null != theType.getExtends())
+            if ((theType != null) && (theType.getExtends() != null)
                     && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName()))) {
                 return theType.getExtends().getType();
             }
@@ -589,7 +606,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         if (!summary.isComService()) {
             for (CapabilitySetType capabilitySet : service.getCapabilitySet()) {
                 for (OperationType op : capabilitySet.getSendIPOrSubmitIPOrRequestIP()) {
-                    createOperationSummary(op, capabilitySet.getNumber(), summary);
+                    OperationSummary ele = extractOperationSummary(op, capabilitySet.getNumber());
+                    summary.getOperations().add(ele);
                 }
             }
         }
@@ -601,17 +619,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      *
      * @return the logger.
      */
-    protected Log getLog() {
+    public Log getLog() {
         return logger;
     }
 
-    private OperationSummary createOperationSummary(OperationType op,
-            int capNum,
-            ServiceSummary summary) {
-        OperationSummary ele = null;
+    private OperationSummary extractOperationSummary(OperationType op, int capNum) {
         if (op instanceof SendOperationType) {
             SendOperationType lop = (SendOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny())),
                     lop.getMessages().getSend().getComment(),
@@ -620,7 +635,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     null, "");
         } else if (op instanceof SubmitOperationType) {
             SubmitOperationType lop = (SubmitOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny())),
                     lop.getMessages().getSubmit().getComment(),
@@ -629,7 +644,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     null, "");
         } else if (op instanceof RequestOperationType) {
             RequestOperationType lop = (RequestOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny())),
                     lop.getMessages().getRequest().getComment(),
@@ -640,7 +655,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof InvokeOperationType) {
             InvokeOperationType lop = (InvokeOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny())),
                     lop.getMessages().getInvoke().getComment(),
@@ -653,7 +668,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof ProgressOperationType) {
             ProgressOperationType lop = (ProgressOperationType) op;
-            ele = new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny())),
                     lop.getMessages().getProgress().getComment(),
@@ -674,18 +689,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             List<TypeInfo> riList = TypeUtils.convertTypeReferences(this,
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
-            ele = new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
+            return new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
                     subKeysList, "",
                     null, "",
                     riList, "",
                     riList, lop.getMessages().getPublishNotify().getComment());
         }
 
-        if (null != summary) {
-            summary.getOperations().add(ele);
-        }
-
-        return ele;
+        return null;
     }
 
     private void loadTypesFromObjectList(String area, String service, List<Object> typeList) {
@@ -855,14 +866,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param comment The comment with the field.
      * @return the element details.
      */
-    protected abstract CompositeField createCompositeElementsDetails(
-            TargetWriter file,
-            boolean checkType,
-            String fieldName,
-            TypeReference elementType,
-            boolean isStructure,
-            boolean canBeNull,
-            String comment);
+    public abstract CompositeField createCompositeElementsDetails(TargetWriter file,
+            boolean checkType, String fieldName, TypeReference elementType,
+            boolean isStructure, boolean canBeNull, String comment);
 
     /**
      * @return the configuration.

@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.datatype|
+
+*!
+!4 Explicit types test procedure
+
+The test procedure does the following actions:
+ 1 Call the proper data type operation provided by the !-DataTest-! service provider with a statically defined value.
+ 2 Check that no error is raised by the provider, especially DATA_ERROR and BAD_ENCODING, meaning that the provider received the right value.
+ 3 Check the return value which must equal to the original value.
+
+The test procedure is applied to all the MAL Attribute data types.
+
+The data values are statically known by the !-DataTest-! service provider and consumer. This allows the provider to check that the value he receives equals to the value sent by the consumer.
+The test operation of the !-DataTest-! service is specific to the tested type T. It is defined as: <T> testData<T>(<T>).
+
+|script| data type scenario|
+|note| Explicit types test|
+|check| explicit duration type works| OK|
+|check| explicit Fine Time type works| OK|
+|check| explicit Identifier type works| OK|
+|check| explicit Time type works| OK|
+|check| explicit URI type works| OK|
+|check| explicit Blob type works| OK|
+|check| explicit Boolean type works| OK|
+|check| explicit Octet type works| OK|
+|check| explicit Double type works| OK|
+|check| explicit Float type works| OK|
+|check| explicit Integer type works| OK|
+|check| explicit Long type works| OK|
+|check| explicit Short type works| OK|
+|check| explicit String type works| OK|
+|check| explicit UOctet type works| OK|
+|check| explicit UInteger type works| OK|
+|check| explicit ULong type works| OK|
+|check| explicit UShort type works| OK|
+|check| explicit Object Ref type works| OK|
+|check| explicit Attribute types work| OK|

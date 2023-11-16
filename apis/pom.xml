@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>apis</artifactId>
-    <version>9.0</version>
+    <version>10.0</version>
     <packaging>pom</packaging>
     <name>ESA MO APIs</name>
 
@@ -70,5 +70,6 @@
         <module>api-com</module>
         <module>api-common</module>
         <module>api-mc</module>
+        <module>api-mps</module>
     </modules>
 </project>

@@ -20,17 +20,13 @@
  */
 package org.ccsds.moims.mo.com.test.activity;
 
-import static esa.mo.com.support.ActivityTrackingPublisher.OBJ_NO_ASE_ACCEPTANCE_STR;
-import esa.mo.com.support.ComStructureHelper;
+import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.*;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.test.suite.LocalMALInstance;
@@ -38,7 +34,7 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.activitytest.consumer.ActivityTestAdapter;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -151,7 +147,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
     erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
          */
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription sub = new Subscription(new Identifier("SubA"), domain, filters);
+        Subscription sub = new Subscription(new Identifier("SubA"), domain, null, filters);
         evStub.monitorEventRegister(sub, monitorEventAdapter);
         logMessage(loggingClassName + ":registerForEvents Complete");
         return true;
@@ -217,9 +213,9 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * @return monitorkey to be used to check result of the pattern.
      * @throws Exception generated in case of comms failures
      */
-    public String patternInitiationForViaWithTransportActivityAndExecutionActivity(String pattern, 
+    public String patternInitiationForViaWithTransportActivityAndExecutionActivity(String pattern,
             String relay, String[] transactivity, String[] exeactivity) throws MALException, MALInteractionException {
-        logMessage(loggingClassName + ":patternInitiationForViaWithTransportActivityAndExecutionActivity[" 
+        logMessage(loggingClassName + ":patternInitiationForViaWithTransportActivityAndExecutionActivity["
                 + pattern + "," + relay + "," + toString(transactivity) + "," + toString(exeactivity) + "]");
 
         MonitorActivityTestAdapter monitor = new MonitorActivityTestAdapter();
@@ -486,12 +482,10 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * @throws MALInteractionException
      * @throws MALException
      */
-    protected void publishReleaseEvent(boolean withSuccess, String relay, 
+    protected void publishReleaseEvent(boolean withSuccess, String relay,
             MALMessageHeader hdr) throws MALInteractionException, MALException {
         LoggingBase.logMessage(loggingClassName + ":publishReleaseEvent " + withSuccess);
 
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_RELEASE_STR),
@@ -514,30 +508,19 @@ public class MonitorActivityScenario extends BaseActivityScenario {
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"), domain, keys));
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + "CONSUMER"),
+                domain, keys.getAsNullableAttributeList());
 
-        // Produce ActivityTransferList
-        ActivityTransferList atl = new ActivityTransferList();
-        ActivityTransfer activityTransferInstance = new ActivityTransfer();
-        activityTransferInstance.setSuccess(withSuccess);
-        atl.add(activityTransferInstance);
+        // Produce ActivityTransfer
+        ActivityTransfer activityTransferInstance = new ActivityTransfer(withSuccess);
 
-        // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
-
-        ObjectId source = new ObjectId();
-        source.setType(COMTestHelper.getOperationActivityType());
-        ObjectKey key = new ObjectKey();
-        key.setDomain(hdr.getDomain());
-        key.setInstId(hdr.getTransactionId());
-        source.setKey(key);
-        objDetails.setSource(source);
-        odl.add(objDetails);
+        ObjectKey key = new ObjectKey(domain, hdr.getTransactionId());
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
-        LocalMALInstance.instance().getMonitorEventPublisher(relay).publish(uhl, odl, atl);
+        LocalMALInstance.instance().getMonitorEventPublisher(relay).publish(uh, objDetails, activityTransferInstance);
         LoggingBase.logMessage(loggingClassName + ":publishReleaseEvent END");
     }
 
@@ -559,7 +542,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void testSubmitErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void testSubmitErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:testSubmitErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -582,7 +565,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void requestErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void requestErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:requestErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -591,7 +574,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void invokeAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:invokeAckErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -609,7 +592,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void invokeResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void invokeResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:invokeResponseErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -618,7 +601,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressAckErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressAckErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressAckErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -635,7 +618,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressUpdateErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressUpdateErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressUpdateErrorReceived");
             synchronized (cond) {
                 isError = true;
@@ -644,7 +627,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressResponseErrorReceived(MALMessageHeader msgHeader, MALStandardError error, Map qosProperties) {
+        public void progressResponseErrorReceived(MALMessageHeader msgHeader, MOErrorException error, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressResponseErrorReceived");
             synchronized (cond) {
                 isError = true;

@@ -37,6 +37,7 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -49,11 +50,11 @@ import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -82,7 +83,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
                 HeaderTestProcedure.AUTHENTICATION_ID,
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), shared).getStub();
 
         IdentifierList keyNames = new IdentifierList();
         keyNames.add(Helper.key1);
@@ -92,7 +93,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
                         HeaderTestProcedure.DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
-                        keyNames, expectedErrorCode);
+                        keyNames, Helper.get1TestKeyType(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         listener = new MonitorListener();
@@ -105,7 +106,8 @@ public class SubscriptionTestProcedure extends LoggingBase {
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
         filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID,
+                HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.asyncMonitorRegister(subscription, listener);
         synchronized (listener.cond) {
@@ -120,8 +122,8 @@ public class SubscriptionTestProcedure extends LoggingBase {
         logMessage("SubscriptionTestProcedure.reregister()");
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("A")));
-        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(new Identifier("A"))));
+        Subscription subscription = new Subscription(HeaderTestProcedure.SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         ipTest.asyncMonitorRegister(subscription, listener);
         synchronized (listener.cond) {
@@ -137,7 +139,10 @@ public class SubscriptionTestProcedure extends LoggingBase {
         listener.resetState();
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("A")));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN,
+                (new AttributeList(new Identifier("A"))).getAsNullableAttributeList()
+        ));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
@@ -145,7 +150,8 @@ public class SubscriptionTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
-                SESSION, SESSION_NAME, false, updateHeaderList, updateList, null, expectedErrorCode, false, null);
+                SESSION, SESSION_NAME, false, updateHeaderList,
+                updateList, null, expectedErrorCode, false, null);
 
         ipTest.publishUpdates(testPublishUpdate);
         return true;
@@ -163,20 +169,20 @@ public class SubscriptionTestProcedure extends LoggingBase {
     }
 
     public int numberOfNotifiedUpdates() throws Exception {
-        UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
-        if (updateHeaderList == null) {
+        UpdateHeader updateHeader = listener.getNotifiedUpdate();
+        if (updateHeader == null) {
             return 0;
         } else {
-            return updateHeaderList.size();
+            return 1;
         }
     }
 
     public boolean transactionIdIsFromTheFirstRegister() throws Exception {
-        UpdateHeaderList updateHeaderList = listener.getNotifiedUpdates();
-        if (updateHeaderList == null) {
+        UpdateHeader updateHeader = listener.getNotifiedUpdate();
+        if (updateHeader == null) {
             return false;
         } else {
-            return updateHeaderList.size() > 0 && listener.isTransactionIdentifierOK();
+            return listener.isTransactionIdentifierOK();
         }
     }
 
@@ -185,7 +191,7 @@ public class SubscriptionTestProcedure extends LoggingBase {
         private final BooleanCondition cond = new BooleanCondition();
         private Long firstRegisterTransactionId;
 
-        private UpdateHeaderList notifiedUpdateHeaders;
+        private UpdateHeader notifiedUpdateHeader;
 
         private boolean transactionIdentifierOK;
 
@@ -205,23 +211,23 @@ public class SubscriptionTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
-            logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ',' + updateHeaderList + ")");
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
+            logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ',' + updateHeader + ")");
             if (msgHeader.getTransactionId().equals(firstRegisterTransactionId)) {
                 transactionIdentifierOK = true;
             }
-            notifiedUpdateHeaders = updateHeaderList;
+            notifiedUpdateHeader = updateHeader;
         }
 
         public void resetState() {
             cond.reset();
-            notifiedUpdateHeaders = null;
+            notifiedUpdateHeader = null;
             transactionIdentifierOK = false;
         }
 
-        public UpdateHeaderList getNotifiedUpdates() {
-            return notifiedUpdateHeaders;
+        public UpdateHeader getNotifiedUpdate() {
+            return notifiedUpdateHeader;
         }
 
         public boolean isTransactionIdentifierOK() {

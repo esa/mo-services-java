@@ -24,6 +24,7 @@ import java.util.Iterator;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.LongList;
@@ -261,6 +262,10 @@ public class Archive {
         }
 
         public Object getElement() {
+            if (element instanceof Attribute) {
+                return Attribute.attribute2JavaType(element);
+            }
+
             return element;
         }
 

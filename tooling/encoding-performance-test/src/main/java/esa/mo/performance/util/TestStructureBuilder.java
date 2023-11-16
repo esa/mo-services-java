@@ -10,7 +10,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.perftest.structures.AggregationValueList;
 import org.ccsds.moims.mo.perftest.structures.GenerationMode;
 import org.ccsds.moims.mo.perftest.structures.ObjectIdList;
@@ -30,14 +29,12 @@ public abstract class TestStructureBuilder {
         org.ccsds.moims.mo.perftest.structures.ObjectIdList objectId = new ObjectIdList();
         org.ccsds.moims.mo.perftest.structures.AggregationValueList value = new AggregationValueList();
 
-        SubscriptionFilterList filters = new SubscriptionFilterList();
-
         for (int i = 0; i < pktsPerReport; i++) {
-            AttributeList lst = new AttributeList();
-            lst.add(new Identifier("1"));
-            lst.add(new AttributeList(new Union(1L)));
-            lst.add(new AttributeList(new Union((long) (i + 1))));
-            lst.add(new AttributeList(null));
+            NullableAttributeList lst = new NullableAttributeList();
+            lst.add(new NullableAttribute(new Identifier("1")));
+            lst.add(new NullableAttribute(new Union(1L)));
+            lst.add(new NullableAttribute(new Union((long) (i + 1))));
+            lst.add(new NullableAttribute(null));
             
             updateHeader.add(new UpdateHeader(new Identifier(""), null, lst));
             objectId.add(null);

@@ -21,12 +21,13 @@
 package esa.mo.mal.impl;
 
 import esa.mo.mal.impl.transport.TransportSingleton;
-import esa.mo.mal.impl.util.MALClose;
+import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALService;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -36,26 +37,64 @@ import org.ccsds.moims.mo.mal.transport.MALTransport;
 /**
  * Base class that is used by service providers, both providers and Brokers.
  */
-public abstract class ServiceComponentImpl extends MALClose {
+public abstract class ServiceComponentImpl implements MALCloseable {
 
-    protected final MessageSend sendHandler;
-    protected final MessageReceive receiveHandler;
+    /**
+     * The MAL message sender.
+     */
+    protected final MALSender sendHandler;
+    /**
+     * The MAL message receiver.
+     */
+    protected final MALReceiver receiveHandler;
+    /**
+     * The MAL provider interaction handler.
+     */
     protected final MALInteractionHandler handler;
+    /**
+     * The local name of this component
+     */
     protected final String localName;
+    /**
+     * The MAL service.
+     */
     protected final MALService service;
-    protected Blob authenticationId;
+    /**
+     * Expected QoS level.
+     */
     protected final QoSLevel[] expectedQos;
+    /**
+     * Number of the priority levels.
+     */
     protected final UInteger priorityLevelNumber;
+    /**
+     * The default QoS levels.
+     */
     protected final Map defaultQoSProperties;
+    /**
+     * The local URI.
+     */
     protected final URI localUri;
+    /**
+     * The MAL Transport interface.
+     */
     protected final MALTransport transport;
+    /**
+     * The MAL Endpoint interface.
+     */
     protected final MALEndpoint endpoint;
+    /**
+     * MAL Endpoint details.
+     */
     protected final Address msgAddress;
+    /**
+     * The authentication ID.
+     */
+    protected Blob authenticationId;
 
     /**
      * Constructor.
      *
-     * @param parent Parent object.
      * @param impl MAL impl.
      * @param localName Local name of this component.
      * @param protocol The protocol to use.
@@ -63,11 +102,12 @@ public abstract class ServiceComponentImpl extends MALClose {
      * @param authenticationId Authentication identifier.
      * @param expectedQosA Expected QoS.
      * @param priorityLevelNumber Number of priority levels.
+     * @param supplements Supplements for this service component.
      * @param defaultQoSProperties Default QOS properties.
      * @param handler Service interaction handler.
      * @throws MALException on error.
      */
-    public ServiceComponentImpl(final MALClose parent,
+    public ServiceComponentImpl(
             final MALContextImpl impl,
             final String localName,
             final String protocol,
@@ -75,10 +115,9 @@ public abstract class ServiceComponentImpl extends MALClose {
             final Blob authenticationId,
             final QoSLevel[] expectedQosA,
             final UInteger priorityLevelNumber,
+            final NamedValueList supplements,
             final Map defaultQoSProperties,
             final MALInteractionHandler handler) throws MALException {
-        super(parent);
-
         this.sendHandler = impl.getSendingInterface();
         this.receiveHandler = impl.getReceivingInterface();
         this.handler = handler;
@@ -93,10 +132,10 @@ public abstract class ServiceComponentImpl extends MALClose {
         this.priorityLevelNumber = priorityLevelNumber;
         this.defaultQoSProperties = (defaultQoSProperties != null) ? defaultQoSProperties : null;
         this.transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
-        this.endpoint = transport.createEndpoint(localName, defaultQoSProperties);
+        this.endpoint = transport.createEndpoint(localName, defaultQoSProperties, supplements);
         this.localUri = this.endpoint.getURI();
         this.msgAddress = new Address(endpoint, authenticationId, handler);
-        this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
+        this.receiveHandler.addProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
         this.endpoint.setMessageListener(this.receiveHandler);
         this.endpoint.startMessageDelivery();
     }
@@ -104,28 +143,27 @@ public abstract class ServiceComponentImpl extends MALClose {
     /**
      * Constructor.
      *
-     * @param parent Parent object.
      * @param impl MAL impl.
      * @param endPoint The endpoint to use.
      * @param service The service.
      * @param authenticationId Authentication identifier.
      * @param expectedQosA Expected QoS.
      * @param priorityLevelNumber Number of priority levels.
+     * @param supplements Supplements for this service component.
      * @param defaultQoSProperties Default QOS properties.
      * @param handler Service interaction handler.
      * @throws MALException on error.
      */
-    public ServiceComponentImpl(final MALClose parent,
+    public ServiceComponentImpl(
             final MALContextImpl impl,
             final MALEndpoint endPoint,
             final MALService service,
             final Blob authenticationId,
             final QoSLevel[] expectedQosA,
             final UInteger priorityLevelNumber,
+            final NamedValueList supplements,
             final Map defaultQoSProperties,
             final MALInteractionHandler handler) throws MALException {
-        super(parent);
-
         this.sendHandler = impl.getSendingInterface();
         this.receiveHandler = impl.getReceivingInterface();
         this.handler = handler;
@@ -143,7 +181,7 @@ public abstract class ServiceComponentImpl extends MALClose {
         this.transport = TransportSingleton.instance(endpoint.getURI(), impl.getInitialProperties());
         this.localUri = this.endpoint.getURI();
         this.msgAddress = new Address(endpoint, authenticationId, handler);
-        this.receiveHandler.registerProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
+        this.receiveHandler.addProviderEndpoint(endpoint.getURI().getValue(), service, this.msgAddress);
         this.endpoint.setMessageListener(this.receiveHandler);
     }
 
@@ -154,15 +192,6 @@ public abstract class ServiceComponentImpl extends MALClose {
      */
     public URI getURI() {
         return this.localUri;
-    }
-
-    /**
-     * Returns the interaction handler for messages received by this component.
-     *
-     * @return the interaction handler.
-     */
-    public MALInteractionHandler getHandler() {
-        return handler;
     }
 
     /**
@@ -195,20 +224,9 @@ public abstract class ServiceComponentImpl extends MALClose {
         return previous;
     }
 
-    /**
-     * Returns the Address structure used by this component.
-     *
-     * @return the Address structure.
-     */
-    public Address getMsgAddress() {
-        return msgAddress;
-    }
-
     @Override
-    protected void thisObjectClose() throws MALException {
-        super.thisObjectClose();
-
-        this.receiveHandler.deregisterProviderEndpoint(endpoint.getURI().getValue(), service);
+    public void close() throws MALException {
+        this.receiveHandler.removeProviderEndpoint(endpoint.getURI().getValue(), service);
         endpoint.stopMessageDelivery();
         endpoint.close();
     }

@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Union implements Attribute {
 
+    private static final long serialVersionUID = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER;
     private final Object value;
     private final Integer typeShortForm;
     private final Long shortForm;
@@ -360,6 +361,4 @@ public class Union implements Attribute {
 
         return String.valueOf(value);
     }
-
-    private static final long serialVersionUID = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER;
 }

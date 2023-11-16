@@ -39,8 +39,8 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.PubSubTestCaseHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestTransitionList;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestTransitionList;
 import org.ccsds.moims.mo.malspp.test.suite.LocalMALInstance;
 
 public class QosPropertiesTest extends MalSppPatternTest {

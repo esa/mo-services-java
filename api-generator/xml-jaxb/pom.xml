@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>xml-jaxb</artifactId>
-    <version>9.0</version>
+    <version>10.0</version>
     <packaging>jar</packaging>
   
     <name>ESA MO JAXB classes for MO XML files</name>
@@ -80,12 +80,12 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-prototypes</artifactId>
-            <version>9.0</version>
+            <version>10.0</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-standards</artifactId>
-            <version>9.0</version>
+            <version>10.0</version>
         </dependency>
     </dependencies>
 
@@ -160,4 +160,19 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>jdk-17</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.xml.bind</groupId>
+                    <artifactId>jakarta.xml.bind-api</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

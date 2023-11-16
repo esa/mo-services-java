@@ -39,22 +39,24 @@ import java.util.Vector;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
@@ -91,10 +93,10 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
         ipTestForPublish = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         AttributeList keyValues = new AttributeList();
-        keyValues.add("myValue");
+        keyValues.add(new Identifier("myValue"));
 
         updateList = new TestUpdateList();
         updateList.add(new TestUpdate(new Integer(0)));
@@ -107,17 +109,21 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
 
         // Prepare the Publish Updates that will be sent later on
         for (int i = 0; i < publishDomainIds.length; i++) {
-            UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"), publishDomainIds[i], keyValues);
+            UpdateHeader updateHeader = new UpdateHeader(new Identifier("source"),
+                    publishDomainIds[i], keyValues.getAsNullableAttributeList());
             UpdateHeaderList uhl = new UpdateHeaderList();
             uhl.add(updateHeader);
             updateHeaderList[i] = uhl;
-
-            UInteger expectedErrorCode = new UInteger(999);
-            TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL,
-                    PRIORITY, publishDomainIds[i], HeaderTestProcedure.NETWORK_ZONE, SESSION,
-                    SESSION_NAME, false, keyNames, expectedErrorCode);
-            ipTestForPublish.publishRegister(testPublishRegister);
         }
+        
+        // a single PublishRegister should be done, as only the last one shall be effective
+        // there is a single provider, all the messages but the first shall be seen as reregistration messages
+        UInteger expectedErrorCode = new UInteger(999);
+        TestPublishRegister testPublishRegister = new TestPublishRegister(QOS_LEVEL,
+                PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, SESSION,
+                SESSION_NAME, false, keyNames, Helper.get1TestKeyType(), expectedErrorCode);
+        ipTestForPublish.publishRegister(testPublishRegister);
+        
         return true;
     }
 
@@ -159,21 +165,21 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
         logMessage("subdomainId=" + subdomainId);
         logMessage("Subscription domain = " + domainId);
 
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, domainId, null);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, domainId, null, null);
 
         MonitorListener listener = new MonitorListener();
 
         IPTestStub ipTest = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         ipTest.monitorRegister(subscription, listener);
 
         for (int i = 0; i < publishDomainIds.length; i++) {
             UInteger expectedErrorCode = new UInteger(999);
             TestPublishUpdate testPublishUpdate = new TestPublishUpdate(QOS_LEVEL, PRIORITY,
-                    publishDomainIds[i], HeaderTestProcedure.NETWORK_ZONE, SESSION,
+                    HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE, SESSION,
                     SESSION_NAME, false, updateHeaderList[i], updateList,
                     null, expectedErrorCode, Boolean.FALSE, null);
             ipTestForPublish.publishUpdates(testPublishUpdate);
@@ -213,7 +219,7 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
             IPTestStub loopIpTestForPublish = LocalMALInstance.instance()
                     .ipTestStub(HeaderTestProcedure.AUTHENTICATION_ID,
                             publishDomainId, HeaderTestProcedure.NETWORK_ZONE, SESSION,
-                            SESSION_NAME, QOS_LEVEL, PRIORITY, shared).getStub();
+                            SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), shared).getStub();
             loopIpTestForPublish.publishDeregister(testPublishDeregister);
         }
         return true;
@@ -246,11 +252,11 @@ public class SubscriptionDomainTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
             logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
-                    + updateHeaderList + ')');
-            notifiedDomains.add(msgHeader.getDomain());
+                    + updateHeader + ')');
+            notifiedDomains.add(updateHeader.getDomain());
             monitorCond.set();
         }
 

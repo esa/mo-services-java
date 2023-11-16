@@ -18,8 +18,6 @@
 # limitations under the License. 
 # ----------------------------------------------------------------------------
 
-!2 Data type test scenario
-
 !*< Hidden
 !define TEST_SYSTEM {slim}
 
@@ -27,43 +25,16 @@
 |org.ccsds.moims.mo.mal.test.datatype|
 
 *!
-A list of MAL data structure instances is statically defined according to the following constraints:
- * All the data types shall be instantiated at least once.
- * Enumerations shall be instantiated once for each enumerated value.
- * Abstract types need to be extended by a concrete type for the test
- * The value Null shall belong to the list
- * The value Null shall be inserted into a Composite structure
+!2 Data type test scenario
 
-This data list is statically known by the !-DataTest-! service provider and consumer.
-The consumer takes the data from the list one by one, in the same order, and calls the operation 'testData'. It checks that no error is raised by the provider, especially DATA_ERROR and BAD_ENCODING.
+A single test case is defined for all the procedures used to check the MAL data types related assertions.
 
-|script| data type scenario|
-|check| explicit duration type works| OK|
-|check| explicit Fine Time type works| OK|
-|check| explicit Identifier type works| OK|
-|check| explicit Time type works| OK|
-|check| explicit URI type works| OK|
-|check| explicit Blob type works| OK|
-|check| explicit Boolean type works| OK|
-|check| explicit Octet type works| OK|
-|check| explicit Double type works| OK|
-|check| explicit Float type works| OK|
-|check| explicit Integer type works| OK|
-|check| explicit Long type works| OK|
-|check| explicit Short type works| OK|
-|check| explicit String type works| OK|
-|check| explicit UOctet type works| OK|
-|check| explicit UInteger type works| OK|
-|check| explicit ULong type works| OK|
-|check| explicit UShort type works| OK|
-|check| explicit Object Ref type works| OK|
-|check| attribute types work| OK|
-|check| enumerations work| OK|
-|check| complete composites work | OK|
-|check| abstract composites work | OK|
-|check| lists work | OK|
-|check| nulls work|OK|
-|check| composites with null work| OK|
-|check| explicit multi return works| OK|
-|check| abstract multi return works | OK|
-|check| multi return with nulls work| OK|
+!3 Data type test case
+
+Several test procedures are defined:
+ * the explicit types test procedure checks the basic exchange of data values from a consumer to a provider and back. The widest range of values are checked.
+ * the Element parameter test procedure checks the characteristics of all types to be a MAL Element.
+ * the multi return test procedure explores the use of data values in operation parameters, depending on the complexity of the operation body.
+ * the polymorphic types test procedure checks the extended polymorphic possibilities offered by the MAL type system.
+ * the MO Object test procedure checks assertions related to the MO Object concept.
+ 

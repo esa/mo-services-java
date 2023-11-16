@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.test.activity.MonitorEventPublisherSkeleton;
 import org.ccsds.moims.mo.com.test.util.COMInterceptor;
 import org.ccsds.moims.mo.com.test.util.MALPublishInteractionListenerImpl;
-import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementHelper;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementStub;
@@ -48,6 +47,7 @@ import org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.archivetest.consumer.ArchiveTestStub;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
@@ -88,16 +88,15 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     protected void initHelpers() throws MALException {
-        org.ccsds.moims.mo.com.COMHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityTrackingHelper.init(MALContextFactory.getElementsRegistry());
-        ArchiveHelper.init(MALContextFactory.getElementsRegistry());
-        EventHelper.init(MALContextFactory.getElementsRegistry());
+        MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
+        registry.loadServiceAndAreaElements(ActivityTrackingHelper.ACTIVITYTRACKING_SERVICE);
+        registry.loadServiceAndAreaElements(ArchiveHelper.ARCHIVE_SERVICE);
+        registry.loadServiceAndAreaElements(EventHelper.EVENT_SERVICE);
 
-        COMPrototypeHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityTestHelper.init(MALContextFactory.getElementsRegistry());
-        ActivityRelayManagementHelper.init(MALContextFactory.getElementsRegistry());
-        EventTestHelper.init(MALContextFactory.getElementsRegistry());
-        ArchiveTestHelper.init(MALContextFactory.getElementsRegistry());
+        registry.loadServiceAndAreaElements(ActivityTestHelper.ACTIVITYTEST_SERVICE);
+        registry.loadServiceAndAreaElements(ActivityRelayManagementHelper.ACTIVITYRELAYMANAGEMENT_SERVICE);
+        registry.loadServiceAndAreaElements(EventTestHelper.EVENTTEST_SERVICE);
+        registry.loadServiceAndAreaElements(ArchiveTestHelper.ARCHIVETEST_SERVICE);
 
         TransportInterceptor.instance().setEndpointSendInterceptor(new COMInterceptor());
     }
@@ -126,7 +125,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             stub = new ActivityTestStub(consumer);
             activityTestStubs.put(extraNamePart, stub);
@@ -149,7 +150,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             activityRelayManagementStub = new ActivityRelayManagementStub(consumer);
         }
@@ -173,7 +176,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             activityEventStub = new EventStub(consumer);
         }
@@ -196,7 +201,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveStub = new ArchiveStub(consumer);
         }
@@ -219,7 +226,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveTestStub = new ArchiveTestStub(consumer);
         }
@@ -242,7 +251,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             archiveEventStub = new EventStub(consumer);
         }
@@ -269,7 +280,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             eventTestStub = new EventTestStub(consumer);
         }
@@ -293,7 +306,9 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             eventStub = new EventStub(consumer);
         }
@@ -322,7 +337,8 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 new UInteger(1),
                 null,
                 true,
-                uris.broker);
+                uris.broker,
+                null);
         LoggingBase.logMessage("ActivityTestHandlerImpl:createMonitorEventPublisher - calling store UI\n");
         // FileBasedDirectory.storeURI(EventHelper.EVENT_SERVICE_NAME.getValue() + PROVIDER, malProvider.getURI(), malProvider.getBrokerURI());
 
@@ -338,17 +354,20 @@ public class LocalMALInstance extends BaseLocalMALInstance {
                 QoSLevel.BESTEFFORT,
                 null,
                 new UInteger(0));
-        /*
-    final EntityKeyList lst = new EntityKeyList();
-    lst.add(new EntityKey(new Identifier("*"), new Long(0), new Long(0), new Long(0)));
-         */
 
         IdentifierList keys = new IdentifierList();
         keys.add(new Identifier("K1"));
         keys.add(new Identifier("K2"));
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
-        monitorEventPublisher.register(keys, new MALPublishInteractionListenerImpl());
+
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+
+        monitorEventPublisher.register(keys, keyTypes, new MALPublishInteractionListenerImpl());
     }
 
     public MonitorEventPublisher getMonitorEventPublisher(String relay) throws MALInteractionException, MALException {

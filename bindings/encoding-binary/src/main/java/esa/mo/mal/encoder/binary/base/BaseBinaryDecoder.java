@@ -25,7 +25,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.encoding.Decoder;
@@ -85,7 +84,7 @@ public abstract class BaseBinaryDecoder extends Decoder {
     public BinaryTimeHandler getTimeHandler() {
         return timeHandler;
     }
-    
+
     /**
      * Internal class that is used to hold the byte buffer. Derived classes
      * should extend this (and replace it in the constructors).
@@ -267,7 +266,7 @@ public abstract class BaseBinaryDecoder extends Decoder {
                         for (int i = 0; i < existingContentRemaining; ++i) {
                             destBuf[i] = this.buf[this.offset + i];
                         }
-                        
+
                         // the start of the data in the buffer has moved to zero now
                         this.buf = destBuf;
                         this.offset = 0;
@@ -283,12 +282,12 @@ public abstract class BaseBinaryDecoder extends Decoder {
                         LOGGER.log(Level.FINER, "Read from input stream: {0}", read);
                         if (read < 0) {
                             throw new MALException(
-                                    "Unable to read required amount from source stream: end of file.");
+                                    "(1) Unable to read required amount from source stream: end of file.");
                         }
                         this.contentLength += read;
                     } catch (IOException ex) {
                         throw new MALException(
-                                "Unable to read required amount from source stream", ex);
+                                "(2) Unable to read required amount from source stream", ex);
                     }
                 }
             }

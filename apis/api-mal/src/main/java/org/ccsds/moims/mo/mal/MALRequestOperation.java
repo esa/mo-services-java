@@ -47,16 +47,15 @@ public class MALRequestOperation extends MALOperation {
      */
     public static final UOctet REQUEST_RESPONSE_STAGE = new UOctet(_REQUEST_RESPONSE_STAGE);
 
-    private final MALOperationStage requestStage;
-    private final MALOperationStage responseStage;
+    private final OperationField[] requestStage;
+    private final OperationField[] responseStage;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param requestStage The stage information for the REQUEST stage.
      * @param responseStage The stage information for the REQUEST_RESPONSE
@@ -64,14 +63,14 @@ public class MALRequestOperation extends MALOperation {
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALRequestOperation(final UShort number,
+    public MALRequestOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage requestStage,
-            final MALOperationStage responseStage)
+            final OperationField[] requestStage,
+            final OperationField[] responseStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.REQUEST, capabilitySet);
+        super(serviceKey, number, name, InteractionType.REQUEST, capabilitySet);
 
         this.requestStage = requestStage;
         this.responseStage = responseStage;
@@ -86,8 +85,7 @@ public class MALRequestOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

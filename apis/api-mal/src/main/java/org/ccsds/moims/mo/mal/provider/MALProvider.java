@@ -101,12 +101,11 @@ public interface MALProvider {
      *
      * @param op The operation
      * @param domain Domain of the PUBLISH messages
-     * @param networkZone Network zone of the PUBLISH messages
      * @param sessionType Session type of the PUBLISH messages
      * @param sessionName Session name of the PUBLISH messages
      * @param remotePublisherQos QoS level of the PUBLISH messages
      * @param remotePublisherQosProps QoS properties of the PUBLISH messages
-     * @param remotePublisherPriority Priority of the PUBLISH messages
+     * @param supplements Set of optional named values
      * @return the new MALPublisher.
      * @throws java.lang.IllegalArgumentException If the parameters ‘op’ or
      * ‘domain’ or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ or
@@ -116,12 +115,11 @@ public interface MALProvider {
      */
     MALPublisher createPublisher(MALPubSubOperation op,
             IdentifierList domain,
-            Identifier networkZone,
             SessionType sessionType,
             Identifier sessionName,
             QoSLevel remotePublisherQos,
             Map remotePublisherQosProps,
-            UInteger remotePublisherPriority)
+            NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**

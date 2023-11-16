@@ -31,11 +31,15 @@ import esa.mo.xsd.util.XmlHelper;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +63,9 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.Token;
+import org.fife.ui.rsyntaxtextarea.folding.Fold;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -108,14 +114,12 @@ public class AreaTabbedPane extends JTabbedPane {
         panelMOSDL.add(buttonB, BorderLayout.NORTH);
         panelMOSDL.add(textEditorMOSDL, BorderLayout.CENTER);
 
-        //panelDocs.setLayout(new BorderLayout());
-        JButton generateDocs = createButtonDocs(textEditorXML, panelDocs, true);
+        JButton generateDocs = createButtonDocs(textEditorXML, panelDocs);
         panelDocs.add(generateDocs);
 
         this.add("XML View", panelXML);
         this.add("MOSDL View", panelMOSDL);
         this.add("Generate Documents", panelDocs);
-
     }
 
     private JButton createButtonA(RTextScrollPane textEditorFrom, RTextScrollPane textEditorTo) {
@@ -127,11 +131,10 @@ public class AreaTabbedPane extends JTabbedPane {
     private JButton createButtonB(RTextScrollPane textEditorFrom, RTextScrollPane textEditorTo) {
         JButton buttonB = new JButton("Convert to XML");
         buttonB.addActionListener(new ConvertMOSDLToXML(textEditorFrom, textEditorTo));
-
         return buttonB;
     }
 
-    private JButton createButtonDocs(RTextScrollPane textEditorFrom, JPanel panel, boolean all) {
+    private JButton createButtonDocs(RTextScrollPane textEditorFrom, JPanel panel) {
         final JButton buttonB = new JButton("Generate Word document");
         buttonB.addActionListener(new ActionListener() {
             @Override
@@ -163,7 +166,8 @@ public class AreaTabbedPane extends JTabbedPane {
                     FileSupport.writeFile(tempFilePath, text);
 
                     File xmlRefDirectory = new File(sourFolder);
-                    List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
+                    List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs;
+                    specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
                     // now generator from each specification
                     for (Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification> spec : specs) {
@@ -196,19 +200,20 @@ public class AreaTabbedPane extends JTabbedPane {
 
                     timestamp = System.currentTimeMillis() - timestamp;
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
-                            "Success! Generated the Book in " + timestamp + " miliseconds!", text);
+                            "Success! Generated the Book in " + timestamp + " miliseconds! "
+                            + "Location:\n >> " + destFolder, text);
                     buttonB.revalidate();
                     buttonB.repaint();
                 } catch (JAXBException ex) {
                     panel.remove(LABEL_GENERATING);
                     panel.add(LABEL_ERROR_GENERATION);
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(
-                            Level.SEVERE, "Something went wrong...", ex);
+                            Level.SEVERE, "(1) Something went wrong...", ex);
                 } catch (Exception ex) {
                     panel.remove(LABEL_GENERATING);
                     panel.add(LABEL_ERROR_GENERATION);
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(
-                            Level.SEVERE, "Something went wrong...", ex);
+                            Level.SEVERE, "(2) Something went wrong...", ex);
                 }
             }
         });
@@ -220,8 +225,10 @@ public class AreaTabbedPane extends JTabbedPane {
         RSyntaxTextArea textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
         textArea.setCodeFoldingEnabled(true);
-        this.displayFindTextAreaOnPanel(textArea, panelXML);
-        return new RTextScrollPane(textArea);
+        displayFindTextAreaOnPanel(textArea, panelXML);
+        RTextScrollPane pane = new RTextScrollPane(textArea);
+        addZoomingToScrollPane(pane);
+        return pane;
     }
 
     private RTextScrollPane createTextEditorMOSDL(JPanel panelMOSDL) {
@@ -233,9 +240,10 @@ public class AreaTabbedPane extends JTabbedPane {
         //scheme.setStyle(Token.COMMENT_DOCUMENTATION, new Style(Color.blue));
         scheme.setStyle(Token.COMMENT_DOCUMENTATION, scheme.getStyle(Token.COMMENT_EOL));
         textArea.revalidate();
-        this.displayFindTextAreaOnPanel(textArea, panelMOSDL);
+        displayFindTextAreaOnPanel(textArea, panelMOSDL);
 
         RTextScrollPane textPane = new RTextScrollPane(textArea);
+        addZoomingToScrollPane(textPane);
         CompletionProvider provider = AutoCompleteForMOSDL.createCompletionProvider();
         AutoCompletion ac = new AutoCompletion(provider);
         ac.install(textArea);
@@ -251,7 +259,24 @@ public class AreaTabbedPane extends JTabbedPane {
         return textPane;
     }
 
-    private void displayFindTextAreaOnPanel(final RSyntaxTextArea textArea, final JPanel panel) {
+    private static void addZoomingToScrollPane(final RTextScrollPane scrollPane) {
+        MouseWheelListener listener = new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.isControlDown()) {
+                    Font font = scrollPane.getTextArea().getFont();
+                    // Is it zooming in or zooming out?
+                    float diff = (e.getWheelRotation() < 0) ? 1.0f : -1.0f;
+                    float size = font.getSize() + diff;
+                    scrollPane.getTextArea().setFont(font.deriveFont(size));
+                }
+            }
+        };
+
+        scrollPane.addMouseWheelListener(listener);
+    }
+
+    private static void displayFindTextAreaOnPanel(final RSyntaxTextArea textArea, final JPanel panel) {
         final SearchToolbar toolbar = new SearchToolbar(textArea);
         final AtomicBoolean isvisible = new AtomicBoolean(false);
         toolbar.init();
@@ -324,6 +349,7 @@ public class AreaTabbedPane extends JTabbedPane {
                 int caretPosition = textEditorTo.getTextArea().getCaretPosition();
                 textEditorTo.getTextArea().setText(newText);
                 textEditorTo.getTextArea().setCaretPosition(caretPosition);
+                textEditorFrom.getTextArea().removeAllLineHighlights();
 
                 timestamp = System.currentTimeMillis() - timestamp;
                 Logger.getLogger(FileSupport.class.getName()).log(Level.INFO,
@@ -331,6 +357,15 @@ public class AreaTabbedPane extends JTabbedPane {
                         new Object[]{timestamp}
                 );
             } catch (IOException ex) {
+                Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NullPointerException ex) {
+                String msg = ex.getMessage();
+
+                if (msg != null) {
+                    Integer lineNumber = Integer.parseInt(msg);
+                    highlightLine(lineNumber, textEditorFrom);
+                }
+
                 Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -359,30 +394,30 @@ public class AreaTabbedPane extends JTabbedPane {
                 int caretPosition = textEditorTo.getTextArea().getCaretPosition();
                 textEditorTo.getTextArea().setText(newText);
                 textEditorTo.getTextArea().setCaretPosition(caretPosition);
-                timestamp = System.currentTimeMillis() - timestamp;
+                textEditorFrom.getTextArea().removeAllLineHighlights();
 
+                timestamp = System.currentTimeMillis() - timestamp;
                 Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                         "Success! From XML to MOSDL in {0} miliseconds!",
                         new Object[]{timestamp}
                 );
-
-                textEditorFrom.getTextArea().removeAllLineHighlights();
-            } catch (JAXBException ex) {
-                if (ex.getLinkedException() instanceof SAXParseException) {
-                    Logger.getLogger(AreaTabbedPane.class.getName()).log(
-                            Level.WARNING, "Found!");
-
-                    SAXParseException sax = (SAXParseException) ex.getLinkedException();
+            } catch (SAXException ex1) {
+                if (ex1 instanceof SAXParseException) {
+                    int lineNumber = ((SAXParseException) ex1).getLineNumber();
+                    highlightLine(lineNumber, textEditorFrom);
+                }
+            } catch (JAXBException ex2) {
+                if (ex2.getLinkedException() instanceof SAXParseException) {
+                    SAXParseException sax = (SAXParseException) ex2.getLinkedException();
                     int lineNumber = sax.getLineNumber();
-                    try {
-                        textEditorFrom.getTextArea().addLineHighlight(lineNumber - 1, Color.RED);
-                    } catch (BadLocationException ex1) {
-                        Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.SEVERE, null, ex1);
-                    }
+
+                    Logger.getLogger(AreaTabbedPane.class.getName()).log(
+                            Level.WARNING, "The line with the error is: {0}", lineNumber);
+                    highlightLine(lineNumber, textEditorFrom);
                 } else {
-                    String message = ex.getCause().getMessage();
-                    String localizedMessage = ex.getCause().getLocalizedMessage();
-                    String errotCode = ex.getErrorCode();
+                    String message = ex2.getCause().getMessage();
+                    String localizedMessage = ex2.getCause().getLocalizedMessage();
+                    String errotCode = ex2.getErrorCode();
                     Logger.getLogger(FileSupport.class.getName()).log(
                             Level.WARNING,
                             "Error"
@@ -390,10 +425,51 @@ public class AreaTabbedPane extends JTabbedPane {
                             + "\n--------------\n" + localizedMessage
                             + "\n--------------\n" + errotCode
                             + "\n--------------",
-                            ex);
+                            ex2);
                 }
             }
         }
     }
 
+    public static void highlightLine(int lineNumber, RTextScrollPane editor) {
+        int lineIndex = lineNumber - 1;
+
+        try {
+            RSyntaxTextArea rsta = (RSyntaxTextArea) editor.getTextArea();
+
+            // Find the line with the fold to highlight the complete Fold
+            ArrayList<Integer> linesToHighlight = new ArrayList<>();
+
+            // Find all lines above
+            for (int i = lineIndex; i > 0; i--) {
+                Fold fold = rsta.getFoldManager().getFoldForLine(i);
+                linesToHighlight.add(i);
+
+                if (fold != null) {
+                    break;
+                }
+            }
+
+            // Find all lines below
+            for (int i = lineIndex + 1; i < rsta.getLineCount(); i++) {
+                Fold fold = rsta.getFoldManager().getFoldForLine(i);
+
+                if (fold != null) {
+                    break;
+                }
+
+                linesToHighlight.add(i);
+            }
+
+            for (Integer line : linesToHighlight) {
+                rsta.addLineHighlight(line, Color.PINK);
+            }
+
+            rsta.revalidate();
+            rsta.repaint();
+        } catch (BadLocationException ex1) {
+            Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.SEVERE,
+                    "The line number does not exist: " + lineIndex, ex1);
+        }
+    }
 }

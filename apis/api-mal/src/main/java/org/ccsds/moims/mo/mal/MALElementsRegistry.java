@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -22,8 +22,11 @@ package org.ccsds.moims.mo.mal;
 
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 
 /**
  * Holds a map of MAL Elements indexed on the absolute short form part. Used to
@@ -36,11 +39,15 @@ public class MALElementsRegistry {
     /**
      * Adds an Element to the map of Elements.
      *
-     * @param absoluteSFP The absolute short form part.
-     * @param callable The method with the generation of the Element.
+     * @param element The Element to be added.
+     * @return True if already previously loaded else false.
      */
-    public synchronized void addCallableElement(Long absoluteSFP, Callable<Element> callable) {
-        ELEMENTS.put(absoluteSFP, callable);
+    public boolean addElement(Element element) {
+        Long absoluteSFP = element.getShortForm();
+        Callable<Element> callable = () -> element.createElement();
+
+        Callable<Element> previous = ELEMENTS.put(absoluteSFP, callable);
+        return previous != null; // Not the first time?
     }
 
     /**
@@ -69,12 +76,22 @@ public class MALElementsRegistry {
      * @throws NotFoundException if the element was not found.
      */
     public Element createElement(Long absoluteSFP) throws Exception {
+        if (absoluteSFP == 0) {
+            return new HeterogeneousList();
+        }
+
         Callable<Element> callable = ELEMENTS.get(absoluteSFP);
 
         if (callable == null) {
-            int area = (int) (absoluteSFP >> 48);
-            throw new NotFoundException("The element was not found: " + absoluteSFP
-                    + "\nArea: " + area);
+            TypeId typeId = new TypeId(absoluteSFP);
+
+            if (typeId.isOldMAL()) {
+                Logger.getLogger(MALElementsRegistry.class.getName()).log(Level.SEVERE,
+                        "The typeId is incorrect! It is: {0}", typeId.toString());
+            }
+
+            throw new NotFoundException("The element was not found: "
+                    + absoluteSFP + "\n" + typeId.toString());
         }
 
         return callable.call();
@@ -92,11 +109,17 @@ public class MALElementsRegistry {
             return null;
         }
 
+        // Is it already a List?
+        if (obj instanceof ElementList) {
+            return (ElementList) obj;
+        }
+
         long l = obj.getShortForm();
         long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
 
         try {
-            return (ElementList) MALContextFactory.getElementsRegistry().createElement(ll);
+            Element createdElement = MALContextFactory.getElementsRegistry().createElement(ll);
+            return (ElementList) createdElement;
         } catch (Exception ex) {
             throw new NotFoundException("The element could not be found in the MAL ElementFactory!"
                     + " The object type is: " + obj.getClass().getSimpleName()
@@ -127,6 +150,67 @@ public class MALElementsRegistry {
                     + " The object type is: " + obj.getClass().getSimpleName()
                     + ". Maybe the service Helper for this object was not initialized."
                     + " Try initializing the Service Helper of this object.", ex);
+        }
+    }
+
+    /**
+     * Registers the Elements for a certain area.
+     *
+     * @param malArea The Area with the Elements to be registered.
+     */
+    public synchronized void registerElementsForArea(MALArea malArea) {
+        Element[] elements = malArea.getElements();
+
+        for (Element element : elements) {
+            if (this.addElement(element)) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Registers the Elements for a certain service.
+     *
+     * @param malService The Service with the Elements to be registered.
+     */
+    public synchronized void registerElementsForService(MALService malService) {
+        Element[] elements = malService.getElements();
+
+        for (Element element : elements) {
+            if (this.addElement(element)) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Loads the Elements for a certain service and its respective Area.
+     *
+     * @param service The Service to be loaded.
+     */
+    public void loadServiceAndAreaElements(MALService service) {
+        // Load the elements here:
+        this.registerElementsForArea(MALHelper.MAL_AREA);
+        this.registerElementsForService(service);
+
+        // The Top-level Area loading also needs to be loaded
+        this.registerElementsForArea(service.getArea());
+        try {
+            org.ccsds.moims.mo.mal.MALContextFactory.registerArea(service.getArea());
+        } catch (MALException ex) {
+            Logger.getLogger(MALElementsRegistry.class.getName()).log(
+                    Level.SEVERE, "Something went wrong!", ex);
+        }
+    }
+
+    /**
+     * Loads the Area Elements and all the Service Elements in that Area.
+     *
+     * @param area The Area to be loaded.
+     */
+    public void loadFullArea(MALArea area) {
+        for (MALService service : area.getServices()) {
+            loadServiceAndAreaElements(service);
         }
     }
 }

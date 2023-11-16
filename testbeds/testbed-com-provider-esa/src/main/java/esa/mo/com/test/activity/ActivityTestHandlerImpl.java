@@ -20,15 +20,12 @@
  */
 package esa.mo.com.test.activity;
 
-import esa.mo.com.support.ComStructureHelper;
+import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.Map;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptanceList;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecution;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecutionList;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.InvokeInteraction;
@@ -40,9 +37,8 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestInheritanceSkeleton;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
@@ -93,7 +89,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             keys.add(new Identifier("K3"));
             keys.add(new Identifier("K4"));
 
-            monitorEventPublisher.register(keys, new ActivityTestPublisher());
+            AttributeTypeList keyTypes = new AttributeTypeList();
+            keyTypes.add(AttributeType.IDENTIFIER);
+            keyTypes.add(AttributeType.IDENTIFIER);
+            keyTypes.add(AttributeType.IDENTIFIER);
+            keyTypes.add(AttributeType.IDENTIFIER);
+
+            monitorEventPublisher.register(keys, keyTypes, new ActivityTestPublisher());
         }
     }
 
@@ -109,13 +111,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishAcceptance(true, interaction);
             if ((_String.contains(ACK_ERROR))) {
                 publishExecution(false, interaction, 1, 1);
-                throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+                throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
             } else {
                 publishExecution(!_String.contains(RESPONSE_ERROR), interaction, 1, 1);
             }
         } else {
             publishAcceptance(false, interaction);
-            throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+            throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
         }
         return _String;
     }
@@ -126,13 +128,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishAcceptance(true, interaction);
             if ((_String.contains(ACK_ERROR))) {
                 publishExecution(false, interaction, 1, 1);
-                throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+                throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
             } else {
                 publishExecution(true, interaction, 1, 1);
             }
         } else {
             publishAcceptance(false, interaction);
-            throw new MALInteractionException(new MALStandardError(new UInteger(0), null));
+            throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
         }
     }
 
@@ -144,12 +146,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 publishExecution(false, interaction.getInteraction(), 1, 2);
             }
             // TBD error number to be specified
-            interaction.sendError(new MALStandardError(new UInteger(0), null));
+            interaction.sendError(new MOErrorException(new UInteger(0), null));
         } else if ((_String.contains(ACK_ERROR))) {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(false, interaction.getInteraction(), 1, 2);
             // TBD error number to be specified
-            interaction.sendError(new MALStandardError(new UInteger(0), null));
+            interaction.sendError(new MOErrorException(new UInteger(0), null));
         } else {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(true, interaction.getInteraction(), 1, 2);
@@ -164,7 +166,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             } else {
                 // TBD error number to be specified
                 publishExecution(false, interaction.getInteraction(), 2, 2);
-                interaction.sendError(new MALStandardError(new UInteger(0), null));
+                interaction.sendError(new MOErrorException(new UInteger(0), null));
             }
         }
     }
@@ -180,12 +182,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             if (_String.contains(ACK_ERROR)) {
                 publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
             }
-            interaction.sendError(new MALStandardError(new UInteger(0), null));
+            interaction.sendError(new MOErrorException(new UInteger(0), null));
         } else if ((_String.contains(ACK_ERROR))) {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
             // TBD error number to be specified
-            interaction.sendError(new MALStandardError(new UInteger(0), null));
+            interaction.sendError(new MOErrorException(new UInteger(0), null));
         } else {
             publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
             publishAcceptance(true, interaction.getInteraction());
@@ -199,7 +201,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 if (_String.get(i).contains(UPDATE_ERROR)) {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send update ERR");
                     publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-                    interaction.sendUpdateError(new MALStandardError(new UInteger(0), null));
+                    interaction.sendUpdateError(new MOErrorException(new UInteger(0), null));
                     bUpdateErr = true;
                 } else if (_String.get(i).contains(UPDATE)) {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send UPDATE");
@@ -220,7 +222,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response ERR");
                     publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
                     // TBD error number to be specified
-                    interaction.sendError(new MALStandardError(new UInteger(0), null));
+                    interaction.sendError(new MOErrorException(new UInteger(0), null));
                 }
             }
         }
@@ -255,33 +257,21 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
     private void publishAcceptance(boolean success, MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance malInter = " + interaction);
 
-        // Produce ActivityTransferList
-        ActivityAcceptanceList aal = new ActivityAcceptanceList();
-        ActivityAcceptance aa = new ActivityAcceptance();
-        aa.setSuccess(success);
-        aal.add(aa);
-        // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
+        // Produce ActivityTransfer
+        ActivityAcceptance aa = new ActivityAcceptance(success);
 
-        // Set source
-        ObjectId source = new ObjectId();
-        source.setType(COMTestHelper.getOperationActivityType());
-        LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
+        ObjectKey key = new ObjectKey(new IdentifierList(),
+                new Long(interaction.getMessageHeader().getTransactionId()));
 
-        ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
-        key.setInstId(new Long(interaction.getMessageHeader().getTransactionId()));
         if (interaction.getMessageHeader().getTransactionId() == null) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
         }
         LoggingBase.logMessage("ActivityTestHandler:key = " + key);
-        source.setKey(key);
-        objDetails.setSource(source);
-        odl.add(objDetails);
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
+
+        // Produce ObjectDetails
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
+        LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance source = " + source);
 
         /*
         final EntityKey ekey = new EntityKey(
@@ -293,8 +283,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             generateSubKey(COMHelper._COM_AREA_NUMBER, 
                     ActivityTrackingHelper._ACTIVITYTRACKING_SERVICE_NUMBER, 
                     COMHelper._COM_AREA_VERSION, COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY));
-        */
-        
+         */
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
@@ -310,24 +299,22 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandler: keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getURITo();
+        Identifier uri = interaction.getMessageHeader().getTo();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
 
-        UpdateHeader uh = new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues);
-        uhl.add(uh);
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(uri, domain, keyValues.getAsNullableAttributeList());
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, aal);
+        monitorEventPublisher.publish(uh, objDetails, aa);
 
     }
 
     private void publishExecution(boolean success, MALInteraction interaction,
             int currentStageCount, int totalStageCount) throws MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution malInter = " + interaction);
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
         /*
     final EntityKey ekey = new EntityKey(
             new Identifier(COMTestHelper.OBJ_NO_ASE_EXECUTION_STR),
@@ -351,56 +338,48 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution keyValues = " + keyValues);
-        URI uri = interaction.getMessageHeader().getURITo();
+        Identifier uri = interaction.getMessageHeader().getTo();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("mission"));
-        uhl.add(new UpdateHeader(new Identifier(uri.getValue()), domain, keyValues));
+
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(uri, domain, keyValues.getAsNullableAttributeList());
 
         // Produce ActivityTransferList
-        ActivityExecutionList ael = new ActivityExecutionList();
-        ActivityExecution activityExecutionInstance = new ActivityExecution();
-        activityExecutionInstance.setExecutionStage(new UInteger(currentStageCount)); // TBD
-        activityExecutionInstance.setStageCount(new UInteger(totalStageCount));
-        activityExecutionInstance.setSuccess(success);
+        ActivityExecution activityExecutionInstance = new ActivityExecution(
+                success, new UInteger(currentStageCount), new UInteger(totalStageCount));
 
-        ael.add(activityExecutionInstance);
+        ObjectKey key = new ObjectKey(domain, interaction.getMessageHeader().getTransactionId());
 
-        // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
-
-        ObjectId source = new ObjectId();
-
-        source.setType(COMTestHelper.getOperationActivityType());
-
-        ObjectKey key = new ObjectKey();
-        key.setDomain(interaction.getMessageHeader().getDomain());
-        key.setInstId(interaction.getMessageHeader().getTransactionId());
         if (interaction.getMessageHeader().getTransactionId() == null) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:getTransactionId = NULL");
         }
-        source.setKey(key);
-        objDetails.setSource(source);
-        odl.add(objDetails);
+
+        // Produce ObjectDetails
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, ael);
+        monitorEventPublisher.publish(uh, objDetails, activityExecutionInstance);
     }
 
     public static class ActivityTestPublisher implements MALPublishInteractionListener {
 
+        @Override
         public void publishRegisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
         }
 
+        @Override
         public void publishRegisterErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
         }
 
+        @Override
         public void publishErrorReceived(MALMessageHeader header, MALErrorBody body, Map qosProperties) throws MALException {
             LoggingBase.logMessage("ActivityTestPublisher:publishErrorReceived - " + body.toString());
         }
 
+        @Override
         public void publishDeregisterAckReceived(MALMessageHeader header, Map qosProperties) throws MALException {
         }
     }

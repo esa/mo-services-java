@@ -21,13 +21,14 @@
 package org.ccsds.moims.mo.mal;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 
 /**
  * Class representing a Publish-Subscribe operation.
@@ -114,64 +115,72 @@ public class MALPubSubOperation extends MALOperation {
      * MAL UOctet representing the PUBLISH_DEREGISTER_ACK stage.
      */
     public static final UOctet PUBLISH_DEREGISTER_ACK_STAGE = new UOctet(_PUBLISH_DEREGISTER_ACK_STAGE);
-    private static final MALOperationStage PUBSUB_REG_OPERATION_STAGE
-            = new MALOperationStage(REGISTER_STAGE, new Object[]{Subscription.SHORT_FORM}, new Object[0]);
-    private static final MALOperationStage PUBSUB_REGACK_OPERATION_STAGE
-            = new MALOperationStage(REGISTER_ACK_STAGE, new Object[0], new Object[0]);
-    private static final MALOperationStage PUBSUB_PUBREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_STAGE, new Object[]{IdentifierList.SHORT_FORM}, new Object[0]);
-    private static final MALOperationStage PUBSUB_PUBREGACK_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_REGISTER_ACK_STAGE, new Object[0], new Object[0]);
-    private static final MALOperationStage PUBSUB_DEREG_OPERATION_STAGE
-            = new MALOperationStage(DEREGISTER_STAGE, new Object[]{IdentifierList.SHORT_FORM}, new Object[0]);
-    private static final MALOperationStage PUBSUB_DEREGACK_OPERATION_STAGE
-            = new MALOperationStage(DEREGISTER_ACK_STAGE, new Object[0], new Object[0]);
-    private static final MALOperationStage PUBSUB_PUBDEREG_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_DEREGISTER_STAGE, new Object[0], new Object[0]);
-    private static final MALOperationStage PUBSUB_PUBDEREGACK_OPERATION_STAGE
-            = new MALOperationStage(PUBLISH_DEREGISTER_ACK_STAGE, new Object[0], new Object[0]);
-    private final MALOperationStage pubSubPublishStage;
-    private final MALOperationStage pubSubNotifyStage;
+
+    private static final OperationField[] PUBSUB_REG_OPERATION_STAGE = new OperationField[]{
+        new OperationField("subscription", false, Subscription.SHORT_FORM)
+    };
+
+    private static final OperationField[] PUBSUB_REGACK_OPERATION_STAGE = new OperationField[0];
+
+    private static final OperationField[] PUBSUB_PUBREG_OPERATION_STAGE
+            = new OperationField[]{
+                new OperationField("names", false, IdentifierList.SHORT_FORM),
+                new OperationField("types", false, AttributeTypeList.SHORT_FORM)
+            };
+
+    private static final OperationField[] PUBSUB_PUBREGACK_OPERATION_STAGE = new OperationField[0];
+
+    private static final OperationField[] PUBSUB_DEREG_OPERATION_STAGE = new OperationField[]{
+        new OperationField("subscriptionIds", false, IdentifierList.SHORT_FORM)
+    };
+
+    private static final OperationField[] PUBSUB_DEREGACK_OPERATION_STAGE = new OperationField[0];
+
+    private static final OperationField[] PUBSUB_PUBDEREG_OPERATION_STAGE = new OperationField[0];
+
+    private static final OperationField[] PUBSUB_PUBDEREGACK_OPERATION_STAGE = new OperationField[0];
+
+    private final OperationField[] pubSubPublishStage;
+
+    private final OperationField[] pubSubNotifyStage;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
-     * @param updateListShortForms Absolute short forms of the update lists
-     * transmitted by the PUBLISH/NOTIFY message of a PUBLISH-SUBSCRIBE
-     * operation.
-     * @param lastUpdateListShortForms Absolute short forms of the update lists
-     * that can be assigned to the last element of the PUBLISH/NOTIFY message
-     * body
+     * @param fields PUB-SUB fields. transmitted by the PUBLISH/NOTIFY message
+     * of a PUBLISH-SUBSCRIBE operation.
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALPubSubOperation(final UShort number,
+    public MALPubSubOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
-            final Object[] updateListShortForms,
-            final Object[] lastUpdateListShortForms)
+            final OperationField[] fields)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.PUBSUB, capabilitySet);
+        super(serviceKey, number, name, InteractionType.PUBSUB, capabilitySet);
 
-        final Object[] pSF = new Object[updateListShortForms.length + 1];
-        final Object[] nSF = new Object[updateListShortForms.length + 2];
-        for (int i = 0; i < updateListShortForms.length; i++) {
-            final Object v = updateListShortForms[i];
-            pSF[i + 1] = v;
-            nSF[i + 2] = v;
+        OperationField[] publishFields = new OperationField[fields.length + 1];
+        OperationField[] notifyFields = new OperationField[fields.length + 2];
+
+        for (int i = 0; i < fields.length; i++) {
+            final OperationField field = fields[i];
+            publishFields[i + 1] = field;
+            notifyFields[i + 2] = field;
         }
-        nSF[0] = Attribute.IDENTIFIER_SHORT_FORM;
-        nSF[1] = UpdateHeaderList.SHORT_FORM;
-        pSF[0] = nSF[1];
+        // Publish message:
+        publishFields[0] = new OperationField("header", false, UpdateHeader.SHORT_FORM);
 
-        this.pubSubPublishStage = new MALOperationStage(PUBLISH_STAGE, pSF, lastUpdateListShortForms);
-        this.pubSubNotifyStage = new MALOperationStage(NOTIFY_STAGE, nSF, lastUpdateListShortForms);
+        // Notify message:
+        notifyFields[0] = new OperationField("subscriptionId", false, Attribute.IDENTIFIER_SHORT_FORM);
+        notifyFields[1] = new OperationField("updateHeader", false, UpdateHeader.SHORT_FORM);
+
+        this.pubSubPublishStage = publishFields;
+        this.pubSubNotifyStage = notifyFields;
     }
 
     /**
@@ -183,8 +192,7 @@ public class MALPubSubOperation extends MALOperation {
      * null or stage does not exist for this pattern.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber)
-            throws IllegalArgumentException {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) throws IllegalArgumentException {
         if (stageNumber == null) {
             throw new IllegalArgumentException("Supplied stage number must not be NULL");
         }

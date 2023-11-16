@@ -26,7 +26,7 @@ package org.ccsds.moims.mo.mal;
  */
 public class MALInteractionException extends Exception {
 
-    private final MALStandardError standardError;
+    private final MOErrorException standardError;
 
     /**
      * The constructor calls the java.lang.Exception constructor with the String
@@ -35,9 +35,9 @@ public class MALInteractionException extends Exception {
      *
      * @param error The MAL standard error to wrap.
      */
-    public MALInteractionException(final MALStandardError error) {
+    public MALInteractionException(final MOErrorException error) {
         super(
-                ((null != error) && (null != error.getExtraInformation()))
+                ((error != null) && (error.getExtraInformation() != null))
                 ? error.getExtraInformation().toString() : null
         );
 
@@ -49,7 +49,7 @@ public class MALInteractionException extends Exception {
      *
      * @return The MAL standard error.
      */
-    public MALStandardError getStandardError() {
+    public MOErrorException getStandardError() {
         return standardError;
     }
 

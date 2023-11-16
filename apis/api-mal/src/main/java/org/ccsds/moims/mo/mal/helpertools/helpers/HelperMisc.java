@@ -116,8 +116,9 @@ public class HelperMisc {
     /**
      * Loads the properties for the consumer
      *
-     * @throws java.net.MalformedURLException
-     * @throws IOException The file consumer properties file does no exist
+     * @throws java.net.MalformedURLException if the URI could not be converted
+     * into a URL.
+     * @throws IOException if the file consumer properties file does no exist
      */
     public static void loadConsumerProperties() throws MalformedURLException, IOException {
         final Properties sysProps = System.getProperties();

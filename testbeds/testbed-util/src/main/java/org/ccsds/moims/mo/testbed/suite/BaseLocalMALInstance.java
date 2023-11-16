@@ -119,7 +119,6 @@ public abstract class BaseLocalMALInstance extends LoggingBase {
             defaultMal = malFactory.createMALContext(defaultProps);
             logMessage("MAL created");
 
-            MALHelper.init(MALContextFactory.getElementsRegistry());
             initHelpers();
 
             defaultConsumerMgr = defaultMal.createConsumerManager();
@@ -189,6 +188,7 @@ public abstract class BaseLocalMALInstance extends LoggingBase {
 
         @Override
         public int hashCode() {
+//            return authenticationId.hashCode();
             return authenticationId.hashCode()
                     + domain.hashCode()
                     + networkZone.hashCode()

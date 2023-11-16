@@ -21,6 +21,9 @@
 package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The MALElementInputStream interface is used to decode Elements.
@@ -28,15 +31,26 @@ import org.ccsds.moims.mo.mal.MALException;
 public interface MALElementInputStream {
 
     /**
-     * The method decodes an Element.
+     * The method reads the header from the input stream.
+     *
+     * @param header The header to decode.
+     * @return The decoded header.
+     * @throws java.lang.IllegalArgumentException If there is something wrong
+     * with the provided header.
+     * @throws MALException If the MALElementInputStream is closed
+     */
+    MALMessageHeader readHeader(MALMessageHeader header) throws MALException;
+
+    /**
+     * The method reads an Element from the stream.
      *
      * @param element Element to decode, may be null.
-     * @param ctx MALEncodingContext to be used in order to decode an Element
+     * @param field The field information to be used in order to decode an Element
      * @return The decoded element.
      * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL
      * @throws MALException If the MALElementInputStream is closed
      */
-    Object readElement(Object element, MALEncodingContext ctx)
+    Element readElement(Element element, OperationField field)
             throws java.lang.IllegalArgumentException, MALException;
 
     /**

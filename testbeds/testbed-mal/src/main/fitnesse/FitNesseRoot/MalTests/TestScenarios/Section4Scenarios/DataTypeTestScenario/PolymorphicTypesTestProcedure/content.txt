@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------------
+# Copyright (C) 2013      European Space Agency
+#                         European Space Operations Centre
+#                         Darmstadt
+#                         Germany
+# ----------------------------------------------------------------------------
+# System                : CCSDS MO MAL Test bed
+# ----------------------------------------------------------------------------
+# Licensed under the European Space Agency Public License, Version 2.0
+# You may not use this file except in compliance with the License.
+#
+# Except as expressly set forth in this License, the Software is provided to
+# You on an "as is" basis and without warranties of any kind, including without
+# limitation merchantability, fitness for a particular purpose, absence of
+# defects or errors, accuracy or non-infringement of intellectual property rights.
+# 
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+# ----------------------------------------------------------------------------
+
+!*< Hidden
+!define TEST_SYSTEM {slim}
+
+|Import|
+|org.ccsds.moims.mo.mal.test.datatype|
+
+*!
+!4 Polymorphic types test procedure
+
+The test procedure does the following actions:
+ 1 Call a specific operation provided by the !-DataTest-! service provider with a statically defined value.
+ 2 Check that no error is raised by the provider, especially DATA_ERROR and BAD_ENCODING, meaning that the provider received the right value.
+ 3 Check the return value which must equal to the original value.
+
+The test procedure is similar to the Element parameter test procedure, except that it explores more complex polymorphic use cases allowed by the MAL type rules.
+A complex set of abstract and concrete types are defined, with associated values. A number of specific test operations are defined in the !-DataTest-! service, which make use of those abstract types to declare their parameter.
+The tested use cases include:
+ * multiple levels of Composite inheritance
+ * operation parameter type as an intermediate abstract level (i.e. not the top Element type and not the final concrete type)
+ * List of the various abstract types
+ * List of !-ObjectRef-![<T>] with various abstract types for T
+
+|script| data type scenario|
+|note| Polymorphic types test|
+|check| polymorphic abstract composite lists work | OK|
+|check| polymorphic mal composite lists work | OK|
+|check| polymorphic mal element lists work | OK|
+|check| polymorphic object ref types work | OK|

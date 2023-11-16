@@ -20,16 +20,17 @@
  */
 package esa.mo.mal.impl.pubsub;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Simple structure style class that holds a single notify message body.
+ *
+ * @author Cesar.Coelho
  */
 public class NotifyMessageBody {
 
@@ -37,10 +38,6 @@ public class NotifyMessageBody {
      * PubSub domain.
      */
     private final IdentifierList domain;
-    /**
-     * PubSub network zone.
-     */
-    private final Identifier networkZone;
     /**
      * PubSub area.
      */
@@ -64,44 +61,47 @@ public class NotifyMessageBody {
     /**
      * PubSub update headers.
      */
-    private final UpdateHeaderList updateHeaderList;
+    private final UpdateHeader updateHeader;
     /**
      * PubSub updates.
      */
-    private final java.util.List[] updateList;
+    private final Object[] updateObjects;
 
-    public NotifyMessageBody(Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-            java.util.List[] notifyList, MALMessageHeader srcHdr) {
+    /**
+     * Constructor.
+     *
+     * @param subscriptionId    PubSub subscription id.
+     * @param updateHeader      PubSub update headers.
+     * @param notifyList        Update objects.
+     * @param srcHdr            Source MAL message header.
+     * @param domain            PubSub domain.
+     */
+    public NotifyMessageBody(Identifier subscriptionId, UpdateHeader updateHeader,
+            Object[] notifyList, MALMessageHeader srcHdr, IdentifierList domain) {
         this.subscriptionId = subscriptionId;
-        this.updateHeaderList = updateHeaderList;
-        this.updateList = notifyList;
-        this.domain = srcHdr.getDomain();
-        this.networkZone = srcHdr.getNetworkZone();
+        this.updateHeader = updateHeader;
+        this.updateObjects = notifyList;
+        this.domain = domain;
         this.area = srcHdr.getServiceArea();
         this.service = srcHdr.getService();
         this.operation = srcHdr.getOperation();
-        this.version = srcHdr.getAreaVersion();
+        this.version = srcHdr.getServiceVersion();
     }
 
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append(" >> domain: ").append(domain);
-        buf.append("\n >> networkZone: ").append(networkZone);
         buf.append("\n >> area/service/version/operation: ");
         buf.append(area).append("/").append(service).append("/");
         buf.append(version).append("/").append(operation);
         buf.append("\n >> subscriptionId: ").append(subscriptionId);
-        buf.append("\n >> updateHeaderList: ").append(updateHeaderList);
+        buf.append("\n >> updateHeaderList: ").append(updateHeader);
         return buf.toString();
     }
 
     public IdentifierList getDomain() {
         return domain;
-    }
-
-    public Identifier getNetworkZone() {
-        return networkZone;
     }
 
     public UShort getArea() {
@@ -124,11 +124,11 @@ public class NotifyMessageBody {
         return subscriptionId;
     }
 
-    public UpdateHeaderList getUpdateHeaderList() {
-        return updateHeaderList;
+    public UpdateHeader getUpdateHeader() {
+        return updateHeader;
     }
 
-    public List[] getUpdateList() {
-        return updateList;
+    public Object[] getUpdateObjects() {
+        return updateObjects;
     }
 }

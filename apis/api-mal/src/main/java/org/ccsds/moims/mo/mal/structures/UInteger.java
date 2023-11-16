@@ -29,13 +29,15 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class UInteger implements Attribute {
 
-    private long value;
+    private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
 
     /**
      * A constant holding the maximum value a {@code UInteger} can have,
      * 2<sup>32</sup>-1.
      */
     public static final long MAX_VALUE = 4294967295L;
+
+    private long value;
 
     /**
      * Default constructor.
@@ -50,10 +52,10 @@ public class UInteger implements Attribute {
      * @param value Value to initialise with.
      */
     public UInteger(final long value) {
-        if (0 > value) {
+        if (value < 0) {
             throw new IllegalArgumentException("UInteger argument must not be negative");
         }
-        if (UInteger.MAX_VALUE < value) {
+        if (value > UInteger.MAX_VALUE) {
             throw new IllegalArgumentException(
                     "UInteger argument must not be greater than " + UInteger.MAX_VALUE);
         }
@@ -74,11 +76,6 @@ public class UInteger implements Attribute {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(long value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.UINTEGER_SHORT_FORM;
@@ -137,5 +134,4 @@ public class UInteger implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.UINTEGER_SHORT_FORM;
 }

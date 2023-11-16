@@ -75,8 +75,8 @@ public class TransportThreadFactory implements ThreadFactory {
 
     public static ExecutorService createDispatcherExecutor(final java.util.Map properties) {
         boolean needsTuning = false;
-        int lInputProcessorThreads = 100;
-        int lMinInputProcessorThreads = lInputProcessorThreads;
+        int nThreads = 100;
+        int lMinInputProcessorThreads = nThreads;
         int lIdleTimeInSeconds = 0;
 
         if (null != properties) {
@@ -97,25 +97,22 @@ public class TransportThreadFactory implements ThreadFactory {
 
             // number of internal threads that process incoming MAL packets
             if (properties.containsKey(INPUT_PROCESSORS_PROPERTY)) {
-                lInputProcessorThreads
-                        = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
+                nThreads = Integer.parseInt((String) properties.get(INPUT_PROCESSORS_PROPERTY));
             }
         }
 
-        ExecutorService rv = Executors.newFixedThreadPool(lInputProcessorThreads,
+        ExecutorService executorService = Executors.newFixedThreadPool(nThreads,
                 new TransportThreadFactory("Transport_Dispatcher"));
 
         // see if we can tune the thread pool
         if (needsTuning) {
-            if (rv instanceof ThreadPoolExecutor) {
-                ThreadPoolExecutor tpe = (ThreadPoolExecutor) rv;
-
+            if (executorService instanceof ThreadPoolExecutor) {
+                ThreadPoolExecutor tpe = (ThreadPoolExecutor) executorService;
                 tpe.setKeepAliveTime(lIdleTimeInSeconds, TimeUnit.SECONDS);
                 tpe.setCorePoolSize(lMinInputProcessorThreads);
             }
         }
 
-        return rv;
+        return executorService;
     }
-
 }

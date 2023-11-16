@@ -19,18 +19,17 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>9.0</version>
+        <version>10.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>mo-navigator</artifactId>
-    <version>9.0</version>
+    <version>10.0</version>
     <packaging>jar</packaging>
     
     <name>ESA MO Navigator</name>
     <description>The Navigator for MO XML files</description>
-    <url>https://www.cesar-coelho.com/</url>
   
     <organization>
         <name>ESA</name>
@@ -82,12 +81,12 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-docs</artifactId>
-            <version>9.0</version>
+            <version>10.0</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-java</artifactId>
-            <version>9.0</version>
+            <version>10.0</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
@@ -97,7 +96,6 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
-            <!-- <version>2.2.11</version>  -->
         </dependency>
     </dependencies>
 
@@ -144,6 +142,11 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <finalName>${project.artifactId}</finalName>
+                    <archive>
+                      <manifest>
+                        <mainClass>esa.mo.navigator.AppGUI</mainClass>
+                      </manifest>
+                    </archive>
                 </configuration>
                 <executions>
                     <execution>

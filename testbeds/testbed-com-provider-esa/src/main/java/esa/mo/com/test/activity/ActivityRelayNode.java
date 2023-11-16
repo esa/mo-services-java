@@ -23,16 +23,13 @@ package esa.mo.com.test.activity;
 import java.util.Hashtable;
 import java.util.Map;
 import org.ccsds.moims.mo.com.COMHelper;
-import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
-import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransferList;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
-import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
@@ -41,7 +38,7 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -84,11 +81,11 @@ public class ActivityRelayNode {
     public void relayMessage(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
         if (containsStage("RECEPTION_ERROR", relayName, _String)) {
             publishReceptionOrForward(false, COMTestHelper.OBJ_NO_ASE_RECEPTION_STR, interaction);
-            throw new MALInteractionException(new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
         } else if (containsStage("FORWARD_ERROR", relayName, _String)) {
             publishReceptionOrForward(true, COMTestHelper.OBJ_NO_ASE_RECEPTION_STR, interaction);
             publishReceptionOrForward(false, COMTestHelper.OBJ_NO_ASE_FORWARD_STR, interaction);
-            throw new MALInteractionException(new MALStandardError(MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
         } else {
             publishReceptionOrForward(true, COMTestHelper.OBJ_NO_ASE_RECEPTION_STR, interaction);
             publishReceptionOrForward(true, COMTestHelper.OBJ_NO_ASE_FORWARD_STR, interaction);
@@ -148,6 +145,7 @@ public class ActivityRelayNode {
                 new UInteger(1),
                 null,
                 true,
+                null,
                 null);
         LoggingBase.logMessage("ActivityRelayNode:createMonitorEventPublisher - calling store UI\n");
         FileBasedDirectory.storeURI(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName, malProvider.getURI(), malProvider.getBrokerURI());
@@ -177,10 +175,16 @@ public class ActivityRelayNode {
         keys.add(new Identifier("K3"));
         keys.add(new Identifier("K4"));
 
+        AttributeTypeList keyTypes = new AttributeTypeList();
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+        keyTypes.add(AttributeType.IDENTIFIER);
+
         LoggingBase.logMessage("ActivityRelayNode:createMonitorEventPublisher Reset X calling register");
 
         try {
-            monitorEventPublisher.register(keys, activityTestPublisher);
+            monitorEventPublisher.register(keys, keyTypes, activityTestPublisher);
         } catch (MALInteractionException ex) {
             // todo
             ex.printStackTrace();
@@ -200,7 +204,7 @@ public class ActivityRelayNode {
         SubscriptionFilterList filters = new SubscriptionFilterList();
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
-        Subscription sub = new Subscription(new Identifier("Sub-" + relayName), domain, filters);
+        Subscription sub = new Subscription(new Identifier("Sub-" + relayName), domain, null, filters);
         try {
             evStub.monitorEventRegister(sub, new MonitorEventAdapter());
         } catch (MALInteractionException ex) {
@@ -245,7 +249,9 @@ public class ActivityRelayNode {
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    null);
 
             evstub = new EventStub(consumer);
         }
@@ -259,9 +265,6 @@ public class ActivityRelayNode {
 
         LoggingBase.logMessage("publishReceptionOrForward " + relayName + " " + withSuccess);
 
-        // Produce header
-        UpdateHeaderList uhl = new UpdateHeaderList();
-
         AttributeList keyValues = new AttributeList();
         keyValues.add(new Identifier(phase));
         keyValues.add(new Union(ActivityTestHandlerImpl.generateSubKey(
@@ -270,43 +273,39 @@ public class ActivityRelayNode {
                 COMHelper._COM_AREA_VERSION,
                 0)
         ));
-        keyValues.add(new Long(instIdBaseOffset + (instanceIdentifier++)));
+        keyValues.add(new Union(new Long(instIdBaseOffset + (instanceIdentifier++))));
         keyValues.add(new Union(ActivityTestHandlerImpl.generateSubKey(
                 COMHelper._COM_AREA_NUMBER,
                 ActivityTrackingServiceInfo._ACTIVITYTRACKING_SERVICE_NUMBER,
                 COMHelper._COM_AREA_VERSION,
                 COMTestHelper.OBJ_NO_ASE_OPERATION_ACTIVITY)));
 
-        uhl.add(new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName), srcMessage.getDomain(), keyValues));
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("mission"));
 
-        // Produce ActivityTransferList
-        ActivityTransferList atl = new ActivityTransferList();
-        ActivityTransfer activityTransferInstance = new ActivityTransfer();
-        activityTransferInstance.setSuccess(withSuccess);
-        atl.add(activityTransferInstance);
+        // Produce header
+        UpdateHeader uh = new UpdateHeader(new Identifier(LocalMALInstance.ACTIVITY_EVENT_NAME + relayName),
+                domain, keyValues.getAsNullableAttributeList());
 
-        // Produce ObjectDetails 
-        ObjectDetailsList odl = new ObjectDetailsList();
-        ObjectDetails objDetails = new ObjectDetails();
-        objDetails.setRelated(null);
+        // Produce ActivityTransfer
+        ActivityTransfer activityTransferInstance = new ActivityTransfer(withSuccess);
 
-        ObjectId source = new ObjectId();
-        source.setType(COMTestHelper.getOperationActivityType());
+        ObjectKey key;
 
-        ObjectKey key = new ObjectKey();
-        key.setDomain(srcMessage.getDomain());
         if (srcMessage.getTransactionId() == null) {
+            key = new ObjectKey(domain, null);
             LoggingBase.logMessage("ActivityRelayNode:getTransactionId = NULL");
         } else {
-            key.setInstId(srcMessage.getTransactionId());
+            key = new ObjectKey(domain, srcMessage.getTransactionId());
         }
         LoggingBase.logMessage("ActivityRelayNode:key = " + key);
-        source.setKey(key);
-        objDetails.setSource(source);
-        odl.add(objDetails);
+
+        ObjectId source = new ObjectId(COMTestHelper.getOperationActivityType(), key);
+        ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uhl, odl, atl);
+        monitorEventPublisher.publish(uh, objDetails, activityTransferInstance);
         LoggingBase.logMessage("ActivityRelayNode:publishReceptionStatus - END " + relayName);
     }
 
@@ -345,18 +344,18 @@ public class ActivityRelayNode {
          */
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-                UpdateHeaderList _UpdateHeaderList1, ObjectDetailsList _ObjectDetailsList2,
-                ElementList _ElementList3, java.util.Map qosProperties) {
+                UpdateHeader updateHeader, ObjectDetails objectDetails,
+                Element element, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY");
 
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR" + msgHeader);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + _Identifier0);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + _UpdateHeaderList1);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + _ObjectDetailsList2);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + _ElementList3);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + updateHeader);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + objectDetails);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + element);
 
             try {
-                monitorEventPublisher.publish(_UpdateHeaderList1, _ObjectDetailsList2, _ElementList3);
+                monitorEventPublisher.publish(updateHeader, objectDetails, element);
             } catch (MALInteractionException ex1) {
                 LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived FAILURE " + ex1);
             } catch (MALException ex2) {
@@ -385,7 +384,7 @@ public class ActivityRelayNode {
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
-        public void monitorEventRegisterErrorReceived(MALMessageHeader msgHeader, MALStandardError error,
+        public void monitorEventRegisterErrorReceived(MALMessageHeader msgHeader, MOErrorException error,
                 java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorEventRegisterErrorReceived - ERROR");
         }
@@ -411,7 +410,7 @@ public class ActivityRelayNode {
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
-        public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader, MALStandardError error, java.util.Map qosProperties) {
+        public void monitorEventNotifyErrorReceived(MALMessageHeader msgHeader, MOErrorException error, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorEventDeregisterAckReceived - ERROR");
         }
     }

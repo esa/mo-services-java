@@ -58,12 +58,11 @@ public class MALProviderSet {
      *
      * @param op PUBLISH-SUBSCRIBE operation
      * @param domain Domain of the PUBLISH messages
-     * @param networkZone Network zone of the PUBLISH messages
      * @param sessionType Session type of the PUBLISH messages
      * @param sessionName Session name of the PUBLISH messages
      * @param remotePublisherQos QoS level of the PUBLISH messages
      * @param remotePublisherQosProps QoS properties of the PUBLISH messages
-     * @param remotePublisherPriority Priority of the PUBLISH messages
+     * @param supplements Set of optional named values
      * @return The created publisher set.
      * @throws java.lang.IllegalArgumentException If the parameters ‘op’ or
      * ‘domain’ or ‘networkZone’ or ‘sessionType’ or ‘sessionName’ or
@@ -73,29 +72,26 @@ public class MALProviderSet {
     public MALPublisherSet createPublisherSet(
             final MALPubSubOperation op,
             final IdentifierList domain,
-            final Identifier networkZone,
             final SessionType sessionType,
             final Identifier sessionName,
             final QoSLevel remotePublisherQos,
             final Map remotePublisherQosProps,
-            final UInteger remotePublisherPriority)
+            final NamedValueList supplements)
             throws java.lang.IllegalArgumentException, MALException {
-        final MALPublisherSet rv = new MALPublisherSet(this,
+        final MALPublisherSet publisherSet = new MALPublisherSet(
                 op,
                 domain,
-                networkZone,
                 sessionType,
                 sessionName,
                 remotePublisherQos,
-                remotePublisherQosProps,
-                remotePublisherPriority);
-        publisherSets.add(rv);
+                remotePublisherQosProps);
+        publisherSets.add(publisherSet);
 
         for (MALProvider provider : providers) {
-            rv.createPublisher(provider);
+            publisherSet.createPublisher(provider);
         }
 
-        return rv;
+        return publisherSet;
     }
 
     /**
@@ -119,8 +115,8 @@ public class MALProviderSet {
 
         providers.add(provider);
 
-        for (MALPublisherSet e : publisherSets) {
-            e.createPublisher(provider);
+        for (MALPublisherSet publisherSet : publisherSets) {
+            publisherSet.createPublisher(provider);
         }
     }
 
@@ -135,9 +131,9 @@ public class MALProviderSet {
      */
     public boolean removeProvider(final MALProvider provider) throws java.lang.IllegalArgumentException {
         providers.remove(provider);
-        for (MALPublisherSet e : publisherSets) {
+        for (MALPublisherSet publisherSet : publisherSets) {
             try {
-                e.deletePublisher(provider);
+                publisherSet.deletePublisher(provider);
             } catch (MALException ex) {
                 // ToDo
             }

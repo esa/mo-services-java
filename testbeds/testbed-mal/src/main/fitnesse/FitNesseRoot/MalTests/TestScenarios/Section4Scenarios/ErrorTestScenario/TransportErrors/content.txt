@@ -38,6 +38,7 @@
 |org.ccsds.moims.mo.mal.test.errors|
 
 *******!
+!3 Test Case: Transport errors
 !4 Test procedure: transport errors
 This test checks that the error code are correctly defined at the MAL level.
 An !-ErrorTest-! consumer is created. Each operation raising a transport error is initiated. For each transport error, the test checks that the error raised by the provider is the one expected by the consumer.
@@ -52,8 +53,9 @@ An !-ErrorTest-! consumer is created. Each operation raising a transport error i
 |ensure |raise error | DESTINATION_LOST |
 |ensure |raise error | ENCRYPTION_FAIL |
 |ensure |raise error | UNSUPPORTED_AREA |
+|ensure |raise error | UNSUPPORTED_AREA_VERSION |
+|ensure |raise error | UNSUPPORTED_SERVICE |
 |ensure |raise error | UNSUPPORTED_OPERATION |
-|ensure |raise error | UNSUPPORTED_VERSION |
 |ensure |raise error | BAD_ENCODING |
 |ensure |raise error | UNKNOWN |
 

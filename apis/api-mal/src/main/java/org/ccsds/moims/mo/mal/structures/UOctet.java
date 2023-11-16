@@ -29,17 +29,20 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class UOctet implements Attribute {
 
+    private static final long serialVersionUID = Attribute.UOCTET_SHORT_FORM;
+
     /**
      * Version for area.
      */
     public static final UOctet AREA_VERSION = new UOctet((short) 1);
-    private short value;
 
     /**
      * A constant holding the maximum value a {@code UOctet} can have,
      * 2<sup>8</sup>-1.
      */
     public static final short MAX_VALUE = 255;
+
+    private short value;
 
     /**
      * Default constructor.
@@ -70,14 +73,7 @@ public class UOctet implements Attribute {
      * @param value Value to initialise with.
      */
     public UOctet(final int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("UOctet argument must not be negative");
-        }
-        if (value > UOctet.MAX_VALUE) {
-            throw new IllegalArgumentException(
-                    "UOctet argument must not be greater than " + UOctet.MAX_VALUE);
-        }
-        this.value = (short) value;
+        this((short) value);
     }
 
     @Override
@@ -94,11 +90,6 @@ public class UOctet implements Attribute {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(short value)
-//  {
-//    this.value = value;
-//  }
     @Override
     public Long getShortForm() {
         return Attribute.UOCTET_SHORT_FORM;
@@ -157,6 +148,4 @@ public class UOctet implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-
-    private static final long serialVersionUID = Attribute.UOCTET_SHORT_FORM;
 }

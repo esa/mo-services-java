@@ -31,7 +31,8 @@ public abstract class StdStrings {
 
     public static final String ELEMENT = "Element";
     public static final String COMPOSITE = "Composite";
-    public static final String MOOBJECT = "MOObject";
+    public static final String MOOBJECT = "Object"; // This is the input type, not the mapped MAL type (MOObject)
+    public static final String MOOBJECT_MAPPED_TYPE_IN_JAVA = "MOObject"; // This is the MAL type (MOObject)
     public static final String ATTRIBUTE = "Attribute";
     public static final String ENUMERATION = "Enumeration";
     public static final String BLOB = "Blob";

@@ -20,13 +20,12 @@
  */
 package esa.mo.mal.transport.file;
 
-import esa.mo.mal.transport.gen.GENEndpoint;
+import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.GENTransport;
-import esa.mo.mal.transport.gen.receivers.GENIncomingStreamMessageDecoderFactory;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENMessagePoller;
+import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.receivers.IncomingStreamMessageDecoderFactory;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.MessagePoller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -46,11 +45,13 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
+import esa.mo.mal.transport.gen.sending.MessageSender;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * An implementation of the transport interface for a file based protocol.
  */
-public class FileTransport extends GENTransport <InputStream, InputStream> {
+public class FileTransport extends Transport <InputStream, InputStream> {
 
     /**
      * Logger
@@ -142,8 +143,8 @@ public class FileTransport extends GENTransport <InputStream, InputStream> {
             tc = new FileTransceiver(incomingDirectory, outgoingDirectory,
                     watcher, transportString, filenameString, deleteFiles);
 
-            asyncPollThread = new GENMessagePoller<InputStream, InputStream>(this, 
-                    tc, tc, new GENIncomingStreamMessageDecoderFactory());
+            asyncPollThread = new MessagePoller<InputStream, InputStream>(this, 
+                    tc, tc, new IncomingStreamMessageDecoderFactory());
         } catch (IOException ex) {
             ex.printStackTrace();
             throw new MALException("Error initialising TCP Server", ex);
@@ -169,9 +170,9 @@ public class FileTransport extends GENTransport <InputStream, InputStream> {
     }
 
     @Override
-    protected GENEndpoint internalCreateEndpoint(String localName,
-            String routingName, Map qosProperties) throws MALException {
-        return new GENEndpoint(this, localName, routingName, uriBase + localName, false);
+    protected Endpoint internalCreateEndpoint(String localName,
+            String routingName, Map qosProperties, NamedValueList supplements) throws MALException {
+        return new Endpoint(this, localName, routingName, uriBase + localName, false, supplements);
     }
 
     @Override
@@ -213,7 +214,7 @@ public class FileTransport extends GENTransport <InputStream, InputStream> {
     }
 
     @Override
-    protected GENMessageSender createMessageSender(GENMessage msg,
+    protected MessageSender createMessageSender(GENMessage msg,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         return tc;
     }
@@ -224,7 +225,7 @@ public class FileTransport extends GENTransport <InputStream, InputStream> {
     }
 
     @Override
-    protected GENOutgoingMessageHolder internalEncodeMessage(String destinationRootURI,
+    protected OutgoingMessageHolder internalEncodeMessage(String destinationRootURI,
             String destinationURI, Object multiSendHandle, boolean lastForHandle, 
             String targetURI, GENMessage msg) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");

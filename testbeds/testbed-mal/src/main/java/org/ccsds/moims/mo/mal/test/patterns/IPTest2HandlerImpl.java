@@ -39,17 +39,17 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malprototype.iptest2.provider.IPTest2InheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype.iptest2.provider.MonitorPublisher;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
 
 public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
 
@@ -77,7 +77,7 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
 
-        publisher.register(_TestPublishRegister.getKeyNames(), new PublisherListener());
+        publisher.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
     }
 
     public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
@@ -90,15 +90,13 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
                 _TestPublishUpdate.getQos(),
                 new Hashtable(),
                 _TestPublishUpdate.getPriority());
-        UpdateHeaderList updateHeaderList = _TestPublishUpdate.getUpdateHeaders();
-        TestUpdateList testUpdateList = _TestPublishUpdate.getUpdates();
+        UpdateHeader updateHeader = _TestPublishUpdate.getUpdateHeaders().get(0);
+        TestUpdate testUpdate = _TestPublishUpdate.getUpdates().get(0);
 
-        for (UpdateHeader updateHeader : updateHeaderList) {
-            updateHeader.setDomain(_TestPublishUpdate.getDomain());
-            updateHeader.setSource(new Identifier(""));
-        }
+        UpdateHeader publishHeader = new UpdateHeader(new Identifier(""),
+                _TestPublishUpdate.getDomain(), updateHeader.getKeyValues());
 
-        publisher.publish(updateHeaderList, testUpdateList);
+        publisher.publish(publishHeader, testUpdate);
     }
 
     public void testMultipleNotify(TestPublishUpdate _TestPublishRegister, MALInteraction interaction)
@@ -108,24 +106,28 @@ public class IPTest2HandlerImpl extends IPTest2InheritanceSkeleton {
 
     static class PublisherListener implements MALPublishInteractionListener {
 
+        @Override
         public void publishDeregisterAckReceived(MALMessageHeader arg0, Map arg1)
                 throws MALException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void publishErrorReceived(MALMessageHeader arg0, MALErrorBody arg1,
                 Map arg2) throws MALException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void publishRegisterAckReceived(MALMessageHeader arg0, Map arg1)
                 throws MALException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void publishRegisterErrorReceived(MALMessageHeader arg0,
                 MALErrorBody arg1, Map arg2) throws MALException {
             // TODO Auto-generated method stub

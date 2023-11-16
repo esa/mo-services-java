@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Blob implements Attribute {
 
+    private static final long serialVersionUID = Attribute.BLOB_SHORT_FORM;
     private static final int T_BUFFER_SIZE = 4096;
     private byte[] value;
     private int offset;
@@ -262,10 +263,10 @@ public class Blob implements Attribute {
 
     @Override
     public int hashCode() {
-        if (null != uvalue) {
+        if (uvalue != null) {
             return uvalue.hashCode();
         } else {
-            if (null != value) {
+            if (value != null) {
                 return value.length;
             }
         }
@@ -281,6 +282,4 @@ public class Blob implements Attribute {
             return "Blob(buffer based, length=" + value.length + ")";
         }
     }
-    
-    private static final long serialVersionUID = Attribute.BLOB_SHORT_FORM;
 }

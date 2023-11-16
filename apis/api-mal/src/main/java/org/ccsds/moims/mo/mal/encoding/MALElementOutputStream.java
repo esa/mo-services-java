@@ -21,6 +21,9 @@
 package org.ccsds.moims.mo.mal.encoding;
 
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The MALElementOutputStream interface is used to encode Elements.
@@ -28,14 +31,24 @@ import org.ccsds.moims.mo.mal.MALException;
 public interface MALElementOutputStream {
 
     /**
-     * The method encodes an Element.
+     * The method writes the header to the output stream.
+     *
+     * @param header The header to encode.
+     * @throws java.lang.IllegalArgumentException If there is something wrong
+     * with the provided header.
+     * @throws MALException If the MALElementOutputStream is closed
+     */
+    void writeHeader(MALMessageHeader header) throws IllegalArgumentException, MALException;
+
+    /**
+     * The method writes an element to the output stream.
      *
      * @param element Element to encode, may be null.
-     * @param ctx MALEncodingContext to be used in order to encode an Element
+     * @param field The field information to be used in order to encode an Element
      * @throws java.lang.IllegalArgumentException If the parameter ‘ctx’ is NULL
      * @throws MALException If the MALElementOutputStream is closed
      */
-    void writeElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException;
+    void writeElement(Element element, OperationField field) throws IllegalArgumentException, MALException;
 
     /**
      * Flushes the stream.

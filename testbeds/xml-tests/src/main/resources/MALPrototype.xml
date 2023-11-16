@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
-    <smc:area name="MALPrototype" number="100" version="1">
-        <smc:service name="IPTest" number="1">
+    <smc:area name="MALPrototype" number="100" version="1"
+              comment="The MALPrototype area defines data types, services and operations used to test the proper implementation of the MAL requirements.">
+        <smc:service name="IPTest" number="1"
+        			 comment="This service aims at testing each Interaction Pattern (IP). It provides one operation for Send, Submit, Request, Invoke and Progress. The input parameter is an IPTestDefinition that contains:
+
+- The parameters used by the consumer in order to initiate the interaction. These parameters enable the provider to check whether the received message header is correct or not.
+
+- A list of interaction transitions expected by the consumer.
+
+An operation 'getResult' is provided in order to enable the consumer to get:
+
+- the interaction transaction identifier
+
+- and the assertions evaluated on the provider side during an interaction.
+
+Finally four operations 'monitor', 'publishUpdates' and 'publishError' are provided in order to test the Pub/Sub interaction.">
             <smc:capabilitySet number="100">
                 <smc:sendIP name="send" number="100" supportInReplay="false"
                             comment="This operation cleans the assertions table and check that the header of the received message is the same as the one expected (see 4.1.1).">
                     <smc:messages>
                         <smc:send>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:send>
                     </smc:messages>
@@ -16,10 +30,10 @@
                 </smc:sendIP>
                 <smc:submitIP name="testSubmit" number="101"
                               supportInReplay="false"
-                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:submit>
                     </smc:messages>
@@ -31,10 +45,10 @@
                 </smc:submitIP>
                 <smc:requestIP name="request" number="102"
                                supportInReplay="false"
-                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:request>
                         <smc:response>
@@ -49,10 +63,10 @@
                 </smc:requestIP>
                 <smc:invokeIP name="invoke" number="103"
                               supportInReplay="false"
-                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
+                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:invoke>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:invoke>
                         <smc:acknowledgement>
@@ -70,10 +84,10 @@
                 </smc:invokeIP>
                 <smc:progressIP name="progress" number="104"
                                 supportInReplay="false"
-                                comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
+                                comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.1.1).">
                     <smc:messages>
                         <smc:progress>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:progress>
                         <smc:acknowledgement>
@@ -97,7 +111,7 @@
                               comment="This operation initiates a Pub/Sub interaction. It is not implemented by the service provider but by a broker.">
                     <smc:messages>
                         <smc:publishNotify>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestUpdate" />
                         </smc:publishNotify>
                     </smc:messages>
@@ -117,7 +131,7 @@
                             <smc:type area="MAL" name="Element" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestResult" />
                         </smc:response>
                     </smc:messages>
@@ -130,7 +144,7 @@
                               comment="This operation cleans the assertions table, publishes an update as specified by the parameter TestPublishUpdate and checks the header of the Publish message (see 4.1.3). Moreover if an error is expected by the TestPublishUpdate then the operation hangs until a Publish error is raised or a timer ends (see 4.1.10). The header of the Publish error message is checked (see 4.1.4).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishUpdate" />
                         </smc:submit>
                     </smc:messages>
@@ -141,7 +155,7 @@
                               comment="This operation cleans the assertions table, registers a publisher as specified by the parameter TestPublishRegister and checks the header of the Publish Register message (see 4.1.5). Moreover if no error is expected by the TestPublishRegister, it checks the header of the Publish Register acknowledgement message (see 4.1.6). Otherwise it checks the header of the Publish Register error message (see 4.1.7).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishRegister" />
                         </smc:submit>
                     </smc:messages>
@@ -152,7 +166,7 @@
                               comment="This operation cleans the assertions table, registers a publisher as specified by the parameter TestPublishDeregister and checks the header of the Publish Deregister message (see 4.1.5). Moreover if no error is expected by the TestPublishDeregister, it checks the header of the Publish Deregister acknowledgement message (see 4.1.8). Otherwise it checks the header of the Publish Deregister error message (see 4.1.9).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishDeregister" />
                         </smc:submit>
                     </smc:messages>
@@ -162,7 +176,7 @@
                               supportInReplay="false" comment="">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishUpdate" />
                         </smc:submit>
                     </smc:messages>
@@ -171,10 +185,10 @@
             </smc:capabilitySet>
             <smc:capabilitySet number="103">
                 <smc:sendIP name="sendMulti" number="113" supportInReplay="false"
-                            comment="This operation cleans the assertions table and check that the header of the received message is the same as the one expected (see 4.1.1).">
+                            comment="This operation duplicates the send operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:send>
-                            <smc:type area="MALPrototype" service="IPTest" name="IPTestDefinition" />
+                            <smc:type area="MALPrototype" name="IPTestDefinition" />
                             <smc:type area="MAL" name="Element" />
                         </smc:send>
                     </smc:messages>
@@ -182,10 +196,10 @@
                 </smc:sendIP>
                 <smc:submitIP name="submitMulti" number="114"
                               supportInReplay="false"
-                              comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                              comment="This operation duplicates the testSubmit operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest" name="IPTestDefinition" />
+                            <smc:type area="MALPrototype" name="IPTestDefinition" />
                             <smc:type area="MAL" name="Element" />
                         </smc:submit>
                     </smc:messages>
@@ -197,10 +211,10 @@
                 </smc:submitIP>
                 <smc:requestIP name="requestMulti" number="115"
                                supportInReplay="false"
-                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 3.1.2).">
+                               comment="This operation duplicates the request operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MALPrototype" service="IPTest" name="IPTestDefinition" />
+                            <smc:type area="MALPrototype" name="IPTestDefinition" />
                             <smc:type area="MAL" name="Element" />
                         </smc:request>
                         <smc:response>
@@ -219,7 +233,7 @@
                               comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
                     <smc:messages>
                         <smc:invoke>
-                            <smc:type area="MALPrototype" service="IPTest" name="IPTestDefinition" />
+                            <smc:type area="MALPrototype" name="IPTestDefinition" />
                             <smc:type area="MAL" name="Element" />
                         </smc:invoke>
                         <smc:acknowledgement>
@@ -239,10 +253,10 @@
                 </smc:invokeIP>
                 <smc:progressIP name="progressMulti" number="117"
                                 supportInReplay="false"
-                                comment="This operation cleans the assertions table and checks that the header of the received message is the same as the one expected (see 4.1.1). Moreover it triggers the transitions specified by the IPTestDefinition (see 4.1.2).">
+                                comment="This operation duplicates the progress operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:progress>
-                            <smc:type area="MALPrototype" service="IPTest" name="IPTestDefinition" />
+                            <smc:type area="MALPrototype" name="IPTestDefinition" />
                             <smc:type area="MAL" name="Element" />
                         </smc:progress>
                         <smc:acknowledgement>
@@ -266,10 +280,10 @@
                 </smc:progressIP>
                 <smc:pubsubIP name="monitorMulti" number="118"
                               supportInReplay="false"
-                              comment="This operation initiates a Pub/Sub interaction. It is not implemented by the service provider but by a broker.">
+                              comment="This operation duplicates the monitor operation with an additional IN parameter.">
                     <smc:messages>
                         <smc:publishNotify>
-                            <smc:type area="MALPrototype" service="IPTest" name="TestUpdate" />
+                            <smc:type area="MALPrototype" name="TestUpdate" />
                             <smc:type area="MAL" name="Element" />
                         </smc:publishNotify>
                     </smc:messages>
@@ -287,7 +301,7 @@
                                comment="This operation checks that an empty body can be sent and received explicitly for a request pattern">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:request>
                         <smc:response>
@@ -296,10 +310,10 @@
                 </smc:requestIP>
                 <smc:invokeIP name="testInvokeEmptyBody" number="121"
                               supportInReplay="false"
-                              comment="This operation checks that an empty body can be sent and received explicitly for a request pattern">
+                              comment="This operation checks that an empty body can be sent and received explicitly for an Invoke pattern">
                     <smc:messages>
                         <smc:invoke>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:invoke>
                         <smc:acknowledgement>
@@ -310,10 +324,10 @@
                 </smc:invokeIP>
                 <smc:progressIP name="testProgressEmptyBody" number="122"
                                 supportInReplay="false"
-                                comment="This operation checks that an empty body can be sent and received explicitly for a request pattern">
+                                comment="This operation checks that an empty body can be sent and received explicitly for a Progress pattern">
                     <smc:messages>
                         <smc:progress>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="IPTestDefinition" />
                         </smc:progress>
                         <smc:acknowledgement>
@@ -325,298 +339,12 @@
                     </smc:messages>
                 </smc:progressIP>
             </smc:capabilitySet>
-            <smc:dataTypes>
-                <smc:enumeration name="IPTestTransitionType"
-                                 shortFormPart="1" comment="">
-                    <smc:item value="ACK" nvalue="1" comment="" />
-                    <smc:item value="RESPONSE" nvalue="2" comment="" />
-                    <smc:item value="ACK_ERROR" nvalue="3" comment="" />
-                    <smc:item value="RESPONSE_ERROR" nvalue="4"
-                              comment="" />
-                    <smc:item value="UPDATE" nvalue="5" comment="" />
-                    <smc:item value="UPDATE_ERROR" nvalue="6" comment="" />
-                </smc:enumeration>
-                <smc:composite name="IPTestDefinition" shortFormPart="2"
-                               comment="This abstract structure is inherited by all the IP test definition structures.">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="procedureName" comment="Name of the test procedure">
-                        <smc:type area="MAL" name="String" />
-                    </smc:field>
-                    <smc:field name="consumerURI" comment="The consumer's URI">
-                        <smc:type area="MAL" name="URI" />
-                    </smc:field>
-                    <smc:field name="authenticationId"
-                               comment="The authentication identifier used by the consumer">
-                        <smc:type area="MAL" name="Blob" />
-                    </smc:field>
-                    <smc:field name="Qos"
-                               comment="The QoS level required by the consumer">
-                        <smc:type area="MAL" name="QoSLevel" />
-                    </smc:field>
-                    <smc:field name="Priority"
-                               comment="The priority level required by the consumer">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                    <smc:field name="Domain" comment="The domain used by the consumer">
-                        <smc:type list="true" area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="networkZone"
-                               comment="The network zone used by the consumer">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="Session"
-                               comment="The type of the session used by the consumer">
-                        <smc:type area="MAL" name="SessionType" />
-                    </smc:field>
-                    <smc:field name="sessionName"
-                               comment="The identifier of the session used by the consumer">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="transitions"
-                               comment="The transitions that are requested by the consumer">
-                        <smc:type list="true" area="MALPrototype" service="IPTest"
-                                  name="IPTestTransition" />
-                    </smc:field>
-                    <smc:field name="timestamp"
-                               comment="The time the consumer initiated the interaction.">
-                        <smc:type area="MAL" name="Time" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="IPTestTransition" shortFormPart="3"
-                               comment="This structure is used to define an expected transition from an IP test. It asserts what transition is expected and what result is expected from the transition: successful or failure.">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="Type" comment="The type of the transition to do">
-                        <smc:type area="MALPrototype" service="IPTest"
-                                  name="IPTestTransitionType" />
-                    </smc:field>
-                    <smc:field name="errorCode"
-                               comment="The code of the error expected to be raised when doing the transition (failed transition).-1 if no error is expected (successful transition).">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="BadHeaderReport" shortFormPart="4"
-                               comment="This data structure is an error report produced after having found a faulty header.">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="expectedHeader" comment="The expected header">
-                        <smc:type area="MALPrototype" service="IPTest"
-                                  name="MessageHeader" />
-                    </smc:field>
-                    <smc:field name="faultyHeader"
-                               comment="The header that is not compliant with the MAL rules">
-                        <smc:type area="MALPrototype" service="IPTest"
-                                  name="MessageHeader" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="TestPublish"
-                               comment="This abstract structure is a publish context.">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="Qos"
-                               comment="The QoS level to be used by the provider.">
-                        <smc:type area="MAL" name="QoSLevel" />
-                    </smc:field>
-                    <smc:field name="Priority"
-                               comment="The priority to be used by the provider.">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                    <smc:field name="domain"
-                               comment="The domain to be used by the provider.">
-                        <smc:type list="true" area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="networkZone"
-                               comment="The network zone to be used by the provider.">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="Session"
-                               comment="The session type to be used by the provider.">
-                        <smc:type area="MAL" name="SessionType" />
-                    </smc:field>
-                    <smc:field name="sessionName"
-                               comment="The session name to be used by the provider.">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="testMultiType"
-                               comment="Whether to use the multi type version of the PubSub operation.">
-                        <smc:type area="MAL" name="Boolean" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="TestPublishRegister"
-                               shortFormPart="5"
-                               comment="This data structure specifies how the IPTest provider shall register.">
-                    <smc:extends>
-                        <smc:type area="MALPrototype" service="IPTest"
-                                  name="TestPublish" />
-                    </smc:extends>
-                    <smc:field name="keyNames"
-                               comment="The name of the keys to be used by the broker.">
-                        <smc:type area="MAL" name="IdentifierList" />
-                    </smc:field>            
-                    <smc:field name="errorCode"
-                               comment="The code of the Publish Register error expected to be received.-1 if no Publish Register error is expected.">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="TestPublishDeregister"
-                               shortFormPart="6"
-                               comment="This data structure specifies how the IPTest provider shall register.">
-                    <smc:extends>
-                        <smc:type area="MALPrototype" service="IPTest"
-                                  name="TestPublish" />
-                    </smc:extends>
-                    <smc:field name="errorCode"
-                               comment="The code of the Publish Deregister error expected to be received.-1 if no Publish Deregister error is expected.">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="TestPublishUpdate" shortFormPart="7"
-                               comment="This data structure specifies how the IPTest provider shall publish an update.">
-                    <smc:extends>
-                        <smc:type area="MALPrototype" service="IPTest"
-                                  name="TestPublish" />
-                    </smc:extends>
-                    <smc:field name="updateHeaders"
-                               comment="The headers of the updates to be published by the provider">
-                        <smc:type list="true" area="MAL"
-                                  name="UpdateHeader" />
-                    </smc:field>
-                    <smc:field name="updates"
-                               comment="The updates to be published by the provider">
-                        <smc:type list="true" area="MALPrototype" service="IPTest"
-                                  name="TestUpdate" />
-                    </smc:field>
-                    <smc:field name="keyValues"
-                               comment="The list of key values">
-                        <smc:type area="MAL" name="AttributeList" />
-                    </smc:field>            
-                    <smc:field name="errorCode"
-                               comment="The code of the Publish error expected to be received.-1 if no Publish error is expected.">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                    <smc:field name="isException"
-                               comment="Indicates whether the error is returned as an Exception or a Publish Error message">
-                        <smc:type area="MAL" name="Boolean" />
-                    </smc:field>
-                    <smc:field name="failedKeyValues"
-                               comment="The list of failed keys values.">
-                        <smc:type area="MAL" name="AttributeList" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="TestUpdate" shortFormPart="8"
-                               comment="This data structure defines an Update published by the IPTest.">
-                    <smc:field name="Counter"
-                               comment="A counter used to distinguish the test updates and to check the ordering.">
-                        <smc:type area="MAL" name="Integer" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="InteractionKey" shortFormPart="9"
-                               comment="">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="URIfrom" comment="The consumer's URI">
-                        <smc:type area="MAL" name="URI" />
-                    </smc:field>
-                    <smc:field name="transactionId"
-                               comment="The transaction identifier of the interaction">
-                        <smc:type area="MAL" name="Integer" />
-                    </smc:field>
-                    <smc:field name="interactionType" comment="The type of the interaction">
-                        <smc:type area="MAL" name="InteractionType" />
-                    </smc:field>
-                    <smc:field name="Service" comment="The name of the called service">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="operation" comment="The name of the called operation">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="IPTestResult" shortFormPart="10"
-                               comment="">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="transactionId"
-                               comment="The transaction identifier assigned to the last interaction">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="assertions"
-                               comment="The list of assertions checked by the provider.">
-                        <smc:type list="true" area="MALPrototype" name="Assertion" />
-                    </smc:field>
-                </smc:composite>
-                <smc:composite name="MessageHeader" shortFormPart="11"
-                               comment="The MessageHeader structure is used to hold all fields that are passed for each message exchanged between a consumer and provider. See 4.1 for more information.">
-                    <smc:extends>
-                        <smc:type area="MAL" name="Composite" />
-                    </smc:extends>
-                    <smc:field name="URIfrom" comment="Message Source URI">
-                        <smc:type area="MAL" name="URI" />
-                    </smc:field>
-                    <smc:field name="authenticationId" comment="Source Authentication Credentials">
-                        <smc:type area="MAL" name="Blob" />
-                    </smc:field>
-                    <smc:field name="URIto" comment="Message Destination URI">
-                        <smc:type area="MAL" name="URI" />
-                    </smc:field>
-                    <smc:field name="timestamp" comment="Message generation timestamp">
-                        <smc:type area="MAL" name="Time" />
-                    </smc:field>
-                    <smc:field name="QoSlevel" comment="The QoS level of the message">
-                        <smc:type area="MAL" name="QoSLevel" />
-                    </smc:field>
-                    <smc:field name="priority" comment="The QoS priority of the message">
-                        <smc:type area="MAL" name="UInteger" />
-                    </smc:field>
-                    <smc:field name="domain" comment="Domain of the message">
-                        <smc:type list="true" area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="networkZone" comment="Network zone of the message">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="session" comment="Type of session of the message">
-                        <smc:type area="MAL" name="SessionType" />
-                    </smc:field>
-                    <smc:field name="sessionName"
-                               comment="Name of the session of the message. Shall be ‘LIVE’ if session type is LIVE.">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="interactionType" comment="Interaction Pattern Type">
-                        <smc:type area="MAL" name="InteractionType" />
-                    </smc:field>
-                    <smc:field name="interactionStage" comment="Interaction Pattern Stage">
-                        <smc:type area="MAL" name="UOctet" />
-                    </smc:field>
-                    <smc:field name="transactionId" comment="Unique to consumer">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="area" comment="Service Area Identifier">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="service" comment="Service Identifier">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="operation" comment="Service Operation Identifier">
-                        <smc:type area="MAL" name="Identifier" />
-                    </smc:field>
-                    <smc:field name="version" comment="Service version">
-                        <smc:type area="MAL" name="UOctet" />
-                    </smc:field>
-                    <smc:field name="isError"
-                               comment="True if this is an error message else False.">
-                        <smc:type area="MAL" name="Boolean" />
-                    </smc:field>
-                </smc:composite>
-            </smc:dataTypes>
 
         </smc:service>
-        <smc:service name="DataTest" number="2">
+        <smc:service name="DataTest" number="2"
+                     comment="This service aims at testing the data structures.
+                     
+It provides an operation 'testData' that enables to transmit any Element to the provider and check that it is well interpreted by the provider.">
             <smc:capabilitySet number="100">
                 <smc:submitIP name="setTestDataOffset" number="99"
                               supportInReplay="false"
@@ -629,7 +357,7 @@
                 </smc:submitIP>
                 <smc:requestIP name="testData" number="100"
                                supportInReplay="false"
-                               comment="The 'testData' operation allows a consumer to check that a data is correctly decoded on the provider side. The provider needs to statically know the list of data that the consumer is going to send. The consumer selects the data in the same order as the list and calls the operation 'testData'. The provider keeps the index of the currently selected data from the static list. When the operation 'testData' is called, the provider checks that the received data is equal to the selected data from the list. If the equality test fails, then the error DATA_ERROR is raised otherwise the provider returns the sent data.">
+                               comment="The 'testData' operation allows a consumer to check that a data is correctly decoded on the provider side, then that the same data sent back by the provider is correctly decoded on the consumer side. The provider needs to statically know the list of data that the consumer is going to send. The consumer selects the data in the same order as the list and calls the operation 'testData'. The provider keeps the index of the currently selected data from the static list. When the operation 'testData' is called, the provider checks that the received data is equal to the selected data from the list. If the equality test fails, then the error DATA_ERROR is raised, otherwise the provider returns the decoded data. When the consumer receives the returned data, it checks that this data is equal to the original data it sent.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Element" />
@@ -640,7 +368,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -658,7 +386,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -676,7 +404,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -694,7 +422,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -712,7 +440,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -730,7 +458,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -748,7 +476,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -766,7 +494,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -784,7 +512,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -802,7 +530,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -820,7 +548,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -838,7 +566,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -856,7 +584,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -874,7 +602,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -892,7 +620,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -910,7 +638,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -928,7 +656,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -946,7 +674,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -964,7 +692,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -982,7 +710,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1000,7 +728,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1018,7 +746,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1028,21 +756,37 @@
                                comment="This operation checks that multiple types can be sent and received explicitly">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="UOctet" />
-                            <smc:type area="MAL" name="UShort" />
-                            <smc:type area="MAL" name="UInteger" />
-                            <smc:type area="MAL" name="ULong" />
+                            <smc:field name = "in1" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UOctet" />
+                           	</smc:field>
+                            <smc:field name = "in2" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UShort" />
+                           	</smc:field>
+                            <smc:field name = "in3" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UInteger" />
+                           	</smc:field>
+                            <smc:field name = "in4" canBeNull ="true" comment = "">
+                            	<smc:type area="MAL" name="ULong" />
+                           	</smc:field>
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="UOctet" />
-                            <smc:type area="MAL" name="UShort" />
-                            <smc:type area="MAL" name="UInteger" />
-                            <smc:type area="MAL" name="ULong" />
+                            <smc:field name = "out1" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UOctet" />
+                           	</smc:field>
+                            <smc:field name = "out2" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UShort" />
+                           	</smc:field>
+                            <smc:field name = "out3" canBeNull ="false" comment = "">
+                            	<smc:type area="MAL" name="UInteger" />
+                           	</smc:field>
+                            <smc:field name = "out4" canBeNull ="true" comment = "">
+                            	<smc:type area="MAL" name="ULong" />
+                           	</smc:field>
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1066,7 +810,7 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1082,14 +826,14 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testMalAttribute" number="125"
                                supportInReplay="false"
-                               comment="This operation checks that a MAL::Attribute can be sent and received explicitly">
+                               comment="This operation checks that a MAL::Attribute can be sent and received as an abstract Attribute">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Attribute" />
@@ -1100,14 +844,14 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testMalComposite" number="126"
                                supportInReplay="false"
-                               comment="This operation checks that a MAL::Composite can be sent and received explicitly">
+                               comment="This operation checks that a Composite can be sent and received as a MAL Composite. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type area="MAL" name="Composite" />
@@ -1118,32 +862,32 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testAbstractComposite" number="127"
                                supportInReplay="false"
-                               comment="This operation checks that an abstract Composite can be sent and received explicitly">
+                               comment="This operation checks that a Composite can be sent and received as an abstract Composite. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MALPrototype" service="IPTest" name="TestPublish" />
+                            <smc:type area="MALPrototype" name="TestPublish" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MALPrototype" service="IPTest" name="TestPublish" />
+                            <smc:type area="MALPrototype" name="TestPublish" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testMalAttributeList" number="128"
                                supportInReplay="false"
-                               comment="This operation checks that a list of MAL::Attribute can be sent and received explicitly">
+                               comment="This operation checks that a list of MAL::Attribute can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MAL" name="Attribute" />
@@ -1154,14 +898,14 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testMalElementList" number="129"
                                supportInReplay="false"
-                               comment="This operation checks that a list of MAL::Element can be sent and received explicitly">
+                               comment="This operation checks that a list of MAL::Element can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MAL" name="Element" />
@@ -1172,14 +916,14 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testMalCompositeList" number="130"
                                supportInReplay="false"
-                               comment="This operation checks that a list of MAL::Composite can be sent and received explicitly">
+                               comment="This operation checks that a list of MAL::Composite can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
                             <smc:type list="true" area="MAL" name="Composite" />
@@ -1190,25 +934,25 @@
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
                 <smc:requestIP name="testAbstractCompositeList" number="131"
                                supportInReplay="false"
-                               comment="This operation checks that a list of abstract composite can be sent and received explicitly">
+                               comment="This operation checks that a list of abstract composite can be sent and received explicitly. It is no longer used in the testbed.">
                     <smc:messages>
                         <smc:request>
-                            <smc:type list="true" area="MALPrototype" service="IPTest" name="TestPublish" />
+                            <smc:type list="true" area="MALPrototype" name="TestPublish" />
                         </smc:request>
                         <smc:response>
-                            <smc:type list="true" area="MALPrototype" service="IPTest" name="TestPublish" />
+                            <smc:type list="true" area="MALPrototype" name="TestPublish" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
@@ -1218,26 +962,209 @@
                                comment="This operation checks that a basic ObjectRef type can be sent and received explicitly">
                     <smc:messages>
                         <smc:request>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
                         </smc:request>
                         <smc:response>
-                            <smc:type area="MAL" name="ObjectRef&lt;Identifier&gt;" />
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
                         </smc:response>
                     </smc:messages>
                     <smc:errors>
                         <smc:errorRef comment="Data interoperability error">
-                            <smc:type area="MALPrototype" service="DataTest"
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testInnerAbstractMultiReturn" number="133"
+                               supportInReplay="false"
+                               comment="This operation checks that multiple types with a not final abstract type can be sent and received explicitly">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MAL" name="UOctet" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="UInteger" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MAL" name="UOctet" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="Element" />
+                            <smc:type area="MAL" name="UInteger" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testPolymorphicAbstractCompositeList" number="134"
+                               supportInReplay="false"
+                               comment="This operation checks that various concrete values can be sent and received explicitly as a list of abstract composite">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type list="true" area="MALPrototype" name="AbstractComposite" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type list="true" area="MALPrototype" name="AbstractComposite" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testPolymorphicMalCompositeList" number="135"
+                               supportInReplay="false"
+                               comment="This operation checks that various concrete values can be sent and received explicitly as a list of MAL Composite">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type list="true" area="MAL" name="Composite" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type list="true" area="MAL" name="Composite" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testPolymorphicMalElementList" number="136"
+                               supportInReplay="false"
+                               comment="This operation checks that various concrete values can be sent and received explicitly as a list of MAL Element">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type list="true" area="MAL" name="Element" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type list="true" area="MAL" name="Element" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="testPolymorphicObjectRefTypes" number="137"
+                               supportInReplay="false"
+                               comment="This operation checks the ObjectRef(T) polymorphism in operation type signature and in composite fields">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:field name="garage" comment="">
+                                <smc:type area="MALPrototype" name="Garage" />
+                            </smc:field>
+                            <smc:field name="porsches" comment="">
+                                <smc:type list="true" area="MALPrototype" name="ObjectRef(Porsche)" />
+                            </smc:field>
+                            <smc:field name="autos" comment="">
+                                <smc:type list="true" area="MALPrototype" name="ObjectRef(Auto)" />
+                            </smc:field>
+                            <smc:field name="elements" comment="">
+                                <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
+                            </smc:field>
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MALPrototype" name="Garage" />
+                            <smc:type list="true" area="MALPrototype" name="ObjectRef(Porsche)" />
+                            <smc:type list="true" area="MALPrototype" name="ObjectRef(Auto)" />
+                            <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
                                       name="DATA_ERROR" />
                         </smc:errorRef>
                     </smc:errors>
                 </smc:requestIP>
             </smc:capabilitySet>
-            <smc:errors>
-                <smc:error name="DATA_ERROR" number="70001"
-                           comment="Data interoperability error" />
-            </smc:errors>
+            <smc:capabilitySet number="200">
+                <smc:requestIP name="createObject" number="201"
+                               supportInReplay="false"
+                               comment="This operation creates a new MO Object from a full value">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MALPrototype" name="Auto" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="TEST_OBJECT_EXISTS" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:requestIP name="createObjectFromFields" number="202"
+                               supportInReplay="false"
+                               comment="This operation creates a new MO Object from fields values">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MAL" name="Long" comment="autoType" />
+                            <smc:type area="MAL" name="Identifier" comment="key" />
+                            <smc:type area="MAL" name="Boolean" comment="update" />
+                            <smc:type area="MAL" name="String" comment="engine" />
+                            <smc:type area="MAL" name="String" comment="chassis" />
+                            <smc:type list="true" area="MAL" name="String" comment="windows" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="TEST_OBJECT_EXISTS" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+                <smc:submitIP name="deleteObject" number="203"
+                              supportInReplay="false"
+                              comment="This operation deletes an MO Object">
+                    <smc:messages>
+                        <smc:submit>
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                        </smc:submit>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:submitIP>
+                <smc:requestIP name="getObject" number="204"
+                               supportInReplay="false"
+                               comment="This operation gets an MO Object value from its reference">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MALPrototype" name="Auto" />
+                        </smc:response>
+                    </smc:messages>
+                    <smc:errors>
+                        <smc:errorRef comment="Data interoperability error">
+                            <smc:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </smc:errorRef>
+                    </smc:errors>
+                </smc:requestIP>
+            </smc:capabilitySet>
         </smc:service>
-        <smc:service name="ErrorTest" number="3">
+        <smc:service name="ErrorTest" number="3"
+                     comment="This service aims at testing the MAL errors. It doesn't need to be implemented as it is only used on the consumer side to make the transport layer raise errors (see section 3.3).">
             <smc:capabilitySet number="100">
                 <smc:requestIP name="testDeliveryFailed" number="100"
                                supportInReplay="false"
@@ -1356,7 +1283,7 @@
                     </smc:messages>
 
                 </smc:requestIP>
-                <smc:requestIP name="testUnsupportedVersion"
+                <smc:requestIP name="testUnsupportedAreaVersion"
                                number="109" supportInReplay="false"
                                comment="This operation does nothing. Actually the error is raised by the transport layer before the provider is invoked.">
                     <smc:messages>
@@ -1421,6 +1348,19 @@
                     </smc:messages>
 
                 </smc:requestIP>
+                <smc:requestIP name="testUnsupportedService"
+                               number="114" supportInReplay="false"
+                               comment="This operation does nothing. Actually the error is raised by the transport layer before the provider is invoked.">
+                    <smc:messages>
+                        <smc:request>
+                            <smc:type area="MAL" name="Element" />
+                        </smc:request>
+                        <smc:response>
+                            <smc:type area="MAL" name="Element" />
+                        </smc:response>
+                    </smc:messages>
+
+                </smc:requestIP>
             </smc:capabilitySet>
 
         </smc:service>
@@ -1431,7 +1371,7 @@
                               comment="This operation initiates a Pub/Sub interaction. It is not implemented by the service provider but by a broker.">
                     <smc:messages>
                         <smc:publishNotify>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestUpdate" />
                         </smc:publishNotify>
                     </smc:messages>
@@ -1449,7 +1389,7 @@
                               comment="This operation cleans the assertions table, publishes an update as specified by the parameter TestPublishUpdate and checks the header of the Publish message (see 4.1.3). Moreover if an error is expected by the TestPublishUpdate then the operation hangs until a Publish error is raised or a timer ends (see 4.1.10). The header of the Publish error message is checked (see 4.1.4).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishUpdate" />
                         </smc:submit>
                     </smc:messages>
@@ -1460,7 +1400,7 @@
                               comment="This operation cleans the assertions table, registers a publisher as specified by the parameter TestPublishRegister and checks the header of the Publish Register message (see 4.1.5). Moreover if no error is expected by the TestPublishRegister, it checks the header of the Publish Register acknowledgement message (see 4.1.6). Otherwise it checks the header of the Publish Register error message (see 4.1.7).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishRegister" />
                         </smc:submit>
                     </smc:messages>
@@ -1471,7 +1411,7 @@
                               comment="This operation cleans the assertions table, registers a publisher as specified by the parameter TestPublishDeregister and checks the header of the Publish Deregister message (see 4.1.5). Moreover if no error is expected by the TestPublishDeregister, it checks the header of the Publish Deregister acknowledgement message (see 4.1.8). Otherwise it checks the header of the Publish Deregister error message (see 4.1.9).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishDeregister" />
                         </smc:submit>
                     </smc:messages>
@@ -1481,7 +1421,7 @@
                               supportInReplay="false" comment="">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishUpdate" />
                         </smc:submit>
                     </smc:messages>
@@ -1510,7 +1450,7 @@
             </smc:composite>
             <smc:composite name="MyFirstObject" shortFormPart="2" comment="">
                 <smc:extends>
-                    <smc:type area="MAL" name="MOObject" />
+                    <smc:type area="MAL" name="Object" />
                 </smc:extends>
                 <smc:field name="procedureName" comment="Name of the test procedure that evaluated the assertion.">
                     <smc:type area="MAL" name="String" />
@@ -1522,7 +1462,371 @@
                     <smc:type area="MAL" name="Boolean" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="TestBody" shortFormPart="123" comment="An abstract composite example.">
+            <smc:enumeration name="IPTestTransitionType"
+                             shortFormPart="3" comment="">
+                <smc:item value="ACK" nvalue="1" comment="" />
+                <smc:item value="RESPONSE" nvalue="2" comment="" />
+                <smc:item value="ACK_ERROR" nvalue="3" comment="" />
+                <smc:item value="RESPONSE_ERROR" nvalue="4"
+                          comment="" />
+                <smc:item value="UPDATE" nvalue="5" comment="" />
+                <smc:item value="UPDATE_ERROR" nvalue="6" comment="" />
+            </smc:enumeration>
+            <smc:composite name="IPTestDefinition" shortFormPart="4"
+                           comment="This abstract structure is inherited by all the IP test definition structures.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="procedureName" comment="Name of the test procedure">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="consumerURI" comment="The consumer's URI">
+                    <smc:type area="MAL" name="URI" />
+                </smc:field>
+                <smc:field name="authenticationId"
+                           comment="The authentication identifier used by the consumer">
+                    <smc:type area="MAL" name="Blob" />
+                </smc:field>
+                <smc:field name="Qos"
+                           comment="The QoS level required by the consumer">
+                    <smc:type area="MAL" name="QoSLevel" />
+                </smc:field>
+                <smc:field name="Priority"
+                           comment="The priority level required by the consumer">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+                <smc:field name="Domain" comment="The domain used by the consumer">
+                    <smc:type list="true" area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="networkZone"
+                           comment="The network zone used by the consumer">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="Session"
+                           comment="The type of the session used by the consumer">
+                    <smc:type area="MAL" name="SessionType" />
+                </smc:field>
+                <smc:field name="sessionName"
+                           comment="The identifier of the session used by the consumer">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="supplements"
+                           comment="The supplements field used by the consumer">
+                    <smc:type list="true" area="MAL" name="NamedValue" />
+                </smc:field>
+                <smc:field name="transitions"
+                           comment="The transitions that are requested by the consumer">
+                    <smc:type list="true" area="MALPrototype"
+                              name="IPTestTransition" />
+                </smc:field>
+                <smc:field name="timestamp"
+                           comment="The time the consumer initiated the interaction.">
+                    <smc:type area="MAL" name="Time" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="IPTestTransition" shortFormPart="5"
+                           comment="This structure is used to define an expected transition from an IP test. It asserts what transition is expected and what result is expected from the transition: successful or failure.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="Type" comment="The type of the transition to do">
+                    <smc:type area="MALPrototype"
+                              name="IPTestTransitionType" />
+                </smc:field>
+                <smc:field name="errorCode"
+                           comment="The code of the error expected to be raised when doing the transition (failed transition).-1 if no error is expected (successful transition).">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="BadHeaderReport" shortFormPart="6"
+                           comment="This data structure is an error report produced after having found a faulty header.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="expectedHeader" comment="The expected header">
+                    <smc:type area="MALPrototype"
+                              name="MessageHeader" />
+                </smc:field>
+                <smc:field name="faultyHeader"
+                           comment="The header that is not compliant with the MAL rules">
+                    <smc:type area="MALPrototype"
+                              name="MessageHeader" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestPublish"
+                           comment="This abstract structure is a publish context.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="Qos"
+                           comment="The QoS level to be used by the provider.">
+                    <smc:type area="MAL" name="QoSLevel" />
+                </smc:field>
+                <smc:field name="Priority"
+                           comment="The priority to be used by the provider.">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+                <smc:field name="domain"
+                           comment="The domain to be used by the provider.">
+                    <smc:type list="true" area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="networkZone"
+                           comment="The network zone to be used by the provider.">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="Session"
+                           comment="The session type to be used by the provider.">
+                    <smc:type area="MAL" name="SessionType" />
+                </smc:field>
+                <smc:field name="sessionName"
+                           comment="The session name to be used by the provider.">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="testMultiType"
+                           comment="Whether to use the multi type version of the PubSub operation.">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestPublishRegister"
+                           shortFormPart="7"
+                           comment="This data structure specifies how the IPTest provider shall register.">
+                <smc:extends>
+                    <smc:type area="MALPrototype"
+                              name="TestPublish" />
+                </smc:extends>
+                <smc:field name="keyNames"
+                           comment="The names of the keys to be used by the broker.">
+                    <smc:type area="MAL" name="IdentifierList" />
+                </smc:field>
+                <smc:field name="keyTypes"
+                           comment="The types of the keys to be used by the broker.">
+                    <smc:type area="MAL" name="AttributeTypeList" />
+                </smc:field>
+                <smc:field name="errorCode"
+                           comment="The code of the Publish Register error expected to be received.-1 if no Publish Register error is expected.">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestPublishDeregister"
+                           shortFormPart="8"
+                           comment="This data structure specifies how the IPTest provider shall register.">
+                <smc:extends>
+                    <smc:type area="MALPrototype"
+                              name="TestPublish" />
+                </smc:extends>
+                <smc:field name="errorCode"
+                           comment="The code of the Publish Deregister error expected to be received.-1 if no Publish Deregister error is expected.">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestPublishUpdate" shortFormPart="9"
+                           comment="This data structure specifies how the IPTest provider shall publish an update.">
+                <smc:extends>
+                    <smc:type area="MALPrototype"
+                              name="TestPublish" />
+                </smc:extends>
+                <smc:field name="updateHeaders"
+                           comment="The headers of the updates to be published by the provider">
+                    <smc:type list="true" area="MAL"
+                              name="UpdateHeader" />
+                </smc:field>
+                <smc:field name="updates"
+                           comment="The updates to be published by the provider">
+                    <smc:type list="true" area="MALPrototype"
+                              name="TestUpdate" />
+                </smc:field>
+                <smc:field name="keyValues"
+                           comment="The list of key values">
+                    <smc:type area="MAL" name="NullableAttributeList" />
+                </smc:field>
+                <smc:field name="errorCode"
+                           comment="The code of the Publish error expected to be received.-1 if no Publish error is expected.">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+                <smc:field name="isException"
+                           comment="Indicates whether the error is returned as an Exception or a Publish Error message">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+                <smc:field name="failedKeyValues"
+                           comment="The list of failed keys values.">
+                    <smc:type area="MAL" name="NullableAttributeList" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestUpdate" shortFormPart="10"
+                           comment="This data structure defines an Update published by the IPTest.">
+                <smc:field name="Counter"
+                           comment="A counter used to distinguish the test updates and to check the ordering.">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="InteractionKey" shortFormPart="11"
+                           comment="">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="URIfrom" comment="The consumer's URI">
+                    <smc:type area="MAL" name="URI" />
+                </smc:field>
+                <smc:field name="transactionId"
+                           comment="The transaction identifier of the interaction">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+                <smc:field name="interactionType" comment="The type of the interaction">
+                    <smc:type area="MAL" name="InteractionType" />
+                </smc:field>
+                <smc:field name="Service" comment="The name of the called service">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="operation" comment="The name of the called operation">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="IPTestResult" shortFormPart="12"
+                           comment="">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="transactionId"
+                           comment="The transaction identifier assigned to the last interaction">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="assertions"
+                           comment="The list of assertions checked by the provider.">
+                    <smc:type list="true" area="MALPrototype" name="Assertion" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="MessageHeader" shortFormPart="13"
+                           comment="The MessageHeader structure is used to hold all fields that are passed for each message exchanged between a consumer and provider. See 4.1 for more information.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Composite" />
+                </smc:extends>
+                <smc:field name="URIfrom" comment="Message Source URI">
+                    <smc:type area="MAL" name="URI" />
+                </smc:field>
+                <smc:field name="authenticationId" comment="Source Authentication Credentials">
+                    <smc:type area="MAL" name="Blob" />
+                </smc:field>
+                <smc:field name="URIto" comment="Message Destination URI">
+                    <smc:type area="MAL" name="URI" />
+                </smc:field>
+                <smc:field name="timestamp" comment="Message generation timestamp">
+                    <smc:type area="MAL" name="Time" />
+                </smc:field>
+                <smc:field name="QoSlevel" comment="The QoS level of the message">
+                    <smc:type area="MAL" name="QoSLevel" />
+                </smc:field>
+                <smc:field name="priority" comment="The QoS priority of the message">
+                    <smc:type area="MAL" name="UInteger" />
+                </smc:field>
+                <smc:field name="domain" comment="Domain of the message">
+                    <smc:type list="true" area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="networkZone" comment="Network zone of the message">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="session" comment="Type of session of the message">
+                    <smc:type area="MAL" name="SessionType" />
+                </smc:field>
+                <smc:field name="sessionName"
+                           comment="Name of the session of the message. Shall be ‘LIVE’ if session type is LIVE.">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="interactionType" comment="Interaction Pattern Type">
+                    <smc:type area="MAL" name="InteractionType" />
+                </smc:field>
+                <smc:field name="interactionStage" comment="Interaction Pattern Stage">
+                    <smc:type area="MAL" name="UOctet" />
+                </smc:field>
+                <smc:field name="transactionId" comment="Unique to consumer">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="area" comment="Service Area Identifier">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="service" comment="Service Identifier">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="operation" comment="Service Operation Identifier">
+                    <smc:type area="MAL" name="Identifier" />
+                </smc:field>
+                <smc:field name="version" comment="Service version">
+                    <smc:type area="MAL" name="UOctet" />
+                </smc:field>
+                <smc:field name="isError"
+                           comment="True if this is an error message else False.">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="Auto" comment="An abstract object type for cars. This type and all derived types are notably used in the Polymorphic types test procedure related to ObjectRef.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Object" />
+                </smc:extends>
+                <smc:field name="engine" comment="The engine of the car.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="chassis" comment="The chassis of the car.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="windows" comment="The windows of the car.">
+                    <smc:type list="true" area="MAL" name="String" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="Lamborghini" shortFormPart="120" comment="The object representing a Lamborghini car.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="Auto" />
+                </smc:extends>
+            </smc:composite>
+            <smc:composite name="Porsche" shortFormPart="121" comment="The object representing a Porsche car.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="Auto" />
+                </smc:extends>
+            </smc:composite>
+            <smc:composite name="Garage" shortFormPart="122" comment="The object representing a Garage with multiple references and lists of references to cars.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Object" />
+                </smc:extends>
+                <smc:field name="courtesyCarAsPorsche" comment="The Porsche courtesy car offered by the garage.">
+                    <smc:type area="MALPrototype" name="ObjectRef(Porsche)" />
+                </smc:field>
+                <smc:field name="courtesyCarAsAuto" comment="The courtesy car offered by the garage.">
+                    <smc:type area="MALPrototype" name="ObjectRef(Auto)" />
+                </smc:field>
+                <smc:field name="courtesyCarAsObject" comment="The courtesy car offered by the garage.">
+                    <smc:type area="MAL" name="ObjectRef(Element)" />
+                </smc:field>
+                <smc:field name="carsAsPorsches" comment="The list of Porsche cars parked in the garage.">
+                    <smc:type list="true" area="MALPrototype" name="ObjectRef(Porsche)" />
+                </smc:field>
+                <smc:field name="carsAsAutos" comment="The list of cars parked in the garage.">
+                    <smc:type list="true" area="MALPrototype" name="ObjectRef(Auto)" />
+                </smc:field>
+                <smc:field name="carsAsObjects" comment="The list of cars parked in the garage.">
+                    <smc:type list="true" area="MAL" name="ObjectRef(Element)" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestObjectBase" comment="An abstract MO Object structure.">
+                <smc:extends>
+                    <smc:type area="MAL" name="Object" />
+                </smc:extends>
+                <smc:field name="firstItem" comment="Example String item.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="secondItem" comment="Example Integer item.">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestObject" shortFormPart="20" comment="A concrete MO Object structure which does not extend directly the MAL Object type.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="TestObjectBase" />
+                </smc:extends>
+                <smc:field name="thirdItem" comment="Another example String item.">
+                    <smc:type area="MAL" name="String" />
+                </smc:field>
+                <smc:field name="fourthItem" comment="Example Boolean item.">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+            </smc:composite>
+            <smc:composite name="TestBody" shortFormPart="123" comment="An concrete composite example used to build complex composite structures.">
                 <smc:extends>
                     <smc:type area="MAL" name="Composite" />
                 </smc:extends>
@@ -1533,7 +1837,7 @@
                     <smc:type area="MAL" name="Integer" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="AbstractComposite" comment="An abstract composite example.">
+            <smc:composite name="AbstractComposite" comment="An abstract composite example. This type and all derived types are notably used in the Polymorphic types test procedure.">
                 <smc:extends>
                     <smc:type area="MAL" name="Composite" />
                 </smc:extends>
@@ -1544,7 +1848,7 @@
                     <smc:type area="MAL" name="Integer" />
                 </smc:field>
             </smc:composite>
-            <smc:composite name="ComplexStructure" shortFormPart="345" comment="A concrete composite example extending an Abstract composite.">
+            <smc:composite name="ComplexStructure" shortFormPart="345" comment="A concrete composite example extending an Abstract composite with some common fields.">
                 <smc:extends>
                     <smc:type area="MALPrototype" name="AbstractComposite" />
                 </smc:extends>
@@ -1558,9 +1862,32 @@
                     <smc:type area="MALPrototype" name="TestBody" />
                 </smc:field>
             </smc:composite>
+            <smc:composite name="BasicAbstractComposite" shortFormPart="346" comment="A concrete composite example extending an Abstract composite with no field.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:extends>
+            </smc:composite>
+            <smc:composite name="StructureWithAbstractField" shortFormPart="347" comment="A concrete composite example extending an Abstract composite with a field which is itself an Abstract composite, allowing for defining complex instances.">
+                <smc:extends>
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:extends>
+                <smc:field name="abstract_item" comment="Contained abstract structure.">
+                    <smc:type area="MALPrototype" name="AbstractComposite" />
+                </smc:field>
+                <smc:field name="third_item" comment="Extra Boolean item.">
+                    <smc:type area="MAL" name="Boolean" />
+                </smc:field>
+                <smc:field name="fourth_item" comment="Example Integer item.">
+                    <smc:type area="MAL" name="Integer" />
+                </smc:field>
+            </smc:composite>
         </smc:dataTypes>
         <smc:errors>
-            <smc:error name="TEST_ERROR" number="70000"
+            <smc:error name="DATA_ERROR" number="1"
+                       comment="Data interoperability error." />
+            <smc:error name="TEST_OBJECT_EXISTS" number="2"
+                       comment="MO Object already exists." />
+            <smc:error name="TEST_ERROR" number="3"
                        comment="Fake error for testing." />
         </smc:errors>
     </smc:area>
@@ -1572,7 +1899,7 @@
                               comment="This operation initiates a Pub/Sub interaction. It is not implemented by the service provider but by a broker.">
                     <smc:messages>
                         <smc:publishNotify>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestUpdate" />
                         </smc:publishNotify>
                     </smc:messages>
@@ -1588,7 +1915,7 @@
                               comment="This operation initiates a Pub/Sub interaction. It is not implemented by the service provider but by a broker.">
                     <smc:messages>
                         <smc:publishNotify>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestUpdate" />
                         </smc:publishNotify>
                     </smc:messages>
@@ -1606,7 +1933,7 @@
                               comment="This operation cleans the assertions table, publishes an update as specified by the parameter TestPublishUpdate and checks the header of the Publish message (see 4.1.3). Moreover if an error is expected by the TestPublishUpdate then the operation hangs until a Publish error is raised or a timer ends (see 4.1.10). The header of the Publish error message is checked (see 4.1.4).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishUpdate" />
                         </smc:submit>
                     </smc:messages>
@@ -1617,7 +1944,7 @@
                               comment="This operation cleans the assertions table, registers a publisher as specified by the parameter TestPublishRegister and checks the header of the Publish Register message (see 4.1.5). Moreover if no error is expected by the TestPublishRegister, it checks the header of the Publish Register acknowledgement message (see 4.1.6). Otherwise it checks the header of the Publish Register error message (see 4.1.7).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishRegister" />
                         </smc:submit>
                     </smc:messages>
@@ -1628,7 +1955,7 @@
                               comment="This operation cleans the assertions table, registers a publisher as specified by the parameter TestPublishDeregister and checks the header of the Publish Deregister message (see 4.1.5). Moreover if no error is expected by the TestPublishDeregister, it checks the header of the Publish Deregister acknowledgement message (see 4.1.8). Otherwise it checks the header of the Publish Deregister error message (see 4.1.9).">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishDeregister" />
                         </smc:submit>
                     </smc:messages>
@@ -1638,7 +1965,7 @@
                               supportInReplay="false" comment="">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
+                            <smc:type area="MALPrototype"
                                       name="TestPublishUpdate" />
                         </smc:submit>
                     </smc:messages>
@@ -1649,8 +1976,8 @@
                               supportInReplay="false" comment="">
                     <smc:messages>
                         <smc:submit>
-                            <smc:type area="MALPrototype" service="IPTest"
-                                      name="ObjectRef&lt;TestPublishUpdate&gt;" />
+                            <smc:type area="MALPrototype"
+                                      name="ObjectRef(Auto)" />
                         </smc:submit>
                     </smc:messages>
 
@@ -1660,8 +1987,8 @@
                             supportInReplay="false" comment="">
                     <smc:messages>
                         <smc:send>
-                            <smc:type area="MALPrototype" service="IPTest"
-                                      name="ObjectRef&lt;IPTestDefinition&gt;" />
+                            <smc:type area="MALPrototype"
+                                      name="ObjectRef(Auto)" />
                         </smc:send>
                     </smc:messages>
                 </smc:sendIP>   

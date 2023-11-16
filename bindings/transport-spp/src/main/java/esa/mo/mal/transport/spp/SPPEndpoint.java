@@ -20,51 +20,49 @@
  */
 package esa.mo.mal.transport.spp;
 
-import esa.mo.mal.transport.gen.GENEndpoint;
-import esa.mo.mal.transport.gen.GENMessageHeader;
-import esa.mo.mal.transport.gen.GENTransport;
+import esa.mo.mal.transport.gen.Endpoint;
+import esa.mo.mal.transport.gen.Transport;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.APID_QUALIFIER_PROPERTY;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.IS_TC_PACKET_PROPERTY;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import org.ccsds.moims.mo.mal.structures.QoSLevel;
-import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
  */
-public class SPPEndpoint extends GENEndpoint {
+public class SPPEndpoint extends Endpoint {
 
     private final SPPConfiguration configuration;
     private final int apidQualifier;
     private final Boolean forceTC;
     private final SPPURIRepresentation uriRep;
     private final SPPSourceSequenceCounter ssCounter;
-    private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap
-            = new HashMap<SegmentIndex, SPPSegmentCounter>();
+    private final Map<SegmentIndex, SPPSegmentCounter> segmentCounterMap = new HashMap<>();
 
-    public SPPEndpoint(GENTransport transport,
+    public SPPEndpoint(Transport transport,
             SPPConfiguration configuration,
             int apidQualifier,
             SPPURIRepresentation uriRep,
             SPPSourceSequenceCounter ssCounter,
-            String localName, String routingName, String uri, boolean wrapBodyParts,
+            String localName,
+            String routingName,
+            String uri,
+            boolean wrapBodyParts,
             final Map properties) {
-        super(transport, localName, routingName, uri, wrapBodyParts);
+        super(transport, localName, routingName, uri, wrapBodyParts, new NamedValueList());
 
         this.configuration = new SPPConfiguration(configuration, properties);
 
@@ -97,12 +95,6 @@ public class SPPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -111,6 +103,7 @@ public class SPPEndpoint extends GENEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final Object... body) throws MALException {
         try {
@@ -119,12 +112,6 @@ public class SPPEndpoint extends GENEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     interactionType,
                     interactionStage,
                     transactionId,
@@ -133,13 +120,14 @@ public class SPPEndpoint extends GENEndpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
+                    supplements,
                     qosProperties);
 
             return new SPPMessage(((SPPBaseTransport) transport).getHeaderStreamFactory(),
                     hdr.getConfiguration(),
                     getMessageSegmentCounter(hdr),
                     false, hdr,
-                    qosProperties, null, transport.getStreamFactory(), body);
+                    qosProperties, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }
@@ -149,12 +137,6 @@ public class SPPEndpoint extends GENEndpoint {
     public MALMessage createMessage(final Blob authenticationId,
             final URI uriTo,
             final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
             final InteractionType interactionType,
             final UOctet interactionStage,
             final Long transactionId,
@@ -163,6 +145,7 @@ public class SPPEndpoint extends GENEndpoint {
             final UShort operation,
             final UOctet serviceVersion,
             final Boolean isErrorMessage,
+            final NamedValueList supplements,
             final Map qosProperties,
             final MALEncodedBody body) throws MALException {
         try {
@@ -171,12 +154,6 @@ public class SPPEndpoint extends GENEndpoint {
                     authenticationId,
                     uriTo,
                     timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
                     interactionType,
                     interactionStage,
                     transactionId,
@@ -185,12 +162,13 @@ public class SPPEndpoint extends GENEndpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
+                    supplements,
                     qosProperties);
 
             return new SPPMessage(
                     ((SPPBaseTransport) transport).getHeaderStreamFactory(),
                     hdr.getConfiguration(), getMessageSegmentCounter(hdr),
-                    false, hdr, qosProperties, null,
+                    false, hdr, qosProperties,
                     transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
@@ -198,111 +176,10 @@ public class SPPEndpoint extends GENEndpoint {
     }
 
     @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
-            final Long transactionId,
-            final Boolean isErrorMessage,
-            final MALOperation op,
-            final UOctet interactionStage,
-            final Map qosProperties,
-            final MALEncodedBody body) throws MALException {
-        try {
-            SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(
-                    getURI(),
-                    authenticationId,
-                    uriTo,
-                    timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
-                    op.getInteractionType(),
-                    interactionStage,
-                    transactionId,
-                    op.getService().getAreaNumber(),
-                    op.getService().getServiceNumber(),
-                    op.getNumber(),
-                    op.getService().getServiceVersion(),
-                    isErrorMessage,
-                    qosProperties);
-
-            return new SPPMessage(
-                    ((SPPBaseTransport) transport).getHeaderStreamFactory(),
-                    hdr.getConfiguration(), getMessageSegmentCounter(hdr),
-                    false, hdr, qosProperties, op,
-                    transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
-    }
-
-    @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final QoSLevel qosLevel,
-            final UInteger priority,
-            final IdentifierList domain,
-            final Identifier networkZone,
-            final SessionType session,
-            final Identifier sessionName,
-            final Long transactionId,
-            final Boolean isErrorMessage,
-            final MALOperation op,
-            final UOctet interactionStage,
-            final Map qosProperties,
-            final Object... body) throws MALException {
-        try {
-            SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(
-                    getURI(),
-                    authenticationId,
-                    uriTo,
-                    timestamp,
-                    qosLevel,
-                    priority,
-                    domain,
-                    networkZone,
-                    session,
-                    sessionName,
-                    op.getInteractionType(),
-                    interactionStage,
-                    transactionId,
-                    op.getService().getAreaNumber(),
-                    op.getService().getServiceNumber(),
-                    op.getNumber(),
-                    op.getService().getServiceVersion(),
-                    isErrorMessage,
-                    qosProperties);
-
-            return new SPPMessage(
-                    ((SPPBaseTransport) transport).getHeaderStreamFactory(),
-                    hdr.getConfiguration(), getMessageSegmentCounter(hdr), false,
-                    hdr, qosProperties, op, transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
-    }
-
-    @Override
-    public GENMessageHeader createMessageHeader(URI uriFrom,
+    public MALMessageHeader createMessageHeader(URI uriFrom,
             Blob authenticationId,
             URI uriTo,
             Time timestamp,
-            QoSLevel qosLevel,
-            UInteger priority,
-            IdentifierList domain,
-            Identifier networkZone,
-            SessionType session,
-            Identifier sessionName,
             InteractionType interactionType,
             UOctet interactionStage,
             Long transactionId,
@@ -311,20 +188,16 @@ public class SPPEndpoint extends GENEndpoint {
             UShort operation,
             UOctet serviceVersion,
             Boolean isErrorMessage,
+            NamedValueList supplements,
             Map qosProperties) {
         return new SPPMessageHeader(
                 ((SPPBaseTransport) transport).getHeaderStreamFactory(),
                 new SPPConfiguration(configuration, qosProperties),
-                forceTC, apidQualifier, uriRep, ssCounter, getURI(),
+                forceTC, apidQualifier, uriRep, ssCounter,
+                new Identifier(getURI().getValue()),
                 authenticationId,
-                uriTo,
+                new Identifier(uriTo.getValue()),
                 timestamp,
-                qosLevel,
-                priority,
-                domain,
-                networkZone,
-                session,
-                sessionName,
                 interactionType,
                 interactionStage,
                 transactionId,
@@ -332,10 +205,11 @@ public class SPPEndpoint extends GENEndpoint {
                 service,
                 operation,
                 serviceVersion,
-                isErrorMessage);
+                isErrorMessage,
+                supplements);
     }
 
-    private SPPSegmentCounter getMessageSegmentCounter(GENMessageHeader hdr) {
+    private SPPSegmentCounter getMessageSegmentCounter(MALMessageHeader hdr) {
         SegmentIndex idx = new SegmentIndex(hdr);
 
         SPPSegmentCounter cnt = segmentCounterMap.get(idx);
@@ -350,28 +224,20 @@ public class SPPEndpoint extends GENEndpoint {
 
     private static class SegmentIndex {
 
-        private final URI uriFrom;
-        private final URI uriTo;
-        private final IdentifierList domain;
-        private final Identifier networkZone;
-        private final SessionType session;
-        private final Identifier sessionName;
+        private final Identifier uriFrom;
+        private final Identifier uriTo;
         private final InteractionType interactionType;
         private final Long transactionId;
         private final UShort serviceArea;
         private final UShort service;
         private final UShort operation;
 
-        public SegmentIndex(GENMessageHeader hdr) {
-            this.uriFrom = hdr.getURIFrom();
-            this.uriTo = hdr.getURITo();
-            this.domain = hdr.getDomain();
-            this.networkZone = hdr.getNetworkZone();
-            this.session = hdr.getSession();
-            this.sessionName = hdr.getSessionName();
+        public SegmentIndex(MALMessageHeader hdr) {
+            this.uriFrom = hdr.getFrom();
+            this.uriTo = hdr.getTo();
             this.interactionType = hdr.getInteractionType();
             this.transactionId = hdr.getTransactionId();
-            this.serviceArea = hdr.getAreaNumber();
+            this.serviceArea = hdr.getServiceArea();
             this.service = hdr.getService();
             this.operation = hdr.getOperation();
         }
@@ -381,10 +247,6 @@ public class SPPEndpoint extends GENEndpoint {
             int hash = 3;
             hash = 47 * hash + (this.uriFrom != null ? this.uriFrom.hashCode() : 0);
             hash = 47 * hash + (this.uriTo != null ? this.uriTo.hashCode() : 0);
-            hash = 47 * hash + (this.domain != null ? this.domain.hashCode() : 0);
-            hash = 47 * hash + (this.networkZone != null ? this.networkZone.hashCode() : 0);
-            hash = 47 * hash + (this.session != null ? this.session.hashCode() : 0);
-            hash = 47 * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
             hash = 47 * hash + (this.interactionType != null ? this.interactionType.hashCode() : 0);
             hash = 47 * hash + (this.transactionId != null ? this.transactionId.hashCode() : 0);
             hash = 47 * hash + (this.serviceArea != null ? this.serviceArea.hashCode() : 0);
@@ -413,6 +275,7 @@ public class SPPEndpoint extends GENEndpoint {
                     && (this.uriTo == null || !this.uriTo.equals(other.uriTo))) {
                 return false;
             }
+            /*
             if (this.domain != other.domain
                     && (this.domain == null || !this.domain.equals(other.domain))) {
                 return false;
@@ -432,6 +295,7 @@ public class SPPEndpoint extends GENEndpoint {
                     || !this.sessionName.equals(other.sessionName))) {
                 return false;
             }
+             */
             if (this.interactionType != other.interactionType
                     && (this.interactionType == null
                     || !this.interactionType.equals(other.interactionType))) {

@@ -30,27 +30,35 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALSendOperation extends MALOperation {
 
-    private final MALOperationStage sendStage;
+    /**
+     * Literal representing the SUBMIT stage.
+     */
+    public static final byte _SEND_STAGE = (byte) 0x1;
+    /**
+     * MAL UOctet representing the SUBMIT stage.
+     */
+    public static final UOctet SEND_STAGE = new UOctet(_SEND_STAGE);
+
+    private final OperationField[] sendStage;
 
     /**
      * Initialises the internal variables with the supplied values.
      *
+     * @param serviceKey Service Key for the service of this operation.
      * @param number Number of the operation.
      * @param name Name of the operation.
-     * @param replayable Boolean that indicates whether the operation is
-     * replayable or not
      * @param capabilitySet Capability set of the operation.
      * @param sendStage The stage information for the SEND stage.
      * @throws java.lang.IllegalArgumentException If any argument is null,
      * except the operation stage arguments.
      */
-    public MALSendOperation(final UShort number,
+    public MALSendOperation(final ServiceKey serviceKey,
+            final UShort number,
             final Identifier name,
-            final Boolean replayable,
             final UShort capabilitySet,
-            final MALOperationStage sendStage)
+            final OperationField[] sendStage)
             throws java.lang.IllegalArgumentException {
-        super(number, name, replayable, InteractionType.SEND, capabilitySet);
+        super(serviceKey, number, name, InteractionType.SEND, capabilitySet);
         this.sendStage = sendStage;
     }
 
@@ -61,7 +69,7 @@ public class MALSendOperation extends MALOperation {
      * @return The operation stage.
      */
     @Override
-    public MALOperationStage getOperationStage(final UOctet stageNumber) {
+    public OperationField[] getFieldsOnStage(final UOctet stageNumber) {
         return sendStage;
     }
 }

@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.spp;
 
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
@@ -34,7 +35,7 @@ public interface SPPURIRepresentation {
      * @param uri The URI to interrogate.
      * @return the SPP APID to use
      */
-    short getApid(URI uri);
+    short getApid(Identifier uri);
 
     /**
      * Returns true if the supplied URI contains an APID qualifier
@@ -50,7 +51,7 @@ public interface SPPURIRepresentation {
      * @param uri The URI to interrogate
      * @return the SPP APID qualifier to use.
      */
-    int getQualifier(URI uri);
+    int getQualifier(Identifier uri);
 
     /**
      * Returns true if the supplied URI contains a subId
@@ -58,7 +59,7 @@ public interface SPPURIRepresentation {
      * @param uri The URI to interrogate
      * @return True if there is a subId.
      */
-    boolean hasSubId(URI uri);
+    boolean hasSubId(Identifier uri);
 
     /**
      * Returns the subject id to encode for the supplied URI
@@ -66,7 +67,7 @@ public interface SPPURIRepresentation {
      * @param uri The URI to interrogate
      * @return the SPP SubId to use.
      */
-    short getSubId(URI uri);
+    short getSubId(Identifier uri);
 
     /**
      * Returns the URI from the APID and the subject id
@@ -76,5 +77,5 @@ public interface SPPURIRepresentation {
      * @param subId the subid. NULL if no subId present.
      * @return the URI to use.
      */
-    URI getURI(Integer qualifier, short apid, Short subId);
+    Identifier getURI(Integer qualifier, short apid, Short subId);
 }

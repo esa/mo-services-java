@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.mal.provider;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 
@@ -66,6 +66,6 @@ public interface MALProgress extends MALInvoke {
      * state.
      * @throws MALException If an error occurs
      */
-    MALMessage sendUpdateError(MALStandardError error)
+    MALMessage sendUpdateError(MOErrorException error)
             throws java.lang.IllegalArgumentException, MALInteractionException, MALException;
 }

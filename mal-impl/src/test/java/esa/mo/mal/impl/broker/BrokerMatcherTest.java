@@ -485,7 +485,6 @@ public class BrokerMatcherTest {
         assertEquals(expResult, result);
     }
 
-
     @Test
     public void testDomainMatchesWildcardDomain_6_4() {
         System.out.println("domainMatchesWildcardDomain: myconstellation.*.*.app_1 and myconstellation.spacecraft_1.obc_2.app_1 matching");
@@ -545,7 +544,7 @@ public class BrokerMatcherTest {
         boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
         assertEquals(expResult, result);
     }
-    
+
     @Test
     public void testDomainMatchesWildcardDomain_6_7() {
         System.out.println("domainMatchesWildcardDomain: *.spacecraft_1.*.app_1 and myconstellation.spacecraft_1.obc_2.app_2 matching");
@@ -584,7 +583,7 @@ public class BrokerMatcherTest {
         boolean expResult = true;
         boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
         assertEquals(expResult, result);
-    }   
+    }
 
     @Test
     public void testDomainMatchesWildcardDomain_6_9() {
@@ -626,7 +625,7 @@ public class BrokerMatcherTest {
         boolean expResult = true;
         boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
         assertEquals(expResult, result);
-    } 
+    }
 
     @Test
     public void testDomainMatchesWildcardDomain_6_11() {
@@ -648,5 +647,5 @@ public class BrokerMatcherTest {
         boolean expResult = false;
         boolean result = BrokerMatcher.domainMatchesWildcardDomain(consumerDomain, providerDomain);
         assertEquals(expResult, result);
-    }     
+    }
 }

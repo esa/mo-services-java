@@ -24,18 +24,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 public class TestXMLStreamFactory extends MALElementStreamFactory {
 
@@ -58,11 +57,6 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public Blob encode(Object[] elements, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     protected static class TestXMLOutputStream implements MALElementOutputStream {
 
         private final OutputStream os;
@@ -72,7 +66,20 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public void writeElement(Object o, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public void writeHeader(MALMessageHeader header) throws IllegalArgumentException, MALException {
+            try {
+                String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
+                String schemaEle = "report";
+                JAXBContext jc = JAXBContext.newInstance(header.getClass().getPackage().getName());
+                Marshaller marshaller = jc.createMarshaller();
+                marshaller.marshal(new JAXBElement(new QName(schemaURN, schemaEle), header.getClass(), null, header), os);
+            } catch (JAXBException ex) {
+                throw new MALException("XML Encoding error", ex);
+            }
+        }
+
+        @Override
+        public void writeElement(Element o, OperationField field) throws IllegalArgumentException, MALException {
             try {
                 String schemaURN = "http://www.ccsds.org/schema/PerfTestServiceSchema";
                 String schemaEle = "report";
@@ -112,12 +119,24 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
         }
 
         @Override
-        public Object readElement(Object element, MALEncodingContext ctx) throws IllegalArgumentException, MALException {
+        public MALMessageHeader readHeader(MALMessageHeader header) throws IllegalArgumentException, MALException {
+            try {
+                JAXBContext jc = JAXBContext.newInstance(header.getClass().getPackage().getName());
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
+                return (MALMessageHeader) rootElement.getValue();
+            } catch (JAXBException ex) {
+                throw new MALException("XML Decoding error", ex);
+            }
+        }
+
+        @Override
+        public Element readElement(Element element, OperationField field) throws IllegalArgumentException, MALException {
             try {
                 JAXBContext jc = JAXBContext.newInstance(element.getClass().getPackage().getName());
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
                 JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-                return rootElement.getValue();
+                return (Element) rootElement.getValue();
             } catch (JAXBException ex) {
                 throw new MALException("XML Decoding error", ex);
             }

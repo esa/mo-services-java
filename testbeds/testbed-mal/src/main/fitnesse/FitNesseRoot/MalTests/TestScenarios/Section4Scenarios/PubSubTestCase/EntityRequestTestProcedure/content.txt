@@ -39,42 +39,56 @@
 
 *******!
 !4 Test procedure: entity request
-This test checks that the entity requests are correctly interpreted by the broker, in particular the expression used to define the expected entities.
-A list of entity keys is defined:
- * A
- * A.2
- * A.2.3
+
+At first, publishRegister() is called to instantiate the broker with four subscription key names: K1, K2, K3 and K4.
+
+This test checks that the subscription requests are correctly interpreted by the broker, in particular the expression used to define the expected entities.
+A list of subscription key values is defined:
+ * A.0.0.0
+ * A.2.0.0
+ * A.2.3.0
  * A.2.3.4
- * B
- * Q.2.3
-A list of entity request expressions is defined:
- * A
- * A.[null]
- * A.*
- * A.2.[null]
- * A.2.*
- * [null].B.[null]
- * *.2.*
- * *
+ * B.0.0.0
+ * Q.2.3.0
+
+A list of subscription key values to match is defined:
+ * A.0.0.0
+ * A.*.0.0
+ * A.*.*.*
+ * A.2.0.0
+ * A.2.*.0
+ * *.2.*.0
+ * B.*.*.*
+ * A.0.0.0 (select keys: K1.K2.K3.K4)
+ * A.0.0.0 (select keys: K1.K2.K3)
+ * A.0.0.0 (select keys: K1.K2)
+ * A.0.0.0 (select keys: K4.K3.K2.K1)
+ * A.0.0.0 (select keys: K4.K3.K1)
+
 The consumer does the following actions:
  * Creation of one subscription for each expression and registration.
- * Trigger the publication of one !-TestUpdate-! for each entity key.
+ * Trigger the publication of one !-TestUpdate-! for each subscription key values.
  
 The consumer checks that the expected keys are received and only them (see table below).
 
 !*> Sub scenario definitions
-|scenario| entity request | shared |
-|ensure |initiate publisher with entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4,B.[null].[null].[null],Q.2.3.[null] | and shared broker | @shared |
-|ensure |subscribe to pattern | A.[null].[null].[null] | and expected entities | A.[null].[null].[null] |
-|ensure |subscribe to pattern | A.*.[null].[null] | and expected entities | A.[null].[null].[null],A.2.[null].[null] |
-|ensure |subscribe to pattern | A.*.*.* | and expected entities | A.[null].[null].[null],A.2.[null].[null],A.2.3.[null],A.2.3.4 |
-|ensure |subscribe to pattern | A.2.[null].[null] | and expected entities | A.2.[null].[null] |
-|ensure |subscribe to pattern | A.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null] |
-|ensure |subscribe to pattern | *.2.*.[null] | and expected entities | A.2.[null].[null],A.2.3.[null],Q.2.3.[null] |
-|ensure |subscribe to pattern | B.*.*.* | and expected entities | B.[null].[null].[null] |
+|scenario| entity request with shared broker | shared |
+|ensure |prepare test to use the following subscription key values | A.0.0.0,A.2.0.0,A.2.3.0,A.2.3.4,B.0.0.0,Q.2.3.0 | and shared broker | @shared |
+|ensure |subscribe to key values | A.0.0.0 | and select keys | [null] | and expected key values | A.0.0.0 |
+|ensure |subscribe to key values | A.*.0.0 | and select keys | [null] | and expected key values | A.0.0.0,A.2.0.0 |
+|ensure |subscribe to key values | A.*.*.*| and select keys | [null] | and expected key values | A.0.0.0,A.2.0.0,A.2.3.0,A.2.3.4 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | [null] | and expected key values | A.2.0.0 |
+|ensure |subscribe to key values | A.2.*.0 | and select keys | [null] | and expected key values | A.2.0.0,A.2.3.0 |
+|ensure |subscribe to key values | *.2.*.0 | and select keys | [null] | and expected key values | A.2.0.0,A.2.3.0,Q.2.3.0 |
+|ensure |subscribe to key values | B.*.*.* | and select keys | [null] | and expected key values | B.0.0.0 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K1.K2.K3.K4 | and expected key values | A.2.0.0 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K1.K2.K3 | and expected key values | A.2.0 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K1.K2 | and expected key values | A.2 |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K4.K3.K2.K1 | and expected key values | 0.0.2.A |
+|ensure |subscribe to key values | A.2.0.0 | and select keys | K4.K3.K1 | and expected key values | 0.0.A |
 |ensure |publish deregister |
 ***********!
 
 |script| entity request test procedure |
-|entity request | false |
-|entity request | true |
+|entity request with shared broker | false |
+|entity request with shared broker | true |

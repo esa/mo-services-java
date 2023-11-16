@@ -20,11 +20,10 @@
  */
 package esa.mo.mal.transport.tcpip;
 
-import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryStreamFactory;
+import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
 import esa.mo.mal.transport.gen.*;
-import esa.mo.mal.transport.gen.sending.GENMessageSender;
-import esa.mo.mal.transport.gen.sending.GENOutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.GENMessagePoller;
+import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import esa.mo.mal.transport.gen.util.MessagePoller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Inet6Address;
@@ -41,17 +40,23 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
+import esa.mo.mal.transport.gen.sending.MessageSender;
+import org.ccsds.moims.mo.mal.BadEncodingException;
+import org.ccsds.moims.mo.mal.DeliveryFailedException;
+import org.ccsds.moims.mo.mal.DestinationTransientException;
+import org.ccsds.moims.mo.mal.DestinationUnknownException;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * The TCPIP MAL Transport implementation.
@@ -95,7 +100,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  * (uses bidirectional TCP/IP communication).
  *
  */
-public class TCPIPTransport extends GENTransport<byte[], byte[]> {
+public class TCPIPTransport extends Transport<byte[], byte[]> {
 
     /**
      * Logger
@@ -169,7 +174,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     /**
      * Holds the list of data poller threads
      */
-    private final List<GENMessagePoller> messagePollerThreadPool = new ArrayList<>();
+    private final List<MessagePoller> messagePollerThreadPool = new ArrayList<>();
 
     private static boolean aliasesLoaded = false;
 
@@ -193,7 +198,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     public TCPIPTransport(final String protocol, final char serviceDelim,
             final boolean supportsRouting, final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        super(protocol, supportsRouting, false, factory, properties);
+        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
 
         RLOGGER.fine("TCPIPTransport (constructor)");
 
@@ -399,8 +404,9 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * PROGRESS. PUBSUB is not supported. A MAL implementation layer has to
      * support PUBSUB itself.
      *
-     * @param type
-     * @return
+     * @param type The interaction Type.
+     * @return true if the provided interaction pattern is supported, false
+     * otherwise.
      */
     @Override
     public boolean isSupportedInteractionType(final InteractionType type) {
@@ -410,8 +416,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
     /**
      * The MAL TCPIP binding supports all QoS levels.
      *
-     * @param qos
-     * @return
+     * @param qos The qos level.
+     * @return true if the provided qos is supported, false otherwise.
      */
     @Override
     public boolean isSupportedQoSLevel(final QoSLevel qos) {
@@ -422,7 +428,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * Close all pollers and socket connections and then close the transport
      * itself.
      *
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @throws org.ccsds.moims.mo.mal.MALException if could not be closed.
      */
     @Override
     public void close() throws MALException {
@@ -431,7 +437,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         synchronized (this) {
             clientSockets.close();
 
-            for (GENMessagePoller entry : messagePollerThreadPool) {
+            for (MessagePoller entry : messagePollerThreadPool) {
                 entry.close();
             }
 
@@ -461,7 +467,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * @throws Exception if an error.
      */
     @Override
-    protected GENOutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
             final String destinationRootURI, final String destinationURI,
             final Object multiSendHandle, final boolean lastForHandle,
             final String targetURI, final GENMessage msg) throws Exception {
@@ -475,12 +481,12 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             LOGGER.log(Level.FINE, "GEN Sending data to {0} : {1}",
                     new Object[]{targetURI, new PacketToString(data)});
 
-            return new GENOutgoingMessageHolder<byte[]>(10, destinationRootURI,
+            return new OutgoingMessageHolder<byte[]>(10, destinationRootURI,
                     destinationURI, multiSendHandle, lastForHandle, msg, data);
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "GEN could not encode message!", ex);
-            throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
-                    MALHelper.BAD_ENCODING_ERROR_NUMBER, null), null);
+            throw new MALTransmitErrorException(msg.getHeader(),
+                    new BadEncodingException(null), null);
         }
     }
 
@@ -489,10 +495,10 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * the base url plus the service identifier.
      */
     @Override
-    protected GENEndpoint internalCreateEndpoint(final String localName,
-            final String routingName, final Map properties) throws MALException {
+    protected Endpoint internalCreateEndpoint(final String localName,
+            final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}", uriBase);
-        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts);
+        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts, supplements);
     }
 
     /**
@@ -505,8 +511,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * If this is a provider, the host and port as defined in the configuration
      * file are used.
      *
-     * @return
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @return the created transport address.
+     * @throws org.ccsds.moims.mo.mal.MALException if something went wrong.
      */
     @Override
     protected String createTransportAddress() throws MALException {
@@ -525,7 +531,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     @Override
     public GENMessage createMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new GENMessageHeader(),
+        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
                 qosProperties, packet, getStreamFactory());
     }
 
@@ -542,9 +548,10 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * Binding specification. The body is decoded using whatever we have
      * selected.
      *
-     * @param packetInfo
-     * @return
-     * @throws org.ccsds.moims.mo.mal.MALException
+     * @param packetInfo The packet information.
+     * @return The decoded TCPIPMessage to be passed upwards.
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be
+     * decoded.
      */
     public GENMessage createMessage(final TCPIPPacketInfoHolder packetInfo) throws MALException {
         String serviceDelimStr = Character.toString(serviceDelim);
@@ -558,25 +565,23 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         }
 
         // preset header
-        TCPIPMessageHeader header = new TCPIPMessageHeader(new URI(from), new URI(to));
+        TCPIPMessageHeader header = new TCPIPMessageHeader(new Identifier(from), new Identifier(to));
 
         // msg with decoded header and empty body
         byte[] packetData = packetInfo.getPacketData();
 
-        // Header must be always Fixed Binary
-        TCPIPMessage msg = new TCPIPMessage(wrapBodyParts, header,
-                qosProperties, packetData, new TCPIPFixedBinaryStreamFactory());
+        // Header must be always decoded with TCP-IP Fixed Binary
+        header = header.decode(new TCPIPFixedBinaryDecoder(packetData, 0));
 
-        int decodedHeaderBytes = ((TCPIPMessageHeader) msg.getHeader()).decodedHeaderBytes;
-        int bodySize = ((TCPIPMessageHeader) msg.getHeader()).getBodyLength() + 23 - decodedHeaderBytes;
+        int decodedHeaderBytes = header.decodedHeaderBytes;
+        int bodySize = header.getBodyLength() + 23 - decodedHeaderBytes;
 
         // copy body to separate packet
         byte[] bodyPacketData = new byte[bodySize];
         System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
         // decode the body
-        return new TCPIPMessage(wrapBodyParts,
-                (TCPIPMessageHeader) msg.getHeader(), qosProperties,
+        return new TCPIPMessage(wrapBodyParts, header, qosProperties,
                 bodyPacketData, getStreamFactory());
     }
 
@@ -591,9 +596,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
      * terminate when the underlying connection is terminated.
      */
     @Override
-    protected GENMessageSender<byte[]> createMessageSender(GENMessage msg,
-            String remoteRootURI) throws MALException,
-            MALTransmitErrorException {
+    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
+            String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.fine("TCPIPTransport.createMessageSender()");
         try {
             // create a message sender and receiver for the socket
@@ -621,7 +625,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
             TCPIPTransportDataTransceiver trans = createDataTransceiver(s);
 
-            GENMessagePoller messageReceiver = new GENMessagePoller(this, trans,
+            MessagePoller messageReceiver = new MessagePoller(this, trans,
                     trans, new TCPIPMessageDecoderFactory());
             messageReceiver.setRemoteURI(remoteRootURI);
             messageReceiver.start();
@@ -636,14 +640,13 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             LOGGER.log(Level.WARNING, "TCPIP could not find host: {0}", remoteRootURI);
             LOGGER.log(Level.FINE, "TCPIP could not find host: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msg.getHeader(),
-                    new MALStandardError(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null), null);
+                    new DestinationUnknownException(null), null);
         } catch (java.net.ConnectException e) {
             LOGGER.log(Level.WARNING, "TCPIP could not reach: {0}", remoteRootURI);
             LOGGER.log(Level.FINE, "TCPIP could not reach: " + remoteRootURI, e);
             throw new MALTransmitErrorException(
                     msg.getHeader(),
-                    new MALStandardError(
-                            MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null), null);
+                    new DestinationTransientException(null), null);
         } catch (IOException e) {
             // there was a communication problem, we need to clean up the
             // objects we created in the meanwhile
@@ -651,8 +654,8 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
             communicationError(remoteRootURI, null);
 
             // rethrow for higher MAL leyers
-            throw new MALTransmitErrorException(msg.getHeader(), new MALStandardError(
-                    MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null), null);
+            throw new MALTransmitErrorException(msg.getHeader(),
+                    new DeliveryFailedException(null), null);
         }
     }
 
@@ -703,6 +706,11 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
         return "127.0.0.1";
     }
 
+    /**
+     * Returns the service delimiter.
+     *
+     * @return The service delimiter.
+     */
     public char getServiceDelim() {
         return this.serviceDelim;
     }
@@ -770,7 +778,7 @@ public class TCPIPTransport extends GENTransport<byte[], byte[]> {
 
     @Override
     protected URI rerouteMessage(GENMessage message) {
-        String uri = message.getHeader().getURITo().getValue();
+        String uri = message.getHeader().getTo().getValue();
 
         if (aliasToIp.isEmpty()) {
             return new URI(uri);

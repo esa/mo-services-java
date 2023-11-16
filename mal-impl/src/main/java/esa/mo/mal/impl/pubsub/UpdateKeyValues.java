@@ -20,41 +20,27 @@
  */
 package esa.mo.mal.impl.pubsub;
 
-import java.util.List;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * Simple class that represents a MAL update key.
+ * The UpdateKeyValues class holds the keyValues with the respective domain and
+ * area/service/operation numbers.
  */
 public final class UpdateKeyValues {
 
-    /**
-     * The domain of the update.
-     */
+    private final NamedValueList keyValues;
     private final IdentifierList domain;
-
-    /**
-     * The area of the update.
-     */
     private final UShort area;
-
-    /**
-     * The service of the update.
-     */
     private final UShort service;
-
-    /**
-     * The operation of the update.
-     */
     private final UShort operation;
-
-    /**
-     * The keyValues of the update.
-     */
-    private final List<NamedValue> keyValues;
 
     /**
      * Constructor.
@@ -64,7 +50,7 @@ public final class UpdateKeyValues {
      * @param keyValues Key values.
      */
     public UpdateKeyValues(final MALMessageHeader srcHdr,
-            final IdentifierList domainId, final List<NamedValue> keyValues) {
+            final IdentifierList domainId, final NamedValueList keyValues) {
         this(domainId, srcHdr.getServiceArea(), srcHdr.getService(), srcHdr.getOperation(), keyValues);
     }
 
@@ -78,7 +64,7 @@ public final class UpdateKeyValues {
      * @param keyValues key value provided by provider
      */
     public UpdateKeyValues(final IdentifierList domain, final UShort area,
-            final UShort service, final UShort operation, final List<NamedValue> keyValues) {
+            final UShort service, final UShort operation, final NamedValueList keyValues) {
         this.domain = domain;
         this.area = area;
         this.service = service;
@@ -113,7 +99,7 @@ public final class UpdateKeyValues {
      *
      * @return the keyValues.
      */
-    public List<NamedValue> getKeyValues() {
+    public NamedValueList getKeyValues() {
         return keyValues;
     }
 
@@ -142,5 +128,43 @@ public final class UpdateKeyValues {
      */
     public UShort getOperation() {
         return operation;
+    }
+
+    /**
+     * Generates notify key values
+     *
+     * @param selectedKeys   List with selected key objects.
+     * @return  The key value list.
+     * @throws MALException When a selected key was not found.
+     */
+    public NullableAttributeList generateNotifyKeyValues(IdentifierList selectedKeys) throws MALException {
+        NullableAttributeList newKeyValues = new NullableAttributeList();
+
+        // NULL means that All Keys were selected!
+        if (selectedKeys == null) {
+            for (NamedValue namedValue : this.getKeyValues()) {
+                newKeyValues.add(new NullableAttribute(namedValue.getValue()));
+            }
+
+            return newKeyValues;
+        }
+
+        for (Identifier selectedKey : selectedKeys) {
+            boolean found = false;
+
+            for (NamedValue namedValue : this.getKeyValues()) {
+                if (selectedKey.equals(namedValue.getName())) {
+                    newKeyValues.add(new NullableAttribute(namedValue.getValue()));
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                throw new MALException("The selectedKey was not found! selectedKey name: " + selectedKey);
+            }
+        }
+
+        return newKeyValues;
     }
 }

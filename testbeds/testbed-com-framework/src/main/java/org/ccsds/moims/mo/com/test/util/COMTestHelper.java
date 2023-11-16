@@ -62,12 +62,10 @@ public class COMTestHelper {
     public final static String TEST_OBJECT_B_STR = Integer.toString(TEST_OBJECT_B);
 
     public static ObjectType getOperationActivityType() {
-        ObjectType type = new ObjectType();
-        type.setArea(COMHelper.COM_AREA_NUMBER);
-        type.setService(ActivityTrackingServiceInfo.ACTIVITYTRACKING_SERVICE_NUMBER);
-        type.setVersion(COMHelper.COM_AREA_VERSION);
-        type.setNumber(new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
-        return type;
+        return new ObjectType(COMHelper.COM_AREA_NUMBER,
+        ActivityTrackingServiceInfo.ACTIVITYTRACKING_SERVICE_NUMBER,
+        COMHelper.COM_AREA_VERSION,
+        new UShort(OBJ_NO_ASE_OPERATION_ACTIVITY));
     }
 
     // Generates the long format for object type

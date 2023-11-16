@@ -20,15 +20,24 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The Attribute interface represents the MAL Attribute type.
  */
 public interface Attribute extends Element {
 
+    public final static TypeId TYPE_ID_MAL_AREA = new TypeId(
+            MALHelper._MAL_AREA_NUMBER,
+            MALHelper._MAL_AREA_VERSION,
+            0,
+            0
+    );
     /**
      * Holds the MAL Area/Service/Version number in absolute type short form.
      */
-    public final static long ABSOLUTE_AREA_SERVICE_NUMBER = 0x1000001000000L;
+    public final static long ABSOLUTE_AREA_SERVICE_NUMBER = TYPE_ID_MAL_AREA.getTypeId();
     /**
      * Relative type short form for BLOB, can be using in switch statements.
      */

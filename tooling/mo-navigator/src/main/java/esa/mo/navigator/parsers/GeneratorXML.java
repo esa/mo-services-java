@@ -32,7 +32,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Marshaller.Listener;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.ccsds.schema.serviceschema.AreaType;
@@ -61,7 +60,7 @@ public class GeneratorXML extends XmlGenerator {
      *
      * @param spec The specification
      * @return The parsed Data
-     * @throws java.io.IOException
+     * @throws java.io.IOException if the specification could not be marshaled.
      */
     public static String generateXML(SpecificationType spec) throws IOException {
         try {
@@ -69,7 +68,10 @@ public class GeneratorXML extends XmlGenerator {
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             org.ccsds.schema.serviceschema.ObjectFactory serviceSchemaObjectFactory = new org.ccsds.schema.serviceschema.ObjectFactory();
+
             JAXBElement element = serviceSchemaObjectFactory.createSpecification(spec);
+            // updated for future due to jakarta migration:
+            // JAXBElement element = new JAXBElement<>(new QName("http://www.ccsds.org/schema/ServiceSchema"), org.ccsds.schema.serviceschema.SpecificationType.class, spec);
             boolean validate = false;
 
             if (validate) {
@@ -130,7 +132,7 @@ public class GeneratorXML extends XmlGenerator {
      * Currently, only error lists exhibit this structure. They are used for
      * area, service and all operation types (except SEND).
      */
-    private static class CleanupListener extends Listener {
+    private static class CleanupListener extends Marshaller.Listener {
 
         @Override
         public void beforeMarshal(Object source) {

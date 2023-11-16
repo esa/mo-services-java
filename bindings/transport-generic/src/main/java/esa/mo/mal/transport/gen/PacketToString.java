@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.util.GENHelper;
+import esa.mo.mal.transport.gen.util.ByteArrayHelper;
 import java.util.Properties;
 
 /**
@@ -37,7 +37,6 @@ public class PacketToString {
     /**
      * True if string based stream, can be logged as a string rather than hex.
      */
-
     private final byte[] data;
     private String str;
 
@@ -53,10 +52,9 @@ public class PacketToString {
         // Should be removed in the future...
         if (logFullDebug == null) {
             Properties properties = System.getProperties();
-            String prop = properties.getProperty(GENTransport.DEBUG_PROPERTY, "false");
+            String prop = properties.getProperty(Transport.DEBUG_PROPERTY, "false");
             logFullDebug = Boolean.valueOf(prop);
         }
-
     }
 
     @Override
@@ -68,7 +66,7 @@ public class PacketToString {
         str = "";
 
         if (logFullDebug && data != null) {
-            str = GENHelper.byteArrayToHexString(data);
+            str = ByteArrayHelper.byteArrayToHexString(data);
         }
 
         return str;

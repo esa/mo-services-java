@@ -22,14 +22,14 @@
 !define TEST_SYSTEM {slim}
 *!
 !1 Test Scenarios
-A scenario is comprised of several test cases. Each test case launch several test procedures.
-Scenarios, test cases and procedures are uniquely identified by a name. The also have a status that can be RUN, DONE or FAIL.
+A scenario is comprised of several test cases. Each test case launches several test procedures. 
+Scenarios, test cases and procedures are uniquely identified by a name. They also have a status that can be RUN, DONE or FAIL.
 
 All the scenarios are coordinated at the consumer side:
  * They are started by a consumer initiating an interaction
  * The status of scenarios, test cases and procedures is determined on the consumer side.
 
-Of course, assertions can be checked on both side: consumer and provider.
+Of course, assertions can be checked on both sides: consumer and provider.
 
 A test procedure is in charge of checking a set of assertions. There are two possible results for an assertion: OK (the assertion succeeded) or ERROR (the assertion failed).
 

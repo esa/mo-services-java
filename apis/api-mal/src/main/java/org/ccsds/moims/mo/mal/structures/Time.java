@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
  */
 public class Time implements Attribute {
 
+    private static final long serialVersionUID = Attribute.TIME_SHORT_FORM;
     private long value;
 
     /**
@@ -134,5 +135,4 @@ public class Time implements Attribute {
     public String toString() {
         return String.valueOf(value);
     }
-    private static final long serialVersionUID = Attribute.TIME_SHORT_FORM;
 }

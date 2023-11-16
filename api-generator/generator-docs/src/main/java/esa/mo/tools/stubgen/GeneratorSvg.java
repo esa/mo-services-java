@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
-import static esa.mo.tools.stubgen.GeneratorDocument.splitString;
+import esa.mo.tools.stubgen.docx.GeneratorUtils;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
@@ -62,7 +62,8 @@ public class GeneratorSvg extends GeneratorDocument {
      * @param logger The logger to use.
      */
     public GeneratorSvg(org.apache.maven.plugin.logging.Log logger) {
-        super(logger, new GeneratorConfiguration("", "", "", "", "", "", "", "", "", "", "", ""));
+        super(logger, new GeneratorConfiguration("", "", "", "",
+                "", "", "", "", "", "", "", ""));
     }
 
     @Override
@@ -110,7 +111,8 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     @Override
-    public void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException {
+    public void compile(String destinationFolderName, SpecificationType spec,
+            JAXBElement rootNode) throws IOException, JAXBException {
         for (AreaType area : spec.getArea()) {
             Map<String, String> indexMap = new HashMap<>();
 
@@ -281,14 +283,15 @@ public class GeneratorSvg extends GeneratorDocument {
                 updateHdr.setList(Boolean.TRUE);
                 types.add(0, TypeUtils.convertTypeReference(this, subId));
                 types.add(1, TypeUtils.convertTypeReference(this, updateHdr));
-                List<esa.mo.tools.stubgen.specification.TypeInfo> rt = op.getRetTypes();
-                for (TypeInfo typeInfo : rt) {
+
+                for (TypeInfo typeInfo : op.getRetTypes()) {
                     TypeReference refType = typeInfo.getSourceType();
                     refType.setList(Boolean.TRUE);
                     types.add(TypeUtils.convertTypeReference(this, refType));
                     refType.setList(Boolean.FALSE);
                 }
-                drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:", types, op.getRetComment(), op.getName(), "PUBSUB");
+                drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:",
+                        types, op.getRetComment(), op.getName(), "PUBSUB");
                 break;
             }
 
@@ -298,7 +301,8 @@ public class GeneratorSvg extends GeneratorDocument {
         }
     }
 
-    private void createFundamentalClass(SvgBaseWriter svgFile, Map<String, String> indexMap, FundamentalType fundamental) throws IOException {
+    private void createFundamentalClass(SvgBaseWriter svgFile,
+            Map<String, String> indexMap, FundamentalType fundamental) throws IOException {
         String fundName = fundamental.getName();
 
         getLog().info("Creating fundamental class " + fundName);
@@ -312,7 +316,8 @@ public class GeneratorSvg extends GeneratorDocument {
         indexMap.put(fundName, createXlink(null, null, fundName));
     }
 
-    private void createAttributeClass(SvgBaseWriter svgFile, Map<String, String> indexMap, AttributeType attribute) throws IOException {
+    private void createAttributeClass(SvgBaseWriter svgFile,
+            Map<String, String> indexMap, AttributeType attribute) throws IOException {
         String attrName = attribute.getName();
 
         getLog().info("Creating attribute class " + attrName);
@@ -326,7 +331,8 @@ public class GeneratorSvg extends GeneratorDocument {
         indexMap.put(attrName, createXlink(null, null, attrName));
     }
 
-    private void createEnumerationClass(SvgBaseWriter svgFile, Map<String, String> indexMap, ServiceType service, EnumerationType enumeration) throws IOException {
+    private void createEnumerationClass(SvgBaseWriter svgFile, Map<String, String> indexMap,
+            ServiceType service, EnumerationType enumeration) throws IOException {
         String enumName = enumeration.getName();
 
         getLog().info("Creating enumeration class " + enumName);
@@ -345,7 +351,8 @@ public class GeneratorSvg extends GeneratorDocument {
         indexMap.put(enumName, createXlink(null, (service == null ? null : service.getName()), enumName));
     }
 
-    private void createCompositeClass(SvgBaseWriter svgFile, Map<String, String> indexMap, ServiceType service, CompositeType composite) throws IOException {
+    private void createCompositeClass(SvgBaseWriter svgFile, Map<String, String> indexMap,
+            ServiceType service, CompositeType composite) throws IOException {
         String compName = composite.getName();
 
         getLog().info("Creating composite class " + compName);
@@ -371,8 +378,10 @@ public class GeneratorSvg extends GeneratorDocument {
         indexMap.put(compName, createXlink(null, (service == null ? null : service.getName()), compName));
     }
 
-    private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary, Integer number, String title, List<TypeInfo> types, String comment, String name, String phase) throws IOException {
-        if (0 < types.size()) {
+    private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary,
+            Integer number, String title, List<TypeInfo> types, String comment,
+            String name, String phase) throws IOException {
+        if (!types.isEmpty()) {
             svgFile.addTitle(4, title, null, "", false);
         } else {
             svgFile.addTitle(4, title, null, " None", false);
@@ -385,7 +394,7 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         if (includeCollapsedMessages) {
-            if (0 < types.size()) {
+            if (!types.isEmpty()) {
                 SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
                 svgOutput.startDrawing();
                 for (TypeInfo e : types) {
@@ -398,7 +407,7 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         if (includeExpandedMessages) {
-            if (0 < types.size()) {
+            if (!types.isEmpty()) {
                 SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
                 TopContainer cnt = new TopContainer();
                 cnt.addOperationTypes(types);
@@ -430,7 +439,8 @@ public class GeneratorSvg extends GeneratorDocument {
         }
     }
 
-    private void drawCompositeType(SvgBaseWriter svgFile, CompositeType composite, List<CompositeField> compElements) throws IOException {
+    private void drawCompositeType(SvgBaseWriter svgFile, CompositeType composite,
+            List<CompositeField> compElements) throws IOException {
         svgFile.startDrawing();
 
         if (null == compElements) {
@@ -497,7 +507,8 @@ public class GeneratorSvg extends GeneratorDocument {
         }
     }
 
-    private SvgBaseWriter getSvgOutputFile(ServiceSummary service, Integer number, String name, String phase, SvgBaseWriter mainSvgFile) {
+    private SvgBaseWriter getSvgOutputFile(ServiceSummary service, Integer number,
+            String name, String phase, SvgBaseWriter mainSvgFile) {
         SvgBaseWriter rv = mainSvgFile;
 
         if (splitOutSvg) {
@@ -523,7 +534,8 @@ public class GeneratorSvg extends GeneratorDocument {
         protected final boolean isOptional;
         protected boolean expanded = false;
 
-        public ContainerElement(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional) {
+        public ContainerElement(Container container, TypeReference typeRef,
+                String name, String type, boolean isList, boolean isOptional) {
             this.container = container;
             this.typeRef = typeRef;
             this.name = name;
@@ -592,7 +604,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
     private class AbstractElement extends ContainerElement {
 
-        public AbstractElement(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional) {
+        public AbstractElement(Container container, TypeReference typeRef,
+                String name, String type, boolean isList, boolean isOptional) {
             super(container, typeRef, name, type, isList, isOptional);
         }
 
@@ -608,7 +621,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
     private class ContainerAttribute extends ContainerElement {
 
-        public ContainerAttribute(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional) {
+        public ContainerAttribute(Container container, TypeReference typeRef,
+                String name, String type, boolean isList, boolean isOptional) {
             super(container, typeRef, name, type, isList, isOptional);
             expanded = true;
         }
@@ -627,7 +641,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected final List<ContainerElement> elements = new ArrayList<>();
 
-        public Container(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional) {
+        public Container(Container container, TypeReference typeRef,
+                String name, String type, boolean isList, boolean isOptional) {
             super(container, typeRef, name, type, isList, isOptional);
         }
 
@@ -774,7 +789,8 @@ public class GeneratorSvg extends GeneratorDocument {
         private final TypeReference tr;
         private boolean fullyExpanded = false;
 
-        public CompositeContainer(Container container, TypeReference typeRef, String name, String type, boolean isList, boolean isOptional, TypeReference tr) {
+        public CompositeContainer(Container container, TypeReference typeRef, String name,
+                String type, boolean isList, boolean isOptional, TypeReference tr) {
             super(container, typeRef, name, type, isList, isOptional);
             this.tr = tr;
         }
@@ -934,7 +950,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(List<String> cmts) throws IOException {
             if (includeDescriptions) {
-                if (0 < cmts.size()) {
+                if (!cmts.isEmpty()) {
                     for (String str : cmts) {
                         addComment(str);
                     }
@@ -944,8 +960,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(String text) throws IOException {
             if (includeDescriptions) {
-                List<String> strings = splitString(null, text);
-                if (0 < strings.size()) {
+                List<String> strings = GeneratorUtils.splitString(null, text);
+                if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
                             file.append(makeLine(2, "<p>" + escape(str) + "</p>", false));
@@ -957,8 +973,8 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(String text, boolean override) throws IOException {
             if (override) {
-                List<String> strings = splitString(null, text);
-                if (0 < strings.size()) {
+                List<String> strings = GeneratorUtils.splitString(null, text);
+                if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
                             file.append(makeLine(2, "<p>" + escape(str) + "</p>", false));

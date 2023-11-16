@@ -23,7 +23,7 @@ package org.ccsds.moims.mo.mal.test.regression.fastprovider;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.malprototype.iptest.body.RequestMultiResponse;
@@ -34,11 +34,11 @@ import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.ProgressMultiInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.TestInvokeEmptyBodyInteraction;
 import org.ccsds.moims.mo.malprototype.iptest.provider.TestProgressEmptyBodyInteraction;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.iptest.structures.IPTestResult;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -48,13 +48,13 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     public void testSubmit(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
         if (null == iptd) {
-            throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
         }
     }
 
     public String request(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
         if (null == iptd) {
-            throw new MALInteractionException(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+            throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
         }
 
         return "";
@@ -66,7 +66,7 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
             Thread.sleep(1000);
 
             if (null == iptd) {
-                ri.sendError(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+                ri.sendError(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
                 return;
             }
 
@@ -90,7 +90,7 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
             Thread.sleep(1000);
 
             if (null == iptd) {
-                qi.sendError(new MALStandardError(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+                qi.sendError(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
                 return;
             }
 

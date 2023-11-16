@@ -32,30 +32,35 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
-import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Map;
 import java.util.Vector;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
+import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishDeregister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestPublishUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdate;
-import org.ccsds.moims.mo.malprototype.iptest.structures.TestUpdateList;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
+import org.ccsds.moims.mo.malprototype.structures.TestUpdateList;
 import org.ccsds.moims.mo.malprototype.structures.Assertion;
 import org.ccsds.moims.mo.malprototype.structures.AssertionList;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
@@ -95,13 +100,13 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         ipTestToPublish = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 publishNetworkId, SESSION, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister = new TestPublishRegister(
                 QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN,
-                new Identifier(network), SESSION, SESSION_NAME, false, Helper.get1TestKey(),
-                expectedErrorCode);
+                new Identifier(network), SESSION, SESSION_NAME, false,
+                Helper.get1TestKey(), Helper.get1TestKeyType(), expectedErrorCode);
         ipTestToPublish.publishRegister(testPublishRegister);
         return true;
     }
@@ -111,8 +116,8 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
                 + network + ',' + notifyNumber + ")");
 
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList("*")));
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, filters);
+        filters.add(new SubscriptionFilter(Helper.key1, new AttributeList(new Union("*"))));
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
 
         listener = new MonitorListener();
 
@@ -120,12 +125,15 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         ipTestToSubscribe = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID, HeaderTestProcedure.DOMAIN,
                 subscribeNetworkId, SESSION, SESSION_NAME, QOS_LEVEL,
-                PRIORITY, shared).getStub();
+                PRIORITY, new NamedValueList(), shared).getStub();
 
         ipTestToSubscribe.monitorRegister(subscription, listener);
 
         UpdateHeaderList updateHeaderList = new UpdateHeaderList();
-        updateHeaderList.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, new AttributeList("value")));
+        NullableAttributeList keyValues = new NullableAttributeList();
+        keyValues.add(new NullableAttribute(new Union("value")));
+        updateHeaderList.add(new UpdateHeader(new Identifier("source"),
+                HeaderTestProcedure.DOMAIN, keyValues));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(0));
@@ -181,10 +189,10 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
 
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
-                Identifier subscriptionId, UpdateHeaderList updateHeaderList,
-                TestUpdateList updateList, Map qosProperties) {
+                Identifier subscriptionId, UpdateHeader updateHeader,
+                TestUpdate update, Map qosProperties) {
             logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
-                    + updateHeaderList + ')');
+                    + updateHeader + ')');
             receivedNotify.addElement(msgHeader);
             monitorCond.set();
         }
@@ -196,11 +204,14 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         public boolean checkHeaderAssertions() {
             AssertionList assertions = new AssertionList();
             String procedureName = "PubSub.checkSubscriptionNetwork";
+
             for (int i = 0; i < receivedNotify.size(); i++) {
                 MALMessageHeader msgHeader = (MALMessageHeader) receivedNotify.elementAt(i);
-                assertions.add(new Assertion(procedureName,
+                Attribute value = msgHeader.getSupplementValue("network");
+                Assertion assertion = new Assertion(procedureName,
                         "The network zone of the notify is : " + publishNetworkId,
-                        msgHeader.getNetworkZone().equals(publishNetworkId)));
+                        publishNetworkId.equals(value));
+                assertions.add(assertion);
             }
             return AssertionHelper.checkAssertions(assertions);
         }

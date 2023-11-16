@@ -21,9 +21,6 @@
 package org.ccsds.moims.mo.mal.structures;
 
 import java.util.ArrayList;
-import org.ccsds.moims.mo.mal.MALDecoder;
-import org.ccsds.moims.mo.mal.MALEncoder;
-import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * The Attributes list. The added and removed objects to this class might or
@@ -31,16 +28,18 @@ import org.ccsds.moims.mo.mal.MALException;
  * to be able to handle each case when trying to encode and when passing the
  * values to the user.
  */
-public class AttributeList extends java.util.ArrayList<Object> implements Element {
+public class AttributeList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
 
     /**
      * Default constructor.
      *
-     * @param attribute An attribute to be added to the list.
+     * @param attribute An attribute to be added to the list. The type has to be
+     * Object (instead of Attribute) because the Union type does not extend the
+     * Attribute type.
      */
     public AttributeList(Object attribute) {
         super();
-        super.add(attribute);
+        super.add((Element) Attribute.javaType2Attribute(attribute));
     }
 
     /**
@@ -50,39 +49,51 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
         super();
     }
 
+    /**
+     * Adds an element to the list and checks if the type is correct.
+     *
+     * @param element The element to be added.
+     * @return The success status.
+     */
+    @Override
+    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+        if (element != null && !(element instanceof Attribute)) {
+            throw new java.lang.ClassCastException("The added element does not extend the type: Attribute");
+        }
+        return super.add(element);
+    }
+
+    /**
+     * Adds an element to the list. The element will be converted to Attribute
+     * in case it is a native Java Type (E.g. Integer, Long, etc).
+     *
+     * @param element The element to be added.
+     * @return The success status.
+     */
+    public boolean addAsJavaType(Object element) {
+        Object att = Attribute.javaType2Attribute(element);
+        if (att instanceof Attribute) {
+            this.add((Attribute) att);
+            return true;
+        }
+        throw new IllegalArgumentException("The added argument could not be converted to a MAL Attribute!");
+    }
+
     @Override
     public Element createElement() {
         return new AttributeList();
     }
 
-    @Override
-    public Long getShortForm() {
-        throw new UnsupportedOperationException("This method should never be called!");
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        throw new UnsupportedOperationException("This method should never be called!");
-    }
-
-    @Override
-    public Object get(int index) {
+    public Object getAsJavaType(int index) {
         return Attribute.attribute2JavaType(super.get(index));
+    }
+
+    public NullableAttributeList getAsNullableAttributeList() {
+        NullableAttributeList attributes = new NullableAttributeList();
+        for (Object obj : this) {
+            attributes.add(new NullableAttribute((Attribute) Attribute.javaType2Attribute(obj)));
+        }
+        return attributes;
     }
 
     /**
@@ -97,39 +108,5 @@ public class AttributeList extends java.util.ArrayList<Object> implements Elemen
             attributes.add((Attribute) Attribute.javaType2Attribute(obj));
         }
         return attributes;
-    }
-
-    @Override
-    public void encode(MALEncoder encoder) throws MALException {
-        int size = this.size();
-        encoder.encodeInteger(size);
-
-        for (int i = 0; i < size; i++) {
-            Object objToEncode = super.get(i);
-
-            if (!(objToEncode instanceof Attribute)) {
-                objToEncode = Attribute.javaType2Attribute(objToEncode);
-            }
-
-            if (objToEncode != null && !(objToEncode instanceof Attribute)) {
-                throw new MALException("The object is not an Attribute type! "
-                        + "It is: " + objToEncode.getClass().getCanonicalName()
-                        + " - With value: " + objToEncode.toString());
-            }
-
-            encoder.encodeNullableAttribute((Attribute) objToEncode);
-        }
-    }
-
-    @Override
-    public Element decode(MALDecoder decoder) throws MALException {
-        int size = decoder.decodeInteger();
-        AttributeList newObj = new AttributeList();
-
-        for (int i = 0; i < size; i++) {
-            newObj.add(decoder.decodeNullableAttribute());
-        }
-
-        return newObj;
     }
 }

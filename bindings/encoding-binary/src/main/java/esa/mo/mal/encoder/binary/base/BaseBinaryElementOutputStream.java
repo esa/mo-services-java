@@ -20,12 +20,12 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
-import org.ccsds.moims.mo.mal.encoding.GENElementOutputStream;
+import org.ccsds.moims.mo.mal.encoding.ElementOutputStream;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding.
  */
-public abstract class BaseBinaryElementOutputStream extends GENElementOutputStream {
+public abstract class BaseBinaryElementOutputStream extends ElementOutputStream {
 
     /**
      * Time handler to encode time with.
