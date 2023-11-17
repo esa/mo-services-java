@@ -348,6 +348,8 @@ public class AreaTabbedPane extends JTabbedPane {
                 String newText = GeneratorXML.generateXML(spec);
                 int caretPosition = textEditorTo.getTextArea().getCaretPosition();
                 textEditorTo.getTextArea().setText(newText);
+                int newCaretPosition = textEditorTo.getTextArea().getCaretPosition();
+                caretPosition = (caretPosition > newCaretPosition) ? newCaretPosition : caretPosition;
                 textEditorTo.getTextArea().setCaretPosition(caretPosition);
                 textEditorFrom.getTextArea().removeAllLineHighlights();
 
