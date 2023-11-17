@@ -28,6 +28,7 @@ import java.io.IOException;
  * Small extension to the standard ClassWriter interface to add methods for
  * proposed features.
  */
+@Deprecated
 public interface ClassWriterProposed extends ClassWriter {
 
     /**
@@ -42,25 +43,8 @@ public interface ClassWriterProposed extends ClassWriter {
      * @param initialValue The initial value of the variable.
      * @throws IOException If there is an IO error.
      */
+    @Deprecated
     void addClassVariableProposed(boolean isStatic, boolean isFinal,
             String scope, CompositeField type, boolean isObject,
             String initialValue) throws IOException;
-
-    /**
-     * Adds a member variable to the class.
-     *
-     * @param isStatic True if the variable is static.
-     * @param isFinal True if the variable may not be modified.
-     * @param scope Scope of the variable.
-     * @param type Type of the variable.
-     * @param isObject True if the variable is an object rather than native
-     * type.
-     * @param initialValue The initial value of the variable.
-     * @param isArray True if the variable is an array
-     * @param isNewInit True if new keyword is used for initialization
-     * @throws IOException If there is an IO error.
-     */
-    void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope,
-            CompositeField type, boolean isObject, boolean isArray,
-            String initialValue, boolean isNewInit) throws IOException;
 }

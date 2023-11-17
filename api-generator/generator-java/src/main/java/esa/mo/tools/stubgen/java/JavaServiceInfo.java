@@ -223,13 +223,13 @@ public class JavaServiceInfo {
             if (features != null) {
                 if (features.getObjects() != null) {
                     for (ModelObjectType obj : features.getObjects().getObject()) {
-                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, false, area);
+                        createComObjectHelperDetails(file, comObjectCalls, serviceCAPS, obj, false, area);
                     }
                 }
 
                 if (features.getEvents() != null) {
                     for (ModelObjectType obj : features.getEvents().getEvent()) {
-                        createComObjectHelperDetails(file, comObjectCalls, namespace, serviceCAPS, obj, true, area);
+                        createComObjectHelperDetails(file, comObjectCalls, serviceCAPS, obj, true, area);
                     }
                 }
             }
@@ -275,7 +275,7 @@ public class JavaServiceInfo {
     }
 
     private void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls,
-            String areaHelperObject, String serviceVar, ModelObjectType obj, boolean isEvent, AreaType area) throws IOException {
+            String serviceVar, ModelObjectType obj, boolean isEvent, AreaType area) throws IOException {
         String objNameCaps = obj.getName().toUpperCase();
         comObjectCalls.add(objNameCaps);
 
