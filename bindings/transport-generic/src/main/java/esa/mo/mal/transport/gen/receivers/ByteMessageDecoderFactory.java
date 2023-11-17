@@ -24,7 +24,6 @@ import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
 import org.ccsds.moims.mo.mal.MALException;
-import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * Factory class for byte decoders.
@@ -32,8 +31,7 @@ import esa.mo.mal.transport.gen.ReceptionHandler;
 public class ByteMessageDecoderFactory<O> implements MessageDecoderFactory<byte[], O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport<byte[], O> transport,
-            ReceptionHandler receptionHandler, byte[] messageSource) {
+    public GENIncomingMessageDecoder createDecoder(Transport<byte[], O> transport, byte[] messageSource) {
         return new GENIncomingByteMessageDecoder(transport, messageSource);
     }
 

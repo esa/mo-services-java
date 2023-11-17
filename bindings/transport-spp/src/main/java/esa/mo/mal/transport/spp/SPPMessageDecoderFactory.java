@@ -25,11 +25,10 @@ import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
 import java.nio.ByteBuffer;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
-import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
-import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * Factory class for SPPMessage decoders.
@@ -39,8 +38,7 @@ import esa.mo.mal.transport.gen.ReceptionHandler;
 public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, List<ByteBuffer>> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport<I, List<ByteBuffer>> transport,
-            ReceptionHandler receptionHandler, I messageSource) {
+    public GENIncomingMessageDecoder createDecoder(Transport<I, List<ByteBuffer>> transport, I messageSource) {
         return new SPPMessageDecoder((SPPBaseTransport<I>) transport, messageSource);
     }
 

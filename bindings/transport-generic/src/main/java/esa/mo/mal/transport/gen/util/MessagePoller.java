@@ -222,9 +222,9 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
         public void receiveMessage() throws IOException, InterruptedException {
             I msg = receiver.readEncodedMessage();
 
-            if (null != msg) {
+            if (msg != null) {
                 transport.receive(handler,
-                        decoderFactory.createDecoder(transport, handler, msg));
+                        decoderFactory.createDecoder(transport, msg));
             }
         }
 

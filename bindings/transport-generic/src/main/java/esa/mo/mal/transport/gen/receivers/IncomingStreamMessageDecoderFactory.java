@@ -25,7 +25,6 @@ import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
 import java.io.InputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * Factory class for IO stream decoders.
@@ -33,8 +32,7 @@ import esa.mo.mal.transport.gen.ReceptionHandler;
 public class IncomingStreamMessageDecoderFactory<O> implements MessageDecoderFactory<InputStream, O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport<InputStream, O> transport,
-            ReceptionHandler receptionHandler, InputStream messageSource) {
+    public GENIncomingMessageDecoder createDecoder(Transport<InputStream, O> transport, InputStream messageSource) {
         return new GENIncomingStreamMessageDecoder(transport, messageSource);
     }
 

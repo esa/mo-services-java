@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.gen.receivers;
 
 import esa.mo.mal.transport.gen.Transport;
-import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  * Interface for factory classes used by the receivers for creating decoders.
@@ -35,10 +34,8 @@ public interface MessageDecoderFactory<I, O> {
      * Creates a decoder for the supplied message source.
      *
      * @param transport Transport to pass messages to.
-     * @param receptionHandler The reception handler.
      * @param messageSource The message source to pass to the decoder.
      * @return the new message decoder.
      */
-    GENIncomingMessageDecoder createDecoder(final Transport<I, O> transport,
-            ReceptionHandler receptionHandler, I messageSource);
+    GENIncomingMessageDecoder createDecoder(final Transport<I, O> transport, I messageSource);
 }

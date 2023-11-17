@@ -448,7 +448,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     public void channelDataReceived(byte[] remoteIdentity, byte[] data) {
-        this.receive(null, decoderFactory.createDecoder(this, null, data));
+        this.receive(null, decoderFactory.createDecoder(this, data));
     }
 
     /**

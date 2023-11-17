@@ -38,8 +38,7 @@ import esa.mo.mal.transport.gen.ReceptionHandler;
 public class TCPIPMessageDecoderFactory<O> implements MessageDecoderFactory<TCPIPPacketInfoHolder, O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport transport,
-            ReceptionHandler receptionHandler, TCPIPPacketInfoHolder packetInfo) {
+    public GENIncomingMessageDecoder createDecoder(Transport transport, TCPIPPacketInfoHolder packetInfo) {
         return new TCPIPMessageDecoder((TCPIPTransport) transport, packetInfo);
     }
 
