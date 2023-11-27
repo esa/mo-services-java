@@ -35,7 +35,7 @@ public class RMIMessageSender implements MessageSender<byte[]> {
 
     private final String remoteURI;
     private boolean closed = false;
-    private RMIReceiveInterface destinationRMI;
+    private RMIReceiveImpl destinationRMI;
 
     /**
      * Constructor.
@@ -45,10 +45,10 @@ public class RMIMessageSender implements MessageSender<byte[]> {
      * @throws MalformedURLException If URI not correct.
      * @throws RemoteException If there is a remote error.
      */
-    public RMIMessageSender(String remoteRootURI) 
+    public RMIMessageSender(String remoteRootURI)
             throws NotBoundException, MalformedURLException, RemoteException {
         this.remoteURI = remoteRootURI;
-        destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
+        destinationRMI = (RMIReceiveImpl) Naming.lookup(remoteURI);
     }
 
     @Override
@@ -63,18 +63,18 @@ public class RMIMessageSender implements MessageSender<byte[]> {
         }
     }
 
-    private void internalSendMessage(OutgoingMessageHolder<byte[]> packetData) 
+    private void internalSendMessage(OutgoingMessageHolder<byte[]> packetData)
             throws MalformedURLException, RemoteException, IOException {
         if (!closed) {
             if (null == destinationRMI) {
                 try {
-                    destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
+                    destinationRMI = (RMIReceiveImpl) Naming.lookup(remoteURI);
                 } catch (NotBoundException ex) {
                     throw new IOException("Remote URI no known " + remoteURI, ex);
                 }
             }
 
-            RMIReceiveInterface remoteIf = destinationRMI;
+            RMIReceiveImpl remoteIf = destinationRMI;
 
             if (null != remoteIf) {
                 remoteIf.receive(packetData.getEncodedMessage());

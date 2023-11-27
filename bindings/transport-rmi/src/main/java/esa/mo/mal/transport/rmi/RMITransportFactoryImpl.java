@@ -45,7 +45,7 @@ public class RMITransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final MALContext malContext, 
+    public MALTransport createTransport(final MALContext malContext,
             final Map properties) throws MALException {
         synchronized (MUTEX) {
             if (null == transport) {
