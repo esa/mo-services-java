@@ -59,7 +59,7 @@ public class ByteMessageDecoderFactory<O> implements MessageDecoderFactory<byte[
         public IncomingMessageHolder decodeAndCreateMessage() throws MALException {
             PacketToString smsg = new PacketToString(rawMessage);
             GENMessage malMsg = transport.createMessage(rawMessage);
-            return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+            return new IncomingMessageHolder(malMsg, smsg);
         }
     }
 }

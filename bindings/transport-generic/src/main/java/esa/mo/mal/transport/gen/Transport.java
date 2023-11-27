@@ -421,8 +421,7 @@ public abstract class Transport<I, O> implements MALTransport {
                     new Object[]{endpointUriPart});
 
             // if local then just send internally
-            receiveIncomingMessage(new IncomingMessageHolder(
-                    header.getTransactionId(), msg, new PacketToString(null)));
+            receiveIncomingMessage(new IncomingMessageHolder(msg, new PacketToString(null)));
         } else {
             try {
                 LOGGER.log(Level.FINE,
@@ -558,15 +557,16 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param malMsg the message
      */
     public void receiveIncomingMessage(final IncomingMessageHolder malMsg) {
+        Long transactionId = malMsg.getMalMsg().getHeader().getTransactionId();
         LOGGER.log(Level.FINE, "Queuing message : {0} : {1}",
-                new Object[]{malMsg.malMsg.getHeader().getTransactionId(), malMsg.smsg});
+                new Object[]{transactionId, malMsg.getSmsg()});
 
         synchronized (transactionQueues) {
-            IncomingMessageDispatcher dispatcher = transactionQueues.get(malMsg.transactionId);
+            IncomingMessageDispatcher dispatcher = transactionQueues.get(transactionId);
 
             if (dispatcher == null) {
                 dispatcher = new IncomingMessageDispatcher(this, malMsg);
-                transactionQueues.put(malMsg.transactionId, dispatcher);
+                transactionQueues.put(transactionId, dispatcher);
                 dispatcherExecutor.submit(dispatcher);
             } else if (dispatcher.addMessage(malMsg)) {
                 // need to resubmit this to the processing threads

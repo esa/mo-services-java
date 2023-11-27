@@ -51,8 +51,7 @@ public class IncomingStreamMessageDecoderFactory<O> implements MessageDecoderFac
          * @param transport Containing transport.
          * @param ios The stream message
          */
-        public GENIncomingStreamMessageDecoder(
-                final Transport<InputStream, O> transport, InputStream ios) {
+        public GENIncomingStreamMessageDecoder(Transport<InputStream, O> transport, InputStream ios) {
             this.transport = transport;
             this.ios = ios;
         }
@@ -61,7 +60,7 @@ public class IncomingStreamMessageDecoderFactory<O> implements MessageDecoderFac
         public IncomingMessageHolder decodeAndCreateMessage() throws MALException {
             PacketToString smsg = new PacketToString(null);
             GENMessage malMsg = transport.createMessage(ios);
-            return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+            return new IncomingMessageHolder(malMsg, smsg);
         }
     }
 }

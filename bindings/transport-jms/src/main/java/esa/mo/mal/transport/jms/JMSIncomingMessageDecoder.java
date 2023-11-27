@@ -51,7 +51,6 @@ final class JMSIncomingMessageDecoder implements GENIncomingMessageDecoder {
     public IncomingMessageHolder decodeAndCreateMessage() throws MALException {
         GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
                 new HashMap(), jmsUpdate.getDat(), transport.getStreamFactory());
-        return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(),
-                malMsg, new PacketToString(null));
+        return new IncomingMessageHolder(malMsg, new PacketToString(null));
     }
 }

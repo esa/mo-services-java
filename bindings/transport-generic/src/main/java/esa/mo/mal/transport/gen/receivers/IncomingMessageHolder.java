@@ -29,29 +29,30 @@ import esa.mo.mal.transport.gen.PacketToString;
 public final class IncomingMessageHolder {
 
     /**
-     * The transaction id of this message.
-     */
-    public final Long transactionId;
-    /**
      * The decoded MAL message.
      */
-    public final GENMessage malMsg;
+    private final GENMessage malMsg;
     /**
      * A string representation for debug tracing.
      */
-    public final PacketToString smsg;
+    private final PacketToString smsg;
 
     /**
      * Constructor.
      *
-     * @param transactionId the message transaction id.
      * @param malMsg The decoded MAL message.
      * @param smsg A string representation for debug tracing.
      */
-    public IncomingMessageHolder(final Long transactionId, 
-            final GENMessage malMsg, final PacketToString smsg) {
-        this.transactionId = transactionId;
+    public IncomingMessageHolder(final GENMessage malMsg, final PacketToString smsg) {
         this.malMsg = malMsg;
         this.smsg = smsg;
+    }
+
+    public GENMessage getMalMsg() {
+        return malMsg;
+    }
+
+    public PacketToString getSmsg() {
+        return smsg;
     }
 }

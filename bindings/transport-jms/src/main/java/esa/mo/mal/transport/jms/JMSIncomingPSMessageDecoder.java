@@ -97,8 +97,7 @@ final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
 
             GENMessage malMsg = new GENMessage(false, new JMSMessageHeader(hdr, jmsUpdate),
                     null, null, transport.getStreamFactory(), new_objs);
-            return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(),
-                    malMsg, new PacketToString(data));
+            return new IncomingMessageHolder(malMsg, new PacketToString(data));
         } catch (Throwable ex) {
             throw new MALException("Internal error decoding message", ex);
         }

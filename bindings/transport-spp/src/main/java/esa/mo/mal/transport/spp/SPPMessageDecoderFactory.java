@@ -70,7 +70,7 @@ public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, Lis
             GENMessage malMsg = transport.createMessage(rawMessage);
 
             if (malMsg != null) {
-                return new IncomingMessageHolder(malMsg.getHeader().getTransactionId(), malMsg, smsg);
+                return new IncomingMessageHolder(malMsg, smsg);
             }
 
             return null;

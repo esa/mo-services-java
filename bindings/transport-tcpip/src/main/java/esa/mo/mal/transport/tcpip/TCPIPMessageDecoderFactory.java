@@ -27,7 +27,6 @@ import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
-import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
  *
@@ -68,7 +67,7 @@ public class TCPIPMessageDecoderFactory<O> implements MessageDecoderFactory<TCPI
 
             if (msg != null) {
                 PacketToString smsg = new PacketToString(null);
-                return new IncomingMessageHolder(msg.getHeader().getTransactionId(), msg, smsg);
+                return new IncomingMessageHolder(msg, smsg);
             }
 
             return null;

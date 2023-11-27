@@ -65,12 +65,11 @@ public class IncomingMessageReceiver implements Runnable {
 
             // the decoder may return null for transports that support fragmentation
             if (msg != null) {
-                Transport.LOGGER.log(Level.FINE,
-                        "Receving message : {0} : {1}",
-                        new Object[]{msg.malMsg.getHeader().getTransactionId(), msg.smsg});
+                Transport.LOGGER.log(Level.FINE, "Receving message : {0} : {1}",
+                        new Object[]{msg.getMalMsg().getHeader().getTransactionId(), msg.getSmsg()});
 
                 //register communication channel if needed
-                transport.manageCommunicationChannel(msg.malMsg, true, receptionHandler);
+                transport.manageCommunicationChannel(msg.getMalMsg(), true, receptionHandler);
                 transport.receiveIncomingMessage(msg);
             }
         } catch (MALException e) {
