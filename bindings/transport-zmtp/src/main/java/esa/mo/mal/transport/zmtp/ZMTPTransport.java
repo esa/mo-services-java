@@ -384,9 +384,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
                     dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
                     getBodyEncodingSelector().getDecoderStreamFactory(header));
         } catch (MALException ex) {
-            returnErrorMessage(null,
-                    dummyMessage,
-                    MALHelper.INTERNAL_ERROR_NUMBER,
+            returnErrorMessage(dummyMessage, MALHelper.INTERNAL_ERROR_NUMBER,
                     "The message body could not be decoded. The message will be discarded!");
 
             return null;

@@ -613,9 +613,7 @@ public abstract class Transport<I, O> implements MALTransport {
                 LOGGER.log(Level.WARNING, "Endpoint not found: {0}! "
                         + "Double check the uri, in particular, the ending part!",
                         new Object[]{endpointUriPart});
-                returnErrorMessage(null,
-                        msg,
-                        MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                returnErrorMessage(msg, MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                         "Endpoint not found: " + endpointUriPart);
             }
         } catch (Exception e) {
@@ -625,9 +623,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(null,
-                        msg,
-                        MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(msg, MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE,
@@ -643,9 +639,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(null,
-                        msg,
-                        MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(msg, MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE, "Error occurred when return error data : {0}", ex);
@@ -656,13 +650,12 @@ public abstract class Transport<I, O> implements MALTransport {
     /**
      * Creates a return error message based on a received message.
      *
-     * @param ep The endpoint to use for sending the error.
      * @param srcMsg The original message
      * @param errorNumber The error number
      * @param errorMsg The error message.
      * @throws MALException if cannot encode a response message
      */
-    protected void returnErrorMessage(Endpoint ep, final GENMessage srcMsg,
+    protected void returnErrorMessage(final GENMessage srcMsg,
             final UInteger errorNumber, final String errorMsg) throws MALException {
         try {
             final MALMessageHeader srcHdr = srcMsg.getHeader();
@@ -680,7 +673,7 @@ public abstract class Transport<I, O> implements MALTransport {
                     || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
                     || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
 
-                if ((null == ep) && (!endpointMalMap.isEmpty())) {
+                if (!endpointMalMap.isEmpty()) {
                     Endpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
 
                     final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),

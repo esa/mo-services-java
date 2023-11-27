@@ -20,31 +20,20 @@
  */
 package esa.mo.mal.transport.rmi;
 
-import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory.GENIncomingByteMessageDecoder;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
 /**
- * The implementation of the RMIReceiveInterface interface. Holds a reference to
- * the transport instance that created it.
+ * The RMI interface. Defines a single method for the reception of an encoded
+ * message.
  */
-public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInterface {
-
-    private static final long serialVersionUID = 0x1000001111100L;
-    private final transient RMITransport transport;
+public interface RMIReceiveInterface extends Remote {
 
     /**
-     * Creates a new instance of RMIRecvImpl
+     * Used to pass an encoded message to a RMI Transport instance.
      *
-     * @param transport The transport instance to pass received messages to.
-     * @throws RemoteException On error.
+     * @param message The encoded message.
+     * @throws RemoteException On remote error.
      */
-    public RMIReceiveImpl(final RMITransport transport) throws RemoteException {
-        this.transport = transport;
-    }
-
-    @Override
-    public void receive(final byte[] packet) throws RemoteException {
-        transport.receive(null, new GENIncomingByteMessageDecoder(transport, packet));
-    }
+    void receive(final byte[] message) throws RemoteException;
 }

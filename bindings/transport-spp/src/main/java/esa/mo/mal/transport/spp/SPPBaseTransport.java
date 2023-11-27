@@ -272,8 +272,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
                         dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
                         localBodyStreamFactory);
             } catch (MALException ex) {
-                returnErrorMessage(null,
-                        dummyMessage,
+                returnErrorMessage(dummyMessage,
                         MALHelper.INTERNAL_ERROR_NUMBER,
                         "The message body could not be decoded. The message will be discarded!");
 
