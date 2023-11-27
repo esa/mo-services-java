@@ -407,8 +407,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
                 multiSendHandle,
                 lastForHandle,
                 msg,
-                internalEncodeByteMessage(destinationRootURI, destinationURI,
-                        multiSendHandle, lastForHandle, targetURI, msg));
+                internalEncodeByteMessage(msg));
     }
 
     protected MALElementStreamFactory getHeaderStreamFactory() {

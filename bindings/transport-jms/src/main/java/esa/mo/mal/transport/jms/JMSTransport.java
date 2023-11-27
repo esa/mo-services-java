@@ -197,7 +197,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
                 multiSendHandle,
                 lastForHandle,
                 msg,
-                internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle, targetURI, msg));
+                internalEncodeByteMessage(msg));
     }
 
     private class JMSMessageSender implements MessageSender<byte[]> {

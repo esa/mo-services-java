@@ -218,8 +218,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
             final boolean lastForHandle,
             final String targetURI,
             final GENMessage msg) throws Exception {
-        byte[] buf = internalEncodeByteMessage(destinationRootURI,
-                destinationURI, multiSendHandle, lastForHandle, targetURI, msg);
+        byte[] buf = internalEncodeByteMessage(msg);
 
         int sequenceFlags = (buf[2] & 0xC0) >> 6;
 

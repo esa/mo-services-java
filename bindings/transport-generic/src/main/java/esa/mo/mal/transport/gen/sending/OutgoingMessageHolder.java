@@ -48,6 +48,7 @@ public class OutgoingMessageHolder<O> {
     /**
      * The destination root URI, holds the connection level URI
      */
+    @Deprecated
     private final String destinationRootURI;
     /**
      * The complete destination URI
@@ -65,6 +66,7 @@ public class OutgoingMessageHolder<O> {
     /**
      * The encoded message
      */
+    @Deprecated
     private final MALMessage originalMessage;
     /**
      * The encoded message
@@ -145,6 +147,7 @@ public class OutgoingMessageHolder<O> {
      *
      * @return The root URI.
      */
+    @Deprecated
     public String getDestinationRootURI() {
         return destinationRootURI;
     }
@@ -173,6 +176,7 @@ public class OutgoingMessageHolder<O> {
      *
      * @return the original message
      */
+    @Deprecated
     public MALMessage getOriginalMessage() {
         return originalMessage;
     }

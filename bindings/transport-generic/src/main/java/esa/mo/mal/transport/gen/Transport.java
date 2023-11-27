@@ -921,21 +921,11 @@ public abstract class Transport<I, O> implements MALTransport {
     /**
      * Internal method for encoding the message.
      *
-     * @param destinationRootURI The destination root URI.
-     * @param destinationURI The complete destination URI.
-     * @param multiSendHandle Handle for multi send messages.
-     * @param lastForHandle true if last message in a multi send.
-     * @param targetURI The target URI.
      * @param msg The message to send.
      * @return The message holder for the outgoing message.
      * @throws MALTransmitErrorException if an error.
      */
-    protected byte[] internalEncodeByteMessage(final String destinationRootURI,
-            final String destinationURI,
-            final Object multiSendHandle,
-            final boolean lastForHandle,
-            final String targetURI,
-            final GENMessage msg) throws MALTransmitErrorException {
+    protected byte[] internalEncodeByteMessage(final GENMessage msg) throws MALTransmitErrorException {
         // encode the message
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -943,10 +933,8 @@ public abstract class Transport<I, O> implements MALTransport {
             msg.encodeMessage(getStreamFactory(), enc, baos, true);
             byte[] data = baos.toByteArray();
 
-            // message is encoded!
-            LOGGER.log(Level.FINE, "Sending data to {0} : {1}",
-                    new Object[]{targetURI, new PacketToString(data)});
-
+            // Message is encoded:
+            LOGGER.log(Level.FINE, "Encoded message: {0}", new PacketToString(data));
             return data;
         } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, "Could not encode message!", ex);
