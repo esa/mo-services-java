@@ -22,8 +22,8 @@ package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
@@ -44,7 +44,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  * Responsible for decoding newly arrived PS MAL Messages.
  */
-final class JMSIncomingPSMessageDecoder implements GENIncomingMessageDecoder {
+final class JMSIncomingPSMessageDecoder implements MessageDecoder {
 
     private final JMSTransport transport;
     final JMSUpdate jmsUpdate;

@@ -34,7 +34,7 @@ public class IncomingMessageReceiver implements Runnable {
 
     protected final Transport transport;
     protected final ReceptionHandler receptionHandler;
-    protected final GENIncomingMessageDecoder decoder;
+    protected final MessageDecoder decoder;
 
     /**
      * Constructor
@@ -46,7 +46,7 @@ public class IncomingMessageReceiver implements Runnable {
      */
     public IncomingMessageReceiver(final Transport transport,
             final ReceptionHandler receptionHandler,
-            final GENIncomingMessageDecoder decoder) {
+            final MessageDecoder decoder) {
         this.transport = transport;
         this.receptionHandler = receptionHandler;
         this.decoder = decoder;

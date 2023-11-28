@@ -20,10 +20,11 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
+import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageReceiver;
 import esa.mo.mal.transport.gen.sending.ConcurrentMessageSender;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.TransportThreadFactory;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +43,6 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.*;
-import esa.mo.mal.transport.gen.sending.MessageSender;
 
 /**
  * A generic implementation of the transport interface.
@@ -385,7 +385,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param decoder The class responsible for decoding the message from the
      * incoming connection
      */
-    public void receive(ReceptionHandler receptionHandler, GENIncomingMessageDecoder decoder) {
+    public void receive(ReceptionHandler receptionHandler, MessageDecoder decoder) {
         decoderExecutor.submit(new IncomingMessageReceiver(this, receptionHandler, decoder));
     }
 

@@ -24,9 +24,9 @@ import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * Small interface that is used to decode a message from an incoming
- * connection.s
+ * connection.
  */
-public interface GENIncomingMessageDecoder {
+public interface MessageDecoder {
 
     /**
      * Decodes and returns a new incoming message holder.

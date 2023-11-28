@@ -28,6 +28,7 @@ import esa.mo.mal.transport.gen.Transport;
  * @param <I> The type of the incoming messages.
  * @param <O> The type of the outgoing messages.
  */
+@Deprecated
 public interface MessageDecoderFactory<I, O> {
 
     /**
@@ -37,5 +38,5 @@ public interface MessageDecoderFactory<I, O> {
      * @param messageSource The message source to pass to the decoder.
      * @return the new message decoder.
      */
-    GENIncomingMessageDecoder createDecoder(final Transport<I, O> transport, I messageSource);
+    MessageDecoder createDecoder(final Transport<I, O> transport, I messageSource);
 }

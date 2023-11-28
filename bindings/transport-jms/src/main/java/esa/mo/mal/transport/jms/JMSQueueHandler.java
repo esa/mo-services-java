@@ -20,13 +20,13 @@
  */
 package esa.mo.mal.transport.jms;
 
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
+import esa.mo.mal.transport.gen.receivers.MessageDecoder;
+import esa.mo.mal.transport.jms.util.StructureHelper;
 import java.util.logging.Level;
 import javax.jms.*;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import esa.mo.mal.transport.jms.util.StructureHelper;
 
 /**
  *
@@ -108,7 +108,7 @@ public class JMSQueueHandler implements MessageListener {
         }
     }
 
-    protected GENIncomingMessageDecoder createMessageDecoder(JMSUpdate update) {
+    protected MessageDecoder createMessageDecoder(JMSUpdate update) {
         return new JMSIncomingMessageDecoder(endPoint.getJtransport(), update);
     }
 }

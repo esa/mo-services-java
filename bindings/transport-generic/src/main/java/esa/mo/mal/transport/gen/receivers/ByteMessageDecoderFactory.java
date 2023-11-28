@@ -31,15 +31,15 @@ import org.ccsds.moims.mo.mal.MALException;
 public class ByteMessageDecoderFactory<O> implements MessageDecoderFactory<byte[], O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport<byte[], O> transport, byte[] messageSource) {
-        return new GENIncomingByteMessageDecoder(transport, messageSource);
+    public MessageDecoder createDecoder(Transport<byte[], O> transport, byte[] messageSource) {
+        return new ByteMessageDecoder(transport, messageSource);
     }
 
     /**
      * Implementation of the GENIncomingMessageDecoder class for newly arrived
      * MAL Messages in byte array format.
      */
-    public static final class GENIncomingByteMessageDecoder<O> implements GENIncomingMessageDecoder {
+    public static final class ByteMessageDecoder<O> implements MessageDecoder {
 
         private final Transport<byte[], O> transport;
         private final byte[] rawMessage;
@@ -50,7 +50,7 @@ public class ByteMessageDecoderFactory<O> implements MessageDecoderFactory<byte[
          * @param transport Containing transport.
          * @param rawMessage The raw message
          */
-        public GENIncomingByteMessageDecoder(final Transport<byte[], O> transport, byte[] rawMessage) {
+        public ByteMessageDecoder(final Transport<byte[], O> transport, byte[] rawMessage) {
             this.transport = transport;
             this.rawMessage = rawMessage;
         }

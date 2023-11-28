@@ -24,9 +24,9 @@ import org.ccsds.moims.mo.mal.MALException;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
+import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 
 /**
  *
@@ -37,14 +37,14 @@ import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
 public class TCPIPMessageDecoderFactory<O> implements MessageDecoderFactory<TCPIPPacketInfoHolder, O> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport transport, TCPIPPacketInfoHolder packetInfo) {
+    public MessageDecoder createDecoder(Transport transport, TCPIPPacketInfoHolder packetInfo) {
         return new TCPIPMessageDecoder((TCPIPTransport) transport, packetInfo);
     }
 
     /**
      * The TCPIPMessageDecoder to decode the message.
      */
-    public static final class TCPIPMessageDecoder implements GENIncomingMessageDecoder {
+    public static final class TCPIPMessageDecoder implements MessageDecoder {
 
         private final TCPIPTransport transport;
         private final TCPIPPacketInfoHolder packetInfo;

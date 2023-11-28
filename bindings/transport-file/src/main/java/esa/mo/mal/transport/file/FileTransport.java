@@ -23,7 +23,7 @@ package esa.mo.mal.transport.file;
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
-import esa.mo.mal.transport.gen.receivers.IncomingStreamMessageDecoderFactory;
+import esa.mo.mal.transport.gen.receivers.StreamMessageDecoderFactory;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.MessagePoller;
 import java.io.IOException;
@@ -144,7 +144,7 @@ public class FileTransport extends Transport <InputStream, InputStream> {
                     watcher, transportString, filenameString, deleteFiles);
 
             asyncPollThread = new MessagePoller<InputStream, InputStream>(this, 
-                    tc, tc, new IncomingStreamMessageDecoderFactory());
+                    tc, tc, new StreamMessageDecoderFactory());
         } catch (IOException ex) {
             ex.printStackTrace();
             throw new MALException("Error initialising TCP Server", ex);

@@ -23,12 +23,12 @@ package esa.mo.mal.transport.spp;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.PacketToString;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
 import java.nio.ByteBuffer;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
+import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 
 /**
  * Factory class for SPPMessage decoders.
@@ -38,7 +38,7 @@ import org.ccsds.moims.mo.mal.MALException;
 public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, List<ByteBuffer>> {
 
     @Override
-    public GENIncomingMessageDecoder createDecoder(Transport<I, List<ByteBuffer>> transport, I messageSource) {
+    public MessageDecoder createDecoder(Transport<I, List<ByteBuffer>> transport, I messageSource) {
         return new SPPMessageDecoder((SPPBaseTransport<I>) transport, messageSource);
     }
 
@@ -48,7 +48,7 @@ public class SPPMessageDecoderFactory<I> implements MessageDecoderFactory<I, Lis
      *
      * @param <I> The type of the incoming messages.
      */
-    public static final class SPPMessageDecoder<I> implements GENIncomingMessageDecoder {
+    public static final class SPPMessageDecoder<I> implements MessageDecoder {
 
         private final SPPBaseTransport<I> transport;
         private final I rawMessage;

@@ -20,6 +20,9 @@
  */
 package esa.mo.mal.transport.jms;
 
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.receivers.MessageDecoder;
+import esa.mo.mal.transport.jms.util.StructureHelper;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,9 +32,6 @@ import javax.jms.Topic;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.receivers.GENIncomingMessageDecoder;
-import esa.mo.mal.transport.jms.util.StructureHelper;
 
 /**
  *
@@ -274,7 +274,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
     }
 
     @Override
-    protected GENIncomingMessageDecoder createMessageDecoder(JMSUpdate update) {
+    protected MessageDecoder createMessageDecoder(JMSUpdate update) {
         return new JMSIncomingPSMessageDecoder(endPoint.getJtransport(), update,
                 endPoint.getURI(), version, subId, URIFrom, transactionId);
     }
