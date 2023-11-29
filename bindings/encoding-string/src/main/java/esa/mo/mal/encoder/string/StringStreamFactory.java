@@ -39,12 +39,6 @@ public class StringStreamFactory extends MALElementStreamFactory {
     }
 
     @Override
-    public MALElementInputStream createInputStream(final byte[] bytes, final int offset) {
-        int length = bytes.length - offset;
-        return new StringElementInputStream(new ByteArrayInputStream(bytes, offset, length));
-    }
-
-    @Override
     public MALElementInputStream createInputStream(final InputStream is) throws MALException {
         return new StringElementInputStream(is);
     }

@@ -49,12 +49,6 @@ public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fix
 
     @Override
     public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
-            final byte[] bytes, final int offset) {
-        return new ZMTPHeaderElementInputStream(bytes, offset, transport, timeHandler);
-    }
-
-    @Override
-    public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
             final java.io.InputStream is) throws org.ccsds.moims.mo.mal.MALException {
         return new ZMTPHeaderElementInputStream(is, transport, timeHandler);
     }

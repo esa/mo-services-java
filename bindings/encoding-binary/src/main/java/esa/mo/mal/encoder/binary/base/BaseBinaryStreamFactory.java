@@ -61,22 +61,6 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory {
     }
 
     @Override
-    public MALElementInputStream createInputStream(final byte[] bytes,
-            final int offset) throws java.lang.IllegalArgumentException, MALException {
-        try {
-            return (MALElementInputStream) inputStreamImpl
-                    .getDeclaredConstructor(byte[].class, int.class, BinaryTimeHandler.class)
-                    .newInstance(bytes, offset, timeHandler);
-        } catch (NoSuchMethodException ex) {
-            throw new MALException("Error when creating input stream. Cannot find "
-                    + inputStreamImpl.getName() + "(byte[], int) constructor.",
-                    ex);
-        } catch (Exception ex) {
-            throw new MALException("Error when creating input stream.", ex);
-        }
-    }
-
-    @Override
     public MALElementInputStream createInputStream(final InputStream is) throws MALException {
         try {
             return (MALElementInputStream) inputStreamImpl.getDeclaredConstructor(

@@ -40,13 +40,6 @@ public class LineStreamFactory extends MALElementStreamFactory {
     }
 
     @Override
-    public MALElementInputStream createInputStream(final byte[] bytes, final int offset) {
-        return new LineElementInputStream(
-                new ByteArrayInputStream(bytes, offset, bytes.length - offset)
-        );
-    }
-
-    @Override
     public MALElementInputStream createInputStream(final InputStream is) throws MALException {
         return new LineElementInputStream(is);
     }

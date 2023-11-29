@@ -56,11 +56,6 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
     }
 
     @Override
-    public MALElementInputStream createInputStream(final byte[] bytes, final int offset) throws MALException {
-        return new FixedBinaryElementInputStream(bytes, offset, timeHandler, shortLengthField);
-    }
-
-    @Override
     public MALElementInputStream createInputStream(final java.io.InputStream is) throws MALException {
         return new FixedBinaryElementInputStream(is, timeHandler, shortLengthField);
     }

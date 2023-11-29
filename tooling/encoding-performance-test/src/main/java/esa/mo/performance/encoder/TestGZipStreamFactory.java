@@ -60,9 +60,4 @@ public class TestGZipStreamFactory extends MALElementStreamFactory {
             throw new MALException("XML Encoding error", ex);
         }
     }
-
-    @Override
-    public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException {
-        return delegate.createInputStream(bytes, offset);
-    }
 }
