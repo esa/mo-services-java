@@ -340,7 +340,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     @Override
-    protected MessageSender createMessageSender(GENMessage msg,
+    protected MessageSender createMessageSender(MALMessageHeader msgHeader,
             String remoteRootURI) throws MALException {
         return createMessageSender(remoteRootURI);
     }
@@ -365,7 +365,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     @Override
-    public GENMessage createMessage(byte[] packet) throws MALException {
+    public GENMessage decodeMessage(byte[] packet) throws MALException {
         // Default configuration (loaded from transport properties) is used for decoding
         ZMTPMessageHeader header = new ZMTPMessageHeader(
                 new ZMTPConfiguration(defaultConfiguration, qosProperties), null);
@@ -387,7 +387,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     @Override
-    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> encodeMessage(
             String destinationRootURI,
             String destinationURI,
             Object multiSendHandle,
@@ -442,7 +442,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     public void channelDataReceived(byte[] remoteIdentity, byte[] data) {
         try {
             PacketToString smsg = new PacketToString(data);
-            GENMessage malMsg = this.createMessage(data);
+            GENMessage malMsg = this.decodeMessage(data);
             this.receive(null, new IncomingMessageHolder(malMsg, smsg));
         } catch (MALException ex) {
             Logger.getLogger(ZMTPTransport.class.getName()).log(Level.SEVERE, null, ex);

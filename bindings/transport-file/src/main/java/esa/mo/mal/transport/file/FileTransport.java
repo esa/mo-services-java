@@ -46,16 +46,17 @@ import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * An implementation of the transport interface for a file based protocol.
  */
-public class FileTransport extends Transport <InputStream, InputStream> {
+public class FileTransport extends Transport<InputStream, InputStream> {
 
     /**
      * Logger
      */
-    public static final java.util.logging.Logger RLOGGER 
+    public static final java.util.logging.Logger RLOGGER
             = Logger.getLogger("org.ccsds.moims.mo.mal.transport.file");
     public static final String FILE_PREFIX = "CCSDS_FILE_TRANSPORT_";
     private static final String QOS_I_MESSAGE_PROPERTY
@@ -66,7 +67,7 @@ public class FileTransport extends Transport <InputStream, InputStream> {
             = "ccsds.mal.transport.file.outgoing.directory.property";
     private static final String QOS_O_MESSAGE_DIRECTORY
             = "ccsds.mal.transport.file.outgoing.directory.name";
-    private static final String QOS_DELETE_FILE 
+    private static final String QOS_DELETE_FILE
             = "ccsds.mal.transport.file.qos.delete";
     private final boolean deleteFiles;
     private final Thread asyncPollThread;
@@ -212,19 +213,19 @@ public class FileTransport extends Transport <InputStream, InputStream> {
     }
 
     @Override
-    protected MessageSender createMessageSender(GENMessage msg,
+    protected MessageSender createMessageSender(MALMessageHeader msgHeader,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         return tc;
     }
 
     @Override
-    public GENMessage createMessage(InputStream ios) throws MALException {
+    public GENMessage decodeMessage(InputStream ios) throws MALException {
         return new FileBasedMessage(qosProperties, ios, getStreamFactory());
     }
 
     @Override
-    protected OutgoingMessageHolder internalEncodeMessage(String destinationRootURI,
-            String destinationURI, Object multiSendHandle, boolean lastForHandle, 
+    protected OutgoingMessageHolder encodeMessage(String destinationRootURI,
+            String destinationURI, Object multiSendHandle, boolean lastForHandle,
             String targetURI, GENMessage msg) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }

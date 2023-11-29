@@ -23,7 +23,6 @@ package esa.mo.mal.transport.jms;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
-import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 import esa.mo.mal.transport.jms.util.StructureHelper;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -112,9 +111,5 @@ public class JMSQueueHandler implements MessageListener {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    protected MessageDecoder createMessageDecoder(JMSUpdate update) {
-        return new JMSIncomingMessageDecoder(endPoint.getJtransport(), update);
     }
 }

@@ -373,7 +373,7 @@ public abstract class Transport<I, O> implements MALTransport {
         return streamFactory;
     }
 
-    public abstract GENMessage createMessage(I packet) throws MALException;
+    public abstract GENMessage decodeMessage(I packet) throws MALException;
 
     /**
      * On reception of an IO stream this method should be called. This is the
@@ -429,7 +429,7 @@ public abstract class Transport<I, O> implements MALTransport {
                 // get outgoing channel
                 ConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
 
-                OutgoingMessageHolder outgoingMessage = internalEncodeMessage(
+                OutgoingMessageHolder outgoingMessage = encodeMessage(
                         remoteRootURI, destinationURI, multiSendHandle,
                         lastForHandle, dataSender.getTargetURI(), msg);
 
@@ -813,14 +813,14 @@ public abstract class Transport<I, O> implements MALTransport {
 
                 try {
                     // create new sender for this URI
-                    MessageSender transmitter = createMessageSender(msg, remoteRootURI);
+                    MessageSender transmitter = createMessageSender(msg.getHeader(), remoteRootURI);
                     sender = registerMessageSender(transmitter, remoteRootURI);
 
                     LOGGER.log(Level.FINE, "Opening {0}", numConnections);
 
                     for (int i = 1; i < numConnections; i++) {
                         // insert new processor (message sender) to root data sender for the URI
-                        MessageSender anotherTransmitter = createMessageSender(msg, remoteRootURI);
+                        MessageSender anotherTransmitter = createMessageSender(msg.getHeader(), remoteRootURI);
                         sender.addProcessor(anotherTransmitter, remoteRootURI);
                     }
                 } catch (MALException e) {
@@ -901,7 +901,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @return The message holder for the outgoing message.
      * @throws Exception if an error.
      */
-    protected abstract OutgoingMessageHolder<O> internalEncodeMessage(
+    protected abstract OutgoingMessageHolder<O> encodeMessage(
             final String destinationRootURI,
             final String destinationURI,
             final Object multiSendHandle,
@@ -946,7 +946,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * Method to be implemented by the transport in order to return a message
      * sender capable if sending messages to a target root URI.
      *
-     * @param msg the message to be send
+     * @param msgHeader The message header.
      * @param remoteRootURI the remote root URI.
      * @return returns a message sender capable of sending messages to the
      * target URI
@@ -955,7 +955,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @throws MALTransmitErrorException in case of error connecting to the
      * target URI
      */
-    protected abstract MessageSender createMessageSender(GENMessage msg,
+    protected abstract MessageSender createMessageSender(MALMessageHeader msgHeader,
             String remoteRootURI) throws MALException, MALTransmitErrorException;
 
 }

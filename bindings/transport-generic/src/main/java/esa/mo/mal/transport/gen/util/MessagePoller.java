@@ -90,12 +90,12 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
         // handles message reads from this client
         while (bContinue && !interrupted()) {
             try {
-                I msg = messageReceiver.readEncodedMessage();
+                I encodedMsg = messageReceiver.readEncodedMessage();
 
-                if (msg != null) {
+                if (encodedMsg != null) {
                     try {
                         //PacketToString smsg = new PacketToString(msg);
-                        GENMessage malMsg = transport.createMessage(msg);
+                        GENMessage malMsg = transport.decodeMessage(encodedMsg);
                         IncomingMessageHolder holder = new IncomingMessageHolder(malMsg, null);
                         transport.receive(this, holder);
                     } catch (MALException e) {

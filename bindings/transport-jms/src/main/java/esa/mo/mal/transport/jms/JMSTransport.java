@@ -107,6 +107,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
         return null;
     }
 
+    @Override
     public MALBrokerBinding createBroker(String localName, Blob authenticationId,
             QoSLevel[] expectedQos, UInteger priorityLevelNumber,
             Map defaultQoSProperties) throws MALException {
@@ -115,6 +116,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
                 authenticationId, expectedQos, priorityLevelNumber);
     }
 
+    @Override
     public MALBrokerBinding createBroker(MALEndpoint endpoint, Blob authenticationId,
             QoSLevel[] qosLevels, UInteger priorities, Map properties) throws MALException {
         // not support by transport
@@ -122,10 +124,12 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
                 endpoint.getLocalName(), authenticationId, qosLevels, priorities);
     }
 
+    @Override
     public boolean isSupportedInteractionType(InteractionType type) {
         return true;
     }
 
+    @Override
     public boolean isSupportedQoSLevel(QoSLevel qos) {
         return qos.getOrdinal() == QoSLevel._BESTEFFORT_INDEX;
     }
@@ -159,7 +163,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
     }
 
     @Override
-    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
+    protected MessageSender<byte[]> createMessageSender(MALMessageHeader msgHeader,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
                 "JMS received request to create connections to URI:{0}", remoteRootURI);
@@ -182,13 +186,13 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
     }
 
     @Override
-    public GENMessage createMessage(byte[] packet) throws MALException {
+    public GENMessage decodeMessage(byte[] packet) throws MALException {
         return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
                 qosProperties, packet, getStreamFactory());
     }
 
     @Override
-    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(String destinationRootURI,
+    protected OutgoingMessageHolder<byte[]> encodeMessage(String destinationRootURI,
             String destinationURI, Object multiSendHandle, boolean lastForHandle,
             String targetURI, GENMessage msg) throws Exception {
         return new OutgoingMessageHolder<byte[]>(10,

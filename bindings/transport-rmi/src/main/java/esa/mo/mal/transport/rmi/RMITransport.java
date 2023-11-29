@@ -185,36 +185,35 @@ public class RMITransport extends Transport<byte[], byte[]> {
     }
 
     @Override
-    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
+    protected MessageSender<byte[]> createMessageSender(MALMessageHeader msgHeader,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.log(Level.FINE,
                 "RMI received request to create connections to URI: {0}", remoteRootURI);
 
         try {
-            // create new sender for this URI
-            return new RMIMessageSender(remoteRootURI);
+            return new RMIMessageSender(remoteRootURI); // create new sender for this URI
         } catch (NotBoundException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
-            throw new MALTransmitErrorException(msg.getHeader(),
+            throw new MALTransmitErrorException(msgHeader,
                     new DestinationUnknownException(null),
                     null);
 
         } catch (IOException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
-            throw new MALTransmitErrorException(msg.getHeader(),
+            throw new MALTransmitErrorException(msgHeader,
                     new DeliveryFailedException(null),
                     null);
         }
     }
 
     @Override
-    public GENMessage createMessage(byte[] packet) throws MALException {
+    public GENMessage decodeMessage(byte[] packet) throws MALException {
         return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
                 qosProperties, packet, getStreamFactory());
     }
 
     @Override
-    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> encodeMessage(
             String destinationRootURI,
             String destinationURI,
             Object multiSendHandle,

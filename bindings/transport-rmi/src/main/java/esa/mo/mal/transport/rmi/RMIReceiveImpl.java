@@ -52,7 +52,7 @@ public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInt
     public void receive(final byte[] packet) throws RemoteException {
         try {
             PacketToString smsg = new PacketToString(packet);
-            GENMessage malMsg = transport.createMessage(packet);
+            GENMessage malMsg = transport.decodeMessage(packet);
             transport.receive(null, new IncomingMessageHolder(malMsg, smsg));
         } catch (MALException ex) {
             Logger.getLogger(RMIReceiveImpl.class.getName()).log(Level.SEVERE, null, ex);

@@ -467,7 +467,7 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * @throws Exception if an error.
      */
     @Override
-    protected OutgoingMessageHolder<byte[]> internalEncodeMessage(
+    protected OutgoingMessageHolder<byte[]> encodeMessage(
             final String destinationRootURI, final String destinationURI,
             final Object multiSendHandle, final boolean lastForHandle,
             final String targetURI, final GENMessage msg) throws Exception {
@@ -530,7 +530,7 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
     }
 
     @Override
-    public GENMessage createMessage(byte[] packet) throws MALException {
+    public GENMessage decodeMessage(byte[] packet) throws MALException {
         return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
                 qosProperties, packet, getStreamFactory());
     }
@@ -596,7 +596,7 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * terminate when the underlying connection is terminated.
      */
     @Override
-    protected MessageSender<byte[]> createMessageSender(GENMessage msg,
+    protected MessageSender<byte[]> createMessageSender(MALMessageHeader msgHeader,
             String remoteRootURI) throws MALException, MALTransmitErrorException {
         RLOGGER.fine("TCPIPTransport.createMessageSender()");
         try {
@@ -638,13 +638,12 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
         } catch (UnknownHostException e) {
             LOGGER.log(Level.WARNING, "TCPIP could not find host: {0}", remoteRootURI);
             LOGGER.log(Level.FINE, "TCPIP could not find host: " + remoteRootURI, e);
-            throw new MALTransmitErrorException(msg.getHeader(),
+            throw new MALTransmitErrorException(msgHeader,
                     new DestinationUnknownException(null), null);
         } catch (java.net.ConnectException e) {
             LOGGER.log(Level.WARNING, "TCPIP could not reach: {0}", remoteRootURI);
             LOGGER.log(Level.FINE, "TCPIP could not reach: " + remoteRootURI, e);
-            throw new MALTransmitErrorException(
-                    msg.getHeader(),
+            throw new MALTransmitErrorException(msgHeader,
                     new DestinationTransientException(null), null);
         } catch (IOException e) {
             // there was a communication problem, we need to clean up the
@@ -653,7 +652,7 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
             communicationError(remoteRootURI, null);
 
             // rethrow for higher MAL leyers
-            throw new MALTransmitErrorException(msg.getHeader(),
+            throw new MALTransmitErrorException(msgHeader,
                     new DeliveryFailedException(null), null);
         }
     }

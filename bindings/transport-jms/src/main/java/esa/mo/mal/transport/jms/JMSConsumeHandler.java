@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 import esa.mo.mal.transport.jms.util.StructureHelper;
 import java.util.LinkedList;
 import java.util.List;
@@ -271,11 +270,5 @@ public class JMSConsumeHandler extends JMSQueueHandler {
         }
 
         return true;
-    }
-
-    @Override
-    protected MessageDecoder createMessageDecoder(JMSUpdate update) {
-        return new JMSIncomingPSMessageDecoder(endPoint.getJtransport(), update,
-                endPoint.getURI(), version, subId, URIFrom, transactionId);
     }
 }

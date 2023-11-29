@@ -211,7 +211,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     }
 
     @Override
-    protected OutgoingMessageHolder<List<ByteBuffer>> internalEncodeMessage(
+    protected OutgoingMessageHolder<List<ByteBuffer>> encodeMessage(
             final String destinationRootURI,
             final String destinationURI,
             final Object multiSendHandle,
