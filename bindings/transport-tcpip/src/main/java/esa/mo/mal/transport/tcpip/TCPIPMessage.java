@@ -73,7 +73,7 @@ public class TCPIPMessage extends GENMessage {
         // Header must always be TCPIP Fixed Binary
         ByteArrayOutputStream hdrBaos = new ByteArrayOutputStream();
         TCPIPFixedBinaryEncoder encoder = new TCPIPFixedBinaryEncoder(hdrBaos);
-        ((TCPIPMessageHeader) header).encode(encoder);
+        ((TCPIPMessageHeader) this.getHeader()).encode(encoder);
 
         // Encode Body using the selected Encoding
         ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
@@ -101,8 +101,8 @@ public class TCPIPMessage extends GENMessage {
 
     @Override
     public String toString() {
-        return "TCPIPMessage {URIFrom:" + header.getFrom()
-                + "URITo:" + header.getTo() + "}";
+        return "TCPIPMessage {URIFrom:" + this.getHeader().getFrom()
+                + "URITo:" + this.getHeader().getTo() + "}";
     }
 
     /**
@@ -112,14 +112,14 @@ public class TCPIPMessage extends GENMessage {
      * @return the string representation of the body of the message.
      */
     public String bodytoString() {
-        if (this.body != null) {
+        if (this.getBody() != null) {
             StringBuilder output = new StringBuilder();
-            output.append(this.body.getClass().getCanonicalName());
-            for (int i = 0; i < this.body.getElementCount(); i++) {
+            output.append(this.getBody().getClass().getCanonicalName());
+            for (int i = 0; i < this.getBody().getElementCount(); i++) {
                 try {
-                    if (this.body.getBodyElement(i, null) != null) {
+                    if (this.getBody().getBodyElement(i, null) != null) {
                         output.append(" | ");
-                        output.append(this.body.getBodyElement(i, null).toString());
+                        output.append(this.getBody().getBodyElement(i, null).toString());
                     }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();

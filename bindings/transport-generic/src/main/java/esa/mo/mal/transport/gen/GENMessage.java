@@ -48,8 +48,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class GENMessage implements MALMessage, java.io.Serializable {
 
     private static final long serialVersionUID = 222222222222222L;
-    protected final MALMessageHeader header;
-    protected final MessageBody body;
+    private final MALMessageHeader header;
+    private final MessageBody body;
     protected final Map qosProperties;
     protected final boolean wrapBodyParts;
 

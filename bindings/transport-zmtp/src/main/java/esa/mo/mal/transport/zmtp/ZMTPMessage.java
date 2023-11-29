@@ -28,7 +28,6 @@ import java.io.OutputStream;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -119,7 +118,7 @@ public class ZMTPMessage extends GENMessage {
 
             super.encodeMessage(streamFactory, bodyEnc, bodyBaos, false);
 
-            hdrEnc.writeHeader(header);
+            hdrEnc.writeHeader(this.getHeader());
             lowLevelOutputStream.write(hdrBaos.toByteArray());
             lowLevelOutputStream.write(bodyBaos.toByteArray());
 
