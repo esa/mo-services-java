@@ -55,10 +55,8 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
      * the low level message sender
      */
     protected final MessageSender messageSender;
-    /**
-     * the low level message receiver
-     */
-    protected final MessageAdapter<I, O> messageReceiver;
+    protected final MessageReceiver<I> messageReceiver;
+    protected final MessageDecoderFactory<I, O> decoderFactory;
     /**
      * the remote URI (client) this connection is associated to. This is
      * volatile as it is potentially set by a different thread after its
@@ -83,25 +81,8 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
             MessageDecoderFactory<I, O> decoderFactory) {
         this.transport = transport;
         this.messageSender = messageSender;
-        this.messageReceiver = new MessageAdapter<I, O>(transport,
-                this, messageReceiver, decoderFactory);
-        setName("Transport_Receive");
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param transport Message transport being used.
-     * @param messageSender The message sending interface associated to this
-     * connection.
-     * @param messageReceiver The message reception interface, used for pulling
-     * messaging into this transport.
-     */
-    protected MessagePoller(Transport<I, O> transport,
-            MessageSender messageSender, MessageAdapter messageReceiver) {
-        this.transport = transport;
-        this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
+        this.decoderFactory = decoderFactory;
         setName("Transport_Receive");
     }
 
@@ -112,7 +93,12 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
         // handles message reads from this client
         while (bContinue && !interrupted()) {
             try {
-                messageReceiver.receiveMessage();
+                I msg = messageReceiver.readEncodedMessage();
+
+                if (msg != null) {
+                    transport.receive(this,
+                            decoderFactory.createDecoder(transport, msg));
+                }
             } catch (InterruptedException ex) {
                 LOGGER.log(Level.INFO, "(1) Client closing connection: {0}", remoteURI);
 
@@ -157,59 +143,4 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
         messageReceiver.close();
     }
 
-    /**
-     * Internal class for adapting from the message receivers to the relevant
-     * receive operation on the transport.
-     *
-     * @param <I> The type of the encoded messages.
-     */
-    protected static class MessageAdapter<I, O> {
-
-        private final Transport transport;
-        private final ReceptionHandler handler;
-        private final MessageReceiver<I> receiver;
-        private final MessageDecoderFactory<I, O> decoderFactory;
-
-        /**
-         * Constructor.
-         *
-         * @param transport Transport to pass messages to.
-         * @param handler The reception handler.
-         * @param receiver The receiver to pull messages from.
-         * @param decoderFactory The decoder factory to create message decoders
-         * from.
-         */
-        public MessageAdapter(Transport transport,
-                ReceptionHandler handler,
-                MessageReceiver<I> receiver,
-                MessageDecoderFactory<I, O> decoderFactory) {
-            this.transport = transport;
-            this.handler = handler;
-            this.receiver = receiver;
-            this.decoderFactory = decoderFactory;
-        }
-
-        /**
-         * Takes the message from the receiver and passes it to the transport if
-         * not null.
-         *
-         * @throws IOException in case the encoded message cannot be read
-         * @throws InterruptedException in case IO read is interrupted
-         */
-        public void receiveMessage() throws IOException, InterruptedException {
-            I msg = receiver.readEncodedMessage();
-
-            if (msg != null) {
-                transport.receive(handler,
-                        decoderFactory.createDecoder(transport, msg));
-            }
-        }
-
-        /**
-         * Closes any used resources.
-         */
-        public void close() {
-            receiver.close();
-        }
-    }
 }
