@@ -23,7 +23,6 @@ package esa.mo.mal.transport.gen.util;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.MessageReceiver;
-import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
 import esa.mo.mal.transport.gen.ReceptionHandler;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.Transport;
@@ -59,7 +58,6 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
      */
     protected final MessageSender messageSender;
     protected final MessageReceiver<I> messageReceiver;
-    protected final MessageDecoderFactory<I, O> decoderFactory;
     /**
      * the remote URI (client) this connection is associated to. This is
      * volatile as it is potentially set by a different thread after its
@@ -75,17 +73,13 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
      * connection.
      * @param messageReceiver The message reception interface, used for pulling
      * messaging into this transport.
-     * @param decoderFactory The decoder factory to create message decoders
-     * from.
      */
     public MessagePoller(Transport<I, O> transport,
             MessageSender messageSender,
-            MessageReceiver<I> messageReceiver,
-            MessageDecoderFactory<I, O> decoderFactory) {
+            MessageReceiver<I> messageReceiver) {
         this.transport = transport;
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
-        this.decoderFactory = decoderFactory;
         setName("Transport_Receive");
     }
 

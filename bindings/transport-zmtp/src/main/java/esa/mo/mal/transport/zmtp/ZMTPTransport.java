@@ -25,7 +25,6 @@ import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
-import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.net.Inet4Address;
@@ -178,11 +177,6 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     protected MALElementStreamFactory hdrStreamFactory;
 
     /**
-     * Decoder factory used to create decoder instances.
-     */
-    protected ByteMessageDecoderFactory decoderFactory;
-
-    /**
      * Selector of encoding for MAL message body transmitted over ZMTP.
      */
     protected ZMTPEncodingSelector bodyEncodingSelector;
@@ -205,7 +199,6 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
         defaultConfiguration = new ZMTPConfiguration();
 
         hdrStreamFactory = new ZMTPHeaderStreamFactory(this);
-        decoderFactory = new ByteMessageDecoderFactory();
         bodyEncodingSelector = new ZMTPEncodingSelector();
         bodyEncodingSelector.init(properties);
 

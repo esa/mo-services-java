@@ -83,8 +83,7 @@ public class TCPIPServerConnectionListener extends Thread {
                 // handle socket in separate thread
                 TCPIPTransportDataTransceiver tc = transport.createDataTransceiver(socket);
 
-                MessagePoller poller = new MessagePoller(
-                        transport, tc, tc, new TCPIPMessageDecoderFactory());
+                MessagePoller poller = new MessagePoller(transport, tc, tc);
                 pollerThreads.add(poller);
                 poller.start();
             } catch (java.net.SocketTimeoutException ex) {

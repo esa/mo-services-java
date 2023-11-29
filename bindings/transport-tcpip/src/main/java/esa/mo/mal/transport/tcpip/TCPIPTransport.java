@@ -625,8 +625,7 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
 
             TCPIPTransportDataTransceiver trans = createDataTransceiver(s);
 
-            MessagePoller messageReceiver = new MessagePoller(this, trans,
-                    trans, new TCPIPMessageDecoderFactory());
+            MessagePoller messageReceiver = new MessagePoller(this, trans, trans);
             messageReceiver.setRemoteURI(remoteRootURI);
             messageReceiver.start();
 
