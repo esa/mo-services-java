@@ -66,7 +66,7 @@ public class RMIMessageSender implements MessageSender<byte[]> {
     private void internalSendMessage(OutgoingMessageHolder<byte[]> packetData)
             throws MalformedURLException, RemoteException, IOException {
         if (!closed) {
-            if (null == destinationRMI) {
+            if (destinationRMI == null) {
                 try {
                     destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
                 } catch (NotBoundException ex) {
@@ -74,10 +74,11 @@ public class RMIMessageSender implements MessageSender<byte[]> {
                 }
             }
 
-            RMIReceiveInterface remoteIf = destinationRMI;
+            RMIReceiveInterface remote = destinationRMI;
 
-            if (null != remoteIf) {
-                remoteIf.receive(packetData.getEncodedMessage());
+            if (remote != null) {
+                // Push the message into the "receive" method of the remote location
+                remote.receive(packetData.getEncodedMessage());
             }
         }
     }

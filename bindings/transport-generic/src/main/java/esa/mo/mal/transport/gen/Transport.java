@@ -431,13 +431,13 @@ public abstract class Transport<I, O> implements MALTransport {
                 // get outgoing channel
                 ConcurrentMessageSender dataSender = manageCommunicationChannel(msg, false, null);
 
-                OutgoingMessageHolder outgoingPacket = internalEncodeMessage(
+                OutgoingMessageHolder outgoingMessage = internalEncodeMessage(
                         remoteRootURI, destinationURI, multiSendHandle,
                         lastForHandle, dataSender.getTargetURI(), msg);
 
-                dataSender.sendMessage(outgoingPacket);
+                dataSender.sendMessage(outgoingMessage);
 
-                if (!Boolean.TRUE.equals(outgoingPacket.getResult())) {
+                if (!Boolean.TRUE.equals(outgoingMessage.getResult())) {
                     // data was not sent succesfully, throw an exception for the
                     // higher MAL layers
                     throw new MALTransmitErrorException(header,

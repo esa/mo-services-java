@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.transport.gen.receivers.MessageReceiver;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.MessagePoller.GENMessageReceiver;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -41,7 +41,7 @@ import esa.mo.mal.transport.gen.sending.MessageSender;
  *
  * This class manages both the transmitting and receiving of messages.
  */
-public class TCPIPTransportDataTransceiver implements GENMessageReceiver<TCPIPPacketInfoHolder>, MessageSender {
+public class TCPIPTransportDataTransceiver implements MessageReceiver<TCPIPPacketInfoHolder>, MessageSender {
 
     private boolean closed = false;
     private final static int HEADER_SIZE = 23;

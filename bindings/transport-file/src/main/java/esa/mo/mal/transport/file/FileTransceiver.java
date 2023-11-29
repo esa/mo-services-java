@@ -20,8 +20,8 @@
  */
 package esa.mo.mal.transport.file;
 
+import esa.mo.mal.transport.gen.receivers.MessageReceiver;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
-import esa.mo.mal.transport.gen.util.MessagePoller.GENMessageReceiver;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import esa.mo.mal.transport.gen.sending.MessageSender;
 /**
  * File transmitter and receiver. Used by the GEN message poller class.
  */
-public class FileTransceiver implements GENMessageReceiver<InputStream>, MessageSender {
+public class FileTransceiver implements MessageReceiver<InputStream>, MessageSender {
 
     private final Path incomingDirectory;
     private final Path outgoingDirectory;
@@ -87,7 +87,7 @@ public class FileTransceiver implements GENMessageReceiver<InputStream>, Message
 
         java.io.File tmpFile = new File(outgoingDirectory.toFile(), tmpname + ".tmp");
 
-        try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+        try ( FileOutputStream fos = new FileOutputStream(tmpFile)) {
             fos.write((byte[]) packetData.getEncodedMessage());
             fos.flush();
         }

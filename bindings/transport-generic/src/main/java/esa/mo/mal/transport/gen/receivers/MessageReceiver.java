@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2014      European Space Agency
+ * Copyright (C) 2023      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,28 +18,30 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.transport.gen.sending;
+package esa.mo.mal.transport.gen.receivers;
 
 import java.io.IOException;
 
 /**
- * Interface used to map to the low level transport specific send.
+ * Simple interface for reading encoded messages from a low level transport.
+ * Used by the message poller class.
  *
- * @param <O> The data type for the output.
+ * @param <T> The type of the encoded messages.
  */
-public interface MessageSender<O> {
+public interface MessageReceiver<T> {
 
     /**
-     * Sends an encoded message to the client (MAL Message encoded as a byte
-     * array)
+     * Reads an encoded MALMessage.
      *
-     * @param encodedMessage the MALMessage
-     * @throws IOException in case the message cannot be sent to the client
+     * @return the object containing the encoded MAL Message, may be null if
+     * nothing to read at this time
+     * @throws IOException in case the encoded message cannot be read
+     * @throws InterruptedException in case IO read is interrupted
      */
-    void sendEncodedMessage(OutgoingMessageHolder<O> encodedMessage) throws IOException;
+    T readEncodedMessage() throws IOException, InterruptedException;
 
     /**
-     * Closes any resources connected to the low level interface.
+     * Closes any used resources.
      */
     void close();
 }

@@ -28,6 +28,7 @@ import static esa.mo.mal.transport.gen.Transport.LOGGER;
 import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.ReceptionHandler;
+import esa.mo.mal.transport.gen.receivers.MessageReceiver;
 
 /**
  * This utility class creates a thread to pull encoded messages from a
@@ -78,7 +79,7 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
      */
     public MessagePoller(Transport<I, O> transport,
             MessageSender messageSender,
-            GENMessageReceiver<I> messageReceiver,
+            MessageReceiver<I> messageReceiver,
             MessageDecoderFactory<I, O> decoderFactory) {
         this.transport = transport;
         this.messageSender = messageSender;
@@ -157,30 +158,6 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
     }
 
     /**
-     * Simple interface for reading encoded messages from a low level transport.
-     * Used by the message poller class.
-     *
-     * @param <T> The type of the encoded messages.
-     */
-    public static interface GENMessageReceiver<T> {
-
-        /**
-         * Reads an encoded MALMessage.
-         *
-         * @return the object containing the encoded MAL Message, may be null if
-         * nothing to read at this time
-         * @throws IOException in case the encoded message cannot be read
-         * @throws InterruptedException in case IO read is interrupted
-         */
-        T readEncodedMessage() throws IOException, InterruptedException;
-
-        /**
-         * Closes any used resources.
-         */
-        void close();
-    }
-
-    /**
      * Internal class for adapting from the message receivers to the relevant
      * receive operation on the transport.
      *
@@ -190,7 +167,7 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
 
         private final Transport transport;
         private final ReceptionHandler handler;
-        private final GENMessageReceiver<I> receiver;
+        private final MessageReceiver<I> receiver;
         private final MessageDecoderFactory<I, O> decoderFactory;
 
         /**
@@ -204,7 +181,7 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
          */
         public MessageAdapter(Transport transport,
                 ReceptionHandler handler,
-                GENMessageReceiver<I> receiver,
+                MessageReceiver<I> receiver,
                 MessageDecoderFactory<I, O> decoderFactory) {
             this.transport = transport;
             this.handler = handler;
