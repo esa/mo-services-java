@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.gen;
 
-import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageReceiver;
 import esa.mo.mal.transport.gen.sending.ConcurrentMessageSender;
@@ -382,11 +381,10 @@ public abstract class Transport<I, O> implements MALTransport {
      * transports.
      *
      * @param receptionHandler The reception handler to pass them to.
-     * @param decoder The class responsible for decoding the message from the
-     * incoming connection
+     * @param msg The message from the incoming connection
      */
-    public void receive(ReceptionHandler receptionHandler, MessageDecoder decoder) {
-        decoderExecutor.submit(new IncomingMessageReceiver(this, receptionHandler, decoder));
+    public void receive(ReceptionHandler receptionHandler, IncomingMessageHolder msg) {
+        decoderExecutor.submit(new IncomingMessageReceiver(this, receptionHandler, msg));
     }
 
     /**

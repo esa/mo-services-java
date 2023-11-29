@@ -22,7 +22,6 @@ package esa.mo.mal.transport.gen.receivers;
 
 import esa.mo.mal.transport.gen.Transport;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import esa.mo.mal.transport.gen.ReceptionHandler;
 
@@ -34,22 +33,21 @@ public class IncomingMessageReceiver implements Runnable {
 
     protected final Transport transport;
     protected final ReceptionHandler receptionHandler;
-    protected final MessageDecoder decoder;
+    protected final IncomingMessageHolder msg;
 
     /**
      * Constructor
      *
      * @param transport Containing transport.
      * @param receptionHandler The reception handler to pass them to.
-     * @param decoder The class responsible for decoding the message from the
-     * incoming connection
+     * @param msg The message from the incoming connection
      */
     public IncomingMessageReceiver(final Transport transport,
             final ReceptionHandler receptionHandler,
-            final MessageDecoder decoder) {
+            final IncomingMessageHolder msg) {
         this.transport = transport;
         this.receptionHandler = receptionHandler;
-        this.decoder = decoder;
+        this.msg = msg;
     }
 
     /**
@@ -61,8 +59,6 @@ public class IncomingMessageReceiver implements Runnable {
     @Override
     public void run() {
         try {
-            IncomingMessageHolder msg = decoder.decodeAndCreateMessage();
-
             // the decoder may return null for transports that support fragmentation
             if (msg != null) {
                 Transport.LOGGER.log(Level.FINE, "Receving message : {0} : {1}",
@@ -72,11 +68,6 @@ public class IncomingMessageReceiver implements Runnable {
                 transport.manageCommunicationChannel(msg.getMalMsg(), true, receptionHandler);
                 transport.receiveIncomingMessage(msg);
             }
-        } catch (MALException e) {
-            Transport.LOGGER.log(Level.WARNING,
-                    "Error occurred when decoding data : {0}", e);
-
-            transport.communicationError(null, receptionHandler);
         } catch (MALTransmitErrorException e) {
             Transport.LOGGER.log(Level.WARNING,
                     "Error occurred when decoding data : {0}", e);

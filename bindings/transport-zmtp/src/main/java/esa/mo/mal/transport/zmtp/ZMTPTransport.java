@@ -23,8 +23,10 @@ package esa.mo.mal.transport.zmtp;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -445,7 +447,13 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     public void channelDataReceived(byte[] remoteIdentity, byte[] data) {
-        this.receive(null, decoderFactory.createDecoder(this, data));
+        try {
+            PacketToString smsg = new PacketToString(data);
+            GENMessage malMsg = this.createMessage(data);
+            this.receive(null, new IncomingMessageHolder(malMsg, smsg));
+        } catch (MALException ex) {
+            Logger.getLogger(ZMTPTransport.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

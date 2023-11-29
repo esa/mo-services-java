@@ -20,9 +20,14 @@
  */
 package esa.mo.mal.transport.rmi;
 
-import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory.ByteMessageDecoder;
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.PacketToString;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * The implementation of the RMIReceiveInterface interface. Holds a reference to
@@ -45,6 +50,12 @@ public class RMIReceiveImpl extends UnicastRemoteObject implements RMIReceiveInt
 
     @Override
     public void receive(final byte[] packet) throws RemoteException {
-        transport.receive(null, new ByteMessageDecoder(transport, packet));
+        try {
+            PacketToString smsg = new PacketToString(packet);
+            GENMessage malMsg = transport.createMessage(packet);
+            transport.receive(null, new IncomingMessageHolder(malMsg, smsg));
+        } catch (MALException ex) {
+            Logger.getLogger(RMIReceiveImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

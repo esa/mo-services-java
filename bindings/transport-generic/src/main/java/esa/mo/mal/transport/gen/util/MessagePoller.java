@@ -20,15 +20,18 @@
  */
 package esa.mo.mal.transport.gen.util;
 
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
+import esa.mo.mal.transport.gen.receivers.MessageReceiver;
+import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
+import esa.mo.mal.transport.gen.ReceptionHandler;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.Transport;
+import static esa.mo.mal.transport.gen.Transport.LOGGER;
 import java.io.IOException;
 import java.io.EOFException;
 import java.util.logging.Level;
-import static esa.mo.mal.transport.gen.Transport.LOGGER;
-import esa.mo.mal.transport.gen.receivers.MessageDecoderFactory;
-import esa.mo.mal.transport.gen.sending.MessageSender;
-import esa.mo.mal.transport.gen.ReceptionHandler;
-import esa.mo.mal.transport.gen.receivers.MessageReceiver;
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * This utility class creates a thread to pull encoded messages from a
@@ -96,8 +99,17 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
                 I msg = messageReceiver.readEncodedMessage();
 
                 if (msg != null) {
-                    transport.receive(this,
-                            decoderFactory.createDecoder(transport, msg));
+                    try {
+                        //PacketToString smsg = new PacketToString(msg);
+                        GENMessage malMsg = transport.createMessage(msg);
+                        IncomingMessageHolder holder = new IncomingMessageHolder(malMsg, null);
+                        transport.receive(this, holder);
+                    } catch (MALException e) {
+                        Transport.LOGGER.log(Level.WARNING,
+                                "Error occurred when decoding data : {0}", e);
+
+                        transport.communicationError(null, this);
+                    }
                 }
             } catch (InterruptedException ex) {
                 LOGGER.log(Level.INFO, "(1) Client closing connection: {0}", remoteURI);

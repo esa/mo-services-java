@@ -20,13 +20,18 @@
  */
 package esa.mo.mal.transport.jms;
 
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.PacketToString;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.receivers.MessageDecoder;
 import esa.mo.mal.transport.jms.util.StructureHelper;
+import java.util.HashMap;
 import java.util.logging.Level;
 import javax.jms.*;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
@@ -89,9 +94,10 @@ public class JMSQueueHandler implements MessageListener {
                     UShort s = new UShort(objMsg.getIntProperty(JMSEndpoint.SVC_PROPERTY));
                     UShort o = new UShort(objMsg.getIntProperty(JMSEndpoint.OPN_PROPERTY));
 
-                    endPoint.getJtransport().receive(null,
-                            createMessageDecoder(new JMSUpdate(d, n, a, s, o, (byte[]) dat))
-                    );
+                    GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
+                            new HashMap(), (byte[]) dat, endPoint.getJtransport().getStreamFactory());
+                    IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(null));
+                    endPoint.getJtransport().receive(null, msgHolder);
                 } else {
                     JMSTransport.RLOGGER.log(Level.WARNING,
                             "JMS received bad message format: {0}",
