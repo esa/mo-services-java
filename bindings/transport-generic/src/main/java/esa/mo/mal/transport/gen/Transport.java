@@ -733,7 +733,7 @@ public abstract class Transport<I, O> implements MALTransport {
             // get target URI
             URI reroutedMsg = this.rerouteMessage(msg);
             String remoteRootURI = reroutedMsg.getRootURI(serviceDelim, serviceDelimCounter);
-            sender = outgoingDataChannelsManager.manageCommunicationChannelOutgoing(msg, remoteRootURI);
+            sender = outgoingDataChannelsManager.manageCommunicationChannelOutgoing(msg.getHeader(), remoteRootURI);
         }
 
         return sender;

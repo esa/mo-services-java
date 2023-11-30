@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.DestinationUnknownException;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
 /**
@@ -51,17 +52,11 @@ public class OutgoingDataChannels {
             = "org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline";
 
     /**
-     * Value of the
-     * org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline property
+     * Map of outgoing channels. This associates a URI to a transport resource
+     * that is able to send messages to this URI.
      */
-    private boolean connectWhenConsumerOffline = true;
+    private final Map<String, ConcurrentMessageSender> outgoingDataChannels = new HashMap<>();
 
-    /**
-     * The number of connections per client or server. The Transport will
-     * connect numConnections times to the predefined port and host per
-     * different client/server.
-     */
-    private final int numConnections;
     /**
      * Set of root uris to which the transport tried to connect. Used together
      * with the connectWhenConsumerOffline property to decide if the connection
@@ -70,11 +65,20 @@ public class OutgoingDataChannels {
     private final static Set<String> connectionAttempts = new HashSet<>();
 
     /**
-     * Map of outgoing channels. This associates a URI to a transport resource
-     * that is able to send messages to this URI.
+     * The number of connections per client or server. The Transport will
+     * connect numConnections times to the predefined port and host per
+     * different client/server.
      */
-    private final Map<String, ConcurrentMessageSender> outgoingDataChannels = new HashMap<>();
+    private final int numConnections;
+
+    // The transport.
     private final Transport transport;
+
+    /**
+     * Value of the:
+     * org.ccsds.moims.mo.mal.transport.gen.connectwhenconsumeroffline property
+     */
+    private boolean connectWhenConsumerOffline = true;
 
     public OutgoingDataChannels(Transport transport, final java.util.Map properties) {
         this.transport = transport;
@@ -163,12 +167,12 @@ public class OutgoingDataChannels {
         return dataSender;
     }
 
-    public synchronized ConcurrentMessageSender manageCommunicationChannelOutgoing(GENMessage msg,
+    public synchronized ConcurrentMessageSender manageCommunicationChannelOutgoing(MALMessageHeader header,
             String remoteRootURI) throws MALTransmitErrorException {
         // get sender if it exists
         ConcurrentMessageSender sender = outgoingDataChannels.get(remoteRootURI);
-
         boolean firstTime = !connectionAttempts.contains(remoteRootURI);
+
         if (firstTime) {
             connectionAttempts.add(remoteRootURI);
         }
@@ -180,30 +184,23 @@ public class OutgoingDataChannels {
 
             try {
                 // create new sender for this URI
-                MessageSender transmitter = transport.createMessageSender(msg.getHeader(), remoteRootURI);
+                MessageSender transmitter = transport.createMessageSender(header, remoteRootURI);
                 sender = this.registerMessageSender(transmitter, remoteRootURI);
-
                 LOGGER.log(Level.FINE, "Opening {0}", numConnections);
 
                 for (int i = 1; i < numConnections; i++) {
                     // insert new processor (message sender) to root data sender for the URI
-                    MessageSender anotherTransmitter = transport.createMessageSender(msg.getHeader(), remoteRootURI);
+                    MessageSender anotherTransmitter = transport.createMessageSender(header, remoteRootURI);
                     sender.addProcessor(anotherTransmitter, remoteRootURI);
                 }
             } catch (MALException e) {
-                LOGGER.log(Level.WARNING,
-                        "Could not connect to: " + remoteRootURI, e);
-
-                throw new MALTransmitErrorException(msg.getHeader(),
-                        new DestinationUnknownException(null),
-                        null);
+                LOGGER.log(Level.WARNING, "Could not connect to: " + remoteRootURI, e);
+                throw new MALTransmitErrorException(header, new DestinationUnknownException(null), null);
             }
         } else if (sender == null && !connectWhenConsumerOffline) {
             LOGGER.log(Level.FINE, "Could not locate an outgoing data channel and "
                     + "the connectWhenConsumerOffline property prevents establishing a new one");
-            throw new MALTransmitErrorException(msg.getHeader(),
-                    new DestinationUnknownException(null),
-                    null);
+            throw new MALTransmitErrorException(header, new DestinationUnknownException(null), null);
         }
         return sender;
     }
