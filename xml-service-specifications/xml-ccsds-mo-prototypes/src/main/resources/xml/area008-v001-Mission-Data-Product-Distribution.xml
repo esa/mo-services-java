@@ -335,7 +335,7 @@ Note that the ProductTypes are not contained within the service messages of any 
         <mal:field name="creationDate" canBeNull="false" comment="Date and time at which the product was generated.">
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
-        <mal:field name="source" canBeNull="true" comment="Reference to an MO Object that is associated with triggering the generation of the product.  For example an MPS planning request, an event or an M&C alert.">
+        <mal:field name="source" canBeNull="true" comment="Reference to an MO Object that is associated with triggering the generation of the product.  For example an MPS planning request, an event or an MC alert.">
           <mal:type area="MAL" list="false" name="ObjectRef"/>
         </mal:field>
         <mal:field name="timeWindow" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
@@ -390,9 +390,9 @@ A ProductSummary relates to a specific Product instance.">
         <mal:field name="creationDate" canBeNull="false" comment="Date and time at which the product was generated.">
           <mal:type area="MAL" list="false" name="Time"/>
         </mal:field>
-        <mal:field name="source" canBeNull="true" comment="Reference to an MO Object that is associated with triggering the generation of the product.  For example an MPS planning request, an event or an M&C alert.">
+        <mal:field name="source" canBeNull="true" comment="Reference to an MO Object that is associated with triggering the generation of the product.  For example an MPS planning request, an event or an MC alert.">
           <mal:type area="MAL" list="false" name="ObjectRef"/>
-        </mal:field>
+        </mal:field>	
         <mal:field name="timeWindow" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
           <mal:type area="MPDS" list="false" name="TimeWindow"/>
         </mal:field>
@@ -416,7 +416,7 @@ Note that in the case of requesting a list of available products, filtering by a
         <mal:field name="domain" canBeNull="false" comment="An ordered list of hierarchical domain Identifiers, “*” may be used as a wildcard.">
           <mal:type area="MAL" list="true" name="Identifier"/>
         </mal:field>
-        <mal:field name="sources" canBeNull="true" comment="Set of references to MO Objects associated with triggering the generation of filtered products.  For example an MPS planning request, an event or an M&C alert.  If the product source matches one of the listed sources, then it passes the filter.">
+        <mal:field name="sources" canBeNull="true" comment="Set of references to MO Objects associated with triggering the generation of filtered products.  For example an MPS planning request, an event or an MC alert.  If the product source matches one of the listed sources, then it passes the filter.">
           <mal:type area="MAL" list="true" name="ObjectRef"/>
         </mal:field>
         <mal:field name="parameterFilter" canBeNull="true" comment="Set of parameterFilters defining the desired values of product metadata parameters.  If multiple parameterFilters are defined then the product metadata must match all specified criteria to pass the filter.">
