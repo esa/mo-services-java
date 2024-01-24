@@ -86,7 +86,7 @@ public class GeneratorUtils {
      * @param str String to split.
      * @return The updated source array.
      */
-    public static List<String> splitString(List<String> srcArr, String str) {
+    public static List<String> addSplitStrings(List<String> srcArr, String str) {
         if (srcArr == null) {
             srcArr = new LinkedList<>();
         }

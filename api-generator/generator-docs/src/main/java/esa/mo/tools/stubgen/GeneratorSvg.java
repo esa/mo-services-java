@@ -960,7 +960,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(String text) throws IOException {
             if (includeDescriptions) {
-                List<String> strings = GeneratorUtils.splitString(null, text);
+                List<String> strings = GeneratorUtils.addSplitStrings(null, text);
                 if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
@@ -973,7 +973,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addComment(String text, boolean override) throws IOException {
             if (override) {
-                List<String> strings = GeneratorUtils.splitString(null, text);
+                List<String> strings = GeneratorUtils.addSplitStrings(null, text);
                 if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {

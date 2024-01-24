@@ -59,7 +59,7 @@ public class GeneratorDocx extends GeneratorDocument {
         2000, 1700, 800, 4500
     };
     private static final int[] OPERATION_ERROR_TABLE_WIDTHS = new int[]{
-        2250, 2250, 4500
+        1500, 1500, 2500, 3500
     };
     private static final int[] ERROR_TABLE_WIDTHS = new int[]{
         2302, 1430, 5268
@@ -144,7 +144,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxServiceFile.addComment(area.getComment());
                 for (DocumentationType documentation : area.getDocumentation()) {
                     docxServiceFile.addTitle(2, documentation.getName());
-                    docxServiceFile.addNumberedComment(GeneratorUtils.splitString(null, documentation.getContent()));
+                    docxServiceFile.addNumberedComment(GeneratorUtils.addSplitStrings(null, documentation.getContent()));
                 }
 
                 // create services
@@ -156,7 +156,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                     for (DocumentationType documentation : service.getDocumentation()) {
                         docxServiceFile.addTitle(3, documentation.getName());
-                        docxServiceFile.addNumberedComment(GeneratorUtils.splitString(null, documentation.getContent()));
+                        docxServiceFile.addNumberedComment(GeneratorUtils.addSplitStrings(null, documentation.getContent()));
                     }
 
                     if (!StdStrings.COM.equalsIgnoreCase(service.getName())) {
@@ -170,7 +170,7 @@ public class GeneratorDocx extends GeneratorDocument {
                             String str = cSet.getComment();
 
                             if (null != str) {
-                                comments.addAll(GeneratorUtils.splitString(null, str));
+                                comments.addAll(GeneratorUtils.addSplitStrings(null, str));
                             }
                         }
 
@@ -382,7 +382,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
             if (null != features.getObjects()) {
                 docxFile.addTitle(3, "COM usage");
-                docxFile.addNumberedComment(GeneratorUtils.splitString(null, features.getObjects().getComment()));
+                docxFile.addNumberedComment(GeneratorUtils.addSplitStrings(null, features.getObjects().getComment()));
 
                 if (!features.getObjects().getObject().isEmpty()) {
                     hasCOMobjects = true;
@@ -456,7 +456,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                 DocxBaseWriter evntTable = new DocxBaseWriter(docxFile.getNumberWriter());
                 evntTable.addTitle(3, "COM Event Service usage");
-                evntTable.addNumberedComment(GeneratorUtils.splitString(null, features.getEvents().getComment()));
+                evntTable.addNumberedComment(GeneratorUtils.addSplitStrings(null, features.getEvents().getComment()));
 
                 evntTable.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Events");
 
@@ -556,7 +556,7 @@ public class GeneratorDocx extends GeneratorDocument {
             if (features.getArchiveUsage() != null) {
                 DocxBaseWriter archiveUsage = new DocxBaseWriter(docxFile.getNumberWriter());
                 archiveUsage.addTitle(3, "COM Archive Service usage");
-                archiveUsage.addNumberedComment(GeneratorUtils.splitString(null, features.getArchiveUsage().getComment()));
+                archiveUsage.addNumberedComment(GeneratorUtils.addSplitStrings(null, features.getArchiveUsage().getComment()));
 
                 docxFile.appendBuffer(archiveUsage.getBuffer());
             }
@@ -564,7 +564,7 @@ public class GeneratorDocx extends GeneratorDocument {
             if (features.getActivityUsage() != null) {
                 DocxBaseWriter activityUsage = new DocxBaseWriter(docxFile.getNumberWriter());
                 activityUsage.addTitle(3, "COM Activity Service usage");
-                activityUsage.addNumberedComment(GeneratorUtils.splitString(null, features.getActivityUsage().getComment()));
+                activityUsage.addNumberedComment(GeneratorUtils.addSplitStrings(null, features.getActivityUsage().getComment()));
 
                 docxFile.appendBuffer(activityUsage.getBuffer());
             }
@@ -688,8 +688,6 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     private void addOperationStructureDetails(DocxBaseWriter docxFile, OperationType op) throws IOException {
-        docxFile.addTitle(4, "Structures");
-
         List<AnyTypeReference> msgs = new LinkedList<>();
 
         if (op instanceof SendOperationType) {
@@ -718,25 +716,40 @@ public class GeneratorDocx extends GeneratorDocument {
             msgs.add(lop.getMessages().getPublishNotify());
         }
 
+        docxFile.addTitle(4, "Type Signature Details");
+
         if (!msgs.isEmpty()) {
-            addMessageStructureDetails(docxFile, msgs);
+            addTypeSignatureDetails(docxFile, msgs);
+        }
+
+        docxFile.addTitle(4, "Requirements");
+
+        if (!msgs.isEmpty()) {
+            addRequirementsDetails(docxFile, msgs);
         }
     }
 
-    private void addMessageStructureDetails(DocxBaseWriter docxFile, List<AnyTypeReference> msgs) throws IOException {
-        List<String> strings = null;
+    private void addTypeSignatureDetails(DocxBaseWriter docxFile, List<AnyTypeReference> msgs) throws IOException {
+        List<String> signatureDetails = null;
         for (AnyTypeReference msg : msgs) {
-            strings = GeneratorUtils.splitString(strings, msg.getComment());
-
             List<TypeRef> refs = TypeUtils.getTypeListViaXSDAny(msg.getAny());
             for (TypeRef typeRef : refs) {
                 if (typeRef.isField()) {
-                    strings = GeneratorUtils.splitString(strings, typeRef.getFieldRef().getComment());
+                    signatureDetails = GeneratorUtils.addSplitStrings(signatureDetails, typeRef.getFieldRef().getComment());
                 }
             }
         }
 
-        docxFile.addNumberedComment(strings);
+        docxFile.addNumberedComment(signatureDetails);
+    }
+
+    private void addRequirementsDetails(DocxBaseWriter docxFile, List<AnyTypeReference> msgs) throws IOException {
+        List<String> requirements = null;
+        for (AnyTypeReference msg : msgs) {
+            requirements = GeneratorUtils.addSplitStrings(requirements, msg.getComment());
+        }
+
+        docxFile.addNumberedComment(requirements);
     }
 
     private void addOperationErrorDetails(DocxBaseWriter docxFile, AreaType area, ServiceType service, OperationType op) throws IOException {
@@ -762,117 +775,116 @@ public class GeneratorDocx extends GeneratorDocument {
         }
     }
 
-    private void addErrorStructureDetails(DocxBaseWriter docxFile, AreaType area, ServiceType service, OperationErrorList errs) throws IOException {
-        if ((null != errs) && (null != errs.getErrorOrErrorRef()) && (!errs.getErrorOrErrorRef().isEmpty())) {
-            if (1 == errs.getErrorOrErrorRef().size()) {
-                docxFile.addComment("The operation may return the following error:");
-            } else {
-                docxFile.addComment("The operation may return one of the following errors:");
-            }
-
-            TreeMap<String, List<Object[]>> m = new TreeMap<>(new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    try {
-                        Long value1 = Long.valueOf(o1);
-                        Long value2 = Long.valueOf(o2);
-                        return value1.compareTo(value2);
-                    } catch (java.lang.NumberFormatException e) {
-                        return o1.compareTo(o2);
-                    }
-                }
-            });
-
-            for (Object object : errs.getErrorOrErrorRef()) {
-                if (object instanceof ErrorDefinitionType) {
-                    ErrorDefinitionType err = (ErrorDefinitionType) object;
-
-                    List<String> pcmts = GeneratorUtils.splitString(null, err.getComment());
-                    if (null != err.getExtraInformation()) {
-                        pcmts = GeneratorUtils.splitString(pcmts, err.getExtraInformation().getComment());
-                    }
-
-                    String ev = "Not Used";
-                    if (null != err.getExtraInformation()) {
-                        ev = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
-                    }
-
-                    List<Object[]> v;
-                    if (m.containsKey(String.valueOf(err.getNumber()))) {
-                        v = m.get(String.valueOf(err.getNumber()));
-                    } else {
-                        v = new ArrayList<>();
-                        m.put(String.valueOf(err.getNumber()), v);
-                    }
-
-                    v.add(new Object[]{
-                        err.getName(), pcmts, err.getNumber(), ev
-                    });
-                } else if (object instanceof ErrorReferenceType) {
-                    ErrorReferenceType err = (ErrorReferenceType) object;
-
-                    List<String> pcmts = GeneratorUtils.splitString(null, err.getComment());
-                    if (null != err.getExtraInformation()) {
-                        pcmts = GeneratorUtils.splitString(pcmts, err.getExtraInformation().getComment());
-                    }
-
-                    String en;
-                    String es;
-                    if ((null == err.getType().getArea()) || (err.getType().getArea().equals(area.getName()))) {
-                        ErrorDefinitionType edt = getErrorDefinition(err.getType().getName());
-                        if (null != edt) {
-                            en = String.valueOf(edt.getNumber());
-                        } else {
-                            en = "UNKNOWN ERROR NUMBER!";
-                        }
-                        es = en;
-                    } else {
-                        en = "Defined in " + err.getType().getArea();
-                        es = "0";
-                    }
-
-                    String ev = "Not Used";
-                    if (null != err.getExtraInformation()) {
-                        ev = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
-                    }
-
-                    List<Object[]> v;
-                    if (m.containsKey(es)) {
-                        v = m.get(es);
-                    } else {
-                        v = new ArrayList<>();
-                        m.put(es, v);
-                    }
-
-                    v.add(new Object[]{
-                        err.getType().getName(), pcmts, en, ev
-                    });
-                }
-            }
-
-            for (String en : m.navigableKeySet()) {
-                for (Object[] err : m.get(en)) {
-                    docxFile.addTitle(5, "ERROR: " + (String) err[0]);
-
-                    docxFile.addNumberedComment((List<String>) err[1]);
-
-                    docxFile.startTable(OPERATION_ERROR_TABLE_WIDTHS);
-                    docxFile.startRow();
-                    docxFile.addCell(0, OPERATION_ERROR_TABLE_WIDTHS, "Error", HEADER_COLOUR);
-                    docxFile.addCell(1, OPERATION_ERROR_TABLE_WIDTHS, "Error #", HEADER_COLOUR);
-                    docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, "ExtraInfo Type", HEADER_COLOUR);
-                    docxFile.endRow();
-
-                    docxFile.startRow();
-                    docxFile.addCell(0, OPERATION_ERROR_TABLE_WIDTHS, (String) err[0]);
-                    docxFile.addCell(1, OPERATION_ERROR_TABLE_WIDTHS, String.valueOf(err[2]));
-                    docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, (String) err[3]);
-                    docxFile.endRow();
-                    docxFile.endTable();
-                }
-            }
-        } else {
+    private void addErrorStructureDetails(DocxBaseWriter docxFile, AreaType area, ServiceType service, OperationErrorList errors) throws IOException {
+        if (errors == null || errors.getErrorOrErrorRef() == null || errors.getErrorOrErrorRef().isEmpty()) {
             docxFile.addComment("The operation does not return any errors.");
+            return;
+        }
+
+        if (errors.getErrorOrErrorRef().size() == 1) {
+            docxFile.addComment("The operation may return the following error:");
+        } else {
+            docxFile.addComment("The operation may return one of the following errors:");
+        }
+
+        TreeMap<String, List<Object[]>> m = new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                try {
+                    Long value1 = Long.valueOf(o1);
+                    Long value2 = Long.valueOf(o2);
+                    return value1.compareTo(value2);
+                } catch (java.lang.NumberFormatException e) {
+                    return o1.compareTo(o2);
+                }
+            }
+        });
+
+        for (Object object : errors.getErrorOrErrorRef()) {
+            if (object instanceof ErrorDefinitionType) {
+                ErrorDefinitionType err = (ErrorDefinitionType) object;
+                List<String> pcmts = GeneratorUtils.addSplitStrings(null, err.getComment());
+                String ev = "Not Used";
+                String errorTypeDescription = "-";
+
+                if (err.getExtraInformation() != null) {
+                    ev = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
+
+                    if (err.getExtraInformation().getComment() != null) {
+                        errorTypeDescription = err.getExtraInformation().getComment();
+                    }
+                }
+
+                List<Object[]> v;
+                if (m.containsKey(String.valueOf(err.getNumber()))) {
+                    v = m.get(String.valueOf(err.getNumber()));
+                } else {
+                    v = new ArrayList<>();
+                    m.put(String.valueOf(err.getNumber()), v);
+                }
+
+                v.add(new Object[]{err.getName(), pcmts, err.getNumber(), ev, errorTypeDescription});
+            } else if (object instanceof ErrorReferenceType) {
+                ErrorReferenceType err = (ErrorReferenceType) object;
+                List<String> pcmts = GeneratorUtils.addSplitStrings(null, err.getComment());
+                String errorNumber = "UNKNOWN ERROR NUMBER!";
+                String es;
+                if ((null == err.getType().getArea()) || (err.getType().getArea().equals(area.getName()))) {
+                    ErrorDefinitionType edt = getErrorDefinition(err.getType().getName());
+                    if (edt != null) {
+                        errorNumber = String.valueOf(edt.getNumber());
+                    }
+                    es = errorNumber;
+                } else {
+                    errorNumber = "Defined in " + err.getType().getArea();
+                    es = "0";
+                }
+
+                String errorType = "Not Used";
+                String errorTypeDescription = "-";
+
+                if (err.getExtraInformation() != null) {
+                    errorType = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
+
+                    if (err.getExtraInformation().getComment() != null) {
+                        errorTypeDescription = err.getExtraInformation().getComment();
+                    }
+                }
+
+                List<Object[]> value;
+                if (m.containsKey(es)) {
+                    value = m.get(es);
+                } else {
+                    value = new ArrayList<>();
+                    m.put(es, value);
+                }
+
+                value.add(new Object[]{err.getType().getName(), pcmts, errorNumber, errorType, errorTypeDescription});
+            }
+        }
+
+        for (String key : m.navigableKeySet()) {
+            for (Object[] err : m.get(key)) {
+                docxFile.addTitle(5, "ERROR: " + (String) err[0]);
+
+                docxFile.addNumberedComment((List<String>) err[1]);
+
+                docxFile.startTable(OPERATION_ERROR_TABLE_WIDTHS);
+                docxFile.startRow();
+                docxFile.addCell(0, OPERATION_ERROR_TABLE_WIDTHS, "Error", HEADER_COLOUR);
+                docxFile.addCell(1, OPERATION_ERROR_TABLE_WIDTHS, "Error #", HEADER_COLOUR);
+                docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, "ExtraInfo Type", HEADER_COLOUR);
+                docxFile.addCell(3, OPERATION_ERROR_TABLE_WIDTHS, "ExtraInfo description", HEADER_COLOUR);
+                docxFile.endRow();
+
+                docxFile.startRow();
+                docxFile.addCell(0, OPERATION_ERROR_TABLE_WIDTHS, (String) err[0]);
+                docxFile.addCell(1, OPERATION_ERROR_TABLE_WIDTHS, String.valueOf(err[2]));
+                docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, (String) err[3]);
+                docxFile.addCell(3, OPERATION_ERROR_TABLE_WIDTHS, (String) err[4]);
+                docxFile.endRow();
+                docxFile.endTable();
+            }
         }
     }
 

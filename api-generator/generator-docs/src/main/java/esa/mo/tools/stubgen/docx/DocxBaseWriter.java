@@ -310,7 +310,7 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void addComment(String text) throws IOException {
-        List<String> strings = GeneratorUtils.splitString(null, text);
+        List<String> strings = GeneratorUtils.addSplitStrings(null, text);
 
         if (!strings.isEmpty()) {
             for (int i = 0; i < strings.size(); i++) {
@@ -353,7 +353,7 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     private void addNumberedComment(int instance, int level, String text) throws IOException {
-        List<String> strings = GeneratorUtils.splitString(null, text);
+        List<String> strings = GeneratorUtils.addSplitStrings(null, text);
         if (!strings.isEmpty()) {
             if (strings.size() > 1) {
                 for (String str : strings) {
