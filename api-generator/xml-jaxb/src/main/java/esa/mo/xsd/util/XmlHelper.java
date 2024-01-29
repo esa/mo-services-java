@@ -23,10 +23,8 @@ package esa.mo.xsd.util;
 import esa.mo.xsd.SpecificationType;
 import java.io.File;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -42,9 +40,8 @@ public class XmlHelper {
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.xsd");
     private static JAXBContext jc = null;
 
-    public static List<Map.Entry<SpecificationType, XmlSpecification>> loadSpecifications(
-            final File directory) throws IOException, JAXBException {
-        final List<Map.Entry<SpecificationType, XmlSpecification>> specList = new LinkedList<>();
+    public static List<XmlSpecification> loadSpecifications(final File directory) throws IOException, JAXBException {
+        final List<XmlSpecification> specList = new LinkedList<>();
 
         if (!directory.exists()) {
             return specList;
@@ -83,8 +80,7 @@ public class XmlHelper {
         return specList;
     }
 
-    public synchronized static AbstractMap.SimpleEntry<SpecificationType, XmlSpecification> loadSpecification(
-            final File is) throws IOException, JAXBException {
+    public synchronized static XmlSpecification loadSpecification(final File is) throws IOException, JAXBException {
         if (jc == null) {
             jc = JAXBContext.newInstance("esa.mo.xsd");
         }
@@ -92,8 +88,7 @@ public class XmlHelper {
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
         final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
         SpecificationType specType = (SpecificationType) rootElement.getValue();
-        XmlSpecification xmlSpec = new XmlSpecification(is, rootElement);
-        return new AbstractMap.SimpleEntry<>(specType, xmlSpec);
+        return new XmlSpecification(is, rootElement, specType);
     }
 
     public final static class XmlSpecification {
@@ -106,16 +101,51 @@ public class XmlHelper {
          * Holds the XML root element.
          */
         public final JAXBElement rootElement;
+        /**
+         * Holds the SpecificationType.
+         */
+        public final SpecificationType specType;
 
         /**
          * Constructor.
          *
          * @param file The file.
          * @param rootElement The XML root element.
+         * @param specType The specification type.
          */
-        public XmlSpecification(File file, JAXBElement rootElement) {
+        public XmlSpecification(File file, JAXBElement rootElement, SpecificationType specType) {
             this.file = file;
             this.rootElement = rootElement;
+            this.specType = specType;
+        }
+    }
+
+    public final static class XsdSpecification {
+
+        /**
+         * Holds the source file object.
+         */
+        public final File file;
+        /**
+         * Holds the XML root element.
+         */
+        public final JAXBElement rootElement;
+        /**
+         * Holds the SpecificationType.
+         */
+        public final Object schema;
+
+        /**
+         * Constructor.
+         *
+         * @param file The file.
+         * @param rootElement The XML root element.
+         * @param schema The schema.
+         */
+        public XsdSpecification(File file, JAXBElement rootElement, Object schema) {
+            this.file = file;
+            this.rootElement = rootElement;
+            this.schema = schema;
         }
     }
 }

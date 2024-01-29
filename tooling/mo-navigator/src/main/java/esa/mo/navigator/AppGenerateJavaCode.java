@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -61,17 +60,17 @@ public class AppGenerateJavaCode {
         try {
             generator.init(destFolder, true, true, packageBindings, extraProperties);
             File xmlRefDirectory = new File(sourFolder);
-            List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
+            List<XmlHelper.XmlSpecification> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
             // now generator from each specification
-            for (Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification> spec : specs) {
+            for (XmlHelper.XmlSpecification spec : specs) {
                 try {
-                    generator.preProcess(spec.getKey());
-                    generator.compile(destFolder, spec.getKey(), spec.getValue().rootElement);
+                    generator.preProcess(spec.specType);
+                    generator.compile(destFolder, spec.specType, spec.rootElement);
                 } catch (Exception ex) {
                     Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.INFO,
                             "Exception thrown during the processing of XML file: "
-                            + spec.getValue().file.getPath(), ex);
+                            + spec.file.getPath(), ex);
                 }
             }
 

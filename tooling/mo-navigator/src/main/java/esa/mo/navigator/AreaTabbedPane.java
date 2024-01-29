@@ -28,6 +28,7 @@ import esa.mo.navigator.parsers.ParserMOSDL;
 import esa.mo.navigator.parsers.ParserXML;
 import esa.mo.tools.stubgen.GeneratorDocx;
 import esa.mo.xsd.util.XmlHelper;
+import esa.mo.xsd.util.XmlHelper.XmlSpecification;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -166,18 +167,18 @@ public class AreaTabbedPane extends JTabbedPane {
                     FileSupport.writeFile(tempFilePath, text);
 
                     File xmlRefDirectory = new File(sourFolder);
-                    List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs;
+                    List<XmlSpecification> specs;
                     specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
                     // now generator from each specification
-                    for (Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification> spec : specs) {
+                    for (XmlSpecification spec : specs) {
                         try {
-                            generator.preProcess(spec.getKey());
-                            generator.compile(destFolder, spec.getKey(), spec.getValue().rootElement);
+                            generator.preProcess(spec.specType);
+                            generator.compile(destFolder, spec.specType, spec.rootElement);
                         } catch (Exception ex) {
                             Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                                     "Exception thrown during the processing of XML file: "
-                                    + spec.getValue().file.getPath(), ex);
+                                    + spec.file.getPath(), ex);
                         }
                     }
 
