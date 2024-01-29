@@ -501,7 +501,7 @@ public class StubGenerator extends AbstractMojo {
         // pre process the reference XSD specifications
         for (XsdSpecification spec : refXsd) {
             try {
-                generator.preProcess((Schema) spec.schema);
+                generator.preProcess(spec.schema);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(

@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import w3c.xsd.Schema;
 
 /**
  * Small helper class to load in MO XML specifications via JAXB
@@ -133,7 +134,7 @@ public class XmlHelper {
         /**
          * Holds the SpecificationType.
          */
-        public final Object schema;
+        public final Schema schema;
 
         /**
          * Constructor.
@@ -142,7 +143,7 @@ public class XmlHelper {
          * @param rootElement The XML root element.
          * @param schema The schema.
          */
-        public XsdSpecification(File file, JAXBElement rootElement, Object schema) {
+        public XsdSpecification(File file, JAXBElement rootElement, Schema schema) {
             this.file = file;
             this.rootElement = rootElement;
             this.schema = schema;
