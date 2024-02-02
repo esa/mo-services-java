@@ -34,12 +34,9 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
  * times.
  *
  */
-public abstract class StructureHelper {
+public class StructureHelper {
 
     private static final Set LOADED_PROPERTIES = new TreeSet();
-
-    private StructureHelper() {
-    }
 
     /**
      * Loads in a property file and optionally searches for a contained property
