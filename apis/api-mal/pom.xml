@@ -100,13 +100,6 @@
             <plugin>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-generator-maven-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                        <version>3.0.2</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
