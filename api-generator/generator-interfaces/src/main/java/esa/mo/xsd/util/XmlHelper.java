@@ -128,10 +128,6 @@ public class XmlHelper {
          */
         public final File file;
         /**
-         * Holds the XML root element.
-         */
-        public final JAXBElement rootElement;
-        /**
          * Holds the SpecificationType.
          */
         public final Schema schema;
@@ -140,12 +136,10 @@ public class XmlHelper {
          * Constructor.
          *
          * @param file The file.
-         * @param rootElement The XML root element.
          * @param schema The schema.
          */
-        public XsdSpecification(File file, JAXBElement rootElement, Schema schema) {
+        public XsdSpecification(File file, Schema schema) {
             this.file = file;
-            this.rootElement = rootElement;
             this.schema = schema;
         }
     }

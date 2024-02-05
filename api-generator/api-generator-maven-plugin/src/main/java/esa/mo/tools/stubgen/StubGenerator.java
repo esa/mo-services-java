@@ -426,9 +426,9 @@ public class StubGenerator extends AbstractMojo {
         final List<XsdSpecification> specList = new LinkedList<>();
 
         if (directory.exists()) {
-            final File xmlFiles[] = directory.listFiles();
+            final File[] xmsFiles = directory.listFiles();
 
-            for (File file : xmlFiles) {
+            for (File file : xmsFiles) {
                 if (file.isFile()) {
                     specList.add(loadXsdSpecification(file));
                 }
@@ -438,11 +438,11 @@ public class StubGenerator extends AbstractMojo {
         return specList;
     }
 
-    private static XsdSpecification loadXsdSpecification(final File is) throws IOException, JAXBException {
+    private static XsdSpecification loadXsdSpecification(final File file) throws IOException, JAXBException {
         final JAXBContext jc = JAXBContext.newInstance("w3c.xsd");
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
-        Schema schema = (Schema) unmarshaller.unmarshal(is);
-        return new XsdSpecification(is, null, schema);
+        Schema schema = (Schema) unmarshaller.unmarshal(file);
+        return new XsdSpecification(file, schema);
     }
 
     private void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
