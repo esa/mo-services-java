@@ -65,7 +65,7 @@
     <properties>
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
-        <ccsds.specification.download.filter>**/*.xsd</ccsds.specification.download.filter>
+        <ccsds.specification.download.filter>**/ServiceSchema-v003.xsd,**/COMSchema.xsd</ccsds.specification.download.filter>
     </properties>
 
     <dependencies>
