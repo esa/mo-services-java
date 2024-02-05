@@ -877,7 +877,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             + area.getName().toLowerCase() + "." + service.getName().toLowerCase()
                             + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
                     requiredPublishers.put(updateType, new RequiredPublisher(area, service, op));
-                    file.addTypeDependency("Map<_String;_String>");
                     CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher",
                             TypeUtils.createTypeReference(area.getName(),
                                     service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),

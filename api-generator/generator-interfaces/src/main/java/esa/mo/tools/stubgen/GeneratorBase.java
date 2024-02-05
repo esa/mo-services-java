@@ -431,7 +431,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         }
 
         if (file != null) {
-            file.addTypeDependency(retVal);
             retVal = convertClassName(retVal);
         }
 

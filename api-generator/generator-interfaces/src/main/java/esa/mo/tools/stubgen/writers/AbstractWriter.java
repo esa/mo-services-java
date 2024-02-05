@@ -49,10 +49,6 @@ public abstract class AbstractWriter implements TargetWriter {
         return lineSeparator;
     }
 
-    @Override
-    public void addTypeDependency(String typeName) {
-    }
-
     /**
      * Creates a String indented correctly with a semicolon at the end if
      * required.

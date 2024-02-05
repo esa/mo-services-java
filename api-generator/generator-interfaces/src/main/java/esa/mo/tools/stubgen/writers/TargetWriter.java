@@ -28,13 +28,6 @@ import java.io.IOException;
 public interface TargetWriter {
 
     /**
-     * Adds a dependency on a supplied type to the file.
-     *
-     * @param typeName The type to depend on.
-     */
-    void addTypeDependency(String typeName);
-
-    /**
      * Returns the current line separator.
      *
      * @return the line separator.
