@@ -23,12 +23,12 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>api-com</artifactId>
+    <artifactId>api-mpd</artifactId>
     <version>10.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA MO API - COM v001</name>
-    <description>The CCSDS COM API for Java</description>
+    <name>ESA MO API - MPD v001</name>
+    <description>The CCSDS MPD API for Java</description>
     <url>http://www.esa.int</url>
   
     <organization>
@@ -55,22 +55,15 @@
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
-    <developers>
-        <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
-        </developer>
-    </developers>
-
     <properties>
+<!--        <ccsds.specification.version>1.7</ccsds.specification.version>    -->
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
-        <ccsds.specification.download.filter>**/area002-v001-COM.xml</ccsds.specification.download.filter>
+        <ccsds.specification.download.filter>**/area006-v001-Mission-Product-Distribution.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
+        <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml</ccsds.specification.download.ref-filter>
     </properties>
-
+  
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>

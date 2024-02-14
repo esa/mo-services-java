@@ -71,5 +71,6 @@
         <module>api-common</module>
         <module>api-mc</module>
         <module>api-mps</module>
+        <module>api-mpd</module>
     </modules>
 </project>

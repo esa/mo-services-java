@@ -27,7 +27,7 @@
     <version>10.1-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO API - MAL</name>
+    <name>ESA MO API - MAL v003</name>
     <description>An implementation of the Java API for the CCSDS MAL</description>
     <url>http://www.esa.int</url>
   
