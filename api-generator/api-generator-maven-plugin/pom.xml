@@ -95,11 +95,13 @@
             <artifactId>generator-interfaces</artifactId>
             <version>10.1-SNAPSHOT</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-jaxb</artifactId>
             <version>10.1-SNAPSHOT</version>
         </dependency>
+                -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
