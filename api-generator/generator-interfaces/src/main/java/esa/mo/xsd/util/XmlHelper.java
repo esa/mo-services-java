@@ -31,7 +31,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import w3c.xsd.Schema;
 
 /**
  * Small helper class to load in MO XML specifications via JAXB
@@ -90,57 +89,5 @@ public class XmlHelper {
         final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
         SpecificationType specType = (SpecificationType) rootElement.getValue();
         return new XmlSpecification(is, rootElement, specType);
-    }
-
-    public final static class XmlSpecification {
-
-        /**
-         * Holds the source file object.
-         */
-        public final File file;
-        /**
-         * Holds the XML root element.
-         */
-        public final JAXBElement rootElement;
-        /**
-         * Holds the SpecificationType.
-         */
-        public final SpecificationType specType;
-
-        /**
-         * Constructor.
-         *
-         * @param file The file.
-         * @param rootElement The XML root element.
-         * @param specType The specification type.
-         */
-        public XmlSpecification(File file, JAXBElement rootElement, SpecificationType specType) {
-            this.file = file;
-            this.rootElement = rootElement;
-            this.specType = specType;
-        }
-    }
-
-    public final static class XsdSpecification {
-
-        /**
-         * Holds the source file object.
-         */
-        public final File file;
-        /**
-         * Holds the SpecificationType.
-         */
-        public final Schema schema;
-
-        /**
-         * Constructor.
-         *
-         * @param file The file.
-         * @param schema The schema.
-         */
-        public XsdSpecification(File file, Schema schema) {
-            this.file = file;
-            this.schema = schema;
-        }
     }
 }

@@ -21,8 +21,8 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.xsd.util.XmlHelper;
-import esa.mo.xsd.util.XmlHelper.XmlSpecification;
-import esa.mo.xsd.util.XmlHelper.XsdSpecification;
+import esa.mo.xsd.util.XmlSpecification;
+import esa.mo.xsd.util.XsdSpecification;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -489,36 +489,36 @@ public class StubGenerator extends AbstractMojo {
         // pre process the reference specifications
         for (XmlSpecification spec : refSpecs) {
             try {
-                generator.preProcess(spec.specType);
+                generator.preProcess(spec.getSpecType());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XML file: "
-                        + spec.file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
         // pre process the reference XSD specifications
         for (XsdSpecification spec : refXsd) {
             try {
-                generator.preProcess(spec.schema);
+                generator.preProcess(spec.getSchema());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XSD file: "
-                        + spec.file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
         // pre process the specifications
         for (XmlSpecification spec : specs) {
             try {
-                generator.preProcess(spec.specType);
+                generator.preProcess(spec.getSpecType());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of XML file: "
-                        + spec.file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
@@ -526,12 +526,12 @@ public class StubGenerator extends AbstractMojo {
         for (XmlSpecification spec : specs) {
             try {
                 getLog().info("Generating " + generator.getShortName());
-                generator.compile(outputDirectory.getPath(), spec.specType, spec.rootElement);
+                generator.compile(outputDirectory.getPath(), spec.getSpecType(), spec.getRootElement());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "(c) Exception thrown during the processing of XML file: "
-                        + spec.file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
@@ -545,7 +545,7 @@ public class StubGenerator extends AbstractMojo {
 
     private long getLatestTimestamp(long inputTimestamp, final List<XmlSpecification> specs) {
         for (XmlSpecification spec : specs) {
-            long fileTimestamp = spec.file.lastModified();
+            long fileTimestamp = spec.getFile().lastModified();
             if (fileTimestamp > inputTimestamp) {
                 inputTimestamp = fileTimestamp;
             }
@@ -556,7 +556,7 @@ public class StubGenerator extends AbstractMojo {
 
     private long getLatestSchemaTimestamp(long inputTimestamp, final List<XsdSpecification> specs) {
         for (XsdSpecification spec : specs) {
-            long fileTimestamp = spec.file.lastModified();
+            long fileTimestamp = spec.getFile().lastModified();
             if (fileTimestamp > inputTimestamp) {
                 inputTimestamp = fileTimestamp;
             }

@@ -22,6 +22,7 @@ package esa.mo.navigator;
 
 import esa.mo.tools.stubgen.GeneratorJava;
 import esa.mo.xsd.util.XmlHelper;
+import esa.mo.xsd.util.XmlSpecification;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,17 +61,17 @@ public class AppGenerateJavaCode {
         try {
             generator.init(destFolder, true, true, packageBindings, extraProperties);
             File xmlRefDirectory = new File(sourFolder);
-            List<XmlHelper.XmlSpecification> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
+            List<XmlSpecification> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
             // now generator from each specification
-            for (XmlHelper.XmlSpecification spec : specs) {
+            for (XmlSpecification spec : specs) {
                 try {
-                    generator.preProcess(spec.specType);
-                    generator.compile(destFolder, spec.specType, spec.rootElement);
+                    generator.preProcess(spec.getSpecType());
+                    generator.compile(destFolder, spec.getSpecType(), spec.getRootElement());
                 } catch (Exception ex) {
                     Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.INFO,
                             "Exception thrown during the processing of XML file: "
-                            + spec.file.getPath(), ex);
+                            + spec.getFile().getPath(), ex);
                 }
             }
 

@@ -28,7 +28,7 @@ import esa.mo.navigator.parsers.ParserMOSDL;
 import esa.mo.navigator.parsers.ParserXML;
 import esa.mo.tools.stubgen.GeneratorDocx;
 import esa.mo.xsd.util.XmlHelper;
-import esa.mo.xsd.util.XmlHelper.XmlSpecification;
+import esa.mo.xsd.util.XmlSpecification;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -173,12 +172,12 @@ public class AreaTabbedPane extends JTabbedPane {
                     // now generator from each specification
                     for (XmlSpecification spec : specs) {
                         try {
-                            generator.preProcess(spec.specType);
-                            generator.compile(destFolder, spec.specType, spec.rootElement);
+                            generator.preProcess(spec.getSpecType());
+                            generator.compile(destFolder, spec.getSpecType(), spec.getRootElement());
                         } catch (Exception ex) {
                             Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                                     "Exception thrown during the processing of XML file: "
-                                    + spec.file.getPath(), ex);
+                                    + spec.getFile().getPath(), ex);
                         }
                     }
 
