@@ -505,19 +505,5 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>jdk-17</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.xml.bind</groupId>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                    <version>4.0.0</version>
-                </dependency>
-            </dependencies>
-        </profile>
     </profiles>
 </project>
