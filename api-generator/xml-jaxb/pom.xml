@@ -79,6 +79,11 @@
             <artifactId>xml-ccsds-mo-standards</artifactId>
             <version>10.1-SNAPSHOT</version>
         </dependency>
+        <!-- The dependencies below are needed for Java 9 and higher -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
