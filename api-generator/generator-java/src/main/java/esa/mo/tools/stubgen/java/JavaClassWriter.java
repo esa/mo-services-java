@@ -142,7 +142,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         addClassVariable(false, isStatic, isFinal, scope, arg, isObject, isArray, val);
     }
 
-    protected void addClassVariable(boolean isProposed, boolean isStatic, boolean isFinal, String scope,
+    protected void addClassVariable(boolean isDeprecated, boolean isStatic, boolean isFinal, String scope,
             CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException {
         addMultilineComment(1, false, arg.getComment(), false);
 
@@ -177,7 +177,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             }
         }
 
-        if (isProposed) {
+        if (isDeprecated) {
             file.append(makeLine(1, "@Deprecated", false));
         }
         file.append(makeLine(1, buf.toString(), true));
