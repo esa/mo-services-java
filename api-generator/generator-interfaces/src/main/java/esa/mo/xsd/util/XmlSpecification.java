@@ -22,7 +22,11 @@ package esa.mo.xsd.util;
 
 import esa.mo.xsd.SpecificationType;
 import java.io.File;
+import java.io.IOException;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * The XML Specification
@@ -41,6 +45,8 @@ public final class XmlSpecification {
      * Holds the SpecificationType.
      */
     private final SpecificationType specType;
+
+    private static JAXBContext jc = null;
 
     /**
      * Constructor.
@@ -65,5 +71,16 @@ public final class XmlSpecification {
 
     public SpecificationType getSpecType() {
         return specType;
+    }
+
+    public synchronized static XmlSpecification loadSpecification(final File is) throws IOException, JAXBException {
+        if (jc == null) {
+            jc = JAXBContext.newInstance("esa.mo.xsd");
+        }
+
+        final Unmarshaller unmarshaller = jc.createUnmarshaller();
+        final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
+        SpecificationType specType = (SpecificationType) rootElement.getValue();
+        return new XmlSpecification(is, rootElement, specType);
     }
 }

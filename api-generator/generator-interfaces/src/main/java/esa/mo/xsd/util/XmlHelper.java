@@ -20,17 +20,13 @@
  */
 package esa.mo.xsd.util;
 
-import esa.mo.xsd.SpecificationType;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 /**
  * Small helper class to load in MO XML specifications via JAXB
@@ -38,7 +34,6 @@ import javax.xml.bind.Unmarshaller;
 public class XmlHelper {
 
     public static final java.util.logging.Logger LOGGER = Logger.getLogger("esa.mo.xsd");
-    private static JAXBContext jc = null;
 
     public static List<XmlSpecification> loadSpecifications(final File directory) throws IOException, JAXBException {
         final List<XmlSpecification> specList = new LinkedList<>();
@@ -52,7 +47,7 @@ public class XmlHelper {
         for (File file : xmlFiles) {
             if (file.isFile()) {
                 try {
-                    specList.add(loadSpecification(file));
+                    specList.add(XmlSpecification.loadSpecification(file));
                 } catch (IOException ex) {
                     LOGGER.log(Level.WARNING,
                             "(1) Exception thrown during the processing of XML file: {0}",
@@ -78,16 +73,5 @@ public class XmlHelper {
         }
 
         return specList;
-    }
-
-    public synchronized static XmlSpecification loadSpecification(final File is) throws IOException, JAXBException {
-        if (jc == null) {
-            jc = JAXBContext.newInstance("esa.mo.xsd");
-        }
-
-        final Unmarshaller unmarshaller = jc.createUnmarshaller();
-        final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
-        SpecificationType specType = (SpecificationType) rootElement.getValue();
-        return new XmlSpecification(is, rootElement, specType);
     }
 }
