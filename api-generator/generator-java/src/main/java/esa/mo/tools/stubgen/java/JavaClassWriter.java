@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorJava;
 import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorJava.JAVA_FILE_EXT;
@@ -29,6 +28,7 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
+import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
@@ -43,7 +43,7 @@ import java.util.List;
 /**
  *
  */
-public class JavaClassWriter extends AbstractLanguageWriter implements ClassWriterProposed, InterfaceWriter, MethodWriter {
+public class JavaClassWriter extends AbstractLanguageWriter implements ClassWriter, InterfaceWriter, MethodWriter {
 
     private final Writer file;
     private final GeneratorJava generator;
@@ -114,7 +114,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addClassVariableProposed(boolean isStatic, boolean isFinal, String scope,
+    public void addClassVariableDeprecated(boolean isStatic, boolean isFinal, String scope,
             CompositeField arg, boolean isObject, String initialValue) throws IOException {
         addClassVariable(true, isStatic, isFinal, scope, arg, isObject, false, initialValue);
     }

@@ -2131,7 +2131,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     public abstract String getNullValue();
 
-    public abstract ClassWriterProposed createClassFile(File folder, String className) throws IOException;
+    public abstract ClassWriter createClassFile(File folder, String className) throws IOException;
 
     public abstract ClassWriter createClassFile(String destinationFolderName, String className) throws IOException;
 

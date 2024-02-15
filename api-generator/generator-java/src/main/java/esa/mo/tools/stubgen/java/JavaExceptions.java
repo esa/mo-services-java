@@ -20,12 +20,12 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ErrorDefinitionType;
@@ -78,7 +78,7 @@ public class JavaExceptions {
         String inCamelCase = convertToCamelCase(error.getName());
         String className = inCamelCase + EXCEPTION;
 
-        ClassWriterProposed file = generator.createClassFile(folder, className);
+        ClassWriter file = generator.createClassFile(folder, className);
         file.addPackageStatement(area, service, null);
 
         // Appends the class name

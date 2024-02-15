@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
@@ -30,6 +29,7 @@ import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AnyTypeReference;
@@ -65,7 +65,7 @@ public class JavaServiceInfo {
     public void createServiceInfoClass(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info(" > Creating ServiceInfo class: " + service.getName());
-        ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
+        ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
         // construct area helper class name and variable
         String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
@@ -274,7 +274,7 @@ public class JavaServiceInfo {
         file.flush();
     }
 
-    private void createComObjectHelperDetails(ClassWriterProposed file, List<String> comObjectCalls,
+    private void createComObjectHelperDetails(ClassWriter file, List<String> comObjectCalls,
             String serviceVar, ModelObjectType obj, boolean isEvent, AreaType area) throws IOException {
         String objNameCaps = obj.getName().toUpperCase();
         comObjectCalls.add(objNameCaps);
@@ -292,13 +292,13 @@ public class JavaServiceInfo {
                 TypeUtils.createTypeReference(StdStrings.COM, null, "ObjectType", false),
                 true, true, "Object type constant.");
 
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, _objNumberVar, false,
+        file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, _objNumberVar, false,
                 String.valueOf(obj.getNumber()));
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objNumberVar, false,
+        file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, objNumberVar, false,
                 "(_" + objNameCaps + "_OBJECT_NUMBER)");
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectNameVar, false,
+        file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, objectNameVar, false,
                 "(\"" + obj.getName() + "\")");
-        file.addClassVariableProposed(true, true, StdStrings.PUBLIC, objectTypeVar, false,
+        file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, objectTypeVar, false,
                 "(new org.ccsds.moims.mo.mal.structures.UShort(" + area.getNumber() + "), "
                 + serviceVar + "_SERVICE_NUMBER, "
                 + "new org.ccsds.moims.mo.mal.structures.UOctet(" + area.getVersion() + "), "
@@ -314,7 +314,7 @@ public class JavaServiceInfo {
         CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT",
                 TypeUtils.createTypeReference(StdStrings.COM, null, "COMObject", false),
                 false, true, "Object instance.");
-        file.addClassVariableProposed(true, false, StdStrings.PUBLIC, objectInstVar, true,
+        file.addClassVariableDeprecated(true, false, StdStrings.PUBLIC, objectInstVar, true,
                 "(" + objNameCaps + "_OBJECT_TYPE, " + objNameCaps + "_OBJECT_NAME, " + bodyShortForm + ", "
                 + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ", " + isEvent + ")");
     }

@@ -306,4 +306,20 @@ public interface ClassWriter extends LanguageWriter {
     void addClassVariableNewInit(boolean isStatic, boolean isFinal, String scope,
             CompositeField type, boolean isObject, boolean isArray,
             String initialValue, boolean isNewInit) throws IOException;
+
+    /**
+     * Adds a proposed member variable to the class.
+     *
+     * @param isStatic True if the variable is static.
+     * @param isFinal True if the variable may not be modified.
+     * @param scope Scope of the variable.
+     * @param type Type of the variable.
+     * @param isObject True if the variable is an object rather than native
+     * type.
+     * @param initialValue The initial value of the variable.
+     * @throws IOException If there is an IO error.
+     */
+    void addClassVariableDeprecated(boolean isStatic, boolean isFinal,
+            String scope, CompositeField type, boolean isObject,
+            String initialValue) throws IOException;
 }

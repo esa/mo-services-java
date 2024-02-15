@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorConfiguration;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
@@ -28,6 +27,7 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.AttributeType;
 import esa.mo.xsd.CompositeType;
@@ -52,7 +52,7 @@ public class JavaHelpers {
 
     public void createServiceHelperClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().info(" > Creating service Helper class: " + service.getName());
-        ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
+        ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
@@ -133,7 +133,7 @@ public class JavaHelpers {
 
     public void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
         generator.getLog().info(" > Creating area helper class: " + area.getName());
-        ClassWriterProposed file = generator.createClassFile(areaFolder, area.getName() + "Helper");
+        ClassWriter file = generator.createClassFile(areaFolder, area.getName() + "Helper");
 
         String areaName = area.getName();
         String areaNameCAPS = area.getName().toUpperCase();

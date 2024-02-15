@@ -453,7 +453,7 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    public ClassWriterProposed createClassFile(File folder, String className) throws IOException {
+    public ClassWriter createClassFile(File folder, String className) throws IOException {
         return new JavaClassWriter(folder, className, this);
     }
 
