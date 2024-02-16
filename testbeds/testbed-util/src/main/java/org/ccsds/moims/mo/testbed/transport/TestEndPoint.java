@@ -285,11 +285,6 @@ public class TestEndPoint implements MALEndpoint {
         }
 
         @Override
-        public void free() throws MALException {
-            // Do nothing
-        }
-
-        @Override
         public MALMessageHeader getHeader() {
             return header;
         }

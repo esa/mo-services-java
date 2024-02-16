@@ -146,11 +146,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         return qosProperties;
     }
 
-    @Override
-    public void free() throws MALException {
-        // do nothing in the GEN case.
-    }
-
     /**
      * Encodes the contents of the message into the provided stream
      *

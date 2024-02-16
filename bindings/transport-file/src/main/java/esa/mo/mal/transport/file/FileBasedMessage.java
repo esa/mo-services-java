@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.file;
 
 import esa.mo.mal.transport.gen.GENMessage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
@@ -44,22 +43,9 @@ public class FileBasedMessage extends GENMessage {
      * @param encFactory The stream factory to use for decoding.
      * @throws MALException On decoding error.
      */
-    public FileBasedMessage(Map qosProperties, InputStream ios, 
+    public FileBasedMessage(Map qosProperties, InputStream ios,
             MALElementStreamFactory encFactory) throws MALException {
         super(false, true, new MALMessageHeader(), qosProperties, ios, encFactory);
-
         is = ios;
-    }
-
-    @Override
-    public void free() throws MALException {
-        System.out.println("File based message freed");
-        super.free();
-
-        try {
-            is.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 }
