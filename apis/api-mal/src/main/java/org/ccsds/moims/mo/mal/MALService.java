@@ -32,11 +32,6 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public abstract class MALService {
 
-    /**
-     * Number representing a non-existent service.
-     */
-    public static final UShort NULL_SERVICE_NUMBER = new UShort(0);
-
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final ServiceKey serviceKey;
     private final Identifier serviceName;
