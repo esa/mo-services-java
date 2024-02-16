@@ -48,7 +48,7 @@ public abstract class COMService extends MALService {
     public COMService(final ServiceKey serviceKey, final Identifier serviceName,
             final Element[] elements, final MALOperation[] operations, final COMObject[] comObjects) {
         super(serviceKey, serviceName, elements, operations);
-        this.comObjects = new COMObject[0];
+        this.comObjects = comObjects;
     }
 
     /**

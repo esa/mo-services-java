@@ -200,8 +200,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                             encFactory, encBodyBytes, encBodyElements);
                 case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
                     return new PublishRegisterBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes,
-                            encBodyElements);
+                            encFactory, encBodyBytes, encBodyElements);
                 case MALPubSubOperation._PUBLISH_STAGE:
                     return new PublishBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
