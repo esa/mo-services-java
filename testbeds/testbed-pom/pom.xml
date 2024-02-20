@@ -76,7 +76,7 @@
         <ant.plugin.version>1.7</ant.plugin.version>
         <ant.version>1.8.1</ant.version>
         <ant.trax.version>1.8.0</ant.trax.version>
-        <fitnesse.version>20140901</fitnesse.version>
+        <fitnesse.version>20200308</fitnesse.version>
         <jacoco.version>0.8.10</jacoco.version>
         <junit.version>4.8.1</junit.version>
         <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
