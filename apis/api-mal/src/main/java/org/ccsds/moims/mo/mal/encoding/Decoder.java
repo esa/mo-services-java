@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
- * Extends the MALDecoder interface for use in the generic encoding framework.
+ * The Decoder class can be extended to create fully functional decoders.
  */
 public abstract class Decoder implements MALDecoder {
 
