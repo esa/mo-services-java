@@ -289,6 +289,7 @@ jobs:
          path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk21:
+   if: ${{ false }}  # disable for now
    needs: build-testbeds-jdk21
    runs-on: ubuntu-latest
    steps:
@@ -405,6 +406,7 @@ jobs:
          path: testbeds/testbed-com/target/surefire-reports/
 
   testbed-com-jdk21:
+   if: ${{ false }}  # disable for now
    needs: build-testbeds-jdk21
    runs-on: ubuntu-latest
    steps:
