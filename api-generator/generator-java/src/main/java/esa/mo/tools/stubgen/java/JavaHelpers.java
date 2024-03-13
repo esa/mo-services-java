@@ -51,7 +51,6 @@ public class JavaHelpers {
     }
 
     public void createServiceHelperClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info(" > Creating service Helper class: " + service.getName());
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();
@@ -132,7 +131,6 @@ public class JavaHelpers {
     }
 
     public void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
-        generator.getLog().info(" > Creating area helper class: " + area.getName());
         ClassWriter file = generator.createClassFile(areaFolder, area.getName() + "Helper");
 
         String areaName = area.getName();

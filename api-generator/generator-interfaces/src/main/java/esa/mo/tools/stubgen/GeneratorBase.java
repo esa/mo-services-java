@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import org.apache.maven.plugin.logging.Log;
 import w3c.xsd.ComplexType;
 import w3c.xsd.NoFixedFacet;
 import w3c.xsd.OpenAttrs;
@@ -59,17 +58,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
     protected final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
     protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
-    private final Log logger;
     private boolean generateCOM;
 
     /**
      * Constructor.
      *
-     * @param logger The logger.
      * @param config The configuration to use.
      */
-    protected GeneratorBase(Log logger, GeneratorConfiguration config) {
-        this.logger = logger;
+    protected GeneratorBase(GeneratorConfiguration config) {
         this.config = config;
     }
 
@@ -223,7 +219,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the details if found, otherwise null.
      */
     public AttributeTypeDetails getAttributeDetails(String area, String type) {
-        if (null != type) {
+        if (type != null) {
             return attributeTypesMap.get(new TypeKey(area, null, type));
         }
         return null;
@@ -611,15 +607,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
         }
         return summary;
-    }
-
-    /**
-     * Returns the logger.
-     *
-     * @return the logger.
-     */
-    public Log getLog() {
-        return logger;
     }
 
     private OperationSummary extractOperationSummary(OperationType op, int capNum) {

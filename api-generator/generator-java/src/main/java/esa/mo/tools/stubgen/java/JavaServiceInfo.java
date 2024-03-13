@@ -64,7 +64,6 @@ public class JavaServiceInfo {
 
     public void createServiceInfoClass(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info(" > Creating ServiceInfo class: " + service.getName());
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
         // construct area helper class name and variable
@@ -215,9 +214,7 @@ public class JavaServiceInfo {
 
         // auto-generate helper object for the COM extra features
         if (service instanceof ExtendedServiceType) {
-            generator.getLog().info(" > Creating extended COM service features: " + service.getName());
             ExtendedServiceType eService = (ExtendedServiceType) service;
-
             SupportedFeatures features = eService.getFeatures();
 
             if (features != null) {

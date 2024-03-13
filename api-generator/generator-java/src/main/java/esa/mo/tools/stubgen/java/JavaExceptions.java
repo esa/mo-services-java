@@ -48,10 +48,12 @@ public class JavaExceptions {
 
     public void createServiceExceptions(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
+        /*
         generator.getLog().warn("The service Exceptions must be moved to Area "
                 + "level! This is just supported for backward compatibility. "
                 + "Check the Errors defined in service: " + service.getName());
         generator.getLog().info(" > Creating service Exceptions for service: " + service.getName());
+        */
 
         if (summary.getService().getErrors() != null && summary.getService().getErrors().getError() != null) {
             for (ErrorDefinitionType error : summary.getService().getErrors().getError()) {
@@ -61,8 +63,6 @@ public class JavaExceptions {
     }
 
     public void createAreaExceptions(File areaFolder, AreaType area) throws IOException {
-        generator.getLog().info(" > Creating Area Exceptions for area: " + area.getName());
-
         if (area.getErrors() != null && area.getErrors().getError() != null) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
                 this.generateException(areaFolder, area, null, error);
@@ -72,8 +72,6 @@ public class JavaExceptions {
 
     public void generateException(File folder, AreaType area,
             ServiceType service, ErrorDefinitionType error) throws IOException {
-        generator.getLog().info(" > Creating Exception: " + error.getName());
-
         // Needs to be converted to Camel case in the future!
         String inCamelCase = convertToCamelCase(error.getName());
         String className = inCamelCase + EXCEPTION;

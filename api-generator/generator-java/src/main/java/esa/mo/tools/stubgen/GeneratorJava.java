@@ -132,7 +132,7 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     public void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher publisher) throws IOException {
-        getLog().info(" > Creating Publisher class: " + fqPublisherName);
+        logger.info(" > Creating Publisher class: " + fqPublisherName);
 
         String publisherName = fqPublisherName.substring(fqPublisherName.lastIndexOf('.') + 1);
         ClassWriter file = createClassFile(destinationFolderName, fqPublisherName.replace('.', '/'));
@@ -251,10 +251,13 @@ public class GeneratorJava extends GeneratorLangs {
     public void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
         JavaLists javaLists = new JavaLists(this);
+        String listName = srcTypeName + "List";
 
         if (isAbstract) {
+            logger.info(" > Creating HeterogeneousList class: " + listName);
             javaLists.createHeterogeneousListClass(folder, area, service, srcTypeName);
         } else {
+            logger.info(" > Creating List class: " + listName);
             javaLists.createHomogeneousListClass(folder, area, service, srcTypeName, shortFormPart);
         }
     }

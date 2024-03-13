@@ -93,6 +93,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     public boolean supportsToValue;
     private boolean supportsAsync;
     private boolean generateStructures;
+    protected final Log logger;
 
     /**
      * Constructor.
@@ -111,13 +112,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
     public GeneratorLangs(Log logger, boolean supportsToString, boolean supportsEquals,
             boolean supportsToValue, boolean supportsAsync,
             boolean requiresDefaultConstructors, GeneratorConfiguration config) {
-        super(logger, config);
+        super(config);
 
         this.supportsToString = supportsToString;
         this.supportsEquals = supportsEquals;
         this.supportsToValue = supportsToValue;
         this.supportsAsync = supportsAsync;
         this.requiresDefaultConstructors = requiresDefaultConstructors;
+        this.logger = logger;
     }
 
     @Override
@@ -207,9 +209,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             long timestamp = System.currentTimeMillis();
             processArea(destinationFolderName, area, requiredPublishers);
             timestamp = System.currentTimeMillis() - timestamp;
-            getLog().info("-----------");
-            getLog().info("Processed " + area.getName() + " area in " + timestamp + " ms");
-            getLog().info("-----------");
+            logger.info("-----------");
+            logger.info("Processed " + area.getName() + " area in " + timestamp + " ms");
+            logger.info("-----------");
         }
 
         for (Map.Entry<String, MultiReturnType> entry : multiReturnTypeMap.entrySet()) {
@@ -218,9 +220,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             createMultiReturnType(destinationFolderName, string, rt);
         }
 
-        getLog().info("-----------");
+        logger.info("-----------");
         totalTime = System.currentTimeMillis() - totalTime;
-        getLog().info("Processed all Areas in " + totalTime + " ms");
+        logger.info("Processed all Areas in " + totalTime + " ms");
     }
 
     @Override
@@ -323,7 +325,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void processArea(String destinationFolderName, AreaType area,
             Map<String, RequiredPublisher> requiredPublishers) throws IOException {
         if ((!area.getName().equalsIgnoreCase(StdStrings.COM)) || (generateCOM())) {
-            getLog().info("Processing area: " + area.getName());
+            logger.info("Processing area: " + area.getName());
 
             // create folder
             File destinationFolder = StubUtils.createFolder(new File(destinationFolderName),
@@ -352,10 +354,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             // Create Area Helper
             JavaHelpers helper = new JavaHelpers(this);
+            logger.info(" > Creating Area Helper class: " + area.getName());
             helper.createAreaHelperClass(areaFolder, area);
 
             // Create Area Exceptions
             JavaExceptions exceptions = new JavaExceptions(this);
+            logger.info(" > Creating Area Exceptions for area: " + area.getName());
             exceptions.createAreaExceptions(areaFolder, area);
 
             // if area level types exist
@@ -384,7 +388,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             createCompositeClass(structureFolder, area, null, (CompositeType) oType);
                         } else if (oType instanceof EnumerationType) {
                             JavaEnumerations enumerations = new JavaEnumerations(this);
-                            enumerations.createEnumerationClass(structureFolder, area, null, (EnumerationType) oType);
+                            EnumerationType enumType = (EnumerationType) oType;
+                            logger.info(" > Creating Enumeration class: " + enumType.getName());
+                            enumerations.createEnumerationClass(structureFolder, area, null, enumType);
                         } else {
                             throw new IllegalArgumentException("Unexpected area (" + area.getName() + ") level datatype of " + oType.getClass().getName());
                         }
@@ -412,7 +418,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void processService(File areaFolder, AreaType area, ServiceType service,
             Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        this.getLog().info("Processing service: " + service.getName());
+        logger.info("Processing service: " + service.getName());
         // create service folders
         File serviceFolder = StubUtils.createFolder(areaFolder, service.getName());
         // load service operation details
@@ -421,10 +427,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createServiceFolderComment(serviceFolder, area, service);
         // create service helper
         JavaHelpers helper = new JavaHelpers(this);
+        logger.info(" > Creating service Helper class: " + service.getName());
         helper.createServiceHelperClass(serviceFolder, area, service, summary);
 
         // create service info
         JavaServiceInfo serviceInfo = new JavaServiceInfo(this);
+        logger.info(" > Creating ServiceInfo class: " + service.getName());
         serviceInfo.createServiceInfoClass(serviceFolder, area, service, summary);
 
         // create consumer classes
@@ -443,6 +451,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
                 if (oType instanceof EnumerationType) {
                     JavaEnumerations enumerations = new JavaEnumerations(this);
+                    EnumerationType enumType = (EnumerationType) oType;
+                    logger.info(" > Creating Enumeration class: " + enumType.getName());
                     enumerations.createEnumerationClass(structureFolder, area, service, (EnumerationType) oType);
                     name = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
@@ -453,7 +463,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             + ":" + service.getName() + ") level datatype of " + oType.getClass().getName());
                 }
 
-                this.getLog().warn("Warning! The data structure " + name
+                logger.warn("Warning! The data structure " + name
                         + " is set at Service-level in the " + service.getName()
                         + " service! Please move this data structure to Area-level"
                         + " in order to be compatible with the latest MO Standard.");
@@ -463,19 +473,21 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceConsumerClasses(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating consumer classes: " + service.getName());
+        logger.info(" > Creating consumer classes: " + service.getName());
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
         createServiceConsumerFolderComment(consumerFolder, area, service);
         createServiceConsumerInterface(consumerFolder, area, service, summary);
         JavaConsumer consumer = new JavaConsumer(this, supportsToValue, supportsAsync);
+        logger.info(" > Creating consumer adapter: " + service.getName());
         consumer.createServiceConsumerAdapter(consumerFolder, area, service, summary);
+        logger.info(" > Creating consumer stub: " + service.getName());
         consumer.createServiceConsumerStub(consumerFolder, area, service, summary);
     }
 
     protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service,
             ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        getLog().info(" > Creating provider classes: " + service.getName());
+        logger.info(" > Creating provider classes: " + service.getName());
         File providerFolder = StubUtils.createFolder(serviceFolder, PROVIDER_FOLDER);
         // create a comment for the provider folder if supported
         createServiceProviderFolderComment(providerFolder, area, service);
@@ -488,13 +500,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderDelegation(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating provider delegate class: " + service.getName());
+        logger.info(" > Creating provider delegate class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, true);
     }
 
     protected void createServiceProviderInheritance(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating provider inheritance class: " + service.getName());
+        logger.info(" > Creating provider inheritance class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, false);
     }
 
@@ -513,7 +525,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             ServiceType service, ServiceSummary summary) throws IOException {
         String serviceName = service.getName();
 
-        getLog().info(" > Creating consumer interface: " + serviceName);
+        logger.info(" > Creating consumer interface: " + serviceName);
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName);
 
@@ -643,7 +655,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void createServiceProviderHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating provider handler interface: " + service.getName());
+        logger.info(" > Creating provider handler interface: " + service.getName());
 
         String handlerName = service.getName() + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
@@ -698,7 +710,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderInvokeInteractionClass(File providerFolder, AreaType area, ServiceType service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
-        getLog().info(" > Creating provider invoke interaction class: " + className);
+        logger.info(" > Creating provider invoke interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
@@ -768,7 +780,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void createServiceProviderProgressInteractionClass(File providerFolder,
             AreaType area, ServiceType service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
-        getLog().info(" > Creating provider progress interaction class: " + className);
+        logger.info(" > Creating provider progress interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
@@ -863,7 +875,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service,
             ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        getLog().info(" > Creating provider skeleton interface: " + service.getName());
+        logger.info(" > Creating provider skeleton interface: " + service.getName());
 
         String skeletonName = service.getName() + "Skeleton";
         InterfaceWriter file = createInterfaceFile(providerFolder, skeletonName);
@@ -1288,7 +1300,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         TypeKey key = new TypeKey(any.getArea(), service, String.valueOf(any.getNumber()));
 
         if (!comObjectMap.containsKey(key)) {
-            getLog().warn("Unknown COM object referenced: " + key);
+            logger.warn("Unknown COM object referenced: " + key);
             return null;
         }
 
@@ -1304,7 +1316,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
         String className = composite.getName();
-        getLog().info(" > Creating Composite class: " + className);
+        logger.info(" > Creating Composite class: " + className);
 
         ClassWriter file = createClassFile(folder, className);
         String parentClass = null;
@@ -1618,7 +1630,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     public abstract void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException;
 
     protected final void createMultiReturnType(String destinationFolderName, String returnTypeFqName, MultiReturnType returnTypeInfo) throws IOException {
-        getLog().info(" > Creating multiple return class class " + returnTypeFqName);
+        logger.info(" > Creating multiple return class class " + returnTypeFqName);
 
         // create a comment for the body folder if supported
         createServiceMessageBodyFolderComment(destinationFolderName, returnTypeInfo.getArea(), returnTypeInfo.getService());
@@ -1958,7 +1970,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 argName = "_" + shortName + i;
 
                 // Give a Warning here!!
-                this.getLog().warn("Warning! The field name is not set in the xml file! "
+                logger.warn("Warning! The field name is not set in the xml file! "
                         + "The autogenerated value is: " + argName);
             }
 

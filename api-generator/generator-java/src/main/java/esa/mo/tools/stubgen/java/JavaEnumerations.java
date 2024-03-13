@@ -49,9 +49,6 @@ public class JavaEnumerations {
     public void createEnumerationClass(File folder, AreaType area, ServiceType service, EnumerationType enumeration) throws IOException {
         String enumName = enumeration.getName();
         long enumSize = enumeration.getItem().size();
-
-        generator.getLog().info(" > Creating Enumeration class: " + enumName);
-
         ClassWriter file = generator.createClassFile(folder, enumName);
 
         file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());

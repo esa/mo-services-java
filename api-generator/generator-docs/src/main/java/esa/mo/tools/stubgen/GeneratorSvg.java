@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import org.apache.maven.plugin.logging.Log;
 
 /**
  * Generates an XHTML compliant file of the service specification in an ECSS PUS
@@ -55,6 +56,7 @@ public class GeneratorSvg extends GeneratorDocument {
     private boolean splitOutSvg = false;
     private boolean includeCollapsedMessages = true;
     private boolean includeExpandedMessages = true;
+    private final Log logger;
 
     /**
      * Constructor.
@@ -62,8 +64,9 @@ public class GeneratorSvg extends GeneratorDocument {
      * @param logger The logger to use.
      */
     public GeneratorSvg(org.apache.maven.plugin.logging.Log logger) {
-        super(logger, new GeneratorConfiguration("", "", "", "",
+        super(new GeneratorConfiguration("", "", "", "",
                 "", "", "", "", "", "", "", ""));
+        this.logger = logger;
     }
 
     @Override
@@ -86,27 +89,27 @@ public class GeneratorSvg extends GeneratorDocument {
 
         if (extraProperties.containsKey("svg.includeDescriptiveText")) {
             includeDescriptions = Boolean.parseBoolean(extraProperties.get("svg.includeDescriptiveText"));
-            getLog().info("svg.includeDescriptiveText: " + includeDescriptions);
+            logger.info("svg.includeDescriptiveText: " + includeDescriptions);
         }
 
         if (extraProperties.containsKey("svg.includeIndexes")) {
             includeIndexes = Boolean.parseBoolean(extraProperties.get("svg.includeIndexes"));
-            getLog().info("svg.includeIndexes: " + includeIndexes);
+            logger.info("svg.includeIndexes: " + includeIndexes);
         }
 
         if (extraProperties.containsKey("svg.splitOutSvg")) {
             splitOutSvg = Boolean.parseBoolean(extraProperties.get("svg.splitOutSvg"));
-            getLog().info("svg.splitOutSvg: " + splitOutSvg);
+            logger.info("svg.splitOutSvg: " + splitOutSvg);
         }
 
         if (extraProperties.containsKey("svg.includeCollapsedMessages")) {
             includeCollapsedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeCollapsedMessages"));
-            getLog().info("svg.includeCollapsedMessages: " + includeCollapsedMessages);
+            logger.info("svg.includeCollapsedMessages: " + includeCollapsedMessages);
         }
 
         if (extraProperties.containsKey("svg.includeExpandedMessages")) {
             includeExpandedMessages = Boolean.parseBoolean(extraProperties.get("svg.includeExpandedMessages"));
-            getLog().info("svg.includeExpandedMessages: " + includeExpandedMessages);
+            logger.info("svg.includeExpandedMessages: " + includeExpandedMessages);
         }
     }
 
@@ -121,7 +124,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 SvgWriter svgFile = new SvgWriter(destinationFolderName, outputName, "xhtml", true);
                 SvgBufferWriter svgBuff = new SvgBufferWriter(destinationFolderName, outputName, true);
 
-                getLog().info("Processing area: " + area.getName());
+                logger.info("Processing area: " + area.getName());
                 svgBuff.addTitle(1, "Specification: ", createId(null, null), area.getName(), false);
                 svgBuff.addComment(area.getComment());
 
@@ -305,7 +308,7 @@ public class GeneratorSvg extends GeneratorDocument {
             Map<String, String> indexMap, FundamentalType fundamental) throws IOException {
         String fundName = fundamental.getName();
 
-        getLog().info("Creating fundamental class " + fundName);
+        logger.info("Creating fundamental class " + fundName);
 
         svgFile.addTitle(3, "Fundamental: ", createId(null, fundName), fundName, true);
 
@@ -320,7 +323,7 @@ public class GeneratorSvg extends GeneratorDocument {
             Map<String, String> indexMap, AttributeType attribute) throws IOException {
         String attrName = attribute.getName();
 
-        getLog().info("Creating attribute class " + attrName);
+        logger.info("Creating attribute class " + attrName);
 
         svgFile.addTitle(3, "Attribute: ", createId(null, attrName), attrName, true);
 
@@ -335,7 +338,7 @@ public class GeneratorSvg extends GeneratorDocument {
             ServiceType service, EnumerationType enumeration) throws IOException {
         String enumName = enumeration.getName();
 
-        getLog().info("Creating enumeration class " + enumName);
+        logger.info("Creating enumeration class " + enumName);
 
         svgFile.addTitle(3, "Enum: ", createId(service, enumName), enumName, false);
 
@@ -355,7 +358,7 @@ public class GeneratorSvg extends GeneratorDocument {
             ServiceType service, CompositeType composite) throws IOException {
         String compName = composite.getName();
 
-        getLog().info("Creating composite class " + compName);
+        logger.info("Creating composite class " + compName);
 
         boolean abstractComposite = (null == composite.getShortFormPart());
 
@@ -831,7 +834,7 @@ public class GeneratorSvg extends GeneratorDocument {
         protected SvgWriter(String folder, String className, String ext, boolean withXhtml) throws IOException {
             super(folder, className, StubUtils.createLowLevelWriter(folder, className, ext), withXhtml);
 
-            getLog().info("Creating file " + folder + " " + className + "." + ext);
+            logger.info("Creating file " + folder + " " + className + "." + ext);
 
             if (withXhtml) {
                 getFile().append(makeLine(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));

@@ -64,7 +64,6 @@ public class JavaLists {
 
         srcType.setName(srcTypeName);
         String listName = srcTypeName + "List";
-        generator.getLog().info(" > Creating HeterogeneousList class: " + listName);
 
         JavaClassWriter file = (JavaClassWriter) generator.createClassFile(folder, listName);
         file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
@@ -116,15 +115,13 @@ public class JavaLists {
         String listName = srcTypeName + "List";
 
         TypeReference srcType = new TypeReference();
+        srcType.setName(srcTypeName);
         srcType.setArea(area.getName());
         if (service != null) {
             srcType.setService(service.getName());
         }
 
-        srcType.setName(srcTypeName);
-        generator.getLog().info(" > Creating List class: " + listName);
         ClassWriter file = generator.createClassFile(folder, listName);
-
         file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
 
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
