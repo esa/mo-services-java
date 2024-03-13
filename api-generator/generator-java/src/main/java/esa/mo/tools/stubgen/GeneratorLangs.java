@@ -44,6 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.logging.Log;
@@ -328,6 +330,23 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     getConfig().getAreaPackage(area.getName()).replace('.', '/'));
             final File areaFolder = StubUtils.createFolder(destinationFolder, area.getName());
 
+            ConcurrentLinkedQueue<Exception> errors_2 = new ConcurrentLinkedQueue<>();
+            Thread t1 = new Thread() {
+                @Override
+                public void run() {
+                    // create services
+                    for (ServiceType service : area.getService()) {
+                        try {
+                            processService(areaFolder, area, service, requiredPublishers);
+                        } catch (IOException ex) {
+                            errors_2.add(ex);
+                        }
+                    }
+                }
+            };
+
+            t1.start();
+
             // Create a comment for the area folder if supported
             createAreaFolderComment(areaFolder, area);
 
@@ -379,9 +398,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 }
             }
 
-            // create services
-            for (ServiceType service : area.getService()) {
-                processService(areaFolder, area, service, requiredPublishers);
+            try {
+                t1.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GeneratorLangs.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (!errors_2.isEmpty()) {
+                throw (IOException) new IOException(errors_2.poll());
             }
         }
     }
