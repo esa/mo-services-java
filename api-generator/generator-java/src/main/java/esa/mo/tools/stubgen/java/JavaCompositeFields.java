@@ -51,7 +51,7 @@ public class JavaCompositeFields {
             String fqTypeName;
 
             if (generator.isAttributeNativeType(elementType)) {
-                fqTypeName = generator.createElementType(file, StdStrings.MAL, null, typeName + "List");
+                fqTypeName = generator.createElementType(StdStrings.MAL, null, typeName + "List");
             } else {
                 if (isObjectRef) {
                     //String temp = generator.createElementType(file, elementType, true);
@@ -59,7 +59,7 @@ public class JavaCompositeFields {
                     // fqTypeName = lastCharRemoved + "List>";
                     fqTypeName = "org.ccsds.moims.mo.mal.structures.ObjectRefList";
                 } else {
-                    fqTypeName = generator.createElementType(file, elementType, true) + "List";
+                    fqTypeName = generator.createElementType(elementType, true) + "List";
                 }
             }
 
@@ -75,7 +75,7 @@ public class JavaCompositeFields {
                     StdStrings.ELEMENT, true, newCall, comment);
         } else if (generator.isAttributeType(elementType)) {
             AttributeTypeDetails details = generator.getAttributeDetails(elementType);
-            String fqTypeName = generator.createElementType(file, elementType, isStructure);
+            String fqTypeName = generator.createElementType(elementType, isStructure);
             return new CompositeField(details.getTargetType(), elementType, fieldName,
                     elementType.isList(), canBeNull, false, typeName, "",
                     typeName, false, "new " + fqTypeName + "()", comment);
@@ -88,7 +88,7 @@ public class JavaCompositeFields {
                         elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
             }
 
-            String fqTypeName = generator.createElementType(file, elementTypeIndir, isStructure);
+            String fqTypeName = generator.createElementType(elementTypeIndir, isStructure);
 
             if (generator.isEnum(elementType)) {
                 EnumerationType typ = generator.getEnum(elementType);

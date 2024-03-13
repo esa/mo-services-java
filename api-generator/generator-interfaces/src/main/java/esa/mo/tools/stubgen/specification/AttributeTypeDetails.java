@@ -60,7 +60,7 @@ public final class AttributeTypeDetails {
         this.nativeType = isNativeType;
 
         if (!nativeType) {
-            this.targetType = ti.createElementType(null, StdStrings.MAL, null, targetType);
+            this.targetType = ti.createElementType(StdStrings.MAL, null, targetType);
         } else {
             this.targetType = targetType;
         }

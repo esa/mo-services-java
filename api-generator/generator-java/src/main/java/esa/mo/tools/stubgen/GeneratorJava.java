@@ -139,8 +139,8 @@ public class GeneratorJava extends GeneratorLangs {
 
         file.addPackageStatement(publisher.area, publisher.service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
         String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
         CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet",
@@ -447,7 +447,7 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     protected String malStringAsElement(LanguageWriter file) {
-        return createElementType(file, StdStrings.MAL, null, StdStrings.UNION);
+        return createElementType(StdStrings.MAL, null, StdStrings.UNION);
     }
 
     @Override

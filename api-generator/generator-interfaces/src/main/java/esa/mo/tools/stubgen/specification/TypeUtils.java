@@ -60,7 +60,7 @@ public class TypeUtils {
             return null;
         }
 
-        String argTypeStr = tiSource.createElementType(null, tr, true);
+        String argTypeStr = tiSource.createElementType(tr, true);
         String argVersionStr = tiSource.getAreaPackage(tr.getArea())
                 + tr.getArea().toLowerCase() + "." + tr.getArea()
                 + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";

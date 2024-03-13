@@ -27,7 +27,7 @@
     <version>10.1-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO JAXB classes for MO XML files</name>
+    <name>ESA MO API Generator - JAXB classes for MO</name>
   
     <organization>
         <name>ESA</name>
@@ -53,15 +53,6 @@
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
-    <developers>
-        <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
-        </developer>
-    </developers>
-
     <properties>
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>

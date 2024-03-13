@@ -327,18 +327,18 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     @Override
-    public String createElementType(TargetWriter file, TypeReference type, boolean isStructure) {
+    public String createElementType(TypeReference type, boolean isStructure) {
         if (type == null) {
             return null;
         }
 
-        return createElementType(file, type.getArea(), type.getService(),
+        return createElementType(type.getArea(), type.getService(),
                 isStructure ? config.getStructureFolder() : null, type.getName());
     }
 
     @Override
-    public String createElementType(TargetWriter file, String areaName, String serviceName, String typeName) {
-        return createElementType(file, areaName, serviceName, config.getStructureFolder(), typeName);
+    public String createElementType(String areaName, String serviceName, String typeName) {
+        return createElementType(areaName, serviceName, config.getStructureFolder(), typeName);
     }
 
     /**
@@ -350,10 +350,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type The type.
      * @return the full name of the type.
      */
-    public String createElementType(TargetWriter file, AreaType area, ServiceType service, String type) {
+    public String createElementType(AreaType area, ServiceType service, String type) {
         String areaName = (area != null) ? area.getName() : null;
         String serviceName = (service != null) ? service.getName() : null;
-        return createElementType(file, areaName, serviceName, config.getStructureFolder(), type);
+        return createElementType(areaName, serviceName, config.getStructureFolder(), type);
     }
 
     public static String extractTypeFromObjectRef(String type) {
@@ -384,7 +384,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type The type.
      * @return the full name of the type.
      */
-    public String createElementType(TargetWriter file, String area,
+    public String createElementType(String area,
             String service, String extraPackageLevel, String type) {
         if (area == null) {
             return type;
@@ -392,7 +392,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
         if (type.contains("ObjectRef<") || type.contains("ObjectRef(")) {
             String internalType = extractTypeFromObjectRef(type);
-            internalType = createElementType(file, area, service, extraPackageLevel, internalType);
+            internalType = createElementType(area, service, extraPackageLevel, internalType);
             return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
         }
 
@@ -426,21 +426,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
         }
 
-        if (file != null) {
-            retVal = convertClassName(retVal);
-        }
-
         return convertToNamespace(retVal);
     }
 
     @Override
     public String convertToNamespace(String targetType) {
         return targetType;
-    }
-
-    @Override
-    public String convertClassName(String call) {
-        return call;
     }
 
     /**

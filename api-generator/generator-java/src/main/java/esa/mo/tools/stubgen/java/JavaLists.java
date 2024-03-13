@@ -127,7 +127,7 @@ public class JavaLists {
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
                 true, true, null);
-        String fqSrcTypeName = generator.createElementType(file, area, service, srcTypeName);
+        String fqSrcTypeName = generator.createElementType(area, service, srcTypeName);
 
         String sElement = "org.ccsds.moims.mo.mal.structures.Homogeneous";
         file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",

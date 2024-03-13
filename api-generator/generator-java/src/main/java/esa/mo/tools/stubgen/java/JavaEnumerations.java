@@ -54,10 +54,10 @@ public class JavaEnumerations {
         file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
 
         file.addClassOpenStatement(enumName, true, false,
-                generator.createElementType(file, StdStrings.MAL, null, StdStrings.ENUMERATION),
+                generator.createElementType(StdStrings.MAL, null, StdStrings.ENUMERATION),
                 null, "Enumeration class for " + enumName + ".");
 
-        String fqEnumName = generator.createElementType(file, area, service, enumName);
+        String fqEnumName = generator.createElementType(area, service, enumName);
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
                 true, true, null);
@@ -88,7 +88,7 @@ public class JavaEnumerations {
                     true, false, "Enumeration singleton for value " + value);
             file.addClassVariable(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
             file.addClassVariable(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(generator.convertClassName(fqEnumName) + "._" + value + "_INDEX)"));
+            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(fqEnumName + "._" + value + "_INDEX)"));
         }
 
         // create arrays

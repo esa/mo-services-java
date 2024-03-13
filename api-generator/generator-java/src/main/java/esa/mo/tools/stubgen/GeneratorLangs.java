@@ -547,8 +547,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 true, true, "Transaction identifier of the interaction to continue");
         List<CompositeField> continueOpArgs = StubUtils.concatenateArguments(lastInteractionStage, initiationTimestamp, transactionId, serviceAdapterArg);
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
@@ -668,8 +668,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField intHandler = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
                 false, true, "The MAL object representing the interaction in the provider.");
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
         for (OperationSummary op : summary.getOperations()) {
@@ -716,8 +716,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
@@ -786,8 +786,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
@@ -879,7 +879,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         String skeletonName = service.getName() + "Skeleton";
         InterfaceWriter file = createInterfaceFile(providerFolder, skeletonName);
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField malDomId = createCompositeElementsDetails(file, false, "domain",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true),
                 true, true, "The domain used for publishing");
@@ -947,15 +947,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsMALAndInteractionException = throwsInteractionException + ", " + throwsMALException;
-        String malHelper = createElementType(file, StdStrings.MAL, null, null, "MALHelper");
-        String helperName = createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
-        String serviceInfoName = createElementType(file, area.getName(), service.getName(), null, service.getName() + JavaServiceInfo.SERVICE_INFO);
+        String malHelper = createElementType(StdStrings.MAL, null, null, "MALHelper");
+        String helperName = createElementType(area.getName(), service.getName(), null, service.getName() + "Helper");
+        String serviceInfoName = createElementType(area.getName(), service.getName(), null, service.getName() + JavaServiceInfo.SERVICE_INFO);
         String malString = malStringAsElement(file);
-        String malInteger = createElementType(file, StdStrings.MAL, null, StdStrings.INTEGER);
-        String stdError = createElementType(file, StdStrings.MAL, null, null, "MOErrorException");
+        String malInteger = createElementType(StdStrings.MAL, null, StdStrings.INTEGER);
+        String stdError = createElementType(StdStrings.MAL, null, null, "MOErrorException");
         CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false),
                 false, true, "The message body");
@@ -987,10 +987,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         List<CompositeField> psArgs = StubUtils.concatenateArguments(malDomId, malNetworkZone,
                 malSession, malSessionName, malqos, malqosprops, malPriority);
 
-        String implementsList = createElementType(file, StdStrings.MAL, null, PROVIDER_FOLDER, "MALInteractionHandler")
-                + ", " + createElementType(file, area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Skeleton");
+        String implementsList = createElementType(StdStrings.MAL, null, PROVIDER_FOLDER, "MALInteractionHandler")
+                + ", " + createElementType(area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Skeleton");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(file, area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
+            implementsList += ", " + createElementType(area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
         }
         file.addClassOpenStatement(className, false, !isDelegate, null, implementsList, comment);
 
@@ -1182,7 +1182,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
-                        + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
+                        + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction))");
                 method.addLine("    break");
             }
         }
@@ -1213,7 +1213,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + convertClassName(StubUtils.preCap(op.getName()) + "Interaction") + "(interaction))");
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction))");
                 method.addLine("    break");
             }
         }
@@ -1305,7 +1305,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         ModelObjectType refObj = comObjectMap.get(key);
-        return convertToNamespace(createElementType(file, any.getArea(), service, null, service + JavaServiceInfo.SERVICE_INFO)
+        return convertToNamespace(createElementType(any.getArea(), service, null, service + JavaServiceInfo.SERVICE_INFO)
                 + "." + refObj.getName().toUpperCase() + "_OBJECT_TYPE");
     }
 
@@ -1321,7 +1321,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         ClassWriter file = createClassFile(folder, className);
         String parentClass = null;
         TypeReference parentType = null;
-        String parentInterface = createElementType(file, StdStrings.MAL, null, StdStrings.COMPOSITE);
+        String parentInterface = createElementType(StdStrings.MAL, null, StdStrings.COMPOSITE);
 
         // Check if it is an extended Composite Type:
         if (composite.getExtends() != null) {
@@ -1329,14 +1329,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             if (!StdStrings.MAL.equals(composite.getExtends().getType().getArea())
                     && !StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())) {
-                parentClass = createElementType(file, parentType, true);
+                parentClass = createElementType(parentType, true);
                 parentInterface = null;
             }
 
             // Check if it is an MO Object:
             if (StdStrings.MAL.equals(composite.getExtends().getType().getArea())
                     && StdStrings.MOOBJECT.equals(composite.getExtends().getType().getName())) {
-                parentClass = createElementType(file, parentType, true);
+                parentClass = createElementType(parentType, true);
                 parentInterface = null;
             }
         }
@@ -1353,7 +1353,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         boolean abstractComposite = (null == composite.getShortFormPart());
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
                 parentClass, parentInterface, composite.getComment());
-        String fqName = createElementType(file, area, service, className);
+        String fqName = createElementType(area, service, className);
 
         if (!abstractComposite) {
             addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
@@ -1436,7 +1436,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, false, elementType, "createElement", null, null,
                     "Creates an instance of this type using the default constructor. It is a generic factory method.",
                     "A new instance of this type with default field values.", null);
-            method.addLine("return new " + convertClassName(fqName) + "()");
+            method.addLine("return new " + fqName + "()");
             method.addMethodCloseStatement();
         }
 
@@ -1743,7 +1743,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("return TYPE_SHORT_FORM");
         method.addMethodCloseStatement();
 
-        String helperArea = createElementType(file, area.getName(), null, null, area.getName() + "Helper");
+        String helperArea = createElementType(area.getName(), null, null, area.getName() + "Helper");
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, ustType, "getAreaNumber", null, null,
                 "Returns the area number of this type.", "The area number of this type.", null);
@@ -1761,7 +1761,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Returns the service number of this type.", "The service number of this type.", null);
 
         if (service != null) {
-            String serviceInfo = createElementType(file, area.getName(), service.getName(), null, service.getName() + "ServiceInfo");
+            String serviceInfo = createElementType(area.getName(), service.getName(), null, service.getName() + "ServiceInfo");
             method.addLine("return " + serviceInfo + "." + service.getName().toUpperCase() + "_SERVICE_NUMBER");
         } else {
             method.addLine("return new org.ccsds.moims.mo.mal.structures.UShort(0)");
@@ -1998,7 +1998,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             if (typeInfo.isNativeType()) {
                 AttributeTypeDetails details = getAttributeDetails(typeInfo.getSourceType());
-                String elementType = createElementType(file, StdStrings.MAL, null, StdStrings.UNION);
+                String elementType = createElementType(StdStrings.MAL, null, StdStrings.UNION);
                 av = argName + ".getBodyElement(" + argIndex + ", new " + elementType + "(" + details.getDefaultValue() + "))";
                 returnParameter = "(" + tv + " == null) ? null : ((" + elementType + ") " + tv + ").get" + details.getMalType() + "Value()";
             } else {
@@ -2082,7 +2082,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public MethodWriter encodeMethodOpen(ClassWriter file) throws IOException {
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "encoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALEncoder", false),
                 false, true, "The encoder to use for encoding.");
@@ -2093,7 +2093,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public MethodWriter decodeMethodOpen(ClassWriter file, CompositeField returnType) throws IOException {
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "decoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false),
                 false, true, "The decoder to use for decoding.");

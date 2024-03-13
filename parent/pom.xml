@@ -407,9 +407,9 @@
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
-                            </goals> 
-                        </execution> 
-                    </executions> 
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin> 
                     <!-- explicitly define maven-deploy-plugin after other to force exec order -->

@@ -78,34 +78,23 @@ public interface TypeInformation {
     String convertToNamespace(String targetType);
 
     /**
-     * Converts a class name to a language specific version. Useful when a
-     * language native type is used to represent a MAL type.
-     *
-     * @param call the source type.
-     * @return the converted type.
-     */
-    String convertClassName(String call);
-
-    /**
      * Creates the full name of a structure type from the supplied details.
      *
-     * @param file The writer to add any type dependencies to.
      * @param type The type.
      * @param isStructure True if the type is a structure type.
      * @return the full name of the type.
      */
-    String createElementType(TargetWriter file, TypeReference type, boolean isStructure);
+    String createElementType(TypeReference type, boolean isStructure);
 
     /**
      * Creates the full name of a structure type from the supplied details.
      *
-     * @param file The writer to add any type dependencies to.
      * @param area The area of the type.
      * @param service The service of the type, may be null.
      * @param type The type.
      * @return the full name of the type.
      */
-    String createElementType(TargetWriter file,
+    String createElementType(
             String area,
             String service,
             String type);

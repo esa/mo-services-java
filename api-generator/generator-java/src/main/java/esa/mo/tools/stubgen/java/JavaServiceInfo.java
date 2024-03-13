@@ -67,7 +67,7 @@ public class JavaServiceInfo {
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
         // construct area helper class name and variable
-        String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
+        String hlp = generator.createElementType(area.getName(), null, null, area.getName() + "Helper");
         String namespace = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
@@ -180,13 +180,13 @@ public class JavaServiceInfo {
                 }
 
                 if (!isAbstract) {
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), typeName));
+                    String clsName = generator.createElementType(area.getName(), service.getName(), typeName);
                     String text = "new " + clsName + "()";
                     if (oType instanceof EnumerationType) {
                         text = clsName + ".fromOrdinal(0)";
                     }
 
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), service.getName(), typeName + "List"));
+                    String lclsName = generator.createElementType(area.getName(), service.getName(), typeName + "List");
                     elementInstantiations.add(text);
                     elementInstantiations.add("new " + lclsName + "()");
                 }
@@ -322,9 +322,9 @@ public class JavaServiceInfo {
         List<String> opArgs = new LinkedList<>();
         opArgs.add("SERVICE_KEY");
         opArgs.add(initNewLine + op.getName().toUpperCase() + "_OP_NUMBER");
-        opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
+        opArgs.add(initNewLine + "new " + generator.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
         // opArgs.add(initNewLine + "" + op.getReplay());
-        opArgs.add(initNewLine + "new " + generator.createElementType(file, StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
+        opArgs.add(initNewLine + "new " + generator.createElementType(StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
 
         switch (op.getPattern()) {
             case SEND_OP:

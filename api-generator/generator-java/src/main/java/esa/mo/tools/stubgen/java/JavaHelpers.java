@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.GeneratorConfiguration;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
@@ -58,8 +57,8 @@ public class JavaHelpers {
 
         file.addPackageStatement(area, service, null);
 
-        String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
+        String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String identifierType = generator.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER);
         CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "elementsRegistry",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false),
                 false, true, "elementsRegistry The element factory registry to initialise with this helper.");
@@ -90,7 +89,7 @@ public class JavaHelpers {
         file.addClassVariable(true, false, StdStrings.PUBLIC, serviceInstVar, true, "()");
 
         // construct area helper class name and variable
-        String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
+        String hlp = generator.createElementType(area.getName(), null, null, area.getName() + "Helper");
         String prefix = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
 
         /*
@@ -139,8 +138,8 @@ public class JavaHelpers {
 
         file.addPackageStatement(area, null, null);
 
-        String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
+        String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String identifierType = generator.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER);
         CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "elementsRegistry",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false),
                 false, true, "elementsRegistry The element factory registry to initialise with this helper.");
@@ -175,36 +174,33 @@ public class JavaHelpers {
 
         if ((area.getDataTypes() != null) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
             for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
-                GeneratorConfiguration config = generator.getConfig();
-
                 if (oType instanceof AttributeType) {
                     AttributeType dt = (AttributeType) oType;
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, StdStrings.ATTRIBUTE));
                     AttributeTypeDetails details = generator.getAttributeDetails(area.getName(), dt.getName());
                     String theType;
 
                     if (details.isNativeType()) {
-                        theType = generator.convertClassName(generator.createElementType(file, StdStrings.MAL, null, StdStrings.UNION)) + "(" + details.getDefaultValue() + ")";
+                        theType = generator.createElementType(StdStrings.MAL, null, StdStrings.UNION) + "(" + details.getDefaultValue() + ")";
                     } else {
-                        theType = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()) + "()");
+                        theType = generator.createElementType(area.getName(), null, dt.getName()) + "()";
                     }
 
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
                     elementList.add("new " + theType);
                     elementList.add("new " + lclsName + "()");
                 } else if (oType instanceof CompositeType) {
                     CompositeType dt = (CompositeType) oType;
 
                     if (null != dt.getShortFormPart()) {
-                        String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                        String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                        String clsName = generator.createElementType(area.getName(), null, dt.getName());
+                        String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
                         elementList.add("new " + clsName + "()");
                         elementList.add("new " + lclsName + "()");
                     }
                 } else if (oType instanceof EnumerationType) {
                     EnumerationType dt = (EnumerationType) oType;
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    String clsName = generator.createElementType(area.getName(), null, dt.getName());
+                    String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
                     elementList.add(clsName + ".fromOrdinal(0)");
                     elementList.add("new " + lclsName + "()");
                 }
@@ -223,7 +219,7 @@ public class JavaHelpers {
 
         StringBuilder buf_2 = new StringBuilder();
         for (ServiceType service : area.getService()) {
-            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
+            String helperType = generator.createElementType(area.getName(), service.getName(), null, service.getName() + "Helper");
             String ns = generator.convertToNamespace(helperType) + "." + service.getName().toUpperCase() + "_SERVICE";
 //            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "ServiceInfo()");
 //            String ns = "new " + generator.convertToNamespace(helperType);
