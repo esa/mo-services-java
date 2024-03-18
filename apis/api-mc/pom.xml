@@ -70,7 +70,7 @@
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
         <ccsds.specification.download.filter>**/area004-v002-Monitor-and-Control.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-        <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml</ccsds.specification.download.ref-filter>
     </properties>
   
     <dependencies>
