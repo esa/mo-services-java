@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2024
 
-  Generated from MPDS Blue Book DraftD 04/03/2024
+  Generated from MPDS Blue Book DraftE 20/03/2024
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
@@ -12,12 +12,12 @@
 
     <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service, introduced in §2.5, enables browsing and retrieval of existing products.">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.2.3.H.1	The following set of mission data product configuration data shall be available to both provider and consumers in any deployment of the product retrieval service:
+        3.2.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in any deployment of the product retrieval service:
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        Req_3.2.4.F.2	In response to a listProducts operation, the service provider shall compile a list of Products that satisfy the specified criteria and return this list (as object references) to the service consumer.
+        3.2.4.1 In response to a listProducts operation, the service provider shall compile a list of Products that satisfy the specified criteria and return this list (as object references) to the service consumer.
         Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
-        Req_3.2.4.F.3	In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message, the final, empty Response message signalling that all products have been returned.
+        3.2.4.2 In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message, the final, empty Response message signalling that all products have been returned.
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation can be used to obtain a list of available products of a specified product type that pass a set filter criteria.  The service consumer sends the required filter criteria to the service provider, which then builds a list of products that pass the filter and returns this to the consumer.  
@@ -124,15 +124,15 @@ After each requested product has been delivered by file transfer, a separate Upd
     </mal:service>
     <mal:service name="OrderManagement" number="2" comment="The Order Management Service, introduced in §2.5, is used to submit and manage standing orders.  Standing orders specify a product filter to subscribe to a subset of automatically generated products and define the method and destination for product delivery.">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.3.3.H.5	The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order management service:
+        3.3.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order management service:
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        Req_3.3.4.F.6	In response to a listStandingOrders operation, the service provider shall compile a list of standing orders that satisfy the specified criteria and return this list (as StandingOrder data structures) to the service consumer.
+        3.3.4.1 In response to a listStandingOrders operation, the service provider shall compile a list of standing orders that satisfy the specified criteria and return this list (as StandingOrder data structures) to the service consumer.
         Note: depending on any mission specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
-        Req_3.3.4.F.7	On receipt of a Standing Order through a submitStandingOrder operation that has an empty orderID, the service provider shall create a new standing order, assign a unique orderID to this and return the orderID to the service consumer.
-        Req_3.3.4.F.8	On receipt of a Standing Order through a submitStandingOrder operation that has an specified orderID, the service provider shall verify the uniqueness of this orderID, before creating a new standing order.  If the orderID already exists, an error is returned to the service consumer.
-        Req_3.3.4.F.9	Following successful creation of a new standing order in response to a submitStandingOrder operation, the delivery of requested products shall be automatically commenced by the service provider from the start of the specified validity window.  Where the specified delivery method is by file transfer, the delivery proceeds without further intervention from the service consumer.  Where the specified delivery method is by service, delivery is subject to the operations of the ProductDelivery service.
-        Req_3.3.4.F.10	If the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
+        3.3.4.2 On receipt of a Standing Order through a submitStandingOrder operation that has an empty orderID, the service provider shall create a new standing order, assign a unique orderID to this and return the orderID to the service consumer.
+        3.3.4.3 On receipt of a Standing Order through a submitStandingOrder operation that has an specified orderID, the service provider shall verify the uniqueness of this orderID, before creating a new standing order.  If the orderID already exists, an error is returned to the service consumer.
+        3.3.4.4 Following successful creation of a new standing order in response to a submitStandingOrder operation, the delivery of requested products shall be automatically commenced by the service provider from the start of the specified validity window.  Where the specified delivery method is by file transfer, the delivery proceeds without further intervention from the service consumer.  Where the specified delivery method is by service, delivery is subject to the operations of the ProductDelivery service.
+        3.3.4.5 If the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation can be used to obtain a list of existing standing orders relating to a specified domain and/or product user.
@@ -219,13 +219,13 @@ The service provides two capabilities to the the consumer:
 to receive notifications each time their ordered products have been delivered as files
 to receive the ordered products via message transfer rather than file delivery">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.4.3.H.12	The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order delivery service:
+        3.4.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order delivery service:
         a) Product definitions (as ProductType objects [§4.2.2] )
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        Req_3.4.4.F.13	In response to subscription using the notifyProductDelivery operation, the service provider shall forward delivery notifications to the service consumer following the successful transfer of each product file that is associated with the specified standing order, or all standing orders associated with the specified user.
+        3.4.4.1 In response to subscription using the notifyProductDelivery operation, the service provider shall forward delivery notifications to the service consumer following the successful transfer of each product file that is associated with the specified standing order, or all standing orders associated with the specified user.
         Note: The provision of delivery notifications continues until the service consumer deregisters or the service session is terminated.  It is implementation dependent whether notifications relating to product deliveries that occur when the service consumer is not subscribed are queued awaiting subscription or discarded.
-        Req_3.4.4.F.14	In response to subscription using the deliverProducts operation, the service provider shall forward products associated with the specified standing order, or all standing orders associated with the specified user, to the service consumer as they become available
+        3.4.4.2 In response to subscription using the deliverProducts operation, the service provider shall forward products associated with the specified standing order, or all standing orders associated with the specified user, to the service consumer as they become available
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:pubsubIP name="notifyProductDelivery" number="1" supportInReplay="true" comment="The notifyProductDelivery operation can be used to receive notification when products have been delivered by file transfer or email in accordance with an existing product order.  
@@ -455,7 +455,7 @@ Note that as ParameterDef is only used in the context of ProductType, which is n
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ParameterFilter" comment=": A ParameterFilter enables specification of a filter based on the value of a metadata parameter.  It is used in the context of selecting  a subset of mission data products.  It is an abstract data type, with concrete subtypes for specific types of filter.">
+      <mal:composite name="ParameterFilter" comment="A ParameterFilter enables specification of a filter based on the value of a metadata parameter.  It is used in the context of selecting  a subset of mission data products.  It is an abstract data type, with concrete subtypes for specific types of filter.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
