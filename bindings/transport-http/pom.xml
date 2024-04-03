@@ -44,36 +44,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:esa/CCSDS_MO_TRANS.git</connection>
-    <developerConnection>scm:git:git@github.com:esa/CCSDS_MO_TRANS.git</developerConnection>
-    <url>https://github.com/esa/CCSDS_MO_TRANS</url>
-  </scm>
-
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/esa/CCSDS_MO_TRANS/issues</url>
-  </issueManagement>
-
-  <developers>
-    <developer>
-      <id>SamCooper</id>
-      <name>Sam Cooper</name>
-      <email>sam.cooper@scisys.co.uk</email>
-      <url>https://github.com/SamCooper</url>
-    </developer>
-    <developer>
-      <id>ppissias</id>
-      <name>Petros Pissias</name>
-      <email>petros.pissias@esa.int</email>
-    </developer>
-    <developer>
-      <id>qa41yjus</id>
-      <name>Thomas Pignede</name>
-      <email>thomas.pignede@esa.int</email>
-    </developer>
-  </developers>
-
   <dependencies>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
@@ -95,12 +65,6 @@
           <artifactId>activation</artifactId>
         </exclusion>
     </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
