@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -56,8 +56,8 @@
     </issueManagement>
   
     <properties>
-<!--        <ccsds.specification.version>1.7</ccsds.specification.version>    -->
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+        <ccsds.specification.download.artifact>xml-ccsds-mo-prototypes</ccsds.specification.download.artifact>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
         <ccsds.specification.download.filter>**/area005-v001-Mission-Planning-and-Scheduling.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
