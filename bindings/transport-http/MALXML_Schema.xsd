@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://www.w3.org/2001/XMLSchema"
+xmlns:malxml="http://www.ccsds.org/schema/malxml/MAL"
+targetNamespace="http://www.ccsds.org/schema/malxml/MAL">
+  <!-- Top-level entity definitions -->
+  <complexType name="Element" abstract="true" />
+  <complexType name="Attribute" abstract="true">
+    <complexContent>
+      <extension base="malxml:Element" />
+    </complexContent>
+  </complexType>
+  <complexType name="Composite" abstract="true">
+    <complexContent>
+      <extension base="malxml:Element" />
+    </complexContent>
+  </complexType>
+  <!-- MAL attribute definitions -->
+  <complexType name="Blob">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Blob" type="xsd:hexBinary" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Boolean">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Boolean" type="xsd:boolean" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Duration">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Duration" type="xsd:duration" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Float">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Float" type="xsd:float" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Double">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Double" type="xsd:double" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Identifier">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Identifier" type="xsd:string" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Octet">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Octet" type="xsd:byte" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="UOctet">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="UOctet" type="xsd:unsignedByte" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Short">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Short" type="xsd:short" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="UShort">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="UShort" type="xsd:unsignedShort" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Integer">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Integer" type="xsd:int" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="UInteger">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="UInteger" type="xsd:unsignedInt" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Long">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Long" type="xsd:long" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="ULong">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="ULong" type="xsd:unsignedLong" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="String">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="String" type="xsd:string" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Time">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="Time" type="xsd:dateTime" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="FineTime">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="FineTime" type="xsd:dateTime" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="URI">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="URI" type="xsd:anyURI" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="ObjectRef">
+    <complexContent>
+      <extension base="malxml:Attribute">
+        <sequence>
+          <element name="domain" type="malxml:IdentifierList" />
+          <element name="absoluteSFP" type="xsd:long" />
+          <element name="key" type="xsd:string" />
+          <element name="objectVersion" type="xsd:unsignedInt" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <!-- MAL enumeration definitions -->
+  <complexType name="InteractionType">
+    <complexContent>
+      <extension base="malxml:Element">
+        <sequence>
+          <element name="InteractionType"
+          type="malxml:InteractionTypeEnum" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <simpleType name="InteractionTypeEnum">
+    <restriction base="xsd:string">
+      <enumeration value="SEND" />
+      <enumeration value="SUBMIT" />
+      <enumeration value="REQUEST" />
+      <enumeration value="INVOKE" />
+      <enumeration value="PROGRESS" />
+      <enumeration value="PUBSUB" />
+    </restriction>
+  </simpleType>
+  <complexType name="SessionType">
+    <complexContent>
+      <extension base="malxml:Element">
+        <sequence>
+          <element name="SessionType"
+          type="malxml:SessionTypeEnum" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <simpleType name="SessionTypeEnum">
+    <restriction base="xsd:string">
+      <enumeration value="LIVE" />
+      <enumeration value="SIMULATION" />
+      <enumeration value="REPLAY" />
+    </restriction>
+  </simpleType>
+  <complexType name="QoSLevel">
+    <complexContent>
+      <extension base="malxml:Element">
+        <sequence>
+          <element name="QoSLevel" type="malxml:QoSLevelEnum" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <simpleType name="QoSLevelEnum">
+    <restriction base="xsd:string">
+      <enumeration value="BESTEFFORT" />
+      <enumeration value="ASSURED" />
+      <enumeration value="QUEUED" />
+      <enumeration value="TIMELY" />
+    </restriction>
+  </simpleType>
+  <complexType name="AttributeType">
+    <complexContent>
+      <extension base="malxml:Element">
+        <sequence>
+          <element name="AttributeType"
+          type="malxml:AttributeTypeEnum" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <simpleType name="AttributeTypeEnum">
+    <restriction base="xsd:string">
+      <enumeration value="BLOB" />
+      <enumeration value="BOOLEAN" />
+      <enumeration value="DURATION" />
+      <enumeration value="FLOAT" />
+      <enumeration value="DOUBLE" />
+      <enumeration value="IDENTIFIER" />
+      <enumeration value="OCTET" />
+      <enumeration value="UOCTET" />
+      <enumeration value="SHORT" />
+      <enumeration value="USHORT" />
+      <enumeration value="INTEGER" />
+      <enumeration value="UINTEGER" />
+      <enumeration value="LONG" />
+      <enumeration value="ULONG" />
+      <enumeration value="STRING" />
+      <enumeration value="TIME" />
+      <enumeration value="FINETIME" />
+      <enumeration value="URI" />
+      <enumeration value="OBJECTREF" />
+    </restriction>
+  </simpleType>
+  <complexType name="AreaNumber">
+    <complexContent>
+      <extension base="malxml:Element">
+        <sequence>
+          <element name="AreaNumber" type="malxml:AreaNumberEnum" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <simpleType name="AreaNumberEnum">
+    <restriction base="xsd:string">
+      <enumeration value="MAL" />
+      <enumeration value="COM" />
+      <enumeration value="COMMON" />
+      <enumeration value="MC" />
+      <enumeration value="MPS" />
+      <enumeration value="SM" />
+      <enumeration value="MDPD" />
+    </restriction>
+  </simpleType>
+  <!-- MAL structure definitions -->
+  <complexType name="Subscription">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="subscriptionId" type="malxml:Identifier" />
+          <element name="domain" type="malxml:IdentifierList" />
+          <element name="selectedKeys" type="malxml:IdentifierList" />
+          <element name="filters" type="malxml:SubscriptionFilterList" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="IdentifierList">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="Identifier" type="malxml:Identifier"
+          nillable="true" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="SubscriptionFilterList">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="SubscriptionFilter" type="malxml:SubscriptionFilter"
+          nillable="true" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="SubscriptionFilter">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="name" type="malxml:Identifier" />
+          <element name="values" type="malxml:AttributeList" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="AttributeList">
+    <complexContent>
+      <extension base="malxml:Element">
+        <sequence>
+          <element name="Attribute" type="malxml:Attribute"
+          nillable="true" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="UpdateHeader">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="source" type="malxml:Identifier"
+          nillable="true" />
+          <element name="domain" type="malxml:IdentifierList"
+          nillable="true"/>
+          <element name="keyValues" type="malxml:AttributeList"
+          nillable="true"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="IdBooleanPair">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="id" type="malxml:Identifier"
+          nillable="true" />
+          <element name="value" type="malxml:Boolean"
+          nillable="true" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="Pair">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="first" type="malxml:Attribute"
+          nillable="true" />
+          <element name="second" type="malxml:Attribute"
+          nillable="true" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="NamedValueList">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="NamedValue" type="malxml:NamedValue"
+          nillable="true" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="NamedValue">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="name" type="malxml:Identifier"
+          nillable="true" />
+          <element name="value" type="malxml:Attribute"
+          nillable="true" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="File">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="name" type="malxml:Identifier" />
+          <element name="mimeType" type="malxml:String"
+          nillable="true" />
+          <element name="creationDate" type="malxml:Time"
+          nillable="true" />
+          <element name="modificationDate" type="malxml:Time"
+          nillable="true" />
+          <element name="size" type="malxml:ULong"
+          nillable="true" />
+          <element name="content" type="malxml:Blob"
+          nillable="true" />
+          <element name="metaData" type="malxml:NamedValueList"
+          nillable="true" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="ObjectIdentity">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="domain" type="malxml:IdentifierList" />
+          <element name="area" type="malxml:Identifier" />
+          <element name="type" type="malxml:Identifier" />
+          <element name="key" type="malxml:Identifier" />
+          <element name="version" type="malxml:UInteger" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="ServiceId">
+    <complexContent>
+      <extension base="malxml:Composite">
+        <sequence>
+          <element name="keyArea" type="malxml:UOctet" />
+          <element name="keyService" type="malxml:UShort" />
+          <element name="keyServiceVersion" type="malxml:UOctet" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <!-- MAL Message Body definitions -->
+  <element name="Body" type="malxml:Body" />
+  <complexType name="Body">
+    <sequence>
+      <any processContents="lax" minOccurs="0"
+      maxOccurs="unbounded" />
+    </sequence>
+  </complexType>
+  <!-- MAL Message Header definitions -->
+  <element name="MALMessageHeader" type="malxml:Header" />
+  <complexType name="Header">
+    <sequence>
+      <element name="from" type="malxml:Identifier" />
+      <element name="authenticationId" type="malxml:Blob" />
+      <element name="to" type="malxml:Identifier" />
+      <element name="timestamp" type="malxml:Time" />
+      <element name="interactionType" type="malxml:InteractionType" />
+      <element name="interactionStage" type="malxml:UOctet" />
+      <element name="transactionId" type="malxml:Long" />
+      <element name="serviceArea" type="malxml:UShort" />
+      <element name="service" type="malxml:UShort" />
+      <element name="operation" type="malxml:UShort" />
+      <element name="serviceVersion" type="malxml:UOctet" />
+      <element name="isErrorMessage" type="malxml:Boolean" />
+      <element name="supplements" type="malxml:NamedValueList" />
+    </sequence>
+  </complexType>
+  <!-- MAL Message definitions -->
+  <element name="Message" type="malxml:Message" />
+  <complexType name="Message">
+    <sequence>
+      <!-- <element ref="malxml:Header" /> -->
+      <element ref="malxml:Body" />
+    </sequence>
+  </complexType>
+</schema>
