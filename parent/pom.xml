@@ -161,7 +161,7 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>transport-http-tp</artifactId>
+                <artifactId>transport-http</artifactId>
                 <version>${esa.http.transport.version}</version>
             </dependency>
             <dependency>
