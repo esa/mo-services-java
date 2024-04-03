@@ -1,14 +1,12 @@
 package esa.mo.mal.encoder.http;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
-
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * 
@@ -27,13 +25,6 @@ public class HTTPXMLStreamFactory extends MALElementStreamFactory {
   @Override
   public MALElementInputStream createInputStream(InputStream is)
       throws IllegalArgumentException, MALException {
-    return new HTTPXMLElementInputStream(is);
-  }
-
-  @Override
-  public MALElementInputStream createInputStream(byte[] bytes, int offset)
-      throws IllegalArgumentException, MALException {
-    InputStream is = new ByteArrayInputStream(bytes, offset, bytes.length);
     return new HTTPXMLElementInputStream(is);
   }
 

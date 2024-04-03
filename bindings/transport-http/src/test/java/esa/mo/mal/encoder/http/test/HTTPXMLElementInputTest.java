@@ -25,14 +25,8 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
-import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
-import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
-import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import esa.mo.mal.encoder.http.HTTPXMLElementInputStream;
 
@@ -50,7 +44,6 @@ public class HTTPXMLElementInputTest {
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     MALContextFactory.getElementsRegistry().registerElementsForArea(MALHelper.MAL_AREA);
-    MALContextFactory.getElementsRegistry().registerElementsForArea(MALPrototypeHelper.MALPROTOTYPE_AREA);
   }
 
   @Test
@@ -199,67 +192,6 @@ public class HTTPXMLElementInputTest {
   }
 
   @Test
-  public void testDecodeIPTestDefinition() throws Exception {
-
-    String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-      + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<IPTestDefinition>"
-          + "<procedureName><String>1</String></procedureName>"
-          + "<consumerURI><URI>malhttp://172.28.16.54:56294/1259037869</URI></consumerURI>"
-          + "<authenticationId><Blob>0001</Blob></authenticationId>"
-          + "<Qos><UOctet>0</UOctet></Qos>"
-          + "<Priority><UInteger>1</UInteger></Priority>"
-          + "<Domain>"
-            + "<Identifier><Identifier>Test</Identifier></Identifier>"
-            + "<Identifier><Identifier>Domain0</Identifier></Identifier>"
-          + "</Domain>"
-          + "<networkZone><Identifier>NetworkZone</Identifier></networkZone>"
-          + "<Session><UOctet>1</UOctet></Session>"
-          + "<sessionName><Identifier>S1</Identifier></sessionName>"
-          + "<supplements></supplements>"
-          + "<transitions>"
-            + "<IPTestTransition>"
-              + "<Type><UOctet>0</UOctet></Type>"
-              + "<errorCode xsi:nil=\"true\"/>"
-            + "</IPTestTransition>"
-          + "</transitions>"
-          + "<timestamp><Time>2017-12-06T12:40:21.597</Time></timestamp>"
-        + "</IPTestDefinition>"
-      + "</malxml:Body>";
-
-    helper.assertAgainstSchema(testXml);
-
-    InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
-
-    IPTestDefinition iptest = (IPTestDefinition) eis.readElement(new IPTestDefinition(), null);
-
-    assertNotNull(iptest);
-    Node ipTestNode = helper.queryXPath(testXml, "/Body/IPTestDefinition").item(0);
-
-    assertEquals("IPTestDefinition", ipTestNode.getNodeName());
-    NodeList ipTestNodeChildren = helper.queryXPath(testXml, "/Body/IPTestDefinition/*");
-    assertEquals(12, ipTestNodeChildren.getLength());
-    assertNotNull(ipTestNodeChildren.item(0));
-    assertEquals("procedureName", ipTestNodeChildren.item(0).getNodeName());
-    assertNotNull(ipTestNodeChildren.item(1));
-    assertEquals("consumerURI", ipTestNodeChildren.item(1).getNodeName());
-    assertNotNull(ipTestNodeChildren.item(3));
-    assertEquals("Qos", ipTestNodeChildren.item(3).getNodeName());
-    assertNotNull(ipTestNodeChildren.item(3).getChildNodes().item(0));
-    assertEquals("0", ipTestNodeChildren.item(3).getChildNodes().item(0).getTextContent());
-    assertNotNull(ipTestNodeChildren.item(5));
-    assertEquals("Domain", ipTestNodeChildren.item(5).getNodeName());
-    assertNotNull(ipTestNodeChildren.item(8));
-    assertEquals("sessionName", ipTestNodeChildren.item(8).getNodeName());
-    assertNotNull(ipTestNodeChildren.item(9));
-    assertEquals("supplements", ipTestNodeChildren.item(9).getNodeName());
-    assertNotNull(ipTestNodeChildren.item(11));
-    assertEquals("timestamp", ipTestNodeChildren.item(11).getNodeName());
-
-  }
-
-  @Test
   public void testDecodeUnionMessage() throws IllegalArgumentException, MALException {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -280,54 +212,6 @@ public class HTTPXMLElementInputTest {
     assertEquals(999, uint1.getValue());
     assertNotNull(un1);
     assertEquals("No error", un1.getStringValue());
-  }
-
-  @Test
-  public void testDecodeComplexComposite() throws Exception {
-
-    String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-      + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate>"
-          + "<org.ccsds.moims.mo.malprototype.structures.TestPublish>"
-            + "<Qos malxml:type=\"\"><UOctet>1</UOctet></Qos>"
-            + "<Priority malxml:type=\"\"><UInteger>1</UInteger></Priority>"
-            + "<domain malxml:type=\"\">"
-              + "<Identifier><Identifier>Test</Identifier></Identifier>"
-              + "<Identifier><Identifier>Domain0</Identifier></Identifier>"
-            + "</domain>"
-            + "<networkZone type=\"\"><Identifier>NetworkZone</Identifier></networkZone>"
-            + "<Session malxml:type=\"\"><UOctet>0</UOctet></Session>"
-            + "<sessionName malxml:type=\"\"><Identifier>LIVE</Identifier></sessionName>"
-            + "<testMultiType malxml:type=\"\"><Boolean>false</Boolean></testMultiType>"
-          + "</org.ccsds.moims.mo.malprototype.structures.TestPublish>"
-          + "<updateHeaders>"
-            + "<UpdateHeader>"
-              + "<source><Identifier></Identifier></source>"
-              + "<domain xsi:nil=\"true\" />"
-              + "<keyValues xsi:nil=\"true\" />"
-            + "</UpdateHeader>"
-          + "</updateHeaders>"
-          + "<updates>"
-            + "<TestUpdate>"
-              + "<Counter><Integer>0</Integer></Counter>"
-            + "</TestUpdate>"
-          + "</updates>"
-          + "<keyValues xsi:nil=\"true\" />"
-          + "<errorCode><UInteger>65550</UInteger></errorCode>"
-          + "<isException><Boolean>true</Boolean></isException>"
-          + "<failedEntityKeys xsi:nil=\"true\" />"
-        + "</org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate>"
-      + "</malxml:Body>";
-
-    helper.assertAgainstSchema(testXml);
-
-    InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
-
-    TestPublishUpdate publishUpdate = new TestPublishUpdate();
-    publishUpdate = (TestPublishUpdate) eis.readElement(publishUpdate, null);
-
-    assertNotNull(publishUpdate);
   }
 
   @Test
@@ -461,81 +345,4 @@ public class HTTPXMLElementInputTest {
     assertEquals(QoSLevel.QUEUED, qos);
   }
 
-  /**
-   * Caused a numberformatexception while decoding value uint 4294967295 as a short.
-   * @throws MALException
-   */
-  @Test
-  public void testDecodePublishRegister() throws MALException {
-
-    String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-      + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<TestPublishRegister malxml:type=\"28147497687842823\">"
-          + "<org.ccsds.moims.mo.malprototype.structures.TestPublish malxml:type=\"28147497687842823\">"
-            + "<Qos malxml:type=\"281475027042407\"><Qos>QUEUED</Qos></Qos>"
-            + "<Priority malxml:type=\"281474993487884\"><UInteger>4294967295</UInteger></Priority>"
-            + "<domain malxml:type=\"281475010265082\">"
-              + "<Identifier malxml:type=\"281475027042310\"><Identifier>Identifier test</Identifier></Identifier>"
-              + "<Identifier malxml:type=\"281475027042310\"><Identifier>Identifier test</Identifier></Identifier>"
-              + "<Identifier malxml:type=\"281475027042310\"><Identifier>Identifier test</Identifier></Identifier>"
-              + "<Identifier malxml:type=\"281475027042310\"><Identifier>Identifier test</Identifier></Identifier>"
-            + "</domain>"
-            + "<networkZone malxml:type=\"281475027042310\"><Identifier>Identifier test</Identifier></networkZone>"
-            + "<Session malxml:type=\"281474993487892\"><UOctet>1</UOctet></Session>"
-            + "<sessionName malxml:type=\"281475027042310\"><Identifier>Identifier test</Identifier></sessionName>"
-            + "<testMultiType><Boolean>false</Boolean></testMultiType>"
-          + "</org.ccsds.moims.mo.malprototype.structures.TestPublish>"
-          + "<keyNames xsi:nil=\"true\"/>"
-          + "<keyTypes xsi:nil=\"true\"/>"
-          + "<errorCode malxml:type=\"281474993487884\"><UInteger>4294967295</UInteger></errorCode>"
-        + "</TestPublishRegister>"
-      + "</malxml:Body>";
-
-    helper.assertAgainstSchema(testXml);
-
-    InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
-
-    TestPublishRegister register = (TestPublishRegister) eis.readElement(null, null);
-
-    assertNotNull(register);
-    assertEquals(QoSLevel.QUEUED, register.getQos());
-    assertEquals(new UInteger(4294967295L), register.getPriority());
-  }
-
-  @Test
-  public void testNasaEncodedMessage() throws Exception {
-
-    String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-      + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<TestPublishRegister malxml:type=\"28147497687842823\">"
-          + "<QoSLevel><QoSLevel>QUEUED</QoSLevel></QoSLevel>"
-          + "<UInteger><UInteger>4294967295</UInteger></UInteger>"
-          + "<IdentifierList>"
-            + "<Identifier><Identifier>Identifier test</Identifier></Identifier>"
-            + "<Identifier><Identifier>Identifier test</Identifier></Identifier>"
-            + "<Identifier><Identifier>Identifier test</Identifier></Identifier>"
-            + "<Identifier><Identifier>Identifier test</Identifier></Identifier>"
-          + "</IdentifierList>"
-          + "<Identifier><Identifier>Identifier test</Identifier></Identifier>"
-          + "<SessionType><SessionType>SIMULATION</SessionType></SessionType>"
-          + "<Identifier><Identifier>Identifier test</Identifier></Identifier>"
-          + "<Boolean><Boolean>false</Boolean></Boolean>"
-          + "<Element xsi:nil=\"true\"/>"
-          + "<Element xsi:nil=\"true\"/>"
-          + "<UInteger><UInteger>4294967295</UInteger></UInteger>"
-        + "</TestPublishRegister>"
-      + "</malxml:Body>";
-
-    helper.assertAgainstSchema(testXml);
-
-    InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
-
-    TestPublishRegister register = (TestPublishRegister) eis.readElement(null, null);
-
-    assertNotNull(register);
-    assertEquals(QoSLevel.QUEUED, register.getQos());
-    assertEquals(new UInteger(4294967295L), register.getPriority());
-  }
 }

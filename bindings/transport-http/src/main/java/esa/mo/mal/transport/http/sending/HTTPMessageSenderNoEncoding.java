@@ -26,9 +26,7 @@ import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.api.IPostClient;
 import esa.mo.mal.transport.http.receiving.HTTPClientShutDown;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
-
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
-
 import java.io.IOException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 

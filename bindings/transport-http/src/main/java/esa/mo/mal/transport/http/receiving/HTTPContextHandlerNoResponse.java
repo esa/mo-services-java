@@ -33,6 +33,8 @@ import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.api.IHttpRequest;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -97,6 +99,8 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
    */
   protected MALMessageHeader createMALHeaderFromHttp(IHttpRequest request, Identifier uriTo, Identifier uriFrom) {
 
+    SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(HTTPTransport.TIMESTAMP_STRING_FORMAT);
+    TIMESTAMP_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     Identifier from = new Identifier(uriFrom.getValue());
     Blob authenticationId = new Blob(
         HTTPTransport.hexStringToByteArray(request.getRequestHeader("X-MAL-Authentication-Id")));
@@ -105,7 +109,7 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
     try {
       String xMalTimestamp = request.getRequestHeader("X-MAL-Timestamp");
       if (xMalTimestamp != null && !xMalTimestamp.isEmpty()) {
-        timestamp = new Time(HTTPTransport.TIMESTAMP_FORMAT.parse(xMalTimestamp).getTime());
+        timestamp = new Time(TIMESTAMP_FORMAT.parse(xMalTimestamp).getTime());
       }
     } catch (ParseException e) {
       RLOGGER.severe(e.getMessage());

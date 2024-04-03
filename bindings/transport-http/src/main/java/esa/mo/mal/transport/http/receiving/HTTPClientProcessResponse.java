@@ -35,6 +35,8 @@ import esa.mo.mal.transport.http.api.IPostClient;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
 import esa.mo.mal.transport.http.util.UriHelper;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -114,6 +116,8 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
    */
   protected MALMessageHeader createMALHeaderFromHttp(IPostClient client, Identifier uriTo, Identifier uriFrom) {
 
+    SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(HTTPTransport.TIMESTAMP_STRING_FORMAT);
+    TIMESTAMP_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     Identifier from = new Identifier(uriFrom.getValue());
     Blob authenticationId = new Blob(
         HTTPTransport.hexStringToByteArray(client.getResponseHeader("X-MAL-Authentication-Id")));
@@ -122,7 +126,7 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
     try {
       String timestampHeader = client.getResponseHeader("X-MAL-Timestamp");
       if (timestampHeader != null && !timestampHeader.isEmpty()) {
-        timestamp = new Time(HTTPTransport.TIMESTAMP_FORMAT.parse(timestampHeader).getTime());
+        timestamp = new Time(TIMESTAMP_FORMAT.parse(timestampHeader).getTime());
       }
     } catch (ParseException e) {
       RLOGGER.severe(e.getMessage());

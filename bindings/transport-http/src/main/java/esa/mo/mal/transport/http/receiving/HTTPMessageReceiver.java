@@ -20,10 +20,14 @@
  */
 package esa.mo.mal.transport.http.receiving;
 
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.PacketToString;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.http.HTTPTransport;
-import esa.mo.mal.transport.http.receiving.HTTPIncomingHeaderAndBodyMessageDecoderFactory.HTTPIncomingHeaderAndBodyMessageDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The HTTP message receiver. Holds a reference to the transport instance that created it and defines a single method
@@ -55,7 +59,12 @@ public class HTTPMessageReceiver {
    *            The encoded message.
    */
   public void receive(final byte[] packet) {
-    transport.receive(null,
-        new HTTPIncomingHeaderAndBodyMessageDecoder(transport, new HTTPHeaderAndBody(header, packet, statusCode)));
+      try {
+        PacketToString smsg = new PacketToString(packet);
+        GENMessage malMsg = transport.decodeMessage(new HTTPHeaderAndBody(header, packet, statusCode));
+        transport.receive(null,new IncomingMessageHolder(malMsg, smsg));
+      } catch (MALException ex) {
+        Logger.getLogger(HTTPMessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }
 }

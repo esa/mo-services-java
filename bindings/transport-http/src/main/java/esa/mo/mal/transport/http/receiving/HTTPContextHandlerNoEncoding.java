@@ -20,12 +20,19 @@
  */
 package esa.mo.mal.transport.http.receiving;
 
-import esa.mo.mal.transport.gen.receivers.ByteMessageDecoderFactory;
+import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.PacketToString;
+import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.api.IContextHandler;
 import esa.mo.mal.transport.http.api.IHttpRequest;
 import esa.mo.mal.transport.http.api.IHttpResponse;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The HttpHandler implementation for the MAL HTTP Transport Server.
@@ -57,6 +64,13 @@ public class HTTPContextHandlerNoEncoding implements IContextHandler {
 
   @Override
   public void finishHandling() {
-    transport.receive(null, new ByteMessageDecoderFactory.GENIncomingByteMessageDecoder(transport, data));
+      try {
+          GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
+                  new HashMap(), data, transport.getStreamFactory());
+          IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(data));
+          transport.receive(null, msgHolder);
+      } catch (MALException ex) {
+          Logger.getLogger(HTTPContextHandlerNoEncoding.class.getName()).log(Level.SEVERE, null, ex);
+      }
   }
 }

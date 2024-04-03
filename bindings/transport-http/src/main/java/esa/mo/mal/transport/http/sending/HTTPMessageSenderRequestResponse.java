@@ -44,6 +44,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * Extension of HTTPMessageSenderNoResponse. Additionally adds support for the HTTP request/response paradigm. I.e.
@@ -208,7 +210,9 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
     }
 
     Date timestampAsDate = new Date(malMessageHeader.getTimestamp().getValue());
-    httpResponse.setResponseHeader("X-MAL-Timestamp", HTTPTransport.TIMESTAMP_FORMAT.format(timestampAsDate));
+    SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(HTTPTransport.TIMESTAMP_STRING_FORMAT);
+    TIMESTAMP_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    httpResponse.setResponseHeader("X-MAL-Timestamp", TIMESTAMP_FORMAT.format(timestampAsDate));
     httpResponse.setResponseHeader("X-MAL-Interaction-Type", malMessageHeader.getInteractionType().toString());
     httpResponse.setResponseHeader("X-MAL-Interaction-Stage",
         encodeAscii(String.valueOf(malMessageHeader.getInteractionStage().getValue())));

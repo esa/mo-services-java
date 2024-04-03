@@ -22,24 +22,22 @@ package esa.mo.mal.transport.http.sending;
 
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.http.HTTPTransport;
+import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import esa.mo.mal.transport.http.api.IPostClient;
 import esa.mo.mal.transport.http.receiving.HTTPClientShutDown;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
-
+import java.util.TimeZone;
 import javax.mail.internet.MimeUtility;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 /**
  * Extension of HTTPMessageSenderNoEncoding. Additionally encodes the MAL message header separately over the HTTP
@@ -132,7 +130,9 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
     }
 
     Date timestampAsDate = new Date(malMessageHeader.getTimestamp().getValue());
-    client.setRequestHeader("X-MAL-Timestamp", HTTPTransport.TIMESTAMP_FORMAT.format(timestampAsDate));
+    SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(HTTPTransport.TIMESTAMP_STRING_FORMAT);
+    TIMESTAMP_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    client.setRequestHeader("X-MAL-Timestamp", TIMESTAMP_FORMAT.format(timestampAsDate));
     client.setRequestHeader("X-MAL-Interaction-Type", malMessageHeader.getInteractionType().toString());
 
     if (malMessageHeader.getInteractionStage() != null) {

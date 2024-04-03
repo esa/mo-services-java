@@ -36,14 +36,12 @@ import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoResponse;
 import esa.mo.mal.transport.http.sending.HTTPMessageSenderRequestResponse;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.StatusCodeHelper;
-
 import java.io.ByteArrayOutputStream;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +52,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInvokeOperation;
@@ -113,7 +110,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
   /**
    * 
    */
-  public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-DDD'T'HH:mm:ss.SSS");
+  public static final String TIMESTAMP_STRING_FORMAT = "yyyy-DDD'T'HH:mm:ss.SSS";
 
   /**
    * The selected HTTP binding mode
@@ -532,15 +529,13 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
   }
 
   @Override
-  protected OutgoingMessageHolder<byte[]> internalEncodeMessage(final String destinationRootURI,
-      final String destinationURI, final Object multiSendHandle, final boolean lastForHandle,
-      final String targetURI, final GENMessage msg) throws Exception {
-
+  protected OutgoingMessageHolder<byte[]> encodeMessage(String destinationRootURI,
+          String destinationURI, Object multiSendHandle, boolean lastForHandle,
+          String targetURI, GENMessage msg) throws Exception {
     RLOGGER.log(Level.FINEST, "Header of msg to send: \n" + msg.getHeader().toString());
 
     if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_ENCODING) {
-      byte[] data = internalEncodeByteMessage(destinationRootURI, destinationURI, multiSendHandle, lastForHandle,
-          targetURI, msg);
+      byte[] data = internalEncodeByteMessage(msg);
       return new OutgoingMessageHolder<byte[]>(this.timeout, destinationRootURI, destinationURI,
           multiSendHandle, lastForHandle, msg, data);
     } else {
@@ -605,8 +600,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
    *             on Error.
    */
   @Override
-  public GENMessage createMessage(HTTPHeaderAndBody messageSource) throws MALException {
-
+  public GENMessage decodeMessage(HTTPHeaderAndBody messageSource) throws MALException {
     RLOGGER.fine("HTTPTransport.createMessage:\n" + messageSource.toString());
 
     MALMessageHeader header = messageSource.getHeader();
@@ -650,8 +644,8 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
   }
 
   @Override
-  protected MessageSender<byte[]> createMessageSender(GENMessage msg, String remoteRootURI)
-      throws MALException, MALTransmitErrorException {
+  protected MessageSender createMessageSender(MALMessageHeader msgHeader,
+          String remoteRootURI) throws MALException, MALTransmitErrorException {
     if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_ENCODING) {
       return new HTTPMessageSenderNoEncoding(this, abstractPostClientImpl);
     } else if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_RESPONSE) {

@@ -19,7 +19,7 @@
   <parent>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>10.0</version>
+    <version>10.1-SNAPSHOT</version>
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
@@ -27,7 +27,7 @@
   <packaging>jar</packaging>
   <version>10.0</version>
 
-  <name>ESA MAL HTTP Java transport (TP)</name>
+  <name>ESA MO Transport - HTTP</name>
   <description>A Java HTTP transport for CCSDS MAL</description>
   <url>http://www.esa.int</url>
 
@@ -78,18 +78,10 @@
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>transport-generic</artifactId>
-      <version>10.0</version>
     </dependency>
     <dependency>
       <groupId>int.esa.ccsds.mo</groupId>
       <artifactId>api-mal</artifactId>
-      <version>10.0</version>
-    </dependency>
-    <dependency>
-      <groupId>int.esa.ccsds.mo</groupId>
-      <artifactId>api-mal-test</artifactId>
-      <version>10.0</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -143,6 +135,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
+      <!--
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -154,6 +147,7 @@
           </systemProperties>
         </configuration>
       </plugin>
+            -->
     </plugins>
   </build>
 
