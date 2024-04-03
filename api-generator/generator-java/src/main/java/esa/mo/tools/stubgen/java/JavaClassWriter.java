@@ -177,10 +177,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             }
         }
 
+        buf.append(";");
+
         if (isDeprecated) {
             file.append(makeLine(1, "@Deprecated"));
         }
-        file.append(makeLine(1, buf.toString(), true));
+        file.append(makeLine(1, buf.toString()));
         file.append(getLineSeparator());
     }
 
@@ -219,7 +221,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             }
         }
 
-        file.append(makeLine(1, buf.toString(), true));
+        buf.append(";");
+        file.append(makeLine(1, buf.toString()));
         file.append(getLineSeparator());
     }
 
@@ -261,7 +264,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         signature.append(" {");
         file.append(makeLine(1, signature.toString()));
         if ((null != superArgs) && (!superArgs.isEmpty())) {
-            file.append(makeLine(2, "super(" + processArgs(superArgs, false) + ")", true));
+            file.append(makeLine(2, "super(" + processArgs(superArgs, false) + ");"));
         }
 
         return this;
@@ -365,7 +368,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             packageName += extraPackage;
         }
 
-        file.append(makeLine(0, "package " + packageName, true));
+        file.append(makeLine(0, "package " + packageName + ";"));
     }
 
     @Override
@@ -396,7 +399,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             buf.append(" throws ").append(throwsSpec);
         }
 
-        file.append(makeLine(1, buf.toString(), true));
+        buf.append(";");
+        file.append(makeLine(1, buf.toString()));
     }
 
     @Override
@@ -437,7 +441,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addLine(String statement, boolean addSemi) throws IOException {
-        if (0 < statement.trim().length()) {
+        if (statement.trim().length() > 0) {
             file.append(makeLine(2, statement, addSemi));
         }
     }
