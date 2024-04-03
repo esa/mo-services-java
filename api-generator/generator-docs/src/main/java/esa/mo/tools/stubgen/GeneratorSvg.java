@@ -837,21 +837,21 @@ public class GeneratorSvg extends GeneratorDocument {
             logger.info("Creating file " + folder + " " + className + "." + ext);
 
             if (withXhtml) {
-                getFile().append(makeLine(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", false));
-                getFile().append(makeLine(0, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">", false));
-                getFile().append(makeLine(0, "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">", false));
-                getFile().append(makeLine(1, "<head>", false));
-                getFile().append(makeLine(2, "<title></title>", false));
-                getFile().append(makeLine(1, "</head>", false));
-                getFile().append(makeLine(1, "<body>", false));
+                getFile().append(makeLine(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+                getFile().append(makeLine(0, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
+                getFile().append(makeLine(0, "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"));
+                getFile().append(makeLine(1, "<head>"));
+                getFile().append(makeLine(2, "<title></title>"));
+                getFile().append(makeLine(1, "</head>"));
+                getFile().append(makeLine(1, "<body>"));
             }
         }
 
         @Override
         public void flush() throws IOException {
             if (withXhtml) {
-                getFile().append(makeLine(1, "</body>", false));
-                getFile().append(makeLine(0, "</html>", false));
+                getFile().append(makeLine(1, "</body>"));
+                getFile().append(makeLine(0, "</html>"));
             }
             getFile().flush();
         }
@@ -927,9 +927,9 @@ public class GeneratorSvg extends GeneratorDocument {
                 postfix = "</p>";
             }
 
-            file.append(makeLine(2, prefix + "<svg:svg version=\"1.1\" width=\"" + w + "px\" height=\"" + h + "px\">", false));
+            file.append(makeLine(2, prefix + "<svg:svg version=\"1.1\" width=\"" + w + "px\" height=\"" + h + "px\">"));
             file.append(tbuffer);
-            file.append(makeLine(2, "</svg:svg>" + postfix, false));
+            file.append(makeLine(2, "</svg:svg>" + postfix));
         }
 
         protected void startNewLine() {
@@ -948,7 +948,7 @@ public class GeneratorSvg extends GeneratorDocument {
             if (italic) {
                 text = "<i>" + text + "</i>";
             }
-            file.append(makeLine(2, "<h" + level + id + ">" + section + text + "</h" + level + ">", false));
+            file.append(makeLine(2, "<h" + level + id + ">" + section + text + "</h" + level + ">"));
         }
 
         protected void addComment(List<String> cmts) throws IOException {
@@ -967,7 +967,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
-                            file.append(makeLine(2, "<p>" + escape(str) + "</p>", false));
+                            file.append(makeLine(2, "<p>" + escape(str) + "</p>"));
                         }
                     }
                 }
@@ -980,7 +980,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 if (!strings.isEmpty()) {
                     for (String str : strings) {
                         if (null != str) {
-                            file.append(makeLine(2, "<p>" + escape(str) + "</p>", false));
+                            file.append(makeLine(2, "<p>" + escape(str) + "</p>"));
                         }
                     }
                 }
@@ -989,10 +989,10 @@ public class GeneratorSvg extends GeneratorDocument {
 
         protected void addFieldComment(String name, String text) throws IOException {
             if (includeDescriptions) {
-                file.append(makeLine(2, "<p>", false));
-                file.append(makeLine(3, "<h4>" + name + ":</h4>", false));
-                file.append(makeLine(3, text, false));
-                file.append(makeLine(2, "</p>", false));
+                file.append(makeLine(2, "<p>"));
+                file.append(makeLine(3, "<h4>" + name + ":</h4>"));
+                file.append(makeLine(3, text));
+                file.append(makeLine(2, "</p>"));
             }
         }
 
@@ -1069,25 +1069,25 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         protected void addLine(int x1, int y1, int x2, int y2) throws IOException {
-            tbuffer.append(makeLine(3, "<svg:line x1=\"" + x1 + "\" y1=\"" + y1 + "\" x2=\"" + x2 + "\" y2=\"" + y2 + "\" stroke=\"navy\" stroke-width=\"1\"/>", false));
+            tbuffer.append(makeLine(3, "<svg:line x1=\"" + x1 + "\" y1=\"" + y1 + "\" x2=\"" + x2 + "\" y2=\"" + y2 + "\" stroke=\"navy\" stroke-width=\"1\"/>"));
         }
 
         protected void addRect(int x, int y, int width, int height, String colour, String text, String linkTo, boolean italic, boolean bold) throws IOException {
-            tbuffer.append(makeLine(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"2\"/>", false));
+            tbuffer.append(makeLine(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"2\"/>"));
             addText(x, y, width, height, text, linkTo, italic, bold);
 
             setMaxHeight(y + height);
         }
 
         protected void addSubRect(int x, int y, int width, int height, String colour, String text, String linkTo, boolean italic, boolean bold) throws IOException {
-            tbuffer.append(makeLine(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"2\"/>", false));
+            tbuffer.append(makeLine(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"2\"/>"));
             addText(x, y, width, 20, text, linkTo, italic, bold);
 
             setMaxHeight(y + height);
         }
 
         protected void addSubRectangle(int x, int y, int width, int height, String colour) throws IOException {
-            tbuffer.append(makeLine(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"0\"/>", false));
+            tbuffer.append(makeLine(3, "<svg:rect x=\"" + x + "\" y=\"" + y + "\" width=\"" + width + "\" height=\"" + height + "\" fill=\"" + colour + "\" stroke=\"navy\" stroke-width=\"0\"/>"));
 
             setMaxHeight(y + height);
         }
@@ -1105,18 +1105,18 @@ public class GeneratorSvg extends GeneratorDocument {
                 text = "<svg:a xlink:href=\"" + linkTo + "\">" + text + "</svg:a>";
             }
 
-            tbuffer.append(makeLine(3, "<svg:text x=\"" + (x + width / 2) + "\" y=\"" + (y + height / 2 + HALF_TEXT_HEIGHT) + "\" font-family=\"Verdana\" font-size=\"12\"" + styleStr + " fill=\"navy\" text-anchor=\"middle\" alignment-baseline=\"middle\">", false));
-            tbuffer.append(makeLine(4, text, false));
-            tbuffer.append(makeLine(3, "</svg:text>", false));
+            tbuffer.append(makeLine(3, "<svg:text x=\"" + (x + width / 2) + "\" y=\"" + (y + height / 2 + HALF_TEXT_HEIGHT) + "\" font-family=\"Verdana\" font-size=\"12\"" + styleStr + " fill=\"navy\" text-anchor=\"middle\" alignment-baseline=\"middle\">"));
+            tbuffer.append(makeLine(4, text));
+            tbuffer.append(makeLine(3, "</svg:text>"));
         }
 
         protected void addIndex(String title, int titleLevel, Set<Map.Entry<String, String>> entries) throws IOException {
-            file.append(makeLine(2, "<div>", false));
+            file.append(makeLine(2, "<div>"));
             addTitle(titleLevel, title, null, "", false);
             for (Map.Entry<String, String> e : entries) {
-                file.append(makeLine(2, "<p>" + "<a href=\"" + e.getValue() + "\">" + e.getKey() + "</a>" + "</p>", false));
+                file.append(makeLine(2, "<p>" + "<a href=\"" + e.getValue() + "\">" + e.getKey() + "</a>" + "</p>"));
             }
-            file.append(makeLine(2, "</div>", false));
+            file.append(makeLine(2, "</div>"));
         }
 
         protected void appendBuffer(StringBuffer buf) throws IOException {

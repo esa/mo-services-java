@@ -76,12 +76,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addStatement(String string) throws IOException {
-        file.append(makeLine(0, string, false));
+        file.append(makeLine(0, string));
     }
 
     @Override
     public void addClassCloseStatement() throws IOException {
-        file.append(makeLine(0, "}", false));
+        file.append(makeLine(0, "}"));
     }
 
     @Override
@@ -178,7 +178,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         if (isDeprecated) {
-            file.append(makeLine(1, "@Deprecated", false));
+            file.append(makeLine(1, "@Deprecated"));
         }
         file.append(makeLine(1, buf.toString(), true));
         file.append(getLineSeparator());
@@ -259,7 +259,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         signature.append(" {");
-        file.append(makeLine(1, signature.toString(), false));
+        file.append(makeLine(1, signature.toString()));
         if ((null != superArgs) && (!superArgs.isEmpty())) {
             file.append(makeLine(2, "super(" + processArgs(superArgs, false) + ")", true));
         }
@@ -339,7 +339,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         methodSignature.append(" {");
-        file.append(makeLine(1, methodSignature.toString(), false));
+        file.append(makeLine(1, methodSignature.toString()));
 
         return this;
     }
@@ -375,7 +375,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addInterfaceCloseStatement() throws IOException {
-        file.append(makeLine(0, "}", false));
+        file.append(makeLine(0, "}"));
     }
 
     @Override
@@ -444,7 +444,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addMethodCloseStatement() throws IOException {
-        file.append(makeLine(1, "}", false));
+        file.append(makeLine(1, "}"));
         file.append(getLineSeparator());
     }
 
@@ -456,15 +456,15 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                 file.append(getLineSeparator());
             }
 
-            file.append(makeLine(tabCount, "/**", false));
+            file.append(makeLine(tabCount, "/**"));
 
             for (String comment : comments) {
                 // Clean up tags like "<T>"
                 comment = comment.replaceAll("<", "_");
                 comment = comment.replaceAll(">", "_");
-                file.append(makeLine(tabCount, " * " + comment, false));
+                file.append(makeLine(tabCount, " * " + comment));
             }
-            file.append(makeLine(tabCount, " */", false));
+            file.append(makeLine(tabCount, " */"));
 
             if (postBlankLine) {
                 file.append(getLineSeparator());

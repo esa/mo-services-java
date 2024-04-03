@@ -55,6 +55,18 @@ public abstract class AbstractWriter implements TargetWriter {
      *
      * @param tabCount Indentation level.
      * @param statement The file statement.
+     * @return the created string.
+     */
+    protected String makeLine(int tabCount, String statement) {
+        return makeLine(tabCount, statement, false);
+    }
+
+    /**
+     * Creates a String indented correctly with a semicolon at the end if
+     * required.
+     *
+     * @param tabCount Indentation level.
+     * @param statement The file statement.
      * @param addSemi True if a trailing semicolon is required.
      * @return the created string.
      */

@@ -56,16 +56,16 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addFigureCaption(String caption) throws IOException {
         if (caption != null) {
-            buffer.append(makeLine(2, "<w:p>", false));
-            buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Figure </w:t></w:r>", false));
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"F_" + caption + "\"/>", false));
-            buffer.append(makeLine(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">", false));
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>", false));
-            buffer.append(makeLine(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-            buffer.append(makeLine(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>", false));
-            buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-            buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>", false));
-            buffer.append(makeLine(2, "</w:p>", false));
+            buffer.append(makeLine(2, "<w:p>"));
+            buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Figure </w:t></w:r>"));
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"F_" + caption + "\"/>"));
+            buffer.append(makeLine(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">"));
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>"));
+            buffer.append(makeLine(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Figure_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>"));
+            buffer.append(makeLine(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>"));
+            buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>"));
+            buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>"));
+            buffer.append(makeLine(2, "</w:p>"));
         }
     }
 
@@ -75,42 +75,42 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void startTable(int[] widths, String caption) throws IOException {
         if (null != caption) {
-            buffer.append(makeLine(2, "<w:p>", false));
-            buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Table </w:t></w:r>", false));
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"T_" + caption + "\"/>", false));
-            buffer.append(makeLine(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Table \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">", false));
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>", false));
-            buffer.append(makeLine(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Table_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-            buffer.append(makeLine(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>", false));
-            buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>", false));
-            buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>", false));
-            buffer.append(makeLine(2, "</w:p>", false));
+            buffer.append(makeLine(2, "<w:p>"));
+            buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Table </w:t></w:r>"));
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"T_" + caption + "\"/>"));
+            buffer.append(makeLine(3, "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> STYLEREF \"Heading 1\"\\l \\n \\t  \\* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Table \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:bookmarkEnd w:id=\"0\"/><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText>tc  \\f T \"</w:instrText></w:r><w:fldSimple w:instr=\" STYLEREF &quot;Heading 1&quot;\\l \\n \\t  \\* MERGEFORMAT \">"));
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + caption + "\"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>"));
+            buffer.append(makeLine(3, "<w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> SEQ Table_TOC \\s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>"));
+            buffer.append(makeLine(3, "<w:r><w:instrText>" + caption + "</w:instrText></w:r>"));
+            buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>"));
+            buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>"));
+            buffer.append(makeLine(2, "</w:p>"));
 
         }
-        buffer.append(makeLine(2, "<w:tbl>", false));
-        buffer.append(makeLine(3, "<w:tblPr>", false));
-        buffer.append(makeLine(4, "<w:tblW w:w=\"00\" w:type=\"auto\"/>", false));
-        buffer.append(makeLine(4, "<w:tblBorders>", false));
-        buffer.append(makeLine(5, "<w:top w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-        buffer.append(makeLine(5, "<w:left w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-        buffer.append(makeLine(5, "<w:bottom w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-        buffer.append(makeLine(5, "<w:right w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-        buffer.append(makeLine(5, "<w:insideH w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-        buffer.append(makeLine(5, "<w:insideV w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>", false));
-        buffer.append(makeLine(4, "</w:tblBorders>", false));
-        buffer.append(makeLine(3, "</w:tblPr>", false));
+        buffer.append(makeLine(2, "<w:tbl>"));
+        buffer.append(makeLine(3, "<w:tblPr>"));
+        buffer.append(makeLine(4, "<w:tblW w:w=\"00\" w:type=\"auto\"/>"));
+        buffer.append(makeLine(4, "<w:tblBorders>"));
+        buffer.append(makeLine(5, "<w:top w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>"));
+        buffer.append(makeLine(5, "<w:left w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>"));
+        buffer.append(makeLine(5, "<w:bottom w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>"));
+        buffer.append(makeLine(5, "<w:right w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>"));
+        buffer.append(makeLine(5, "<w:insideH w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>"));
+        buffer.append(makeLine(5, "<w:insideV w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>"));
+        buffer.append(makeLine(4, "</w:tblBorders>"));
+        buffer.append(makeLine(3, "</w:tblPr>"));
 
         if (null != widths) {
-            buffer.append(makeLine(3, "<w:tblGrid>", false));
+            buffer.append(makeLine(3, "<w:tblGrid>"));
             for (int i : widths) {
-                buffer.append(makeLine(4, "<w:gridCol w:w=\"" + i + "\"/>", false));
+                buffer.append(makeLine(4, "<w:gridCol w:w=\"" + i + "\"/>"));
             }
-            buffer.append(makeLine(3, "</w:tblGrid>", false));
+            buffer.append(makeLine(3, "</w:tblGrid>"));
         }
     }
 
     public void startRow() throws IOException {
-        buffer.append(makeLine(3, "<w:tr>", false));
+        buffer.append(makeLine(3, "<w:tr>"));
     }
 
     public void addCell(int index, int[] widths, String text) throws IOException {
@@ -188,7 +188,7 @@ public class DocxBaseWriter extends AbstractWriter {
             // default value
             boolean nullable = true;
             if (types.get(i).isField()) {
-              nullable = types.get(i).getFieldRef().isCanBeNull();
+                nullable = types.get(i).getFieldRef().isCanBeNull();
             }
             buf.append("<w:r><w:t>");
             buf.append(nullable ? "Yes" : "No");
@@ -254,15 +254,15 @@ public class DocxBaseWriter extends AbstractWriter {
         }
         buf.append("</w:tc>");
 
-        buffer.append(makeLine(4, buf.toString(), false));
+        buffer.append(makeLine(4, buf.toString()));
     }
 
     public void endRow() throws IOException {
-        buffer.append(makeLine(3, "</w:tr>", false));
+        buffer.append(makeLine(3, "</w:tr>"));
     }
 
     public void endTable() throws IOException {
-        buffer.append(makeLine(2, "</w:tbl>", false));
+        buffer.append(makeLine(2, "</w:tbl>"));
     }
 
     public void addTitle(int level, String name) throws IOException {
@@ -270,12 +270,12 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void addTitle(int level, String section, String name, String bookmarkSection, boolean bookmark) throws IOException {
-        buffer.append(makeLine(2, "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>", false));
+        buffer.append(makeLine(2, "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>"));
         if (bookmark) {
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + bookmarkSection + "_" + name + "\"/><w:bookmarkEnd w:id=\"1\"/>", false));
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + bookmarkSection + "_" + name + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
         }
-        buffer.append(makeLine(3, "<w:r><w:t>" + section + name + "</w:t></w:r>", false));
-        buffer.append(makeLine(2, "</w:p>", false));
+        buffer.append(makeLine(3, "<w:r><w:t>" + section + name + "</w:t></w:r>"));
+        buffer.append(makeLine(2, "</w:p>"));
     }
 
     public void addNumberedComment(List<String> strings) throws IOException {
@@ -334,7 +334,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
             for (String str : strings) {
                 if (null != str) {
-                    buffer.append(makeLine(2, str, false));
+                    buffer.append(makeLine(2, str));
                 }
             }
         }
@@ -364,7 +364,7 @@ public class DocxBaseWriter extends AbstractWriter {
                 if (str != null && str.length() > 0) {
                     buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
                             + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>"
-                            + escape(str) + "</w:t></w:r></w:p>", false));
+                            + escape(str) + "</w:t></w:r></w:p>"));
                 }
             }
         }
