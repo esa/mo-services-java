@@ -735,10 +735,10 @@ public class DataTypeScenario extends LoggingBase {
                 rv = subMultiTest(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
                         ex.getStandardError().getErrorNumber(),
                         rv,
-                        "Expected object already exists error for Object identity is unique test");
+                        "(1) Expected object already exists error for Object identity is unique test");
             }
             rv = subMultiTest(null, autoRef2, rv,
-                    "Expecting object already exists error for Object identity is unique test");
+                    "(2) Expecting object already exists error for Object identity is unique test");
 
             // create a valid Object identity
             ObjectIdentity autoId3 = new ObjectIdentity(autoId2.getDomain(),

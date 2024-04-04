@@ -63,7 +63,7 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
 
     try {
 
-      writer = factory.createXMLStreamWriter(os);
+      writer = factory.createXMLStreamWriter(os, "UTF-8");
       writer.setDefaultNamespace("http://www.ccsds.org/schema/malxml/MAL");
 
       writer.writeStartDocument(UTF8_CHARSET.name(), "1.0");
