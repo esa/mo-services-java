@@ -100,7 +100,7 @@ import org.ccsds.moims.mo.mal.structures.NamedValueList;
  * (uses bidirectional TCP/IP communication).
  *
  */
-public class TCPIPTransport extends Transport<byte[], byte[]> {
+public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
 
     /**
      * Logger
@@ -529,12 +529,6 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
         return addr;
     }
 
-    @Override
-    public GENMessage decodeMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
-                qosProperties, packet, getStreamFactory());
-    }
-
     /**
      * Called for received messages.
      *
@@ -553,7 +547,8 @@ public class TCPIPTransport extends Transport<byte[], byte[]> {
      * @throws org.ccsds.moims.mo.mal.MALException if the message could not be
      * decoded.
      */
-    public GENMessage createMessage(final TCPIPPacketInfoHolder packetInfo) throws MALException {
+    @Override
+    public GENMessage decodeMessage(TCPIPPacketInfoHolder packetInfo) throws MALException {
         String serviceDelimStr = Character.toString(serviceDelim);
         String from = packetInfo.getUriFrom().getValue();
         if (!from.endsWith(serviceDelimStr)) {
