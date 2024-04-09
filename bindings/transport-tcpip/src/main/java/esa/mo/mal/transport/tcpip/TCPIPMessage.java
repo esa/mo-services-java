@@ -76,21 +76,31 @@ public class TCPIPMessage extends GENMessage {
         ((TCPIPMessageHeader) this.getHeader()).encode(encoder);
 
         // Encode Body using the selected Encoding
-        ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
-        MALElementOutputStream bodyEncoder = bodyStreamFactory.createOutputStream(bodyBaos);
-        super.encodeMessage(bodyStreamFactory, bodyEncoder, bodyBaos, false);
+        ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
+        MALElementOutputStream bodyEncoder = bodyStreamFactory.createOutputStream(bodyBytes);
+        super.encodeMessage(bodyStreamFactory, bodyEncoder, bodyBytes, false);
+
+        // Re-encode Header with the correct size!
+        int size = hdrBaos.size() + bodyBytes.size() - 23;
+        ((TCPIPMessageHeader) this.getHeader()).setBodyLength(size);
+        ByteArrayOutputStream hdrBaos1 = new ByteArrayOutputStream();
+        TCPIPFixedBinaryEncoder encoder1 = new TCPIPFixedBinaryEncoder(hdrBaos1);
+        ((TCPIPMessageHeader) this.getHeader()).encode(encoder1);
 
         // Overwrite bodysize parameter in the Header
+        /*
         byte[] hdrBuf = hdrBaos.toByteArray();
         ByteBuffer b = ByteBuffer.allocate(4);
         b.order(ByteOrder.BIG_ENDIAN);
         b.putInt(hdrBaos.size() + bodyBaos.size() - 23);
         System.arraycopy(b.array(), 0, hdrBuf, 19, 4);
+*/
+        byte[] hdrBuf = hdrBaos1.toByteArray();
 
         try {
             lowLevelOutputStream.write(hdrBuf);
             if (this.getBody() != null) {
-                lowLevelOutputStream.write(bodyBaos.toByteArray());
+                lowLevelOutputStream.write(bodyBytes.toByteArray());
             }
         } catch (IOException e) {
             RLOGGER.log(Level.WARNING,

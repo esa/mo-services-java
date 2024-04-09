@@ -49,7 +49,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
 
     private short encodingId = 0;
 
-    private int bodyLength;
+    private int bodyLength = 0;
 
     private byte[] remainingEncodedData;
 
@@ -85,7 +85,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
     }
 
     @Deprecated
-    private void setBodyLength(int bodyLength) {
+    public void setBodyLength(int bodyLength) {
         this.bodyLength = bodyLength;
     }
 
@@ -110,18 +110,9 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         this.encodingId = encodingId;
     }
 
-    @Deprecated
-    private void setInteractionType(short sduType) {
-        interactionType = getInteractionType(sduType);
-    }
-
-    @Deprecated
-    private void setInteractionStage(short sduType) {
-        interactionStage = getInteractionStage(sduType);
-    }
-
     @Override
-    public TCPIPMessageHeader decode(final MALDecoder dec) throws MALException {
+    public TCPIPMessageHeader decode(final MALDecoder decoder) throws MALException {
+        TCPIPFixedBinaryDecoder dec = (TCPIPFixedBinaryDecoder) decoder;
         short versionAndSDU = dec.decodeUOctet().getValue();
         short sduType = (short) (versionAndSDU & 0x1f);
 
@@ -134,7 +125,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         this.isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
         //QoSLevel qosLevel = QoSLevel.fromOrdinal(((parts & 0x70) >> 4));
         //SessionType session = SessionType.fromOrdinal(parts & 0xF);
-        this.transactionId = ((TCPIPFixedBinaryDecoder) dec).decodeMALLong();
+        this.transactionId = dec.decodeMALLong();
 
         short flags = dec.decodeUOctet().getValue(); // flags
         boolean sourceIdFlag = (((flags & 0x80) >> 7) == 0x1);
@@ -148,6 +139,9 @@ public class TCPIPMessageHeader extends MALMessageHeader {
 
         this.encodingId = dec.decodeUOctet().getValue();
         this.bodyLength = (int) dec.decodeInteger();
+        this.supplements = new NamedValueList();
+        this.supplements = (NamedValueList) supplements.decode(dec);
+
         Identifier uriFrom = this.getFrom();
         Identifier uriTo = this.getTo();
 
@@ -174,19 +168,17 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         //Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : null;
         //IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : null;
         this.authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
-        //NamedValueList supplements = (NamedValueList) dec.decodeNullableElement(new NamedValueList());
 
         TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, this.getServiceFrom(),
                 authenticationId, uriTo, this.getServiceTo(), timestamp,
-                null, null, transactionId, serviceArea,
-                service, operation, serviceVersion, isErrorMessage, new NamedValueList());
+                getInteractionType(sduType), getInteractionStage(sduType),
+                transactionId, serviceArea,
+                service, operation, serviceVersion, isErrorMessage, supplements);
 
-        header.setInteractionType(sduType);
-        header.setInteractionStage(sduType);
         header.setEncodingId(encodingId);
         header.setBodyLength(bodyLength);
 
-        header.decodedHeaderBytes = ((TCPIPFixedBinaryDecoder) dec).getBufferOffset();
+        header.decodedHeaderBytes = dec.getBufferOffset();
         header.versionNumber = (versionAndSDU >> 0x5);
 
         // debug information
@@ -217,8 +209,8 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         // version number & sdu type
         TCPIPFixedBinaryEncoder enc = (TCPIPFixedBinaryEncoder) encoder;
         byte versionAndSDU = (byte) (this.versionNumber << 5 | this.getSDUType());
-
         enc.encodeUOctet(new UOctet(versionAndSDU));
+
         enc.encodeShort((short) this.getServiceArea().getValue());
         enc.encodeShort((short) this.getService().getValue());
         enc.encodeShort((short) this.getOperation().getValue());
@@ -236,13 +228,11 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         enc.encodeUOctet(new UOctet(parts));
         enc.encodeMALLong(this.getTransactionId());
 
-        // set flags
-        enc.encodeUOctet(getFlags(this));
-        // set encoding id
-        enc.encodeUOctet(new UOctet(this.getEncodingId()));
+        enc.encodeUOctet(getFlags()); // set flags
 
-        // preset body length. Allocate four bytes.
-        enc.encodeInteger(0);
+        enc.encodeUOctet(new UOctet(this.getEncodingId())); // set encoding id
+        enc.encodeInteger(bodyLength);
+        supplements.encode(enc);
 
         // encode rest of header
         if (!this.getServiceFrom().isEmpty()) {
@@ -273,11 +263,6 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         if (this.getAuthenticationId() != null && this.getAuthenticationId().getLength() > 0) {
             enc.encodeBlob(this.getAuthenticationId());
         }
-        /*
-        if (header.getSupplements() != null) {
-            header.getSupplements().encode(enc);
-        }
-         */
     }
 
     /**
@@ -286,36 +271,36 @@ public class TCPIPMessageHeader extends MALMessageHeader {
      * @param header
      * @return
      */
-    private UOctet getFlags(TCPIPMessageHeader header) {
+    private UOctet getFlags() {
 
         short result = 0;
-        if (!header.getServiceFrom().isEmpty()) {
+        if (!this.getServiceFrom().isEmpty()) {
             result |= (0x1 << 7);
         }
-        if (!header.getServiceTo().isEmpty()) {
+        if (!this.getServiceTo().isEmpty()) {
             result |= (0x1 << 6);
         }
         /*
-        if (header.getPriority() != null) {
+        if (this.getPriority() != null) {
             result |= (0x1 << 5);
         }
          */
-        if (header.getTimestamp() != null) {
+        if (this.getTimestamp() != null) {
             result |= (0x1 << 4);
         }
         /*
-        if (header.getNetworkZone() != null) {
+        if (this.getNetworkZone() != null) {
             result |= (0x1 << 3);
         }
-        if (header.getSessionName() != null) {
+        if (this.getSessionName() != null) {
             result |= (0x1 << 2);
         }
-        if (header.getDomain() != null && header.getDomain().size() > 0) {
+        if (this.getDomain() != null && header.getDomain().size() > 0) {
             result |= (0x1 << 1);
         }
          */
 
-        if (header.getAuthenticationId() != null && header.getAuthenticationId().getLength() > 0) {
+        if (this.getAuthenticationId() != null && this.getAuthenticationId().getLength() > 0) {
             result |= 0x1;
         }
 

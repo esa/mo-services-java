@@ -23,11 +23,11 @@ package esa.mo.mal.transport.tcpip;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The TCPIP Connection pool manager keeps a list of client sockets, uniquely
@@ -53,7 +53,7 @@ public class TCPIPClientSocketsManager {
      * The internal list of sockets. Each socket is identified by its port
      * number.
      */
-    private final Map<Integer, Socket> connections = new HashMap<>();
+    private final Map<Integer, Socket> connections = new ConcurrentHashMap<>();
 
     /**
      * Returns a socket bound to a specific port. If this socket doesn't exist,
@@ -113,12 +113,12 @@ public class TCPIPClientSocketsManager {
         for (int port : connections.keySet()) {
             try {
                 connections.get(port).close();
-                connections.remove(port);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
+        connections.clear();
     }
 
     /**

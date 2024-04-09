@@ -228,6 +228,10 @@ public class Endpoint implements MALEndpoint {
         }
     }
 
+    public NamedValueList getEndpointSupplements() {
+        return endpointSupplements;
+    }
+
     /**
      * Callback method when multiple messages are received for this endpoint.
      *

@@ -101,7 +101,7 @@ public class TCPIPEndpoint extends Endpoint {
                 serviceFrom, authenticationId, new Identifier(uriTo.getValue()),
                 serviceTo, timestamp, interactionType, interactionStage,
                 transactionId, serviceArea, service, operation,
-                serviceVersion, isErrorMessage, supplements);
+                serviceVersion, isErrorMessage, this.getEndpointSupplements());
     }
 
 }
