@@ -100,7 +100,7 @@ public class MessagePoller<I, O> extends Thread implements ReceptionHandler {
                         transport.receive(this, holder);
                     } catch (MALException e) {
                         Transport.LOGGER.log(Level.WARNING,
-                                "Error occurred when decoding data : {0}", e);
+                                "Error occurred when decoding message: " + encodedMsg.toString(), e);
 
                         transport.communicationError(null, this);
                     }
