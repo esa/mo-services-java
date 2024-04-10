@@ -8,6 +8,7 @@ The different versions and respective updates are the following:
 * Updates all the xml files for their respective latest updates
 * The yaml workflows for building the project and running the testbeds are now operational for: Java 8, 11, 17
 * Simplifies and optimizes parts of the code in the Transport and in the API generation process
+* Adds the HTTP project
 
 ### Version 10.0 (2023 November 16)
 * Full alignment of the MAL API and MAL Impl to the MAL Standard book version 521.0-B-3
