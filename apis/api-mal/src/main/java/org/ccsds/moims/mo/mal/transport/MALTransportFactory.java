@@ -43,6 +43,17 @@ public abstract class MALTransportFactory {
     private final String protocol;
 
     /**
+     * Constructor.
+     *
+     * @param protocol Name of the protocol to be handled by the instantiated
+     * MALTransportFactory
+     * @throws IllegalArgumentException If the parameter ‘protocol’ is NULL
+     */
+    public MALTransportFactory(final String protocol) throws IllegalArgumentException {
+        this.protocol = protocol;
+    }
+
+    /**
      * The method allows an implementation to register the class of a specific
      * MALTransportFactory. NOTE – This method may be useful in environments
      * where several class loaders are involved (e.g., OSGi platforms).
@@ -128,17 +139,6 @@ public abstract class MALTransportFactory {
             throw new MALException(
                     "Unknown transport factory for protocol: " + protocol);
         }
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param protocol Name of the protocol to be handled by the instantiated
-     * MALTransportFactory
-     * @throws IllegalArgumentException If the parameter ‘protocol’ is NULL
-     */
-    public MALTransportFactory(final String protocol) throws IllegalArgumentException {
-        this.protocol = protocol;
     }
 
     /**
