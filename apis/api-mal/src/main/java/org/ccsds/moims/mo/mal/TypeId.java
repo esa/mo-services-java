@@ -133,6 +133,10 @@ public class TypeId {
         return (areaNumber == 1 && areaVersion < 3);
     }
 
+    public boolean isList() {
+        return (serviceNumber < 0);
+    }
+
     /**
      * Returns the short form part number.
      *
