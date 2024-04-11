@@ -78,7 +78,7 @@ public class Blob implements Attribute {
      * @param length Length in supplied array to use.
      * @throws java.lang.IllegalArgumentException If the argument is null.
      */
-    public Blob(final byte[] value, final int offset, final int length) 
+    public Blob(final byte[] value, final int offset, final int length)
             throws java.lang.IllegalArgumentException {
         this.value = value;
         this.uvalue = null;
@@ -279,7 +279,11 @@ public class Blob implements Attribute {
         if (isURLBased()) {
             return "Blob(URL based, URL=" + uvalue + ")";
         } else {
-            return "Blob(buffer based, length=" + value.length + ")";
+            if (value == null) {
+                return "Blob(buffer based, value = null)";
+            } else {
+                return "Blob(buffer based, length=" + value.length + ")";
+            }
         }
     }
 }
