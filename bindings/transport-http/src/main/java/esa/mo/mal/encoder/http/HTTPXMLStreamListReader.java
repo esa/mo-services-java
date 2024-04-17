@@ -29,15 +29,12 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 
-public class HTTPXMLStreamListReader extends HTTPXMLStreamReader implements MALListDecoder {
+public class HTTPXMLStreamListReader implements MALListDecoder {
 
+    private XMLEventReader eventReader;
     private List list;
     private String listName;
     private int size = 0;
-
-    public HTTPXMLStreamListReader(InputStream is) {
-        super(is);
-    }
 
     public HTTPXMLStreamListReader(List list, XMLEventReader eventReader) {
         this(list, eventReader, list.getClass().getSimpleName());

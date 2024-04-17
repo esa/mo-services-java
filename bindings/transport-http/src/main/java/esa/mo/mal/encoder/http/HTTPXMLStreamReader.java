@@ -23,21 +23,13 @@ package esa.mo.mal.encoder.http;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import esa.mo.mal.transport.http.util.UriHelper;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
@@ -49,7 +41,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -73,6 +64,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
 
     XMLInputFactory inputFactory;
     XMLEventReader eventReader;
+    XMLReader xmlReader;
 
     public HTTPXMLStreamReader() {
     }
@@ -82,21 +74,8 @@ public class HTTPXMLStreamReader implements MALDecoder {
             if (is.available() > 0) {
                 inputFactory = XMLInputFactory.newInstance();
                 eventReader = inputFactory.createXMLEventReader(is);
-                eventReader.nextEvent(); // xml header
-
-                // message body
-                XMLEvent event = eventReader.nextEvent();
-                // skip \n, \t character events
-                while (event.isCharacters()) {
-                    event = eventReader.nextEvent();
-                }
-
-                // validate allocation of body element in xml
-                if (!(event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("Body"))) {
-                    RLOGGER.severe("XML Malformed: Body element missing");
-                }
+                xmlReader = new XMLReader(eventReader, this);
             }
-
         } catch (Exception e) {
             RLOGGER.severe(e.getMessage());
             e.printStackTrace();
@@ -381,188 +360,12 @@ public class HTTPXMLStreamReader implements MALDecoder {
         return (ObjectRef) element;
     }
 
-    public Element decodeList(final Element element) throws MALException {
-        Element returnable = null;
-
-        try {
-            XMLEvent event = eventReader.nextTag();
-
-            if (event.isStartElement()) {
-                StartElement se = event.asStartElement();
-                javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
-
-                if (nillable != null && nillable.getValue().equals("true")) {
-                    returnable = null;
-                } else {
-                    returnable = element.decode(this);
-                }
-
-                if (eventReader.hasNext() && eventReader.peek().isEndElement()) {
-                    eventReader.next();
-                }
-
-            } else if (event.isEndElement()) {
-                EndElement ee = event.asEndElement();
-                if (openstandingEndElements.contains(ee.getName().getLocalPart())) {
-                    openstandingEndElements.remove(ee.getName().getLocalPart());
-                }
-            } else {
-                throw new MALException(
-                        "Expected a xml start element or nullable for element " + element.getClass().getSimpleName());
-            }
-
-        } catch (XMLStreamException e) {
-            throw new MALException(e.getMessage());
-        }
-
-        return returnable;
-    }
-
-    List<String> openstandingEndElements = new ArrayList<>();
-
     @Override
     public Element decodeElement(Element element) throws IllegalArgumentException, MALException {
-        Element returnable = null;
-        String superClassName = null;
-
-        try {
-            if (eventReader == null || !eventReader.hasNext()) {
-                return null;
-            }
-
-            while (eventReader.peek().isCharacters()
-                    && eventReader.peek().asCharacters().getData().matches("[\\n\\t]+")) {
-                eventReader.next();
-            }
-
-            if (element == null && eventReader.peek().isStartElement()) {
-                element = getElementByType(eventReader.peek().asStartElement());
-            }
-
-            if (eventReader.peek() != null && eventReader.peek().isEndElement()) {
-                EndElement ee = eventReader.peek().asEndElement();
-                String endElementName = ee.getName().getLocalPart();
-                if (openstandingEndElements.contains(endElementName)) {
-                    openstandingEndElements.remove(endElementName);
-                    eventReader.nextTag();
-                }
-            }
-
-            if (element instanceof List) {
-                return decodeList(element);
-            }
-
-            Map<String, Integer> openedElements = new HashMap<>();
-            if (element != null) {
-                superClassName = element.getClass().getSuperclass().getName();
-            }
-            boolean done = false;
-
-            while (eventReader.hasNext() && !done) {
-                XMLEvent event = eventReader.nextTag();
-
-                if (event.isStartElement()) {
-                    StartElement se = event.asStartElement();
-                    String possibleSuperClassName = null;
-
-                    if (eventReader.peek() != null && eventReader.peek().isStartElement()) {
-                        possibleSuperClassName = eventReader.peek().asStartElement().getName().getLocalPart();
-                    }
-
-                    int count = 0;
-                    if (openedElements.containsKey(se.getName().getLocalPart())) {
-                        count = openedElements.get(se.getName().getLocalPart());
-                    }
-                    openedElements.put(se.getName().getLocalPart(), ++count);
-
-                    if (element instanceof Composite && superClassName.equals(possibleSuperClassName)) {
-                        openstandingEndElements.add(possibleSuperClassName);
-                    } else if (element instanceof Enumeration) {
-                        returnable = decodeEnumeration((Enumeration) element);
-                    } else {
-                        javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
-                        if (nillable != null && nillable.getValue().equals("true")) {
-                            if (eventReader.peek().isEndElement()) {
-                                eventReader.next();
-                            }
-                            return null;
-                        }
-
-                        if (element != null) {
-                            returnable = element.decode(this);
-                        } else {
-                            returnable = decodeElementByType(se.getName().getLocalPart(), se);
-                        }
-                    }
-                } else if (event.isEndElement()) {
-                    EndElement ee = event.asEndElement();
-
-                    if (openedElements.containsKey(ee.getName().getLocalPart())) {
-                        int count = openedElements.get(ee.getName().getLocalPart()) - 1;
-                        if (count < 1) {
-                            openedElements.remove(ee.getName().getLocalPart());
-                            if (openedElements.containsKey(superClassName)) {
-                                openedElements.remove(superClassName);
-                            }
-                        } else {
-                            openedElements.put(ee.getName().getLocalPart(), count);
-                        }
-                    }
-
-                    if (openedElements.size() < 1) {
-                        done = true;
-                    }
-                } else {
-                    done = true;
-                }
-            }
-
-        } catch (XMLStreamException e) {
-            RLOGGER.log(Level.SEVERE, "The Element could not be fully decoded! State: " + element, e);
-            throw new MALException(e.getMessage());
-        }
-
-        return returnable;
+        return xmlReader.readNextElement(element);
     }
 
-    private Enumeration decodeEnumeration(Enumeration element) throws MALException {
-        String enumValue = decodeXMLElement();
-
-        Class<?> cls = element.getClass();
-        Method m;
-        try {
-            m = cls.getMethod("fromString", String.class);
-
-            if (m != null) {
-                return (Enumeration) m.invoke(null, enumValue);
-            }
-        } catch (NoSuchMethodException e) {
-            return null;
-        } catch (Exception e) {
-            RLOGGER.severe(e.getMessage());
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private Element getElementByType(StartElement event) throws MALException {
-        if (event.getAttributeByName(new QName(MAL_NS, "type", "malxml")) == null) {
-            return null;
-        }
-
-        javax.xml.stream.events.Attribute att = event.getAttributeByName(new QName(MAL_NS, "type", "malxml"));
-        Long shortForm = Long.valueOf(att.getValue());
-        MALElementsRegistry elementsRegistry = MALContextFactory.getElementsRegistry();
-
-        try {
-            return (Element) elementsRegistry.createElement(shortForm);
-        } catch (Exception e) {
-            throw new MALException("Can't find element with shortForm: " + shortForm.toString());
-        }
-    }
-
-    private Element decodeElementByType(String typeName, StartElement event) throws MALException {
+    public Element decodeElementByType(String typeName, StartElement event) throws MALException {
         if (typeName.equals("Blob")) {
             return decodeBlob();
         } else if (typeName.equals("Duration")) {
@@ -620,44 +423,12 @@ public class HTTPXMLStreamReader implements MALDecoder {
     }
 
     public Element decodeUnion() throws MALException {
-        try {
-            Union union = null;
-
-            while (eventReader.peek().isCharacters()
-                    && eventReader.peek().asCharacters().getData().matches("[\\n\\t]+")) {
-                eventReader.next();
-            }
-
-            XMLEvent nextEvent = eventReader.peek();
-            if (nextEvent.isStartElement()) {
-                StartElement se = nextEvent.asStartElement();
-                String subElementType = se.getName().getLocalPart();
-
-                if (subElementType.equals("Boolean")) {
-                    union = new Union(false);
-                } else if (subElementType.equals("Float")) {
-                    union = new Union(0f);
-                } else if (subElementType.equals("Double")) {
-                    union = new Union(0d);
-                } else if (subElementType.equals("Integer")) {
-                    union = new Union(0);
-                } else if (subElementType.equals("Long")) {
-                    union = new Union(0L);
-                } else if (subElementType.equals("Octet")) {
-                    union = new Union((byte) 0);
-                } else if (subElementType.equals("Short")) {
-                    union = new Union((short) 0);
-                } else {
-                    union = new Union("");
-                }
-
-                return union.decode(this);
-            }
-        } catch (XMLStreamException e) {
-            throw new MALException("The Union type could not be decoded!", e);
+        Element union = xmlReader.decodeUnion();
+        if (union != null) {
+            return union.decode(this);
         }
 
-        return null;
+        return union;
     }
 
     @Override
@@ -686,65 +457,11 @@ public class HTTPXMLStreamReader implements MALDecoder {
     }
 
     public String decodeXMLElement() throws MALException {
-        return decodeXMLElement(false);
+        return xmlReader.readStringFromXMLElement(false);
     }
 
     public String decodeNullableXMLElement() throws MALException {
-        return decodeXMLElement(true);
-    }
-
-    public String decodeXMLElement(boolean mightBeNull) throws MALException {
-        String value = "";
-
-        try {
-            XMLEvent event = null;
-            boolean done = false;
-
-            Map<String, Integer> openedElements = new HashMap<>();
-
-            while (eventReader.hasNext() && !done) {
-                event = eventReader.nextEvent();
-
-                if (event.isStartElement()) {
-                    StartElement se = event.asStartElement();
-                    int count = 0;
-                    if (openedElements.containsKey(se.getName().getLocalPart())) {
-                        count = openedElements.get(se.getName().getLocalPart());
-                    }
-                    openedElements.put(se.getName().getLocalPart(), ++count);
-
-                    if (mightBeNull) {
-                        javax.xml.stream.events.Attribute att = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
-                        if (att != null && att.getValue().equals("true")) {
-                            value = null;
-                        }
-                    }
-                }
-
-                if (event.isCharacters() && !event.asCharacters().getData().matches("[\\n\\t ]+")) {
-                    value = event.asCharacters().getData();
-                }
-
-                if (event.isEndElement()) {
-                    EndElement ee = event.asEndElement();
-                    if (openedElements.containsKey(ee.getName().getLocalPart())) {
-                        int count = openedElements.get(ee.getName().getLocalPart()) - 1;
-                        if (count < 1) {
-                            openedElements.remove(ee.getName().getLocalPart());
-                        } else {
-                            openedElements.put(ee.getName().getLocalPart(), count);
-                        }
-                    }
-                    if (openedElements.size() < 1) {
-                        done = true;
-                    }
-                }
-            }
-        } catch (XMLStreamException e) {
-            throw new MALException(e.getMessage());
-        }
-
-        return value;
+        return xmlReader.readStringFromXMLElement(true);
     }
 
     @Override
@@ -764,26 +481,6 @@ public class HTTPXMLStreamReader implements MALDecoder {
 
     @Override
     public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
-        HTTPXMLStreamListReader listDecoder = (HTTPXMLStreamListReader) this.createListDecoder(list);
-
-        while (listDecoder.hasNext()) {
-            Element element = list.createTypedElement();
-
-            if (element instanceof Composite) {
-                eventReader.next();
-            }
-
-            Element decodedElement = element.decode(listDecoder);
-
-            // If the decoded element is of Union type, then cast it to
-            // its respective Java type before adding it to the list
-            if (decodedElement instanceof Union) {
-                list.add(Attribute.attribute2JavaType(decodedElement));
-            } else {
-                list.add(decodedElement);
-            }
-        }
-
-        return list;
+        return (HomogeneousList) xmlReader.decodeHomogeneousList(list);
     }
 }

@@ -449,7 +449,7 @@ public abstract class Decoder implements MALDecoder {
                 list.add(Attribute.attribute2JavaType(att));
             } else {
                 // Normal Case
-                list.add(element.decode(listDecoder));
+                list.add(element.decode(this));
             }
         }
         return list;

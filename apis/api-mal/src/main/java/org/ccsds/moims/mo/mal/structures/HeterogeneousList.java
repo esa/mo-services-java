@@ -115,9 +115,9 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
         }
         while (listDecoder.hasNext()) {
             if (ENFORCE_NON_NULLABLE_ENTRIES) {
-                add((Element) listDecoder.decodeAbstractElement());
+                add((Element) decoder.decodeAbstractElement());
             } else {
-                add((Element) listDecoder.decodeNullableAbstractElement());
+                add((Element) decoder.decodeNullableAbstractElement());
             }
         }
         return this;
