@@ -27,6 +27,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.StringList;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -60,7 +61,7 @@ public class FixedEncoderDecoderTest {
     }
 
     /**
-     * Test of encodeTime method, of class BinaryTimeHandler.
+     * Simple test for encoding decoding a list of NullableAttributeList.
      *
      * @throws java.lang.Exception
      */
@@ -89,5 +90,39 @@ public class FixedEncoderDecoderTest {
         assertEquals("NullableAttributeList.get(0)", list.get(0), readList.get(0));
         assertEquals("NullableAttributeList.get(1)", list.get(1), readList.get(1));
         assertEquals("NullableAttributeList.get(2)", list.get(2), readList.get(2));
+    }
+
+    /**
+     * Simple test for encoding decoding a list of StringList. Note that the
+     * String MAL type is mapped to the String Java type, therefore the type
+     * might need to be wrapped in a Union type for correct encoding/decoding.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testEncodeDecodeStringList() throws Exception {
+        StringList list = new StringList();
+        list.add("String A");
+        list.add("String B");
+        list.add("String C");
+
+        FixedBinaryStreamFactory factory = new FixedBinaryStreamFactory();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        MALElementOutputStream malWriter = factory.createOutputStream(baos);
+
+        malWriter.writeElement(list, null);
+
+        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        MALElementInputStream malReader = factory.createInputStream(bais);
+
+        StringList readList = new StringList();
+        readList = (StringList) malReader.readElement(readList, null);
+
+        // Assertions:
+        assertNotNull(readList);
+        assertEquals(3, readList.size());
+        assertEquals("StringList.get(0)", list.get(0), readList.get(0));
+        assertEquals("StringList.get(1)", list.get(1), readList.get(1));
+        assertEquals("StringList.get(2)", list.get(2), readList.get(2));
     }
 }
