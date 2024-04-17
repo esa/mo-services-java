@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -68,6 +69,17 @@ public abstract class Encoder implements MALListEncoder {
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
+    }
+
+    @Override
+    public void encodeHomogeneousList(final HomogeneousList list) throws MALException {
+        org.ccsds.moims.mo.mal.MALListEncoder listEncoder = this.createListEncoder(list);
+        for (int i = 0; i < list.size(); i++) {
+            Object obj = list.get(i);
+            Element element = (obj instanceof Element) ? (Element) obj : (Element) Attribute.javaType2Attribute(obj);
+            element.encode(listEncoder);
+        }
+        listEncoder.close();
     }
 
     @Override

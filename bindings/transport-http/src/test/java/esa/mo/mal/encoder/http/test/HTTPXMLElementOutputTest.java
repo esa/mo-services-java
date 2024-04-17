@@ -3,12 +3,11 @@
  */
 package esa.mo.mal.encoder.http.test;
 
-import static org.junit.Assert.*;
-
+import esa.mo.mal.encoder.http.HTTPXMLElementInputStream;
+import esa.mo.mal.encoder.http.HTTPXMLElementOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
@@ -23,15 +22,12 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import esa.mo.mal.encoder.http.HTTPXMLElementInputStream;
-import esa.mo.mal.encoder.http.HTTPXMLElementOutputStream;
-import org.ccsds.moims.mo.mal.structures.File;
 
 /**
  * @author rvangijlswijk
@@ -170,6 +166,7 @@ public class HTTPXMLElementOutputTest {
     httpElementOutputStream.close();
 
     String xmlResult = baos.toString();
+    System.out.println(xmlResult);
 
     NodeList nodes = helper.queryXPath(xmlResult, "/Body/Subscription");
     assertNotNull(nodes);

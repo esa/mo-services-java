@@ -45,6 +45,7 @@ public class HTTPXMLStreamListWriterTest {
     writer.close();
 
     String xmlResult = baos.toString();
+    System.out.println(xmlResult);
 
     assertNotNull(helper.queryXPath(xmlResult, "//IdentifierList"));
     assertEquals(1, helper.queryXPath(xmlResult, "//IdentifierList").getLength());

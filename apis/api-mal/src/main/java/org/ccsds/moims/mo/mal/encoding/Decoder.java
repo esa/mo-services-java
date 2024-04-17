@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
@@ -424,6 +425,34 @@ public abstract class Decoder implements MALDecoder {
         }
 
         return null;
+    }
+
+    @Override
+    public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
+        org.ccsds.moims.mo.mal.MALListDecoder listDecoder = this.createListDecoder(list);
+        int decodedSize = listDecoder.size();
+        if (decodedSize > 1000000) {
+            throw new org.ccsds.moims.mo.mal.MALException("The decoded list size is too big: " + decodedSize);
+        }
+/*
+        if (decodedSize > 0) {
+            list.ensureCapacity(decodedSize);
+        }
+*/
+        for(int i = 0; i < decodedSize; i++) {
+            Element element = list.createTypedElement();
+
+            if(element instanceof Union) {
+                // Case for Attributes that are mapped to the Java API
+                Union union = (Union) element;
+                Attribute att = internalDecodeAttribute(union.getTypeShortForm());
+                list.add(Attribute.attribute2JavaType(att));
+            } else {
+                // Normal Case
+                list.add(element.decode(listDecoder));
+            }
+        }
+        return list;
     }
 
     /**

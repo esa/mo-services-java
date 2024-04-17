@@ -726,6 +726,29 @@ public class LineDecoder implements MALDecoder {
         return data;
     }
 
+    @Override
+    public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
+        org.ccsds.moims.mo.mal.MALListDecoder listDecoder = this.createListDecoder(list);
+        int decodedSize = listDecoder.size();
+        if (decodedSize > 1000000) {
+            throw new org.ccsds.moims.mo.mal.MALException("The decoded list size is too big: " + decodedSize);
+        }
+        for(int i = 0; i < decodedSize; i++) {
+            Element element = list.createTypedElement();
+
+            if(element instanceof Union) {
+                // Case for Attributes that are mapped to the Java API
+                Union union = (Union) element;
+                Attribute att = internalDecodeAttribute("TBD!");
+                list.add(Attribute.attribute2JavaType(att));
+            } else {
+                // Normal Case
+                list.add(element.decode(listDecoder));
+            }
+        }
+        return list;
+    }
+
     /**
      * The BufferHolder holds a string buffer.
      */

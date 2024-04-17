@@ -1,5 +1,7 @@
 package esa.mo.mal.encoder.http;
 
+import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
+import esa.mo.mal.transport.http.util.UriHelper;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
@@ -10,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -18,7 +19,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
@@ -42,35 +43,25 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
-import esa.mo.mal.transport.http.util.UriHelper;
-
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
-
 public class HTTPXMLStreamReader implements MALListDecoder {
-
-  XMLInputFactory inputFactory;
-  XMLEventReader eventReader;
 
   protected static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
   protected static final String MAL_NS = "http://www.ccsds.org/schema/malxml/MAL";
-
   protected static final String MALFORMED_INPUT = "Malformed xml input";
-
   protected static final String LINE_END = "";
   protected static final String TAB = "";
+
+  XMLInputFactory inputFactory;
+  XMLEventReader eventReader;
 
   public HTTPXMLStreamReader() {
   }
 
   public HTTPXMLStreamReader(InputStream is) {
-
     try {
-
       if (is.available() > 0) {
-
         inputFactory = XMLInputFactory.newInstance();
         eventReader = inputFactory.createXMLEventReader(is);
-
         eventReader.nextEvent(); // xml header
 
         // message body
@@ -94,13 +85,11 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Boolean decodeBoolean() throws MALException {
-
     return decodeXMLElement().equals("true");
   }
 
   @Override
   public Boolean decodeNullableBoolean() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -111,13 +100,11 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Float decodeFloat() throws MALException {
-
     return Float.valueOf(decodeXMLElement());
   }
 
   @Override
   public Float decodeNullableFloat() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -128,13 +115,11 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Double decodeDouble() throws MALException {
-
     return Double.valueOf(decodeXMLElement());
   }
 
   @Override
   public Double decodeNullableDouble() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -145,13 +130,11 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Byte decodeOctet() throws MALException {
-
     return Byte.valueOf(decodeXMLElement(), 10);
   }
 
   @Override
   public Byte decodeNullableOctet() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -167,7 +150,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public UOctet decodeNullableUOctet() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -183,7 +165,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Short decodeNullableShort() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -199,7 +180,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public UShort decodeNullableUShort() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -214,7 +194,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Integer decodeNullableInteger() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -231,7 +210,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public UInteger decodeNullableUInteger() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -247,7 +225,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Long decodeNullableLong() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -263,7 +240,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public ULong decodeNullableULong() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -279,7 +255,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public String decodeNullableString() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -288,7 +263,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Blob decodeBlob() throws MALException {
-
     byte[] byteValue = hexStringToByteArray(decodeXMLElement());
 
     if (byteValue == null) {
@@ -299,7 +273,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Blob decodeNullableBlob() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -308,7 +281,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Duration decodeDuration() throws MALException {
-
     String durationFormat = decodeXMLElement();
     java.time.Duration d = java.time.Duration.parse(durationFormat);
     Duration value = new Duration(d.getSeconds() + d.getNano() / 1e9d);
@@ -317,7 +289,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Duration decodeNullableDuration() throws MALException {
-
     String durationFormat = decodeNullableXMLElement();
     if (durationFormat == null) {
       return null;
@@ -329,15 +300,12 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public FineTime decodeFineTime() throws MALException {
-
     Instant i = Instant.parse(decodeXMLElement() + "Z");
-
     return new FineTime((long) (i.getEpochSecond() * 1e9) + i.getNano());
   }
 
   @Override
   public FineTime decodeNullableFineTime() throws MALException {
-
     Long value = decodeNullableLong();
     if (value == null)
       return null;
@@ -351,7 +319,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Identifier decodeNullableIdentifier() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -360,16 +327,14 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Time decodeTime() throws MALException {
-
     Instant i = Instant.parse(decodeXMLElement() + "Z");
-
     return new Time(i.toEpochMilli());
   }
 
   @Override
   public Time decodeNullableTime() throws MALException {
-
     String decoded = decodeNullableXMLElement();
+
     if (decoded == null)
       return null;
     else if (decoded.equals(""))
@@ -387,7 +352,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public URI decodeNullableURI() throws MALException {
-
     String decoded = decodeNullableXMLElement();
     if (decoded == null)
       return null;
@@ -406,16 +370,13 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   }
 
   public Element decodeList(final Element element) throws MALException {
-
     Element returnable = null;
 
     try {
       XMLEvent event = eventReader.nextTag();
 
       if (event.isStartElement()) {
-
         StartElement se = event.asStartElement();
-
         javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
 
         if (nillable != null && nillable.getValue().equals("true")) {
@@ -449,12 +410,10 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Element decodeElement(Element element) throws IllegalArgumentException, MALException {
-
     Element returnable = null;
     String superClassName = null;
 
     try {
-
       if (eventReader == null || !eventReader.hasNext()) {
         return null;
       }
@@ -478,11 +437,10 @@ public class HTTPXMLStreamReader implements MALListDecoder {
       }
 
       if (element instanceof List) {
-        returnable = decodeList(element);
+        return decodeList(element);
+      }
 
-      } else {
-
-        Map<String, Integer> openedElements = new HashMap<String, Integer>();
+        Map<String, Integer> openedElements = new HashMap<>();
         if (element != null) {
           superClassName = element.getClass().getSuperclass().getName();
         }
@@ -492,10 +450,9 @@ public class HTTPXMLStreamReader implements MALListDecoder {
           XMLEvent event = eventReader.nextTag();
 
           if (event.isStartElement()) {
-
             StartElement se = event.asStartElement();
-
             String possibleSuperClassName = null;
+
             if (eventReader.peek() != null && eventReader.peek().isStartElement()) {
               possibleSuperClassName = eventReader.peek().asStartElement().getName().getLocalPart();
             }
@@ -509,9 +466,8 @@ public class HTTPXMLStreamReader implements MALListDecoder {
             if (element instanceof Composite && superClassName.equals(possibleSuperClassName)) {
               openstandingEndElements.add(possibleSuperClassName);
             } else if (element instanceof Enumeration) {
-              returnable = decodeEnumeration((Enumeration) element);
+                returnable = decodeEnumeration((Enumeration) element);
             } else {
-
               javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
               if (nillable != null && nillable.getValue().equals("true")) {
                 if (eventReader.peek().isEndElement()) {
@@ -525,12 +481,10 @@ public class HTTPXMLStreamReader implements MALListDecoder {
               } else {
                 returnable = decodeElementByType(se.getName().getLocalPart(), se);
               }
-
             }
-
           } else if (event.isEndElement()) {
-
             EndElement ee = event.asEndElement();
+
             if (openedElements.containsKey(ee.getName().getLocalPart())) {
               int count = openedElements.get(ee.getName().getLocalPart()) - 1;
               if (count < 1) {
@@ -546,16 +500,13 @@ public class HTTPXMLStreamReader implements MALListDecoder {
             if (openedElements.size() < 1) {
               done = true;
             }
-          }
-
-          else {
+          } else {
             done = true;
           }
         }
-      }
 
     } catch (XMLStreamException e) {
-      RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+      RLOGGER.log(Level.SEVERE, "The Element could not be fully decoded! State: " + element, e);
       throw new MALException(e.getMessage());
     }
 
@@ -584,12 +535,9 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   }
 
   private Element getElementByType(StartElement event) throws MALException {
-
     if (event.getAttributeByName(new QName(MAL_NS, "type", "malxml")) != null) {
-
       javax.xml.stream.events.Attribute att = event.getAttributeByName(new QName(MAL_NS, "type", "malxml"));
       Long shortForm = Long.valueOf(att.getValue());
-
       MALElementsRegistry elementsRegistry = MALContextFactory.getElementsRegistry();
 
       try {
@@ -603,7 +551,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   }
 
   private Element decodeElementByType(String typeName, StartElement event) throws MALException {
-
     if (typeName.equals("Blob")) {
       return decodeBlob();
     } else if (typeName.equals("Duration")) {
@@ -644,7 +591,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
       return new AttributeList().decode(this);
     } else if (event.getAttributeByName(new QName(MAL_NS, "type", "malxml")) != null) {
       // can't determine type by name, using xml type attribute
-
       javax.xml.stream.events.Attribute att = event.getAttributeByName(new QName(MAL_NS, "type", "malxml"));
       Long shortForm = Long.valueOf(att.getValue());
 
@@ -662,9 +608,7 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   }
 
   public Element decodeUnion() throws MALException {
-
     try {
-
       Union union = null;
 
       while (eventReader.peek().isCharacters()
@@ -697,9 +641,8 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
         return union.decode(this);
       }
-
     } catch (XMLStreamException e) {
-      throw new MALException(e.getMessage());
+      throw new MALException("The Union type could not be decoded!", e);
     }
 
     return null;
@@ -707,20 +650,17 @@ public class HTTPXMLStreamReader implements MALListDecoder {
 
   @Override
   public Element decodeNullableElement(final Element element) throws IllegalArgumentException, MALException {
-
     return decodeElement(element);
   }
 
   @Override
   public Attribute decodeAttribute() throws MALException {
-
     return (Attribute) decodeElement(null);
   }
 
   @Override
   public Attribute decodeNullableAttribute() throws MALException {
-
-    return (Attribute) decodeElement(null);
+    return (Attribute) decodeNullableElement(null);
   }
 
   @Override
@@ -742,15 +682,13 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   }
 
   public String decodeXMLElement(boolean mightBeNull) throws MALException {
-
     String value = "";
 
     try {
-
       XMLEvent event = null;
       boolean done = false;
 
-      Map<String, Integer> openedElements = new HashMap<String, Integer>();
+      Map<String, Integer> openedElements = new HashMap<>();
 
       while (eventReader.hasNext() && !done) {
         event = eventReader.nextEvent();
@@ -790,7 +728,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
           }
         }
       }
-
     } catch (XMLStreamException e) {
       throw new MALException(e.getMessage());
     }
@@ -801,7 +738,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   @Override
   public MALListDecoder createListDecoder(List list)
       throws IllegalArgumentException, MALException {
-
     return new HTTPXMLStreamListReader(list, eventReader);
   }
 
@@ -816,7 +752,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
   }
 
   private static byte[] hexStringToByteArray(final String s) {
-
     final int len = s.length();
     final byte[] data = new byte[len / 2];
     for (int i = 0; i < len; i += 2) {
@@ -833,7 +768,6 @@ public class HTTPXMLStreamReader implements MALListDecoder {
    * @return whether the string is a URL
    */
   private static boolean isURL(String url) {
-
     // check for custom CCSDS transport protocols
     if (url.startsWith("maltcp://") || url.startsWith("malhttp://"))
       return true;
@@ -846,4 +780,31 @@ public class HTTPXMLStreamReader implements MALListDecoder {
       return false;
     }
   }
+
+    @Override
+    public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
+        HTTPXMLStreamListReader listDecoder = (HTTPXMLStreamListReader) this.createListDecoder(list);
+
+        while(listDecoder.hasNext()) {
+            Element element = list.createTypedElement();
+
+            if (element instanceof Composite) {
+            //if (!(element instanceof Attribute)) {
+                eventReader.next();
+            }
+
+            Element decodedElement = element.decode(listDecoder);
+            //Element decodedElement = listDecoder.decodeElement(element);
+
+            // If the decoded element is of Union type, then cast it to
+            // its respective Java type before adding it to the list
+            if (decodedElement instanceof Union) {
+                list.add(Attribute.attribute2JavaType(decodedElement));
+            } else {
+                list.add(decodedElement);
+            }
+        }
+
+        return list;
+    }
 }

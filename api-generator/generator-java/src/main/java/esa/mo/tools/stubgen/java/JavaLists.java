@@ -185,29 +185,26 @@ public class JavaLists {
         method.addLine("return new " + listName + "()");
         method.addMethodCloseStatement();
 
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
+                true, elementType, "createTypedElement", null, null,
+                "Creates an instance of the selected generic type for this list.",
+                "A new instance of this type with default field values.", null);
+
+        // Wrap in Union if needed:
+        String dummyElement = (listElement.getNewCall().contains("structures"))
+                ? listElement.getNewCall() : "new Union(TYPE_SHORT_FORM * (-1), null)";
+
+        method.addLine("return " + dummyElement);
+        method.addMethodCloseStatement();
+
         // create encode method
         method = generator.encodeMethodOpen(file);
-        method.addLine("org.ccsds.moims.mo.mal.MALListEncoder listEncoder = encoder.createListEncoder(this)");
-        method.addLine("for (int i = 0; i < size(); i++) {", false);
-        method.addLine("  listEncoder.encode" + listElement.getEncodeCall() + "((" + fqSrcTypeName + ") get(i))");
-        method.addLine("}", false);
-        method.addLine("listEncoder.close()");
+        method.addLine("encoder.encodeHomogeneousList(this)");
         method.addMethodCloseStatement();
 
         // create decode method
         method = generator.decodeMethodOpen(file, elementType);
-        method.addLine("org.ccsds.moims.mo.mal.MALListDecoder listDecoder = decoder.createListDecoder(this)");
-        method.addLine("int decodedSize = listDecoder.size()");
-        method.addLine("if (decodedSize > 1000000) {", false); // Adds a safe check! Limit it to a max of 1 million entries!
-        method.addLine("    throw new org.ccsds.moims.mo.mal.MALException(\"The decoded list size is too big: \" + decodedSize)");
-        method.addLine("}", false);
-        method.addLine("if (decodedSize > 0) {", false);
-        method.addLine("    ensureCapacity(decodedSize)");
-        method.addLine("}", false);
-        method.addLine("while (listDecoder.hasNext()) {", false);
-        method.addLine("    add(" + listElement.getDecodeCast() + "listDecoder.decode" + listElement.getDecodeCall()
-                + "(" + (listElement.isDecodeNeedsNewCall() ? listElement.getNewCall() : "") + "))");
-        method.addLine("}", false);
+        method.addLine("decoder.decodeHomogeneousList(this)");
         method.addLine("return this");
         method.addMethodCloseStatement();
 

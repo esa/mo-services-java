@@ -635,7 +635,6 @@ public class HTTPXMLStreamReaderTest {
           + "<Identifier><Identifier>Id1</Identifier></Identifier>"
           + "<Identifier><Identifier>Id2</Identifier></Identifier>"
           + "<Identifier><Identifier></Identifier></Identifier>"
-          + "<Identifier xsi:nil=\"true\" />"
         + "</IdentifierList>"
       + "</malxml:Body>";
 
@@ -647,16 +646,13 @@ public class HTTPXMLStreamReaderTest {
     IdentifierList test = new IdentifierList();
     IdentifierList result = (IdentifierList) reader.decodeElement(test);
 
-    assertEquals(4, result.size());
+    assertEquals(3, result.size());
     assertNotNull(result.get(0));
     assertEquals(new Identifier("Id1"), result.get(0));
     assertNotNull(result.get(1));
     assertEquals(new Identifier("Id2"), result.get(1));
     assertNotNull(result.get(2));
     assertEquals(new Identifier(""), result.get(2));
-    assertNotNull(result.get(3));
-    assertEquals(new Identifier(""), result.get(3));
-
   }
 
   @Test

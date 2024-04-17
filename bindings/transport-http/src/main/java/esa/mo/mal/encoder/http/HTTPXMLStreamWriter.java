@@ -1,5 +1,6 @@
 package esa.mo.mal.encoder.http;
 
+import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -10,11 +11,9 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -24,6 +23,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -32,8 +32,6 @@ import org.ccsds.moims.mo.mal.structures.ULong;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 /**
  * 
@@ -575,4 +573,14 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
     return hexString.toString();
   }
 
+    @Override
+    public void encodeHomogeneousList(HomogeneousList list) throws MALException {
+        HTTPXMLStreamListWriter listEncoder = (HTTPXMLStreamListWriter) this.createListEncoder(list);
+        for (int i = 0; i < list.size(); i++) {
+            Object obj = list.get(i);
+            Element element = (obj instanceof Element) ? (Element) obj : (Element) Attribute.javaType2Attribute(obj);
+            element.encode(listEncoder);
+        }
+        listEncoder.close();
+    }
 }

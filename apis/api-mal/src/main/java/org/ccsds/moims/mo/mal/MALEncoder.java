@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.ccsds.moims.mo.mal.structures.*;
 
@@ -411,4 +412,12 @@ public interface MALEncoder {
      * @throws MALException If an error detected during list encoder creation.
      */
     MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException;
+
+    /**
+     * Encodes an Homogeneous list
+     *
+     * @param list The list to encode.
+     * @throws MALException If an error detected during encoding.
+     */
+    void encodeHomogeneousList(HomogeneousList list) throws MALException;
 }

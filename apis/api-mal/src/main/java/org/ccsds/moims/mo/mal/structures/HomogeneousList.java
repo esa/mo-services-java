@@ -27,4 +27,11 @@ package org.ccsds.moims.mo.mal.structures;
  * native type can be used in Attribute lists.
  */
 public interface HomogeneousList<T> extends ElementList<T> {
+
+    /**
+     * Creates an new Element of type T. Useful for decoders.
+     *
+     * @return The newly created object with type T.
+     */
+    Element createTypedElement();
 }
