@@ -21,10 +21,8 @@
 package esa.mo.mal.encoder.http;
 
 import java.io.InputStream;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -39,7 +37,6 @@ public class HTTPXMLElementInputStream implements MALElementInputStream {
 
     public HTTPXMLElementInputStream(InputStream is) {
         this.dec = new HTTPXMLStreamReader(is);
-        MALContextFactory.getElementsRegistry().registerElementsForArea(MALHelper.MAL_AREA);
     }
 
     @Override
