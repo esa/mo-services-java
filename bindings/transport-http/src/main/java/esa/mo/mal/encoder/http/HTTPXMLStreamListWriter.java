@@ -12,47 +12,39 @@ import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 public class HTTPXMLStreamListWriter extends HTTPXMLStreamWriter {
 
-  private List list;
+    private List list;
 
-  public HTTPXMLStreamListWriter(XMLStreamWriter wr, List list) {
-
-    this(wr, list, list.getClass().getSimpleName());
-  }
-
-  public HTTPXMLStreamListWriter(XMLStreamWriter wr, List list, String typeName) {
-
-    this.writer = wr;
-    this.list = list;
-    try {
-
-      writer.writeDTD(LINE_END);
-      writer.writeStartElement(typeName);
-      if (!typeName.equals("AttributeList")) {
-        writer.writeAttribute("malxml:type", ((Element) list).getShortForm().toString());
-      }
-      writer.writeDTD(LINE_END);
-
-    } catch (XMLStreamException e) {
-      RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+    public HTTPXMLStreamListWriter(XMLStreamWriter wr, List list) {
+        this(wr, list, list.getClass().getSimpleName());
     }
-  }
 
-  public int size() {
+    public HTTPXMLStreamListWriter(XMLStreamWriter wr, List list, String typeName) {
+        this.writer = wr;
+        this.list = list;
 
-    return list.size();
-  }
-
-  @Override
-  public void close() {
-
-    try {
-
-      writer.writeDTD(LINE_END);
-      writer.writeEndElement();
-
-    } catch (XMLStreamException e) {
-      RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+        try {
+            writer.writeDTD(LINE_END);
+            writer.writeStartElement(typeName);
+            if (!typeName.equals("AttributeList")) {
+                writer.writeAttribute("malxml:type", ((Element) list).getShortForm().toString());
+            }
+            writer.writeDTD(LINE_END);
+        } catch (XMLStreamException e) {
+            RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
     }
-  }
 
+    public int size() {
+        return list.size();
+    }
+
+    @Override
+    public void close() {
+        try {
+            writer.writeDTD(LINE_END);
+            writer.writeEndElement();
+        } catch (XMLStreamException e) {
+            RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
 }

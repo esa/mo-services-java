@@ -11,52 +11,52 @@ import org.ccsds.moims.mo.mal.MALListDecoder;
 
 public class HTTPXMLStreamListReader extends HTTPXMLStreamReader implements MALListDecoder {
 
-  private List list;
-  private String listName;
-  private int size = 0;
+    private List list;
+    private String listName;
+    private int size = 0;
 
-  public HTTPXMLStreamListReader(InputStream is) {
-    super(is);
-  }
-
-  public HTTPXMLStreamListReader(List list, XMLEventReader eventReader) {
-    this(list, eventReader, list.getClass().getSimpleName());
-  }
-
-  public HTTPXMLStreamListReader(List list, XMLEventReader eventReader, String elementName) {
-    this.list = list;
-    this.listName = elementName;
-    this.eventReader = eventReader;
-  }
-
-  @Override
-  public boolean hasNext() {
-    try {
-      if (!eventReader.hasNext())
-        return false;
-
-      XMLEvent event = eventReader.peek();
-
-      if (event.isCharacters()) {
-        eventReader.nextEvent();
-      }
-      boolean isStart = event.isStartElement();
-
-      if (isStart) {
-        this.size++;
-      }
-      return isStart;
-
-    } catch (XMLStreamException e) {
-      RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+    public HTTPXMLStreamListReader(InputStream is) {
+        super(is);
     }
 
-    return false;
-  }
+    public HTTPXMLStreamListReader(List list, XMLEventReader eventReader) {
+        this(list, eventReader, list.getClass().getSimpleName());
+    }
 
-  @Override
-  public int size() {
-    return this.size;
-  }
+    public HTTPXMLStreamListReader(List list, XMLEventReader eventReader, String elementName) {
+        this.list = list;
+        this.listName = elementName;
+        this.eventReader = eventReader;
+    }
+
+    @Override
+    public boolean hasNext() {
+        try {
+            if (!eventReader.hasNext()) {
+                return false;
+            }
+
+            XMLEvent event = eventReader.peek();
+
+            if (event.isCharacters()) {
+                eventReader.nextEvent();
+            }
+            boolean isStart = event.isStartElement();
+
+            if (isStart) {
+                this.size++;
+            }
+            return isStart;
+        } catch (XMLStreamException e) {
+            RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int size() {
+        return this.size;
+    }
 
 }
