@@ -36,9 +36,7 @@ import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
@@ -402,8 +400,8 @@ public class HTTPXMLStreamReader implements MALDecoder {
                     decodeNullableLong(),
                     decodeNullableIdentifier(),
                     decodeNullableUInteger());
-        } else if (typeName.equals("AttributeList")) {
-            return new AttributeList().decode(this);
+            //} else if (typeName.equals("AttributeList")) {
+            //    return new AttributeList().decode(this);
         } else if (event.getAttributeByName(new QName(MAL_NS, "type", "malxml")) != null) {
             // can't determine type by name, using xml type attribute
             javax.xml.stream.events.Attribute att = event.getAttributeByName(new QName(MAL_NS, "type", "malxml"));
@@ -457,11 +455,11 @@ public class HTTPXMLStreamReader implements MALDecoder {
     }
 
     public String decodeXMLElement() throws MALException {
-        return xmlReader.readStringFromXMLElement(false);
+        return xmlReader.extractNextString(false);
     }
 
     public String decodeNullableXMLElement() throws MALException {
-        return xmlReader.readStringFromXMLElement(true);
+        return xmlReader.extractNextString(true);
     }
 
     @Override
@@ -481,6 +479,6 @@ public class HTTPXMLStreamReader implements MALDecoder {
 
     @Override
     public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
-        return (HomogeneousList) xmlReader.decodeHomogeneousList(list);
+        return (HomogeneousList) xmlReader.readNextElement(list);
     }
 }

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
@@ -60,9 +61,8 @@ public class XMLReader {
         this.xmlStreamReader = xmlStreamReader;
 
         eventReader.nextEvent(); // xml header
+        XMLEvent event = eventReader.nextEvent(); // message body
 
-        // message body
-        XMLEvent event = eventReader.nextEvent();
         // skip \n, \t character events
         while (event.isCharacters()) {
             event = eventReader.nextEvent();
@@ -74,24 +74,25 @@ public class XMLReader {
         }
     }
 
-    public String readStringFromXMLElement(boolean mightBeNull) throws MALException {
+    public String extractNextString(boolean mightBeNull) throws MALException {
         String value = "";
 
         try {
-            XMLEvent event = null;
+            int toBeclosed = 0;
 
-            Map<String, Integer> openedElements = new HashMap<>();
+            // Check if the next Element is a EndElement! If so, there are problems!
+            if (eventReader.peek().isEndElement()) {
+                XMLEvent next = eventReader.nextEvent();
+                String name = next.asEndElement().getName().getLocalPart();
+                throw new MALException("(1) The element is EndElement! The sync is wrong! Close tag: " + name);
+            }
 
             while (eventReader.hasNext()) {
-                event = eventReader.nextEvent();
+                XMLEvent event = eventReader.nextEvent();
 
                 if (event.isStartElement()) {
+                    toBeclosed++;
                     StartElement se = event.asStartElement();
-                    int count = 0;
-                    if (openedElements.containsKey(se.getName().getLocalPart())) {
-                        count = openedElements.get(se.getName().getLocalPart());
-                    }
-                    openedElements.put(se.getName().getLocalPart(), ++count);
 
                     if (mightBeNull) {
                         javax.xml.stream.events.Attribute att = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
@@ -106,31 +107,31 @@ public class XMLReader {
                 }
 
                 if (event.isEndElement()) {
-                    EndElement ee = event.asEndElement();
-                    if (openedElements.containsKey(ee.getName().getLocalPart())) {
-                        int count = openedElements.get(ee.getName().getLocalPart()) - 1;
-                        if (count < 1) {
-                            openedElements.remove(ee.getName().getLocalPart());
-                        } else {
-                            openedElements.put(ee.getName().getLocalPart(), count);
-                        }
-                    }
-                    if (openedElements.size() < 1) {
+                    toBeclosed--;
+
+                    if (toBeclosed == 0) {
                         break;
                     }
                 }
             }
         } catch (XMLStreamException e) {
-            throw new MALException(e.getMessage());
+            throw new MALException("Something went wrong!", e);
         }
 
         return value;
     }
 
     public Element decodeHomogeneousList(final HomogeneousList emptyList) throws MALException {
-        Element returnable = null;
+        HomogeneousList returnable = null;
 
         try {
+            if (eventReader.peek().isEndElement()) {
+                XMLEvent next = eventReader.nextEvent();
+                EndElement ee = next.asEndElement();
+                String name = ee.getName().getLocalPart();
+                throw new MALException("(2) The element is EndElement! The sync is wrong! Close tag: " + name);
+            }
+
             XMLEvent event = eventReader.nextTag();
 
             if (event.isStartElement()) {
@@ -140,8 +141,7 @@ public class XMLReader {
                 if (nillable != null && nillable.getValue().equals("true")) {
                     returnable = null;
                 } else {
-                    // returnable = element.decode(xmlStreamReader);
-                    returnable = getListElements(emptyList);
+                    returnable = extractNextListElements(emptyList);
                 }
 
                 if (eventReader.hasNext() && eventReader.peek().isEndElement()) {
@@ -165,28 +165,36 @@ public class XMLReader {
         return returnable;
     }
 
-    public Element getListElements(HomogeneousList list) throws IllegalArgumentException, MALException {
-        HTTPXMLStreamListReader listDecoder = (HTTPXMLStreamListReader) xmlStreamReader.createListDecoder(list);
+    public HomogeneousList extractNextListElements(HomogeneousList list) throws IllegalArgumentException {
+        try {
+            HTTPXMLStreamListReader listDecoder = (HTTPXMLStreamListReader) xmlStreamReader.createListDecoder(list);
 
-        while (listDecoder.hasNext()) {
-            Element element = list.createTypedElement();
+            while (listDecoder.hasNext()) {
+                Element element = list.createTypedElement();
 
-            if (element instanceof Composite) {
-                eventReader.next();
+                if (element instanceof Composite) {
+                    eventReader.next();
+                }
+
+                Element decodedElement = element.decode(xmlStreamReader);
+                //Element decodedElement = this.readNextElement(element);
+
+                if (element instanceof Composite) {
+                    eventReader.next();
+                }
+
+                // If the decoded element is of Union type, then cast it to
+                // its respective Java type before adding it to the list
+                if (decodedElement instanceof Union) {
+                    list.add(Attribute.attribute2JavaType(decodedElement));
+                } else {
+                    list.add(decodedElement);
+                }
             }
-
-            Element decodedElement = element.decode(xmlStreamReader);
-            //Element decodedElement = xmlReader.readNextElement(element);
-
-            // If the decoded element is of Union type, then cast it to
-            // its respective Java type before adding it to the list
-            if (decodedElement instanceof Union) {
-                list.add(Attribute.attribute2JavaType(decodedElement));
-            } else {
-                list.add(decodedElement);
-            }
+        } catch (MALException ex) {
+            Logger.getLogger(XMLReader.class.getName()).log(Level.SEVERE,
+                    "The list could not be read: " + list.toString(), ex);
         }
-
         return list;
     }
 
@@ -199,21 +207,24 @@ public class XMLReader {
                 return null;
             }
 
+            // Skip all the garbage elements (example spaces and tabs)
             while (eventReader.peek().isCharacters()
                     && eventReader.peek().asCharacters().getData().matches("[\\n\\t]+")) {
                 eventReader.next();
             }
 
+            // Did we receive an abstract element?
             if (element == null && eventReader.peek().isStartElement()) {
                 element = getElementByType(eventReader.peek().asStartElement());
             }
 
+            // Close the previous tag if the respective open tag is on the stack
             if (eventReader.peek() != null && eventReader.peek().isEndElement()) {
                 EndElement ee = eventReader.peek().asEndElement();
                 String endElementName = ee.getName().getLocalPart();
                 if (openstandingEndElements.contains(endElementName)) {
                     openstandingEndElements.remove(endElementName);
-                    eventReader.nextTag();
+                    eventReader.nextTag(); // Then jump to it!
                 }
             }
 
@@ -222,7 +233,9 @@ public class XMLReader {
             }
             if (element instanceof HeterogeneousList) {
                 eventReader.next();
-                return element.decode(xmlStreamReader);
+                returnable = element.decode(xmlStreamReader);
+                eventReader.next();
+                return returnable;
             }
 
             String superClassName = null;
@@ -231,11 +244,12 @@ public class XMLReader {
                 superClassName = element.getClass().getSuperclass().getName();
             }
 
-            while (eventReader.hasNext()) {
+            while (eventReader.hasNext() && !eventReader.peek().isEndDocument()) {
                 XMLEvent event = eventReader.nextTag();
 
                 if (event.isStartElement()) {
                     StartElement se = event.asStartElement();
+                    String localPart = se.getName().getLocalPart();
                     String possibleSuperClassName = null;
 
                     if (eventReader.peek() != null && eventReader.peek().isStartElement()) {
@@ -243,10 +257,10 @@ public class XMLReader {
                     }
 
                     int count = 0;
-                    if (openedElements.containsKey(se.getName().getLocalPart())) {
-                        count = openedElements.get(se.getName().getLocalPart());
+                    if (openedElements.containsKey(localPart)) {
+                        count = openedElements.get(localPart);
                     }
-                    openedElements.put(se.getName().getLocalPart(), ++count);
+                    openedElements.put(localPart, ++count);
 
                     if (element instanceof Composite && superClassName.equals(possibleSuperClassName)) {
                         openstandingEndElements.add(possibleSuperClassName);
@@ -254,6 +268,8 @@ public class XMLReader {
                         returnable = decodeEnumeration((Enumeration) element);
                     } else {
                         javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
+
+                        // Check if it is null, and if so, then return a null!
                         if (nillable != null && nillable.getValue().equals("true")) {
                             if (eventReader.peek().isEndElement()) {
                                 eventReader.next();
@@ -262,9 +278,19 @@ public class XMLReader {
                         }
 
                         if (element != null) {
-                            returnable = element.decode(xmlStreamReader);
+                            try {
+                                returnable = element.decode(xmlStreamReader);
+                            } catch (MALException ex) {
+                                RLOGGER.log(Level.SEVERE,
+                                        "The element could not be decoded: " + element.toString(), ex);
+                            }
                         } else {
-                            returnable = xmlStreamReader.decodeElementByType(se.getName().getLocalPart(), se);
+                            try {
+                                returnable = xmlStreamReader.decodeElementByType(localPart, se);
+                            } catch (MALException ex) {
+                                returnable = xmlStreamReader.decodeElementByType(possibleSuperClassName, se);
+                                eventReader.next();
+                            }
                         }
                     }
                 } else if (event.isEndElement()) {
@@ -290,7 +316,8 @@ public class XMLReader {
                 }
             }
         } catch (XMLStreamException e) {
-            RLOGGER.log(Level.SEVERE, "The Element could not be fully decoded! State: " + element, e);
+            RLOGGER.log(Level.SEVERE, "The Element could not be fully decoded! State: "
+                    + element + " and with returnable: " + returnable, e);
             throw new MALException(e.getMessage());
         }
 
@@ -355,7 +382,7 @@ public class XMLReader {
     }
 
     private Enumeration decodeEnumeration(Enumeration element) throws MALException {
-        String enumValue = this.readStringFromXMLElement(false);
+        String enumValue = this.extractNextString(false);
 
         Class<?> cls = element.getClass();
         Method m;
@@ -374,5 +401,4 @@ public class XMLReader {
 
         return null;
     }
-
 }

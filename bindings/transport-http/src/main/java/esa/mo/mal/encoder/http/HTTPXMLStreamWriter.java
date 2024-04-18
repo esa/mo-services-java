@@ -579,7 +579,13 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
         for (int i = 0; i < list.size(); i++) {
             Object obj = list.get(i);
             Element element = (obj instanceof Element) ? (Element) obj : (Element) Attribute.javaType2Attribute(obj);
-            element.encode(listEncoder);
+
+            if (element instanceof Composite) {
+                String name = element.getClass().getSimpleName();
+                encodeComposite(name, element.getClass(), (Composite) element, true);
+            } else {
+                element.encode(listEncoder);
+            }
         }
         listEncoder.close();
     }
