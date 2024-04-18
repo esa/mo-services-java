@@ -124,7 +124,7 @@ public class XMLReader {
         return value;
     }
 
-    public Element decodeHomogeneousList(final HomogeneousList emptyList) throws MALException {
+    private Element decodeHomogeneousList(final HomogeneousList emptyList) throws MALException {
         HomogeneousList returnable = null;
 
         try {
@@ -161,7 +161,7 @@ public class XMLReader {
         return returnable;
     }
 
-    public HomogeneousList extractNextListElements(HomogeneousList list) throws IllegalArgumentException {
+    private HomogeneousList extractNextListElements(HomogeneousList list) throws IllegalArgumentException {
         try {
             HTTPXMLStreamListReader listDecoder = (HTTPXMLStreamListReader) xmlStreamReader.createListDecoder(list);
 
@@ -223,12 +223,7 @@ public class XMLReader {
                 return returnable;
             }
 
-            String superClassName = null;
             int pendingTags = 0;
-
-            if (element != null) {
-                superClassName = element.getClass().getSuperclass().getName();
-            }
 
             while (eventReader.hasNext() && !eventReader.peek().isEndDocument()) {
                 XMLEvent event = eventReader.nextTag();
