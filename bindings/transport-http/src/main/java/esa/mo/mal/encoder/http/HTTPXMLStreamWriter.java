@@ -78,7 +78,6 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
         factory = XMLOutputFactory.newInstance();
 
         try {
-
             writer = factory.createXMLStreamWriter(os, "UTF-8");
             writer.setDefaultNamespace("http://www.ccsds.org/schema/malxml/MAL");
 
@@ -329,23 +328,18 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
     }
 
     @Override
-    public void encodeElement(Element element) throws IllegalArgumentException,
-            MALException {
-
+    public void encodeElement(Element element) throws IllegalArgumentException, MALException {
         String typeName = element.getClass().getSimpleName();
         encodeElement(element, typeName);
     }
 
     public void encodeElement(final Element element, String typeName) throws MALException {
-
         if (element instanceof List) {
             element.encode(this);
         } else if (element instanceof Composite) {
             encodeComposite(typeName, element.getClass(), (Composite) element, true);
-
         } else if (element instanceof Enumeration) {
             encodeEnumeration(typeName, (Enumeration) element);
-
         } else {
             try {
                 writer.writeDTD(TAB);
@@ -363,7 +357,6 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
 
     @Override
     public void encodeNullableElement(final Element value) throws MALException {
-
         if (value == null) {
             addNull("Element");
         } else {
@@ -372,7 +365,6 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
     }
 
     public void encodeNullableElement(final Element value, String name) throws MALException {
-
         if (value == null) {
             addNull(name);
         } else {
@@ -381,8 +373,7 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
     }
 
     @Override
-    public void encodeAttribute(Attribute att) throws IllegalArgumentException,
-            MALException {
+    public void encodeAttribute(Attribute att) throws IllegalArgumentException, MALException {
         if (att instanceof ObjectRef) {
             encodeObjectRef((ObjectRef) att);
         } else {
@@ -392,7 +383,6 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
 
     @Override
     public void encodeNullableAttribute(Attribute att) throws MALException {
-
         if (att == null) {
             addNull("Attribute");
         } else {
@@ -410,11 +400,9 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
         encodeNullableElement(element);
     }
 
-    private void encodeComposite(final String name, final Class cls, final Composite composite, boolean writeElement)
-            throws MALException {
-
+    private void encodeComposite(final String name, final Class cls,
+            final Composite composite, boolean writeElement) throws MALException {
         try {
-
             if (writeElement) {
                 writer.writeStartElement(name);
                 writer.writeAttribute("malxml:type", composite.getShortForm().toString());
@@ -461,14 +449,12 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
             if (writeElement) {
                 writer.writeEndElement();
             }
-
         } catch (XMLStreamException e) {
             throw new MALException(e.getMessage());
         }
     }
 
     private void encodeEnumeration(String typeName, Enumeration element) throws MALException {
-
         try {
             writer.writeStartElement(typeName);
             writer.writeAttribute("malxml:type", element.getShortForm().toString());
@@ -533,16 +519,6 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
 
     public MALListEncoder createListEncoder(List list, String typeName) throws IllegalArgumentException, MALException {
         return new HTTPXMLStreamListWriter(this.writer, list, typeName);
-    }
-
-    private String guessListElementName(List element, String typeName) {
-        for (Object item : element) {
-            if (item != null) {
-                return item.getClass().getSimpleName();
-            }
-        }
-
-        return typeName.replaceAll("List|s$", "");
     }
 
     @Override

@@ -60,9 +60,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
     protected static final String LINE_END = "";
     protected static final String TAB = "";
 
-    XMLInputFactory inputFactory;
-    XMLEventReader eventReader;
-    XMLReader xmlReader;
+    private XMLReader xmlReader;
 
     public HTTPXMLStreamReader() {
     }
@@ -70,8 +68,8 @@ public class HTTPXMLStreamReader implements MALDecoder {
     public HTTPXMLStreamReader(InputStream is) {
         try {
             if (is.available() > 0) {
-                inputFactory = XMLInputFactory.newInstance();
-                eventReader = inputFactory.createXMLEventReader(is);
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                XMLEventReader eventReader = inputFactory.createXMLEventReader(is);
                 xmlReader = new XMLReader(eventReader, this);
             }
         } catch (Exception e) {
@@ -464,7 +462,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
 
     @Override
     public MALListDecoder createListDecoder(List list) throws IllegalArgumentException, MALException {
-        return new HTTPXMLStreamListReader(list, eventReader);
+        return new HTTPXMLStreamListReader(list, xmlReader.getEventReader());
     }
 
     private static byte[] hexStringToByteArray(final String s) {

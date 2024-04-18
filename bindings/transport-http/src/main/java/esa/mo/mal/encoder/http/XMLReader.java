@@ -53,18 +53,16 @@ import org.ccsds.moims.mo.mal.structures.Union;
  */
 public class XMLReader {
 
-    XMLEventReader eventReader;
-    HTTPXMLStreamReader xmlStreamReader;
+    private final XMLEventReader eventReader;
+    private final HTTPXMLStreamReader xmlStreamReader;
 
     public XMLReader(XMLEventReader eventReader, HTTPXMLStreamReader xmlStreamReader) throws XMLStreamException {
         this.eventReader = eventReader;
         this.xmlStreamReader = xmlStreamReader;
-
         eventReader.nextEvent(); // xml header
         XMLEvent event = eventReader.nextEvent(); // message body
 
-        // skip \n, \t character events
-        while (event.isCharacters()) {
+        while (event.isCharacters()) { // skip \n, \t character events
             event = eventReader.nextEvent();
         }
 
@@ -72,6 +70,10 @@ public class XMLReader {
         if (!(event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("Body"))) {
             RLOGGER.severe("XML Malformed: Body element missing");
         }
+    }
+
+    public XMLEventReader getEventReader() {
+        return eventReader;
     }
 
     public String extractNextString(boolean mightBeNull) throws MALException {
