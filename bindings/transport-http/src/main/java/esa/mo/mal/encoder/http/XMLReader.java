@@ -24,8 +24,6 @@ import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.MAL_NS;
 import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.XSI_NS;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
@@ -152,17 +150,10 @@ public class XMLReader {
                 if (eventReader.hasNext() && eventReader.peek().isEndElement()) {
                     eventReader.next();
                 }
-
-            } else if (event.isEndElement()) {
-                EndElement ee = event.asEndElement();
-                if (openstandingEndElements.contains(ee.getName().getLocalPart())) {
-                    openstandingEndElements.remove(ee.getName().getLocalPart());
-                }
             } else {
                 throw new MALException(
                         "Expected a xml start element or nullable for element " + emptyList.getClass().getSimpleName());
             }
-
         } catch (XMLStreamException e) {
             throw new MALException(e.getMessage());
         }
@@ -203,8 +194,6 @@ public class XMLReader {
         return list;
     }
 
-    List<String> openstandingEndElements = new ArrayList<>();
-
     public Element readNextElement(Element element) throws MALException {
         Element returnable = null;
         try {
@@ -223,19 +212,10 @@ public class XMLReader {
                 element = getElementByType(eventReader.peek().asStartElement());
             }
 
-            // Close the previous tag if the respective open tag is on the stack
-            if (eventReader.peek() != null && eventReader.peek().isEndElement()) {
-                EndElement ee = eventReader.peek().asEndElement();
-                String endElementName = ee.getName().getLocalPart();
-                if (openstandingEndElements.contains(endElementName)) {
-                    openstandingEndElements.remove(endElementName);
-                    eventReader.nextTag(); // Then jump to it!
-                }
-            }
-
             if (element instanceof HomogeneousList) {
                 return decodeHomogeneousList((HomogeneousList) element);
             }
+
             if (element instanceof HeterogeneousList) {
                 eventReader.next();
                 returnable = element.decode(xmlStreamReader);
@@ -264,9 +244,7 @@ public class XMLReader {
 
                     pendingTags++;
 
-                    if (element instanceof Composite && superClassName.equals(possibleSuperClassName)) {
-                        openstandingEndElements.add(possibleSuperClassName);
-                    } else if (element instanceof Enumeration) {
+                    if (element instanceof Enumeration) {
                         returnable = decodeEnumeration((Enumeration) element);
                     } else {
                         javax.xml.stream.events.Attribute nillable = this.getAttributeNil(se);
