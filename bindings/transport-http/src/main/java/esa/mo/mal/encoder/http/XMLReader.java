@@ -25,9 +25,7 @@ import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.XSI_NS;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
@@ -241,7 +239,8 @@ public class XMLReader {
             }
 
             String superClassName = null;
-            Map<String, Integer> openedElements = new HashMap<>();
+            int pendingTags = 0;
+
             if (element != null) {
                 superClassName = element.getClass().getSuperclass().getName();
             }
@@ -258,11 +257,7 @@ public class XMLReader {
                         possibleSuperClassName = eventReader.peek().asStartElement().getName().getLocalPart();
                     }
 
-                    int count = 0;
-                    if (openedElements.containsKey(localPart)) {
-                        count = openedElements.get(localPart);
-                    }
-                    openedElements.put(localPart, ++count);
+                    pendingTags++;
 
                     if (element instanceof Composite && superClassName.equals(possibleSuperClassName)) {
                         openstandingEndElements.add(possibleSuperClassName);
@@ -296,21 +291,9 @@ public class XMLReader {
                         }
                     }
                 } else if (event.isEndElement()) {
-                    EndElement ee = event.asEndElement();
+                    pendingTags--;
 
-                    if (openedElements.containsKey(ee.getName().getLocalPart())) {
-                        int count = openedElements.get(ee.getName().getLocalPart()) - 1;
-                        if (count < 1) {
-                            openedElements.remove(ee.getName().getLocalPart());
-                            if (openedElements.containsKey(superClassName)) {
-                                openedElements.remove(superClassName);
-                            }
-                        } else {
-                            openedElements.put(ee.getName().getLocalPart(), count);
-                        }
-                    }
-
-                    if (openedElements.size() < 1) {
+                    if (pendingTags == 0) {
                         break;
                     }
                 } else {
@@ -326,7 +309,7 @@ public class XMLReader {
         return returnable;
     }
 
-    public Union decodeUnion() throws MALException {
+    public Union getDummyUnionForDecoding() throws MALException {
         try {
             Union union = null;
 

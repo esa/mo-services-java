@@ -419,7 +419,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
     }
 
     public Element decodeUnion() throws MALException {
-        Element union = xmlReader.decodeUnion();
+        Element union = xmlReader.getDummyUnionForDecoding();
         if (union != null) {
             return union.decode(this);
         }
