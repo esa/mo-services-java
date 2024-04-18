@@ -78,7 +78,7 @@ public class XMLReader {
         String value = "";
 
         try {
-            int toBeclosed = 0;
+            int pendingTags = 0;
 
             // Check if the next Element is a EndElement! If so, there are problems!
             if (eventReader.peek().isEndElement()) {
@@ -91,7 +91,7 @@ public class XMLReader {
                 XMLEvent event = eventReader.nextEvent();
 
                 if (event.isStartElement()) {
-                    toBeclosed++;
+                    pendingTags++;
                     StartElement se = event.asStartElement();
 
                     if (mightBeNull) {
@@ -107,9 +107,9 @@ public class XMLReader {
                 }
 
                 if (event.isEndElement()) {
-                    toBeclosed--;
+                    pendingTags--;
 
-                    if (toBeclosed == 0) {
+                    if (pendingTags == 0) {
                         break;
                     }
                 }
@@ -311,8 +311,6 @@ public class XMLReader {
 
     public Union getDummyUnionForDecoding() throws MALException {
         try {
-            Union union = null;
-
             while (eventReader.peek().isCharacters()
                     && eventReader.peek().asCharacters().getData().matches("[\\n\\t]+")) {
                 eventReader.next();
@@ -324,24 +322,22 @@ public class XMLReader {
                 String subElementType = se.getName().getLocalPart();
 
                 if (subElementType.equals("Boolean")) {
-                    union = new Union(false);
+                    return new Union(false);
                 } else if (subElementType.equals("Float")) {
-                    union = new Union(0f);
+                    return new Union(0f);
                 } else if (subElementType.equals("Double")) {
-                    union = new Union(0d);
+                    return new Union(0d);
                 } else if (subElementType.equals("Integer")) {
-                    union = new Union(0);
+                    return new Union(0);
                 } else if (subElementType.equals("Long")) {
-                    union = new Union(0L);
+                    return new Union(0L);
                 } else if (subElementType.equals("Octet")) {
-                    union = new Union((byte) 0);
+                    return new Union((byte) 0);
                 } else if (subElementType.equals("Short")) {
-                    union = new Union((short) 0);
+                    return new Union((short) 0);
                 } else {
-                    union = new Union("");
+                    return new Union("");
                 }
-
-                return union;
             }
         } catch (XMLStreamException e) {
             throw new MALException("The Union type could not be decoded!", e);

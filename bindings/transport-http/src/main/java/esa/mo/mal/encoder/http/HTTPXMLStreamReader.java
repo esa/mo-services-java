@@ -398,8 +398,6 @@ public class HTTPXMLStreamReader implements MALDecoder {
                     decodeNullableLong(),
                     decodeNullableIdentifier(),
                     decodeNullableUInteger());
-            //} else if (typeName.equals("AttributeList")) {
-            //    return new AttributeList().decode(this);
         } else if (event.getAttributeByName(new QName(MAL_NS, "type", "malxml")) != null) {
             // can't determine type by name, using xml type attribute
             javax.xml.stream.events.Attribute att = event.getAttributeByName(new QName(MAL_NS, "type", "malxml"));
@@ -461,7 +459,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
     }
 
     @Override
-    public MALListDecoder createListDecoder(List list) throws IllegalArgumentException, MALException {
+    public MALListDecoder createListDecoder(List list) throws MALException {
         return new HTTPXMLStreamListReader(list, xmlReader.getEventReader());
     }
 

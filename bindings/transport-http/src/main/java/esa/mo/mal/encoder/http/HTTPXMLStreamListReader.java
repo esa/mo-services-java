@@ -21,7 +21,6 @@
 package esa.mo.mal.encoder.http;
 
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
-import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import javax.xml.stream.events.XMLEvent;
