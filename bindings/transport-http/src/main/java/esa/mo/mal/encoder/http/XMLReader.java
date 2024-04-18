@@ -65,13 +65,18 @@ public class XMLReader {
         }
 
         // validate allocation of body element in xml
-        if (!(event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("Body"))) {
+        if (!(event.isStartElement()
+                && event.asStartElement().getName().getLocalPart().equals("Body"))) {
             RLOGGER.severe("XML Malformed: Body element missing");
         }
     }
 
     public XMLEventReader getEventReader() {
         return eventReader;
+    }
+
+    private javax.xml.stream.events.Attribute getAttributeNil(StartElement se) {
+        return se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
     }
 
     public String extractNextString(boolean mightBeNull) throws MALException {
@@ -95,7 +100,7 @@ public class XMLReader {
                     StartElement se = event.asStartElement();
 
                     if (mightBeNull) {
-                        javax.xml.stream.events.Attribute att = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
+                        javax.xml.stream.events.Attribute att = this.getAttributeNil(se);
                         if (att != null && att.getValue().equals("true")) {
                             value = null;
                         }
@@ -136,7 +141,7 @@ public class XMLReader {
 
             if (event.isStartElement()) {
                 StartElement se = event.asStartElement();
-                javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
+                javax.xml.stream.events.Attribute nillable = this.getAttributeNil(se);
 
                 if (nillable != null && nillable.getValue().equals("true")) {
                     returnable = null;
@@ -264,7 +269,7 @@ public class XMLReader {
                     } else if (element instanceof Enumeration) {
                         returnable = decodeEnumeration((Enumeration) element);
                     } else {
-                        javax.xml.stream.events.Attribute nillable = se.getAttributeByName(new QName(XSI_NS, "nil", "xsi"));
+                        javax.xml.stream.events.Attribute nillable = this.getAttributeNil(se);
 
                         // Check if it is null, and if so, then return a null!
                         if (nillable != null && nillable.getValue().equals("true")) {
