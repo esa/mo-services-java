@@ -617,7 +617,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
     }
     if (statusCode >= 400) {
 
-      UInteger errorNumber = StatusCodeHelper.getStatusCodeFromMalError(statusCode);
+      UInteger errorNumber = StatusCodeHelper.getMALErrorFromStatusCode(statusCode);
 
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       MALElementOutputStream os = getStreamFactory().createOutputStream(baos);

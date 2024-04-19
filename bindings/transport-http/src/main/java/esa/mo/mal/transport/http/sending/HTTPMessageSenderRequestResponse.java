@@ -102,7 +102,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
         if (body instanceof ErrorBody) {
           try {
             MOErrorException error = ((ErrorBody) body).getError();
-            statusCode = StatusCodeHelper.getMalErrorFromStatusCode(error.getErrorNumber());
+            statusCode = StatusCodeHelper.getStatusCodeFromMALError(error.getErrorNumber());
           } catch (MALException e) {
             RLOGGER.log(Level.SEVERE, e.getMessage(), e);
           }
