@@ -98,22 +98,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
     }
 
     /**
-     * Encode an unsigned integer using split-binary encoding for a 4-byte
-     * variable sized int.
-     *
-     * @param value The value to be encoded.
-     * @throws MALException if it cannot be encoded.
-     */
-    @Override
-    public void encodeUInteger(final UInteger value) throws MALException {
-        try {
-            ((TCPIPStreamHolder) outputStream).addUnsignedVarint4((int) value.getValue());
-        } catch (IOException ex) {
-            throw new MALException(ENCODING_EXCEPTION_STR, ex);
-        }
-    }
-
-    /**
      * Encode a nullable identifier.
      *
      * @param value The value to be encoded.
@@ -169,20 +153,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
             super(outputStream, false);
         }
 
-        /**
-         * Encode a varint using a split binary encoding algorithm
-         *
-         * @param value  The value to be encoded.
-         * @throws IOException if the value cannot be written.
-         */
-        public void addUnsignedVarint4(int value) throws IOException {
-
-            while ((value & 0xFFFFFF80) != 0L) {
-                outputStream.write((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
-            outputStream.write(value & 0x7F);
-        }
     }
 
 }

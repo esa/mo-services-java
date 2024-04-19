@@ -559,25 +559,27 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
             to += serviceDelimStr;
         }
 
-        // preset header
+        // Use an initial empty header to run the decoding process...
         TCPIPMessageHeader header = new TCPIPMessageHeader(new Identifier(from), new Identifier(to));
+        byte[] packetData = packetInfo.getPacketData(); // Complete packet
 
-        // msg with decoded header and empty body
-        byte[] packetData = packetInfo.getPacketData();
+        try {
+            // Header must be always decoded with TCP-IP Fixed Binary
+            header = header.decode(new TCPIPFixedBinaryDecoder(packetData, 0));
+            int decodedHeaderBytes = header.getDecodedHeaderOffset();
+            int bodySize = header.getTotalLength() - decodedHeaderBytes;
 
-        // Header must be always decoded with TCP-IP Fixed Binary
-        header = header.decode(new TCPIPFixedBinaryDecoder(packetData, 0));
+            // Copy body to separate packet
+            byte[] bodyPacketData = new byte[bodySize];
+            System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
-        int decodedHeaderBytes = header.decodedHeaderBytes;
-        int bodySize = header.getBodyLength() + 23 - decodedHeaderBytes;
-
-        // copy body to separate packet
-        byte[] bodyPacketData = new byte[bodySize];
-        System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
-
-        // decode the body
-        return new TCPIPMessage(wrapBodyParts, header, qosProperties,
-                bodyPacketData, getStreamFactory());
+            // Decode the body
+            return new TCPIPMessage(wrapBodyParts, header, qosProperties,
+                    bodyPacketData, getStreamFactory());
+        } catch (Exception ex) {
+            RLOGGER.log(Level.WARNING, "The header is: " + header.toString(), ex);
+            throw ex; // Rethrow the exception upwards!
+        }
     }
 
     /**

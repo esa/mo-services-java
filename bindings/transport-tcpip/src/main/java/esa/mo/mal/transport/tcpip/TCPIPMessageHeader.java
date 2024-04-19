@@ -49,7 +49,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
 
     private short encodingId = 0;
 
-    private int bodyLength = 0;
+    private int totalLength = 0;
 
     private byte[] remainingEncodedData;
 
@@ -57,7 +57,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
 
     private String serviceTo;
 
-    public int decodedHeaderBytes = 0;
+    private int decodedHeaderOffset = 0;
 
     public TCPIPMessageHeader() {
     }
@@ -80,13 +80,17 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         this.serviceTo = serviceTo;
     }
 
-    public int getBodyLength() {
-        return bodyLength;
+    public int getTotalLength() {
+        return totalLength;
+    }
+
+    public int getDecodedHeaderOffset() {
+        return decodedHeaderOffset;
     }
 
     @Deprecated
-    public void setBodyLength(int bodyLength) {
-        this.bodyLength = bodyLength;
+    public void setTotalLength(int totalLength) {
+        this.totalLength = totalLength;
     }
 
     public String getServiceFrom() {
@@ -113,6 +117,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
     @Override
     public TCPIPMessageHeader decode(final MALDecoder decoder) throws MALException {
         TCPIPFixedBinaryDecoder dec = (TCPIPFixedBinaryDecoder) decoder;
+        this.totalLength = (int) dec.decodeInteger();
         short versionAndSDU = dec.decodeUOctet().getValue();
         short sduType = (short) (versionAndSDU & 0x1f);
 
@@ -138,7 +143,6 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         boolean authenticationIdFlag = ((flags & 0x1) == 0x1);
 
         this.encodingId = dec.decodeUOctet().getValue();
-        this.bodyLength = (int) dec.decodeInteger();
         this.supplements = new NamedValueList();
         this.supplements = (NamedValueList) supplements.decode(dec);
 
@@ -168,17 +172,18 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         //Identifier sessionName = (sessionNameFlag) ? dec.decodeIdentifier() : null;
         //IdentifierList domain = (domainFlag) ? (IdentifierList) new IdentifierList().decode(dec) : null;
         this.authenticationId = (authenticationIdFlag) ? dec.decodeBlob() : new Blob();
+        this.interactionType = getInteractionType(sduType);
 
         TCPIPMessageHeader header = new TCPIPMessageHeader(uriFrom, this.getServiceFrom(),
                 authenticationId, uriTo, this.getServiceTo(), timestamp,
-                getInteractionType(sduType), getInteractionStage(sduType),
+                interactionType, getInteractionStage(sduType),
                 transactionId, serviceArea,
                 service, operation, serviceVersion, isErrorMessage, supplements);
 
         header.setEncodingId(encodingId);
-        header.setBodyLength(bodyLength);
+        header.setTotalLength(totalLength);
 
-        header.decodedHeaderBytes = dec.getBufferOffset();
+        header.decodedHeaderOffset = dec.getBufferOffset();
         header.versionNumber = (versionAndSDU >> 0x5);
 
         // debug information
@@ -206,8 +211,8 @@ public class TCPIPMessageHeader extends MALMessageHeader {
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
-        // version number & sdu type
         TCPIPFixedBinaryEncoder enc = (TCPIPFixedBinaryEncoder) encoder;
+        enc.encodeInteger(totalLength);
         byte versionAndSDU = (byte) (this.versionNumber << 5 | this.getSDUType());
         enc.encodeUOctet(new UOctet(versionAndSDU));
 
@@ -231,7 +236,6 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         enc.encodeUOctet(getFlags()); // set flags
 
         enc.encodeUOctet(new UOctet(this.getEncodingId())); // set encoding id
-        enc.encodeInteger(bodyLength);
         supplements.encode(enc);
 
         // encode rest of header
@@ -272,7 +276,6 @@ public class TCPIPMessageHeader extends MALMessageHeader {
      * @return
      */
     private UOctet getFlags() {
-
         short result = 0;
         if (!this.getServiceFrom().isEmpty()) {
             result |= (0x1 << 7);
@@ -308,10 +311,10 @@ public class TCPIPMessageHeader extends MALMessageHeader {
     }
 
     public short getSDUType() {
-        final short stage = (InteractionType._SEND_INDEX == interactionType.getOrdinal())
-                ? 0 : interactionStage.getValue();
+        int type = interactionType.getOrdinal();
+        final short stage = (InteractionType._SEND_INDEX == type) ? 0 : interactionStage.getValue();
 
-        switch (interactionType.getOrdinal()) {
+        switch (type) {
             case InteractionType._SEND_INDEX:
                 return 0;
             case InteractionType._SUBMIT_INDEX:
@@ -452,9 +455,8 @@ public class TCPIPMessageHeader extends MALMessageHeader {
     @Override
     public String toString() {
         final StringBuilder str = new StringBuilder("TCPIPMessageHeader{");
-        str.append("BodyLength=").append(bodyLength);
-        str.append(", VersionNumber=").append(versionNumber);
-        str.append(", SDUType=").append(getSDUType());
+        str.append("totalLength=").append(totalLength);
+        str.append(", versionNumber=").append(versionNumber);
         str.append(", serviceArea=").append(serviceArea);
         str.append(", service=").append(service);
         str.append(", operation=").append(operation);
@@ -463,8 +465,8 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         str.append(", transactionId=").append(transactionId);
         str.append(", timestamp=").append(timestamp);
         str.append(", authenticationId=").append(authenticationId);
-        str.append(", URIFrom=").append(from);
-        str.append(", URITo=").append(to);
+        str.append(", from=").append(from);
+        str.append(", to=").append(to);
         str.append(", interactionType=").append(interactionType);
         str.append(", interactionStage=").append(interactionStage);
         str.append(", supplements=").append(supplements);

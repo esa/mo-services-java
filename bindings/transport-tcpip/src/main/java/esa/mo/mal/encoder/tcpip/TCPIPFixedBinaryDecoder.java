@@ -72,11 +72,6 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
     }
 
     @Override
-    public UInteger decodeUInteger() throws MALException {
-        return new UInteger(((TCPIPBufferHolder) sourceBuffer).getUnsignedIntValue());
-    }
-
-    @Override
     public Identifier decodeNullableIdentifier() throws MALException {
         // decode presence flag
         boolean isNotNull = decodeBoolean();
@@ -91,18 +86,18 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
 
     @Override
     public Integer decodeInteger() throws MALException {
-        return ((TCPIPBufferHolder) sourceBuffer).get32();
+        return ((TCPIPBufferHolder) sourceBuffer).read32();
     }
 
     @Override
     public Blob decodeBlob() throws MALException {
-        int sz = (int) decodeUInteger().getValue();
+        int size = (int) decodeUInteger().getValue();
 
-        if (sz == 0) {
+        if (size == 0) {
             return null;
         }
 
-        return new Blob(sourceBuffer.readBytes(sz));
+        return new Blob(sourceBuffer.readBytes(size));
     }
 
     public int getBufferOffset() {
@@ -142,33 +137,7 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
             return null;
         }
 
-        /**
-         * Decode an unsigned int using a split-binary approach
-         */
-        @Override
-        public int readUnsignedInt() throws MALException {
-            int value = 0;
-            int i = 0;
-            int b;
-            while (((b = read8()) & 0x80) != 0) {
-                value |= (b & 0x7F) << i;
-                i += 7;
-            }
-            return value | (b << i);
-        }
-
-        public long getUnsignedIntValue() throws MALException {
-            long value = 0;
-            int i = 0;
-            long b;
-            while (((b = read8()) & 0x80) != 0) {
-                value |= (b & 0x7F) << i;
-                i += 7;
-            }
-            return value | (b << i);
-        }
-
-        public int get32() throws MALException {
+        public int read32() throws MALException {
             buf.checkBuffer(4);
 
             final int i = buf.shiftOffsetAndReturnPrevious(4);

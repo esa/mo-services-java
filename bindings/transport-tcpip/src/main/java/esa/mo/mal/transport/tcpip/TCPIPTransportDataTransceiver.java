@@ -43,8 +43,8 @@ import esa.mo.mal.transport.gen.sending.MessageSender;
  */
 public class TCPIPTransportDataTransceiver implements MessageReceiver<TCPIPPacketInfoHolder>, MessageSender {
 
+    private final int INITIAL_OFFSET = 4; // The first 4 bytes include the total size!
     private boolean closed = false;
-    private final static int HEADER_SIZE = 23;
     protected final Socket socket;
     protected final DataOutputStream socketWriteIf;
     protected final DataInputStream socketReadIf;
@@ -108,12 +108,12 @@ public class TCPIPTransportDataTransceiver implements MessageReceiver<TCPIPPacke
      */
     @Override
     public TCPIPPacketInfoHolder readEncodedMessage() throws IOException {
-        // figure out length according to mal message mapping to determine 
-        // byte arr length, then read the rest.
-        byte[] rawHeader = new byte[HEADER_SIZE];
+        // figure out length according to mal message mapping to
+        // determine byte arr length, then read the rest.
+        byte[] rawHeader = new byte[INITIAL_OFFSET];
 
         try {
-            this.readUntilComplete(rawHeader, 0, HEADER_SIZE);
+            this.readUntilComplete(rawHeader, 0, INITIAL_OFFSET);
         } catch (SocketException socketExc) {
             throw new java.io.EOFException(socketExc.getMessage());
         } catch (NullPointerException headerReadNullPointer) {
@@ -126,16 +126,17 @@ public class TCPIPTransportDataTransceiver implements MessageReceiver<TCPIPPacke
                     headerReadOutOfBounds.getMessage());
         }
 
-        // Get the lenght of the body directly at the byte level
-        final int bodyLength = byteArrayToInt(Arrays.copyOfRange(rawHeader, 19, 23));
+        // Get the length of the body directly at the byte level
+        final int totalLength = byteArrayToInt(Arrays.copyOfRange(rawHeader, 0, 4));
 
         // Allocate memory for header and body
-        byte[] totalPacketData = new byte[HEADER_SIZE + bodyLength];
-        System.arraycopy(rawHeader, 0, totalPacketData, 0, HEADER_SIZE);
+        byte[] totalPacketData = new byte[totalLength];
+        // Copy the already extracted initial part of the header into the totalPacketData:
+        System.arraycopy(rawHeader, 0, totalPacketData, 0, INITIAL_OFFSET);
 
         try {
-            // read body and copy the body part
-            this.readUntilComplete(totalPacketData, HEADER_SIZE, bodyLength);
+            // Copy the rest of the header and also the body part
+            this.readUntilComplete(totalPacketData, INITIAL_OFFSET, totalLength - INITIAL_OFFSET);
         } catch (SocketException socketExc) {
             if (socket.isClosed()) {
                 // socket has been closed to throw EOF exception higher
