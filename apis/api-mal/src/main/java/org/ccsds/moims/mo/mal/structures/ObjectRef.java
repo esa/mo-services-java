@@ -172,6 +172,6 @@ public class ObjectRef<T extends Element> implements Attribute {
     @Override
     public String toString() {
         return String.valueOf(domain) + ":" + String.valueOf(absoluteSFP) + ":"
-                + String.valueOf(key) + ":" + String.valueOf(objectVersion) + ":";
+                + String.valueOf(key) + ":" + String.valueOf(objectVersion);
     }
 }

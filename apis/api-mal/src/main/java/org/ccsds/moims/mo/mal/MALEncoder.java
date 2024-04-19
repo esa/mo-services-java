@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.ccsds.moims.mo.mal.structures.*;
 

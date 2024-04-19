@@ -321,7 +321,9 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public Attribute decodeAttribute() throws MALException {
-        return internalDecodeAttribute(internalDecodeAttributeType(sourceBuffer.read8()));
+        byte myByte = sourceBuffer.read8();
+        int attributeType = internalDecodeAttributeType(myByte);
+        return internalDecodeAttribute(attributeType);
     }
 
     @Override

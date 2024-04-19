@@ -560,7 +560,13 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeAttribute(final Attribute value) throws MALException {
         try {
             checkForNull(value);
-            outputStream.writeByte(internalEncodeAttributeType(value.getTypeShortForm().byteValue()));
+
+            if (value.getTypeShortForm() > 20) {
+                throw new IOException("The value.getTypeShortForm() is greater than 20");
+            }
+
+            byte shortForm = value.getTypeShortForm().byteValue();
+            outputStream.writeByte(internalEncodeAttributeType(shortForm));
             value.encode(this);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
