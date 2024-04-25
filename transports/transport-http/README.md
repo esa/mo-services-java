@@ -18,7 +18,7 @@ org.ccsds.moims.mo.mal.transport.protocol.malhttp=esa.mo.mal.transport.http.HTTP
 org.ccsds.moims.mo.mal.transport.http.port=61617
 org.ccsds.moims.mo.mal.transport.http.host=<LOCAL IP ADDRESS>
 org.ccsds.moims.mo.mal.transport.http.debug=FINEST
-org.ccsds.moims.mo.mal.encoding.protocol.malhttp=esa.mo.mal.encoder.http.HTTPXMLStreamFactory
+org.ccsds.moims.mo.mal.encoding.protocol.malhttp=esa.mo.mal.encoder.xml.HTTPXMLStreamFactory
 ```
 
 demoConsumer.properties:
@@ -27,7 +27,7 @@ org.ccsds.moims.mo.mal.transport.default.protocol = malhttp://
 
 org.ccsds.moims.mo.mal.transport.protocol.malhttp=esa.mo.mal.transport..http.HTTPTransportFactoryImpl
 org.ccsds.moims.mo.mal.transport.http.debug=FINEST
-org.ccsds.moims.mo.mal.encoding.protocol.malhttp=esa.mo.mal.encoder.http.HTTPXMLStreamFactory
+org.ccsds.moims.mo.mal.encoding.protocol.malhttp=esa.mo.mal.encoder.xml.HTTPXMLStreamFactory
 ```
 
 demoServiceURI.properties:
@@ -74,7 +74,7 @@ Below a list of all configuration parameters is given.
 | org.ccsds.moims.mo.mal.transport.default.protocol | malhttp |
 | org.ccsds.moims.mo.mal.factory.class | esa.mo.mal.impl.MALContextFactoryImpl |
 | org.ccsds.moims.mo.mal.transport.protocol.malhttp | esa.mo.mal.transport.http.HTTPTransportFactoryImpl |
-| org.ccsds.moims.mo.mal.encoding.protocol.malhttp | esa.mo.mal.encoder.http.HTTPXMLStreamFactory |
+| org.ccsds.moims.mo.mal.encoding.protocol.malhttp | esa.mo.mal.encoder.xml.HTTPXMLStreamFactory |
 | org.ccsds.moims.mo.mal.transport.http.host | adapter (host / IP Address) that the transport will use for incoming connections. In case of a pure client (i.e. not offering any services) this property should be omitted. Note that the transport binding only accepts full ip4 or ip6 addresses, no hostnames. |
 | org.ccsds.moims.mo.mal.transport.http.port | port that the transport listens to. In case this is a pure client, this property should be omitted. Defaults to a random port number. |
 | org.ccsds.moims.mo.mal.transport.http.timeout | The timeout in seconds before the MAL framework stops waiting for an expected message. Defaults to 60 seconds. |

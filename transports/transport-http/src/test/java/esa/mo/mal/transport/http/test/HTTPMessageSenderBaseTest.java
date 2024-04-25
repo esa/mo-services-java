@@ -31,7 +31,7 @@ public abstract class HTTPMessageSenderBaseTest {
   public static void setUpBeforeClass() throws MALException {
 
     System.setProperty("org.ccsds.moims.mo.mal.encoding.protocol.malhttp",
-        "esa.mo.mal.encoder.http.HTTPXMLStreamFactory");
+        "esa.mo.mal.encoder.xml.HTTPXMLStreamFactory");
     //MALElementStreamFactory.registerFactoryClass(HTTPXMLStreamFactory.class);
   }
 
