@@ -23,10 +23,10 @@
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>bindings-reactor</artifactId>
+    <artifactId>transports</artifactId>
     <version>10.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ESA MO Bindings - Encodings and Transports</name>
+    <name>ESA MO Transports</name>
 
     <organization>
         <name>ESA</name>
@@ -52,23 +52,11 @@
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
-    <developers>
-        <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
-        </developer>
-    </developers>
-
     <properties>
         <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
     </properties>
 
     <modules>
-        <module>encoding-string</module>
-        <module>encoding-binary</module>
-        <module>encoding-xml</module>
         <module>transport-generic</module>
         <module>transport-rmi</module>
         <module>transport-tcpip</module>

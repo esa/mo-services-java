@@ -53,7 +53,8 @@
         <module>api-generator</module>
         <module>apis</module>
         <module>mal-impl</module>
-        <module>bindings</module>
+        <module>encodings</module>
+        <module>transports</module>
         <module>tooling</module>
         <!--<module>testbeds</module> -->
     </modules>
