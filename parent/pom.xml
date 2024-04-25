@@ -84,6 +84,7 @@
         <esa.mal.version>10.1-SNAPSHOT</esa.mal.version>
         <esa.string.encoder.version>10.1-SNAPSHOT</esa.string.encoder.version>
         <esa.binary.encoder.version>10.1-SNAPSHOT</esa.binary.encoder.version>
+        <esa.xml.encoder.version>10.1-SNAPSHOT</esa.xml.encoder.version>
         <esa.gen.transport.version>10.1-SNAPSHOT</esa.gen.transport.version>
         <esa.rmi.transport.version>10.1-SNAPSHOT</esa.rmi.transport.version>
         <esa.tcpip.transport.version>10.1-SNAPSHOT</esa.tcpip.transport.version>
@@ -143,6 +144,11 @@
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-binary</artifactId>
                 <version>${esa.binary.encoder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>encoding-xml</artifactId>
+                <version>${esa.xml.encoder.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>

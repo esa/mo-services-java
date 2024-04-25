@@ -63,7 +63,6 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>encoding-xml</artifactId>
-            <version>10.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
