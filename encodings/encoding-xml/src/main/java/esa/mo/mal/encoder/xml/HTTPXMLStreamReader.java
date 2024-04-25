@@ -18,9 +18,9 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.http;
+package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.http.HTTPXMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;

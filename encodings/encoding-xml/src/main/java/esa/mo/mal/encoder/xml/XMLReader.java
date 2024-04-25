@@ -18,11 +18,11 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.http;
+package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.http.HTTPXMLStreamFactory.RLOGGER;
-import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.MAL_NS;
-import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.XSI_NS;
+import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.HTTPXMLStreamReader.MAL_NS;
+import static esa.mo.mal.encoder.xml.HTTPXMLStreamReader.XSI_NS;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.junit.Test;
-import esa.mo.mal.encoder.http.HTTPXMLStreamWriter;
+import esa.mo.mal.encoder.xml.HTTPXMLStreamWriter;
 
 public class HTTPXMLSchemaTest {
 

@@ -1,6 +1,6 @@
 package esa.mo.mal.encoder.http.test;
 
-import esa.mo.mal.encoder.http.HTTPXMLStreamReader;
+import esa.mo.mal.encoder.xml.HTTPXMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;

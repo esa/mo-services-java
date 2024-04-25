@@ -28,7 +28,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import esa.mo.mal.encoder.http.HTTPXMLElementInputStream;
+import esa.mo.mal.encoder.xml.HTTPXMLElementInputStream;
 
 /**
  * @author rvangijlswijk

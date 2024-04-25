@@ -18,43 +18,43 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.http;
+package esa.mo.mal.encoder.xml;
 
 import java.io.InputStream;
-import org.ccsds.moims.mo.mal.MALDecoder;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.OperationField;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
-import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  *
  */
-public class HTTPXMLElementInputStream implements MALElementInputStream {
+public class HTTPXMLStreamFactory extends MALElementStreamFactory {
 
-    private MALDecoder dec;
-
-    public HTTPXMLElementInputStream(InputStream is) {
-        this.dec = new HTTPXMLStreamReader(is);
-    }
-
-    @Override
-    public MALMessageHeader readHeader(MALMessageHeader header) throws MALException {
-        return header.decode(dec);
-    }
+    /**
+     * Logger
+     */
+    public static final Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.http");
 
     @Override
-    public Element readElement(Element element, OperationField field)
+    protected void init(String protocol, Map properties)
             throws IllegalArgumentException, MALException {
-        return this.dec.decodeElement((Element) element);
+        // TODO Auto-generated method stub
     }
 
     @Override
-    public void close() throws MALException {
+    public MALElementInputStream createInputStream(InputStream is)
+            throws IllegalArgumentException, MALException {
+        return new HTTPXMLElementInputStream(is);
     }
 
-    public MALDecoder getDecoder() {
-        return this.dec;
+    @Override
+    public MALElementOutputStream createOutputStream(OutputStream os)
+            throws IllegalArgumentException, MALException {
+        return new HTTPXMLElementOutputStream(os);
     }
+
 }

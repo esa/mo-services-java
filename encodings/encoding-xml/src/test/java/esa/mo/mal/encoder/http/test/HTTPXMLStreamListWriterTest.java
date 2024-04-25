@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import esa.mo.mal.encoder.http.HTTPXMLStreamWriter;
+import esa.mo.mal.encoder.xml.HTTPXMLStreamWriter;
 
 import org.w3c.dom.NodeList;
 

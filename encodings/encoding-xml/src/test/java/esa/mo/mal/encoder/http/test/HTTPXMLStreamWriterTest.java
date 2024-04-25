@@ -29,7 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
-import esa.mo.mal.encoder.http.HTTPXMLStreamWriter;
+import esa.mo.mal.encoder.xml.HTTPXMLStreamWriter;
 
 public class HTTPXMLStreamWriterTest {
 

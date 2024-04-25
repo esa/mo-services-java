@@ -3,8 +3,8 @@
  */
 package esa.mo.mal.encoder.http.test;
 
-import esa.mo.mal.encoder.http.HTTPXMLElementInputStream;
-import esa.mo.mal.encoder.http.HTTPXMLElementOutputStream;
+import esa.mo.mal.encoder.xml.HTTPXMLElementInputStream;
+import esa.mo.mal.encoder.xml.HTTPXMLElementOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
