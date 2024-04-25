@@ -20,9 +20,9 @@
  */
 package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamReader.MAL_NS;
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamReader.XSI_NS;
+import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.XMLStreamReader.MAL_NS;
+import static esa.mo.mal.encoder.xml.XMLStreamReader.XSI_NS;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,9 +50,9 @@ import org.ccsds.moims.mo.mal.structures.Union;
 public class XMLReader {
 
     private final XMLEventReader eventReader;
-    private final HTTPXMLStreamReader xmlStreamReader;
+    private final XMLStreamReader xmlStreamReader;
 
-    public XMLReader(XMLEventReader eventReader, HTTPXMLStreamReader xmlStreamReader) throws XMLStreamException {
+    public XMLReader(XMLEventReader eventReader, XMLStreamReader xmlStreamReader) throws XMLStreamException {
         this.eventReader = eventReader;
         this.xmlStreamReader = xmlStreamReader;
         eventReader.nextEvent(); // xml header
@@ -163,7 +163,7 @@ public class XMLReader {
 
     private HomogeneousList extractNextListElements(HomogeneousList list) throws IllegalArgumentException {
         try {
-            HTTPXMLStreamListReader listDecoder = (HTTPXMLStreamListReader) xmlStreamReader.createListDecoder(list);
+            XMLStreamListReader listDecoder = (XMLStreamListReader) xmlStreamReader.createListDecoder(list);
 
             while (listDecoder.hasNext()) {
                 Element element = list.createTypedElement();

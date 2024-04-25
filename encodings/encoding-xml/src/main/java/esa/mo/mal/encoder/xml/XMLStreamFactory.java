@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.MALException;
 /**
  *
  */
-public class HTTPXMLStreamFactory extends MALElementStreamFactory {
+public class XMLStreamFactory extends MALElementStreamFactory {
 
     /**
      * Logger
@@ -48,13 +48,13 @@ public class HTTPXMLStreamFactory extends MALElementStreamFactory {
     @Override
     public MALElementInputStream createInputStream(InputStream is)
             throws IllegalArgumentException, MALException {
-        return new HTTPXMLElementInputStream(is);
+        return new XMLElementInputStream(is);
     }
 
     @Override
     public MALElementOutputStream createOutputStream(OutputStream os)
             throws IllegalArgumentException, MALException {
-        return new HTTPXMLElementOutputStream(os);
+        return new XMLElementOutputStream(os);
     }
 
 }

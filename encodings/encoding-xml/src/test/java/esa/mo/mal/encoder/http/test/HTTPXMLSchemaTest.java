@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.junit.Test;
-import esa.mo.mal.encoder.xml.HTTPXMLStreamWriter;
+import esa.mo.mal.encoder.xml.XMLStreamWriter;
 
 public class HTTPXMLSchemaTest {
 
@@ -16,7 +16,7 @@ public class HTTPXMLSchemaTest {
   public void testSimpleBodySchema() throws MALException {
 
     baos = new ByteArrayOutputStream();
-    writer = new HTTPXMLStreamWriter(baos);
+    writer = new XMLStreamWriter(baos);
 
     writer.encodeBoolean(true);
     writer.encodeString("Simple Body");

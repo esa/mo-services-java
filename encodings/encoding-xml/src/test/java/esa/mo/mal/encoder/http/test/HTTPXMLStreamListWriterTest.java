@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import esa.mo.mal.encoder.xml.HTTPXMLStreamWriter;
+import esa.mo.mal.encoder.xml.XMLStreamWriter;
 
 import org.w3c.dom.NodeList;
 
@@ -26,7 +26,7 @@ public class HTTPXMLStreamListWriterTest {
   public void setUp() throws Exception {
 
     baos = new ByteArrayOutputStream();
-    writer = new HTTPXMLStreamWriter(baos);
+    writer = new XMLStreamWriter(baos);
   }
 
   @After

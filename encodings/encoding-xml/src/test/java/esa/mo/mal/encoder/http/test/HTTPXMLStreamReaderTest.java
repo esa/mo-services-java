@@ -1,6 +1,6 @@
 package esa.mo.mal.encoder.http.test;
 
-import esa.mo.mal.encoder.xml.HTTPXMLStreamReader;
+import esa.mo.mal.encoder.xml.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,7 +73,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertTrue(reader.decodeBoolean());
     assertTrue(reader.decodeBoolean());
@@ -93,7 +93,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals((Float) 0f, reader.decodeFloat());
     assertEquals((Float) 1f, reader.decodeFloat());
@@ -113,7 +113,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals((Double) 0d, reader.decodeDouble());
     assertEquals((Double) 1d, reader.decodeDouble());
@@ -133,7 +133,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Byte((byte) 0), reader.decodeOctet());
     assertEquals(new Byte((byte) 42), reader.decodeOctet());
@@ -153,7 +153,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new UOctet((short) 0), reader.decodeUOctet());
     assertEquals(new UOctet((short) 1), reader.decodeUOctet());
@@ -173,7 +173,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Short((short) 0), reader.decodeShort());
     assertEquals(new Short((short) 1), reader.decodeShort());
@@ -192,7 +192,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new UShort((short) 0), reader.decodeUShort());
     assertEquals(new UShort((short) 1), reader.decodeUShort());
@@ -212,7 +212,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Integer(0), reader.decodeInteger());
     assertEquals(new Integer(1), reader.decodeInteger());
@@ -232,7 +232,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new UInteger(0l), reader.decodeUInteger());
     assertEquals(new UInteger(1l), reader.decodeUInteger());
@@ -252,7 +252,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Long(0), reader.decodeLong());
     assertEquals(new Long(1), reader.decodeLong());
@@ -272,7 +272,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new ULong(new BigInteger("0")), reader.decodeULong());
     assertEquals(new ULong(new BigInteger("1")), reader.decodeULong());
@@ -293,7 +293,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals("", reader.decodeString());
     assertEquals("Foo", reader.decodeString());
@@ -315,7 +315,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals("", new String(reader.decodeBlob().getValue()));
     assertEquals("4", new String(reader.decodeBlob().getValue()));
@@ -338,7 +338,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Blob(new byte[] { 0 }), reader.decodeBlob());
   }
@@ -358,7 +358,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Duration(0.0), reader.decodeDuration());
     assertEquals(new Duration(100.5), reader.decodeDuration());
@@ -380,7 +380,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertEquals(new Duration(0.0), reader.decodeNullableDuration());
     assertEquals(null, reader.decodeNullableDuration());
@@ -403,7 +403,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     Time time1 = reader.decodeTime();
     Time time2 = reader.decodeTime();
@@ -437,7 +437,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     FineTime f1 = reader.decodeFineTime();
     FineTime f2 = reader.decodeFineTime();
@@ -462,7 +462,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     URI uri = reader.decodeURI();
 
@@ -486,7 +486,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     ObjectRef objectRef = reader.decodeObjectRef();
 
@@ -513,7 +513,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     Subscription test = new Subscription();
     reader.decodeElement(test);
@@ -537,7 +537,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     Subscription test = new Subscription();
     Element result = reader.decodeNullableElement(test);
@@ -557,7 +557,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     bais = new ByteArrayInputStream(testXml.getBytes());
-    reader = new HTTPXMLStreamReader(bais);
+    reader = new XMLStreamReader(bais);
 
     Subscription test2 = new Subscription();
     Subscription result2 = (Subscription) reader.decodeNullableElement(test2);
@@ -582,7 +582,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertNull(reader.decodeNullableDouble());
     assertEquals(new Double(0), reader.decodeNullableDouble());
@@ -602,7 +602,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertNull(reader.decodeNullableString());
     assertEquals("", reader.decodeNullableString());
@@ -619,7 +619,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     assertNull(reader.decodeNullableObjectRef());
   }
@@ -639,7 +639,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     IdentifierList test = new IdentifierList();
     IdentifierList result = (IdentifierList) reader.decodeElement(test);
@@ -668,7 +668,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     IdentifierList test = new IdentifierList();
     IdentifierList result = (IdentifierList) reader.decodeNullableElement(test);
@@ -692,7 +692,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     Time t = (Time) reader.decodeElement(null);
 
@@ -716,7 +716,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     Pair p = new Pair();
     p = (Pair) reader.decodeElement(p);
@@ -737,7 +737,7 @@ public class HTTPXMLStreamReaderTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    MALDecoder reader = new HTTPXMLStreamReader(bais);
+    MALDecoder reader = new XMLStreamReader(bais);
 
     SessionType st = SessionType.fromString("SIMULATION");
     st = (SessionType) reader.decodeElement(st);

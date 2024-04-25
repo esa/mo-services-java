@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -58,10 +57,10 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  * @author rvangijlswijk
  *
  */
-public class HTTPXMLStreamWriter implements MALListEncoder {
+public class XMLStreamWriter implements MALListEncoder {
 
     protected OutputStream dos;
-    protected XMLStreamWriter writer;
+    protected javax.xml.stream.XMLStreamWriter writer;
     protected XMLOutputFactory factory;
 
     protected static final String LINE_END = "";
@@ -70,10 +69,10 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
     protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     protected static final String ENCODING_EXCEPTION_STR = "Bad encoding";
 
-    public HTTPXMLStreamWriter() {
+    public XMLStreamWriter() {
     }
 
-    public HTTPXMLStreamWriter(OutputStream os) {
+    public XMLStreamWriter(OutputStream os) {
         this.dos = os;
         factory = XMLOutputFactory.newInstance();
 
@@ -514,11 +513,11 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
 
     @Override
     public MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException {
-        return new HTTPXMLStreamListWriter(this.writer, list);
+        return new XMLStreamListWriter(this.writer, list);
     }
 
     public MALListEncoder createListEncoder(List list, String typeName) throws IllegalArgumentException, MALException {
-        return new HTTPXMLStreamListWriter(this.writer, list, typeName);
+        return new XMLStreamListWriter(this.writer, list, typeName);
     }
 
     @Override
@@ -551,7 +550,7 @@ public class HTTPXMLStreamWriter implements MALListEncoder {
 
     @Override
     public void encodeHomogeneousList(HomogeneousList list) throws MALException {
-        HTTPXMLStreamListWriter listEncoder = (HTTPXMLStreamListWriter) this.createListEncoder(list);
+        XMLStreamListWriter listEncoder = (XMLStreamListWriter) this.createListEncoder(list);
         for (int i = 0; i < list.size(); i++) {
             Object obj = list.get(i);
             Element element = (obj instanceof Element) ? (Element) obj : (Element) Attribute.javaType2Attribute(obj);

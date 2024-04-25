@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -52,7 +52,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
-public class HTTPXMLStreamReader implements MALDecoder {
+public class XMLStreamReader implements MALDecoder {
 
     protected static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
     protected static final String MAL_NS = "http://www.ccsds.org/schema/malxml/MAL";
@@ -62,10 +62,10 @@ public class HTTPXMLStreamReader implements MALDecoder {
 
     private XMLReader xmlReader;
 
-    public HTTPXMLStreamReader() {
+    public XMLStreamReader() {
     }
 
-    public HTTPXMLStreamReader(InputStream is) {
+    public XMLStreamReader(InputStream is) {
         try {
             if (is.available() > 0) {
                 XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -460,7 +460,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
 
     @Override
     public MALListDecoder createListDecoder(List list) throws MALException {
-        return new HTTPXMLStreamListReader(list, xmlReader.getEventReader());
+        return new XMLStreamListReader(list, xmlReader.getEventReader());
     }
 
     private static byte[] hexStringToByteArray(final String s) {

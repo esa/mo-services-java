@@ -31,12 +31,12 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public class HTTPXMLElementInputStream implements MALElementInputStream {
+public class XMLElementInputStream implements MALElementInputStream {
 
     private MALDecoder dec;
 
-    public HTTPXMLElementInputStream(InputStream is) {
-        this.dec = new HTTPXMLStreamReader(is);
+    public XMLElementInputStream(InputStream is) {
+        this.dec = new XMLStreamReader(is);
     }
 
     @Override

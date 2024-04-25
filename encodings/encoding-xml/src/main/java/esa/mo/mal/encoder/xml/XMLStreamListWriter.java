@@ -20,59 +20,48 @@
  */
 package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
 import java.util.List;
 import java.util.logging.Level;
-import javax.xml.stream.events.XMLEvent;
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
+import javax.xml.stream.XMLStreamWriter;
+import org.ccsds.moims.mo.mal.structures.Element;
 
-public class HTTPXMLStreamListReader implements MALListDecoder {
+public class XMLStreamListWriter extends esa.mo.mal.encoder.xml.XMLStreamWriter {
 
-    private XMLEventReader eventReader;
     private List list;
-    private String listName;
-    private int size = 0;
 
-    public HTTPXMLStreamListReader(List list, XMLEventReader eventReader) {
-        this(list, eventReader, list.getClass().getSimpleName());
+    public XMLStreamListWriter(XMLStreamWriter wr, List list) {
+        this(wr, list, list.getClass().getSimpleName());
     }
 
-    public HTTPXMLStreamListReader(List list, XMLEventReader eventReader, String elementName) {
+    public XMLStreamListWriter(XMLStreamWriter wr, List list, String typeName) {
+        this.writer = wr;
         this.list = list;
-        this.listName = elementName;
-        this.eventReader = eventReader;
-    }
 
-    @Override
-    public boolean hasNext() {
         try {
-            if (!eventReader.hasNext()) {
-                return false;
+            writer.writeDTD(LINE_END);
+            writer.writeStartElement(typeName);
+            if (!typeName.equals("AttributeList")) {
+                writer.writeAttribute("malxml:type", ((Element) list).getShortForm().toString());
             }
-
-            XMLEvent event = eventReader.peek();
-
-            if (event.isCharacters()) {
-                eventReader.nextEvent();
-            }
-            boolean isStart = event.isStartElement();
-
-            if (isStart) {
-                this.size++;
-            }
-            return isStart;
+            writer.writeDTD(LINE_END);
         } catch (XMLStreamException e) {
             RLOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
+    }
 
-        return false;
+    public int size() {
+        return list.size();
     }
 
     @Override
-    public int size() {
-        return this.size;
+    public void close() {
+        try {
+            writer.writeDTD(LINE_END);
+            writer.writeEndElement();
+        } catch (XMLStreamException e) {
+            RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
     }
-
 }

@@ -28,7 +28,7 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import esa.mo.mal.encoder.xml.HTTPXMLElementInputStream;
+import esa.mo.mal.encoder.xml.XMLElementInputStream;
 
 /**
  * @author rvangijlswijk
@@ -79,7 +79,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     Subscription subscription = (Subscription) eis.readElement(new Subscription(), null);
 
@@ -120,7 +120,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     Identifier id = (Identifier) eis.readElement(new Identifier(), null);
     UpdateHeaderList uhl = (UpdateHeaderList) eis.readElement(new UpdateHeaderList(), null);
@@ -148,7 +148,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     Identifier el = (Identifier) eis.readElement(new Identifier(), null);
 
@@ -177,7 +177,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     UInteger int1 = (UInteger) eis.readElement(new UInteger(), null);
     Union el = (Union) eis.readElement(new Union(""), null);
@@ -204,7 +204,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     UInteger uint1 = (UInteger) eis.readElement(null, null);
     Union un1 = (Union) eis.readElement(null, null);
@@ -229,7 +229,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     UOctet uoct = (UOctet) eis.readElement(new UOctet(), null);
     UShort ushort = (UShort) eis.readElement(new UShort(), null);
@@ -256,7 +256,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     UInteger uint1 = (UInteger) eis.readElement(new UInteger(), null);
     Union union = (Union) eis.readElement(new Union(""), null);
@@ -278,7 +278,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     InteractionType it = (InteractionType) eis.readElement(null, null);
 
@@ -298,7 +298,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     UInteger uint = (UInteger) eis.readElement(null, null);
     Union union = (Union) eis.readElement(null, null);
@@ -320,7 +320,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     Union union = (Union) eis.readElement(null, null);
 
@@ -338,7 +338,7 @@ public class HTTPXMLElementInputTest {
     helper.assertAgainstSchema(testXml);
 
     InputStream bais = new ByteArrayInputStream(testXml.getBytes());
-    HTTPXMLElementInputStream eis = new HTTPXMLElementInputStream(bais);
+    XMLElementInputStream eis = new XMLElementInputStream(bais);
 
     QoSLevel qos = (QoSLevel) eis.readElement(null, null);
 

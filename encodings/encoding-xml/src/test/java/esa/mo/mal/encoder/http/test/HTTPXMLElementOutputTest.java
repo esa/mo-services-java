@@ -3,8 +3,8 @@
  */
 package esa.mo.mal.encoder.http.test;
 
-import esa.mo.mal.encoder.xml.HTTPXMLElementInputStream;
-import esa.mo.mal.encoder.xml.HTTPXMLElementOutputStream;
+import esa.mo.mal.encoder.xml.XMLElementInputStream;
+import esa.mo.mal.encoder.xml.XMLElementOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -61,7 +61,7 @@ public class HTTPXMLElementOutputTest {
   public void setUp() throws Exception {
 
     baos = new ByteArrayOutputStream();
-    httpElementOutputStream = new HTTPXMLElementOutputStream(baos);
+    httpElementOutputStream = new XMLElementOutputStream(baos);
 
   }
 
@@ -175,7 +175,7 @@ public class HTTPXMLElementOutputTest {
 
     // Decode
     InputStream inputStream = new ByteArrayInputStream(xmlResult.getBytes());
-    HTTPXMLElementInputStream xmlInputStream = new HTTPXMLElementInputStream(inputStream);
+    XMLElementInputStream xmlInputStream = new XMLElementInputStream(inputStream);
     Subscription decodedSubscription = (Subscription) xmlInputStream.readElement(null, null);
 
     assertNotNull(decodedSubscription);

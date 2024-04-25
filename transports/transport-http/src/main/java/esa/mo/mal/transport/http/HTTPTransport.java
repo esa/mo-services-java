@@ -100,7 +100,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
    * Define the default encoder which is used in combination with this transport. The actually used encoder can be set
    * in the properties file of the transport binding. This constant is merely used as reference
    */
-  public static final String HTTP_DEFAULT_XML_ENCODER = "esa.mo.mal.encoder.xml.HTTPXMLStreamFactory";
+  public static final String HTTP_DEFAULT_XML_ENCODER = "esa.mo.mal.encoder.xml.XMLStreamFactory";
 
   /**
    * The default request/response timeout in seconds. HTTP requests that take longer than the timeout are rejected.

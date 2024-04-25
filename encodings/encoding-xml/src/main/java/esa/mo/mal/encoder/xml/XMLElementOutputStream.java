@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.encoder.xml;
 
-import static esa.mo.mal.encoder.xml.HTTPXMLStreamFactory.RLOGGER;
+import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
@@ -33,15 +33,15 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 /**
  *
  */
-public class HTTPXMLElementOutputStream implements MALElementOutputStream {
+public class XMLElementOutputStream implements MALElementOutputStream {
 
     protected final OutputStream dos;
     protected MALListEncoder enc;
 
-    public HTTPXMLElementOutputStream(OutputStream os) {
+    public XMLElementOutputStream(OutputStream os) {
         this.dos = os;
         if (enc == null) {
-            enc = new HTTPXMLStreamWriter(this.dos);
+            enc = new XMLStreamWriter(this.dos);
         }
     }
 
@@ -53,13 +53,13 @@ public class HTTPXMLElementOutputStream implements MALElementOutputStream {
     @Override
     public void writeElement(final Element element, final OperationField field) throws MALException {
         if (enc == null) {
-            enc = new HTTPXMLStreamWriter(this.dos);
+            enc = new XMLStreamWriter(this.dos);
         }
 
         if (element != null) {
             encodeBody(element);
         } else if (element == null) {
-            ((HTTPXMLStreamWriter) this.enc).encodeNullableElement(null);
+            ((XMLStreamWriter) this.enc).encodeNullableElement(null);
         }
     }
 
@@ -70,12 +70,12 @@ public class HTTPXMLElementOutputStream implements MALElementOutputStream {
             String elementName = element.getClass().getSimpleName();
             if (element instanceof Element) {
                 if (!elementName.isEmpty()) {
-                    ((HTTPXMLStreamWriter) this.enc).encodeElement((Element) element, elementName);
+                    ((XMLStreamWriter) this.enc).encodeElement((Element) element, elementName);
                 } else {
                     ((Element) element).encode(this.enc);
                 }
             } else {
-                ((HTTPXMLStreamWriter) this.enc).encode(element, element.getClass().getSimpleName());
+                ((XMLStreamWriter) this.enc).encode(element, element.getClass().getSimpleName());
             }
 
         } catch (Exception ex) {
