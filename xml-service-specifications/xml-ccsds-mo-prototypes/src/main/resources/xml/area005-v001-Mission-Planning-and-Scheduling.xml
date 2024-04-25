@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2024
 
-  Generated from MO_MPSS_BB_draft_Post CESG Updates 11/03/2024
+  Generated from MO_MPSS_BB_draft_Post CESG Updates v3B 15/04/2024
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
@@ -13,26 +13,26 @@
     <mal:service name="PlanningRequest" number="1" comment="The Planning Request Service, introduced in 2.5.2, is provided by a planning function and enables its consumers to manage the submission of planning requests and to receive feedback on their status.  It comprises the following operations, of which only those in capability set 1 are mandatory.
 In the context of a hierarchical or federated planning system, the Planning Request Service submitRequest operation can be used to submit a Plan (4.2.6.1) to a planning function, either embedding the Plan in the request itself or passing it by reference.  If passed by reference, the Plan can be retrieved using the Plan Distribution Service (3.3).  Patch plans are not permitted in the context of a planning request.">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.2.3.H.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the planning request service:
+        3.2.3.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the planning request service:
         a) Planning Request Definitions (as RequestDefinition objects [4.2.5.1]);
         b) Planning Activity Definitions (as ActivityDefinition objects [4.2.2.1]);
         c) Planning Event Definitions (as EventDefinition objects [4.2.3.1]);
         d) Planning Resource Definitions (as Resource objects [4.2.4.2]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        Req_3.2.4.F.2 In response to a submitRequest operation, the service provider shall create a corresponding RequestInstance object, set its creationDate and return its identity (key and version) to the consumer.
-        Req_3.2.4.F.3 In response to an updateRequest operation, if supported, the service provider shall create a new version of the referenced RequestInstance object, set its creationDate and return its identity (key and version) to the consumer.
-        Req_3.2.4.F.4 The service provider shall only consider the latest version of a RequestInstance in the generation of future Plans, following a successful updateRequest operation.
-        Req_3.2.4.F.5 In response to a cancelRequest operation, if supported, the service provider shall set the requestStatus of the referenced RequestInstance object to ‘CANCELLED’ and stops it being considered in the generation of future Plans.
-        Req_3.2.4.F.6 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of RequestInstance objects in accordance with the planning request state model (4.2.5.2).
+        3.2.4.1 In response to a submitRequest operation, the service provider shall create a corresponding RequestInstance object, set its creationDate and return its identity (key and version) to the consumer.
+        3.2.4.2 In response to an updateRequest operation, if supported, the service provider shall create a new version of the referenced RequestInstance object, set its creationDate and return its identity (key and version) to the consumer.
+        3.2.4.3 The service provider shall only consider the latest version of a RequestInstance in the generation of future Plans, following a successful updateRequest operation.
+        3.2.4.4 In response to a cancelRequest operation, if supported, the service provider shall set the requestStatus of the referenced RequestInstance object to ‘CANCELLED’ and stops it being considered in the generation of future Plans.
+        3.2.4.5 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of RequestInstance objects in accordance with the planning request state model (4.2.5.2).
         NOTE	–	Following a successful updateRequest operation, it is implementation dependent what the status of the previous version of the RequestInstance is set to.  Previous versions may already have been incorporated into Plans.
-        Req_3.2.4.F.7 If a service consumer generates a planning request based on an existing planning request definition, then the PlanningRequestDetails submitted shall:
+        3.2.4.6 If a service consumer generates a planning request based on an existing planning request definition, then the PlanningRequestDetails submitted shall:
         a) Reference the source RequestDefinition (key and version) in the definition field;
         b) Contain a matching set of arguments (name and type) to the RequestDefinition in the arguments field;
         c) Have a matching value to the RequestDefinition in the standingOrder field.
         NOTE	–	While typically the PlanningRequestDetails will also have matching content to the RequestDefinition in the activities and constraints fields it is allowed to add and remove individual activities and constraints.
-        Req_3.2.4.F.8 In the context of a planning request that contains or references an existing Plan, the Plan shall be a full plan, patch plans are not permitted.
-        Req_3.2.4.F.9 Following successful inclusion of a planning request in a generated Plan, the service provider shall update the outputPlanRef attribute of the RequestInstance with the identity of the Plan (key and version).
+        3.2.4.7 In the context of a planning request that contains or references an existing Plan, the Plan shall be a full plan, patch plans are not permitted.
+        3.2.4.8 Following successful inclusion of a planning request in a generated Plan, the service provider shall update the outputPlanRef attribute of the RequestInstance with the identity of the Plan (key and version).
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:requestIP name="submitRequest" number="1" supportInReplay="true" comment="The submitRequest operation sends a planning request to the provider, which then creates a corresponding RequestInstance object and returns its identity to the consumer.">
@@ -267,14 +267,14 @@ A UInteger giving a secondary error code that details the reason for invalidity.
     </mal:service>
     <mal:service name="PlanDistribution" number="2" comment="The Plan Distribution Service, introduced in 2.5.3, is provided by a planning function and enables its consumers to access generated plans and to receive updates on their status.  It comprises the following operations, of which only those in capability set 1 are mandatory.">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.3.3.H.11 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan distribution service:
+        3.3.3.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan distribution service:
         a) Planning Activity Definitions (as ActivityDefinition objects [4.2.2.1]);
         b) Planning Event Definitions (as EventDefinition objects [4.2.3.1]);
         c) Planning Resource Definitions (as Resource objects [4.2.4.2]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        Req_3.3.4.F.12 If no Plan version is specified in the getPlan and getPlanStatus operations, then the service provider shall assume the latest version of the Plan is required.
-        Req_3.3.4.F.13 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of Plan objects in accordance with the plan state model (4.2.6.2).
+        3.3.4.1 If no Plan version is specified in the getPlan and getPlanStatus operations, then the service provider shall assume the latest version of the Plan is required.
+        3.3.4.2 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of Plan objects in accordance with the plan state model (4.2.6.2).
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:requestIP name="getPlanSummaries" number="1" supportInReplay="true" comment="The getPlanSummaries operation allows consumers to obtain a filtered list of currently available Plans.  The request uses the PlanFilter structure to select the set of plans of interest, using the following keys:
@@ -949,14 +949,14 @@ A UInteger giving a secondary error code that details the reason for invalidity.
     </mal:service>
     <mal:service name="PlanInformationManagement" number="4" comment="The Plan Information Management Service, introduced in 2.5.5, is provided by a planning function and enables its consumers to list and retrieve available MPS configuration data.  This includes definitions for planning requests, planning activities, planning events and planning resources, and also MPS system configuration data.  The service may also be provided by a plan execution function (excluding planning request definitions).  It comprises the following operations, none of which are mandatory.">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.5.3.H.45 The following set of mission planning configuration data shall be available to the provider in a any deployment of the plan information management service:
+        3.5.3.1 The following set of mission planning configuration data shall be available to the provider in a any deployment of the plan information management service:
         a) Planning Request Definitions (as RequestDefinition objects [4.2.5.1]);
         b) Planning Activity Definitions (as ActivityDefinition objects [4.2.2.1]);
         c) Planning Event Definitions (as EventDefinition objects [4.2.3.1]);
         d) Planning Resource Definitions (as Resource objects [4.2.4.2]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        Req_3.5.4.F.46 If no version is specified for the definition to be retrieved in a listItem]Defs or operation then the service provider shall list all available versions of the definition.
+        3.5.4.1 If no version is specified for the definition to be retrieved in a listItem]Defs or operation then the service provider shall list all available versions of the definition.
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:progressIP name="listRequestDefs" number="1" supportInReplay="true" comment="The listRequestDefs operation is used to obtain a list of available RequestDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
@@ -1224,25 +1224,25 @@ A UInteger giving a secondary error code that details the reason for invalidity.
     <mal:service name="PlanEdit" number="5" comment="The Plan Edit Service, introduced in 2.5.6, is provided by a plan execution function and enables its consumers to modify Plans that have already been submitted for execution.  It allows an external user or function to update the status of the Plan; insert, modify, or delete its constituent ActivityInstances and EventInstances; update the value of Resources; and apply a time shift to a Plan.  It comprises the following operations, of which those in capability sets 1 and 2 are mandatory.
 In some deployments, the Plan Edit Service could also be provided by a planning function to enable users to make adjustments to their planned activities prior to submission of the plan for execution.">
       <mal:documentation name="High-level Requirements" order="1">
-        Req_3.6.3.H.53 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan edit service:
+        3.6.3.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan edit service:
         a) Planning Activity Definitions (as ActivityDefinition objects [4.2.2.1]);
         b) Planning Event Definitions (as EventDefinition objects [4.2.3.1]);
         c) Planning Resource Definitions (as Resource objects [4.2.4.2]) [Optional];
         d) MPS System Configuration Data (as an MPSSysConfig object [4.2.7]);
         e) Functional Requirements.
-        Req_3.6.3.F.54 In response to an updatePlanStatus operation, the service provider shall update the isAlternate flag of the Plan accordingly and apply any change to Plan status consistently with the plan state model (4.2.6.2).
+        3.6.3.2 In response to an updatePlanStatus operation, the service provider shall update the isAlternate flag of the Plan accordingly and apply any change to Plan status consistently with the plan state model (4.2.6.2).
         NOTE	–	It is implementation dependent what the service provider does in the event of a Plan status change when the Plan has executing ActivityInstances.  It is recommended that the plan execution control service is used to manage Plan deactivation in an orderly manner.
-        Req_3.6.3.F.55 In response to an insertActivity operation, the service provider shall create a new ActivityInstance in the referenced Plan and return its identity to the consumer.
-        Req_3.6.3.F.56 In response to an insertEvent operation, the service provider shall create a new EventInstance in the referenced Plan and return its identity to the consumer.
-        Req_3.6.3.F.57 In response to a deleteActivity operation, the service provider shall transition the referenced ActivityInstance to the TERMINATED state.
+        3.6.3.3 In response to an insertActivity operation, the service provider shall create a new ActivityInstance in the referenced Plan and return its identity to the consumer.
+        3.6.3.4 In response to an insertEvent operation, the service provider shall create a new EventInstance in the referenced Plan and return its identity to the consumer.
+        3.6.3.5 In response to a deleteActivity operation, the service provider shall transition the referenced ActivityInstance to the TERMINATED state.
         NOTE	–	If the ActivityInstance is in the EXECUTING state, then it is implementation dependent what action is taken by the service provider.
-        Req_3.6.3.F.58 In response to a deleteEvent operation, the service provider shall transition the referenced EventInstance to the TERMINATED state.
+        3.6.3.6 In response to a deleteEvent operation, the service provider shall transition the referenced EventInstance to the TERMINATED state.
         NOTE	–	This may also affect any ActivityInstances whose start or end trigger is linked to the deleted EventInstance as a terminated event will not result in the activity being triggered.
-        Req_3.6.3.F.59 In response to an updateActivity operation, the service provider shall apply the changes contained in the ActivityUpdate to the referenced ActivityInstance.
-        Req_3.6.3.F.60 In response to an updateEvent operation, the service provider shall apply the changes contained in the EventUpdate to the referenced EventInstance.
-        Req_3.6.3.F.61 In response to an updateResource operation, the service provider shall apply the changes contained in the ResourceUpdate to the referenced Resource.
-        Req_3.6.3.F.62 In response to an updateResourceProfile operation, the service provider shall apply the supplied ResourceProfile to the referenced Resource.
-        Req_3.6.3.F.63 In response to an applyTimeShift operation, the service provider shall apply the specified time shift to the unexpired (future) content, or the specified time period of the referenced Plan or its SubPlan(s), including temporal start and end triggers on ActivityInstances.
+        3.6.3.7 In response to an updateActivity operation, the service provider shall apply the changes contained in the ActivityUpdate to the referenced ActivityInstance.
+        3.6.3.8 In response to an updateEvent operation, the service provider shall apply the changes contained in the EventUpdate to the referenced EventInstance.
+        3.6.3.9 In response to an updateResource operation, the service provider shall apply the changes contained in the ResourceUpdate to the referenced Resource.
+        3.6.3.10 In response to an updateResourceProfile operation, the service provider shall apply the supplied ResourceProfile to the referenced Resource.
+        3.6.3.11 In response to an applyTimeShift operation, the service provider shall apply the specified time shift to the unexpired (future) content, or the specified time period of the referenced Plan or its SubPlan(s), including temporal start and end triggers on ActivityInstances.
       </mal:documentation>
       <mal:capabilitySet number="1" comment="">
         <mal:submitIP name="updatePlanStatus" number="1" supportInReplay="true" comment="The updatePlanStatus operation may be used to modify the status of a previously submitted Plan.  Directly modifying the status field of a Plan may be used by a third party function to autonomously terminate (or activate) a Plan, but the operation also allows the isAlternate flag to be set or cleared.
@@ -4034,17 +4034,18 @@ Reference to an EventDefinition (type of event)">
     </mal:dataTypes>
 
     <mal:errors>
-        <mal:error number="0" name="INVALID" comment="One or more fields in the message contain invalid values."/>
-        <mal:error number="1" name="CANCEL_FAILED" comment="The cancelRequest operation failed to cancel the referenced RequestInstance."/>
-        <mal:error number="2" name="UPDATE_FAILED" comment="The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object."/>
-        <mal:error number="3" name="REVOKE_FAILED" comment="The revokePlan operation failed to revoke the referenced Plan, for example because it has already started executing."/>
-        <mal:error number="4" name="INSERT_FAILED" comment="The insertActivity or insertEvent operation failed to insert the requested object."/>
-        <mal:error number="5" name="DELETE_FAILED" comment="The deleteActivity or deleteEvent operation failed to delete the requested object."/>
-        <mal:error number="6" name="ACTIVATE_FAILED" comment="The activatePlan operation failed as the activation was outside the validity period of the Plan, or the start of the planPeriod had already passed.  "/>
-        <mal:error number="7" name="UNSUPPORTED" comment="An optional data structure used in the message is not supported by the service provider."/>
-        <mal:error number="8" name="ACTIVATE_SUBPLAN_FAILED" comment="The activateSubPlan operation failed."/>
-        <mal:error number="9" name="DEACTIVATE_SUBPLAN_FAILED" comment="The deactivateSubPlan operation failed."/>
+        <mal:error number="1" name="INVALID" comment="One or more fields in the message contain invalid values."/>
+        <mal:error number="2" name="CANCEL_FAILED" comment="The cancelRequest operation failed to cancel the referenced RequestInstance."/>
+        <mal:error number="3" name="UPDATE_FAILED" comment="The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object."/>
+        <mal:error number="4" name="REVOKE_FAILED" comment="The revokePlan operation failed to revoke the referenced Plan, for example because it has already started executing."/>
+        <mal:error number="5" name="INSERT_FAILED" comment="The insertActivity or insertEvent operation failed to insert the requested object."/>
+        <mal:error number="6" name="DELETE_FAILED" comment="The deleteActivity or deleteEvent operation failed to delete the requested object."/>
+        <mal:error number="7" name="ACTIVATE_FAILED" comment="The activatePlan operation failed as the activation was outside the validity period of the Plan, or the start of the planPeriod had already passed.  "/>
+        <mal:error number="8" name="UNSUPPORTED" comment="An optional data structure used in the message is not supported by the service provider."/>
+        <mal:error number="9" name="ACTIVATE_SUBPLAN_FAILED" comment="The activateSubPlan operation failed."/>
+        <mal:error number="10" name="DEACTIVATE_SUBPLAN_FAILED" comment="The deactivateSubPlan operation failed."/>
     </mal:errors>
 
   </mal:area>
 </mal:specification>
+
