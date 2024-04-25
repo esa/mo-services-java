@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.encoder.http;
 
+import static esa.mo.mal.encoder.http.HTTPXMLStreamFactory.RLOGGER;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
@@ -28,8 +29,6 @@ import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 /**
  *

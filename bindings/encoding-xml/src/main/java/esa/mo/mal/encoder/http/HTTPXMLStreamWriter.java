@@ -20,7 +20,7 @@
  */
 package esa.mo.mal.encoder.http;
 
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
+import static esa.mo.mal.encoder.http.HTTPXMLStreamFactory.RLOGGER;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

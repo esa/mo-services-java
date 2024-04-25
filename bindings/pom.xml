@@ -68,6 +68,7 @@
     <modules>
         <module>encoding-string</module>
         <module>encoding-binary</module>
+        <module>encoding-xml</module>
         <module>transport-generic</module>
         <module>transport-rmi</module>
         <module>transport-tcpip</module>
@@ -77,25 +78,4 @@
         <module>transport-spp</module>
         <module>transport-zmtp</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>ESA</id>
-            <dependencies>
-                <dependency>
-                    <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>One-Oh-Seven-Needed</id>
-            <activation>
-                <jdk>[1.7,]</jdk>
-            </activation>
-            <modules>
-                <module>transport-file</module>
-            </modules>  
-        </profile>
-    </profiles>
 </project>

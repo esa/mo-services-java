@@ -1,30 +1,24 @@
 package esa.mo.mal.transport.http.test;
 
+import esa.mo.mal.transport.http.HTTPTransport;
+import esa.mo.mal.transport.http.api.IPostClient;
+import esa.mo.mal.transport.http.connection.JdkTestClient;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoEncoding;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.util.Map;
-
 import javax.mail.internet.MimeUtility;
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import esa.mo.mal.encoder.http.HTTPXMLStreamFactory;
-import esa.mo.mal.transport.http.HTTPTransport;
-import esa.mo.mal.transport.http.api.IPostClient;
-import esa.mo.mal.transport.http.connection.JdkTestClient;
-import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoEncoding;
 
 public abstract class HTTPMessageSenderBaseTest {
 
@@ -38,7 +32,7 @@ public abstract class HTTPMessageSenderBaseTest {
 
     System.setProperty("org.ccsds.moims.mo.mal.encoding.protocol.malhttp",
         "esa.mo.mal.encoder.http.HTTPXMLStreamFactory");
-    MALElementStreamFactory.registerFactoryClass(HTTPXMLStreamFactory.class);
+    //MALElementStreamFactory.registerFactoryClass(HTTPXMLStreamFactory.class);
   }
 
   @Before

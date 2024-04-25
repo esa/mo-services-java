@@ -20,9 +20,9 @@
  */
 package esa.mo.mal.encoder.http;
 
+import static esa.mo.mal.encoder.http.HTTPXMLStreamFactory.RLOGGER;
 import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.MAL_NS;
 import static esa.mo.mal.encoder.http.HTTPXMLStreamReader.XSI_NS;
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;

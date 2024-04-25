@@ -13,29 +13,29 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+  
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
         <version>10.1-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
-
-    <artifactId>transport-http</artifactId>
+  
+    <artifactId>encoding-xml</artifactId>
     <packaging>jar</packaging>
     <version>10.1-SNAPSHOT</version>
 
-    <name>ESA MO Transport - HTTP</name>
-    <description>A Java HTTP transport for CCSDS MAL</description>
+    <name>ESA MO Encoder - XML</name>
+    <description>A simple Java String based encoder for the CCSDS MAL</description>
     <url>http://www.esa.int</url>
-
+  
     <organization>
         <name>ESA</name>
         <url>http://www.esa.int</url>
     </organization>
-
+  
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
@@ -54,28 +54,17 @@
         <system>GitHub</system>
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
-
+  
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>transport-generic</artifactId>
+            <artifactId>api-mal</artifactId>
         </dependency>
         <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>encoding-xml</artifactId>
-            <version>10.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
-            <exclusions>
-                <exclusion>
-                    <!-- api-mal has javax.activation dependency -->
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.6</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -94,7 +83,7 @@
                 </includes>
             </resource>
         </resources>
-
+    
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

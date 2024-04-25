@@ -1,13 +1,12 @@
 package esa.mo.mal.transport.http.receiving;
 
-import static org.junit.Assert.assertEquals;
-
+import esa.mo.mal.transport.http.HTTPTransport;
+import esa.mo.mal.transport.http.api.IHttpRequest;
+import esa.mo.mal.transport.http.util.HttpApiImplException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -22,14 +21,10 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import esa.mo.mal.encoder.http.HTTPXMLStreamFactory;
-import esa.mo.mal.transport.http.HTTPTransport;
-import esa.mo.mal.transport.http.api.IHttpRequest;
-import esa.mo.mal.transport.http.util.HttpApiImplException;
 
 public class HTTPMessageHandlerNoResponse {
 
@@ -42,7 +37,7 @@ public class HTTPMessageHandlerNoResponse {
 
     System.setProperty("org.ccsds.moims.mo.mal.encoding.protocol.malhttp",
         "esa.mo.mal.encoder.http.HTTPXMLStreamFactory");
-    MALElementStreamFactory.registerFactoryClass(HTTPXMLStreamFactory.class);
+    //MALElementStreamFactory.registerFactoryClass(HTTPXMLStreamFactory.class);
   }
 
   @Before

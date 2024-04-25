@@ -22,8 +22,8 @@ package esa.mo.mal.transport.http.test;
 
 import java.util.Map;
 
+import esa.mo.mal.transport.gen.GENMessage;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -31,9 +31,6 @@ import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
-
-import esa.mo.mal.encoder.http.HTTPXMLStreamFactory;
-import esa.mo.mal.transport.gen.GENMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 public class GENMessageBuilder {
@@ -53,7 +50,7 @@ public class GENMessageBuilder {
   private NamedValueList supplements = new NamedValueList();
 
   private Map qosProperties;
-  private MALElementStreamFactory streamFactory = new HTTPXMLStreamFactory();
+//  private MALElementStreamFactory streamFactory = new HTTPXMLStreamFactory();
   private Object[] body = new Object[0];
 
   public GENMessageBuilder() {
@@ -62,7 +59,7 @@ public class GENMessageBuilder {
   public GENMessage build() throws MALInteractionException {
     MALMessageHeader header = new MALMessageHeader(from, authenticationId, to, timestamp, interactionType, interactionStage, transactionId,
         serviceArea, service, operation, serviceVersion, isErrorMessage, supplements);
-    return new GENMessage(false, header, qosProperties, streamFactory, body);
+    return new GENMessage(false, header, qosProperties, null, body);
   }
 
   public GENMessageBuilder from(final Identifier from) {

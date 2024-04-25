@@ -20,9 +20,9 @@
  */
 package esa.mo.mal.encoder.http;
 
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
-import esa.mo.mal.transport.http.util.UriHelper;
+import static esa.mo.mal.encoder.http.HTTPXMLStreamFactory.RLOGGER;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.List;
@@ -336,7 +336,7 @@ public class HTTPXMLStreamReader implements MALDecoder {
     @Override
     public URI decodeURI() throws MALException {
         String value = decodeXMLElement();
-        return new URI(UriHelper.uriToUtf8(value));
+        return new URI(uriToUtf8(value));
     }
 
     @Override
@@ -476,5 +476,15 @@ public class HTTPXMLStreamReader implements MALDecoder {
     @Override
     public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
         return (HomogeneousList) xmlReader.readNextElement(list);
+    }
+
+    private static String uriToUtf8(String uri) {
+        String decodedUri = "";
+        try {
+            decodedUri = java.net.URLDecoder.decode(uri, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return decodedUri;
     }
 }
