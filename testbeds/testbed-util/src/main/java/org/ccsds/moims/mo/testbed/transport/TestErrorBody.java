@@ -86,9 +86,4 @@ public class TestErrorBody implements MALErrorBody {
         return "TestErrorBody [errorNumber=" + errorNumber + ", extraInformation="
                 + extraInformation + "]";
     }
-
-    @Override
-    public MALEncodedBody getEncodedBody() throws MALException {
-        throw new MALException("Not implemented");
-    }
 }

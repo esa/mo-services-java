@@ -464,6 +464,7 @@ public abstract class Decoder implements MALDecoder {
      * @return The type to decode
      * @throws MALException if there is an error
      */
+    @Override
     public Long decodeAbstractElementSFP(boolean isNullable) throws MALException {
         if (isNullable) {
             return decodeNullableLong();

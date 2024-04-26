@@ -104,7 +104,7 @@ public class SPPSegmentsAssembler {
 
             SPPMessage msg = transport.internalDecodeMessageHeader(apidQualifier, 
                     apid, segment.getPacket());
-            tmpPacket = msg.getBody().getEncodedBody().getEncodedBody().getValue();
+            tmpPacket = segment.getPacket();
 
             System.arraycopy(tmpPacket, 0, concatenated, index, tmpPacket.length);
             index += tmpPacket.length;

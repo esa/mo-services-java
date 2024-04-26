@@ -487,4 +487,13 @@ public class XMLStreamReader implements MALDecoder {
         }
         return decodedUri;
     }
+
+    @Override
+    public Long decodeAbstractElementSFP(boolean isNullable) throws MALException {
+        if (isNullable) {
+            return decodeNullableLong();
+        }
+
+        return decodeLong();
+    }
 }

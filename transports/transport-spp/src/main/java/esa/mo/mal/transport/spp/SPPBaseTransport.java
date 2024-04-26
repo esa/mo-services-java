@@ -268,8 +268,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
             // now full message including body
             try {
                 return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
-                        (MALMessageHeader) dummyMessage.getHeader(), qosProperties,
-                        dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
+                        (MALMessageHeader) dummyMessage.getHeader(), qosProperties, packet,
                         localBodyStreamFactory);
             } catch (MALException ex) {
                 returnErrorMessage(dummyMessage,

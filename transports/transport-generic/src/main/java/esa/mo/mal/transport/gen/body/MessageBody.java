@@ -135,27 +135,6 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
     }
 
     @Override
-    public MALEncodedBody getEncodedBody() throws MALException {
-        if (!decodedBody && (encBodyElements instanceof ElementInputStream)) {
-            byte[] rd = ((ElementInputStream) encBodyElements).getRemainingEncodedData();
-
-            if ((encBodyBytes != null) && (encBodyBytes.available() > 0)) {
-                byte[] c = new byte[rd.length + encBodyBytes.available()];
-                System.arraycopy(rd, 0, c, 0, rd.length);
-                encBodyBytes.mark(0);
-                encBodyBytes.read(c, rd.length, encBodyBytes.available());
-                encBodyBytes.reset();
-
-                rd = c;
-            }
-
-            return new MALEncodedBody(new Blob(rd));
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
-    @Override
     public Object getBodyElement(final int index, final Object element)
             throws IllegalArgumentException, MALException {
         decodeMessageBody();
@@ -221,13 +200,6 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
             }
         } else if (!decodedBody) {
             enc.flush();
-
-            try {
-                lowLevelOutputStream.write(getEncodedBody().getEncodedBody().getValue());
-                lowLevelOutputStream.flush();
-            } catch (IOException ex) {
-                throw new MALException("MAL encoded body encoding error", ex);
-            }
         } else {
             final int count = getElementCount();
 

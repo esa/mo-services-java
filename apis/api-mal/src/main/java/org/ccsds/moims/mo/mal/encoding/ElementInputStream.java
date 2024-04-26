@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.encoding;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContextFactory;
+import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -34,14 +35,14 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public abstract class ElementInputStream implements MALElementInputStream {
 
-    protected final Decoder dec;
+    protected final MALDecoder dec;
 
     /**
      * Sub class constructor.
      *
      * @param pdec Decoder to use.
      */
-    protected ElementInputStream(Decoder pdec) {
+    protected ElementInputStream(MALDecoder pdec) {
         this.dec = pdec;
     }
 
@@ -72,18 +73,6 @@ public abstract class ElementInputStream implements MALElementInputStream {
                     "The following field could not be decoded: " + field.getFieldName(), ex);
             throw ex;
         }
-    }
-
-    /**
-     * Returns a new byte array containing the remaining encoded data for this
-     * stream. Expected to be used for creating an MAL encoded body object.
-     *
-     * @return a byte array containing the remaining encoded data for this
-     * stream.
-     * @throws MALException On error.
-     */
-    public byte[] getRemainingEncodedData() throws MALException {
-        return dec.getRemainingEncodedData();
     }
 
     @Override

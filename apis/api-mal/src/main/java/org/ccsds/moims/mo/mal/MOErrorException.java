@@ -100,11 +100,6 @@ public class MOErrorException extends Exception implements Serializable, MALErro
     }
 
     @Override
-    public MALEncodedBody getEncodedBody() throws MALException {
-        return null;
-    }
-
-    @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append("(");

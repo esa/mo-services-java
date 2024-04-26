@@ -396,6 +396,15 @@ public interface MALDecoder {
     MALListDecoder createListDecoder(List list) throws java.lang.IllegalArgumentException, MALException;
 
     /**
+     * Decodes the typeId of an abstract element.
+     *
+     * @param isNullable If true encode a isNull field.
+     * @return The decoded typeId.
+     * @throws MALException if there is an error.
+     */
+    Long decodeAbstractElementSFP(boolean isNullable) throws MALException;
+
+    /**
      * Decodes an Homogeneous list
      *
      * @param list The list to decode.

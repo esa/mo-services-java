@@ -376,7 +376,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
         try {
             return new ZMTPMessage(hdrStreamFactory, wrapBodyParts, false,
                     (MALMessageHeader) dummyMessage.getHeader(), qosProperties,
-                    dummyMessage.getBody().getEncodedBody().getEncodedBody().getValue(),
+                    packet,
                     getBodyEncodingSelector().getDecoderStreamFactory(header));
         } catch (MALException ex) {
             returnErrorMessage(dummyMessage, MALHelper.INTERNAL_ERROR_NUMBER,
