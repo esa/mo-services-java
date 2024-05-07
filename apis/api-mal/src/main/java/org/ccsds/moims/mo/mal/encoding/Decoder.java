@@ -433,20 +433,17 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
-        org.ccsds.moims.mo.mal.MALListDecoder listDecoder = this.createListDecoder(list);
-        int decodedSize = listDecoder.size();
+        UInteger size = this.decodeUInteger();
+        long decodedSize = size.getValue();
+
         if (decodedSize > 1000000) {
             throw new org.ccsds.moims.mo.mal.MALException("The decoded list size is too big: " + decodedSize);
         }
-/*
-        if (decodedSize > 0) {
-            list.ensureCapacity(decodedSize);
-        }
-*/
-        for(int i = 0; i < decodedSize; i++) {
+
+        for (int i = 0; i < decodedSize; i++) {
             Element element = list.createTypedElement();
 
-            if(element instanceof Union) {
+            if (element instanceof Union) {
                 // Case for Attributes that are mapped to the Java API
                 Union union = (Union) element;
                 Attribute att = internalDecodeAttribute(union.getTypeShortForm());
@@ -461,12 +458,10 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException {
-        MALListDecoder listDecoder = this.createListDecoder(list);
-        int decodedSize = listDecoder.size();
-        if (decodedSize > 0) {
-            list.ensureCapacity(decodedSize);
-        }
-        while (listDecoder.hasNext()) {
+        UInteger size = this.decodeUInteger();
+        long decodedSize = size.getValue();
+
+        for (int i = 0; i < decodedSize; i++) {
             if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
                 list.add((Element) this.decodeAbstractElement());
             } else {
