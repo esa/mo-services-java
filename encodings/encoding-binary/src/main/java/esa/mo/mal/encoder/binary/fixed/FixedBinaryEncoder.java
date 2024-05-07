@@ -27,8 +27,7 @@ import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a fixed length
- * binary encoding.
+ * Extends the BaseBinaryEncoder for a fixed length binary encoding.
  */
 public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinaryEncoder {
 
