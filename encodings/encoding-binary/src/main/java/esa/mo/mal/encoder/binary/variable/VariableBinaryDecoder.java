@@ -77,7 +77,7 @@ public class VariableBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBi
 
     @Override
     public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new VariableBinaryListDecoder(list, sourceBuffer, timeHandler);
+        return new VariableBinaryListDecoder(list, sourceBuffer);
     }
 
     /**

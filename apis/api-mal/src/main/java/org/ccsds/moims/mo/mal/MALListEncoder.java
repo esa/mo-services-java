@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * Encoder for encoding lists.
  */
+@Deprecated
 public interface MALListEncoder extends MALEncoder {
 
     /**

@@ -75,7 +75,7 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
 
     @Override
     public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new SplitBinaryListDecoder(list, sourceBuffer, timeHandler);
+        return new SplitBinaryListDecoder(list, sourceBuffer);
     }
 
     /**

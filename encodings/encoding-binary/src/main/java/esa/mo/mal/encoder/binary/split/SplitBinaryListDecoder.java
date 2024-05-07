@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.encoding.BufferHolder;
  *
  * @author Dominik Marszk
  */
-public class SplitBinaryListDecoder extends SplitBinaryDecoder implements MALListDecoder {
+public class SplitBinaryListDecoder implements MALListDecoder {
 
     private final int listSize;
     private final List list;
@@ -40,15 +40,9 @@ public class SplitBinaryListDecoder extends SplitBinaryDecoder implements MALLis
      *
      * @param list List to decode into.
      * @param sourceBuffer Buffer to reuse.
-     * @param timeHandler Time handler to reuse.
      * @throws MALException If cannot decode size of list.
      */
-    public SplitBinaryListDecoder(final List list,
-            final BufferHolder sourceBuffer,
-            final BinaryTimeHandler timeHandler)
-            throws MALException {
-        super(sourceBuffer, timeHandler);
-
+    public SplitBinaryListDecoder(final List list, final BufferHolder sourceBuffer) throws MALException {
         this.list = list;
         this.listSize = sourceBuffer.readUnsignedInt();
     }

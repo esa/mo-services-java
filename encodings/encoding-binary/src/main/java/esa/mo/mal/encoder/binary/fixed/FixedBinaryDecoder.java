@@ -85,7 +85,7 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
 
     @Override
     public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new FixedBinaryListDecoder(list, sourceBuffer, timeHandler);
+        return new FixedBinaryListDecoder(list, sourceBuffer);
     }
 
     /**

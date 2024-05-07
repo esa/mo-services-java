@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.encoder.binary.variable;
 
-import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALListDecoder;
@@ -30,7 +29,7 @@ import org.ccsds.moims.mo.mal.encoding.BufferHolder;
  *
  * @author Dominik Marszk
  */
-public class VariableBinaryListDecoder extends VariableBinaryDecoder implements MALListDecoder {
+public class VariableBinaryListDecoder implements MALListDecoder {
 
     private final int listSize;
     private final List list;
@@ -40,15 +39,9 @@ public class VariableBinaryListDecoder extends VariableBinaryDecoder implements 
      *
      * @param list List to decode into.
      * @param sourceBuffer Buffer to reuse.
-     * @param timeHandler Time handler to reuse.
      * @throws MALException If cannot decode size of list.
      */
-    public VariableBinaryListDecoder(final List list,
-            final BufferHolder sourceBuffer,
-            final BinaryTimeHandler timeHandler)
-            throws MALException {
-        super(sourceBuffer, timeHandler);
-
+    public VariableBinaryListDecoder(final List list, final BufferHolder sourceBuffer) throws MALException {
         this.list = list;
         this.listSize = sourceBuffer.readUnsignedInt();
     }
