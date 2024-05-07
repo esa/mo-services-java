@@ -164,7 +164,7 @@ public class ZMTPEndpoint extends Endpoint {
                 operation,
                 serviceVersion,
                 isErrorMessage,
-                supplements);
+                this.getEndpointSupplements());
         ((ZMTPTransport) transport).getBodyEncodingSelector().applyEncodingIdToHeader(header);
         return header;
     }
