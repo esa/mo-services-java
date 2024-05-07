@@ -22,6 +22,7 @@ package esa.mo.mal.encoder.tcpip;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
+import esa.mo.mal.encoder.binary.fixed.FixedBinaryListDecoder;
 import java.io.InputStream;
 import java.util.List;
 import org.ccsds.moims.mo.mal.encoding.BufferHolder;
@@ -58,7 +59,7 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
 
     @Override
     public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new TCPIPFixedBinaryListDecoder(list, sourceBuffer, timeHandler);
+        return new FixedBinaryListDecoder(list, sourceBuffer);
     }
 
     @Override
