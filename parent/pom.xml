@@ -89,6 +89,7 @@
         <esa.rmi.transport.version>10.1-SNAPSHOT</esa.rmi.transport.version>
         <esa.tcpip.transport.version>10.1-SNAPSHOT</esa.tcpip.transport.version>
         <esa.jms.transport.version>10.1-SNAPSHOT</esa.jms.transport.version>
+        <esa.zmtp.transport.version>10.1-SNAPSHOT</esa.zmtp.transport.version>
         <esa.spp.transport.version>10.1-SNAPSHOT</esa.spp.transport.version>
         <esa.http.transport.version>10.1-SNAPSHOT</esa.http.transport.version>
     
@@ -174,6 +175,11 @@
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-jms</artifactId>
                 <version>${esa.jms.transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>transport-zmtp</artifactId>
+                <version>${esa.zmtp.transport.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
