@@ -27,6 +27,7 @@
 *!
 
 !include TestScenarios.Section4Scenarios
+!include TestScenarios.Section4Scenarios.DataTypeTestScenario
 !include TestScenarios.Section4Scenarios.AllExceptPubSubTestCase
 !include TestScenarios.Section4Scenarios.AllExceptPubSubTestCase.AllExceptPubSubTestProcedure
 !include TestScenarios.Section4Scenarios.PubSubTestCase
@@ -40,7 +41,6 @@
 !include TestScenarios.Section4Scenarios.PubSubTestCase.SubscriptionSessionTypeTestProcedure
 !include TestScenarios.Section4Scenarios.PubSubTestCase.SubscriptionTestProcedure
 !include TestScenarios.Section4Scenarios.PubSubTestCase.MultiTypeTestProcedure
-!include TestScenarios.Section4Scenarios.DataTypeTestScenario
 !include TestScenarios.Section4Scenarios.ErrorTestScenario
 !include TestScenarios.Section4Scenarios.ErrorTestScenario.TransportErrors
 !include TestScenarios.Section4Scenarios.ErrorTestScenario.SecurityErrors

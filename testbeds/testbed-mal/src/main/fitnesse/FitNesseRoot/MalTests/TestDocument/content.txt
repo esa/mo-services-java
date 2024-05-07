@@ -22,6 +22,12 @@
 # !see CompleteDocument
 
 !see TestScenarios.Section4Scenarios
+!see TestScenarios.Section4Scenarios.DataTypeTestScenario
+!see TestScenarios.Section4Scenarios.DataTypeTestScenario.ExplicitTypesTestProcedure
+!see TestScenarios.Section4Scenarios.DataTypeTestScenario.ElementParameterTestProcedure
+!see TestScenarios.Section4Scenarios.DataTypeTestScenario.MultiReturnTestProcedure
+!see TestScenarios.Section4Scenarios.DataTypeTestScenario.PolymorphicTypesTestProcedure
+!see TestScenarios.Section4Scenarios.DataTypeTestScenario.MoObjectTestProcedure
 !see TestScenarios.Section4Scenarios.AllExceptPubSubTestCase
 !see TestScenarios.Section4Scenarios.AllExceptPubSubTestCase.AllExceptPubSubTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase
@@ -33,12 +39,6 @@
 !see TestScenarios.Section4Scenarios.PubSubTestCase.SubscriptionIdTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase.SubscriptionTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase.MultiTypeTestProcedure
-!see TestScenarios.Section4Scenarios.DataTypeTestScenario
-!see TestScenarios.Section4Scenarios.DataTypeTestScenario.ExplicitTypesTestProcedure
-!see TestScenarios.Section4Scenarios.DataTypeTestScenario.ElementParameterTestProcedure
-!see TestScenarios.Section4Scenarios.DataTypeTestScenario.MultiReturnTestProcedure
-!see TestScenarios.Section4Scenarios.DataTypeTestScenario.PolymorphicTypesTestProcedure
-!see TestScenarios.Section4Scenarios.DataTypeTestScenario.MoObjectTestProcedure
 !see TestScenarios.Section4Scenarios.ErrorTestScenario
 !see TestScenarios.Section4Scenarios.ErrorTestScenario.TransportErrors
 !see TestScenarios.Section4Scenarios.ErrorTestScenario.SecurityErrors
