@@ -55,7 +55,6 @@ public class XMLStreamListWriter extends esa.mo.mal.encoder.xml.XMLStreamWriter 
         return list.size();
     }
 
-    @Override
     public void close() {
         try {
             writer.writeDTD(LINE_END);

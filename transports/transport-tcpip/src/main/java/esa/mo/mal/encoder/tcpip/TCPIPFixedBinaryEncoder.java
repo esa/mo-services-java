@@ -24,9 +24,7 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -48,13 +46,6 @@ public class TCPIPFixedBinaryEncoder extends FixedBinaryEncoder {
 
     public TCPIPFixedBinaryEncoder(final OutputStream os) {
         super(new TCPIPStreamHolder(os), tHandler);
-    }
-
-    @Override
-    public MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException {
-        // encode number of elements
-        encodeUInteger(new UInteger(list.size()));
-        return this;
     }
 
     /**

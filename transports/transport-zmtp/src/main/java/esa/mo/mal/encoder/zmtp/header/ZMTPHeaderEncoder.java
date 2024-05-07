@@ -27,7 +27,6 @@ import esa.mo.mal.transport.zmtp.ZMTPTransport;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -84,17 +83,6 @@ public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
             value >>>= 7;
         }
         outputStream.write((byte) ((int) value & 127));
-    }
-
-    @Override
-    public MALListEncoder createListEncoder(final java.util.List value) throws MALException {
-        checkForNull(value);
-        try {
-            addVariableUnsignedInt(value.size());
-        } catch (IOException ex) {
-            throw new MALException(ENCODING_EXCEPTION_STR, ex);
-        }
-        return this;
     }
 
     @Override

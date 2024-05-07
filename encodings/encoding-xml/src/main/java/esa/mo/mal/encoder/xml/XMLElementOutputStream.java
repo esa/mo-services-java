@@ -23,8 +23,8 @@ package esa.mo.mal.encoder.xml;
 import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
 import java.io.OutputStream;
 import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -36,7 +36,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class XMLElementOutputStream implements MALElementOutputStream {
 
     protected final OutputStream dos;
-    protected MALListEncoder enc;
+    protected MALEncoder enc;
 
     public XMLElementOutputStream(OutputStream os) {
         this.dos = os;

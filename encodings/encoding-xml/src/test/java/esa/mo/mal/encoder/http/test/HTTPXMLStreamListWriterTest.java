@@ -2,8 +2,9 @@ package esa.mo.mal.encoder.http.test;
 
 import static org.junit.Assert.*;
 
+import esa.mo.mal.encoder.xml.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
-import org.ccsds.moims.mo.mal.MALListEncoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -11,16 +12,13 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import esa.mo.mal.encoder.xml.XMLStreamWriter;
-
 import org.w3c.dom.NodeList;
 
 public class HTTPXMLStreamListWriterTest {
 
   XMLTestHelper helper = new XMLTestHelper();
   ByteArrayOutputStream baos;
-  MALListEncoder writer;
+  MALEncoder writer;
 
   @Before
   public void setUp() throws Exception {

@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Composite;
@@ -42,6 +42,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
@@ -57,7 +58,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  * @author rvangijlswijk
  *
  */
-public class XMLStreamWriter implements MALListEncoder {
+public class XMLStreamWriter implements MALEncoder {
 
     protected OutputStream dos;
     protected javax.xml.stream.XMLStreamWriter writer;
@@ -225,7 +226,6 @@ public class XMLStreamWriter implements MALListEncoder {
     @Override
     public void encodeNullableFloat(Float att) throws MALException {
         addNullableNode("Float", att);
-
     }
 
     @Override
@@ -236,85 +236,71 @@ public class XMLStreamWriter implements MALListEncoder {
     @Override
     public void encodeNullableOctet(Byte att) throws MALException {
         addNullableNode("Octet", att);
-
     }
 
     @Override
     public void encodeNullableUOctet(UOctet att) throws MALException {
         addNullableNode("UOctet", att);
-
     }
 
     @Override
     public void encodeNullableShort(Short att) throws MALException {
         addNullableNode("Short", att);
-
     }
 
     @Override
     public void encodeNullableUShort(UShort att) throws MALException {
         addNullableNode("UShort", att);
-
     }
 
     @Override
     public void encodeNullableInteger(Integer att) throws MALException {
         addNullableNode("Integer", att);
-
     }
 
     @Override
     public void encodeNullableUInteger(UInteger att) throws MALException {
         addNullableNode("UInteger", att);
-
     }
 
     @Override
     public void encodeNullableLong(Long att) throws MALException {
         addNullableNode("Long", att);
-
     }
 
     @Override
     public void encodeNullableULong(ULong att) throws MALException {
         addNullableNode("ULong", att);
-
     }
 
     @Override
     public void encodeNullableString(String att) throws MALException {
         addNullableNode("String", att);
-
     }
 
     @Override
     public void encodeNullableBlob(Blob att) throws MALException {
         addNullableNode("Blob", att);
-
     }
 
     @Override
     public void encodeNullableDuration(Duration att) throws MALException {
         addNullableNode("Duration", att);
-
     }
 
     @Override
     public void encodeNullableFineTime(FineTime att) throws MALException {
         addNullableNode("FineTime", att);
-
     }
 
     @Override
     public void encodeNullableTime(Time att) throws MALException {
         addNullableNode("Time", att);
-
     }
 
     @Override
     public void encodeNullableURI(URI att) throws MALException {
         addNullableNode("URI", att);
-
     }
 
     @Override
@@ -512,15 +498,6 @@ public class XMLStreamWriter implements MALListEncoder {
     }
 
     @Override
-    public MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException {
-        return new XMLStreamListWriter(this.writer, list);
-    }
-
-    public MALListEncoder createListEncoder(List list, String typeName) throws IllegalArgumentException, MALException {
-        return new XMLStreamListWriter(this.writer, list, typeName);
-    }
-
-    @Override
     public void close() {
         try {
             writer.writeDTD(LINE_END);
@@ -550,7 +527,7 @@ public class XMLStreamWriter implements MALListEncoder {
 
     @Override
     public void encodeHomogeneousList(HomogeneousList list) throws MALException {
-        XMLStreamListWriter listEncoder = (XMLStreamListWriter) this.createListEncoder(list);
+        XMLStreamListWriter listEncoder = new XMLStreamListWriter(this.writer, list);
         for (int i = 0; i < list.size(); i++) {
             Object obj = list.get(i);
             Element element = (obj instanceof Element) ? (Element) obj : (Element) Attribute.javaType2Attribute(obj);
@@ -560,6 +537,23 @@ public class XMLStreamWriter implements MALListEncoder {
                 encodeComposite(name, element.getClass(), (Composite) element, true);
             } else {
                 element.encode(listEncoder);
+            }
+        }
+        listEncoder.close();
+    }
+
+    @Override
+    public void encodeHeterogeneousList(HeterogeneousList list) throws MALException {
+        XMLStreamListWriter listEncoder = new XMLStreamListWriter(this.writer, list);
+        for (int i = 0; i < list.size(); i++) {
+            Object entry = list.get(i);
+            if (!(entry instanceof Element)) {
+                entry = Attribute.javaType2Attribute(entry);
+            }
+            if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
+                listEncoder.encodeAbstractElement((Element) entry);
+            } else {
+                listEncoder.encodeNullableAbstractElement((Element) entry);
             }
         }
         listEncoder.close();

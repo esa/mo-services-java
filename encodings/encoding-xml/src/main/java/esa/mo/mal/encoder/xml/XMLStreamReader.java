@@ -40,6 +40,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -476,6 +477,23 @@ public class XMLStreamReader implements MALDecoder {
     @Override
     public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
         return (HomogeneousList) xmlReader.readNextElement(list);
+    }
+
+    @Override
+    public HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException {
+        MALListDecoder listDecoder = this.createListDecoder(list);
+        int decodedSize = listDecoder.size();
+        if (decodedSize > 0) {
+            list.ensureCapacity(decodedSize);
+        }
+        while (listDecoder.hasNext()) {
+            if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
+                list.add((Element) this.decodeAbstractElement());
+            } else {
+                list.add((Element) this.decodeNullableAbstractElement());
+            }
+        }
+        return list;
     }
 
     private static String uriToUtf8(String uri) {

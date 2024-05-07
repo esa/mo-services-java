@@ -32,8 +32,6 @@ import org.ccsds.moims.mo.mal.encoding.StreamHolder;
  */
 public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.VariableBinaryEncoder {
 
-    private int openCount = 1;
-
     /**
      * Constructor.
      *
@@ -53,14 +51,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
      */
     protected SplitBinaryEncoder(final StreamHolder os, final BinaryTimeHandler timeHandler) {
         super(os, timeHandler);
-    }
-
-    @Override
-    public org.ccsds.moims.mo.mal.MALListEncoder createListEncoder(
-            final java.util.List value) throws MALException {
-        ++openCount;
-
-        return super.createListEncoder(value);
     }
 
     /**
@@ -103,14 +93,10 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
 
     @Override
     public void close() {
-        --openCount;
-
-        if (1 > openCount) {
-            try {
-                ((SplitBinaryStreamHolder) outputStream).close();
-            } catch (IOException ex) {
-                // do nothing
-            }
+        try {
+            ((SplitBinaryStreamHolder) outputStream).close();
+        } catch (IOException ex) {
+            // do nothing
         }
     }
 

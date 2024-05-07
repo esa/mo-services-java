@@ -1,16 +1,16 @@
 package esa.mo.mal.encoder.http.test;
 
 import java.io.ByteArrayOutputStream;
+import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
-import org.junit.Test;
 import esa.mo.mal.encoder.xml.XMLStreamWriter;
+import org.junit.Test;
 
 public class HTTPXMLSchemaTest {
 
   XMLTestHelper helper = new XMLTestHelper();
   ByteArrayOutputStream baos;
-  MALListEncoder writer;
+  MALEncoder writer;
 
   @Test
   public void testSimpleBodySchema() throws MALException {

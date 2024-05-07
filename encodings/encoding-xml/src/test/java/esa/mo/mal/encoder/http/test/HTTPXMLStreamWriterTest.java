@@ -2,13 +2,13 @@ package esa.mo.mal.encoder.http.test;
 
 import static org.junit.Assert.*;
 
+import esa.mo.mal.encoder.xml.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
@@ -29,12 +29,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
-import esa.mo.mal.encoder.xml.XMLStreamWriter;
 
 public class HTTPXMLStreamWriterTest {
 
   ByteArrayOutputStream baos;
-  MALListEncoder writer;
+  MALEncoder writer;
   XMLTestHelper helper = new XMLTestHelper();
 
   @Before

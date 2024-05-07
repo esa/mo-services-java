@@ -23,11 +23,13 @@ package org.ccsds.moims.mo.mal.encoding;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -452,6 +454,23 @@ public abstract class Decoder implements MALDecoder {
             } else {
                 // Normal Case
                 list.add(element.decode(this));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException {
+        MALListDecoder listDecoder = this.createListDecoder(list);
+        int decodedSize = listDecoder.size();
+        if (decodedSize > 0) {
+            list.ensureCapacity(decodedSize);
+        }
+        while (listDecoder.hasNext()) {
+            if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
+                list.add((Element) this.decodeAbstractElement());
+            } else {
+                list.add((Element) this.decodeNullableAbstractElement());
             }
         }
         return list;
