@@ -613,15 +613,13 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
             RLOGGER.warning("StatusCode 204 received");
             return null;
         }
-        if (statusCode >= 400) {
+        if (statusCode >= 400 && statusCode <= 511) {
             UInteger errorNumber = StatusCodeHelper.getMALErrorFromStatusCode(statusCode);
-
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             MALElementOutputStream os = getStreamFactory().createOutputStream(baos);
             os.writeElement(errorNumber, null);
             os.writeElement(new Union("remote"), null);
             os.close();
-
             packetData = baos.toByteArray();
         }
 
@@ -630,8 +628,8 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         sb.append("Encoded received message:\n");
         sb.append(encodedMsg);
 
-        returnable = new GENMessage(wrapBodyParts, false, header, qosProperties, packetData,
-                getStreamFactory());
+        returnable = new GENMessage(wrapBodyParts, false, header,
+                qosProperties, packetData, getStreamFactory());
 
         sb.append("\nDecoded message:");
         sb.append(returnable.getBody().toString());

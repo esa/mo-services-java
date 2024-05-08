@@ -57,7 +57,6 @@ public class StatusCodeHelper {
             case 500:
             default:
                 return MALHelper.INTERNAL_ERROR_NUMBER;
-                //return new UInteger(statusCode); // Convert to error
         }
     }
 
