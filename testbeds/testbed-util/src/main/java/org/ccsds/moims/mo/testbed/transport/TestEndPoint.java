@@ -56,6 +56,11 @@ public class TestEndPoint implements MALEndpoint {
     }
 
     @Override
+    public void stopMessageDelivery() throws MALException {
+        delegate.stopMessageDelivery();
+    }
+
+    @Override
     public void close() throws MALException {
         delegate.close();
     }
@@ -71,6 +76,19 @@ public class TestEndPoint implements MALEndpoint {
                 interactionType, interactionStage, transactionId, serviceArea,
                 service, operation, serviceVersion,
                 isErrorMessage, supplements, qosProperties, body);
+    }
+
+    @Override
+    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
+            InteractionType interactionType, UOctet interactionStage, Long transactionId,
+            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
+            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
+            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
+        return delegate.createMessage(authenticationId, uriTo, timestamp,
+                interactionType, interactionStage, transactionId,
+                serviceAreaNumber, serviceNumber, operationNumber,
+                areaVersion, isErrorMessage, supplements,
+                qosProperties, body);
     }
 
     @Override
@@ -304,23 +322,5 @@ public class TestEndPoint implements MALEndpoint {
             return "TestMessage [header=" + header
                     + ", body=" + body + ", props=" + props + "]";
         }
-    }
-
-    @Override
-    public void stopMessageDelivery() throws MALException {
-        delegate.stopMessageDelivery();
-    }
-
-    @Override
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
-            InteractionType interactionType, UOctet interactionStage, Long transactionId,
-            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
-            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
-            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
-        return delegate.createMessage(authenticationId, uriTo, timestamp,
-                interactionType, interactionStage, transactionId,
-                serviceAreaNumber, serviceNumber, operationNumber,
-                areaVersion, isErrorMessage, supplements,
-                qosProperties, body);
     }
 }
