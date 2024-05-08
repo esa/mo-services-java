@@ -459,8 +459,7 @@ public class XMLStreamReader implements MALDecoder {
         return xmlReader.extractNextString(true);
     }
 
-    @Override
-    public MALListDecoder createListDecoder(List list) throws MALException {
+    public XMLStreamListReader createListDecoder(List list) throws MALException {
         return new XMLStreamListReader(list, xmlReader.getEventReader());
     }
 

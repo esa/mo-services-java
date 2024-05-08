@@ -29,9 +29,7 @@ import static esa.mo.mal.encoder.string.StringEncoder.STR_NULL_ESC;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.encoding.Decoder;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -69,11 +67,6 @@ public class StringDecoder extends Decoder {
      */
     protected StringDecoder(final BufferHolder src) {
         super(src);
-    }
-
-    @Override
-    public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new StringListDecoder(list, sourceBuffer);
     }
 
     @Override

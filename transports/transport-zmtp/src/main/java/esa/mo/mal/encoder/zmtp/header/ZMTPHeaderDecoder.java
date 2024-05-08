@@ -23,9 +23,7 @@ package esa.mo.mal.encoder.zmtp.header;
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
 import esa.mo.mal.transport.zmtp.ZMTPTransport;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -89,12 +87,6 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
             final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
         super(src, timeHandler);
         this.transport = transport;
-    }
-
-    @Override
-    public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new ZMTPHeaderListDecoder(list, 
-                (FixedBinaryBufferHolder) sourceBuffer, transport, timeHandler);
     }
 
     /**

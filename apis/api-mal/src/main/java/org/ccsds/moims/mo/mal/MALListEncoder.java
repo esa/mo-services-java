@@ -24,7 +24,7 @@ package org.ccsds.moims.mo.mal;
  * Encoder for encoding lists.
  */
 @Deprecated
-public interface MALListEncoder extends MALEncoder {
+public interface MALListEncoder {
 
     /**
      * Signals that the list has finished.

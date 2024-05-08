@@ -44,8 +44,7 @@ import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
- *
- * @author Cesar.Coelho
+ * The XMLReader class to extract information from an xml file.
  */
 public class XMLReader {
 
@@ -163,7 +162,7 @@ public class XMLReader {
 
     private HomogeneousList extractNextListElements(HomogeneousList list) throws IllegalArgumentException {
         try {
-            XMLStreamListReader listDecoder = (XMLStreamListReader) xmlStreamReader.createListDecoder(list);
+            XMLStreamListReader listDecoder = xmlStreamReader.createListDecoder(list);
 
             while (listDecoder.hasNext()) {
                 Element element = list.createTypedElement();

@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
@@ -383,17 +382,6 @@ public interface MALDecoder {
      * @throws MALException If an error detected during decoding.
      */
     Attribute decodeNullableAttribute() throws MALException;
-
-    /**
-     * Creates a list decoder for decoding a list element.
-     *
-     * @param list The list to decode, java.lang.IllegalArgumentException
-     * exception thrown if null.
-     * @return The new list decoder.
-     * @throws java.lang.IllegalArgumentException If the list argument is null.
-     * @throws MALException If an error detected during list decoder creation.
-     */
-    MALListDecoder createListDecoder(List list) throws java.lang.IllegalArgumentException, MALException;
 
     /**
      * Decodes the typeId of an abstract element.

@@ -22,9 +22,7 @@ package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.math.BigInteger;
-import java.util.List;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 
 /**
@@ -81,11 +79,6 @@ public class FixedBinaryDecoder extends esa.mo.mal.encoder.binary.base.BaseBinar
      */
     public FixedBinaryDecoder(final BufferHolder src, final BinaryTimeHandler timeHandler) {
         super(src, timeHandler);
-    }
-
-    @Override
-    public MALListDecoder createListDecoder(final List list) throws MALException {
-        return new FixedBinaryListDecoder(list, sourceBuffer);
     }
 
     /**
