@@ -30,27 +30,28 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  * Instance of the transport factory for a HTTP transport.
  */
 public class HTTPTransportFactoryImpl extends MALTransportFactory {
-  private static final Object MUTEX = new Object();
-  private HTTPTransport transport = null;
 
-  /**
-   * Constructor.
-   *
-   * @param protocol The protocol string.
-   */
-  public HTTPTransportFactoryImpl(final String protocol) {
-    super(protocol);
-  }
+    private static final Object MUTEX = new Object();
+    private HTTPTransport transport = null;
 
-  @Override
-  public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException {
-    synchronized (MUTEX) {
-      if (null == transport) {
-        transport = new HTTPTransport(getProtocol(), '/', false, this, properties);
-        transport.init();
-      }
-
-      return transport;
+    /**
+     * Constructor.
+     *
+     * @param protocol The protocol string.
+     */
+    public HTTPTransportFactoryImpl(final String protocol) {
+        super(protocol);
     }
-  }
+
+    @Override
+    public MALTransport createTransport(final MALContext malContext, final Map properties) throws MALException {
+        synchronized (MUTEX) {
+            if (null == transport) {
+                transport = new HTTPTransport(getProtocol(), '/', false, this, properties);
+                transport.init();
+            }
+
+            return transport;
+        }
+    }
 }

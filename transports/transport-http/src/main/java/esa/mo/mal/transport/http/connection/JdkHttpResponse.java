@@ -20,79 +20,80 @@
  */
 package esa.mo.mal.transport.http.connection;
 
-import com.sun.net.httpserver.HttpExchange;
 import esa.mo.mal.transport.http.api.IHttpResponse;
+import static esa.mo.mal.transport.http.api.IPostClient.EMPTY_STRING_PLACEHOLDER;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.UriHelper;
-
-import static esa.mo.mal.transport.http.api.IPostClient.EMPTY_STRING_PLACEHOLDER;
-
+import com.sun.net.httpserver.HttpExchange;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * An implementation of the AbstractHttpResponse interface based on com.sun.net.httpserver.HttpExchange.
+ * An implementation of the AbstractHttpResponse interface based on
+ * com.sun.net.httpserver.HttpExchange.
  */
 public class JdkHttpResponse implements IHttpResponse {
 
-  protected final HttpExchange httpExchange;
+    protected final HttpExchange httpExchange;
 
-  private String[] asciiHeaders = new String[] { "X-MAL-From", "X-MAL-To", "Host", "request-target" };
+    private String[] asciiHeaders = new String[]{"X-MAL-From", "X-MAL-To", "Host", "request-target"};
 
-  protected int statusCode;
-  protected byte[] data;
+    protected int statusCode;
+    protected byte[] data;
 
-  /**
-   * Constructor.
-   * 
-   * @param httpExchange the HttpExchange object for initialisation of the final field
-   */
-  public JdkHttpResponse(HttpExchange httpExchange) {
-    this.httpExchange = httpExchange;
-  }
-
-  @Override
-  public void setStatusCode(int statusCode) {
-    this.statusCode = statusCode;
-  }
-
-  @Override
-  public void setReferer(String referer) {
-    setResponseHeader("X-MAL-From", referer);
-  }
-
-  @Override
-  public void setResponseHeader(String headerName, String headerValue) {
-    if (headerValue.equals(""))
-      headerValue = EMPTY_STRING_PLACEHOLDER;
-
-    if (Arrays.asList(asciiHeaders).contains(headerName)) {
-      headerValue = UriHelper.uriToAscii(headerValue);
+    /**
+     * Constructor.
+     *
+     * @param httpExchange the HttpExchange object for initialisation of the
+     * final field
+     */
+    public JdkHttpResponse(HttpExchange httpExchange) {
+        this.httpExchange = httpExchange;
     }
-    httpExchange.getResponseHeaders().set(headerName, headerValue);
-  }
 
-  @Override
-  public void writeFullResponseBody(byte[] data) throws HttpApiImplException {
-    this.data = data;
-  }
-
-  @Override
-  public void send() throws HttpApiImplException {
-
-    try {
-      if (data == null || data.length <= 0) {
-        httpExchange.sendResponseHeaders(statusCode, -1);
-      } else {
-        httpExchange.sendResponseHeaders(statusCode, data.length);
-        DataOutputStream os = new DataOutputStream(httpExchange.getResponseBody());
-        os.write(data);
-        os.flush();
-      }
-    } catch (IOException ex) {
-      throw new HttpApiImplException("JdkHttpResponse: IOException at send()", ex);
+    @Override
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
-    httpExchange.close();
-  }
+
+    @Override
+    public void setReferer(String referer) {
+        setResponseHeader("X-MAL-From", referer);
+    }
+
+    @Override
+    public void setResponseHeader(String headerName, String headerValue) {
+        if (headerValue.equals("")) {
+            headerValue = EMPTY_STRING_PLACEHOLDER;
+        }
+
+        if (Arrays.asList(asciiHeaders).contains(headerName)) {
+            headerValue = UriHelper.uriToAscii(headerValue);
+        }
+        httpExchange.getResponseHeaders().set(headerName, headerValue);
+    }
+
+    @Override
+    public void writeFullResponseBody(byte[] data) throws HttpApiImplException {
+        this.data = data;
+    }
+
+    @Override
+    public void send() throws HttpApiImplException {
+
+        try {
+            if (data == null || data.length <= 0) {
+                httpExchange.sendResponseHeaders(statusCode, -1);
+            } else {
+                httpExchange.sendResponseHeaders(statusCode, data.length);
+                DataOutputStream os = new DataOutputStream(httpExchange.getResponseBody());
+                os.write(data);
+                os.flush();
+            }
+        } catch (IOException ex) {
+            throw new HttpApiImplException("JdkHttpResponse: IOException at send()", ex);
+        }
+        httpExchange.close();
+    }
 }

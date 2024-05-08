@@ -24,42 +24,43 @@ import esa.mo.mal.transport.http.util.HttpApiImplException;
 
 /**
  * A generic HTTP request object.
- * 
- * Provides standardised access to all necessary fields and data needed by hiding the usage of specific libraries.
+ *
+ * Provides standardised access to all necessary fields and data needed by
+ * hiding the usage of specific libraries.
  */
 public interface IHttpRequest {
 
-  /**
-   * Gets the full HTTP request URL (i.e. the "host" header field plus the request-target of the request-line).
-   * 
-   * @return the request URL
-   */
-  public String getRequestUrl();
+    /**
+     * Gets the full HTTP request URL (i.e. the "host" header field plus the
+     * request-target of the request-line).
+     *
+     * @return the request URL
+     */
+    public String getRequestUrl();
 
-  /**
-   * Gets the "referer" header field of the HTTP request.
-   * 
-   * @return the request referer
-   */
-  public String getReferer();
+    /**
+     * Gets the "referer" header field of the HTTP request.
+     *
+     * @return the request referer
+     */
+    public String getReferer();
 
-  /**
-   * Gets the header field value of the given header field name.
-   * 
-   * Needs to consider AbstractPostClient.EMPTY_STRING_PLACEHOLDER.
-   * 
-   * @param headerName
-   *            the header field name
-   * @return the header field value
-   */
-  public String getRequestHeader(String headerName);
+    /**
+     * Gets the header field value of the given header field name.
+     *
+     * Needs to consider AbstractPostClient.EMPTY_STRING_PLACEHOLDER.
+     *
+     * @param headerName the header field name
+     * @return the header field value
+     */
+    public String getRequestHeader(String headerName);
 
-  /**
-   * Reads the (possibly empty) full HTTP message body.
-   * 
-   * @return the optional data bytes transmitted
-   * @throws HttpApiImplException
-   *             in case an error occurs when reading the request body
-   */
-  public byte[] readFullBody() throws HttpApiImplException;
+    /**
+     * Reads the (possibly empty) full HTTP message body.
+     *
+     * @return the optional data bytes transmitted
+     * @throws HttpApiImplException in case an error occurs when reading the
+     * request body
+     */
+    public byte[] readFullBody() throws HttpApiImplException;
 }

@@ -20,33 +20,33 @@
  */
 package esa.mo.mal.transport.http.receiving;
 
-import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.api.IHttpResponse;
+import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 
 /**
- * Extension of HTTPContextHandlerNoResponse.
- * Additionally adds support for the HTTP request/response paradigm.
- * I.e. optionally stores the HTTP response to the parent transport for later processing.
+ * Extension of HTTPContextHandlerNoResponse. Additionally adds support for the
+ * HTTP request/response paradigm. I.e. optionally stores the HTTP response to
+ * the parent transport for later processing.
  */
 public class HTTPContextHandlerRequestResponse extends HTTPContextHandlerNoResponse {
 
-  /**
-   * Constructor.
-   *
-   * @param transport The parent HTTP transport.
-   */
-  public HTTPContextHandlerRequestResponse(HTTPTransport transport) {
-    super(transport);
-  }
-
-  @Override
-  public void processResponse(IHttpResponse response) throws HttpApiImplException {
-    if (HTTPTransport.messageHasEmtpyHttpResponse(malMessageHeader)) {
-      super.processResponse(response);
-    } else {
-      transport.storeOpenHttpResponse(malMessageHeader.getTo().getValue(), malMessageHeader.getTransactionId(),
-          response);
+    /**
+     * Constructor.
+     *
+     * @param transport The parent HTTP transport.
+     */
+    public HTTPContextHandlerRequestResponse(HTTPTransport transport) {
+        super(transport);
     }
-  }
+
+    @Override
+    public void processResponse(IHttpResponse response) throws HttpApiImplException {
+        if (HTTPTransport.messageHasEmtpyHttpResponse(malMessageHeader)) {
+            super.processResponse(response);
+        } else {
+            transport.storeOpenHttpResponse(malMessageHeader.getTo().getValue(),
+                    malMessageHeader.getTransactionId(), response);
+        }
+    }
 }

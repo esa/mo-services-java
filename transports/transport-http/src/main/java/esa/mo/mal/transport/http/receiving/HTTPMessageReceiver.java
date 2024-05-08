@@ -30,41 +30,41 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * The HTTP message receiver. Holds a reference to the transport instance that created it and defines a single method
- * for the reception of an encoded message.
+ * The HTTP message receiver. Holds a reference to the transport instance that
+ * created it and defines a single method for the reception of an encoded
+ * message.
  */
 public class HTTPMessageReceiver {
-  private final HTTPTransport transport;
-  private final MALMessageHeader header;
-  private final int statusCode;
 
-  /**
-   * Creates a new instance of HTTPMessageReceiver
-   *
-   * @param transport
-   *            The transport instance to pass received messages to.
-   * @param header
-   *            The message header.
-   */
-  public HTTPMessageReceiver(HTTPTransport transport, MALMessageHeader header, int statusCode) {
-    this.transport = transport;
-    this.header = header;
-    this.statusCode = statusCode;
-  }
+    private final HTTPTransport transport;
+    private final MALMessageHeader header;
+    private final int statusCode;
 
-  /**
-   * Used to pass an encoded message to a HTTP Transport instance.
-   *
-   * @param packet
-   *            The encoded message.
-   */
-  public void receive(final byte[] packet) {
-      try {
-        PacketToString smsg = new PacketToString(packet);
-        GENMessage malMsg = transport.decodeMessage(new HTTPHeaderAndBody(header, packet, statusCode));
-        transport.receive(null,new IncomingMessageHolder(malMsg, smsg));
-      } catch (MALException ex) {
-        Logger.getLogger(HTTPMessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
-      }
-  }
+    /**
+     * Creates a new instance of HTTPMessageReceiver
+     *
+     * @param transport The transport instance to pass received messages to.
+     * @param header The message header.
+     * @param statusCode The status code.
+     */
+    public HTTPMessageReceiver(HTTPTransport transport, MALMessageHeader header, int statusCode) {
+        this.transport = transport;
+        this.header = header;
+        this.statusCode = statusCode;
+    }
+
+    /**
+     * Used to pass an encoded message to a HTTP Transport instance.
+     *
+     * @param packet The encoded message.
+     */
+    public void receive(final byte[] packet) {
+        try {
+            PacketToString smsg = new PacketToString(packet);
+            GENMessage malMsg = transport.decodeMessage(new HTTPHeaderAndBody(header, packet, statusCode));
+            transport.receive(null, new IncomingMessageHolder(malMsg, smsg));
+        } catch (MALException ex) {
+            Logger.getLogger(HTTPMessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -35,42 +35,44 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * The HttpHandler implementation for the MAL HTTP Transport Server.
- * Reads the encoded MAL message from the HTTP request and forwards it to the HTTPTransport.
+ * The HttpHandler implementation for the MAL HTTP Transport Server. Reads the
+ * encoded MAL message from the HTTP request and forwards it to the
+ * HTTPTransport.
  */
 public class HTTPContextHandlerNoEncoding implements IContextHandler {
-  protected final HTTPTransport transport;
-  protected byte[] data;
 
-  /**
-   * Constructor.
-   *
-   * @param transport The parent HTTP transport.
-   */
-  public HTTPContextHandlerNoEncoding(HTTPTransport transport) {
-    this.transport = transport;
-  }
+    protected final HTTPTransport transport;
+    protected byte[] data;
 
-  @Override
-  public void processRequest(IHttpRequest request) throws HttpApiImplException {
-    data = request.readFullBody();
-  }
+    /**
+     * Constructor.
+     *
+     * @param transport The parent HTTP transport.
+     */
+    public HTTPContextHandlerNoEncoding(HTTPTransport transport) {
+        this.transport = transport;
+    }
 
-  @Override
-  public void processResponse(IHttpResponse response) throws HttpApiImplException {
-    response.setStatusCode(204);
-    response.send();
-  }
+    @Override
+    public void processRequest(IHttpRequest request) throws HttpApiImplException {
+        data = request.readFullBody();
+    }
 
-  @Override
-  public void finishHandling() {
-      try {
-          GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
-                  new HashMap(), data, transport.getStreamFactory());
-          IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(data));
-          transport.receive(null, msgHolder);
-      } catch (MALException ex) {
-          Logger.getLogger(HTTPContextHandlerNoEncoding.class.getName()).log(Level.SEVERE, null, ex);
-      }
-  }
+    @Override
+    public void processResponse(IHttpResponse response) throws HttpApiImplException {
+        response.setStatusCode(204);
+        response.send();
+    }
+
+    @Override
+    public void finishHandling() {
+        try {
+            GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
+                    new HashMap(), data, transport.getStreamFactory());
+            IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(data));
+            transport.receive(null, msgHolder);
+        } catch (MALException ex) {
+            Logger.getLogger(HTTPContextHandlerNoEncoding.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

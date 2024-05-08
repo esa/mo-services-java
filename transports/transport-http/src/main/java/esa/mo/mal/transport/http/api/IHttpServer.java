@@ -25,51 +25,53 @@ import java.net.InetSocketAddress;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 
 /**
- * This interface represents the relevant high-level behaviour a HTTP server provides.
- * 
- * Actual implementations shall offer the necessary functionality specified by the required methods but be transparent
- * to any low-level details of the specific technology.
+ * This interface represents the relevant high-level behaviour a HTTP server
+ * provides.
+ *
+ * Actual implementations shall offer the necessary functionality specified by
+ * the required methods but be transparent to any low-level details of the
+ * specific technology.
  */
 public interface IHttpServer {
 
-  /**
-   * Initialises the actual HTTP server which will bind to the specified InetSocketAddress.
-   * 
-   * @param serverSocket
-   *            the InetSocketAddress (IP address and port number) the server binds to
-   * @param useHttps
-   *            whether the communication should be secured via SSL/TLS
-   * @param keystoreFilename
-   *            the Java KeyStore filename
-   * @param keystorePassword
-   *            the Java KeyStore password
-   * @throws HttpApiImplException
-   *             in case an error occurs when initialising the server
-   */
-  public void initServer(InetSocketAddress serverSocket, boolean useHttps, String keystoreFilename,
-      String keystorePassword) throws HttpApiImplException;
+    /**
+     * Initialises the actual HTTP server which will bind to the specified
+     * InetSocketAddress.
+     *
+     * @param serverSocket the InetSocketAddress (IP address and port number)
+     * the server binds to
+     * @param useHttps whether the communication should be secured via SSL/TLS
+     * @param keystoreFilename the Java KeyStore filename
+     * @param keystorePassword the Java KeyStore password
+     * @throws HttpApiImplException in case an error occurs when initialising
+     * the server
+     */
+    public void initServer(InetSocketAddress serverSocket, boolean useHttps, String keystoreFilename,
+            String keystorePassword) throws HttpApiImplException;
 
-  /**
-   * Adds the specified AbstractContextHandler to the HTTP server.
-   * 
-   * @param contextHandler
-   *            the AbstractContextHandler to invoke for incoming requests
-   */
-  public void addContextHandler(IContextHandler contextHandler);
+    /**
+     * Adds the specified AbstractContextHandler to the HTTP server.
+     *
+     * @param contextHandler the AbstractContextHandler to invoke for incoming
+     * requests
+     */
+    public void addContextHandler(IContextHandler contextHandler);
 
-  /**
-   * Starts the HTTP server to listen for incoming connections and to delegate processing to the context handler.
-   * 
-   * @throws HttpApiImplException
-   *             in case an error occurs when starting the server
-   */
-  public void startServer() throws HttpApiImplException;
+    /**
+     * Starts the HTTP server to listen for incoming connections and to delegate
+     * processing to the context handler.
+     *
+     * @throws HttpApiImplException in case an error occurs when starting the
+     * server
+     */
+    public void startServer() throws HttpApiImplException;
 
-  /**
-   * Stops the HTTP server listening for connections and closes any open resources.
-   * 
-   * @throws HttpApiImplException
-   *             in case an error occurs when stopping the server
-   */
-  public void stopServer() throws HttpApiImplException;
+    /**
+     * Stops the HTTP server listening for connections and closes any open
+     * resources.
+     *
+     * @throws HttpApiImplException in case an error occurs when stopping the
+     * server
+     */
+    public void stopServer() throws HttpApiImplException;
 }

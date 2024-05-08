@@ -28,40 +28,40 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  * Small class to hold the HTTP header and body information.
  */
 public class HTTPHeaderAndBody {
-  private final MALMessageHeader header;
-  private final byte[] encodedPacketData;
-  private final int statusCode;
 
-  /**
-   * Constructor
-   * 
-   * @param header
-   *            The message header
-   * @param encodedPacketData
-   *            Encoded message body
-   */
-  public HTTPHeaderAndBody(MALMessageHeader header, byte[] encodedPacketData, int statusCode) {
-    this.header = header;
-    this.encodedPacketData = encodedPacketData;
-    this.statusCode = statusCode;
-  }
+    private final MALMessageHeader header;
+    private final byte[] encodedPacketData;
+    private final int statusCode;
 
-  public MALMessageHeader getHeader() {
-    return header;
-  }
+    /**
+     * Constructor
+     *
+     * @param header The message header.
+     * @param encodedPacketData Encoded message body.
+     * @param statusCode The status code.
+     */
+    public HTTPHeaderAndBody(MALMessageHeader header, byte[] encodedPacketData, int statusCode) {
+        this.header = header;
+        this.encodedPacketData = encodedPacketData;
+        this.statusCode = statusCode;
+    }
 
-  public byte[] getEncodedPacketData() {
-    return encodedPacketData;
-  }
+    public MALMessageHeader getHeader() {
+        return header;
+    }
 
-  public int getStatusCode() {
-    return statusCode;
-  }
+    public byte[] getEncodedPacketData() {
+        return encodedPacketData;
+    }
 
-  @Override
-  public String toString() {
-    return "HTTPHeaderAndBody [header=" + header + ", encodedPacketData=" + Arrays.toString(encodedPacketData)
-        + ", statusCode=" + statusCode + "]";
-  }
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    @Override
+    public String toString() {
+        return "HTTPHeaderAndBody [header=" + header + ", encodedPacketData="
+                + Arrays.toString(encodedPacketData) + ", statusCode=" + statusCode + "]";
+    }
 
 }

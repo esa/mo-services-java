@@ -20,81 +20,80 @@
  */
 package esa.mo.mal.transport.http.connection;
 
+import esa.mo.mal.transport.http.api.IContextHandler;
+import esa.mo.mal.transport.http.api.IHttpServer;
+import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
+import esa.mo.mal.transport.http.util.HttpApiImplException;
+import esa.mo.mal.transport.http.util.SSLHelper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
-import esa.mo.mal.transport.http.api.IContextHandler;
-import esa.mo.mal.transport.http.api.IHttpServer;
-import esa.mo.mal.transport.http.util.HttpApiImplException;
-import esa.mo.mal.transport.http.util.SSLHelper;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-
 import javax.net.ssl.SSLContext;
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 /**
- * An implementation of the AbstractHttpServer interface based on com.sun.net.httpserver.HttpServer.
+ * An implementation of the AbstractHttpServer interface based on
+ * com.sun.net.httpserver.HttpServer.
  */
 public class JdkServer implements IHttpServer {
 
-  protected HttpServer server;
+    protected HttpServer server;
 
-  @SuppressWarnings("restriction")
-  @Override
-  public void initServer(InetSocketAddress serverSocket, boolean useHttps, String keystoreFilename,
-      String keystorePassword) throws HttpApiImplException {
-    try {
-      if (useHttps) {
-        SSLContext sslContext = SSLHelper.createSSLContext(keystoreFilename, keystorePassword);
-        HttpsServer httpsServer = HttpsServer.create(serverSocket, 0);
-        httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
-        server = httpsServer;
-      } else {
-        HttpServer httpServer = HttpServer.create(serverSocket, 0);
-        server = httpServer;
-      }
-      server.setExecutor(Executors.newCachedThreadPool());
-    } catch (IOException ex) {
-      throw new HttpApiImplException("JdkServer: IOException at initServer()", ex);
-    }
-  }
-
-  @SuppressWarnings("restriction")
-  @Override
-  public void addContextHandler(final IContextHandler contextHandler) {
-    server.createContext("/", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange httpExchange) throws IOException {
+    @SuppressWarnings("restriction")
+    @Override
+    public void initServer(InetSocketAddress serverSocket, boolean useHttps, String keystoreFilename,
+            String keystorePassword) throws HttpApiImplException {
         try {
-          contextHandler.processRequest(new JdkHttpRequest(httpExchange));
-          contextHandler.processResponse(new JdkHttpResponse(httpExchange));
-          contextHandler.finishHandling();
-        } catch (HttpApiImplException ex) {
-          RLOGGER.severe(ex.getMessage());
-          throw new IOException("JdkServer.addContextHandler(): HttpApiImplException at HttpHandler.handle()", ex);
-        } catch (Throwable ex) {
-          RLOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-          throw ex;
+            if (useHttps) {
+                SSLContext sslContext = SSLHelper.createSSLContext(keystoreFilename, keystorePassword);
+                HttpsServer httpsServer = HttpsServer.create(serverSocket, 0);
+                httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
+                server = httpsServer;
+            } else {
+                HttpServer httpServer = HttpServer.create(serverSocket, 0);
+                server = httpServer;
+            }
+            server.setExecutor(Executors.newCachedThreadPool());
+        } catch (IOException ex) {
+            throw new HttpApiImplException("JdkServer: IOException at initServer()", ex);
         }
-      }
-    });
-  }
+    }
 
-  @SuppressWarnings("restriction")
-  @Override
-  public void startServer() throws HttpApiImplException {
-    server.start();
-  }
+    @SuppressWarnings("restriction")
+    @Override
+    public void addContextHandler(final IContextHandler contextHandler) {
+        server.createContext("/", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange httpExchange) throws IOException {
+                try {
+                    contextHandler.processRequest(new JdkHttpRequest(httpExchange));
+                    contextHandler.processResponse(new JdkHttpResponse(httpExchange));
+                    contextHandler.finishHandling();
+                } catch (HttpApiImplException ex) {
+                    RLOGGER.severe(ex.getMessage());
+                    throw new IOException("JdkServer.addContextHandler(): HttpApiImplException at HttpHandler.handle()", ex);
+                } catch (Throwable ex) {
+                    RLOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+                    throw ex;
+                }
+            }
+        });
+    }
 
-  @SuppressWarnings("restriction")
-  @Override
-  public void stopServer() throws HttpApiImplException {
-    server.stop(0);
-  }
+    @SuppressWarnings("restriction")
+    @Override
+    public void startServer() throws HttpApiImplException {
+        server.start();
+    }
+
+    @SuppressWarnings("restriction")
+    @Override
+    public void stopServer() throws HttpApiImplException {
+        server.stop(0);
+    }
 }

@@ -4,26 +4,26 @@ import java.io.UnsupportedEncodingException;
 
 public class UriHelper {
 
-  public static String uriToAscii(String uri) {
+    public static String uriToAscii(String uri) {
+        String encodedUri = "";
 
-    String encodedUri = "";
-    try {
-      encodedUri = java.net.URLEncoder.encode(uri, "US-ASCII");
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+        try {
+            encodedUri = java.net.URLEncoder.encode(uri, "US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return encodedUri;
     }
-    return encodedUri;
-  }
 
-  public static String uriToUtf8(String uri) {
+    public static String uriToUtf8(String uri) {
+        String decodedUri = "";
 
-    String decodedUri = "";
-    try {
-      decodedUri = java.net.URLDecoder.decode(uri, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+        try {
+            decodedUri = java.net.URLDecoder.decode(uri, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return decodedUri;
     }
-    return decodedUri;
-  }
 
 }

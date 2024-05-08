@@ -31,95 +31,93 @@ import java.io.IOException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- * The implementation of the GENMessageSender interface for HTTP transport. Encodes and delivers the MAL message via a
- * HTTP request.
+ * The implementation of the GENMessageSender interface for HTTP transport.
+ * Encodes and delivers the MAL message via a HTTP request.
  */
 public class HTTPMessageSenderNoEncoding implements MessageSender<byte[]> {
-  protected final HTTPTransport transport;
-  protected final String abstractPostClientImpl;
 
-  /**
-   * Constructor.
-   *
-   * @param transport
-   *            The parent HTTP transport.
-   * @param abstractPostClientImpl
-   *            AbstractPostClient interface implementation
-   */
-  public HTTPMessageSenderNoEncoding(HTTPTransport transport, String abstractPostClientImpl) {
-    this.transport = transport;
-    this.abstractPostClientImpl = abstractPostClientImpl;
-  }
+    protected final HTTPTransport transport;
+    protected final String abstractPostClientImpl;
 
-  /**
-   * Lets the current thread sleep during the specified number of milliseconds.
-   * 
-   * @param millis
-   *            the duration of time to sleep in milliseconds
-   */
-  protected void threadSleep(int millis) {
-    try {
-      Thread.sleep(millis);
-    } catch (InterruptedException ex) {
-      // do nothing
-    }
-  }
-
-  @Override
-  public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
-    MALMessageHeader malMessageHeader = packetData.getOriginalMessage().getHeader();
-
-    String remoteUrl = malMessageHeader.getTo().getValue();
-    if (transport.useHttps()) {
-      remoteUrl = remoteUrl.replaceAll("malhttp://", "https://");
-    } else {
-      remoteUrl = remoteUrl.replaceAll("malhttp://", "http://");
+    /**
+     * Constructor.
+     *
+     * @param transport The parent HTTP transport.
+     * @param abstractPostClientImpl AbstractPostClient interface implementation
+     */
+    public HTTPMessageSenderNoEncoding(HTTPTransport transport, String abstractPostClientImpl) {
+        this.transport = transport;
+        this.abstractPostClientImpl = abstractPostClientImpl;
     }
 
-    try {
-      IPostClient client = createPostClient();
-      client.initAndConnectClient(remoteUrl, transport.useHttps(), transport.getKeystoreFilename(),
-          transport.getKeystorePassword());
-
-      if (malMessageHeader.getIsErrorMessage()) {
-        RLOGGER.severe("sendEncodedMessage: This is an untreated error message!");
-      }
-
-      client.writeFullRequestBody(packetData.getEncodedMessage());
-      client.sendRequest();
-
-      transport.runAsynchronousTask(new HTTPClientShutDown(client));
-      threadSleep(10);
-    } catch (HttpApiImplException ex) {
-      throw new IOException("HTTPMessageSender: HttpApiImplException at sendEncodedMessageViaHttpClient()", ex);
+    /**
+     * Lets the current thread sleep during the specified number of
+     * milliseconds.
+     *
+     * @param millis the duration of time to sleep in milliseconds
+     */
+    protected void threadSleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            // do nothing
+        }
     }
-  }
 
-  /**
-   * Creates an instance of the AbstractPostClient interface.
-   * 
-   * @return the AbstractPostClient implementation
-   * @throws HttpApiImplException
-   *             in case an error occurs when trying to instantiate the AbstractPostClient
-   */
-  public IPostClient createPostClient() throws HttpApiImplException {
-    try {
-      IPostClient clientImpl = (IPostClient) Class.forName(abstractPostClientImpl).newInstance();
-      return clientImpl;
-    } catch (ClassNotFoundException ex) {
-      throw new HttpApiImplException("HTTPMessageSender: ClassNotFoundException at createPostClient()", ex);
-    } catch (InstantiationException ex) {
-      throw new HttpApiImplException("HTTPMessageSender: InstantiationException at createPostClient()", ex);
-    } catch (IllegalAccessException ex) {
-      throw new HttpApiImplException("HTTPMessageSender: IllegalAccessException at createPostClient()", ex);
+    @Override
+    public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
+        MALMessageHeader malMessageHeader = packetData.getOriginalMessage().getHeader();
+
+        String remoteUrl = malMessageHeader.getTo().getValue();
+        if (transport.useHttps()) {
+            remoteUrl = remoteUrl.replaceAll("malhttp://", "https://");
+        } else {
+            remoteUrl = remoteUrl.replaceAll("malhttp://", "http://");
+        }
+
+        try {
+            IPostClient client = createPostClient();
+            client.initAndConnectClient(remoteUrl, transport.useHttps(),
+                    transport.getKeystoreFilename(), transport.getKeystorePassword());
+
+            if (malMessageHeader.getIsErrorMessage()) {
+                RLOGGER.severe("sendEncodedMessage: This is an untreated error message!");
+            }
+
+            client.writeFullRequestBody(packetData.getEncodedMessage());
+            client.sendRequest();
+            transport.runAsynchronousTask(new HTTPClientShutDown(client));
+            threadSleep(10);
+        } catch (HttpApiImplException ex) {
+            throw new IOException("HTTPMessageSender: HttpApiImplException at sendEncodedMessageViaHttpClient()", ex);
+        }
     }
-  }
 
-  @Override
-  public void close() {
-    // nothing to close
-  }
+    /**
+     * Creates an instance of the AbstractPostClient interface.
+     *
+     * @return the AbstractPostClient implementation
+     * @throws HttpApiImplException in case an error occurs when trying to
+     * instantiate the AbstractPostClient
+     */
+    public IPostClient createPostClient() throws HttpApiImplException {
+        try {
+            IPostClient clientImpl = (IPostClient) Class.forName(abstractPostClientImpl).newInstance();
+            return clientImpl;
+        } catch (ClassNotFoundException ex) {
+            throw new HttpApiImplException("HTTPMessageSender: ClassNotFoundException at createPostClient()", ex);
+        } catch (InstantiationException ex) {
+            throw new HttpApiImplException("HTTPMessageSender: InstantiationException at createPostClient()", ex);
+        } catch (IllegalAccessException ex) {
+            throw new HttpApiImplException("HTTPMessageSender: IllegalAccessException at createPostClient()", ex);
+        }
+    }
 
-  public void setRequestHeaders(MALMessageHeader malMessageHeader, IPostClient client) throws IOException {
-  }
+    @Override
+    public void close() {
+        // nothing to close
+    }
+
+    public void setRequestHeaders(MALMessageHeader malMessageHeader, IPostClient client) throws IOException {
+    }
 }

@@ -21,24 +21,23 @@
 package esa.mo.mal.transport.http.util;
 
 /**
- * Signals that an exception within the actual implementation of the HTTP API interface occurred.
+ * Signals that an exception within the actual implementation of the HTTP API
+ * interface occurred.
  */
 public class HttpApiImplException extends Exception {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1097862268697402976L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1097862268697402976L;
 
-  /**
-   * Constructs a new exception with the specified detail message and cause.
-   * 
-   * @param message
-   *            the detail message
-   * @param cause
-   *            the cause
-   */
-  public HttpApiImplException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    /**
+     * Constructs a new exception with the specified detail message and cause.
+     *
+     * @param message the detail message
+     * @param cause the cause
+     */
+    public HttpApiImplException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
