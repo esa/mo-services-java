@@ -26,7 +26,6 @@ import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -65,18 +64,6 @@ public class TCPIPEndpoint extends Endpoint {
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);
         }
-    }
-
-    @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo, final Time timestamp,
-            final InteractionType interactionType,
-            final UOctet interactionStage, final Long transactionId,
-            final UShort serviceArea, final UShort service,
-            final UShort operation, final UOctet serviceVersion,
-            final Boolean isErrorMessage, final NamedValueList supplements,
-            final Map qosProperties, final MALEncodedBody body) throws MALException {
-        return null;
     }
 
     /**

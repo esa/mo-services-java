@@ -79,19 +79,6 @@ public class TestEndPoint implements MALEndpoint {
     }
 
     @Override
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
-            InteractionType interactionType, UOctet interactionStage, Long transactionId,
-            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
-            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
-            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
-        return delegate.createMessage(authenticationId, uriTo, timestamp,
-                interactionType, interactionStage, transactionId,
-                serviceAreaNumber, serviceNumber, operationNumber,
-                areaVersion, isErrorMessage, supplements,
-                qosProperties, body);
-    }
-
-    @Override
     public String getLocalName() {
         return delegate.getLocalName();
     }

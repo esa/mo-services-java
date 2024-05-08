@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -128,48 +127,6 @@ public class SPPEndpoint extends Endpoint {
                     getMessageSegmentCounter(hdr),
                     false, hdr,
                     qosProperties, transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
-    }
-
-    @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final InteractionType interactionType,
-            final UOctet interactionStage,
-            final Long transactionId,
-            final UShort serviceArea,
-            final UShort service,
-            final UShort operation,
-            final UOctet serviceVersion,
-            final Boolean isErrorMessage,
-            final NamedValueList supplements,
-            final Map qosProperties,
-            final MALEncodedBody body) throws MALException {
-        try {
-            SPPMessageHeader hdr = (SPPMessageHeader) createMessageHeader(
-                    getURI(),
-                    authenticationId,
-                    uriTo,
-                    timestamp,
-                    interactionType,
-                    interactionStage,
-                    transactionId,
-                    serviceArea,
-                    service,
-                    operation,
-                    serviceVersion,
-                    isErrorMessage,
-                    supplements,
-                    qosProperties);
-
-            return new SPPMessage(
-                    ((SPPBaseTransport) transport).getHeaderStreamFactory(),
-                    hdr.getConfiguration(), getMessageSegmentCounter(hdr),
-                    false, hdr, qosProperties,
-                    transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }

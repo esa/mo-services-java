@@ -137,44 +137,6 @@ public class Endpoint implements MALEndpoint {
     }
 
     @Override
-    public MALMessage createMessage(final Blob authenticationId,
-            final URI uriTo,
-            final Time timestamp,
-            final InteractionType interactionType,
-            final UOctet interactionStage,
-            final Long transactionId,
-            final UShort serviceArea,
-            final UShort service,
-            final UShort operation,
-            final UOctet serviceVersion,
-            final Boolean isErrorMessage,
-            final NamedValueList supplements,
-            final Map qosProperties,
-            final MALEncodedBody body)
-            throws IllegalArgumentException, MALException {
-        try {
-            return new GENMessage(wrapBodyParts,
-                    createMessageHeader(getURI(),
-                            authenticationId,
-                            uriTo,
-                            timestamp,
-                            interactionType,
-                            interactionStage,
-                            transactionId,
-                            serviceArea,
-                            service,
-                            operation,
-                            serviceVersion,
-                            isErrorMessage,
-                            supplements,
-                            qosProperties),
-                    qosProperties, transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
-    }
-
-    @Override
     public void sendMessage(final MALMessage msg) throws MALTransmitErrorException {
         this.internalSendMessage(null, true, (GENMessage) msg);
     }
