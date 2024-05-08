@@ -89,9 +89,9 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
                 comment += ".";
             }
 
-            // If the size is less than 80 chars, then put 
+            // If the size is less than 70 chars, then put
             // it directly, otherwise break it up
-            int LENGTH_THRESHOLD = 80;
+            int LENGTH_THRESHOLD = 70;
 
             if (comment.length() < LENGTH_THRESHOLD) {
                 output.add(comment);

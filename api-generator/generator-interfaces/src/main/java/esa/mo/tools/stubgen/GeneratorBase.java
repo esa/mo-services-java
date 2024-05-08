@@ -344,7 +344,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     /**
      * Creates the full name of a structure type from the supplied details.
      *
-     * @param file The writer to add any type dependencies to.
      * @param area The area of the type.
      * @param service The service of the type, may be null.
      * @param type The type.
@@ -376,7 +375,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     /**
      * Creates the full name of a type from the supplied details.
      *
-     * @param file The writer to add any type dependencies to.
      * @param area The area of the type.
      * @param service The service of the type, may be null.
      * @param extraPackageLevel String to insert after the area/service before

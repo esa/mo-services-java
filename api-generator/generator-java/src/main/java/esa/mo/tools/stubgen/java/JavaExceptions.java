@@ -22,7 +22,6 @@ package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.CompositeField;
-import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
@@ -46,14 +45,13 @@ public class JavaExceptions {
         this.generator = generator;
     }
 
+    /*
     public void createServiceExceptions(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        /*
         generator.getLog().warn("The service Exceptions must be moved to Area "
                 + "level! This is just supported for backward compatibility. "
                 + "Check the Errors defined in service: " + service.getName());
         generator.getLog().info(" > Creating service Exceptions for service: " + service.getName());
-        */
 
         if (summary.getService().getErrors() != null && summary.getService().getErrors().getError() != null) {
             for (ErrorDefinitionType error : summary.getService().getErrors().getError()) {
@@ -61,6 +59,7 @@ public class JavaExceptions {
             }
         }
     }
+     */
 
     public void createAreaExceptions(File areaFolder, AreaType area) throws IOException {
         if (area.getErrors() != null && area.getErrors().getError() != null) {
@@ -99,16 +98,16 @@ public class JavaExceptions {
         method_1.addLine("super(" + errorPath + ", " + errorDescription + ")");
         method_1.addMethodCloseStatement();
 
-        // Constructor with a String
+        // Constructor with an Object for the extraInformation
         ArrayList<CompositeField> args = new ArrayList<>();
-        CompositeField field = generator.createCompositeElementsDetails(file, false, "message",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "String", false),
-                false, true, "The message of the exception.");
+        CompositeField field = generator.createCompositeElementsDetails(file, false, "extraInformation",
+                TypeUtils.createTypeReference(null, null, "Object", false),
+                false, true, "The extraInformation of the exception.");
         args.add(field);
 
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
-        method_2.addLine("super(" + errorPath + ", " + "message)");
+        method_2.addLine("super(" + errorPath + ", " + "extraInformation)");
         method_2.addMethodCloseStatement();
 
         file.addClassCloseStatement();
