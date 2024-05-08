@@ -28,8 +28,7 @@ import javax.xml.stream.XMLStreamException;
 
 public class XMLStreamListReader {
 
-    private XMLEventReader eventReader;
-    private int size = 0;
+    private final XMLEventReader eventReader;
 
     public XMLStreamListReader(XMLEventReader eventReader) {
         this.eventReader = eventReader;
@@ -46,12 +45,8 @@ public class XMLStreamListReader {
             if (event.isCharacters()) {
                 eventReader.nextEvent();
             }
-            boolean isStart = event.isStartElement();
 
-            if (isStart) {
-                this.size++;
-            }
-            return isStart;
+            return event.isStartElement();
         } catch (XMLStreamException e) {
             RLOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
