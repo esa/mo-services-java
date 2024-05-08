@@ -21,31 +21,20 @@
 package esa.mo.mal.encoder.xml;
 
 import static esa.mo.mal.encoder.xml.XMLStreamFactory.RLOGGER;
-import java.util.List;
 import java.util.logging.Level;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 
-public class XMLStreamListReader implements MALListDecoder {
+public class XMLStreamListReader {
 
     private XMLEventReader eventReader;
-    private List list;
-    private String listName;
     private int size = 0;
 
-    public XMLStreamListReader(List list, XMLEventReader eventReader) {
-        this(list, eventReader, list.getClass().getSimpleName());
-    }
-
-    public XMLStreamListReader(List list, XMLEventReader eventReader, String elementName) {
-        this.list = list;
-        this.listName = elementName;
+    public XMLStreamListReader(XMLEventReader eventReader) {
         this.eventReader = eventReader;
     }
 
-    @Override
     public boolean hasNext() {
         try {
             if (!eventReader.hasNext()) {
@@ -69,10 +58,4 @@ public class XMLStreamListReader implements MALListDecoder {
 
         return false;
     }
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-
 }

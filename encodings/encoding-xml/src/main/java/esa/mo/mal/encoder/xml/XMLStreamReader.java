@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -460,7 +459,7 @@ public class XMLStreamReader implements MALDecoder {
     }
 
     public XMLStreamListReader createListDecoder(List list) throws MALException {
-        return new XMLStreamListReader(list, xmlReader.getEventReader());
+        return new XMLStreamListReader(xmlReader.getEventReader());
     }
 
     private static byte[] hexStringToByteArray(final String s) {
@@ -480,11 +479,8 @@ public class XMLStreamReader implements MALDecoder {
 
     @Override
     public HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException {
-        MALListDecoder listDecoder = this.createListDecoder(list);
-        int decodedSize = listDecoder.size();
-        if (decodedSize > 0) {
-            list.ensureCapacity(decodedSize);
-        }
+        XMLStreamListReader listDecoder = this.createListDecoder(list);
+
         while (listDecoder.hasNext()) {
             if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
                 list.add((Element) this.decodeAbstractElement());
