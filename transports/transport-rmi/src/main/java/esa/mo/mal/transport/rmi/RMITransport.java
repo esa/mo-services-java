@@ -197,7 +197,6 @@ public class RMITransport extends Transport<byte[], byte[]> {
             throw new MALTransmitErrorException(msgHeader,
                     new DestinationUnknownException(null),
                     null);
-
         } catch (IOException e) {
             RLOGGER.log(Level.WARNING, "RMI could not connect to: " + remoteRootURI, e);
             throw new MALTransmitErrorException(msgHeader,

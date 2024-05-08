@@ -78,39 +78,29 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      * @throws IOException in case the message cannot be sent to the client
      */
     public void sendEncodedMessageViaHttpResponse(OutgoingMessageHolder<byte[]> packetData) throws IOException {
-        MALMessageHeader malMessageHeader = packetData.getOriginalMessage().getHeader();
-        IHttpResponse httpResponse = transport.retrieveOpenHttpResponse(malMessageHeader.getFrom().getValue(),
-                malMessageHeader.getTransactionId());
+        MALMessageHeader header = packetData.getOriginalMessage().getHeader();
+        IHttpResponse httpResponse = transport.retrieveOpenHttpResponse(header.getFrom().getValue(),
+                header.getTransactionId());
         if (httpResponse == null) {
             throw new IOException("HTTPMessageSender: httpResponse is NULL at sendEncodedMessageViaHttpResponse()");
         }
 
         try {
-            int statusCode = StatusCodeHelper.getHttpResponseCode(malMessageHeader.getInteractionType(),
-                    malMessageHeader.getInteractionStage());
+            int statusCode = StatusCodeHelper.getHttpResponseCode(header.getInteractionType(),
+                    header.getInteractionStage());
 
             MALMessageBody body = packetData.getOriginalMessage().getBody();
 
-            if (malMessageHeader.getIsErrorMessage()) {
+            if (header.getIsErrorMessage() && !(body instanceof ErrorBody)) {
                 // assume that the MAL Message only has one element, containing the MAL error code
-                if (body instanceof ErrorBody) {
-                    try {
-                        MOErrorException error = ((ErrorBody) body).getError();
-                        statusCode = StatusCodeHelper.getStatusCodeFromMALError(error.getErrorNumber());
-                    } catch (MALException e) {
-                        RLOGGER.log(Level.SEVERE, e.getMessage(), e);
-                    }
-                } else {
-                    RLOGGER.severe("Message is an error message but body is not an error body!");
-                    throw new IOException("Message is an error message but body is not an error body!");
-                }
+                RLOGGER.severe("Message is an error message but body is not an error body!");
+                throw new IOException("Message is an error message but body is not an error body!");
             }
 
             RLOGGER.log(Level.FINE, "sendEncodedMessageViaHttpResponse statusCode={0}", statusCode);
-
             httpResponse.setStatusCode(statusCode);
             setContentTypeHeader(httpResponse); // according to 3.4.3 in recommended standard.
-            setResponseHeaders(malMessageHeader, httpResponse);
+            setResponseHeaders(header, httpResponse);
             byte[] data = packetData.getEncodedMessage();
 
             if (data.length > 0) {

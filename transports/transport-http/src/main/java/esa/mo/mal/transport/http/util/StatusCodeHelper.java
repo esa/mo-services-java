@@ -56,42 +56,9 @@ public class StatusCodeHelper {
                 return MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER;
             case 500:
             default:
-                return new UInteger(statusCode); // Convert to error
+                return MALHelper.INTERNAL_ERROR_NUMBER;
+                //return new UInteger(statusCode); // Convert to error
         }
-    }
-
-    public static int getStatusCodeFromMALError(UInteger errorNumber) {
-        if (errorNumber.equals(MALHelper.INTERNAL_ERROR_NUMBER)) {
-            return 500;
-        }
-        if (errorNumber.equals(MALHelper.BAD_ENCODING_ERROR_NUMBER)) {
-            return 400;
-        }
-        if (errorNumber.equals(MALHelper.AUTHORISATION_FAIL_ERROR_NUMBER)) {
-            return 401;
-        }
-        if (errorNumber.equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
-            return 404;
-        }
-        if (errorNumber.equals(MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER)) {
-            return 501;
-        }
-        if (errorNumber.equals(MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER)) {
-            return 504;
-        }
-        if (errorNumber.equals(MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER)) {
-            return 503;
-        }
-        if (errorNumber.equals(MALHelper.TOO_MANY_ERROR_NUMBER)) {
-            return 429;
-        }
-        if (errorNumber.equals(MALHelper.DELIVERY_FAILED_ERROR_NUMBER)) {
-            return 502;
-        }
-        if (errorNumber.equals(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER)) {
-            return 511;
-        }
-        return (int) errorNumber.getValue();
     }
 
     public static int getHttpResponseCode(InteractionType type, UOctet stage) {
