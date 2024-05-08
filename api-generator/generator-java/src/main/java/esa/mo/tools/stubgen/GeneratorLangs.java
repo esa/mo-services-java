@@ -1074,10 +1074,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        String opNumber = createProviderSkeletonHandlerSwitch();
-        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
 
-        String msg = "Unknown operation: \" + " + opNumber + " + \" - className: " + className + " - method: ";
+        String operationNumberGetter = createProviderSkeletonHandlerSwitch();
+        method.addLine("int opNumber = " + operationNumberGetter);
+        method.addLine(createMethodCall("switch (opNumber) {"), false);
+
+        //String msg = "Unknown operation number: \" + opNumber + \" - className: " + className + " - method: ";
+        String msg = "org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber";
         String unkErrorMsg;
 
         for (OperationSummary op : summary.getOperations()) {
@@ -1094,7 +1097,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         unkErrorMsg = "(\"" + msg + "Send\")";
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + msg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1106,7 +1109,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(submitInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
+        method.addLine("int opNumber = " + operationNumberGetter);
+        method.addLine(createMethodCall("switch (opNumber) {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
@@ -1123,10 +1127,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         unkErrorMsg = "(\"" + msg + "Submit\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))"), ns + stdErrorNs, true);
+                + msg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + msg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1138,7 +1142,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "handleRequest", StubUtils.concatenateArguments(requestInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
+        method.addLine("int opNumber = " + operationNumberGetter);
+        method.addLine(createMethodCall("switch (opNumber) {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
@@ -1159,10 +1164,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         unkErrorMsg = "(\"" + msg + "Request\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))"), ns + stdErrorNs, true);
+                + msg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + msg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1174,7 +1179,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(invokeInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
+        method.addLine("int opNumber = " + operationNumberGetter);
+        method.addLine(createMethodCall("switch (opNumber) {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
@@ -1191,10 +1197,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         unkErrorMsg = "(\"" + msg + "Invoke\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))"), ns + stdErrorNs, true);
+                + msg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + msg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1206,7 +1212,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StubUtils.concatenateArguments(progressInt, stdBodyArg), throwsMALAndInteractionException,
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
-        method.addLine(createMethodCall("switch (" + opNumber + ") {"), false);
+        method.addLine("int opNumber = " + operationNumberGetter);
+        method.addLine(createMethodCall("switch (opNumber) {"), false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
@@ -1222,10 +1229,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         unkErrorMsg = "(\"" + msg + "Progress\")";
         method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))"), ns + stdErrorNs, true);
+                + msg + "))"), ns + stdErrorNs, true);
         method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + unkErrorMsg + "))", ns + stdErrorNs, true);
+                + msg + "))", ns + stdErrorNs, true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
