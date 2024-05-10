@@ -39,6 +39,11 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
      */
     protected boolean shortLengthField = false;
 
+    public FixedBinaryStreamFactory() {
+        super(FixedBinaryElementInputStream.class, FixedBinaryElementOutputStream.class,
+                new BinaryTimeHandler());
+    }
+
     @Override
     protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException {
         super.init(protocol, properties);
@@ -48,11 +53,6 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
                 shortLengthField = true;
             }
         }
-    }
-
-    public FixedBinaryStreamFactory() {
-        super(FixedBinaryElementInputStream.class, FixedBinaryElementOutputStream.class,
-                new BinaryTimeHandler());
     }
 
     @Override
