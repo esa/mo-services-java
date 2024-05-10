@@ -24,7 +24,7 @@ import java.io.File;
 import w3c.xsd.Schema;
 
 /**
- * The XML Specification
+ * The XSD Specification
  */
 public final class XsdSpecification {
 
