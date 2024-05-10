@@ -411,7 +411,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new ZMTPEndpoint(this, defaultConfiguration, localName,
-                routingName, uriBase + routingName, wrapBodyParts, properties);
+                routingName, uriBase + routingName, wrapBodyParts, supplements, properties);
     }
 
     /**

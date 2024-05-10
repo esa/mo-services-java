@@ -49,8 +49,9 @@ public class ZMTPEndpoint extends Endpoint {
             String routingName,
             String uri,
             boolean wrapBodyParts,
+            NamedValueList supplements,
             final Map properties) {
-        super(transport, localName, routingName, uri, wrapBodyParts, new NamedValueList());
+        super(transport, localName, routingName, uri, wrapBodyParts, supplements);
         this.configuration = new ZMTPConfiguration(configuration, properties);
     }
 
@@ -82,7 +83,7 @@ public class ZMTPEndpoint extends Endpoint {
                     operation,
                     serviceVersion,
                     isErrorMessage,
-                    supplements,
+                    this.getEndpointSupplements(),
                     qosProperties);
             return new ZMTPMessage(
                     ((ZMTPTransport) transport).getHeaderStreamFactory(),
