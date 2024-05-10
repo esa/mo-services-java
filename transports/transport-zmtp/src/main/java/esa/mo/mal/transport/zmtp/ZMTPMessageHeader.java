@@ -76,11 +76,6 @@ public class ZMTPMessageHeader extends MALMessageHeader {
      */
     protected short encodingExtendedId;
 
-    /**
-     * Reference to ZMTP transport instance that holds the Mapping Directory.
-     */
-    protected ZMTPTransport transport;
-
     public static int ZMTP_BINDING_VERSION_NUMBER = 1;
 
     /**
@@ -94,7 +89,6 @@ public class ZMTPMessageHeader extends MALMessageHeader {
      */
     public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport) {
         this.configuration = configuration;
-        this.transport = transport;
     }
 
     /**
@@ -127,9 +121,7 @@ public class ZMTPMessageHeader extends MALMessageHeader {
         super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea, service,
                 operation, serviceVersion, isErrorMessage, supplements);
-
         this.configuration = configuration;
-        this.transport = transport;
     }
 
     @Override

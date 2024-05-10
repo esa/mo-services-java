@@ -32,9 +32,9 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
 
     /**
-     * ZMTP mapping that created the decoder - used for MDK decoding.
+     * ZMTP mapping, used for MDK decoding.
      */
-    private ZMTPStringMappingDirectory mapping;
+    private final ZMTPStringMappingDirectory mapping;
 
     /**
      * Constructor.

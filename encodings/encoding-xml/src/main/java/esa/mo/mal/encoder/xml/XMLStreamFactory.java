@@ -37,23 +37,20 @@ public class XMLStreamFactory extends MALElementStreamFactory {
     /**
      * Logger
      */
-    public static final Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.transport.http");
+    public static final Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.encoding.xml");
 
     @Override
-    protected void init(String protocol, Map properties)
-            throws IllegalArgumentException, MALException {
+    protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException {
         // TODO Auto-generated method stub
     }
 
     @Override
-    public MALElementInputStream createInputStream(InputStream is)
-            throws IllegalArgumentException, MALException {
+    public MALElementInputStream createInputStream(InputStream is) throws IllegalArgumentException, MALException {
         return new XMLElementInputStream(is);
     }
 
     @Override
-    public MALElementOutputStream createOutputStream(OutputStream os)
-            throws IllegalArgumentException, MALException {
+    public MALElementOutputStream createOutputStream(OutputStream os) throws IllegalArgumentException, MALException {
         return new XMLElementOutputStream(os);
     }
 

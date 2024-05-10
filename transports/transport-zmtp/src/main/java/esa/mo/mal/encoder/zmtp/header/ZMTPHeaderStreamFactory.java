@@ -24,6 +24,8 @@ import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 
 /**
  * Implements the MALElementStreamFactory interface for ZMTP header binary
@@ -47,14 +49,12 @@ public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fix
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
-            final java.io.InputStream is) throws org.ccsds.moims.mo.mal.MALException {
+    public MALElementInputStream createInputStream(final java.io.InputStream is) throws MALException {
         return new ZMTPHeaderElementInputStream(is, mapping, timeHandler);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(
-            final java.io.OutputStream os) throws org.ccsds.moims.mo.mal.MALException {
+    public MALElementOutputStream createOutputStream(final java.io.OutputStream os) throws MALException {
         return new ZMTPHeaderElementOutputStream(os, mapping, timeHandler);
     }
 }

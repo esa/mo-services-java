@@ -20,6 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -48,8 +50,7 @@ public abstract class MALElementStreamFactory {
      * @throws IllegalArgumentException if the argument does not extend
      * MALElementStreamFactory
      */
-    public static void registerFactoryClass(final java.lang.Class factoryClass)
-            throws IllegalArgumentException {
+    public static void registerFactoryClass(final Class factoryClass) throws IllegalArgumentException {
         if (!MALElementStreamFactory.class.isAssignableFrom(factoryClass)) {
             throw new IllegalArgumentException("Not compliant: " + factoryClass.getName());
         }
@@ -65,8 +66,7 @@ public abstract class MALElementStreamFactory {
      * @throws IllegalArgumentException if the argument does not extend
      * MALElementStreamFactory
      */
-    public static void deregisterFactoryClass(final java.lang.Class factoryClass)
-            throws IllegalArgumentException {
+    public static void deregisterFactoryClass(final Class factoryClass) throws IllegalArgumentException {
         if (null != factoryClass) {
             FACTORIES.remove(factoryClass.getName());
         }
@@ -138,11 +138,9 @@ public abstract class MALElementStreamFactory {
      *
      * @param is The data source.
      * @return The new MALElementInputStream.
-     * @throws java.lang.IllegalArgumentException if the data source is null.
      * @throws MALException If a MALElementInputStream cannot be created
      */
-    public abstract MALElementInputStream createInputStream(java.io.InputStream is)
-            throws java.lang.IllegalArgumentException, MALException;
+    public abstract MALElementInputStream createInputStream(InputStream is) throws MALException;
 
     /**
      * Creates a MALElementOutputStream using a java.io.OutputStream as the data
@@ -150,9 +148,7 @@ public abstract class MALElementStreamFactory {
      *
      * @param os The data sink.
      * @return The new MALElementOutputStream.
-     * @throws java.lang.IllegalArgumentException if the data sink is null.
      * @throws MALException If a MALElementOutputStream cannot be created
      */
-    public abstract MALElementOutputStream createOutputStream(java.io.OutputStream os)
-            throws java.lang.IllegalArgumentException, MALException;
+    public abstract MALElementOutputStream createOutputStream(OutputStream os) throws MALException;
 }

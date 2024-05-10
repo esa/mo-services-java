@@ -36,25 +36,25 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
  */
 public class ZMTPEncodingSelector {
 
-    public static byte ENCODING_FIXED_BINARY_ID = 0;
-    public static byte ENCODING_VARIABLE_BINARY_ID = 1;
-    public static byte ENCODING_SPLIT_BINARY_ID = 2;
-    public static byte ENCODING_OTHER_ID = 3;
+    public final static byte ENCODING_FIXED_BINARY_ID = 0;
+    public final static byte ENCODING_VARIABLE_BINARY_ID = 1;
+    public final static byte ENCODING_SPLIT_BINARY_ID = 2;
+    public final static byte ENCODING_OTHER_ID = 3;
 
-    public static final String MALZMTP_ENCODING_PROPERTY
+    public final static String MALZMTP_ENCODING_PROPERTY
             = MALElementStreamFactory.FACTORY_PROP_NAME_PREFIX + '.' + "malzmtp";
-    public static final String INTERNAL_PROTOCOL_NAME = "zmtpencodingselector";
-    public static final String INTERNAL_ENCODING_PROPERTY
+    public final static String INTERNAL_PROTOCOL_NAME = "zmtpencodingselector";
+    public final static String INTERNAL_ENCODING_PROPERTY
             = MALElementStreamFactory.FACTORY_PROP_NAME_PREFIX + '.' + INTERNAL_PROTOCOL_NAME;
 
-    public static final String ENCODING_FIXED_BINARY_FACTORY
+    public final static String ENCODING_FIXED_BINARY_FACTORY
             = "esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory";
-    public static final String ENCODING_VARIABLE_BINARY_FACTORY
+    public final static String ENCODING_VARIABLE_BINARY_FACTORY
             = "esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory";
-    public static final String ENCODING_SPLIT_BINARY_FACTORY
+    public final static String ENCODING_SPLIT_BINARY_FACTORY
             = "esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory";
 
-    protected Map<Integer, MALElementStreamFactory> encodingFactories = new HashMap<>();
+    private Map<Integer, MALElementStreamFactory> encodingFactories = new HashMap<>();
 
     /**
      * Encoding ID used for outgoing messages.
@@ -66,24 +66,25 @@ public class ZMTPEncodingSelector {
     private short outboundEncodingExtendedId;
 
     public void init(Map qosProperties) throws MALException {
-        String outboundEncoder;
-        if (qosProperties.containsKey(MALZMTP_ENCODING_PROPERTY)) {
-            outboundEncoder = qosProperties.get(MALZMTP_ENCODING_PROPERTY).toString();
-            if (outboundEncoder.equals(ENCODING_FIXED_BINARY_FACTORY)) {
-                outboundEncodingId = ENCODING_FIXED_BINARY_ID;
-            } else if (outboundEncoder.equals(ENCODING_VARIABLE_BINARY_FACTORY)) {
-                outboundEncodingId = ENCODING_VARIABLE_BINARY_ID;
-            } else if (outboundEncoder.equals(ENCODING_SPLIT_BINARY_FACTORY)) {
-                outboundEncodingId = ENCODING_SPLIT_BINARY_ID;
-            } else {
-                throw new MALException(MessageFormat.format(
-                        "Outbound encoder stream factory selected not "
-                        + "recognized by ZMTPEncodingSelector: {0}",
-                        outboundEncoder));
-            }
-        } else {
+        if (!qosProperties.containsKey(MALZMTP_ENCODING_PROPERTY)) {
             throw new MALException("Missing ZMTP outbound encoder stream factory property.");
         }
+
+        String outboundEncoder = qosProperties.get(MALZMTP_ENCODING_PROPERTY).toString();
+
+        if (outboundEncoder.equals(ENCODING_FIXED_BINARY_FACTORY)) {
+            outboundEncodingId = ENCODING_FIXED_BINARY_ID;
+        } else if (outboundEncoder.equals(ENCODING_VARIABLE_BINARY_FACTORY)) {
+            outboundEncodingId = ENCODING_VARIABLE_BINARY_ID;
+        } else if (outboundEncoder.equals(ENCODING_SPLIT_BINARY_FACTORY)) {
+            outboundEncodingId = ENCODING_SPLIT_BINARY_ID;
+        } else {
+            throw new MALException(MessageFormat.format(
+                    "Outbound encoder stream factory selected not "
+                    + "recognized by ZMTPEncodingSelector: {0}",
+                    outboundEncoder));
+        }
+
         encodingFactories.put((int) ENCODING_FIXED_BINARY_ID, createEncodingFactory(
                 ENCODING_FIXED_BINARY_FACTORY, qosProperties));
         encodingFactories.put((int) ENCODING_VARIABLE_BINARY_ID, createEncodingFactory(
