@@ -22,10 +22,10 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
-import org.ccsds.moims.mo.mal.encoding.StreamHolder;
-import esa.mo.mal.transport.zmtp.ZMTPTransport;
+import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
 import java.io.IOException;
 import java.io.OutputStream;
+import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -35,20 +35,20 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
 
     /**
-     * ZMTP transport that created the encoder - used for MDK encoding.
+     * ZMTP mapping that created the encoder - used for MDK encoding.
      */
-    protected ZMTPTransport transport;
+    protected ZMTPStringMappingDirectory mapping;
 
     /**
      * Constructor.
      *
      * @param os Output stream to write to
-     * @param transport Parent transport
+     * @param mapping Parent mapping.
      * @param timeHandler Implementation of the time encoding to use
      */
-    public ZMTPHeaderEncoder(OutputStream os, ZMTPTransport transport, BinaryTimeHandler timeHandler) {
+    public ZMTPHeaderEncoder(OutputStream os, ZMTPStringMappingDirectory mapping, BinaryTimeHandler timeHandler) {
         super(os, timeHandler, false);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     /**
@@ -56,13 +56,13 @@ public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
      * implementation that should be used.
      *
      * @param os Output stream to write to.
-     * @param transport Parent transport
+     * @param mapping Parent mapping.
      * @param timeHandler Implementation of the time encoding to use
      */
-    protected ZMTPHeaderEncoder(final StreamHolder os, ZMTPTransport transport,
+    protected ZMTPHeaderEncoder(final StreamHolder os, ZMTPStringMappingDirectory mapping,
             BinaryTimeHandler timeHandler) {
         super(os, timeHandler);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     public void encodeVariableUInteger(UInteger value) throws MALException {
@@ -89,7 +89,7 @@ public class ZMTPHeaderEncoder extends FixedBinaryEncoder {
     public void encodeString(String value) throws MALException {
         checkForNull(value);
         try {
-            int key = transport.stringMappingDirectory.getKey(value);
+            int key = mapping.getKey(value);
             if (key == -1) {
                 byte[] stringBytes = value.getBytes(UTF8_CHARSET);
                 addVariableSignedInt(stringBytes.length);

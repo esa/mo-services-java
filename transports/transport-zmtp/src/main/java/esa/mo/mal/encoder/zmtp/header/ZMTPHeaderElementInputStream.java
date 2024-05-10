@@ -22,7 +22,7 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementInputStream;
-import esa.mo.mal.transport.zmtp.ZMTPTransport;
+import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
 
 /**
  * Implements the MALElementInputStream interface for a binary encoding used in
@@ -34,12 +34,12 @@ public class ZMTPHeaderElementInputStream extends FixedBinaryElementInputStream 
      * Constructor.
      *
      * @param is Input stream to read from.
-     * @param transport The parent transport.
+     * @param mapping The parent mapping.
      * @param timeHandler The time handler.
      */
-    public ZMTPHeaderElementInputStream(final java.io.InputStream is, 
-            ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
-        super(new ZMTPHeaderDecoder(is, transport, timeHandler));
+    public ZMTPHeaderElementInputStream(final java.io.InputStream is,
+            ZMTPStringMappingDirectory mapping, final BinaryTimeHandler timeHandler) {
+        super(new ZMTPHeaderDecoder(is, mapping, timeHandler));
     }
 
     /**
@@ -47,12 +47,12 @@ public class ZMTPHeaderElementInputStream extends FixedBinaryElementInputStream 
      *
      * @param buf Byte buffer to read from
      * @param offset Offset into buffer to start from
-     * @param transport The parent transport
+     * @param mapping The parent mapping
      * @param timeHandler Implementation of the time encoding to use
      */
     public ZMTPHeaderElementInputStream(final byte[] buf,
-            final int offset, ZMTPTransport transport,
+            final int offset, ZMTPStringMappingDirectory mapping,
             final BinaryTimeHandler timeHandler) {
-        super(new ZMTPHeaderDecoder(buf, offset, transport, timeHandler));
+        super(new ZMTPHeaderDecoder(buf, offset, mapping, timeHandler));
     }
 }

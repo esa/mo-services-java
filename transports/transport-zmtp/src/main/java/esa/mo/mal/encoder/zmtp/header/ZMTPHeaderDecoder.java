@@ -22,7 +22,7 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;
-import esa.mo.mal.transport.zmtp.ZMTPTransport;
+import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -32,34 +32,34 @@ import org.ccsds.moims.mo.mal.structures.URI;
 public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
 
     /**
-     * ZMTP transport that created the decoder - used for MDK decoding.
+     * ZMTP mapping that created the decoder - used for MDK decoding.
      */
-    protected ZMTPTransport transport;
+    private ZMTPStringMappingDirectory mapping;
 
     /**
      * Constructor.
      *
      * @param src Byte array to read from.
-     * @param transport Parent transport.
+     * @param mapping Parent mapping.
      * @param timeHandler The time handler.
      */
-    public ZMTPHeaderDecoder(final byte[] src, final ZMTPTransport transport,
+    public ZMTPHeaderDecoder(final byte[] src, final ZMTPStringMappingDirectory mapping,
             final BinaryTimeHandler timeHandler) {
         super(src, timeHandler, false);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     /**
      * Constructor.
      *
      * @param is Input stream to read from.
-     * @param transport Parent transport
+     * @param mapping Parent mapping.
      * @param timeHandler The time handler.
      */
     public ZMTPHeaderDecoder(final java.io.InputStream is, 
-            final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
+            final ZMTPStringMappingDirectory mapping, final BinaryTimeHandler timeHandler) {
         super(is, timeHandler, false);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     /**
@@ -67,26 +67,26 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
      *
      * @param src Byte array to read from.
      * @param offset index in array to start reading from.
-     * @param transport Parent transport.
+     * @param mapping Parent mapping.
      * @param timeHandler The time handler.
      */
     public ZMTPHeaderDecoder(final byte[] src, final int offset, 
-            final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
+            final ZMTPStringMappingDirectory mapping, final BinaryTimeHandler timeHandler) {
         super(src, offset, timeHandler, false);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     /**
      * Constructor.
      *
      * @param src Source buffer holder to use.
-     * @param transport Parent transport.
+     * @param mapping Parent mapping.
      * @param timeHandler The time handler.
      */
     protected ZMTPHeaderDecoder(final FixedBinaryBufferHolder src, 
-            final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
+            final ZMTPStringMappingDirectory mapping, final BinaryTimeHandler timeHandler) {
         super(src, timeHandler);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     /**
@@ -150,7 +150,7 @@ public class ZMTPHeaderDecoder extends FixedBinaryDecoder {
         String ret;
         if (lengthOrMDK < 0) {
             int mdk = -lengthOrMDK;
-            ret = transport.stringMappingDirectory.getValue(mdk);
+            ret = mapping.getValue(mdk);
             if (ret == null) {
                 throw new MALException("Cannot resolve String MDK " 
                         + mdk + ". Missing directory entry.");

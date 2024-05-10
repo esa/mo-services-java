@@ -21,7 +21,7 @@
 package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
-import esa.mo.mal.transport.zmtp.ZMTPTransport;
+import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 
@@ -32,30 +32,29 @@ import org.ccsds.moims.mo.mal.MALException;
 public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory {
 
     /**
-     * Parent transport
+     * The mapping
      */
-    ZMTPTransport transport;
+    ZMTPStringMappingDirectory mapping;
 
-    public ZMTPHeaderStreamFactory(ZMTPTransport transport) {
-        this.transport = transport;
+    public ZMTPHeaderStreamFactory(ZMTPStringMappingDirectory mapping) {
+        this.mapping = mapping;
         this.timeHandler = new BinaryTimeHandler();
     }
 
     @Override
-    protected void init(final String protocol, final Map properties) 
-            throws IllegalArgumentException, MALException {
+    protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException {
         super.init(protocol, properties);
     }
 
     @Override
     public org.ccsds.moims.mo.mal.encoding.MALElementInputStream createInputStream(
             final java.io.InputStream is) throws org.ccsds.moims.mo.mal.MALException {
-        return new ZMTPHeaderElementInputStream(is, transport, timeHandler);
+        return new ZMTPHeaderElementInputStream(is, mapping, timeHandler);
     }
 
     @Override
     public org.ccsds.moims.mo.mal.encoding.MALElementOutputStream createOutputStream(
             final java.io.OutputStream os) throws org.ccsds.moims.mo.mal.MALException {
-        return new ZMTPHeaderElementOutputStream(os, transport, timeHandler);
+        return new ZMTPHeaderElementOutputStream(os, mapping, timeHandler);
     }
 }

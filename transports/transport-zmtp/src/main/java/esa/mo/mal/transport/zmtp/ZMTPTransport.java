@@ -152,7 +152,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     /**
      * Holds ZMTP String Mapping Directory used for MDK encoding/decoding
      */
-    public ZMTPStringMappingDirectory stringMappingDirectory = new ZMTPStringMappingDirectory();
+    private ZMTPStringMappingDirectory stringMappingDirectory = new ZMTPStringMappingDirectory();
 
     /**
      * Holds default ZMTP Configuration loaded from properties.
@@ -198,7 +198,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 
-        hdrStreamFactory = new ZMTPHeaderStreamFactory(this);
+        hdrStreamFactory = new ZMTPHeaderStreamFactory(stringMappingDirectory);
         bodyEncodingSelector = new ZMTPEncodingSelector();
         bodyEncodingSelector.init(properties);
 

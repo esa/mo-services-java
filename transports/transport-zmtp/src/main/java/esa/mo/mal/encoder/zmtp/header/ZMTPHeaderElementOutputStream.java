@@ -22,8 +22,8 @@ package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
+import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
-import esa.mo.mal.transport.zmtp.ZMTPTransport;
 
 /**
  * Implements the MALElementOutputStream interface for a binary encoding used in
@@ -32,26 +32,25 @@ import esa.mo.mal.transport.zmtp.ZMTPTransport;
 public class ZMTPHeaderElementOutputStream extends FixedBinaryElementOutputStream {
 
     /**
-     * Parent transport
+     * Parent mapping
      */
-    private ZMTPTransport transport;
+    private final ZMTPStringMappingDirectory mapping;
 
     /**
      * Constructor.
      *
      * @param os Output stream to write to
-     * @param transport The parent transport
+     * @param mapping The parent mapping
      * @param timeHandler Implementation of the time encoding to use
      */
     public ZMTPHeaderElementOutputStream(final java.io.OutputStream os,
-            final ZMTPTransport transport, final BinaryTimeHandler timeHandler) {
+            final ZMTPStringMappingDirectory mapping, final BinaryTimeHandler timeHandler) {
         super(os, timeHandler, false);
-        this.transport = transport;
+        this.mapping = mapping;
     }
 
     @Override
     protected Encoder createEncoder(java.io.OutputStream os) {
-        return new ZMTPHeaderEncoder(os, transport, timeHandler);
+        return new ZMTPHeaderEncoder(os, mapping, timeHandler);
     }
-
 }
