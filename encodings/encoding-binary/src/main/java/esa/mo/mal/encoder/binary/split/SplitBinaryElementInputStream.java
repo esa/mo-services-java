@@ -21,11 +21,12 @@
 package esa.mo.mal.encoder.binary.split;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import org.ccsds.moims.mo.mal.encoding.ElementInputStream;
 
 /**
  * Implements the MALElementInputStream interface for a split binary encoding.
  */
-public class SplitBinaryElementInputStream extends esa.mo.mal.encoder.binary.variable.VariableBinaryElementInputStream {
+public class SplitBinaryElementInputStream extends ElementInputStream {
 
     /**
      * Constructor.

@@ -34,7 +34,7 @@ public class ZMTPHeaderElementOutputStream extends FixedBinaryElementOutputStrea
     /**
      * Parent transport
      */
-    ZMTPTransport transport;
+    private ZMTPTransport transport;
 
     /**
      * Constructor.

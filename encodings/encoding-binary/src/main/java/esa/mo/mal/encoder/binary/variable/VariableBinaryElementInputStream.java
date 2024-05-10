@@ -21,12 +21,13 @@
 package esa.mo.mal.encoder.binary.variable;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
+import org.ccsds.moims.mo.mal.encoding.ElementInputStream;
 
 /**
  * Implements the MALElementInputStream interface for a fixed length binary
  * encoding.
  */
-public class VariableBinaryElementInputStream extends esa.mo.mal.encoder.binary.base.BaseBinaryElementInputStream {
+public class VariableBinaryElementInputStream extends ElementInputStream {
 
     /**
      * Constructor.
