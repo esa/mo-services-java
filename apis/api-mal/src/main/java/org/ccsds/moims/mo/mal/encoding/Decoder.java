@@ -432,7 +432,7 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
-        UInteger size = this.decodeUInteger();
+        UInteger size = decodeUInteger();
         long decodedSize = size.getValue();
 
         if (decodedSize > 1000000) {
@@ -457,14 +457,14 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException {
-        UInteger size = this.decodeUInteger();
+        UInteger size = decodeUInteger();
         long decodedSize = size.getValue();
 
         for (int i = 0; i < decodedSize; i++) {
             if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
-                list.add((Element) this.decodeAbstractElement());
+                list.add((Element) decodeAbstractElement());
             } else {
-                list.add((Element) this.decodeNullableAbstractElement());
+                list.add((Element) decodeNullableAbstractElement());
             }
         }
         return list;

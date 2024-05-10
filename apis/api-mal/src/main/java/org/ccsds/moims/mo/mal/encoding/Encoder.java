@@ -643,9 +643,9 @@ public abstract class Encoder implements MALEncoder {
                     entry = Attribute.javaType2Attribute(entry);
                 }
                 if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
-                    this.encodeAbstractElement((Element) entry);
+                    encodeAbstractElement((Element) entry);
                 } else {
-                    this.encodeNullableAbstractElement((Element) entry);
+                    encodeNullableAbstractElement((Element) entry);
                 }
             }
         } catch (IOException ex) {
