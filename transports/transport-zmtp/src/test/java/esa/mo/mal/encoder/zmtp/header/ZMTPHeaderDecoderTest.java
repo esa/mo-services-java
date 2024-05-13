@@ -18,6 +18,7 @@
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
+package esa.mo.mal.encoder.zmtp.header;
 
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.zmtp.ZMTPStringMappingDirectory;
