@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.gen;
 
+import static esa.mo.mal.transport.gen.Transport.LOGGER;
 import esa.mo.mal.transport.gen.body.DeregisterBody;
 import esa.mo.mal.transport.gen.body.ErrorBody;
 import esa.mo.mal.transport.gen.body.MessageBody;
@@ -28,8 +29,11 @@ import esa.mo.mal.transport.gen.body.PublishBody;
 import esa.mo.mal.transport.gen.body.PublishRegisterBody;
 import esa.mo.mal.transport.gen.body.RegisterBody;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.logging.Level;
+import org.ccsds.moims.mo.mal.BadEncodingException;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
@@ -41,6 +45,7 @@ import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 
 /**
  * A generic implementation of the message interface.
@@ -52,8 +57,9 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     protected MessageBody body;
     protected Map qosProperties;
     protected boolean wrapBodyParts;
+    protected MALElementStreamFactory encFactory;
 
-    public GENMessage(){
+    public GENMessage() {
     }
 
     /**
@@ -74,7 +80,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             final MALElementStreamFactory encFactory,
             final Object... body) throws MALInteractionException {
         this.header = header;
-        this.body = createMessageBody(encFactory, body);
+        this.encFactory = encFactory;
+        this.body = createMessageBody(body);
         this.qosProperties = qosProperties;
         this.wrapBodyParts = wrapBodyParts;
     }
@@ -99,12 +106,13 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             final MALElementStreamFactory encFactory) throws MALException {
         this.qosProperties = qosProperties;
         this.wrapBodyParts = wrapBodyParts;
+        this.encFactory = encFactory;
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 
         this.header = readHeader ? enc.readHeader(header) : header;
-        this.body = createMessageBody(encFactory, bais, enc);
+        this.body = createMessageBody(bais, enc);
     }
 
     @Override
@@ -154,8 +162,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    protected MessageBody createMessageBody(final MALElementStreamFactory encFactory,
-            final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
+    protected MessageBody createMessageBody(final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {
@@ -191,7 +198,31 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                 encFactory, encBodyBytes, encBodyElements);
     }
 
-    protected MessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
+    /**
+     * Encodes the message.
+     *
+     * @return The message holder for the outgoing message.
+     * @throws MALTransmitErrorException if an error.
+     */
+    public byte[] internalEncodeByteMessage() throws MALTransmitErrorException {
+        // encode the message
+        try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final MALElementOutputStream enc = encFactory.createOutputStream(baos);
+            this.encodeMessage(encFactory, enc, baos, true);
+            byte[] data = baos.toByteArray();
+
+            // Message is encoded:
+            LOGGER.log(Level.FINE, "Encoded message: {0}", new PacketToString(data));
+            return data;
+        } catch (MALException ex) {
+            LOGGER.log(Level.SEVERE, "Could not encode message!", ex);
+            throw new MALTransmitErrorException(this.getHeader(),
+                    new BadEncodingException(null), null);
+        }
+    }
+
+    protected MessageBody createMessageBody(final Object[] bodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {

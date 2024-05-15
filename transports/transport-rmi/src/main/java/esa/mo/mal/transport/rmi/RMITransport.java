@@ -225,7 +225,7 @@ public class RMITransport extends Transport<byte[], byte[]> {
                 multiSendHandle,
                 lastForHandle,
                 msg,
-                internalEncodeByteMessage(msg)
+                msg.internalEncodeByteMessage()
         );
     }
 

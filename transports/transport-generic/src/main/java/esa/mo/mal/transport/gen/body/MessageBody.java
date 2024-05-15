@@ -59,6 +59,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
     /**
      * Input ByteArray that holds the encoded message body parts.
      */
+    @Deprecated
     protected ByteArrayInputStream encBodyBytes;
     /**
      * Input stream that holds the encoded message body parts.

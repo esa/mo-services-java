@@ -299,7 +299,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
                         parsedLevel = Level.parse(level.toString());
                         RLOGGER.setLevel(parsedLevel);
                         cHandler.setLevel(parsedLevel);
-                        RLOGGER.info("Setting logger to level " + RLOGGER.getLevel());
+                        RLOGGER.log(Level.INFO, "Setting logger to level {0}", RLOGGER.getLevel());
                         RLOGGER.addHandler(cHandler);
                     } catch (IllegalArgumentException ex) {
                         RLOGGER.log(Level.WARNING,
@@ -331,7 +331,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
             this.timeout = HTTP_DEFAULT_TIMEOUT;
         }
 
-        RLOGGER.log(Level.INFO, "HTTP Host/port: " + this.host + ":" + this.port);
+        RLOGGER.log(Level.INFO, "HTTP Host/port: {0}:{1}", new Object[]{this.host, this.port});
         RLOGGER.log(Level.INFO, "HTTP Wrapping body parts set to : {0}", this.wrapBodyParts);
         String bindingMode = "Request-response";
         if (this.selectedHttpBindingMode != HTTP_BINDING_MODE_REQUEST_RESPONSE) {
@@ -341,8 +341,8 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
                 bindingMode = "No-encoding";
             }
         }
-        RLOGGER.info("HTTP Selected binding mode: " + bindingMode);
-        RLOGGER.info("HTTP Timeout: " + this.timeout);
+        RLOGGER.log(Level.INFO, "HTTP Selected binding mode: {0}", bindingMode);
+        RLOGGER.log(Level.INFO, "HTTP Timeout: {0}", this.timeout);
     }
 
     private static void loadHostAliases(Map properties) {
@@ -532,10 +532,10 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
     protected OutgoingMessageHolder<byte[]> encodeMessage(String destinationRootURI,
             String destinationURI, Object multiSendHandle, boolean lastForHandle,
             String targetURI, GENMessage msg) throws Exception {
-        RLOGGER.log(Level.FINEST, "Header of msg to send: \n" + msg.getHeader().toString());
+        RLOGGER.log(Level.FINEST, "Header of msg to send: \n{0}", msg.getHeader().toString());
 
         if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_ENCODING) {
-            byte[] data = internalEncodeByteMessage(msg);
+            byte[] data = msg.internalEncodeByteMessage();
             return new OutgoingMessageHolder<byte[]>(this.timeout, destinationRootURI, destinationURI,
                     multiSendHandle, lastForHandle, msg, data);
         } else {

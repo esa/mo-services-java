@@ -26,7 +26,6 @@ import esa.mo.mal.transport.gen.sending.ConcurrentMessageSender;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.TransportThreadFactory;
-import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
@@ -37,7 +36,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
-import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -761,31 +759,6 @@ public abstract class Transport<I, O> implements MALTransport {
             final boolean lastForHandle,
             final String targetURI,
             final GENMessage msg) throws Exception;
-
-    /**
-     * Internal method for encoding the message.
-     *
-     * @param msg The message to send.
-     * @return The message holder for the outgoing message.
-     * @throws MALTransmitErrorException if an error.
-     */
-    protected byte[] internalEncodeByteMessage(final GENMessage msg) throws MALTransmitErrorException {
-        // encode the message
-        try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final MALElementOutputStream enc = getStreamFactory().createOutputStream(baos);
-            msg.encodeMessage(getStreamFactory(), enc, baos, true);
-            byte[] data = baos.toByteArray();
-
-            // Message is encoded:
-            LOGGER.log(Level.FINE, "Encoded message: {0}", new PacketToString(data));
-            return data;
-        } catch (MALException ex) {
-            LOGGER.log(Level.SEVERE, "Could not encode message!", ex);
-            throw new MALTransmitErrorException(msg.getHeader(),
-                    new BadEncodingException(null), null);
-        }
-    }
 
     /**
      * Creates the part of the URL specific to this transport instance.
