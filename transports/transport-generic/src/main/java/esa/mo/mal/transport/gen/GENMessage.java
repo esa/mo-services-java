@@ -112,7 +112,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 
         this.header = readHeader ? enc.readHeader(header) : header;
-        this.body = createMessageBody(bais, enc);
+        this.body = createMessageBody(enc);
     }
 
     @Override
@@ -135,14 +135,14 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      *
      * @param streamFactory The stream factory to use for encoder creation.
      * @param enc The output stream to use for encoding.
-     * @param lowLevelOutputStream the stream to write to.
+     * @param outStream the stream to write to.
      * @param writeHeader True if the header should be written to the output
      * stream.
      * @throws MALException On encoding error.
      */
     public void encodeMessage(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc,
-            final OutputStream lowLevelOutputStream,
+            final OutputStream outStream,
             final boolean writeHeader) throws MALException {
         try {
             MALEncodingContext ctx = new MALEncodingContext(header);
@@ -153,7 +153,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             }
 
             // Now encode the body:
-            body.encodeMessageBody(streamFactory, enc, lowLevelOutputStream, ctx);
+            body.encodeMessageBody(streamFactory, enc, outStream, ctx);
         } catch (IllegalArgumentException ex1) {
             throw new MALException("Internal error encoding header of message", ex1);
         } catch (MALException ex2) {
@@ -162,7 +162,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    protected LazyMessageBody createMessageBody(final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
+    protected LazyMessageBody createMessageBody(final MALElementInputStream encBodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {

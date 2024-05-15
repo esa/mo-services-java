@@ -173,14 +173,14 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      *
      * @param streamFactory The stream factory to use for encoder creation.
      * @param enc The output stream to use for encoding.
-     * @param lowLevelOutputStream Low level output stream to use when have an
+     * @param outStream Low level output stream to use when have an
      * already encoded body.
      * @param ctx The encoding context.
      * @throws MALException On encoding error.
      */
     public void encodeMessageBody(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc,
-            final OutputStream lowLevelOutputStream,
+            final OutputStream outStream,
             final MALEncodingContext ctx) throws MALException {
         // first check to see if we have an already encoded body
         if ((messageParts != null) && (messageParts.length == 1)
@@ -188,8 +188,8 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             enc.flush();
 
             try {
-                lowLevelOutputStream.write(((MALEncodedBody) messageParts[0]).getEncodedBody().getValue());
-                lowLevelOutputStream.flush();
+                outStream.write(((MALEncodedBody) messageParts[0]).getEncodedBody().getValue());
+                outStream.flush();
             } catch (IOException ex) {
                 throw new MALException("MAL encoded body encoding error", ex);
             }

@@ -78,7 +78,7 @@ public class ZMTPMessage extends GENMessage {
             MALElementStreamFactory encFactory) throws MALException {
         this.header = header;
         final MALElementInputStream enc = encFactory.createInputStream(bais);
-        this.body = super.createMessageBody(bais, enc);
+        this.body = super.createMessageBody(enc);
         this.hdrStreamFactory = hdrStreamFactory;
     }
 
