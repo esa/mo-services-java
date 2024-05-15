@@ -20,14 +20,16 @@
  */
 package esa.mo.mal.transport.zmtp;
 
+import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.gen.GENMessage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -37,7 +39,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class ZMTPMessage extends GENMessage {
 
-    private final MALElementStreamFactory hdrStreamFactory;
+    private final ZMTPHeaderStreamFactory hdrStreamFactory;
 
     /**
      * Constructor.
@@ -53,11 +55,10 @@ public class ZMTPMessage extends GENMessage {
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
      * is unknown.
      */
-    public ZMTPMessage(final MALElementStreamFactory hdrStreamFactory, boolean wrapBodyParts,
+    public ZMTPMessage(final ZMTPHeaderStreamFactory hdrStreamFactory, boolean wrapBodyParts,
             MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
             Object... body) throws MALInteractionException {
         super(wrapBodyParts, header, qosProperties, encFactory, body);
-
         this.hdrStreamFactory = hdrStreamFactory;
     }
 
@@ -66,42 +67,18 @@ public class ZMTPMessage extends GENMessage {
      *
      * @param hdrStreamFactory The stream factory to use for message header
      * encoding.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
-     * @param readHeader True if the header should be read from the packet.
      * @param header An instance of the header class to use.
      * @param qosProperties The QoS properties for this message.
-     * @param packet The message in encoded form.
+     * @param bais The ByteArrayInputStream in encoded form.
      * @param encFactory The stream factory to use for message body encoding.
      * @throws MALException On decoding error.
      */
-    public ZMTPMessage(final MALElementStreamFactory hdrStreamFactory, boolean wrapBodyParts,
-            boolean readHeader, MALMessageHeader header, Map qosProperties, byte[] packet,
+    public ZMTPMessage(final ZMTPHeaderStreamFactory hdrStreamFactory,
+            MALMessageHeader header, Map qosProperties, ByteArrayInputStream bais,
             MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, readHeader, header, qosProperties, packet, encFactory);
-
-        this.hdrStreamFactory = hdrStreamFactory;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param hdrStreamFactory The stream factory to use for message header
-     * encoding.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
-     * @param readHeader True if the header should be read from the stream.
-     * @param header An instance of the header class to use.
-     * @param qosProperties The QoS properties for this message.
-     * @param ios The message in encoded form.
-     * @param encFactory The stream factory to use for message body encoding.
-     * @throws MALException On decoding error.
-     */
-    public ZMTPMessage(final MALElementStreamFactory hdrStreamFactory, final boolean wrapBodyParts,
-            final boolean readHeader, final MALMessageHeader header, final Map qosProperties,
-            final InputStream ios, final MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, readHeader, header, qosProperties, ios, encFactory);
-
+        this.header = header;
+        final MALElementInputStream enc = encFactory.createInputStream(bais);
+        this.body = super.createMessageBody(encFactory, bais, enc);
         this.hdrStreamFactory = hdrStreamFactory;
     }
 
@@ -112,16 +89,14 @@ public class ZMTPMessage extends GENMessage {
             final boolean writeHeader) throws MALException {
         try {
             final ByteArrayOutputStream hdrBaos = new ByteArrayOutputStream();
-            MALElementOutputStream hdrEnc = hdrStreamFactory.createOutputStream(hdrBaos);
+            ((ZMTPMessageHeader) header).encode(hdrStreamFactory.getHeaderEncoder(hdrBaos));
+            lowLevelOutputStream.write(hdrBaos.toByteArray());
+
             final ByteArrayOutputStream bodyBaos = new ByteArrayOutputStream();
             final MALElementOutputStream bodyEnc = streamFactory.createOutputStream(bodyBaos);
-
             super.encodeMessage(streamFactory, bodyEnc, bodyBaos, false);
-
-            hdrEnc.writeHeader(this.getHeader());
-            lowLevelOutputStream.write(hdrBaos.toByteArray());
-            lowLevelOutputStream.write(bodyBaos.toByteArray());
-
+            byte[] bodyData = bodyBaos.toByteArray();
+            lowLevelOutputStream.write(bodyData);
         } catch (IOException ex) {
             throw new MALException("Internal error encoding message", ex);
         }

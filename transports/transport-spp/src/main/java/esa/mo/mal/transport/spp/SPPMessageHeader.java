@@ -157,7 +157,7 @@ public class SPPMessageHeader extends MALMessageHeader {
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(serviceVersion);
+        encoder.encodeUOctet(areaVersion);
         encoder.encodeUShort(new UShort(
                 getErrorFlag(isErrorMessage) | getQoSLevelBits() | getSessionBits() | secondaryApid));
         encoder.encodeUShort(new UShort(secondaryApidQualifier));
@@ -230,7 +230,7 @@ public class SPPMessageHeader extends MALMessageHeader {
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        serviceVersion = decoder.decodeUOctet();
+        areaVersion = decoder.decodeUOctet();
         final int moHdrPt1 = decoder.decodeUShort().getValue();
         int apidQualifier = decoder.decodeUShort().getValue();
         transactionId = decoder.decodeLong();

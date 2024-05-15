@@ -547,7 +547,7 @@ public abstract class Transport<I, O> implements MALTransport {
                 LOGGER.log(Level.WARNING, "Endpoint not found: {0}! "
                         + "Double check the uri, in particular, the ending part!",
                         new Object[]{endpointUriPart});
-                returnErrorMessage(msg, MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
+                returnErrorMessage(msg.getHeader(), MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                         "Endpoint not found: " + endpointUriPart);
             }
         } catch (Exception e) {
@@ -557,7 +557,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(msg, MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE,
@@ -573,7 +573,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(msg, MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE, "Error occurred when return error data : {0}", ex);
@@ -584,15 +584,14 @@ public abstract class Transport<I, O> implements MALTransport {
     /**
      * Creates a return error message based on a received message.
      *
-     * @param srcMsg The original message
+     * @param srcHdr The source header
      * @param errorNumber The error number
      * @param errorMsg The error message.
      * @throws MALException if cannot encode a response message
      */
-    protected void returnErrorMessage(final GENMessage srcMsg,
+    protected void returnErrorMessage(final MALMessageHeader srcHdr,
             final UInteger errorNumber, final String errorMsg) throws MALException {
         try {
-            final MALMessageHeader srcHdr = srcMsg.getHeader();
             final int type = srcHdr.getInteractionType().getOrdinal();
             final short stage = (null != srcHdr.getInteractionStage())
                     ? srcHdr.getInteractionStage().getValue() : 0;
@@ -622,7 +621,7 @@ public abstract class Transport<I, O> implements MALTransport {
                             srcHdr.getServiceVersion(),
                             true,
                             srcHdr.getSupplements(),
-                            srcMsg.getQoSProperties(),
+                            qosProperties,
                             errorNumber, new Union(errorMsg));
 
                     sendMessage(null, true, retMsg);

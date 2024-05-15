@@ -23,7 +23,6 @@ package esa.mo.mal.transport.zmtp;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderDecoder;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderEncoder;
 import java.text.MessageFormat;
-import java.util.Date;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import org.ccsds.moims.mo.mal.MALDecoder;
@@ -83,11 +82,9 @@ public class ZMTPMessageHeader extends MALMessageHeader {
      *
      * @param configuration The ZMTP configuration to use for this message
      * header.
-     * @param transport Respective ZMTP transport that this message header is
-     * being handled by.
      *
      */
-    public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport) {
+    public ZMTPMessageHeader(ZMTPConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -96,8 +93,6 @@ public class ZMTPMessageHeader extends MALMessageHeader {
      *
      * @param configuration The ZMTP configuration to use for this message
      * header
-     * @param transport Respective ZMTP transport that this message header is
-     * being handled by
      * @param uriFrom URI of the message source
      * @param authenticationId Authentication identifier of the message
      * @param uriTo URI of the message destination
@@ -109,18 +104,18 @@ public class ZMTPMessageHeader extends MALMessageHeader {
      * @param serviceArea Area number of the service
      * @param service Service number
      * @param operation Operation number
-     * @param serviceVersion Service version number
+     * @param areaVersion Area version number
      * @param isErrorMessage Flag indicating if the message conveys an error
      * @param supplements The supplements
      */
-    public ZMTPMessageHeader(ZMTPConfiguration configuration, ZMTPTransport transport,
+    public ZMTPMessageHeader(ZMTPConfiguration configuration,
             Identifier uriFrom, Blob authenticationId, Identifier uriTo, Time timestamp,
             InteractionType interactionType, UOctet interactionStage, Long transactionId,
-            UShort serviceArea, UShort service, UShort operation, UOctet serviceVersion,
+            UShort serviceArea, UShort service, UShort operation, UOctet areaVersion,
             Boolean isErrorMessage, NamedValueList supplements) {
         super(uriFrom, authenticationId, uriTo, timestamp, interactionType,
                 interactionStage, transactionId, serviceArea, service,
-                operation, serviceVersion, isErrorMessage, supplements);
+                operation, areaVersion, isErrorMessage, supplements);
         this.configuration = configuration;
     }
 
@@ -132,15 +127,16 @@ public class ZMTPMessageHeader extends MALMessageHeader {
         ZMTPHeaderEncoder encoder = (ZMTPHeaderEncoder) hdrEncoder;
         encoder.encodeUOctet(new UOctet((short) (getVersionNumberBits() | getSDUType(interactionType,
                 interactionStage))));
+        encoder.encodeBlob(authenticationId);
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(serviceVersion);
+        encoder.encodeUOctet(areaVersion);
+        encoder.encodeElement(supplements);
         encoder.encodeUOctet(new UOctet((short) (getErrorBit() | getQoSLevelBits() | getSessionBits())));
         encoder.encodeLong(transactionId);
         encoder.encodeUOctet(new UOctet((short) (getEncodingIdBits() | configuration.getFlags())));
-        encoder.encodeIdentifier(from);
-        encoder.encodeIdentifier(to);
+
         if (getEncodingId() == 3) {
             encoder.encodeUOctet(new UOctet(getEncodingExtendedId()));
         }
@@ -162,10 +158,12 @@ public class ZMTPMessageHeader extends MALMessageHeader {
         if (configuration.isDomainFlag()) {
             encoder.encodeElement(domain);
         }
-         */
         if (configuration.isAuthFlag()) {
             encoder.encodeBlob(authenticationId);
         }
+         */
+        encoder.encodeIdentifier(from);
+        encoder.encodeIdentifier(to);
     }
 
     @Override
@@ -185,10 +183,12 @@ public class ZMTPMessageHeader extends MALMessageHeader {
         short sduType = (short) (versionAndSduType & 0x1F);
         interactionType = getInteractionType(sduType);
         interactionStage = getInteractionStage(sduType);
+        authenticationId = decoder.decodeBlob();
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        serviceVersion = decoder.decodeUOctet();
+        areaVersion = decoder.decodeUOctet();
+        supplements = (NamedValueList) decoder.decodeElement(new NamedValueList());
 
         final short moHdrPt1 = decoder.decodeUOctet().getValue();
         extractError(moHdrPt1);
@@ -198,8 +198,6 @@ public class ZMTPMessageHeader extends MALMessageHeader {
         transactionId = decoder.decodeLong();
         short flags = decoder.decodeUOctet().getValue();
         extractEncodingId(flags);
-        from = decoder.decodeIdentifier();
-        to = decoder.decodeIdentifier();
 
         if (getEncodingId() == 3) {
             setEncodingExtendedId(decoder.decodeUOctet().getValue());
@@ -214,7 +212,7 @@ public class ZMTPMessageHeader extends MALMessageHeader {
         if (0 != (flags & 0x10)) {
             timestamp = decoder.decodeTime();
         } else {
-            timestamp = new Time(new Date().getTime());
+            timestamp = Time.now();
         }
         /*
         if (0 != (flags & 0x08)) {
@@ -237,15 +235,17 @@ public class ZMTPMessageHeader extends MALMessageHeader {
                 domain.add(new Identifier(defaultDomainTokenizer.nextToken()));
             }
         }
-         */
         if (0 != (flags & 0x01)) {
             authenticationId = decoder.decodeBlob();
-        } else if (configuration.getDefaultAuth().length() > 0) {
+        } else if (configuration != null && configuration.getDefaultAuth() != null && configuration.getDefaultAuth().length() > 0) {
             authenticationId = new Blob(
                     DatatypeConverter.parseBase64Binary(configuration.getDefaultAuth()));
         } else {
             authenticationId = new Blob(new byte[0]);
         }
+         */
+        from = decoder.decodeIdentifier();
+        to = decoder.decodeIdentifier();
         return this;
     }
 
@@ -369,32 +369,19 @@ public class ZMTPMessageHeader extends MALMessageHeader {
     @Override
     public String toString() {
         final StringBuilder str = new StringBuilder("ZMTPMessageHeader{");
-        str.append("URIFrom=");
-        str.append(from);
-        str.append(", authenticationId=");
-        str.append(authenticationId);
-        str.append(", URITo=");
-        str.append(to);
-        str.append(", timestamp=");
-        str.append(timestamp);
-        str.append(", interactionType=");
-        str.append(interactionType);
-        str.append(", interactionStage=");
-        str.append(interactionStage);
-        str.append(", transactionId=");
-        str.append(transactionId);
-        str.append(", serviceArea=");
-        str.append(serviceArea);
-        str.append(", service=");
-        str.append(service);
-        str.append(", operation=");
-        str.append(operation);
-        str.append(", serviceVersion=");
-        str.append(serviceVersion);
-        str.append(", isErrorMessage=");
-        str.append(isErrorMessage);
-        str.append(", supplements=");
-        str.append(supplements);
+        str.append("URIFrom=").append(from);
+        str.append(", authenticationId=").append(authenticationId);
+        str.append(", URITo=").append(to);
+        str.append(", timestamp=").append(timestamp);
+        str.append(", interactionType=").append(interactionType);
+        str.append(", interactionStage=").append(interactionStage);
+        str.append(", transactionId=").append(transactionId);
+        str.append(", area=").append(serviceArea);
+        str.append(", areaVersion=").append(areaVersion);
+        str.append(", service=").append(service);
+        str.append(", operation=").append(operation);
+        str.append(", isErrorMessage=").append(isErrorMessage);
+        str.append(", supplements=").append(supplements);
         str.append('}');
 
         return str.toString();

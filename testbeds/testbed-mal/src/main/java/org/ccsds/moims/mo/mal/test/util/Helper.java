@@ -70,8 +70,11 @@ public final class Helper {
       supplementsFull.add(new NamedValue(new Identifier("Long suppl"), new Union(Long.MAX_VALUE)));
       supplementsFull.add(new NamedValue(new Identifier("ULong suppl"), new ULong(BigInteger.TEN)));
       supplementsFull.add(new NamedValue(new Identifier("String suppl"), new Union("String suppl")));
-      supplementsFull.add(new NamedValue(new Identifier("Time suppl"), new Time(Long.MAX_VALUE)));
-      supplementsFull.add(new NamedValue(new Identifier("FineTime suppl"), new FineTime(Long.MAX_VALUE)));
+      // These numbers are the MAX values supported by the Binary Encoder:
+      Time crazyTime = new Time(5283532800000L);
+      FineTime crazyFineTime = new FineTime(5283532800000000000L);
+      supplementsFull.add(new NamedValue(new Identifier("Time suppl"), crazyTime));
+      supplementsFull.add(new NamedValue(new Identifier("FineTime suppl"), crazyFineTime));
       supplementsFull.add(new NamedValue(new Identifier("URI suppl"), new URI("URI suppl")));
       supplementsFull.add(new NamedValue(new Identifier("ObjectRef suppl"), new ObjectRef(testDomain, MyFirstObject.SHORT_FORM, new Identifier("ObjectRef suppl"), new UInteger(1))));
       supplementsIPTestProvider = new NamedValueList();

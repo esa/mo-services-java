@@ -62,7 +62,7 @@ public class MALMessageHeader {
     protected UShort serviceArea;
     protected UShort service;
     protected UShort operation;
-    protected UOctet serviceVersion;
+    protected UOctet areaVersion;
     protected Boolean isErrorMessage;
     protected NamedValueList supplements;
     private MALOperation malOperation;
@@ -87,7 +87,7 @@ public class MALMessageHeader {
      * @param serviceArea Area number of the service
      * @param service Service number
      * @param operation Operation number
-     * @param serviceVersion Service version number
+     * @param areaVersion Area version number
      * @param isErrorMessage Flag indicating if the message conveys an error
      * @param supplements The header supplements
      */
@@ -101,7 +101,7 @@ public class MALMessageHeader {
             final UShort serviceArea,
             final UShort service,
             final UShort operation,
-            final UOctet serviceVersion,
+            final UOctet areaVersion,
             final Boolean isErrorMessage,
             final NamedValueList supplements) {
         if (supplements == null) {
@@ -118,7 +118,7 @@ public class MALMessageHeader {
         this.serviceArea = serviceArea;
         this.service = service;
         this.operation = operation;
-        this.serviceVersion = serviceVersion;
+        this.areaVersion = areaVersion;
         this.isErrorMessage = isErrorMessage;
         this.supplements = supplements;
     }
@@ -253,12 +253,12 @@ public class MALMessageHeader {
     }
 
     /**
-     * Returns the field version.
+     * Returns the area version.
      *
-     * @return the field version.
+     * @return the area version.
      */
     public UOctet getServiceVersion() {
-        return serviceVersion;
+        return areaVersion;
     }
 
     /**
@@ -307,7 +307,7 @@ public class MALMessageHeader {
         str.append(", serviceArea=").append(serviceArea);
         str.append(", service=").append(service);
         str.append(", operation=").append(operation);
-        str.append(", serviceVersion=").append(serviceVersion);
+        str.append(", areaVersion=").append(areaVersion);
         str.append(", isErrorMessage=").append(isErrorMessage);
         str.append(", supplements=").append(supplements);
         str.append('}');
@@ -374,7 +374,7 @@ public class MALMessageHeader {
         encoder.encodeUShort(serviceArea);
         encoder.encodeUShort(service);
         encoder.encodeUShort(operation);
-        encoder.encodeUOctet(serviceVersion);
+        encoder.encodeUOctet(areaVersion);
         encoder.encodeBoolean(isErrorMessage);
         encoder.encodeElement(supplements);
     }
@@ -390,7 +390,7 @@ public class MALMessageHeader {
         serviceArea = decoder.decodeUShort();
         service = decoder.decodeUShort();
         operation = decoder.decodeUShort();
-        serviceVersion = decoder.decodeUOctet();
+        areaVersion = decoder.decodeUOctet();
         isErrorMessage = decoder.decodeBoolean();
         supplements = (NamedValueList) decoder.decodeElement(new NamedValueList());
         return this;

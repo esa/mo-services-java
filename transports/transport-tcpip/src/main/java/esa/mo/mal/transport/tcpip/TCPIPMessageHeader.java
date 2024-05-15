@@ -124,7 +124,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         this.serviceArea = new UShort(dec.decodeShort());
         this.service = new UShort(dec.decodeShort());
         this.operation = new UShort(dec.decodeShort());
-        this.serviceVersion = dec.decodeUOctet();
+        this.areaVersion = dec.decodeUOctet();
 
         short parts = dec.decodeUOctet().getValue();
         this.isErrorMessage = (((parts & 0x80) >> 7) == 0x1);
@@ -178,7 +178,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
                 authenticationId, uriTo, this.getServiceTo(), timestamp,
                 interactionType, getInteractionStage(sduType),
                 transactionId, serviceArea,
-                service, operation, serviceVersion, isErrorMessage, supplements);
+                service, operation, areaVersion, isErrorMessage, supplements);
 
         header.setEncodingId(encodingId);
         header.setTotalLength(totalLength);
@@ -460,7 +460,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         str.append(", serviceArea=").append(serviceArea);
         str.append(", service=").append(service);
         str.append(", operation=").append(operation);
-        str.append(", serviceVersion=").append(serviceVersion);
+        str.append(", serviceVersion=").append(areaVersion);
         str.append(", isErrorMessage=").append(isErrorMessage);
         str.append(", transactionId=").append(transactionId);
         str.append(", timestamp=").append(timestamp);

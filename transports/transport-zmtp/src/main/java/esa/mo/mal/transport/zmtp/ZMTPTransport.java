@@ -20,38 +20,41 @@
  */
 package esa.mo.mal.transport.zmtp;
 
+import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderDecoder;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
+import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Random;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import org.zeromq.ZMQ;
 import org.zeromq.ZContext;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Random;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import esa.mo.mal.transport.gen.sending.MessageSender;
-import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
  * The ZMTP MAL Transport implementation.
@@ -123,31 +126,26 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
             "org.ccsds.moims.mo.mal.transport.zmtp");
 
     /**
-     * Port delimiter
-     */
-    protected static char PORT_DELIMITER = ':';
-
-    /**
      * The server URI that the channel destination socket is set up on
      */
-    protected String localURI;
+    private String localURI;
 
     /**
      * The server port that the channel destination socket is set up on.
      *
      * Extracted from localURI
      */
-    protected int localPort;
+    private int localPort;
 
     /**
      * Holds ZMQ Context of the binding used to create sockets
      */
-    protected ZContext zmqContext;
+    private ZContext zmqContext;
 
     /**
      * Holds ZMQ URI mapping implementation class instance
      */
-    protected ZMTPURIMapping uriMapping;
+    private ZMTPURIMapping uriMapping;
 
     /**
      * Holds ZMTP String Mapping Directory used for MDK encoding/decoding
@@ -159,27 +157,27 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
      *
      * Can be overloaded per-message basis
      */
-    public ZMTPConfiguration defaultConfiguration;
+    private ZMTPConfiguration defaultConfiguration;
 
     /**
      * P2P server
      */
-    protected ZMTPChannelDestination ptpDest;
+    private ZMTPChannelDestination ptpDest;
 
     /**
      * MCAST server
      */
-    protected ZMTPChannelDestination multicastDest;
+    private ZMTPChannelDestination multicastDest;
 
     /**
      * Encoder stream factory used to decode/encode the message header.
      */
-    protected MALElementStreamFactory hdrStreamFactory;
+    private ZMTPHeaderStreamFactory hdrStreamFactory;
 
     /**
      * Selector of encoding for MAL message body transmitted over ZMTP.
      */
-    protected ZMTPEncodingSelector bodyEncodingSelector;
+    private ZMTPEncodingSelector bodyEncodingSelector;
 
     /*
    * Constructor.
@@ -336,7 +334,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     @Override
     protected String createTransportAddress() throws MALException {
         // Return channel destination URI
-        return getDefaultHost() + PORT_DELIMITER + localPort;
+        return getDefaultHost() + ':' + localPort;
     }
 
     @Override
@@ -367,19 +365,21 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     @Override
     public GENMessage decodeMessage(byte[] packet) throws MALException {
         // Default configuration (loaded from transport properties) is used for decoding
-        ZMTPMessageHeader header = new ZMTPMessageHeader(
-                new ZMTPConfiguration(defaultConfiguration, qosProperties), null);
-        ZMTPMessage dummyMessage = new ZMTPMessage(hdrStreamFactory, wrapBodyParts,
-                true, header, qosProperties, packet, hdrStreamFactory);
+        ZMTPMessageHeader header = new ZMTPMessageHeader(defaultConfiguration);
+        final ByteArrayInputStream is = new ByteArrayInputStream(packet);
+        ZMTPHeaderDecoder headerDecoder = hdrStreamFactory.getHeaderDecoder(is);
+        header.decode(headerDecoder);
 
-        // now full message including body
         try {
-            return new ZMTPMessage(hdrStreamFactory, wrapBodyParts, false,
-                    (MALMessageHeader) dummyMessage.getHeader(), qosProperties,
-                    packet,
-                    getBodyEncodingSelector().getDecoderStreamFactory(header));
+            // Now get the body part for decoding it later
+            byte[] remainingData = headerDecoder.getRemainingEncodedData();
+            MALElementStreamFactory bodyStreamFactory = getBodyEncodingSelector().getDecoderStreamFactory(header);
+
+            return new ZMTPMessage(hdrStreamFactory, header, qosProperties,
+                    new ByteArrayInputStream(remainingData), bodyStreamFactory);
         } catch (MALException ex) {
-            returnErrorMessage(dummyMessage, MALHelper.INTERNAL_ERROR_NUMBER,
+            RLOGGER.log(Level.INFO, "Something went wrong!", ex);
+            returnErrorMessage(header, MALHelper.INTERNAL_ERROR_NUMBER,
                     "The message body could not be decoded. The message will be discarded!");
 
             return null;
@@ -394,16 +394,20 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
             boolean lastForHandle,
             String targetURI,
             GENMessage msg) throws Exception {
+        final ByteArrayOutputStream lowLevelOutputStream = new ByteArrayOutputStream();
+        ((ZMTPMessage) msg).encodeMessage(getStreamFactory(), null, lowLevelOutputStream, false);
+        byte[] data = lowLevelOutputStream.toByteArray();
+
         return new OutgoingMessageHolder<byte[]>(10,
                 destinationRootURI,
                 destinationURI,
                 multiSendHandle,
                 lastForHandle,
                 msg,
-                internalEncodeByteMessage(msg));
+                data);
     }
 
-    protected MALElementStreamFactory getHeaderStreamFactory() {
+    protected ZMTPHeaderStreamFactory getHeaderStreamFactory() {
         return hdrStreamFactory;
     }
 

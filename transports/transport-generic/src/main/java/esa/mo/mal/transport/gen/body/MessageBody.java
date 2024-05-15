@@ -302,7 +302,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                 Object sf = fields[i].getTypeId();
 
                 try {
-                    messageParts[i] = decodeBodyPart(benc, ctx.getOperationFields()[i], sf);
+                    messageParts[i] = decodeBodyPart(benc, fields[i], sf);
                 } catch (Exception ex) {
                     String typeStr = "";
 
@@ -392,14 +392,15 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
 
         // It is not an abstract element:
         if (sf != null) {
-            Long shortForm = (Long) sf;
+            Long absoluteSFP = (Long) sf;
             Transport.LOGGER.log(Level.FINER,
-                    "GEN Message decoding body part : Type = {0}", shortForm);
+                    "GEN Message decoding body part : Type = {0}", absoluteSFP);
 
             try {
-                element = MALContextFactory.getElementsRegistry().createElement(shortForm);
+                element = MALContextFactory.getElementsRegistry().createElement(absoluteSFP);
             } catch (Exception ex) {
-                throw new MALException("The Element could not be created!", ex);
+                TypeId typeId = new TypeId(absoluteSFP);
+                throw new MALException("The Element could not be created: " + typeId.toString(), ex);
             }
         }
 

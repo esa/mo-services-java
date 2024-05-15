@@ -43,30 +43,30 @@ public class ZMTPConfiguration {
     // QoS properties
     public static final String AUTHENTICATION_ID_FLAG
             = "org.ccsds.moims.mo.mal.transport.zmtp.authenticationid.flag";
-    public static final String DOMAIN_FLAG 
+    public static final String DOMAIN_FLAG
             = "org.ccsds.moims.mo.mal.transport.zmtp.domain.flag";
     public static final String NETWORK_ZONE_FLAG
             = "org.ccsds.moims.mo.mal.transport.zmtp.networkzone.flag";
-    public static final String PRIORITY_FLAG 
+    public static final String PRIORITY_FLAG
             = "org.ccsds.moims.mo.mal.transport.zmtp.priority.flag";
     public static final String SESSION_NAME_FLAG
             = "org.ccsds.moims.mo.mal.transport.zmtp.sessionname.flag";
-    public static final String TIMESTAMP_FLAG 
+    public static final String TIMESTAMP_FLAG
             = "org.ccsds.moims.mo.mal.transport.zmtp.timestamp.flag";
 
-    protected String defaultAuth;
-    protected String defaultDomain;
-    protected String defaultNetwork;
-    protected int defaultPriority = 0;
-    protected String defaultSessionName = "LIVE";
+    private String defaultAuth;
+    private String defaultDomain;
+    private String defaultNetwork;
+    private int defaultPriority = 0;
+    private String defaultSessionName = "LIVE";
 
-    protected boolean priorityFlag;
-    protected boolean timestampFlag;
-    protected boolean networkFlag;
-    protected boolean sessionNameFlag;
-    protected boolean domainFlag;
-    protected boolean authFlag;
-    protected short flags = 0x0;
+    private boolean priorityFlag;
+    private boolean timestampFlag;
+    private boolean networkFlag;
+    private boolean sessionNameFlag;
+    private boolean domainFlag;
+    private boolean authFlag;
+    private short flags = 0x0;
 
     public ZMTPConfiguration() {
         this(false, false, false, false, false, false);
@@ -104,7 +104,7 @@ public class ZMTPConfiguration {
         updateFlags();
     }
 
-    private Integer getIntegerProperty(final Map properties, 
+    private Integer getIntegerProperty(final Map properties,
             final String propertyName, Integer existingValue) {
         if ((null != properties) && properties.containsKey(propertyName)) {
             return Integer.parseInt(properties.get(propertyName).toString());
@@ -133,7 +133,7 @@ public class ZMTPConfiguration {
     }
 
     private void updateFlags() {
-        flags = calculateFlags(isPriorityFlag(), isTimestampFlag(), 
+        flags = calculateFlags(isPriorityFlag(), isTimestampFlag(),
                 isNetworkFlag(), isSessionNameFlag(), isDomainFlag(), isAuthFlag());
     }
 
@@ -229,86 +229,4 @@ public class ZMTPConfiguration {
         return authFlag;
     }
 
-    /**
-     * @param defaultAuth the defaultAuth to set
-     */
-    public void setDefaultAuth(String defaultAuth) {
-        this.defaultAuth = defaultAuth;
-    }
-
-    /**
-     * @param defaultDomain the defaultDomain to set
-     */
-    public void setDefaultDomain(String defaultDomain) {
-        this.defaultDomain = defaultDomain;
-    }
-
-    /**
-     * @param defaultNetwork the defaultNetwork to set
-     */
-    public void setDefaultNetwork(String defaultNetwork) {
-        this.defaultNetwork = defaultNetwork;
-    }
-
-    /**
-     * @param defaultPriority the defaultPriority to set
-     */
-    public void setDefaultPriority(int defaultPriority) {
-        this.defaultPriority = defaultPriority;
-    }
-
-    /**
-     * @param defaultSessionName the defaultSessionName to set
-     */
-    public void setDefaultSessionName(String defaultSessionName) {
-        this.defaultSessionName = defaultSessionName;
-    }
-
-    /**
-     * @param priorityFlag the priorityFlag to set
-     */
-    public void setPriorityFlag(boolean priorityFlag) {
-        this.priorityFlag = priorityFlag;
-        updateFlags();
-    }
-
-    /**
-     * @param timestampFlag the timestampFlag to set
-     */
-    public void setTimestampFlag(boolean timestampFlag) {
-        this.timestampFlag = timestampFlag;
-        updateFlags();
-    }
-
-    /**
-     * @param networkFlag the networkFlag to set
-     */
-    public void setNetworkFlag(boolean networkFlag) {
-        this.networkFlag = networkFlag;
-        updateFlags();
-    }
-
-    /**
-     * @param sessionFlag the sessionNameFlag to set
-     */
-    public void setSessionNameFlag(boolean sessionFlag) {
-        this.sessionNameFlag = sessionFlag;
-        updateFlags();
-    }
-
-    /**
-     * @param domainFlag the domainFlag to set
-     */
-    public void setDomainFlag(boolean domainFlag) {
-        this.domainFlag = domainFlag;
-        updateFlags();
-    }
-
-    /**
-     * @param authFlag the authFlag to set
-     */
-    public void setAuthFlag(boolean authFlag) {
-        this.authFlag = authFlag;
-        updateFlags();
-    }
 }

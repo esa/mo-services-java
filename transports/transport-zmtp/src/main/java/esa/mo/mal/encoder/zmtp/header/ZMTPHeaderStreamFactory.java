@@ -57,4 +57,12 @@ public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fix
     public MALElementOutputStream createOutputStream(final java.io.OutputStream os) throws MALException {
         return new ZMTPHeaderElementOutputStream(os, mapping, timeHandler);
     }
+
+    public ZMTPHeaderEncoder getHeaderEncoder(final java.io.OutputStream os) {
+        return new ZMTPHeaderEncoder(os, mapping, timeHandler);
+    }
+
+    public ZMTPHeaderDecoder getHeaderDecoder(final java.io.InputStream is) {
+        return new ZMTPHeaderDecoder(is, mapping, timeHandler);
+    }
 }

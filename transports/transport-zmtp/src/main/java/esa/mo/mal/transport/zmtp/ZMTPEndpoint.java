@@ -111,7 +111,6 @@ public class ZMTPEndpoint extends Endpoint {
             Map qosProperties) {
         ZMTPMessageHeader header = new ZMTPMessageHeader(
                 new ZMTPConfiguration(configuration, qosProperties),
-                null,
                 new Identifier(getURI().getValue()),
                 authenticationId,
                 new Identifier(uriTo.getValue()),

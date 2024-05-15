@@ -48,10 +48,13 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class GENMessage implements MALMessage, java.io.Serializable {
 
     private static final long serialVersionUID = 222222222222222L;
-    private final MALMessageHeader header;
-    private final MessageBody body;
-    protected final Map qosProperties;
-    protected final boolean wrapBodyParts;
+    protected MALMessageHeader header;
+    protected MessageBody body;
+    protected Map qosProperties;
+    protected boolean wrapBodyParts;
+
+    public GENMessage(){
+    }
 
     /**
      * Constructor.
@@ -100,35 +103,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
         final MALElementInputStream enc = encFactory.createInputStream(bais);
 
-        this.header = readHeader ? (MALMessageHeader) enc.readHeader(header) : header;
+        this.header = readHeader ? enc.readHeader(header) : header;
         this.body = createMessageBody(encFactory, bais, enc);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
-     * @param readHeader True if the header should be read from the stream.
-     * @param header An instance of the header class to use.
-     * @param qosProperties The QoS properties for this message.
-     * @param ios The message in encoded form.
-     * @param encFactory The stream factory to use for decoding.
-     * @throws MALException On decoding error.
-     */
-    public GENMessage(final boolean wrapBodyParts,
-            final boolean readHeader,
-            final MALMessageHeader header,
-            final Map qosProperties,
-            final java.io.InputStream ios,
-            final MALElementStreamFactory encFactory) throws MALException {
-        this.qosProperties = qosProperties;
-        this.wrapBodyParts = wrapBodyParts;
-
-        final MALElementInputStream enc = encFactory.createInputStream(ios);
-
-        this.header = readHeader ? (MALMessageHeader) enc.readHeader(header) : header;
-        this.body = createMessageBody(encFactory, null, enc);
     }
 
     @Override
@@ -178,7 +154,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    private MessageBody createMessageBody(final MALElementStreamFactory encFactory,
+    protected MessageBody createMessageBody(final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
@@ -215,7 +191,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                 encFactory, encBodyBytes, encBodyElements);
     }
 
-    private MessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
+    protected MessageBody createMessageBody(final MALElementStreamFactory encFactory, final Object[] bodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {

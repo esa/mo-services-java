@@ -271,7 +271,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
                         (MALMessageHeader) dummyMessage.getHeader(), qosProperties, packet,
                         localBodyStreamFactory);
             } catch (MALException ex) {
-                returnErrorMessage(dummyMessage,
+                returnErrorMessage(dummyMessage.getHeader(),
                         MALHelper.INTERNAL_ERROR_NUMBER,
                         "The message body could not be decoded. The message will be discarded!");
 

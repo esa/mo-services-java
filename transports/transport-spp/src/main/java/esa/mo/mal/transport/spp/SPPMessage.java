@@ -100,33 +100,6 @@ public class SPPMessage extends GENMessage {
         this.segmentCounter = segmentCounter;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param hdrStreamFactory The header stream factory.
-     * @param configuration The SPP configuration to use for this message.
-     * @param segmentCounter The segment counter.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
-     * @param readHeader True if the header should be read from the stream.
-     * @param header An instance of the header class to use.
-     * @param qosProperties The QoS properties for this message.
-     * @param ios The message in encoded form.
-     * @param encFactory The stream factory to use for decoding.
-     * @throws MALException On decoding error.
-     */
-    public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
-            final SPPConfiguration configuration,
-            final SPPSegmentCounter segmentCounter, boolean wrapBodyParts,
-            boolean readHeader, MALMessageHeader header, Map qosProperties,
-            InputStream ios, MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, readHeader, header, qosProperties, ios, encFactory);
-
-        this.hdrStreamFactory = hdrStreamFactory;
-        this.configuration = configuration;
-        this.segmentCounter = segmentCounter;
-    }
-
     @Override
     public void encodeMessage(final MALElementStreamFactory streamFactory,
             final MALElementOutputStream enc,
