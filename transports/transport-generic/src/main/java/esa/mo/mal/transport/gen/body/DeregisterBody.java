@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.gen.body;
 
-import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
@@ -55,16 +54,14 @@ public class DeregisterBody extends LazyMessageBody implements MALDeregisterBody
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
-     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
     public DeregisterBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
-            final ByteArrayInputStream encBodyBytes,
             final MALElementInputStream encBodyElements) {
-        super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
+        super(ctx, wrappedBodyParts, encFactory, encBodyElements);
     }
 
     @Override

@@ -60,11 +60,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      */
     protected MALElementStreamFactory encFactory;
     /**
-     * Input ByteArray that holds the encoded message body parts.
-     */
-    @Deprecated
-    protected ByteArrayInputStream encBodyBytes;
-    /**
      * Input stream that holds the encoded message body parts.
      */
     protected MALElementInputStream encBodyElements;
@@ -109,19 +104,16 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
-     * @param encBodyBytes The encoder body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
     public LazyMessageBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
-            final ByteArrayInputStream encBodyBytes,
             final MALElementInputStream encBodyElements) {
         this.ctx = ctx;
         this.wrappedBodyParts = wrappedBodyParts;
         this.encFactory = encFactory;
-        this.encBodyBytes = encBodyBytes;
         this.encBodyElements = encBodyElements;
     }
 

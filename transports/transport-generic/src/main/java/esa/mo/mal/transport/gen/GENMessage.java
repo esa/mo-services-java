@@ -166,36 +166,28 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {
-            return new ErrorBody(ctx, wrapBodyParts,
-                    encFactory, encBodyBytes, encBodyElements);
+            return new ErrorBody(ctx, wrapBodyParts, encFactory, encBodyElements);
         }
 
         if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
             final short stage = header.getInteractionStage().getValue();
             switch (stage) {
                 case MALPubSubOperation._REGISTER_STAGE:
-                    return new RegisterBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes, encBodyElements);
+                    return new RegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
                 case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return new PublishRegisterBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes, encBodyElements);
+                    return new PublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
                 case MALPubSubOperation._PUBLISH_STAGE:
-                    return new PublishBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes, encBodyElements);
+                    return new PublishBody(ctx, wrapBodyParts, encFactory, encBodyElements);
                 case MALPubSubOperation._NOTIFY_STAGE:
-                    return new NotifyBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes, encBodyElements);
+                    return new NotifyBody(ctx, wrapBodyParts, encFactory, encBodyElements);
                 case MALPubSubOperation._DEREGISTER_STAGE:
-                    return new DeregisterBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes, encBodyElements);
+                    return new DeregisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
                 default:
-                    return new LazyMessageBody(ctx, wrapBodyParts,
-                            encFactory, encBodyBytes, encBodyElements);
+                    return new LazyMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
             }
         }
 
-        return new LazyMessageBody(ctx, wrapBodyParts,
-                encFactory, encBodyBytes, encBodyElements);
+        return new LazyMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
     }
 
     /**

@@ -56,16 +56,14 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
      * @param wrappedBodyParts True if the encoded body parts are wrapped in
      * BLOBs.
      * @param encFactory The encoder stream factory to use.
-     * @param encBodyBytes The enc body bytes.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
     public ErrorBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
-            final ByteArrayInputStream encBodyBytes,
             final MALElementInputStream encBodyElements) {
-        super(ctx, wrappedBodyParts, encFactory, encBodyBytes, encBodyElements);
+        super(ctx, wrappedBodyParts, encFactory, encBodyElements);
     }
 
     @Override
