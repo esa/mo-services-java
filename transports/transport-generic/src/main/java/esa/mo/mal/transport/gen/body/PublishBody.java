@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALPublishBody;
 /**
  * Implementation of the MALPublishBody interface.
  */
-public class PublishBody extends MessageBody implements MALPublishBody {
+public class PublishBody extends LazyMessageBody implements MALPublishBody {
 
     private static final long serialVersionUID = 222222222222227L;
     private final int offset;

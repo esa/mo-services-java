@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
 /**
  * Implementation of the MALRegisterBody interface.
  */
-public class RegisterBody extends MessageBody implements MALRegisterBody {
+public class RegisterBody extends LazyMessageBody implements MALRegisterBody {
 
     private static final long serialVersionUID = 222222222222229L;
 

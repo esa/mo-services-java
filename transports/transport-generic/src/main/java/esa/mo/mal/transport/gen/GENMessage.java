@@ -23,7 +23,7 @@ package esa.mo.mal.transport.gen;
 import static esa.mo.mal.transport.gen.Transport.LOGGER;
 import esa.mo.mal.transport.gen.body.DeregisterBody;
 import esa.mo.mal.transport.gen.body.ErrorBody;
-import esa.mo.mal.transport.gen.body.MessageBody;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.body.NotifyBody;
 import esa.mo.mal.transport.gen.body.PublishBody;
 import esa.mo.mal.transport.gen.body.PublishRegisterBody;
@@ -54,7 +54,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
 
     private static final long serialVersionUID = 222222222222222L;
     protected MALMessageHeader header;
-    protected MessageBody body;
+    protected LazyMessageBody body;
     protected Map qosProperties;
     protected boolean wrapBodyParts;
     protected MALElementStreamFactory encFactory;
@@ -162,7 +162,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    protected MessageBody createMessageBody(final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
+    protected LazyMessageBody createMessageBody(final ByteArrayInputStream encBodyBytes, final MALElementInputStream encBodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {
@@ -189,12 +189,12 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                     return new DeregisterBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
                 default:
-                    return new MessageBody(ctx, wrapBodyParts,
+                    return new LazyMessageBody(ctx, wrapBodyParts,
                             encFactory, encBodyBytes, encBodyElements);
             }
         }
 
-        return new MessageBody(ctx, wrapBodyParts,
+        return new LazyMessageBody(ctx, wrapBodyParts,
                 encFactory, encBodyBytes, encBodyElements);
     }
 
@@ -222,7 +222,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    protected MessageBody createMessageBody(final Object[] bodyElements) {
+    protected LazyMessageBody createMessageBody(final Object[] bodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {
@@ -243,10 +243,10 @@ public class GENMessage implements MALMessage, java.io.Serializable {
                 case MALPubSubOperation._DEREGISTER_STAGE:
                     return new DeregisterBody(ctx, encFactory, bodyElements);
                 default:
-                    return new MessageBody(ctx, encFactory, bodyElements);
+                    return new LazyMessageBody(ctx, encFactory, bodyElements);
             }
         }
 
-        return new MessageBody(ctx, encFactory, bodyElements);
+        return new LazyMessageBody(ctx, encFactory, bodyElements);
     }
 }

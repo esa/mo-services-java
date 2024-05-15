@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
 /**
  * Implementation of the MALDeregisterBody interface.
  */
-public class DeregisterBody extends MessageBody implements MALDeregisterBody {
+public class DeregisterBody extends LazyMessageBody implements MALDeregisterBody {
 
     private static final long serialVersionUID = 222222222222224L;
 

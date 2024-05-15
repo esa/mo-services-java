@@ -32,7 +32,7 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 /**
  * Implementation of the MALErrorBody interface.
  */
-public class ErrorBody extends MessageBody implements MALErrorBody {
+public class ErrorBody extends LazyMessageBody implements MALErrorBody {
 
     private static final long serialVersionUID = 222222222222225L;
 

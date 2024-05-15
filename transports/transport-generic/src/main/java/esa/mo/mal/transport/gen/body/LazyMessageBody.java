@@ -48,9 +48,12 @@ import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.TypeId;
 
 /**
- * Implementation of the MALMessageBody interface.
+ * Implementation of the MALMessageBody interface. The class will only decode
+ * the body elements when the fields are requested. Until then, the body will
+ * remain encoded. This avoid decoding the message body for messages that end up
+ * being rejected.
  */
-public class MessageBody implements MALMessageBody, java.io.Serializable {
+public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
 
     /**
      * Factory used to create encoders/decoders.
@@ -88,7 +91,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
      * @param encFactory The encoder stream factory to use.
      * @param messageParts The message body parts.
      */
-    public MessageBody(final MALEncodingContext ctx,
+    public LazyMessageBody(final MALEncodingContext ctx,
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         this.ctx = ctx;
@@ -110,7 +113,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
-    public MessageBody(final MALEncodingContext ctx,
+    public LazyMessageBody(final MALEncodingContext ctx,
             final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final ByteArrayInputStream encBodyBytes,
@@ -127,7 +130,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
         try {
             decodeMessageBody();
         } catch (MALException ex) {
-            Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(LazyMessageBody.class.getName()).log(Level.SEVERE,
                     "MAL encoded body encoding error", ex);
         }
 
@@ -222,7 +225,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                             getBodyElement(i, null), fields[i]);
                 }
             } catch (NotFoundException ex) {
-                Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
+                Logger.getLogger(LazyMessageBody.class.getName()).log(Level.SEVERE,
                         "The Operation fields could not be found!", ex);
             }
 
@@ -312,7 +315,7 @@ public class MessageBody implements MALMessageBody, java.io.Serializable {
                         typeStr = "' and typeId:'" + typeId.toString();
                     }
 
-                    Logger.getLogger(MessageBody.class.getName()).log(Level.SEVERE,
+                    Logger.getLogger(LazyMessageBody.class.getName()).log(Level.SEVERE,
                             "Error decoding Body part with fieldName:'"
                             + fields[i].getFieldName() + typeStr
                             + "' and with index: " + i, ex);
