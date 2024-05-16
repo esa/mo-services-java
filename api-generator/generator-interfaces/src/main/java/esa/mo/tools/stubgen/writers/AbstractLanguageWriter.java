@@ -89,6 +89,9 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
                 comment += ".";
             }
 
+            comment = comment.replace("&", "&amp;");
+            comment = comment.replace("'", "&quot;");
+
             // If the size is less than 70 chars, then put
             // it directly, otherwise break it up
             int LENGTH_THRESHOLD = 70;

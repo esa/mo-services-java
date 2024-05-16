@@ -27,6 +27,7 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
@@ -37,6 +38,7 @@ import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -372,8 +374,14 @@ public class GeneratorJava extends GeneratorLangs {
      */
     protected void createFolderComment(ClassWriter file, AreaType area,
             ServiceType service, String extraPackage, String comment) throws IOException {
+        List<String> list = AbstractLanguageWriter.normaliseComment(new ArrayList(), comment);
+
         file.addStatement("/**");
-        file.addStatement(comment);
+
+        for (String line : list) {
+            file.addStatement(" * " + line);
+        }
+
         file.addStatement("*/");
         file.addPackageStatement(area, service, extraPackage);
         file.flush();
