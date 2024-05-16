@@ -32,7 +32,6 @@ import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.StatusCodeHelper;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -40,7 +39,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.TimeZone;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -213,8 +211,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      * application/mal-xml. Otherwise, set the content-type to application/mal
      * and specify the encoder used in the X-MAL-ENCODING header.
      *
-     * @see CCSDS recommended standard, paragraphs 3.4.3 and 3.4.4.
-     * @throws UnsupportedEncodingException
+     * @param client The client object to be set.
      */
     protected void setContentTypeHeader(IHttpResponse client) {
         String contentType = "application/mal-xml";

@@ -58,12 +58,19 @@ public class DocxWriter extends DocxBaseWriter {
         docxRelBuf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering\" Target=\"numbering.xml\"/>");
     }
 
-    public void addDiagram(Object o) throws IOException, TranscoderException {
-        if (o instanceof Element) {
+    /**
+     * Adds a diagram.
+     *
+     * @param svg The svg to be added.
+     * @throws IOException if the diagram could not be rasterized.
+     * @throws TranscoderException if there is a transcoding issue.
+     */
+    public void addDiagram(Object svg) throws IOException, TranscoderException {
+        if (svg instanceof Element) {
             int i = IMAGE_INDEX++;
 
-            Element e = (Element) o;
-            int[] dims = rasterizeDiagram(e, destinationFolder + "/media", "image" + i);
+            Element svgElement = (Element) svg;
+            int[] dims = rasterizeDiagram(svgElement, destinationFolder + "/media", "image" + i);
 
             docxRelBuf.append("<Relationship Id=\"image");
             docxRelBuf.append(i);
@@ -119,6 +126,8 @@ public class DocxWriter extends DocxBaseWriter {
      * @param name filename without PNG extension.
      * @return width and height of rasterized image or null if failed.
      * @exception IOException if error.
+     * @throws org.apache.batik.transcoder.TranscoderException if the
+     * transcoding could not be performed.
      */
     protected int[] rasterizeDiagram(Element svg, String folder, String name) throws IOException, TranscoderException {
         int[] dimensions = new int[2];

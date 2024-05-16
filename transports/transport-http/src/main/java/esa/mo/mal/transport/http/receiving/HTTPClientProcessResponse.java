@@ -155,12 +155,12 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
     }
 
     /**
+     * A wrapper method to decode mime text.
      *
-     * @param input
-     * @return
+     * @param input The input text to decode.
+     * @return The decoded text.
      */
-    protected String decodeMimeText(String input) {
-
+    public static String decodeMimeText(String input) {
         try {
             return MimeUtility.decodeText(input);
         } catch (UnsupportedEncodingException e) {

@@ -28,14 +28,12 @@ import esa.mo.mal.transport.http.receiving.HTTPClientShutDown;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.TimeZone;
-import javax.mail.internet.MimeUtility;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -158,37 +156,18 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
      * and specify the encoder used in the X-MAL-ENCODING header.
      *
      * @param client The client object.
-     * @see CCSDS recommended standard, paragraphs 3.4.3 and 3.4.4.
      */
     protected void setContentTypeHeader(IPostClient client) {
-
         String contentType = "application/mal-xml";
         String encoderInUse = transport.getStreamFactory().getClass().getCanonicalName();
         RLOGGER.log(Level.FINEST, "Using encoder {0}", encoderInUse);
-
         boolean isUsingDefaultEncoder = HTTPTransport.HTTP_DEFAULT_XML_ENCODER.equals(encoderInUse);
 
         if (!isUsingDefaultEncoder) {
             contentType = "application/mal";
-
             client.setRequestHeader("X-MAL-Encoding", encodeAscii(encoderInUse));
         }
         client.setRequestHeader("Content-Type", contentType);
-    }
-
-    /**
-     *
-     * @param input
-     * @return
-     */
-    protected String encodeMime(String input) {
-        try {
-            return MimeUtility.encodeText(input);
-        } catch (UnsupportedEncodingException e) {
-            RLOGGER.log(Level.SEVERE, "Could not encode input string as mime {0}", e.getMessage());
-            e.printStackTrace();
-        }
-        return "";
     }
 
     protected String encodeAscii(String input) {

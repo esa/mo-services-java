@@ -35,7 +35,6 @@ public abstract class GeneratorDocument extends GeneratorBase {
     /**
      * Constructor.
      *
-     * @param logger The logger.
      * @param config The configuration to use.
      */
     protected GeneratorDocument(GeneratorConfiguration config) {

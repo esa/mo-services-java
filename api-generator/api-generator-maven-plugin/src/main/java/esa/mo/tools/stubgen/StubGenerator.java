@@ -141,7 +141,7 @@ public class StubGenerator extends AbstractMojo {
 
         boolean printHelp = false;
 
-        if (0 < args.length) {
+        if (args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 final String arg = args[i];
 

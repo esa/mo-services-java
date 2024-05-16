@@ -46,7 +46,7 @@ public class JdkTestClient implements IPostClient {
 
     protected HttpURLConnection connection;
 
-    private String[] asciiHeaders = new String[]{"X-MAL-From", "X-MAL-To", "Host", "request-target"};
+    private final String[] asciiHeaders = new String[]{"X-MAL-From", "X-MAL-To", "Host", "request-target"};
 
     @Override
     public void initAndConnectClient(String remoteUrl, boolean useHttps, String keystoreFilename,
@@ -159,10 +159,9 @@ public class JdkTestClient implements IPostClient {
     /**
      * Exposed for unittesting
      *
-     * @return
+     * @return The connection object.
      */
     public HttpURLConnection getConnection() {
-
         return connection;
     }
 }

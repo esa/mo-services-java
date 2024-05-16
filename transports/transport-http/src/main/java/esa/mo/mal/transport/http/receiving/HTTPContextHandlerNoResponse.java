@@ -26,12 +26,10 @@ import esa.mo.mal.transport.http.api.IHttpRequest;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.TimeZone;
-import javax.mail.internet.MimeUtility;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -144,20 +142,11 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
     }
 
     /**
+     * Decodes an ASCII input.
      *
-     * @param input
-     * @return
+     * @param input The ASCII input.
+     * @return The decoded text;
      */
-    protected String decodeMimeText(String input) {
-        try {
-            return MimeUtility.decodeText(input);
-        } catch (UnsupportedEncodingException e) {
-            RLOGGER.severe(e.getMessage());
-            e.printStackTrace();
-        }
-        return "";
-    }
-
     protected String decodeAscii(String input) {
         return input;
     }
