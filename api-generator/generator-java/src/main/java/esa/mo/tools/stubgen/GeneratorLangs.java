@@ -1697,30 +1697,42 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         long asf = ((long) area.getNumber()) << AREA_BIT_SHIFT;
         asf += ((long) area.getVersion()) << VERSION_BIT_SHIFT;
+
+        if (service != null) {
+            asf += ((long) service.getNumber()) << SERVICE_BIT_SHIFT;
+        }
+
         if (sf >= 0) {
             asf += sf;
         } else {
             asf += Long.parseLong(Integer.toHexString((int) sf).toUpperCase().substring(2), 16);
         }
-        if (service != null) {
-            asf += ((long) service.getNumber()) << SERVICE_BIT_SHIFT;
-        }
 
         addShortForm(file, asf);
+        addTypeId(file, asf);
     }
 
+    @Deprecated
     protected void addTypeShortForm(ClassWriter file, long sf) throws IOException {
         CompositeField var = createCompositeElementsDetails(file, false, "TYPE_SHORT_FORM",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false),
                 true, false, "Short form for type.");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + ")");
+        file.addClassVariable(true, true, StdStrings.PRIVATE, var, false, "(" + sf + ")");
     }
 
+    @Deprecated
     protected void addShortForm(ClassWriter file, long sf) throws IOException {
         CompositeField var = createCompositeElementsDetails(file, false, "SHORT_FORM",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
                 true, false, "Absolute short form for type.");
         file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + "L)");
+    }
+
+    protected void addTypeId(ClassWriter file, long sf) throws IOException {
+        CompositeField var = createCompositeElementsDetails(file, false, "TYPE_ID",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
+                true, false, "Absolute short form for type.");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(SHORT_FORM)");
     }
 
     public void addShortFormMethods(ClassWriter file, AreaType area, ServiceType service) throws IOException {
@@ -1735,6 +1747,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 true, true, null);
         CompositeField uocType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
+                true, true, null);
+        CompositeField typeIdType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
                 true, true, null);
 
         MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
@@ -1766,14 +1781,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, ustType, "getServiceNumber", null, null,
                 "Returns the service number of this type.", "The service number of this type.", null);
-
         if (service != null) {
             String serviceInfo = createElementType(area.getName(), service.getName(), null, service.getName() + "ServiceInfo");
             method.addLine("return " + serviceInfo + "." + service.getName().toUpperCase() + "_SERVICE_NUMBER");
         } else {
             method.addLine("return new org.ccsds.moims.mo.mal.structures.UShort(0)");
         }
+        method.addMethodCloseStatement();
 
+        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+                false, true, typeIdType, "getTypeId", null, null,
+                "Returns the TypeId of this element.",
+                "The TypeId of this element.", null);
+        method.addLine("return TYPE_ID");
         method.addMethodCloseStatement();
     }
 

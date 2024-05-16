@@ -32,6 +32,7 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.malspp.test.datatype;
 
+import org.ccsds.moims.mo.mal.TypeId;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
@@ -104,6 +105,11 @@ public final class LargeEnumeration extends org.ccsds.moims.mo.mal.structures.En
 
     public org.ccsds.moims.mo.mal.structures.Element createElement() {
         return new LargeEnumeration(null);
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(SHORT_FORM);
     }
 
 }

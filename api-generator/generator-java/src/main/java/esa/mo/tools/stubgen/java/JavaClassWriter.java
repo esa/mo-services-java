@@ -538,6 +538,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         String fullType = type.getTypeName();
         fullType = fullType.replaceAll(".ElementList", ".HeterogeneousList");
 
+        if (fullType.contains("org.ccsds.moims.mo.mal.structures.TypeId")) {
+            return fullType.replace("org.ccsds.moims.mo.mal.structures.TypeId",
+                    "org.ccsds.moims.mo.mal.TypeId");
+        }
+
         if (generator.isNativeType(fullType)) {
             NativeTypeDetails dets = generator.getNativeType(fullType);
             return dets.getLanguageTypeName();

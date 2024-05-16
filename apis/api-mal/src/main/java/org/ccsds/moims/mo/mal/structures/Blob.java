@@ -27,6 +27,7 @@ import java.util.Arrays;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * Class representing MAL Blob type.
@@ -225,6 +226,11 @@ public class Blob implements Attribute {
     @Override
     public UShort getServiceNumber() {
         return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(Attribute.BLOB_SHORT_FORM);
     }
 
     @Override

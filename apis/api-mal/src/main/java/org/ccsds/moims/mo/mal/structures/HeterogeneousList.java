@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * The HeterogeneousList allows elements of different types to be added on the
@@ -66,6 +67,11 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
     @Override
     public Integer getTypeShortForm() {
         return 0;
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(0L);
     }
 
     /**
