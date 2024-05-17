@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.1-SNAPSHOT</version>
+        <version>10.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>xml-jaxb</artifactId>
-    <version>10.1-SNAPSHOT</version>
+    <version>10.1</version>
     <packaging>jar</packaging>
   
     <name>ESA MO API Generator - JAXB classes for MO</name>
@@ -60,15 +60,17 @@
     </properties>
 
     <dependencies>
+        <!-- The 2 dependencies below are needed otherwise the compilation, when
+        executed as threaded, will have a race condition and therefore might fail -->
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-prototypes</artifactId>
-            <version>10.1-SNAPSHOT</version>
+            <version>10.1</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-standards</artifactId>
-            <version>10.1-SNAPSHOT</version>
+            <version>10.1</version>
         </dependency>
         <!-- The dependencies below are needed for Java 9 and higher -->
         <dependency>

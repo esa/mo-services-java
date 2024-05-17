@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.1-SNAPSHOT</version>
+        <version>10.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>api-generator-maven-plugin</artifactId>
-    <version>10.1-SNAPSHOT</version>
+    <version>10.1</version>
     <packaging>maven-plugin</packaging>
   
     <name>ESA MO API Generator - Maven Plugin</name>
@@ -93,12 +93,10 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-interfaces</artifactId>
-            <version>10.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-jaxb</artifactId>
-            <version>10.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
