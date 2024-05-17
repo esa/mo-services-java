@@ -30,7 +30,6 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -149,14 +148,5 @@ public class FastEndpoint implements MALEndpoint {
                 serviceVersion,
                 isErrorMessage,
                 supplements);
-    }
-
-    @Override
-    public MALMessage createMessage(Blob authenticationId, URI uriTo, Time timestamp,
-            InteractionType interactionType, UOctet interactionStage, Long transactionId,
-            UShort serviceAreaNumber, UShort serviceNumber, UShort operationNumber,
-            UOctet areaVersion, Boolean isErrorMessage, NamedValueList supplements,
-            Map qosProperties, MALEncodedBody body) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

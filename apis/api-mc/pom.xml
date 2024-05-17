@@ -19,15 +19,15 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0</version>
+        <version>10.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-mc</artifactId>
-    <version>10.0</version>
+    <version>10.1</version>
     <packaging>jar</packaging>
 
-    <name>ESA MO API - MC</name>
+    <name>ESA MO API - MC v002</name>
     <description>The CCSDS MC API for Java</description>
     <url>http://www.esa.int</url>
   
@@ -65,12 +65,12 @@
     </developers>
 
     <properties>
-<!--        <ccsds.specification.version>1.7</ccsds.specification.version>    -->
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+        <ccsds.specification.download.artifact>xml-ccsds-mo-prototypes</ccsds.specification.download.artifact>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
         <ccsds.specification.download.filter>**/area004-v002-Monitor-and-Control.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>
-        <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml, **/area002-v001-COM.xml</ccsds.specification.download.ref-filter>
+        <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml</ccsds.specification.download.ref-filter>
     </properties>
   
     <dependencies>

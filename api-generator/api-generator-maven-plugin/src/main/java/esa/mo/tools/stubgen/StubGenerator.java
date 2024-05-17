@@ -20,9 +20,9 @@
  */
 package esa.mo.tools.stubgen;
 
-import esa.mo.xsd.SpecificationType;
 import esa.mo.xsd.util.XmlHelper;
-import esa.mo.xsd.util.XmlHelper.XmlSpecification;
+import esa.mo.xsd.util.XmlSpecification;
+import esa.mo.xsd.util.XsdSpecification;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -141,7 +141,7 @@ public class StubGenerator extends AbstractMojo {
 
         boolean printHelp = false;
 
-        if (0 < args.length) {
+        if (args.length > 0) {
             for (int i = 0; i < args.length; i++) {
                 final String arg = args[i];
 
@@ -350,18 +350,15 @@ public class StubGenerator extends AbstractMojo {
             // load in any reference specifications
             String steps = "Step 0.. ";
             try {
-                final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs
-                        = XmlHelper.loadSpecifications(xmlRefDirectory);
+                final List<XmlSpecification> refSpecs = XmlHelper.loadSpecifications(xmlRefDirectory);
                 steps += "Step 1.. ";
 
                 // load in any reference XML schema
-                final List<Map.Entry<Schema, XmlSpecification>> refXsd
-                        = loadXsdSpecifications(xsdRefDirectory);
+                final List<XsdSpecification> refXsd = loadXsdSpecifications(xsdRefDirectory);
                 steps += "Step 2.. ";
 
                 // load in the specifications
-                final List<Map.Entry<SpecificationType, XmlSpecification>> specs
-                        = XmlHelper.loadSpecifications(xmlDirectory);
+                final List<XmlSpecification> specs = XmlHelper.loadSpecifications(xmlDirectory);
                 steps += "Step 3.. ";
 
                 // work out the latest timestamp of the input files
@@ -425,14 +422,13 @@ public class StubGenerator extends AbstractMojo {
         out.println("    -? -h         Print this help message");
     }
 
-    private static List<Map.Entry<Schema, XmlSpecification>> loadXsdSpecifications(
-            final File directory) throws IOException, JAXBException {
-        final List<Map.Entry<Schema, XmlSpecification>> specList = new LinkedList<>();
+    private static List<XsdSpecification> loadXsdSpecifications(final File directory) throws IOException, JAXBException {
+        final List<XsdSpecification> specList = new LinkedList<>();
 
         if (directory.exists()) {
-            final File xmlFiles[] = directory.listFiles();
+            final File[] xmsFiles = directory.listFiles();
 
-            for (File file : xmlFiles) {
+            for (File file : xmsFiles) {
                 if (file.isFile()) {
                     specList.add(loadXsdSpecification(file));
                 }
@@ -442,12 +438,11 @@ public class StubGenerator extends AbstractMojo {
         return specList;
     }
 
-    private static AbstractMap.SimpleEntry<Schema, XmlSpecification> loadXsdSpecification(
-            final File is) throws IOException, JAXBException {
+    private static XsdSpecification loadXsdSpecification(final File file) throws IOException, JAXBException {
         final JAXBContext jc = JAXBContext.newInstance("w3c.xsd");
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
-        return new AbstractMap.SimpleEntry<>((Schema) unmarshaller.unmarshal(is),
-                new XmlSpecification(is, null));
+        Schema schema = (Schema) unmarshaller.unmarshal(file);
+        return new XsdSpecification(file, schema);
     }
 
     private void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
@@ -478,9 +473,9 @@ public class StubGenerator extends AbstractMojo {
     }
 
     private void processWithGenerator(final Generator generator,
-            final List<Map.Entry<SpecificationType, XmlSpecification>> refSpecs,
-            final List<Map.Entry<Schema, XmlSpecification>> refXsd,
-            final List<Map.Entry<SpecificationType, XmlSpecification>> specs) throws MojoExecutionException {
+            final List<XmlSpecification> refSpecs,
+            final List<XsdSpecification> refXsd,
+            final List<XmlSpecification> specs) throws MojoExecutionException {
         try {
             generator.reset();
             generator.init(outputDirectory.getPath(), generateStructures, generateCOM, packageBindings, extraProperties);
@@ -492,51 +487,51 @@ public class StubGenerator extends AbstractMojo {
         }
 
         // pre process the reference specifications
-        for (Map.Entry<SpecificationType, XmlSpecification> spec : refSpecs) {
+        for (XmlSpecification spec : refSpecs) {
             try {
-                generator.preProcess(spec.getKey());
+                generator.preProcess(spec.getSpecType());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XML file: "
-                        + spec.getValue().file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
         // pre process the reference XSD specifications
-        for (Map.Entry<Schema, XmlSpecification> spec : refXsd) {
+        for (XsdSpecification spec : refXsd) {
             try {
-                generator.preProcess(spec.getKey());
+                generator.preProcess(spec.getSchema());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XSD file: "
-                        + spec.getValue().file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
         // pre process the specifications
-        for (Map.Entry<SpecificationType, XmlSpecification> spec : specs) {
+        for (XmlSpecification spec : specs) {
             try {
-                generator.preProcess(spec.getKey());
+                generator.preProcess(spec.getSpecType());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of XML file: "
-                        + spec.getValue().file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
         // now generator from each specification
-        for (Map.Entry<SpecificationType, XmlSpecification> spec : specs) {
+        for (XmlSpecification spec : specs) {
             try {
                 getLog().info("Generating " + generator.getShortName());
-                generator.compile(outputDirectory.getPath(), spec.getKey(), spec.getValue().rootElement);
+                generator.compile(outputDirectory.getPath(), spec.getSpecType(), spec.getRootElement());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "(c) Exception thrown during the processing of XML file: "
-                        + spec.getValue().file.getPath(), ex);
+                        + spec.getFile().getPath(), ex);
             }
         }
 
@@ -548,10 +543,9 @@ public class StubGenerator extends AbstractMojo {
         }
     }
 
-    private long getLatestTimestamp(long inputTimestamp,
-            final List<Map.Entry<SpecificationType, XmlSpecification>> specs) {
-        for (Map.Entry<SpecificationType, XmlSpecification> spec : specs) {
-            long fileTimestamp = spec.getValue().file.lastModified();
+    private long getLatestTimestamp(long inputTimestamp, final List<XmlSpecification> specs) {
+        for (XmlSpecification spec : specs) {
+            long fileTimestamp = spec.getFile().lastModified();
             if (fileTimestamp > inputTimestamp) {
                 inputTimestamp = fileTimestamp;
             }
@@ -560,10 +554,9 @@ public class StubGenerator extends AbstractMojo {
         return inputTimestamp;
     }
 
-    private long getLatestSchemaTimestamp(long inputTimestamp,
-            final List<Map.Entry<Schema, XmlSpecification>> specs) {
-        for (Map.Entry<Schema, XmlSpecification> spec : specs) {
-            long fileTimestamp = spec.getValue().file.lastModified();
+    private long getLatestSchemaTimestamp(long inputTimestamp, final List<XsdSpecification> specs) {
+        for (XsdSpecification spec : specs) {
+            long fileTimestamp = spec.getFile().lastModified();
             if (fileTimestamp > inputTimestamp) {
                 inputTimestamp = fileTimestamp;
             }

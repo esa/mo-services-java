@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0</version>
+        <version>10.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>generator-docs</artifactId>
-    <version>10.0</version>
+    <version>10.1</version>
     <packaging>jar</packaging>
   
     <name>ESA MO API Generator - Documentation</name>
@@ -65,19 +65,11 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>generator-lib</artifactId>
-            <version>10.0</version>
+            <artifactId>generator-interfaces</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.8.6</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.annotation</groupId>
-                    <artifactId>javax.annotation-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -183,19 +175,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>jdk-17</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.xml.bind</groupId>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

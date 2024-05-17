@@ -19,15 +19,15 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0</version>
+        <version>10.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>xml-jaxb</artifactId>
-    <version>10.0</version>
+    <version>10.1</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO JAXB classes for MO XML files</name>
+    <name>ESA MO API Generator - JAXB classes for MO</name>
   
     <organization>
         <name>ESA</name>
@@ -53,39 +53,29 @@
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
-    <developers>
-        <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
-        </developer>
-    </developers>
-
     <properties>
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
-        <ccsds.specification.download.filter>**/*.xsd</ccsds.specification.download.filter>
+        <ccsds.specification.download.filter>**/ServiceSchema-v003.xsd,**/COMSchema.xsd</ccsds.specification.download.filter>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-        </dependency>
+        <!-- The 2 dependencies below are needed otherwise the compilation, when
+        executed as threaded, will have a race condition and therefore might fail -->
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-prototypes</artifactId>
-            <version>10.0</version>
+            <version>10.1</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-standards</artifactId>
-            <version>10.0</version>
+            <version>10.1</version>
+        </dependency>
+        <!-- The dependencies below are needed for Java 9 and higher -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
         </dependency>
     </dependencies>
 
@@ -160,19 +150,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>jdk-17</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.xml.bind</groupId>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.structures;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * Class representing MAL UInteger type.
@@ -99,6 +100,11 @@ public class UInteger implements Attribute {
     @Override
     public UShort getServiceNumber() {
         return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(Attribute.UINTEGER_SHORT_FORM);
     }
 
     @Override

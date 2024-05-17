@@ -20,6 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -48,8 +50,7 @@ public abstract class MALElementStreamFactory {
      * @throws IllegalArgumentException if the argument does not extend
      * MALElementStreamFactory
      */
-    public static void registerFactoryClass(final java.lang.Class factoryClass)
-            throws IllegalArgumentException {
+    public static void registerFactoryClass(final Class factoryClass) throws IllegalArgumentException {
         if (!MALElementStreamFactory.class.isAssignableFrom(factoryClass)) {
             throw new IllegalArgumentException("Not compliant: " + factoryClass.getName());
         }
@@ -65,8 +66,7 @@ public abstract class MALElementStreamFactory {
      * @throws IllegalArgumentException if the argument does not extend
      * MALElementStreamFactory
      */
-    public static void deregisterFactoryClass(final java.lang.Class factoryClass) 
-            throws IllegalArgumentException {
+    public static void deregisterFactoryClass(final Class factoryClass) throws IllegalArgumentException {
         if (null != factoryClass) {
             FACTORIES.remove(factoryClass.getName());
         }
@@ -81,7 +81,7 @@ public abstract class MALElementStreamFactory {
      * @return The new factory.
      * @throws MALException If an error detected during instantiation.
      */
-    public static MALElementStreamFactory newFactory(final String protocol, 
+    public static MALElementStreamFactory newFactory(final String protocol,
             final Map qosProperties) throws MALException {
         final String propName = FACTORY_PROP_NAME_PREFIX + '.' + protocol;
         final String className = System.getProperty(propName);
@@ -95,13 +95,13 @@ public abstract class MALElementStreamFactory {
                     factoryClass = Class.forName(className);
                     registerFactoryClass(factoryClass);
                     Logger.getLogger(MALElementStreamFactory.class.getName()).log(
-                            Level.INFO, 
-                            "New encoding factory registered with classname: {0}", 
+                            Level.INFO,
+                            "New encoding factory registered with classname: {0}",
                             className);
                 }
 
-                final MALElementStreamFactory factory = 
-                        (MALElementStreamFactory) factoryClass.newInstance();
+                final MALElementStreamFactory factory
+                        = (MALElementStreamFactory) factoryClass.newInstance();
                 factory.init(protocol, qosProperties);
 
                 return factory;
@@ -138,23 +138,9 @@ public abstract class MALElementStreamFactory {
      *
      * @param is The data source.
      * @return The new MALElementInputStream.
-     * @throws java.lang.IllegalArgumentException if the data source is null.
      * @throws MALException If a MALElementInputStream cannot be created
      */
-    public abstract MALElementInputStream createInputStream(java.io.InputStream is)
-            throws java.lang.IllegalArgumentException, MALException;
-
-    /**
-     * Creates a MALElementInputStream using a byte array as the data source.
-     *
-     * @param bytes Bytes to be decoded
-     * @param offset Index of the first byte to decode
-     * @return The new MALElementInputStream.
-     * @throws java.lang.IllegalArgumentException if the data source is null.
-     * @throws MALException If a MALElementInputStream cannot be created
-     */
-    public abstract MALElementInputStream createInputStream(byte[] bytes, int offset)
-            throws java.lang.IllegalArgumentException, MALException;
+    public abstract MALElementInputStream createInputStream(InputStream is) throws MALException;
 
     /**
      * Creates a MALElementOutputStream using a java.io.OutputStream as the data
@@ -162,9 +148,7 @@ public abstract class MALElementStreamFactory {
      *
      * @param os The data sink.
      * @return The new MALElementOutputStream.
-     * @throws java.lang.IllegalArgumentException if the data sink is null.
      * @throws MALException If a MALElementOutputStream cannot be created
      */
-    public abstract MALElementOutputStream createOutputStream(java.io.OutputStream os)
-            throws java.lang.IllegalArgumentException, MALException;
+    public abstract MALElementOutputStream createOutputStream(OutputStream os) throws MALException;
 }

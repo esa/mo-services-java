@@ -24,6 +24,7 @@ import java.io.Serializable;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * The Element interface represents the MAL Element type.
@@ -35,6 +36,7 @@ public interface Element extends Serializable {
      *
      * @return the absolute short form.
      */
+    @Deprecated
     Long getShortForm();
 
     /**
@@ -42,6 +44,7 @@ public interface Element extends Serializable {
      *
      * @return the area number.
      */
+    @Deprecated
     UShort getAreaNumber();
 
     /**
@@ -49,6 +52,7 @@ public interface Element extends Serializable {
      *
      * @return the area version.
      */
+    @Deprecated
     UOctet getAreaVersion();
 
     /**
@@ -56,6 +60,7 @@ public interface Element extends Serializable {
      *
      * @return the service number.
      */
+    @Deprecated
     UShort getServiceNumber();
 
     /**
@@ -63,7 +68,15 @@ public interface Element extends Serializable {
      *
      * @return the relative short form.
      */
+    @Deprecated
     Integer getTypeShortForm();
+
+    /**
+     * Return the Type Id of the element.
+     *
+     * @return the TypeId.
+     */
+    TypeId getTypeId();
 
     /**
      * The method allows the creation of an element in a generic way, i.e.,

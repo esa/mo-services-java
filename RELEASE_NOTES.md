@@ -4,7 +4,14 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 10 (expected: End of 2023)
+### Version 10.1 (Expected in May 2024)
+* Updates all the xml files for their respective latest updates
+* The yaml workflows for building the project and running the testbeds are now operational for: Java 8, 11, 17
+* Simplifies and optimizes parts of the code in the Transport and in the API generation process
+* Adds the HTTP project
+* The HTTP and the ZMTP projects are now passing the testbed
+
+### Version 10.0 (2023 November 16)
 * Full alignment of the MAL API and MAL Impl to the MAL Standard book version 521.0-B-3
 * Adds more tests to the MAL Testbed project
 * Removal of unused classes and refactoring old code

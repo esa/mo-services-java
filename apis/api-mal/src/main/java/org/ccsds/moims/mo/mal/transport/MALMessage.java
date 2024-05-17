@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal.transport;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * The MALMessage interface gives a generic access to the transport specific
@@ -49,12 +48,4 @@ public interface MALMessage {
      * @return The message QoS properties.
      */
     Map getQoSProperties();
-
-    /**
-     * The method enables the transport to free resources owned by the
-     * MALMessage.
-     *
-     * @throws MALException If an internal error occurs
-     */
-    void free() throws MALException;
 }

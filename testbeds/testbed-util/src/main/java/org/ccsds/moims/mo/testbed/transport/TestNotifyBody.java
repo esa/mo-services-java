@@ -101,9 +101,4 @@ public class TestNotifyBody implements MALNotifyBody {
         return "TestNotifyBody [id=" + id + ", updateHeader=" + updateHeader
                 + ", updateObjects=" + Arrays.toString(updateObjects) + "]";
     }
-
-    @Override
-    public MALEncodedBody getEncodedBody() throws MALException {
-        throw new MALException("Not implemented");
-    }
 }

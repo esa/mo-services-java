@@ -187,6 +187,8 @@ public class Main {
         Identifier from = new Identifier(destination.getURI().getValue() + "@" + sourceHdr.getFrom().getValue());
         System.out.println("cloneForwardMessage      : " + from + "    :    " + to);
 
+        throw new MALException("The code needs to be updated here!");
+        /*
         MALMessage destMessage = destination.createMessage(
                 sourceHdr.getAuthenticationId(),
                 to,
@@ -207,5 +209,6 @@ public class Main {
         destMessage.getHeader().setFrom(from);
 
         return destMessage;
+        */
     }
 }

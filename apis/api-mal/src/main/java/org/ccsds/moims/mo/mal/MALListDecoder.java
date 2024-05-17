@@ -25,7 +25,8 @@ package org.ccsds.moims.mo.mal;
  *
  * Has non-standard extension size() operation.
  */
-public interface MALListDecoder extends MALDecoder {
+@Deprecated
+public interface MALListDecoder {
 
     /**
      * Determines if there are any more elements in the lists to decode.

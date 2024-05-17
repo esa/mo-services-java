@@ -75,7 +75,7 @@ public class GeneratorGwt extends GeneratorJava {
     @Override
     protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating consumer interface: " + service.getName());
+        logger.info(" > Creating consumer interface: " + service.getName());
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, service.getName() + "GWT");
         String serviceName = service.getName();
@@ -84,8 +84,7 @@ public class GeneratorGwt extends GeneratorJava {
         file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service.getName() + "GWT\")");
         file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
-        String throwsMALException = createElementType(file,
-                StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField msgType = createCompositeElementsDetails(file, false,
                 "return", TypeUtils.createTypeReference(StdStrings.MAL,
                         TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
@@ -129,7 +128,7 @@ public class GeneratorGwt extends GeneratorJava {
 
     protected void createServiceConsumerStub2(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating consumer stub: " + service.getName());
+        logger.info(" > Creating consumer stub: " + service.getName());
 
         String serviceName = service.getName();
 
@@ -176,7 +175,7 @@ public class GeneratorGwt extends GeneratorJava {
     @Override
     protected void createServiceProviderHandler(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        getLog().info(" > Creating provider handler interface: " + service.getName());
+        logger.info(" > Creating provider handler interface: " + service.getName());
 
         String handlerName = service.getName() + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
@@ -187,7 +186,7 @@ public class GeneratorGwt extends GeneratorJava {
                 "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
                 false, true, "interaction The MAL object representing the interaction in the provider.");
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         for (OperationSummary op : summary.getOperations()) {
             List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
             switch (op.getPattern()) {
@@ -273,13 +272,12 @@ public class GeneratorGwt extends GeneratorJava {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(file,
-                StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
 
-        String implementsList = createElementType(file, area.getName(),
+        String implementsList = createElementType(area.getName(),
                 service.getName(), CONSUMER_FOLDER, service.getName() + "GWT");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(file, area.getName(),
+            implementsList += ", " + createElementType(area.getName(),
                     service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
         }
 

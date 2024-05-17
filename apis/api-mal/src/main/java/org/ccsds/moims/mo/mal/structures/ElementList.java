@@ -27,4 +27,9 @@ package org.ccsds.moims.mo.mal.structures;
  * native type can be used in Attribute lists.
  */
 public interface ElementList<T> extends Element, java.util.List<T> {
+
+    // The enforcement of non-nullable entries is hard-coded to be disabled because
+    // it is not backwards compatible and it breaks the COM Archive query operation.
+    // Note: All the testbeds are passing even when the enforcement is enabled!
+    public final static boolean ENFORCE_NON_NULLABLE_ENTRIES = false;
 }

@@ -735,10 +735,10 @@ public class DataTypeScenario extends LoggingBase {
                 rv = subMultiTest(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
                         ex.getStandardError().getErrorNumber(),
                         rv,
-                        "Expected object already exists error for Object identity is unique test");
+                        "(1) Expected object already exists error for Object identity is unique test");
             }
             rv = subMultiTest(null, autoRef2, rv,
-                    "Expecting object already exists error for Object identity is unique test");
+                    "(2) Expecting object already exists error for Object identity is unique test");
 
             // create a valid Object identity
             ObjectIdentity autoId3 = new ObjectIdentity(autoId2.getDomain(),
@@ -805,13 +805,13 @@ public class DataTypeScenario extends LoggingBase {
 
                 if (testValue != null) {
                     if (!testValue.equals(rspnElement)) {
-                        String msg = "Test step failed in consumer: " + String.valueOf(reportingOffset);
+                        String msg = "(1) Test step failed in consumer: " + String.valueOf(reportingOffset);
                         logMessage(msg);
                         return msg;
                     }
                 } else {
                     if (rspnElement != null) {
-                        String msg = "Test step failed in consumer: " + String.valueOf(reportingOffset);
+                        String msg = "(2) Test step failed in consumer: " + String.valueOf(reportingOffset);
                         logMessage(msg);
                         return msg;
                     }
@@ -820,7 +820,7 @@ public class DataTypeScenario extends LoggingBase {
                 long errNum = ex.getStandardError().getErrorNumber().getValue();
                 if ((MALHelper.BAD_ENCODING_ERROR_NUMBER.getValue() == errNum)
                         || (MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER.getValue() == errNum)) {
-                    String msg = "Test step failed in consumer: " + ex.toString();
+                    String msg = "(3) Test step failed in consumer: " + ex.toString();
                     logMessage(msg);
                     return msg;
                 }

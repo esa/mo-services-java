@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
@@ -402,13 +401,23 @@ public interface MALEncoder {
     void encodeNullableAttribute(Attribute att) throws MALException;
 
     /**
-     * Creates a list encoder for encoding a list element.
+     * Encodes an Homogeneous list
      *
-     * @param list The list to encode, java.lang.IllegalArgumentException
-     * exception thrown if null.
-     * @return The new list encoder.
-     * @throws java.lang.IllegalArgumentException If the list argument is null.
-     * @throws MALException If an error detected during list encoder creation.
+     * @param list The list to encode.
+     * @throws MALException If an error detected during encoding.
      */
-    MALListEncoder createListEncoder(List list) throws IllegalArgumentException, MALException;
+    void encodeHomogeneousList(HomogeneousList list) throws MALException;
+
+    /**
+     * Encodes an Heterogeneous list
+     *
+     * @param list The list to encode.
+     * @throws MALException If an error detected during encoding.
+     */
+    void encodeHeterogeneousList(HeterogeneousList list) throws MALException;
+
+    /**
+     * Closes the encoder
+     */
+    void close();
 }

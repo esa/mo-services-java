@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;

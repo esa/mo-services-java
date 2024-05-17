@@ -32,8 +32,10 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.malspp.test.datatype;
 
+import org.ccsds.moims.mo.mal.TypeId;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
+import static org.ccsds.moims.mo.malspp.test.datatype.LargeEnumeration.SHORT_FORM;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 
 public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.Enumeration {
@@ -104,6 +106,11 @@ public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.E
 
     public org.ccsds.moims.mo.mal.structures.Element createElement() {
         return new MediumEnumeration(null);
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(SHORT_FORM);
     }
 
 }

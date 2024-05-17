@@ -28,6 +28,8 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
@@ -40,7 +42,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
- * Extends the MALDecoder interface for use in the generic encoding framework.
+ * The Decoder class can be extended to create fully functional decoders.
  */
 public abstract class Decoder implements MALDecoder {
 
@@ -320,7 +322,9 @@ public abstract class Decoder implements MALDecoder {
 
     @Override
     public Attribute decodeAttribute() throws MALException {
-        return internalDecodeAttribute(internalDecodeAttributeType(sourceBuffer.read8()));
+        byte myByte = sourceBuffer.read8();
+        int attributeType = internalDecodeAttributeType(myByte);
+        return internalDecodeAttribute(attributeType);
     }
 
     @Override
@@ -426,6 +430,46 @@ public abstract class Decoder implements MALDecoder {
         return null;
     }
 
+    @Override
+    public HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException {
+        UInteger size = decodeUInteger();
+        long decodedSize = size.getValue();
+
+        if (decodedSize > 1000000) {
+            throw new org.ccsds.moims.mo.mal.MALException("The decoded list size is too big: " + decodedSize);
+        }
+
+        for (int i = 0; i < decodedSize; i++) {
+            Element element = list.createTypedElement();
+
+            if (element instanceof Union) {
+                // Case for Attributes that are mapped to the Java API
+                Union union = (Union) element;
+                Attribute att = internalDecodeAttribute(union.getTypeShortForm());
+                list.add(Attribute.attribute2JavaType(att));
+            } else {
+                // Normal Case
+                list.add(element.decode(this));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException {
+        UInteger size = decodeUInteger();
+        long decodedSize = size.getValue();
+
+        for (int i = 0; i < decodedSize; i++) {
+            if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
+                list.add((Element) decodeAbstractElement());
+            } else {
+                list.add((Element) decodeNullableAbstractElement());
+            }
+        }
+        return list;
+    }
+
     /**
      * Allows the decoding for the type of an abstract element to be over-ridded
      *
@@ -433,6 +477,7 @@ public abstract class Decoder implements MALDecoder {
      * @return The type to decode
      * @throws MALException if there is an error
      */
+    @Override
     public Long decodeAbstractElementSFP(boolean isNullable) throws MALException {
         if (isNullable) {
             return decodeNullableLong();

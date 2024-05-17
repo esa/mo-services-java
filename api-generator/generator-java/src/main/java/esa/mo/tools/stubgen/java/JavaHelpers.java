@@ -20,14 +20,13 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.ClassWriterProposed;
-import esa.mo.tools.stubgen.GeneratorConfiguration;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.AttributeType;
 import esa.mo.xsd.CompositeType;
@@ -51,20 +50,12 @@ public class JavaHelpers {
     }
 
     public void createServiceHelperClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info(" > Creating service Helper class: " + service.getName());
-        ClassWriterProposed file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
+        ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
 
         file.addPackageStatement(area, service, null);
-
-        String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
-        CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "elementsRegistry",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false),
-                false, true, "elementsRegistry The element factory registry to initialise with this helper.");
-
         file.addClassOpenStatement(serviceName + "Helper", false, false, null,
                 null, "Helper class for " + serviceName + " service.");
 
@@ -79,8 +70,10 @@ public class JavaHelpers {
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                         true, true, "Error instance for error " + errorNameCaps);
 
-                file.addClassVariable(true, true, StdStrings.PUBLIC, _errorNumberVar, false, String.valueOf(error.getNumber()));
-                file.addClassVariable(true, true, StdStrings.PUBLIC, errorNumberVar, false, "(_" + errorNameCaps + "_ERROR_NUMBER)");
+                file.addClassVariable(true, true, StdStrings.PUBLIC,
+                        _errorNumberVar, false, String.valueOf(error.getNumber()));
+                file.addClassVariable(true, true, StdStrings.PUBLIC,
+                        errorNumberVar, false, "(_" + errorNameCaps + "_ERROR_NUMBER)");
             }
         }
 
@@ -89,51 +82,12 @@ public class JavaHelpers {
                 false, true, "Service singleton instance.");
 
         file.addClassVariable(true, false, StdStrings.PUBLIC, serviceInstVar, true, "()");
-
-        // construct area helper class name and variable
-        String hlp = generator.createElementType(file, area.getName(), null, null, area.getName() + "Helper");
-        String prefix = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
-
-        /*
-        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
-                false, true, null, "init", Arrays.asList(eleFactory), throwsMALException,
-                "Registers all aspects of this service with the provided element factory",
-                null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
-
-        // Add the if condition to check if it has already been registered!
-        method.addLine("if (org.ccsds.moims.mo.mal.MALContextFactory.lookupArea(", false);
-        method.addLine("   " + prefix + "_NAME,", false);
-        method.addLine("   " + prefix + "_VERSION) == null) {", false);
-        method.addLine("  " + hlp + ".init(elementsRegistry);", false);
-        method.addLine("}", false);
-
-        method.addMethodWithDependencyStatement(generator.createMethodCall(prefix + ".addService(" + serviceCAPS + "_SERVICE)"), prefix, true);
-
-        method.addLine("elementsRegistry.registerElementsForService(" + serviceName + "Helper" + "." + serviceCAPS + "_SERVICE)");
-
-        // register error numbers
-        if ((service.getErrors() != null) && !service.getErrors().getError().isEmpty()) {
-            String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
-
-            for (ErrorDefinitionType error : service.getErrors().getError()) {
-                String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
-                method.addLine(generator.convertToNamespace(factoryType + ".registerError("
-                        + prefix + "_NUMBER, "
-                        + prefix + "_VERSION, "
-                        + errorNameCaps + "_ERROR_NUMBER, "
-                        + "new " + identifierType + "(\"" + error.getName() + "\"))"));
-            }
-        }
-
-        method.addMethodCloseStatement();
-         */
         file.addClassCloseStatement();
         file.flush();
     }
 
     public void createAreaHelperClass(File areaFolder, AreaType area) throws IOException {
-        generator.getLog().info(" > Creating area helper class: " + area.getName());
-        ClassWriterProposed file = generator.createClassFile(areaFolder, area.getName() + "Helper");
+        ClassWriter file = generator.createClassFile(areaFolder, area.getName() + "Helper");
 
         String areaName = area.getName();
         String areaNameCAPS = area.getName().toUpperCase();
@@ -141,11 +95,6 @@ public class JavaHelpers {
 
         file.addPackageStatement(area, null, null);
 
-        String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String identifierType = generator.createElementType(file, StdStrings.MAL, null, StdStrings.IDENTIFIER);
-        CompositeField eleFactory = generator.createCompositeElementsDetails(file, false, "elementsRegistry",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "MALElementsRegistry", false),
-                false, true, "elementsRegistry The element factory registry to initialise with this helper.");
         CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNumber,
                 TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "Area number literal.");
@@ -177,36 +126,33 @@ public class JavaHelpers {
 
         if ((area.getDataTypes() != null) && !area.getDataTypes().getFundamentalOrAttributeOrComposite().isEmpty()) {
             for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
-                GeneratorConfiguration config = generator.getConfig();
-
                 if (oType instanceof AttributeType) {
                     AttributeType dt = (AttributeType) oType;
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, StdStrings.ATTRIBUTE));
                     AttributeTypeDetails details = generator.getAttributeDetails(area.getName(), dt.getName());
                     String theType;
 
                     if (details.isNativeType()) {
-                        theType = generator.convertClassName(generator.createElementType(file, StdStrings.MAL, null, StdStrings.UNION)) + "(" + details.getDefaultValue() + ")";
+                        theType = generator.createElementType(StdStrings.MAL, null, StdStrings.UNION) + "(" + details.getDefaultValue() + ")";
                     } else {
-                        theType = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()) + "()");
+                        theType = generator.createElementType(area.getName(), null, dt.getName()) + "()";
                     }
 
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
                     elementList.add("new " + theType);
                     elementList.add("new " + lclsName + "()");
                 } else if (oType instanceof CompositeType) {
                     CompositeType dt = (CompositeType) oType;
 
-                    if (null != dt.getShortFormPart()) {
-                        String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                        String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    if (dt.getShortFormPart() != null) {
+                        String clsName = generator.createElementType(area.getName(), null, dt.getName());
+                        String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
                         elementList.add("new " + clsName + "()");
                         elementList.add("new " + lclsName + "()");
                     }
                 } else if (oType instanceof EnumerationType) {
                     EnumerationType dt = (EnumerationType) oType;
-                    String clsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName()));
-                    String lclsName = generator.convertClassName(generator.createElementType(file, area.getName(), null, dt.getName() + "List"));
+                    String clsName = generator.createElementType(area.getName(), null, dt.getName());
+                    String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
                     elementList.add(clsName + ".fromOrdinal(0)");
                     elementList.add("new " + lclsName + "()");
                 }
@@ -225,7 +171,8 @@ public class JavaHelpers {
 
         StringBuilder buf_2 = new StringBuilder();
         for (ServiceType service : area.getService()) {
-            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
+            String helperType = generator.createElementType(area.getName(),
+                    service.getName(), null, service.getName() + "Helper");
             String ns = generator.convertToNamespace(helperType) + "." + service.getName().toUpperCase() + "_SERVICE";
 //            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "ServiceInfo()");
 //            String ns = "new " + generator.convertToNamespace(helperType);
@@ -257,45 +204,6 @@ public class JavaHelpers {
             }
         }
 
-        /*
-        String factoryType = generator.createElementType(file, StdStrings.MAL, null, null, "MALContextFactory");
-        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
-                true, null, "init", Arrays.asList(eleFactory), throwsMALException,
-                "Registers all aspects of this area with the provided element factory", null,
-                Arrays.asList(throwsMALException + " If cannot initialise this helper."));
-        method.addLine(generator.convertToNamespace(factoryType + ".registerArea(" + areaNameCAPS + "_AREA)"));
-        method.addLine("elementsRegistry.registerElementsForArea(" + area.getName() + "Helper" + "." + areaNameCAPS + "_AREA)");
-
-        // register error numbers
-        if ((null != area.getErrors()) && !area.getErrors().getError().isEmpty()) {
-            for (ErrorDefinitionType error : area.getErrors().getError()) {
-                String errorNameCaps = JavaExceptions.convertToUppercaseWithUnderscores(error.getName());
-                method.addLine(generator.convertToNamespace(factoryType + ".registerError("
-                        + areaNumber + ", "
-                        + areaNameCAPS + "_AREA_VERSION, "
-                        + errorNameCaps + "_ERROR_NUMBER, "
-                        + "new " + identifierType + "(\"" + error.getName() + "\"))"));
-            }
-        }
-
-        method.addMethodCloseStatement();
-         */
-
- /*
-        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC, false,
-                true, null, "deepInit", Arrays.asList(eleFactory), throwsMALException,
-                "Registers all aspects of this area with the provided element factory and any referenced areas and contained services.",
-                null, Arrays.asList(throwsMALException + " If cannot initialise this helper."));
-        method.addLine("init(elementsRegistry)");
-
-        for (ServiceType service : area.getService()) {
-            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "Helper");
-            String ns = generator.convertToNamespace(helperType + ".init(elementsRegistry)");
-            method.addMethodWithDependencyStatement(ns, ns, true);
-        }
-
-        method.addMethodCloseStatement();
-         */
         file.addClassCloseStatement();
         file.flush();
     }

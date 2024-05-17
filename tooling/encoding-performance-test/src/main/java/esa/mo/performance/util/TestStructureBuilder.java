@@ -12,6 +12,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.perftest.structures.AggregationValueList;
 import org.ccsds.moims.mo.perftest.structures.GenerationMode;
+import org.ccsds.moims.mo.perftest.structures.ObjectId;
 import org.ccsds.moims.mo.perftest.structures.ObjectIdList;
 import org.ccsds.moims.mo.perftest.structures.ParameterValue;
 import org.ccsds.moims.mo.perftest.structures.ParameterValueList;
@@ -37,7 +38,7 @@ public abstract class TestStructureBuilder {
             lst.add(new NullableAttribute(null));
             
             updateHeader.add(new UpdateHeader(new Identifier(""), null, lst));
-            objectId.add(null);
+            objectId.add(new ObjectId());
             value.add(createTestMALValueUpdate(paramsPerPkt));
         }
 

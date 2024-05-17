@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -54,9 +53,5 @@ public class FastMessage implements MALMessage {
     @Override
     public Map getQoSProperties() {
         return qoSProperties;
-    }
-
-    @Override
-    public void free() throws MALException {
     }
 }

@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>10.0</version>
+    <version>10.1</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -74,21 +74,25 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ccsds.specification.version>10.0</ccsds.specification.version>
-        <extra.specification.version>10.0</extra.specification.version>
-        <esa.stubgen.version>10.0</esa.stubgen.version>
-        <esa.api.mal.version>10.0</esa.api.mal.version>
-        <esa.api.com.version>10.0</esa.api.com.version>
-        <esa.api.mc.version>10.0</esa.api.mc.version>
-        <esa.api.common.version>10.0</esa.api.common.version>
-        <esa.mal.version>10.0</esa.mal.version>
-        <esa.string.encoder.version>10.0</esa.string.encoder.version>
-        <esa.binary.encoder.version>10.0</esa.binary.encoder.version>
-        <esa.gen.transport.version>10.0</esa.gen.transport.version>
-        <esa.rmi.transport.version>10.0</esa.rmi.transport.version>
-        <esa.tcpip.transport.version>10.0</esa.tcpip.transport.version>
-        <esa.jms.transport.version>10.0</esa.jms.transport.version>
-        <esa.spp.transport.version>10.0</esa.spp.transport.version>
+        <esa.mo.version>10.1</esa.mo.version>
+        <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
+        <extra.specification.version>${esa.mo.version}</extra.specification.version>
+        <esa.stubgen.version>${esa.mo.version}</esa.stubgen.version>
+        <esa.api.mal.version>${esa.mo.version}</esa.api.mal.version>
+        <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
+        <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
+        <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
+        <esa.mal.version>${esa.mo.version}</esa.mal.version>
+        <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
+        <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
+        <esa.xml.encoder.version>${esa.mo.version}</esa.xml.encoder.version>
+        <esa.gen.transport.version>${esa.mo.version}</esa.gen.transport.version>
+        <esa.rmi.transport.version>${esa.mo.version}</esa.rmi.transport.version>
+        <esa.tcpip.transport.version>${esa.mo.version}</esa.tcpip.transport.version>
+        <esa.jms.transport.version>${esa.mo.version}</esa.jms.transport.version>
+        <esa.zmtp.transport.version>${esa.mo.version}</esa.zmtp.transport.version>
+        <esa.spp.transport.version>${esa.mo.version}</esa.spp.transport.version>
+        <esa.http.transport.version>${esa.mo.version}</esa.http.transport.version>
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
@@ -108,6 +112,16 @@
   
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>generator-interfaces</artifactId>
+                <version>${esa.api.mal.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>xml-jaxb</artifactId>
+                <version>${esa.api.mal.version}</version>
+            </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-mal</artifactId>
@@ -145,6 +159,11 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>encoding-xml</artifactId>
+                <version>${esa.xml.encoder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-generic</artifactId>
                 <version>${esa.gen.transport.version}</version>
             </dependency>
@@ -160,8 +179,18 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>transport-http</artifactId>
+                <version>${esa.http.transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-jms</artifactId>
                 <version>${esa.jms.transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>transport-zmtp</artifactId>
+                <version>${esa.zmtp.transport.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
@@ -179,9 +208,14 @@
                 <version>2.4.0-b180830.0359</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>3.8.6</version>
+            </dependency>
+            <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>2.3.0</version>
+                <version>3.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
@@ -191,7 +225,7 @@
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>
-                <version>3.0.0</version>
+                <version>2.4.0-b180830.0438</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -402,9 +436,9 @@
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
-                            </goals> 
-                        </execution> 
-                    </executions> 
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin> 
                     <!-- explicitly define maven-deploy-plugin after other to force exec order -->
@@ -504,20 +538,6 @@
                     </plugin>                    
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>jdk-17</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-runtime</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.xml.bind</groupId>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                    <version>4.0.0</version>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
 </project>

@@ -35,6 +35,8 @@ import org.ccsds.moims.mo.mal.transport.MALMessageBody;
  */
 public interface MALInteractionHandler {
 
+    public final static String ERROR_MSG_UNSUPPORTED = "Unsupported Operation: ";
+
     /**
      * The method enables a MALInteractionHandler to be initialised when the
      * provider is activated.

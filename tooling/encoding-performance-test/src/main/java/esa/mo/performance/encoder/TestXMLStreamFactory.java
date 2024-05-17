@@ -31,8 +31,6 @@ import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
-import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -50,11 +48,6 @@ public class TestXMLStreamFactory extends MALElementStreamFactory {
     @Override
     public MALElementOutputStream createOutputStream(OutputStream os) throws IllegalArgumentException, MALException {
         return new TestXMLOutputStream(os);
-    }
-
-    @Override
-    public MALElementInputStream createInputStream(byte[] bytes, int offset) throws IllegalArgumentException, MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     protected static class TestXMLOutputStream implements MALElementOutputStream {

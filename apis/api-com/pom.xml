@@ -19,15 +19,15 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.0</version>
+        <version>10.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-com</artifactId>
-    <version>10.0</version>
+    <version>10.1</version>
     <packaging>jar</packaging>
 
-    <name>ESA MO API - COM</name>
+    <name>ESA MO API - COM v001</name>
     <description>The CCSDS COM API for Java</description>
     <url>http://www.esa.int</url>
   
@@ -66,6 +66,7 @@
 
     <properties>
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
+        <ccsds.specification.download.artifact>xml-ccsds-mo-standards</ccsds.specification.download.artifact>
         <ccsds.specification.download.directory>${project.build.directory}</ccsds.specification.download.directory>
         <ccsds.specification.download.filter>**/area002-v001-COM.xml</ccsds.specification.download.filter>
         <ccsds.specification.download.ref-skip>false</ccsds.specification.download.ref-skip>

@@ -24,13 +24,15 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListEncoder;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -44,7 +46,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  * Extends the MALEncoder and MALListEncoder interfaces for use in the generic
  * encoding framework.
  */
-public abstract class Encoder implements MALListEncoder {
+public abstract class Encoder implements MALEncoder {
 
     protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     protected static final String ENCODING_EXCEPTION_STR = "Bad encoding";
@@ -61,12 +63,12 @@ public abstract class Encoder implements MALListEncoder {
     }
 
     @Override
-    public MALListEncoder createListEncoder(final java.util.List value) throws MALException {
+    public void close() {
         try {
-            outputStream.writeUnsignedInt(value.size());
-            return this;
+            outputStream.close();
         } catch (IOException ex) {
-            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+            Logger.getLogger("org.ccsds.moims.mo.mal.encoding.gen").log(
+                    Level.WARNING, "Exception thrown on Encoder.close", ex);
         }
     }
 
@@ -548,7 +550,13 @@ public abstract class Encoder implements MALListEncoder {
     public void encodeAttribute(final Attribute value) throws MALException {
         try {
             checkForNull(value);
-            outputStream.writeByte(internalEncodeAttributeType(value.getTypeShortForm().byteValue()));
+
+            if (value.getTypeShortForm() > 20) {
+                throw new IOException("The value.getTypeShortForm() is greater than 20");
+            }
+
+            byte shortForm = value.getTypeShortForm().byteValue();
+            outputStream.writeByte(internalEncodeAttributeType(shortForm));
             value.encode(this);
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
@@ -611,12 +619,37 @@ public abstract class Encoder implements MALListEncoder {
     }
 
     @Override
-    public void close() {
+    public void encodeHomogeneousList(final HomogeneousList list) throws MALException {
         try {
-            outputStream.close();
+            outputStream.writeUnsignedInt(list.size());
+            for (int i = 0; i < list.size(); i++) {
+                Object obj = list.get(i);
+                Element element = (obj instanceof Element) ? (Element) obj : (Element) Attribute.javaType2Attribute(obj);
+                element.encode(this);
+            }
         } catch (IOException ex) {
-            Logger.getLogger("org.ccsds.moims.mo.mal.encoding.gen").log(
-                    Level.WARNING, "Exception thrown on Encoder.close", ex);
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
+        }
+    }
+
+    @Override
+    public void encodeHeterogeneousList(HeterogeneousList list) throws MALException {
+        try {
+            outputStream.writeUnsignedInt(list.size());
+
+            for (int i = 0; i < list.size(); i++) {
+                Object entry = list.get(i);
+                if (!(entry instanceof Element)) {
+                    entry = Attribute.javaType2Attribute(entry);
+                }
+                if (HeterogeneousList.ENFORCE_NON_NULLABLE_ENTRIES) {
+                    encodeAbstractElement((Element) entry);
+                } else {
+                    encodeNullableAbstractElement((Element) entry);
+                }
+            }
+        } catch (IOException ex) {
+            throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }
     }
 

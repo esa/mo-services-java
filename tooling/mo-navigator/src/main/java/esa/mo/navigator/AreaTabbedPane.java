@@ -28,6 +28,7 @@ import esa.mo.navigator.parsers.ParserMOSDL;
 import esa.mo.navigator.parsers.ParserXML;
 import esa.mo.tools.stubgen.GeneratorDocx;
 import esa.mo.xsd.util.XmlHelper;
+import esa.mo.xsd.util.XmlSpecification;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -43,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -166,18 +166,18 @@ public class AreaTabbedPane extends JTabbedPane {
                     FileSupport.writeFile(tempFilePath, text);
 
                     File xmlRefDirectory = new File(sourFolder);
-                    List<Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification>> specs;
+                    List<XmlSpecification> specs;
                     specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
                     // now generator from each specification
-                    for (Map.Entry<esa.mo.xsd.SpecificationType, XmlHelper.XmlSpecification> spec : specs) {
+                    for (XmlSpecification spec : specs) {
                         try {
-                            generator.preProcess(spec.getKey());
-                            generator.compile(destFolder, spec.getKey(), spec.getValue().rootElement);
+                            generator.preProcess(spec.getSpecType());
+                            generator.compile(destFolder, spec.getSpecType(), spec.getRootElement());
                         } catch (Exception ex) {
                             Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                                     "Exception thrown during the processing of XML file: "
-                                    + spec.getValue().file.getPath(), ex);
+                                    + spec.getFile().getPath(), ex);
                         }
                     }
 
@@ -348,6 +348,8 @@ public class AreaTabbedPane extends JTabbedPane {
                 String newText = GeneratorXML.generateXML(spec);
                 int caretPosition = textEditorTo.getTextArea().getCaretPosition();
                 textEditorTo.getTextArea().setText(newText);
+                int newCaretPosition = textEditorTo.getTextArea().getCaretPosition();
+                caretPosition = (caretPosition > newCaretPosition) ? newCaretPosition : caretPosition;
                 textEditorTo.getTextArea().setCaretPosition(caretPosition);
                 textEditorFrom.getTextArea().removeAllLineHighlights();
 

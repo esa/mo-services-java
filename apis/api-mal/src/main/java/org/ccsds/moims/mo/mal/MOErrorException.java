@@ -23,7 +23,6 @@ package org.ccsds.moims.mo.mal;
 import java.io.Serializable;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
@@ -96,11 +95,6 @@ public class MOErrorException extends Exception implements Serializable, MALErro
 
     @Override
     public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
-        return null;
-    }
-
-    @Override
-    public MALEncodedBody getEncodedBody() throws MALException {
         return null;
     }
 

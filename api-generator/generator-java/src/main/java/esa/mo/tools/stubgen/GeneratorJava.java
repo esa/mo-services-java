@@ -27,6 +27,7 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
@@ -37,6 +38,7 @@ import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -132,15 +134,15 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     public void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher publisher) throws IOException {
-        getLog().info(" > Creating Publisher class: " + fqPublisherName);
+        logger.info(" > Creating Publisher class: " + fqPublisherName);
 
         String publisherName = fqPublisherName.substring(fqPublisherName.lastIndexOf('.') + 1);
         ClassWriter file = createClassFile(destinationFolderName, fqPublisherName.replace('.', '/'));
 
         file.addPackageStatement(publisher.area, publisher.service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
         String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
         CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet",
@@ -251,10 +253,13 @@ public class GeneratorJava extends GeneratorLangs {
     public void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
         JavaLists javaLists = new JavaLists(this);
+        String listName = srcTypeName + "List";
 
         if (isAbstract) {
+            logger.info(" > Creating HeterogeneousList class: " + listName);
             javaLists.createHeterogeneousListClass(folder, area, service, srcTypeName);
         } else {
+            logger.info(" > Creating List class: " + listName);
             javaLists.createHomogeneousListClass(folder, area, service, srcTypeName, shortFormPart);
         }
     }
@@ -262,12 +267,14 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     protected void addTypeShortForm(ClassWriter file, long sf) throws IOException {
         file.addMultilineComment("Short form for type.");
-        file.addStatement("    public static final Integer TYPE_SHORT_FORM = " + sf + ";");
+        file.addStatement("    @Deprecated");
+        file.addStatement("    private static final Integer TYPE_SHORT_FORM = " + sf + ";");
     }
 
     @Override
     protected void addShortForm(ClassWriter file, long sf) throws IOException {
-        file.addMultilineComment("Absolute short form for type.");
+        file.addMultilineComment("Absolute short form for type. This will be replaced by the TypeId.");
+        file.addStatement("    @Deprecated");
         file.addStatement("    public static final Long SHORT_FORM = " + sf + "L;");
         file.addStatement("    private static final long serialVersionUID = " + sf + "L;");
     }
@@ -369,8 +376,14 @@ public class GeneratorJava extends GeneratorLangs {
      */
     protected void createFolderComment(ClassWriter file, AreaType area,
             ServiceType service, String extraPackage, String comment) throws IOException {
+        List<String> list = AbstractLanguageWriter.normaliseComment(new ArrayList(), comment);
+
         file.addStatement("/**");
-        file.addStatement(comment);
+
+        for (String line : list) {
+            file.addStatement(" * " + line);
+        }
+
         file.addStatement("*/");
         file.addPackageStatement(area, service, extraPackage);
         file.flush();
@@ -444,7 +457,7 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     protected String malStringAsElement(LanguageWriter file) {
-        return createElementType(file, StdStrings.MAL, null, StdStrings.UNION);
+        return createElementType(StdStrings.MAL, null, StdStrings.UNION);
     }
 
     @Override
@@ -453,7 +466,7 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    public ClassWriterProposed createClassFile(File folder, String className) throws IOException {
+    public ClassWriter createClassFile(File folder, String className) throws IOException {
         return new JavaClassWriter(folder, className, this);
     }
 

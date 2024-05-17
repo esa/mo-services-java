@@ -61,8 +61,6 @@ public class JavaConsumer {
 
     public void createServiceConsumerAdapter(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info(" > Creating consumer adapter: " + service.getName());
-
         String areaName = area.getName();
         String serviceName = service.getName();
         String className = serviceName + "Adapter";
@@ -71,10 +69,10 @@ public class JavaConsumer {
 
         file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
-        String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String areaHelper = generator.createElementType(file, areaName, null, null, areaName + "Helper");
-        String serviceHelper = generator.createElementType(file, areaName, serviceName, null, serviceName + "Helper");
-        String serviceInfoName = generator.createElementType(file, areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
+        String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String areaHelper = generator.createElementType(areaName, null, null, areaName + "Helper");
+        String serviceHelper = generator.createElementType(areaName, serviceName, null, serviceName + "Helper");
+        String serviceInfoName = generator.createElementType(areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
 
         CompositeField stdHeaderArg = generator.createCompositeElementsDetails(file, false, "msgHeader",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageHeader", false),
@@ -101,7 +99,7 @@ public class JavaConsumer {
         List<CompositeField> stdErrorArgs = StubUtils.concatenateArguments(stdHeaderArg, stdErrorArg, stdQosArg);
 
         file.addClassOpenStatement(className, false, true,
-                generator.createElementType(file, StdStrings.MAL, null, CONSUMER_FOLDER, "MALInteractionAdapter"),
+                generator.createElementType(StdStrings.MAL, null, CONSUMER_FOLDER, "MALInteractionAdapter"),
                 null, "Consumer adapter for " + serviceName + " service.");
 
         // Implement the generation of the adapter
@@ -445,8 +443,6 @@ public class JavaConsumer {
 
     public void createServiceConsumerStub(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        generator.getLog().info(" > Creating consumer stub: " + service.getName());
-
         String serviceName = service.getName();
         String className = serviceName + "Stub";
 
@@ -469,8 +465,8 @@ public class JavaConsumer {
                 true, true, "transactionId Transaction identifier of the interaction to continue");
         List<CompositeField> continueOpArgs = StubUtils.concatenateArguments(lastInteractionStage, initiationTimestamp, transactionId, serviceAdapterArg);
 
-        String throwsMALException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = generator.createElementType(file, StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
         CompositeField msgType = generator.createCompositeElementsDetails(file, false, "return",
@@ -482,8 +478,8 @@ public class JavaConsumer {
         CompositeField uriType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false),
                 true, true, null);
-        String helperType = generator.createElementType(file, area.getName(), service.getName(), null, serviceName + "Helper") + generator.getConfig().getNamingSeparator();
-        String serviceInfoType = generator.createElementType(file, area.getName(), service.getName(), null, serviceName + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
+        String helperType = generator.createElementType(area.getName(), service.getName(), null, serviceName + "Helper") + generator.getConfig().getNamingSeparator();
+        String serviceInfoType = generator.createElementType(area.getName(), service.getName(), null, serviceName + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
         CompositeField consumerType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
@@ -493,7 +489,7 @@ public class JavaConsumer {
                 false, true, null);
 
         file.addClassOpenStatement(className, false, false, null,
-                generator.createElementType(file, area.getName(), serviceName, CONSUMER_FOLDER, serviceName),
+                generator.createElementType(area.getName(), serviceName, CONSUMER_FOLDER, serviceName),
                 "Consumer stub for " + serviceName + " service.");
 
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);

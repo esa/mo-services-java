@@ -20,12 +20,11 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.ClassWriterProposed;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.CompositeField;
-import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ErrorDefinitionType;
@@ -46,6 +45,7 @@ public class JavaExceptions {
         this.generator = generator;
     }
 
+    /*
     public void createServiceExceptions(File serviceFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         generator.getLog().warn("The service Exceptions must be moved to Area "
@@ -59,10 +59,9 @@ public class JavaExceptions {
             }
         }
     }
+     */
 
     public void createAreaExceptions(File areaFolder, AreaType area) throws IOException {
-        generator.getLog().info(" > Creating Area Exceptions for area: " + area.getName());
-
         if (area.getErrors() != null && area.getErrors().getError() != null) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
                 this.generateException(areaFolder, area, null, error);
@@ -72,13 +71,11 @@ public class JavaExceptions {
 
     public void generateException(File folder, AreaType area,
             ServiceType service, ErrorDefinitionType error) throws IOException {
-        generator.getLog().info(" > Creating Exception: " + error.getName());
-
         // Needs to be converted to Camel case in the future!
         String inCamelCase = convertToCamelCase(error.getName());
         String className = inCamelCase + EXCEPTION;
 
-        ClassWriterProposed file = generator.createClassFile(folder, className);
+        ClassWriter file = generator.createClassFile(folder, className);
         file.addPackageStatement(area, service, null);
 
         // Appends the class name
@@ -101,16 +98,16 @@ public class JavaExceptions {
         method_1.addLine("super(" + errorPath + ", " + errorDescription + ")");
         method_1.addMethodCloseStatement();
 
-        // Constructor with a String
+        // Constructor with an Object for the extraInformation
         ArrayList<CompositeField> args = new ArrayList<>();
-        CompositeField field = generator.createCompositeElementsDetails(file, false, "message",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, "String", false),
-                false, true, "The message of the exception.");
+        CompositeField field = generator.createCompositeElementsDetails(file, false, "extraInformation",
+                TypeUtils.createTypeReference(null, null, "Object", false),
+                false, true, "The extraInformation of the exception.");
         args.add(field);
 
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
-        method_2.addLine("super(" + errorPath + ", " + "message)");
+        method_2.addLine("super(" + errorPath + ", " + "extraInformation)");
         method_2.addMethodCloseStatement();
 
         file.addClassCloseStatement();

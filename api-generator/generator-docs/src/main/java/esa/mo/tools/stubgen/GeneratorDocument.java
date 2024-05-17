@@ -25,7 +25,6 @@ import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.TypeReference;
-import org.apache.maven.plugin.logging.Log;
 
 /**
  * Base generator class for generators that product documents rather than
@@ -36,11 +35,10 @@ public abstract class GeneratorDocument extends GeneratorBase {
     /**
      * Constructor.
      *
-     * @param logger The logger.
      * @param config The configuration to use.
      */
-    protected GeneratorDocument(Log logger, GeneratorConfiguration config) {
-        super(logger, config);
+    protected GeneratorDocument(GeneratorConfiguration config) {
+        super(config);
 
         addAttributeType(StdStrings.MAL, StdStrings.BLOB, true, "Blob", "");
         addAttributeType(StdStrings.MAL, StdStrings.BOOLEAN, true, "Boolean", "");

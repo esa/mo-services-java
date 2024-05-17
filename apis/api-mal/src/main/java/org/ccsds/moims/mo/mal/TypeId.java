@@ -138,10 +138,24 @@ public class TypeId {
      *
      * @return The short form part number.
      */
-    public int getShortFormPartNumber() {
+    public int getSFP() {
         return sfp;
     }
 
+    /**
+     * Returns true if it represents a list type.
+     *
+     * @return True if it represents a list type.
+     */
+    public boolean isList() {
+        return (sfp <= 0);
+    }
+
+    /**
+     * Returns the long value of this TypeId.
+     *
+     * @return The long value of this TypeId.
+     */
     public long getTypeId() {
         long asf = ((long) areaNumber) << AREA_BIT_SHIFT;
         asf += ((long) areaVersion) << VERSION_BIT_SHIFT;

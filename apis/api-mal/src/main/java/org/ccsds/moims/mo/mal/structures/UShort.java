@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.structures;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * Class representing MAL UShort type.
@@ -106,6 +107,11 @@ public class UShort implements Attribute {
     @Override
     public UShort getServiceNumber() {
         return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(Attribute.USHORT_SHORT_FORM);
     }
 
     @Override

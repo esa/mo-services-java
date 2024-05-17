@@ -174,7 +174,10 @@ public class PublishRegisterTestProcedure extends LoggingBase {
             }
             if (notifiedUpdates != null && notifiedUpdates.size() == 1) {
                 localAssertions.add(new Assertion(procedureName,
-                        "Expected key is: " + entityKeyValue, values.equals(notifiedUpdateHeaders.get(0).getKeyValues())));
+                        "Expected key is: " + entityKeyValue
+                                + " - values: " + values.toString()
+                                + " - notifiedUpdateHeaders: " + notifiedUpdateHeaders.get(0).getKeyValues().toString(),
+                        values.equals(notifiedUpdateHeaders.get(0).getKeyValues())));
             }
         }
 

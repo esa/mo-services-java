@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.structures;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * Class representing MAL ObjectRef type.
@@ -127,6 +128,11 @@ public class ObjectRef<T extends Element> implements Attribute {
     }
 
     @Override
+    public TypeId getTypeId() {
+        return new TypeId(Attribute.OBJECTREF_SHORT_FORM);
+    }
+
+    @Override
     public void encode(final MALEncoder encoder) throws MALException {
         encoder.encodeObjectRef(this);
     }
@@ -172,6 +178,6 @@ public class ObjectRef<T extends Element> implements Attribute {
     @Override
     public String toString() {
         return String.valueOf(domain) + ":" + String.valueOf(absoluteSFP) + ":"
-                + String.valueOf(key) + ":" + String.valueOf(objectVersion) + ":";
+                + String.valueOf(key) + ":" + String.valueOf(objectVersion);
     }
 }

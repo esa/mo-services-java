@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.List;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
@@ -385,13 +384,29 @@ public interface MALDecoder {
     Attribute decodeNullableAttribute() throws MALException;
 
     /**
-     * Creates a list decoder for decoding a list element.
+     * Decodes the typeId of an abstract element.
      *
-     * @param list The list to decode, java.lang.IllegalArgumentException
-     * exception thrown if null.
-     * @return The new list decoder.
-     * @throws java.lang.IllegalArgumentException If the list argument is null.
-     * @throws MALException If an error detected during list decoder creation.
+     * @param isNullable If true encode a isNull field.
+     * @return The decoded typeId.
+     * @throws MALException if there is an error.
      */
-    MALListDecoder createListDecoder(List list) throws java.lang.IllegalArgumentException, MALException;
+    Long decodeAbstractElementSFP(boolean isNullable) throws MALException;
+
+    /**
+     * Decodes an Homogeneous list
+     *
+     * @param list The list to decode.
+     * @return The decoded list.
+     * @throws MALException If an error detected during decoding.
+     */
+    HomogeneousList decodeHomogeneousList(HomogeneousList list) throws MALException;
+
+    /**
+     * Decodes an Heterogeneous list
+     *
+     * @param list The list to decode.
+     * @return The decoded list.
+     * @throws MALException If an error detected during decoding.
+     */
+    HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException;
 }

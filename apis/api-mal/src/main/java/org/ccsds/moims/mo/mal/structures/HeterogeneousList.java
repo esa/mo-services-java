@@ -24,19 +24,13 @@ import java.util.ArrayList;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALListDecoder;
-import org.ccsds.moims.mo.mal.MALListEncoder;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * The HeterogeneousList allows elements of different types to be added on the
  * same list.
  */
 public class HeterogeneousList extends java.util.ArrayList<Element> implements ElementList<Element> {
-
-    // The enforcement of non-nullable entries is hard-coded to be disabled because
-    // it is not backwards compatible and it breaks the COM Archive query operation.
-    // Note: All the testbeds are passing even when the enforcement is enabled!
-    private final static boolean ENFORCE_NON_NULLABLE_ENTRIES = false;
 
     /**
      * Default constructor.
@@ -75,6 +69,11 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
         return 0;
     }
 
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(0L);
+    }
+
     /**
      * Returns a list with all Elements in this object. It casts them to MO
      * Attribute type when necessary.
@@ -91,35 +90,12 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
 
     @Override
     public void encode(MALEncoder encoder) throws MALException {
-        MALListEncoder listEncoder = encoder.createListEncoder(this);
-        for (int i = 0; i < size(); i++) {
-            Object entry = get(i);
-            if (!(entry instanceof Element)) {
-                entry = Attribute.javaType2Attribute(entry);
-            }
-            if (ENFORCE_NON_NULLABLE_ENTRIES) {
-                listEncoder.encodeAbstractElement((Element) entry);
-            } else {
-                listEncoder.encodeNullableAbstractElement((Element) entry);
-            }
-        }
-        listEncoder.close();
+        encoder.encodeHeterogeneousList(this);
     }
 
     @Override
     public Element decode(MALDecoder decoder) throws MALException {
-        MALListDecoder listDecoder = decoder.createListDecoder(this);
-        int decodedSize = listDecoder.size();
-        if (decodedSize > 0) {
-            ensureCapacity(decodedSize);
-        }
-        while (listDecoder.hasNext()) {
-            if (ENFORCE_NON_NULLABLE_ENTRIES) {
-                add((Element) listDecoder.decodeAbstractElement());
-            } else {
-                add((Element) listDecoder.decodeNullableAbstractElement());
-            }
-        }
+        decoder.decodeHeterogeneousList(this);
         return this;
     }
 

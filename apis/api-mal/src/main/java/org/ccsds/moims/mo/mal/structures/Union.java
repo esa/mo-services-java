@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.structures;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 
 /**
  * The Union class assigns a MAL Attribute mapped to a non-Element Java type
@@ -278,6 +279,11 @@ public class Union implements Attribute {
     @Override
     public UShort getServiceNumber() {
         return UShort.ATTRIBUTE_SERVICE_NUMBER;
+    }
+
+    @Override
+    public TypeId getTypeId() {
+        return new TypeId(shortForm);
     }
 
     @Override
