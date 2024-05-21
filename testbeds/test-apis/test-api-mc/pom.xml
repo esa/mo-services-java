@@ -84,7 +84,7 @@
         </dependency>
         <dependency> 
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-mc</artifactId>
+            <artifactId>api-area004-v002-mc</artifactId>
         </dependency>
     </dependencies>
 

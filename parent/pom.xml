@@ -134,12 +134,12 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-common</artifactId>
+                <artifactId>api-area003-v001-common</artifactId>
                 <version>${esa.api.common.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-mc</artifactId>
+                <artifactId>api-area004-v002-mc</artifactId>
                 <version>${esa.api.mc.version}</version>
             </dependency>
             <dependency>
