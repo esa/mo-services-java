@@ -23,7 +23,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>api-mpd</artifactId>
+    <artifactId>api-area009-v001-mpd</artifactId>
     <version>11.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
