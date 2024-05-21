@@ -80,7 +80,7 @@
         </dependency>
         <dependency> 
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-com</artifactId>
+            <artifactId>api-area002-v001-com</artifactId>
         </dependency>
     </dependencies>
 
