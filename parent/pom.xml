@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>10.1</version>
+    <version>11.0-SNAPSHOT</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -74,7 +74,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <esa.mo.version>10.1</esa.mo.version>
+        <esa.mo.version>11.0-SNAPSHOT</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
         <esa.stubgen.version>${esa.mo.version}</esa.stubgen.version>
