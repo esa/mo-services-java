@@ -23,7 +23,7 @@ package org.ccsds.moims.mo.mal.provider;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorListener;
 
@@ -94,7 +94,7 @@ public interface MALProvider {
      *
      * @return The service.
      */
-    MALService getService();
+    ServiceInfo getService();
 
     /**
      * Creates a MALPublisher.

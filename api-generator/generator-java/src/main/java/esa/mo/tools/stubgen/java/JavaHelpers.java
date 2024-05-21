@@ -182,7 +182,7 @@ public class JavaHelpers {
             buf_2.append("\n        ").append(ns).append(",");
         }
         CompositeField areaServices = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_SERVICES",
-                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALService", false),
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.ServiceInfo", false),
                 false, true, "Services in this Area.");
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, areaServices,
                 false, true, buf_2.toString(), false);

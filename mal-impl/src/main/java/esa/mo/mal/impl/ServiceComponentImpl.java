@@ -24,7 +24,7 @@ import esa.mo.mal.impl.transport.TransportSingleton;
 import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
@@ -58,7 +58,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
     /**
      * The MAL service.
      */
-    protected final MALService service;
+    protected final ServiceInfo service;
     /**
      * Expected QoS level.
      */
@@ -111,7 +111,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
             final MALContextImpl impl,
             final String localName,
             final String protocol,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final QoSLevel[] expectedQosA,
             final UInteger priorityLevelNumber,
@@ -157,7 +157,7 @@ public abstract class ServiceComponentImpl implements MALCloseable {
     public ServiceComponentImpl(
             final MALContextImpl impl,
             final MALEndpoint endPoint,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final QoSLevel[] expectedQosA,
             final UInteger priorityLevelNumber,

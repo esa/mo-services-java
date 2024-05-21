@@ -22,7 +22,7 @@ package org.ccsds.moims.mo.mal.provider;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
@@ -61,7 +61,7 @@ public interface MALProviderManager {
     MALProvider createProvider(
             String localName,
             String protocol,
-            MALService service,
+            ServiceInfo service,
             Blob authenticationId,
             MALInteractionHandler handler,
             QoSLevel[] expectedQos,
@@ -98,7 +98,7 @@ public interface MALProviderManager {
      */
     MALProvider createProvider(
             MALEndpoint endpoint,
-            MALService service,
+            ServiceInfo service,
             Blob authenticationId,
             MALInteractionHandler handler,
             QoSLevel[] expectedQos,

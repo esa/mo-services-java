@@ -78,7 +78,7 @@ public class JavaServiceInfo {
             file.addClassOpenStatement(serviceName + SERVICE_INFO, false, false, "org.ccsds.moims.mo.com.COMService",
                     null, "Helper class for " + serviceName + " service.");
         } else {
-            file.addClassOpenStatement(serviceName + SERVICE_INFO, false, false, "org.ccsds.moims.mo.mal.MALService",
+            file.addClassOpenStatement(serviceName + SERVICE_INFO, false, false, "org.ccsds.moims.mo.mal.ServiceInfo",
                     null, "Helper class for " + serviceName + " service.");
         }
 

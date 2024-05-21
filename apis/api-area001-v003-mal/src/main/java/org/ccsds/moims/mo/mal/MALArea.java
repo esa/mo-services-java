@@ -32,12 +32,12 @@ import org.ccsds.moims.mo.mal.structures.UShort;
  */
 public class MALArea {
 
-    private final Map<Integer, MALService> serviceNumbers = new HashMap<>();
+    private final Map<Integer, ServiceInfo> serviceNumbers = new HashMap<>();
     private final UShort number;
     private final Identifier name;
     private final UOctet version;
     private final Element[] elements;
-    private final MALService[] services;
+    private final ServiceInfo[] services;
 
     /**
      * MALArea constructor.
@@ -50,7 +50,7 @@ public class MALArea {
      * @throws IllegalArgumentException If either argument is null.
      */
     public MALArea(UShort number, Identifier name, UOctet version,
-            Element[] elements, MALService[] services) {
+            Element[] elements, ServiceInfo[] services) {
         if (number == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
@@ -100,7 +100,7 @@ public class MALArea {
      *
      * @return The services in this MAL Area.
      */
-    public final MALService[] getServices() {
+    public final ServiceInfo[] getServices() {
         return services;
     }
 
@@ -110,9 +110,9 @@ public class MALArea {
      * @param serviceNumber The number of the service to find.
      * @return The found service or null if not found.
      */
-    public synchronized MALService getServiceByNumber(final UShort serviceNumber) {
+    public synchronized ServiceInfo getServiceByNumber(final UShort serviceNumber) {
         if (serviceNumbers.isEmpty()) {
-            for (MALService service : services) {
+            for (ServiceInfo service : services) {
                 serviceNumbers.put(service.getServiceNumber().getValue(), service);
             }
         }

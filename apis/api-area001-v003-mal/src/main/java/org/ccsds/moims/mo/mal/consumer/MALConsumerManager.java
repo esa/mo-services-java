@@ -21,7 +21,7 @@
 package org.ccsds.moims.mo.mal.consumer;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 
@@ -65,7 +65,7 @@ public interface MALConsumerManager {
             String localName,
             URI uriTo,
             URI brokerUri,
-            MALService service,
+            ServiceInfo service,
             Blob authenticationId,
             IdentifierList domain,
             Identifier networkZone,
@@ -109,7 +109,7 @@ public interface MALConsumerManager {
             MALEndpoint endpoint,
             URI uriTo,
             URI brokerUri,
-            MALService service,
+            ServiceInfo service,
             Blob authenticationId,
             IdentifierList domain,
             Identifier networkZone,

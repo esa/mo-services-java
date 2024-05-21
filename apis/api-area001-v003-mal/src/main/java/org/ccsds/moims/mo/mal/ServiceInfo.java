@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 /**
  * The MALService class represents the specification of a service.
  */
-public abstract class MALService {
+public abstract class ServiceInfo {
 
     private final Map<Integer, MALOperation> operationsByNumber = new HashMap<>();
     private final ServiceKey serviceKey;
@@ -46,7 +46,7 @@ public abstract class MALService {
      * @param operations The operations of the service.
      * @throws java.lang.IllegalArgumentException If any arguments are null.
      */
-    public MALService(ServiceKey serviceKey, Identifier serviceName, Element[] elements,
+    public ServiceInfo(ServiceKey serviceKey, Identifier serviceName, Element[] elements,
             MALOperation[] operations) throws IllegalArgumentException {
         if (serviceKey == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");

@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -81,7 +81,7 @@ public abstract class ConsumerServiceImpl {
      * @throws java.net.MalformedURLException if the service could not be
      * started.
      */
-    public Object createConsumer(String subsystem, MALService service) throws MALException, MalformedURLException {
+    public Object createConsumer(String subsystem, ServiceInfo service) throws MALException, MalformedURLException {
 
         Logger.getLogger(ConsumerServiceImpl.class.getName()).log(Level.INFO,
                 "URI" + this.connectionDetails.getProviderURI().toString() + "@" + subsystem);

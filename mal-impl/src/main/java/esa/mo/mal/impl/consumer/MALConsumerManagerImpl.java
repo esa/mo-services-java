@@ -25,7 +25,7 @@ import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.structures.*;
@@ -51,7 +51,7 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
     public MALConsumer createConsumer(final String localName,
             final URI uriTo,
             final URI brokerUri,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final IdentifierList domain,
             final Identifier networkZone,
@@ -84,7 +84,7 @@ public class MALConsumerManagerImpl implements MALConsumerManager, MALCloseable 
     public MALConsumer createConsumer(final MALEndpoint endPoint,
             final URI uriTo,
             final URI brokerUri,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final IdentifierList domain,
             final Identifier networkZone,

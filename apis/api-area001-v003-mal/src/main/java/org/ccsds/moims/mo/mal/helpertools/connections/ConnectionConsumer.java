@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
@@ -124,7 +124,7 @@ public class ConnectionConsumer {
      * initialized correctly
      */
     public MALConsumer startService(final URI uriP, final URI uriB,
-            final IdentifierList domain, final MALService malService)
+            final IdentifierList domain, final ServiceInfo malService)
             throws MALException, MalformedURLException {
         this.startMAL();
         return this.createMALconsumer(uriP, uriB, domain, malService);
@@ -147,7 +147,7 @@ public class ConnectionConsumer {
      * initialized correctly
      */
     public MALConsumer startService(final URI uriP, final URI uriB, final IdentifierList domain,
-            final MALService malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
+            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
             MalformedURLException {
         this.startMAL();
         return this.createMALconsumer(uriP, uriB, domain, malService, authenticationId, localNamePrefix);
@@ -167,7 +167,7 @@ public class ConnectionConsumer {
      * initialized correctly
      */
     public MALConsumer createMALconsumer(final URI uriP, final URI uriB, final IdentifierList domain,
-            final MALService malService) throws MALException, MalformedURLException {
+            final ServiceInfo malService) throws MALException, MalformedURLException {
 
         return createMALconsumer(uriP, uriB, domain, malService, null, null);
     }
@@ -188,7 +188,7 @@ public class ConnectionConsumer {
      * initialized correctly
      */
     public MALConsumer createMALconsumer(final URI uriP, final URI uriB, final IdentifierList domain,
-            final MALService malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
+            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
             MalformedURLException {
 
         Properties props = new Properties();
@@ -229,7 +229,7 @@ public class ConnectionConsumer {
      * initialized correctly
      */
     public MALConsumer startService(final URI uriP, final URI uriB, final IdentifierList domain,
-            final QoSLevelList qosLevels, final UInteger priorityLevels, final MALService malService,
+            final QoSLevelList qosLevels, final UInteger priorityLevels, final ServiceInfo malService,
             final Blob authenticationId, final String localNamePrefix) throws MALException, MalformedURLException {
 
         this.startMAL();

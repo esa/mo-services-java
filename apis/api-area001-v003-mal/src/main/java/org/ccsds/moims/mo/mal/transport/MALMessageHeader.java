@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.MALOperation;
 import org.ccsds.moims.mo.mal.MALProgressOperation;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.UnsupportedAreaException;
@@ -409,7 +409,7 @@ public class MALMessageHeader {
                     + this.getServiceArea() + ", " + this.getServiceVersion() + ")"));
         }
 
-        MALService malService = malArea.getServiceByNumber(this.getService());
+        ServiceInfo malService = malArea.getServiceByNumber(this.getService());
 
         if (malService == null) {
             throw new NotFoundException(new UnsupportedServiceException(

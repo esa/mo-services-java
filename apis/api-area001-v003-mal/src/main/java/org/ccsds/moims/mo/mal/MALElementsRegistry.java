@@ -173,7 +173,7 @@ public class MALElementsRegistry {
      *
      * @param malService The Service with the Elements to be registered.
      */
-    public synchronized void registerElementsForService(MALService malService) {
+    public synchronized void registerElementsForService(ServiceInfo malService) {
         Element[] elements = malService.getElements();
 
         for (Element element : elements) {
@@ -188,7 +188,7 @@ public class MALElementsRegistry {
      *
      * @param service The Service to be loaded.
      */
-    public void loadServiceAndAreaElements(MALService service) {
+    public void loadServiceAndAreaElements(ServiceInfo service) {
         // Load the elements here:
         this.registerElementsForArea(MALHelper.MAL_AREA);
         this.registerElementsForService(service);
@@ -209,7 +209,7 @@ public class MALElementsRegistry {
      * @param area The Area to be loaded.
      */
     public void loadFullArea(MALArea area) {
-        for (MALService service : area.getServices()) {
+        for (ServiceInfo service : area.getServices()) {
             loadServiceAndAreaElements(service);
         }
     }

@@ -83,7 +83,7 @@ public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.E
     }
 
     public org.ccsds.moims.mo.mal.structures.UShort getServiceNumber() {
-        return org.ccsds.moims.mo.mal.MALService.NULL_SERVICE_NUMBER;
+        return org.ccsds.moims.mo.mal.ServiceInfo.NULL_SERVICE_NUMBER;
     }
 
     public Long getShortForm() {

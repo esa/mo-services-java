@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
@@ -39,7 +39,7 @@ public class MALProviderSet {
 
     private final Set<MALPublisherSet> publisherSets = new HashSet<>();
     private final Set<MALProvider> providers = new HashSet<>();
-    private final MALService service;
+    private final ServiceInfo service;
 
     /**
      * Constructs a provider set.
@@ -49,7 +49,7 @@ public class MALProviderSet {
      * @throws java.lang.IllegalArgumentException If the parameter ‘service’ is
      * NULL
      */
-    public MALProviderSet(final MALService service) throws java.lang.IllegalArgumentException {
+    public MALProviderSet(final ServiceInfo service) throws java.lang.IllegalArgumentException {
         this.service = service;
     }
 

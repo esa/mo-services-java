@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
@@ -124,7 +124,7 @@ public class ConnectionProvider {
      * @return The MAL provider
      * @throws MALException On error.
      */
-    public MALProvider startService(String serviceName, MALService malService,
+    public MALProvider startService(String serviceName, ServiceInfo malService,
             MALInteractionHandler handler) throws MALException {
         return startService(serviceName, malService, true, handler);
     }
@@ -140,7 +140,7 @@ public class ConnectionProvider {
      * @return The MAL provider
      * @throws MALException On error.
      */
-    public MALProvider startService(String serviceName, MALService malService,
+    public MALProvider startService(String serviceName, ServiceInfo malService,
             boolean isPublisher, MALInteractionHandler handler) throws MALException {
         try {
             malFactory = MALContextFactory.newFactory();
