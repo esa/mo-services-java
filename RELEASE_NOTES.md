@@ -4,7 +4,10 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 10.1 (Expected in May 2024)
+### Version 11.0 (2024)
+* Updates all the API artifactIds to include the area number and area version
+
+### Version 10.1 (2024 May 17)
 * Updates all the xml files for their respective latest updates
 * The yaml workflows for building the project and running the testbeds are now operational for: Java 8, 11, 17
 * Simplifies and optimizes parts of the code in the Transport and in the API generation process
@@ -18,7 +21,7 @@ The different versions and respective updates are the following:
 * Adds yaml workflows for building the project and running the testbeds for different LTS Java versions (8, 11, 17, 21)
 * Improves the Interface between the MAL and the Encoders/Decoders. Now, it passes the name, nullability and type for the field to be encoded/decoded
 
-### Version 9 (2023 February)
+### Version 9 (2023 February 02)
 * This release is a hybrid between the old and the new MAL (top API layer -> new MAL; low Transport layer -> old MAL)
 * Fixes the MAL testbed for the new MAL updates
 * Lowers memory footprint
