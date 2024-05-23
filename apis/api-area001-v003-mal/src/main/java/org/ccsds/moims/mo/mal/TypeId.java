@@ -26,35 +26,35 @@ package org.ccsds.moims.mo.mal;
 public class TypeId {
 
     /**
-     * The bit shift value for the area part of a type short form.
+     * The bit shift value for the area part of a Type Id.
      */
     public static final int AREA_BIT_SHIFT = 48;
     /**
-     * The bit shift value for the service part of a type short form.
+     * The bit shift value for the version part of a Type Id.
      */
-    public static final int SERVICE_BIT_SHIFT = 32;
+    public static final int VERSION_BIT_SHIFT = 32;
     /**
-     * The bit shift value for the version part of a type short form.
+     * The bit shift value for the service part of a Type Id.
      */
-    public static final int VERSION_BIT_SHIFT = 24;
+    public static final int SERVICE_BIT_SHIFT = 24;
 
     /**
-     * Area number.
+     * Area number (defined as UShort by the MAL).
      */
     private final short areaNumber;
 
     /**
-     * Area version.
+     * Area version (defined as UShort by the MAL).
      */
     private final short areaVersion;
 
     /**
-     * Service number.
+     * Service number (defined as UShort by the MAL).
      */
     private final short serviceNumber;
 
     /**
-     * Short Form Part number.
+     * Short Form Part number (defined as Short by the MAL).
      */
     private final short sfp;
 

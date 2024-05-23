@@ -59,17 +59,17 @@ import org.apache.maven.plugin.logging.Log;
 public abstract class GeneratorLangs extends GeneratorBase {
 
     /**
-     * The bit shift value for the area part of a type short form.
+     * The bit shift value for the area part of a Type Id.
      */
     public static final int AREA_BIT_SHIFT = 48;
     /**
-     * The bit shift value for the service part of a type short form.
+     * The bit shift value for the version part of a Type Id.
      */
-    public static final int SERVICE_BIT_SHIFT = 32;
+    public static final int VERSION_BIT_SHIFT = 32;
     /**
-     * The bit shift value for the version part of a type short form.
+     * The bit shift value for the service part of a Type Id.
      */
-    public static final int VERSION_BIT_SHIFT = 24;
+    public static final int SERVICE_BIT_SHIFT = 24;
     /**
      * The folder that consumer interfaces are created.
      */
@@ -1811,6 +1811,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
     }
 
+    @Deprecated
     protected static void addSetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
         String setOpPrefix = "set";
         String attributeName = element.getFieldName();

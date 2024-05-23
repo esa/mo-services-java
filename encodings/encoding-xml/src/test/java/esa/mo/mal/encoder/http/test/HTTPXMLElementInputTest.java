@@ -51,25 +51,25 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<Subscription malxml:type=\"281475027043305\">"
-          + "<Identifier malxml:type=\"281475027042310\">"
+        + "<Subscription malxml:type=\"281487861613545\">"
+          + "<Identifier malxml:type=\"281487861612550\">"
             + "<Identifier>Demo</Identifier>"
           + "</Identifier>"
-          + "<IdentifierList malxml:type=\"281475010265082\">"
+          + "<IdentifierList malxml:type=\"281479288455162\">"
             + "<Identifier>Test</Identifier>"
             + "<Identifier>Domain0</Identifier>"
           + "</IdentifierList>"
-          + "<IdentifierList malxml:type=\"281475010265082\">"
+          + "<IdentifierList malxml:type=\"281479288455162\">"
             + "<Identifier>SomeKey</Identifier>"
           + "</IdentifierList>"
-          + "<SubscriptionFilterList malxml:type=\"281475010264086\">"
-            + "<SubscriptionFilter malxml:type=\"281474993488874\">"
-              + "<Identifier malxml:type=\"281475027042310\">"
+          + "<SubscriptionFilterList malxml:type=\"281479288454166\">"
+            + "<SubscriptionFilter malxml:type=\"281479271678954\">"
+              + "<Identifier malxml:type=\"281487861612550\">"
                 + "<Identifier>TestFilter</Identifier>"
               + "</Identifier>"
               + "<AttributeList>"
-                + "<Blob malxml:type=\"281475027042305\"><Blob>5465737456616c7565</Blob></Blob>"
-                + "<Union malxml:type=\"281475027042306\"><Boolean>true</Boolean></Union>"
+                + "<Blob malxml:type=\"281487861612545\"><Blob>5465737456616c7565</Blob></Blob>"
+                + "<Union malxml:type=\"281487861612546\"><Boolean>true</Boolean></Union>"
               + "</AttributeList>"
             + "</SubscriptionFilter>"
           + "</SubscriptionFilterList>"
@@ -272,7 +272,7 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<InteractionType malxml:type=\"281475027042405\"><InteractionType>SEND</InteractionType></InteractionType>"
+        + "<InteractionType malxml:type=\"281487861612645\"><InteractionType>SEND</InteractionType></InteractionType>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
@@ -291,8 +291,8 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<UInteger malxml:type=\"281475027042316\"><UInteger>65549</UInteger></UInteger>"
-        + "<Union malxml:type=\"281475027042319\"><String>4294967295</String></Union>"
+        + "<UInteger malxml:type=\"281487861612556\"><UInteger>65549</UInteger></UInteger>"
+        + "<Union malxml:type=\"281487861612559\"><String>4294967295</String></Union>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
@@ -314,7 +314,7 @@ public class HTTPXMLElementInputTest {
 
     String testXml =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<Union malxml:type=\"281475027042306\"><Boolean>true</Boolean></Union>"
+        + "<Union malxml:type=\"281487861612546\"><Boolean>true</Boolean></Union>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
@@ -332,7 +332,7 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<Qos malxml:type=\"281475027042407\"><Qos>QUEUED</Qos></Qos>"
+        + "<Qos malxml:type=\"281487861612647\"><Qos>QUEUED</Qos></Qos>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
