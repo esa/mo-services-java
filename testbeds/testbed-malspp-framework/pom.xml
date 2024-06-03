@@ -136,6 +136,20 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ESA</id>
+            <dependencies>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>api-area001-v003-mal</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>api-mal-test</artifactId>
+                    <version>${esa.mal.test_api.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>CNES</id>
             <dependencies>
                 <dependency>

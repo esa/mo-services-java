@@ -74,26 +74,6 @@ public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.E
         return null;
     }
 
-    public org.ccsds.moims.mo.mal.structures.UShort getAreaNumber() {
-        return org.ccsds.moims.mo.mal.MALHelper.MAL_AREA_NUMBER;
-    }
-
-    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
-        return org.ccsds.moims.mo.mal.MALHelper.MAL_AREA_VERSION;
-    }
-
-    public org.ccsds.moims.mo.mal.structures.UShort getServiceNumber() {
-        return org.ccsds.moims.mo.mal.ServiceInfo.NULL_SERVICE_NUMBER;
-    }
-
-    public Long getShortForm() {
-        return SHORT_FORM;
-    }
-
-    public Integer getTypeShortForm() {
-        return TYPE_SHORT_FORM;
-    }
-
     public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
         encoder.encodeUShort(new UShort(getOrdinal()));
     }

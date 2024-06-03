@@ -45,6 +45,7 @@ import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -238,7 +239,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
         MALBrokerBinding tcTmSharedBrokerBinding = brokerManager.createBrokerBinding(
                 tcTmSharedBroker, TC_TM_SHARED_BROKER_NAME, protocol,
                 Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
-                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tcTmProps);
+                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tcTmProps, new NamedValueList());
 
         MALBroker tmTcSharedBroker = brokerManager.createBroker();
         HashMap<Object, Object> tmTcProps = new HashMap<Object, Object>();
@@ -250,7 +251,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
         MALBrokerBinding tmTcSharedBrokerBinding = brokerManager.createBrokerBinding(
                 tmTcSharedBroker, TM_TC_SHARED_BROKER_NAME, protocol,
                 Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
-                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tmTcProps);
+                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tmTcProps, new NamedValueList());
 
         MALBroker tmTmSharedBroker = brokerManager.createBroker();
         HashMap<Object, Object> tmTmProps = new HashMap<>();
@@ -262,7 +263,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
         MALBrokerBinding tmTmSharedBrokerBinding = brokerManager.createBrokerBinding(
                 tmTmSharedBroker, TM_TM_SHARED_BROKER_NAME, protocol,
                 Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
-                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tmTmProps);
+                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tmTmProps, new NamedValueList());
 
         FileBasedDirectory.storeURI(TC_TM_SHARED_BROKER_NAME,
                 tcTmSharedBrokerBinding.getURI(), tcTmSharedBrokerBinding.getURI());
@@ -284,7 +285,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel, new HashMap(),
-                    priority);
+                    priority, new NamedValueList());
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
             tcTcPubsubErrorStubs.put(key, ipconsumer);
@@ -315,7 +316,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tcTmIpConsumerProps, priority);
+                    tcTmIpConsumerProps, priority, new NamedValueList());
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
             tcTmPubsubErrorStubs.put(key, ipconsumer);
@@ -346,7 +347,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tmTmIpConsumerProps, priority);
+                    tmTmIpConsumerProps, priority, new NamedValueList());
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
             tmTmPubsubErrorStubs.put(key, ipconsumer);
@@ -377,7 +378,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tmTcIpConsumerProps, priority);
+                    tmTcIpConsumerProps, priority, new NamedValueList());
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
             tmTcPubsubErrorStubs.put(key, ipconsumer);
@@ -423,7 +424,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tcTcConsumerProps, priority);
+                    tcTcConsumerProps, priority, new NamedValueList());
 
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
@@ -461,7 +462,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tmTcConsumerProps, priority);
+                    tmTcConsumerProps, priority, new NamedValueList());
 
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
@@ -500,7 +501,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tcTmConsumerProps, priority);
+                    tcTmConsumerProps, priority, new NamedValueList());
 
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
@@ -539,7 +540,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    tmTmConsumerProps, priority);
+                    tmTmConsumerProps, priority, new NamedValueList());
 
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
@@ -571,7 +572,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    consumerProps, priority);
+                    consumerProps, priority, new NamedValueList());
 
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
@@ -602,7 +603,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
             MALConsumer consumer = defaultConsumerMgr.createConsumer((String) null,
                     uris.uri, uris.broker, IPTestHelper.IPTEST_SERVICE, authenticationId,
                     domain, networkZone, sessionType, sessionName, qosLevel,
-                    consumerProps, priority);
+                    consumerProps, priority, new NamedValueList());
 
             IPTestStub stub = new IPTestStub(consumer);
             ipconsumer = new IPTestConsumer(consumer, stub);
@@ -627,7 +628,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tcTcPublishErrorHandler,
                     new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1),
                     null, Boolean.TRUE,
-                    errorBrokerUris.broker);
+                    errorBrokerUris.broker, new NamedValueList());
         }
         return tcTcPublishErrorHandler;
     }
@@ -654,7 +655,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tcTmPublishErrorHandler,
                     new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1),
                     tcTmProps, Boolean.TRUE,
-                    errorBrokerUris.broker);
+                    errorBrokerUris.broker, new NamedValueList());
         }
         return tcTmPublishErrorHandler;
     }
@@ -681,7 +682,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tmTcPublishErrorHandler,
                     new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1),
                     tmTcProps, Boolean.TRUE,
-                    errorBrokerUris.broker);
+                    errorBrokerUris.broker, new NamedValueList());
         }
         return tmTcPublishErrorHandler;
     }
@@ -708,7 +709,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     TestServiceProvider.IP_TEST_AUTHENTICATION_ID, tmTmPublishErrorHandler,
                     new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1),
                     tmTmProps, Boolean.TRUE,
-                    errorBrokerUris.broker);
+                    errorBrokerUris.broker, new NamedValueList());
         }
         return tmTmPublishErrorHandler;
     }
@@ -737,7 +738,9 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    new Hashtable(), new UInteger(0));
+                    new Hashtable(),
+                    new UInteger(0),
+                    new NamedValueList());
 
             segstub = new DataTestStub(consumer);
         }
@@ -767,7 +770,9 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    props, new UInteger(0));
+                    props,
+                    new UInteger(0),
+                    new NamedValueList());
 
             segErrorSmallStub = new DataTestStub(consumer);
         }
@@ -797,7 +802,9 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    props, new UInteger(0));
+                    props,
+                    new UInteger(0),
+                    new NamedValueList());
 
             segErrorLargeStub = new DataTestStub(consumer);
         }
@@ -821,7 +828,9 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     SessionType.LIVE,
                     new Identifier("LIVE"),
                     QoSLevel.BESTEFFORT,
-                    props, new UInteger(0));
+                    props,
+                    new UInteger(0),
+                    new NamedValueList());
 
             segCounterStub = new IPTestStub(consumer);
         }
@@ -844,7 +853,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
                     DataTestHelper.DATATEST_SERVICE, new Blob("".getBytes()),
                     new IdentifierList(), new Identifier("networkZone"),
                     SessionType.LIVE, new Identifier("LIVE"), QoSLevel.BESTEFFORT,
-                    props, new UInteger(2));
+                    props, new UInteger(2), new NamedValueList());
 
             dataTestStubNoVarint = new DataTestStub(consumer);
         }
