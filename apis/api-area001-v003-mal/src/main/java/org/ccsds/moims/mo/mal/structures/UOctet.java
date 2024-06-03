@@ -92,31 +92,6 @@ public class UOctet implements Attribute {
     }
 
     @Override
-    public Long getShortForm() {
-        return Attribute.UOCTET_SHORT_FORM;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return Attribute.UOCTET_TYPE_SHORT_FORM;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public UOctet getAreaVersion() {
-        return AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
-    @Override
     public TypeId getTypeId() {
         return new TypeId(Attribute.UOCTET_SHORT_FORM);
     }

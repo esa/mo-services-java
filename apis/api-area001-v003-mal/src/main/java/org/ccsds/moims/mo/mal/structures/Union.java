@@ -152,6 +152,17 @@ public class Union implements Attribute {
         this.typeShortForm = typeShortForm;
     }
 
+    /**
+     * Constructor using Type Id.
+     *
+     * @param typeId The Type Id of the element.
+     */
+    protected Union(final TypeId typeId) {
+        this.value = null;
+        this.shortForm = typeId.getTypeId();
+        this.typeShortForm = typeId.getSFP();
+    }
+
     @Override
     public Element createElement() {
         return new Union(typeShortForm, shortForm);
@@ -257,38 +268,13 @@ public class Union implements Attribute {
     }
 
     @Override
-    public Long getShortForm() {
-        return shortForm;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return typeShortForm;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
-    @Override
     public TypeId getTypeId() {
         return new TypeId(shortForm);
     }
 
     @Override
     public void encode(final MALEncoder encoder) throws MALException {
-        switch (this.getTypeShortForm()) {
+        switch (this.getTypeId().getSFP()) {
             case Attribute._BOOLEAN_TYPE_SHORT_FORM:
                 encoder.encodeBoolean(getBooleanValue());
                 break;
@@ -319,7 +305,7 @@ public class Union implements Attribute {
 
     @Override
     public Element decode(final MALDecoder decoder) throws MALException {
-        switch (this.getTypeShortForm()) {
+        switch (this.getTypeId().getSFP()) {
             case Attribute._BOOLEAN_TYPE_SHORT_FORM:
                 return new Union(decoder.decodeBoolean());
             case Attribute._DOUBLE_TYPE_SHORT_FORM:

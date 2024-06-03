@@ -80,36 +80,38 @@ public class HelperAttributes {
     public static Double attribute2double(Attribute in) {
 
         if (in instanceof Union) {
-            if (((Union) in).getTypeShortForm().equals(Union.BOOLEAN_TYPE_SHORT_FORM)) { // 2
+            Integer sfp = ((Union) in).getTypeId().getSFP();
+
+            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) { // 2
                 double dou = ((Union) in).getBooleanValue() ? 1 : 0;
                 return dou;
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.FLOAT_TYPE_SHORT_FORM)) { // 4
+            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) { // 4
                 return new Double(((Union) in).getFloatValue());
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.DOUBLE_TYPE_SHORT_FORM)) { // 5
+            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) { // 5
                 return ((Union) in).getDoubleValue();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.OCTET_TYPE_SHORT_FORM)) { // 7
+            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) { // 7
                 return new Double((short) ((Union) in).getOctetValue());
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.SHORT_TYPE_SHORT_FORM)) { // 9
+            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) { // 9
                 return new Double(((Union) in).getShortValue());
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.INTEGER_TYPE_SHORT_FORM)) { // 11
+            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) { // 11
                 return new Double(((Union) in).getIntegerValue());
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.LONG_TYPE_SHORT_FORM)) { // 13
+            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) { // 13
                 return new Double(((Union) in).getLongValue());
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.STRING_TYPE_SHORT_FORM)) { // 15
+            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) { // 15
                 Double dou;
                 try {
                     dou = Double.parseDouble(((Union) in).getStringValue());
@@ -181,15 +183,16 @@ public class HelperAttributes {
         }
 
         if (in instanceof Union) {
+            Integer sfp = ((Union) in).getTypeId().getSFP();
 
-            if (((Union) in).getTypeShortForm().equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
                 if (((Union) in).getDoubleValue() == null) {
                     return "";
                 }
                 return ((Union) in).getDoubleValue().toString();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
                 if (((Union) in).getBooleanValue() == null) {
                     return "";
                 }
@@ -197,42 +200,42 @@ public class HelperAttributes {
                 return dou;
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.FLOAT_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) {
                 if (((Union) in).getFloatValue() == null) {
                     return "";
                 }
                 return (((Union) in).getFloatValue()).toString();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.INTEGER_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) {
                 if (((Union) in).getIntegerValue() == null) {
                     return "";
                 }
                 return (((Union) in).getIntegerValue()).toString();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.LONG_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) {
                 if (((Union) in).getLongValue() == null) {
                     return "";
                 }
                 return (((Union) in).getLongValue()).toString();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.OCTET_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) {
                 if (((Union) in).getOctetValue() == null) {
                     return "";
                 }
                 return (((Union) in).getOctetValue()).toString();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.SHORT_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) {
                 if (((Union) in).getShortValue() == null) {
                     return "";
                 }
                 return (((Union) in).getShortValue()).toString();
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.STRING_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) {
                 if (((Union) in).getStringValue() == null) {
                     return "";
                 }
@@ -383,35 +386,37 @@ public class HelperAttributes {
             return null;
         }
         if (in instanceof Union) {
-            if (((Union) in).getTypeShortForm().equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
+            Integer sfp = ((Union) in).getTypeId().getSFP();
+
+            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
                 return new Union(Double.parseDouble(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
                 return new Union(Boolean.parseBoolean(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.FLOAT_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) {
                 return new Union(Float.parseFloat(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.INTEGER_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) {
                 return new Union(Integer.parseInt(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.LONG_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) {
                 return new Union(Long.parseLong(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.OCTET_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) {
                 return new Union(Byte.parseByte(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.SHORT_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) {
                 return new Union(Short.parseShort(value));
             }
 
-            if (((Union) in).getTypeShortForm().equals(Union.STRING_TYPE_SHORT_FORM)) {
+            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) {
                 return new Union(value);
             }
 
@@ -516,7 +521,7 @@ public class HelperAttributes {
     public static Object attribute2JavaType(Object obj) {
 
         if (obj instanceof Union) {
-            Integer typeShortForm = ((Union) obj).getTypeShortForm();
+            Integer typeShortForm = ((Union) obj).getTypeId().getSFP();
 
             if (typeShortForm.intValue() == Attribute.BOOLEAN_TYPE_SHORT_FORM.intValue()) {
                 return (boolean) ((Union) obj).getBooleanValue();

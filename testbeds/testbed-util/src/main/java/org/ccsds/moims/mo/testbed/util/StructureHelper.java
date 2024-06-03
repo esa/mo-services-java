@@ -203,7 +203,7 @@ public abstract class StructureHelper {
      */
     public static boolean isStringAttribute(Attribute in) {
         if (null != in) {
-            int shortFormPart = in.getTypeShortForm();
+            int shortFormPart = in.getTypeId().getSFP();
 
             if ((shortFormPart == Attribute._IDENTIFIER_TYPE_SHORT_FORM)
                     || (shortFormPart == Attribute._STRING_TYPE_SHORT_FORM)

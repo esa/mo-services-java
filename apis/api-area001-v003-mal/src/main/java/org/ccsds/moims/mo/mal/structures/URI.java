@@ -134,31 +134,6 @@ public class URI implements Attribute {
     }
 
     @Override
-    public Long getShortForm() {
-        return Attribute.URI_SHORT_FORM;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return Attribute.URI_TYPE_SHORT_FORM;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
-    @Override
     public TypeId getTypeId() {
         return new TypeId(Attribute.URI_SHORT_FORM);
     }

@@ -32,46 +32,6 @@ import org.ccsds.moims.mo.mal.TypeId;
 public interface Element extends Serializable {
 
     /**
-     * Returns the absolute short form of the element type.
-     *
-     * @return the absolute short form.
-     */
-    @Deprecated
-    Long getShortForm();
-
-    /**
-     * Returns the number of the area this element type belongs to.
-     *
-     * @return the area number.
-     */
-    @Deprecated
-    UShort getAreaNumber();
-
-    /**
-     * Returns the version of the area this element type belongs to.
-     *
-     * @return the area version.
-     */
-    @Deprecated
-    UOctet getAreaVersion();
-
-    /**
-     * Returns the number of the service this element type belongs to.
-     *
-     * @return the service number.
-     */
-    @Deprecated
-    UShort getServiceNumber();
-
-    /**
-     * Return the relative short form of the element type.
-     *
-     * @return the relative short form.
-     */
-    @Deprecated
-    Integer getTypeShortForm();
-
-    /**
      * Return the Type Id of the element.
      *
      * @return the TypeId.

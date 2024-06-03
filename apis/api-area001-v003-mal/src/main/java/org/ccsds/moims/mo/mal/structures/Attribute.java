@@ -322,7 +322,7 @@ public interface Attribute extends Element {
      */
     public static Object attribute2JavaType(Object obj) {
         if (obj instanceof Union) {
-            Integer typeShortForm = ((Union) obj).getTypeShortForm();
+            Integer typeShortForm = ((Union) obj).getTypeId().getSFP();
 
             if (typeShortForm == Attribute._BOOLEAN_TYPE_SHORT_FORM) {
                 return (boolean) ((Union) obj).getBooleanValue();
@@ -372,11 +372,11 @@ public interface Attribute extends Element {
             throw new IllegalArgumentException("Obj must not be null");
         }
 
-        Integer sft = obj.getTypeShortForm(); // sft: Short Form Type
+        Integer sfp = obj.getTypeId().getSFP(); // Short Form Part
 
         // Check if: Identifier, String, URI
-        return (sft == Attribute._IDENTIFIER_TYPE_SHORT_FORM)
-                || (sft == Attribute._STRING_TYPE_SHORT_FORM)
-                || (sft == Attribute._URI_TYPE_SHORT_FORM);
+        return (sfp == Attribute._IDENTIFIER_TYPE_SHORT_FORM)
+                || (sfp == Attribute._STRING_TYPE_SHORT_FORM)
+                || (sfp == Attribute._URI_TYPE_SHORT_FORM);
     }
 }

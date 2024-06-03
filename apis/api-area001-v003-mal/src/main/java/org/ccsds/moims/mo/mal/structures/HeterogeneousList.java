@@ -45,31 +45,6 @@ public class HeterogeneousList extends java.util.ArrayList<Element> implements E
     }
 
     @Override
-    public Long getShortForm() {
-        return 0L;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return 0;
-    }
-
-    @Override
     public TypeId getTypeId() {
         return new TypeId(0L);
     }

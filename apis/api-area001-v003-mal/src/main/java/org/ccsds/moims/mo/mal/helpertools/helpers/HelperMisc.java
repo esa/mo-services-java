@@ -334,7 +334,7 @@ public class HelperMisc {
         if (obj == null) {
             throw new IllegalArgumentException("Obj must not be null");
         }
-        Integer shortFormPart = obj.getTypeShortForm();
+        Integer shortFormPart = obj.getTypeId().getSFP();
 
         if (shortFormPart == 6) { // Identifier
             return true;

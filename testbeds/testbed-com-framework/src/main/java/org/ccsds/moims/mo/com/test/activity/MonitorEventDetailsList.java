@@ -236,7 +236,7 @@ class MonitorEventDetails {
                         objectDetails.getSource().getType().getService(),
                         ActivityTrackingServiceInfo.ACTIVITYTRACKING_SERVICE_NUMBER, bTypeValid);
                 bTypeValid = COMChecker.equalsCheck(strObject, "Source.Type.Version",
-                        objectDetails.getSource().getType().getAreaVersion(),
+                        objectDetails.getSource().getType().getVersion(),
                         COMHelper.COM_AREA_VERSION, bTypeValid);
                 bTypeValid = COMChecker.equalsCheck(strObject, "Source.Type.Number",
                         objectDetails.getSource().getType().getNumber(),

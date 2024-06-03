@@ -49,14 +49,14 @@ public class ObjectRef<T extends Element> implements Attribute {
      * Constructor.
      *
      * @param domain The domain.
-     * @param absoluteSFP The absolute short form part.
+     * @param typeId The Type Id of the object.
      * @param key The key.
      * @param objectVersion The object version.
      */
-    public ObjectRef(final IdentifierList domain, final Long absoluteSFP,
+    public ObjectRef(final IdentifierList domain, final Long typeId,
             final Identifier key, final UInteger objectVersion) {
         this.domain = domain;
-        this.absoluteSFP = absoluteSFP;
+        this.absoluteSFP = typeId;
         this.key = key;
         this.objectVersion = objectVersion;
     }
@@ -100,31 +100,6 @@ public class ObjectRef<T extends Element> implements Attribute {
      */
     public UInteger getObjectVersion() {
         return objectVersion;
-    }
-
-    @Override
-    public Long getShortForm() {
-        return Attribute.OBJECTREF_SHORT_FORM;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return Attribute.OBJECTREF_TYPE_SHORT_FORM;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
     }
 
     @Override

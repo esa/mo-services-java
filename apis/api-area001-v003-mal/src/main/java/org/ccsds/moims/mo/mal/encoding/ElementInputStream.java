@@ -81,21 +81,21 @@ public abstract class ElementInputStream implements MALElementInputStream {
     }
 
     protected Element decodeAbstractSubElement(boolean isNullable) throws MALException {
-        Long shortForm = dec.decodeAbstractElementSFP(isNullable);
+        Long typeId = dec.decodeAbstractElementSFP(isNullable);
 
-        if (shortForm == null) {
+        if (typeId == null) {
             return null;
         }
 
         try {
-            Element e = MALContextFactory.getElementsRegistry().createElement(shortForm);
+            Element e = MALContextFactory.getElementsRegistry().createElement(typeId);
             try {
                 return dec.decodeElement(e);
             } catch (Exception ex) {
                 throw new MALException("Unable to decode element: " + e.toString(), ex);
             }
         } catch (Exception ex) {
-            throw new MALException("Unable to create element for short form part: " + shortForm, ex);
+            throw new MALException("Unable to create element for short form part: " + typeId, ex);
         }
     }
 }

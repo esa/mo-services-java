@@ -81,36 +81,6 @@ public class ULong implements Attribute {
         return value;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(java.math.BigInteger value)
-//  {
-//    this.value = value;
-//  }
-    @Override
-    public Long getShortForm() {
-        return Attribute.ULONG_SHORT_FORM;
-    }
-
-    @Override
-    public Integer getTypeShortForm() {
-        return Attribute.ULONG_TYPE_SHORT_FORM;
-    }
-
-    @Override
-    public UShort getAreaNumber() {
-        return UShort.ATTRIBUTE_AREA_NUMBER;
-    }
-
-    @Override
-    public org.ccsds.moims.mo.mal.structures.UOctet getAreaVersion() {
-        return UOctet.AREA_VERSION;
-    }
-
-    @Override
-    public UShort getServiceNumber() {
-        return UShort.ATTRIBUTE_SERVICE_NUMBER;
-    }
-
     @Override
     public TypeId getTypeId() {
         return new TypeId(Attribute.ULONG_SHORT_FORM);

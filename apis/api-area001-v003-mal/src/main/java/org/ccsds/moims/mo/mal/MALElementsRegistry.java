@@ -43,10 +43,10 @@ public class MALElementsRegistry {
      * @return True if already previously loaded else false.
      */
     public boolean addElement(Element element) {
-        Long absoluteSFP = element.getShortForm();
+        Long typeId = element.getTypeId().getTypeId();
         Callable<Element> callable = () -> element.createElement();
 
-        Callable<Element> previous = ELEMENTS.put(absoluteSFP, callable);
+        Callable<Element> previous = ELEMENTS.put(typeId, callable);
         return previous != null; // Not the first time?
     }
 
@@ -71,27 +71,27 @@ public class MALElementsRegistry {
     /**
      * Creates an element from the absolute short form part.
      *
-     * @param absoluteSFP The absolute short form part.
+     * @param typeIdLong The Type Id (aka: absolute short form part).
      * @return The created Element.
      * @throws NotFoundException if the element was not found.
      */
-    public Element createElement(Long absoluteSFP) throws Exception {
-        if (absoluteSFP == 0) {
+    public Element createElement(Long typeIdLong) throws Exception {
+        if (typeIdLong == 0) {
             return new HeterogeneousList();
         }
 
-        Callable<Element> callable = ELEMENTS.get(absoluteSFP);
+        Callable<Element> callable = ELEMENTS.get(typeIdLong);
 
         if (callable == null) {
-            TypeId typeId = new TypeId(absoluteSFP);
+            TypeId typeId = new TypeId(typeIdLong);
 
             if (typeId.isOldMAL()) {
                 Logger.getLogger(MALElementsRegistry.class.getName()).log(Level.SEVERE,
-                        "The typeId is incorrect! It is: {0}", typeId.toString());
+                        "The typeId is using the old MAL version 1: {0}", typeId.toString());
             }
 
             throw new NotFoundException("The element was not found: "
-                    + absoluteSFP + "\n" + typeId.toString());
+                    + typeIdLong + "(" + typeId.toString() + ")");
         }
 
         return callable.call();
@@ -114,7 +114,7 @@ public class MALElementsRegistry {
             return (ElementList) obj;
         }
 
-        long l = obj.getShortForm();
+        long l = obj.getTypeId().getSFP();
         long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
 
         try {
@@ -140,7 +140,7 @@ public class MALElementsRegistry {
             return null;
         }
 
-        long l = obj.getShortForm();
+        long l = obj.getTypeId().getSFP();
         long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
 
         try {

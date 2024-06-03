@@ -63,13 +63,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
      */
     public static final int AREA_BIT_SHIFT = 48;
     /**
-     * The bit shift value for the version part of a Type Id.
-     */
-    public static final int VERSION_BIT_SHIFT = 32;
-    /**
      * The bit shift value for the service part of a Type Id.
      */
-    public static final int SERVICE_BIT_SHIFT = 24;
+    public static final int SERVICE_BIT_SHIFT = 32;
+    /**
+     * The bit shift value for the version part of a Type Id.
+     */
+    public static final int VERSION_BIT_SHIFT = 24;
     /**
      * The folder that consumer interfaces are created.
      */
@@ -1752,6 +1752,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
                 true, true, null);
 
+        /*
         MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, lonType, "getShortForm", null, null,
                 "Returns the absolute short form of this type.", "The absolute short form of this type.", null);
@@ -1788,8 +1789,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
             method.addLine("return new org.ccsds.moims.mo.mal.structures.UShort(0)");
         }
         method.addMethodCloseStatement();
+        */
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
+        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, typeIdType, "getTypeId", null, null,
                 "Returns the TypeId of this element.",
                 "The TypeId of this element.", null);

@@ -20,6 +20,9 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Class representing a key to a MAL Service.
  */
@@ -30,13 +33,13 @@ public class TypeId {
      */
     public static final int AREA_BIT_SHIFT = 48;
     /**
-     * The bit shift value for the version part of a Type Id.
-     */
-    public static final int VERSION_BIT_SHIFT = 32;
-    /**
      * The bit shift value for the service part of a Type Id.
      */
-    public static final int SERVICE_BIT_SHIFT = 24;
+    public static final int SERVICE_BIT_SHIFT = 32;
+    /**
+     * The bit shift value for the version part of a Type Id.
+     */
+    public static final int VERSION_BIT_SHIFT = 24;
 
     /**
      * Area number (defined as UShort by the MAL).
@@ -58,17 +61,20 @@ public class TypeId {
      */
     private final short sfp;
 
+    private final static long MASK_08 = 0xFF;
+    private final static long MASK_16 = 0xFFFF;
+    private final static long MASK_24 = 0xFFFFFF;
+
     /**
      * Constructor.
      *
      * @param typeId The TypeId of the type.
      */
     public TypeId(final Long typeId) {
-        long shortMask = 0xFFFF;
-        this.areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & shortMask);
-        this.areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & shortMask);
-        this.serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & shortMask);
-        this.sfp = (short) (typeId & shortMask);
+        this.areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & MASK_16);
+        this.areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & MASK_08);
+        this.serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & MASK_16);
+        this.sfp = (short) (typeId & MASK_24);
     }
 
     /**
@@ -171,6 +177,11 @@ public class TypeId {
         }
 
         return asf;
+    }
+
+    public TypeId generateTypeIdPositive() {
+        int newSPF = (sfp > 0) ? sfp : (-1) * sfp;
+        return  new TypeId(areaNumber, areaVersion, serviceNumber, newSPF);
     }
 
     @Override

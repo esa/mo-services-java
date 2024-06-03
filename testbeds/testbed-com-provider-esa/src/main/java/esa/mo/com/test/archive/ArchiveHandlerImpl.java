@@ -1032,9 +1032,9 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         ElementList element = MALObjectTypeRegistry.inst().lookupElementlist(objectType);
 
         try {
-            Long spf = element.getShortForm();
+            Long typeId = element.getTypeId().getTypeId();
             MALElementsRegistry registry = MALContextFactory.getElementsRegistry();
-            return (ElementList) registry.createElement(spf);
+            return (ElementList) registry.createElement(typeId);
         } catch (Exception ex1) {
             Logger.getLogger(ArchiveHandlerImpl.class.getName()).log(Level.SEVERE,
                     CLS + ":returnQueryResults:Raise ERR - Element List Creation " + objectType, ex1);

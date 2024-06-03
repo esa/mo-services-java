@@ -551,11 +551,11 @@ public abstract class Encoder implements MALEncoder {
         try {
             checkForNull(value);
 
-            if (value.getTypeShortForm() > 20) {
+            if (value.getTypeId().getSFP() > 20) {
                 throw new IOException("The value.getTypeShortForm() is greater than 20");
             }
 
-            byte shortForm = value.getTypeShortForm().byteValue();
+            byte shortForm = ((Integer) value.getTypeId().getSFP()).byteValue();
             outputStream.writeByte(internalEncodeAttributeType(shortForm));
             value.encode(this);
         } catch (IOException ex) {
@@ -599,7 +599,7 @@ public abstract class Encoder implements MALEncoder {
 
     @Override
     public void encodeAbstractElement(final Element value) throws MALException {
-        encodeLong(value.getShortForm());
+        encodeLong(value.getTypeId().getTypeId());
         value.encode(this);
     }
 
@@ -608,7 +608,7 @@ public abstract class Encoder implements MALEncoder {
         try {
             if (value != null) {
                 outputStream.writeIsNotNull();
-                encodeLong(value.getShortForm());
+                encodeLong(value.getTypeId().getTypeId());
                 value.encode(this);
             } else {
                 outputStream.writeIsNull();

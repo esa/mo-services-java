@@ -59,7 +59,7 @@ public abstract class MOObject implements Composite {
      */
     public ObjectRef getObjectRef() {
         return new ObjectRef(objectIdentity.getDomain(),
-                this.getShortForm(),
+                this.getTypeId().getTypeId(),
                 objectIdentity.getKey(),
                 objectIdentity.getVersion()
         );

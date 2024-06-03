@@ -191,8 +191,8 @@ public class ArchiveEventPublisher {
         keyValues.add(new Union((long) ++eventInstCount));
         keyValues.add(new Union(ComStructureHelper.generateSubKey(
                 sourceObjectType.getArea().getValue(),
-                sourceObjectType.getServiceNumber().getValue(),
-                sourceObjectType.getAreaVersion().getValue(),
+                sourceObjectType.getService().getValue(),
+                sourceObjectType.getVersion().getValue(),
                 sourceObjectType.getNumber().getValue())));
 
         IdentifierList domain = new IdentifierList();

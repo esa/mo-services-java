@@ -107,7 +107,7 @@ public abstract class ElementOutputStream implements MALElementOutputStream {
 
     protected void encodeAbstractSubElement(final Element element, boolean isNullable) throws MALException {
         if (element != null) {
-            enc.encodeAbstractElementSFP(element.getShortForm(), isNullable);
+            enc.encodeAbstractElementSFP(element.getTypeId().getTypeId(), isNullable);
             enc.encodeElement(element);
         } else {
             enc.encodeAbstractElementSFP(null, isNullable);

@@ -191,9 +191,14 @@ public class JavaLists {
                 "A new instance of this type with default field values.", null);
 
         // Wrap in Union if needed:
+        /*
         String dummyElement = (listElement.getNewCall().contains("structures"))
-                ? listElement.getNewCall() : "new Union(TYPE_SHORT_FORM * (-1), null)";
+                ? listElement.getNewCall() : "new Union(TYPE_SHORT_FORM * (-1), SHORT_FORM * (-1))";
+                */
+        String dummyElement = (listElement.getNewCall().contains("structures"))
+                ? listElement.getNewCall() : "new Union(typeId.generateTypeIdPositive())";
 
+        method.addLine("org.ccsds.moims.mo.mal.TypeId typeId = this.getTypeId()");
         method.addLine("return " + dummyElement);
         method.addMethodCloseStatement();
 

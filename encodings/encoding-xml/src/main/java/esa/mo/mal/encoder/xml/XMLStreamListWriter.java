@@ -43,7 +43,7 @@ public class XMLStreamListWriter extends esa.mo.mal.encoder.xml.XMLStreamWriter 
             writer.writeDTD(LINE_END);
             writer.writeStartElement(typeName);
             if (!typeName.equals("AttributeList")) {
-                writer.writeAttribute("malxml:type", ((Element) list).getShortForm().toString());
+                writer.writeAttribute("malxml:type", ((Long) ((Element) list).getTypeId().getTypeId()).toString());
             }
             writer.writeDTD(LINE_END);
         } catch (XMLStreamException e) {
