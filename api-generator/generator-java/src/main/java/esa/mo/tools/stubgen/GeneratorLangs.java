@@ -1693,7 +1693,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public void addTypeShortFormDetails(ClassWriter file, AreaType area, ServiceType service, long sf) throws IOException {
-        addTypeShortForm(file, sf);
+        //addTypeShortForm(file, sf);
 
         long asf = ((long) area.getNumber()) << AREA_BIT_SHIFT;
         asf += ((long) area.getVersion()) << VERSION_BIT_SHIFT;
@@ -1710,14 +1710,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         addShortForm(file, asf);
         addTypeId(file, asf);
-    }
-
-    @Deprecated
-    protected void addTypeShortForm(ClassWriter file, long sf) throws IOException {
-        CompositeField var = createCompositeElementsDetails(file, false, "TYPE_SHORT_FORM",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false),
-                true, false, "Short form for type.");
-        file.addClassVariable(true, true, StdStrings.PRIVATE, var, false, "(" + sf + ")");
     }
 
     @Deprecated

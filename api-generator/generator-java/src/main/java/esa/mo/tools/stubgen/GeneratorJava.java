@@ -265,13 +265,6 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void addTypeShortForm(ClassWriter file, long sf) throws IOException {
-        file.addMultilineComment("Short form for type.");
-        file.addStatement("    @Deprecated");
-        file.addStatement("    private static final Integer TYPE_SHORT_FORM = " + sf + ";");
-    }
-
-    @Override
     protected void addShortForm(ClassWriter file, long sf) throws IOException {
         file.addMultilineComment("Absolute short form for type. This will be replaced by the TypeId.");
         file.addStatement("    @Deprecated");
