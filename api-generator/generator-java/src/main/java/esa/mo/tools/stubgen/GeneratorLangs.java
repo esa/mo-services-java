@@ -1625,7 +1625,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
 
         if (!abstractComposite) {
-            addShortFormMethods(file, area, service);
+            addTypeIdGetterMethod(file, area, service);
         }
 
         file.addClassCloseStatement();
@@ -1724,64 +1724,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField var = createCompositeElementsDetails(file, false, "TYPE_ID",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
                 true, false, "Absolute short form for type.");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(SHORT_FORM)");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(serialVersionUID)");
     }
 
-    public void addShortFormMethods(ClassWriter file, AreaType area, ServiceType service) throws IOException {
-        CompositeField lonType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
-                true, true, null);
-        CompositeField intType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false),
-                true, true, null);
-        CompositeField ustType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
-                true, true, null);
-        CompositeField uocType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
-                true, true, null);
+    public void addTypeIdGetterMethod(ClassWriter file, AreaType area, ServiceType service) throws IOException {
         CompositeField typeIdType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
                 true, true, null);
-
-        /*
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, lonType, "getShortForm", null, null,
-                "Returns the absolute short form of this type.", "The absolute short form of this type.", null);
-        method.addLine("return SHORT_FORM");
-        method.addMethodCloseStatement();
-
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, intType, "getTypeShortForm", null, null,
-                "Returns the type short form of this type which is unique to the area/service it is defined in but not unique across all types.",
-                "The type short form of this type.", null);
-        method.addLine("return TYPE_SHORT_FORM");
-        method.addMethodCloseStatement();
-
-        String helperArea = createElementType(area.getName(), null, null, area.getName() + "Helper");
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, ustType, "getAreaNumber", null, null,
-                "Returns the area number of this type.", "The area number of this type.", null);
-        method.addLine("return " + helperArea + "." + area.getName().toUpperCase() + "_AREA_NUMBER");
-        method.addMethodCloseStatement();
-
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, uocType, "getAreaVersion", null, null,
-                "Returns the area version of this type.", "The area number of this type.", null);
-        method.addLine("return " + helperArea + "." + area.getName().toUpperCase() + "_AREA_VERSION");
-        method.addMethodCloseStatement();
-
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, ustType, "getServiceNumber", null, null,
-                "Returns the service number of this type.", "The service number of this type.", null);
-        if (service != null) {
-            String serviceInfo = createElementType(area.getName(), service.getName(), null, service.getName() + "ServiceInfo");
-            method.addLine("return " + serviceInfo + "." + service.getName().toUpperCase() + "_SERVICE_NUMBER");
-        } else {
-            method.addLine("return new org.ccsds.moims.mo.mal.structures.UShort(0)");
-        }
-        method.addMethodCloseStatement();
-        */
 
         MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
                 false, true, typeIdType, "getTypeId", null, null,

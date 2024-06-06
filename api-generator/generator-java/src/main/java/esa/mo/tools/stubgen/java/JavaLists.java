@@ -211,7 +211,7 @@ public class JavaLists {
         method.addLine("return this");
         method.addMethodCloseStatement();
 
-        generator.addShortFormMethods(file, area, service);
+        generator.addTypeIdGetterMethod(file, area, service);
 
         file.addClassCloseStatement();
         file.flush();
