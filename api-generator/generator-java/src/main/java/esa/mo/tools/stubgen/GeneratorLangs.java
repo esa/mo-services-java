@@ -1712,19 +1712,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         addTypeId(file, asf);
     }
 
-    @Deprecated
-    protected void addShortForm(ClassWriter file, long sf) throws IOException {
-        CompositeField var = createCompositeElementsDetails(file, false, "SHORT_FORM",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
-                true, false, "Absolute short form for type.");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(" + sf + "L)");
-    }
+    protected abstract void addShortForm(ClassWriter file, long sf) throws IOException;
 
     protected void addTypeId(ClassWriter file, long sf) throws IOException {
         CompositeField var = createCompositeElementsDetails(file, false, "TYPE_ID",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
-                true, false, "Absolute short form for type.");
-        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(serialVersionUID)");
+                true, false, "The TypeId of this Element.");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, var, false, "(SHORT_FORM)");
     }
 
     public void addTypeIdGetterMethod(ClassWriter file, AreaType area, ServiceType service) throws IOException {
