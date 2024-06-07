@@ -134,6 +134,21 @@ public class ConnectionProvider {
      * Closes any existing service providers and recreates them. Used to
      * initialize services.
      *
+     * @param malService MAL service
+     * @param isPublisher Boolean flag to define if the service has PUB-SUB
+     * @param handler The handler of the interaction
+     * @return The MAL provider
+     * @throws MALException On error.
+     */
+    public MALProvider startService(ServiceInfo malService,
+            boolean isPublisher, MALInteractionHandler handler) throws MALException {
+        return startService(malService.getName().getValue(), malService, isPublisher, handler);
+    }
+
+    /**
+     * Closes any existing service providers and recreates them. Used to
+     * initialize services.
+     *
      * @param serviceName Name of the service
      * @param malService MAL service
      * @param isPublisher Boolean flag to define if the service has PUB-SUB

@@ -26,7 +26,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mpd.productorderdelivery.ProductOrderDeliveryHelper;
-import org.ccsds.moims.mo.mpd.productorderdelivery.ProductOrderDeliveryServiceInfo;
 import org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDeliveryInheritanceSkeleton;
 
 /**
@@ -39,7 +38,7 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
     private final ConnectionProvider connection = new ConnectionProvider();
 
     private boolean running = false;
-    private MALProvider productOrderDeliveryServiceProvider;
+    private MALProvider service;
 
     /**
      * Initializes the service.
@@ -48,14 +47,11 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
      */
     public synchronized void init() throws MALException {
         // shut down old service transport
-        if (null != productOrderDeliveryServiceProvider) {
+        if (null != service) {
             connection.closeAll();
         }
 
-        productOrderDeliveryServiceProvider = connection.startService(
-                ProductOrderDeliveryServiceInfo.PRODUCTORDERDELIVERY_SERVICE_NAME.toString(),
-                ProductOrderDeliveryHelper.PRODUCTORDERDELIVERY_SERVICE, true, this);
-
+        service = connection.startService(ProductOrderDeliveryHelper.PRODUCTORDERDELIVERY_SERVICE, true, this);
         // PUB-SUB code needs to be added!!!
         running = true;
         LOGGER.info("Product Order Delivery service READY");
@@ -66,8 +62,8 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
      */
     public void close() {
         try {
-            if (null != productOrderDeliveryServiceProvider) {
-                productOrderDeliveryServiceProvider.close();
+            if (null != service) {
+                service.close();
             }
 
             connection.closeAll();

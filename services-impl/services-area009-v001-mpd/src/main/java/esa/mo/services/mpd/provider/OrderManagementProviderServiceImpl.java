@@ -30,7 +30,6 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementHelper;
-import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
@@ -45,7 +44,7 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
     private final ConnectionProvider connection = new ConnectionProvider();
 
     private boolean running = false;
-    private MALProvider orderManagementServiceProvider;
+    private MALProvider service;
 
     /**
      * Initializes the service.
@@ -54,14 +53,11 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
      */
     public synchronized void init() throws MALException {
         // shut down old service transport
-        if (null != orderManagementServiceProvider) {
+        if (null != service) {
             connection.closeAll();
         }
 
-        orderManagementServiceProvider = connection.startService(
-                OrderManagementServiceInfo.ORDERMANAGEMENT_SERVICE_NAME.toString(),
-                OrderManagementHelper.ORDERMANAGEMENT_SERVICE, false, this);
-
+        service = connection.startService(OrderManagementHelper.ORDERMANAGEMENT_SERVICE, false, this);
         running = true;
         LOGGER.info("Order Management service READY");
     }
@@ -71,8 +67,8 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
      */
     public void close() {
         try {
-            if (null != orderManagementServiceProvider) {
-                orderManagementServiceProvider.close();
+            if (null != service) {
+                service.close();
             }
 
             connection.closeAll();

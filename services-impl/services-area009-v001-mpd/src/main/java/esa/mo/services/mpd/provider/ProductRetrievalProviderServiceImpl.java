@@ -48,7 +48,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
     private final ConnectionProvider connection = new ConnectionProvider();
 
     private boolean running = false;
-    private MALProvider productRetrievalServiceProvider;
+    private MALProvider service;
 
     /**
      * Initializes the service.
@@ -57,14 +57,11 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
      */
     public synchronized void init() throws MALException {
         // shut down old service transport
-        if (null != productRetrievalServiceProvider) {
+        if (null != service) {
             connection.closeAll();
         }
 
-        productRetrievalServiceProvider = connection.startService(
-                ProductRetrievalServiceInfo.PRODUCTRETRIEVAL_SERVICE_NAME.toString(),
-                ProductRetrievalHelper.PRODUCTRETRIEVAL_SERVICE, false, this);
-
+        service = connection.startService(ProductRetrievalHelper.PRODUCTRETRIEVAL_SERVICE, false, this);
         running = true;
         LOGGER.info("Product Retrieval service READY");
     }
@@ -74,8 +71,8 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
      */
     public void close() {
         try {
-            if (null != productRetrievalServiceProvider) {
-                productRetrievalServiceProvider.close();
+            if (null != service) {
+                service.close();
             }
 
             connection.closeAll();
