@@ -82,6 +82,7 @@
         <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
         <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
         <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
+        <esa.api.mpd.version>${esa.mo.version}</esa.api.mpd.version>
         <esa.mal.version>${esa.mo.version}</esa.mal.version>
         <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
         <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
@@ -141,6 +142,11 @@
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area004-v002-mc</artifactId>
                 <version>${esa.api.mc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area009-v001-mpd</artifactId>
+                <version>${esa.api.mpd.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
