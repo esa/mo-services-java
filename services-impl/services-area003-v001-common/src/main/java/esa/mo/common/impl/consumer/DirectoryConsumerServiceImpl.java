@@ -1,21 +1,21 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2021      European Space Agency
+ * Copyright (C) 2024      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : ESA NanoSat MO Framework
+ * System                : CCSDS MO Common services
  * ----------------------------------------------------------------------------
- * Licensed under European Space Agency Public License (ESA-PL) Weak Copyleft â€“ v2.4
+ * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
  *
  * Except as expressly set forth in this License, the Software is provided to
  * You on an "as is" basis and without warranties of any kind, including without
  * limitation merchantability, fitness for a particular purpose, absence of
  * defects or errors, accuracy or non-infringement of intellectual property rights.
- *
+ * 
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
 package esa.mo.common.impl.consumer;
@@ -35,7 +35,7 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- * @author Cesar Coelho
+ * The Directory service implementation, consumer side.
  */
 public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
 
@@ -44,12 +44,12 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
     private DirectoryStub directoryService = null;
 
     public DirectoryConsumerServiceImpl(final URI providerURI) throws MALException, MalformedURLException,
-        MALInteractionException {
+            MALInteractionException {
         this(providerURI, null, null);
     }
 
     public DirectoryConsumerServiceImpl(final URI providerURI, final Blob authenticationId,
-        final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
+            final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
         this.connectionDetails = null;
         this.providerURI = providerURI;
 
@@ -66,7 +66,7 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
         domain.add(new Identifier("*"));
 
         tmConsumer = connection.startService(providerURI, null, domain, DirectoryHelper.DIRECTORY_SERVICE,
-            authenticationId, localNamePrefix);
+                authenticationId, localNamePrefix);
 
         this.directoryService = new DirectoryStub(tmConsumer);
     }
