@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -130,7 +131,7 @@ public class ServicesConnectionDetails {
                     details.setBrokerURI((URI) null);
                 }
 
-                details.setDomain(HelperMisc.domainId2domain(uriProps.getProperty(serviceName + HelperConnections.SUFFIX_DOMAIN)));
+                details.setDomain(HelperDomain.domainId2domain(uriProps.getProperty(serviceName + HelperConnections.SUFFIX_DOMAIN)));
                 String serviceKeyRaw = uriProps.getProperty(serviceName + HelperConnections.SUFFIX_SERVICE_KEY);
 
                 if (serviceKeyRaw != null) {

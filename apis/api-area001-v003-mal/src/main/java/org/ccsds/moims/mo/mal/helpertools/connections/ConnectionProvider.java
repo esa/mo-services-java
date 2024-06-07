@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
@@ -205,6 +206,7 @@ public class ConnectionProvider {
                 serviceName,
                 HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME);
 
+        globalProvidersDetailsPrimary.add(serviceName, primaryConnectionDetails);
         primaryMALServiceProvider = serviceProvider;
 
         final String secondaryProtocol = System.getProperty(HelperMisc.SECONDARY_PROTOCOL);
@@ -248,6 +250,7 @@ public class ConnectionProvider {
                     serviceName,
                     HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME);
 
+            globalProvidersDetailsSecondary.add(serviceName, secondaryConnectionDetails);
             secondaryMALServiceProvider = serviceProvider2;
         }
 
@@ -355,7 +358,7 @@ public class ConnectionProvider {
             wrt.newLine();
             wrt.append(serviceName + HelperConnections.SUFFIX_BROKER + "=" + connectionDetails.getBrokerURI());
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_DOMAIN + "=" + HelperMisc.domain2domainId(connectionDetails.getDomain()));
+            wrt.append(serviceName + HelperConnections.SUFFIX_DOMAIN + "=" + HelperDomain.domain2domainId(connectionDetails.getDomain()));
             wrt.newLine();
             wrt.append(serviceName + HelperConnections.SUFFIX_SERVICE_KEY + "=" + connectionDetails.getServiceKey());
             wrt.newLine();

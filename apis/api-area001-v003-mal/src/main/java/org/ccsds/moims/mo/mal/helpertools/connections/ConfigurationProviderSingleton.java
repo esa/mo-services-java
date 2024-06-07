@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.connections;
 
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -90,7 +91,7 @@ public final class ConfigurationProviderSingleton {
         // ------------------------Domain------------------------
         if (System.getProperty(HelperMisc.PROP_DOMAIN) != null) {
             // Get directly the domain from the property
-            DOMAIN.addAll(HelperMisc.domainId2domain(System.getProperty(HelperMisc.PROP_DOMAIN)));
+            DOMAIN.addAll(HelperDomain.domainId2domain(System.getProperty(HelperMisc.PROP_DOMAIN)));
         } else {
             // Or generate it for the provider
             if (System.getProperty(HelperMisc.PROP_ORGANIZATION_NAME) != null) {  // Include the name of the organization in the Domain

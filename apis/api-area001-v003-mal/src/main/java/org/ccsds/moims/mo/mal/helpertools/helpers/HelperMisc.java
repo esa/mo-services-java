@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
@@ -250,10 +249,13 @@ public class HelperMisc {
                 if (file.exists()) {
                     sysProps.putAll(HelperMisc.loadProperties(file.toURI().toURL(), "settings.properties"));
                 } else {
+                    // Do not report an error here! Looks like something is wrong!
+                    /*
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file settings.properties does not exist on the "
                             + "path: {}. Is the application working directory "
                             + "configured properly?", settingsFile);
+                    */
                 }
             }
 
@@ -347,50 +349,6 @@ public class HelperMisc {
         }
 
         return false;
-    }
-
-    /**
-     * Generates the domain field in an IdentifierList from a String separated
-     * by dots
-     *
-     * @param domainId The domain Id
-     * @return The domain as IdentifierList or an empty IdentifierList if
-     * domainId == null OR domainId.isEmpty
-     */
-    public static IdentifierList domainId2domain(String domainId) {
-        if (domainId == null || domainId.isEmpty()) {
-            return new IdentifierList();
-        }
-
-        IdentifierList output = new IdentifierList();
-        String[] parts = domainId.split("\\.");
-        for (String part : parts) {
-            output.add(new Identifier(part));
-        }
-
-        return output;
-    }
-
-    /**
-     * Generates the domain string from an IdentifierList
-     *
-     * @param domain The domain
-     * @return The domain Id
-     */
-    public static String domain2domainId(final IdentifierList domain) {
-        if (domain == null) {
-            return null;
-        }
-        if (domain.isEmpty()) {
-            return "";
-        }
-        String domainId = "";
-        for (Identifier subdomain : domain) {
-            domainId += subdomain.getValue() + ".";
-        }
-
-        // Remove the last dot and return the string
-        return domainId.substring(0, domainId.length() - 1);
     }
 
     /**

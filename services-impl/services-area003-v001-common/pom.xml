@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -12,10 +12,10 @@
     See the License for the specific language governing permissions and limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
@@ -23,19 +23,19 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
-    <artifactId>transport-tcpip</artifactId>
+    <artifactId>services-area003-v001-common</artifactId>
     <version>11.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ESA MO Transport - TCP/IP</name>
-    <description>A Java TCP/IP transport for CCSDS MAL</description>
+    <name>ESA MO Services - Common Services</name>
+    <description>The ESA MO Services implementation of the CCSDS MO Common</description>
     <url>http://www.esa.int</url>
 
     <organization>
         <name>ESA</name>
         <url>http://www.esa.int</url>
     </organization>
-  
+
     <licenses>
         <license>
             <name>The European Space Agency Public License, Version 2.0</name>
@@ -49,51 +49,25 @@
         <developerConnection>scm:git:git@github.com:esa/mo-services-java.git</developerConnection>
         <url>https://github.com/esa/mo-services-java</url>
     </scm>
-  
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/esa/mo-services-java/issues</url>
     </issueManagement>
   
-    <developers>
-        <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
-        </developer>
-        <developer>
-            <id>ppissias</id>
-            <name>Petros Pissias</name>
-            <email>petros.pissias@esa.int</email>
-        </developer>
-        <developer>
-            <id>rvangijlswijk</id>
-            <name>Rian van Gijlswijk</name>
-            <email>rian.vangijlswijk@telespazio-vega.de</email>
-        </developer>
-        <developer>
-            <id>CesarCoelho</id>
-            <name>Cesar Coelho</name>
-            <email>cesar.coelho@esa.int</email>
-        </developer>
-    </developers>
- 
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-area001-v003-mal</artifactId>
+            <artifactId>api-area003-v001-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>transport-generic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>encoding-binary</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
- 
+
     <build>
         <resources>
             <resource>
@@ -111,13 +85,40 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>
