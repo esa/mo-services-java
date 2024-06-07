@@ -47,7 +47,7 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
      */
     public synchronized void init() throws MALException {
         // shut down old service transport
-        if (null != service) {
+        if (service != null) {
             connection.closeAll();
         }
 
@@ -62,7 +62,7 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
      */
     public void close() {
         try {
-            if (null != service) {
+            if (service != null) {
                 service.close();
             }
 

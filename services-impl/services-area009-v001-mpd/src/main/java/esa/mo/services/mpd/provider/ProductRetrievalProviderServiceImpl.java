@@ -30,7 +30,6 @@ import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalHelper;
-import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductFilesInteraction;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductsInteraction;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
@@ -57,7 +56,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
      */
     public synchronized void init() throws MALException {
         // shut down old service transport
-        if (null != service) {
+        if (service != null) {
             connection.closeAll();
         }
 
@@ -71,7 +70,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
      */
     public void close() {
         try {
-            if (null != service) {
+            if (service != null) {
                 service.close();
             }
 
