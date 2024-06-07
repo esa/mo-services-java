@@ -27,25 +27,28 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementHelper;
-import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo;
-import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
-import org.ccsds.moims.mo.mpd.structures.StandingOrder;
-import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalHelper;
+import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo;
+import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductFilesInteraction;
+import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductsInteraction;
+import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
+import org.ccsds.moims.mo.mpd.structures.ProductFilter;
+import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
+import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
 /**
- * The Order Management service implementation, provider side.
+ * The Product Retrieval service implementation, provider side.
  */
-public class OrderManagementProviderServiceImpl extends OrderManagementInheritanceSkeleton {
+public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInheritanceSkeleton {
 
-    private static final Logger LOGGER = Logger.getLogger(OrderManagementProviderServiceImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ProductRetrievalProviderServiceImpl.class.getName());
 
     private final ConnectionProvider connection = new ConnectionProvider();
 
     private boolean running = false;
-    private MALProvider orderManagementServiceProvider;
+    private MALProvider productRetrievalServiceProvider;
 
     /**
      * Initializes the service.
@@ -54,16 +57,16 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
      */
     public synchronized void init() throws MALException {
         // shut down old service transport
-        if (null != orderManagementServiceProvider) {
+        if (null != productRetrievalServiceProvider) {
             connection.closeAll();
         }
 
-        orderManagementServiceProvider = connection.startService(
-                OrderManagementServiceInfo.ORDERMANAGEMENT_SERVICE_NAME.toString(),
-                OrderManagementHelper.ORDERMANAGEMENT_SERVICE, false, this);
+        productRetrievalServiceProvider = connection.startService(
+                ProductRetrievalServiceInfo.PRODUCTRETRIEVAL_SERVICE_NAME.toString(),
+                ProductRetrievalHelper.PRODUCTRETRIEVAL_SERVICE, false, this);
 
         running = true;
-        LOGGER.info("Order Management service READY");
+        LOGGER.info("Product Retrieval service READY");
     }
 
     /**
@@ -71,8 +74,8 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
      */
     public void close() {
         try {
-            if (null != orderManagementServiceProvider) {
-                orderManagementServiceProvider.close();
+            if (null != productRetrievalServiceProvider) {
+                productRetrievalServiceProvider.close();
             }
 
             connection.closeAll();
@@ -87,20 +90,17 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
     }
 
     @Override
-    public StandingOrderList listStandingOrders(Identifier user, IdentifierList domain,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+    public ProductSummaryList listProducts(ProductFilter productFilter, TimeWindow creationDate, TimeWindow timeWindow, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Identifier submitStandingOrder(StandingOrder orderDetails,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+    public void getProducts(ObjectRefList productRefs, GetProductsInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void cancelStandingOrder(Identifier orderRef,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+    public void getProductFiles(ObjectRefList productRefs, URI deliverTo, GetProductFilesInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
