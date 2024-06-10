@@ -20,26 +20,27 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * Class representing a key to a MAL Service.
+ * Class representing a Type Id of a MAL Element.
  */
 public class TypeId {
 
     /**
      * The bit shift value for the area part of a Type Id.
      */
-    public static final int AREA_BIT_SHIFT = 48;
+    private final static int AREA_BIT_SHIFT = 48;
     /**
      * The bit shift value for the service part of a Type Id.
      */
-    public static final int SERVICE_BIT_SHIFT = 32;
+    private final static int SERVICE_BIT_SHIFT = 32;
     /**
      * The bit shift value for the version part of a Type Id.
      */
-    public static final int VERSION_BIT_SHIFT = 24;
+    private final static int VERSION_BIT_SHIFT = 24;
+
+    private final static long MASK_08 = 0xFF;
+    private final static long MASK_16 = 0xFFFF;
+    private final static long MASK_24 = 0xFFFFFF;
 
     /**
      * Area number (defined as UShort by the MAL).
@@ -61,9 +62,7 @@ public class TypeId {
      */
     private final short sfp;
 
-    private final static long MASK_08 = 0xFF;
-    private final static long MASK_16 = 0xFFFF;
-    private final static long MASK_24 = 0xFFFFFF;
+    private Long typeId = null;
 
     /**
      * Constructor.
@@ -71,6 +70,7 @@ public class TypeId {
      * @param typeId The TypeId of the type.
      */
     public TypeId(final Long typeId) {
+        this.typeId = typeId;
         this.areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & MASK_16);
         this.areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & MASK_08);
         this.serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & MASK_16);
@@ -163,6 +163,10 @@ public class TypeId {
      * @return The long value of this TypeId.
      */
     public long getTypeId() {
+        if (typeId != null) {
+            return typeId;
+        }
+
         long asf = ((long) areaNumber) << AREA_BIT_SHIFT;
         asf += ((long) areaVersion) << VERSION_BIT_SHIFT;
 
@@ -176,12 +180,13 @@ public class TypeId {
             asf += Long.parseLong(Integer.toHexString(sfp).toUpperCase().substring(2), 16);
         }
 
-        return asf;
+        typeId = asf;
+        return typeId;
     }
 
     public TypeId generateTypeIdPositive() {
         int newSPF = (sfp > 0) ? sfp : (-1) * sfp;
-        return  new TypeId(areaNumber, areaVersion, serviceNumber, newSPF);
+        return new TypeId(areaNumber, areaVersion, serviceNumber, newSPF);
     }
 
     @Override
