@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.provider.generic;
+package esa.mo.provider;
 
 import esa.mo.common.impl.provider.DirectoryProviderServiceImpl;
 import java.util.logging.Level;

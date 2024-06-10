@@ -48,7 +48,7 @@ public class OrderManagementConsumerServiceImpl extends ConsumerServiceImpl {
             final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
         this.connectionDetails = connectionDetails;
 
-        // Close old connection
+        // Close previous connection
         if (tmConsumer != null) {
             try {
                 tmConsumer.close();

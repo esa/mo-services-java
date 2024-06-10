@@ -49,7 +49,7 @@ public class ProductOrderDeliveryConsumerServiceImpl extends ConsumerServiceImpl
             throws MALException, MalformedURLException, MALInteractionException {
         this.connectionDetails = connectionDetails;
 
-        // Close old connection
+        // Close previous connection
         if (tmConsumer != null) {
             try {
                 tmConsumer.close();

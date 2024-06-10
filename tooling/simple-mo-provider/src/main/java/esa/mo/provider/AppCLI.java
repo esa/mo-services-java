@@ -18,9 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.start;
-
-import esa.mo.provider.generic.MOSimpleProvider;
+package esa.mo.provider;
 
 /**
  *
