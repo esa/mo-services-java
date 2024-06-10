@@ -28,10 +28,8 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 
 /**
- * The implementation of the NanoSat MO Monolithic that can be extended by
- * particular implementations.
- *
- * @author Cesar Coelho
+ * The MOSimpleProvider class contains a provider with a Directory service and
+ * a few other services.
  */
 public class MOSimpleProvider {
 
