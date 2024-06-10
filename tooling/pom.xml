@@ -67,6 +67,7 @@
 
     <modules>
         <module>simple-mo-provider</module>
+        <module>simple-mo-consumer</module>
         <module>basic-demo</module>
         <module>encoding-performance-test</module>
         <module>transport-bridge</module>
