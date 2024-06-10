@@ -21,7 +21,6 @@
 package esa.mo.services.mpd.util;
 
 import esa.mo.services.mpd.consumer.OrderManagementConsumerServiceImpl;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -51,7 +50,7 @@ public class MPDServicesConsumer {
             if (details != null) {
                 orderManagementService = new OrderManagementConsumerServiceImpl(details, authenticationId, localNamePrefix);
             }
-        } catch (MALException | MALInteractionException | MalformedURLException ex) {
+        } catch (MALException | MALInteractionException ex) {
             Logger.getLogger(MPDServicesConsumer.class.getName()).log(Level.SEVERE, null, ex);
         }
 

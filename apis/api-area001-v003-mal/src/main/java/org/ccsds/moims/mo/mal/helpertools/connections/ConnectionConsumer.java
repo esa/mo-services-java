@@ -120,12 +120,9 @@ public class ConnectionConsumer {
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
-     * @throws java.net.MalformedURLException when the MALconsumer is not
-     * initialized correctly
      */
     public MALConsumer startService(final URI uriP, final URI uriB,
-            final IdentifierList domain, final ServiceInfo malService)
-            throws MALException, MalformedURLException {
+            final IdentifierList domain, final ServiceInfo malService) throws MALException {
         this.startMAL();
         return this.createMALconsumer(uriP, uriB, domain, malService);
     }
@@ -143,12 +140,9 @@ public class ConnectionConsumer {
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
-     * @throws java.net.MalformedURLException when the MALconsumer is not
-     * initialized correctly
      */
     public MALConsumer startService(final URI uriP, final URI uriB, final IdentifierList domain,
-            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
-            MalformedURLException {
+            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException {
         this.startMAL();
         return this.createMALconsumer(uriP, uriB, domain, malService, authenticationId, localNamePrefix);
     }
@@ -164,12 +158,9 @@ public class ConnectionConsumer {
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
-     * @throws java.net.MalformedURLException when the MALconsumer is not
-     * initialized correctly
      */
     public MALConsumer startService(final SingleConnectionDetails connectionDetails,
-            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
-            MalformedURLException {
+            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException {
         return startService(connectionDetails.getProviderURI(), connectionDetails.getBrokerURI(),
                 connectionDetails.getDomain(), malService, authenticationId, localNamePrefix);
     }
@@ -184,12 +175,9 @@ public class ConnectionConsumer {
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
-     * @throws java.net.MalformedURLException when the MALconsumer is not
-     * initialized correctly
      */
-    public MALConsumer createMALconsumer(final URI uriP, final URI uriB, final IdentifierList domain,
-            final ServiceInfo malService) throws MALException, MalformedURLException {
-
+    public MALConsumer createMALconsumer(final URI uriP, final URI uriB,
+            final IdentifierList domain, final ServiceInfo malService) throws MALException {
         return createMALconsumer(uriP, uriB, domain, malService, null, null);
     }
 
@@ -205,13 +193,9 @@ public class ConnectionConsumer {
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
-     * @throws java.net.MalformedURLException when the MALconsumer is not
-     * initialized correctly
      */
     public MALConsumer createMALconsumer(final URI uriP, final URI uriB, final IdentifierList domain,
-            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
-            MalformedURLException {
-
+            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException {
         Properties props = new Properties();
         props.putAll(System.getProperties());
 
@@ -246,12 +230,10 @@ public class ConnectionConsumer {
      * @return The MALConsumer
      * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
      * the initialization of the MAL
-     * @throws java.net.MalformedURLException when the MALconsumer is not
-     * initialized correctly
      */
     public MALConsumer startService(final URI uriP, final URI uriB, final IdentifierList domain,
             final QoSLevelList qosLevels, final UInteger priorityLevels, final ServiceInfo malService,
-            final Blob authenticationId, final String localNamePrefix) throws MALException, MalformedURLException {
+            final Blob authenticationId, final String localNamePrefix) throws MALException {
 
         this.startMAL();
         QoSLevel qosLevel = QoSLevel.BESTEFFORT;  // Worst case scenario

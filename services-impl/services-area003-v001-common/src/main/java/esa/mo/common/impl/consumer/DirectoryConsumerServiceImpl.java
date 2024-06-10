@@ -20,7 +20,6 @@
  */
 package esa.mo.common.impl.consumer;
 
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
@@ -43,13 +42,13 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
 
     private DirectoryStub directoryService = null;
 
-    public DirectoryConsumerServiceImpl(final URI providerURI) throws MALException, MalformedURLException,
-            MALInteractionException {
+    public DirectoryConsumerServiceImpl(final URI providerURI)
+            throws MALException, MALInteractionException {
         this(providerURI, null, null);
     }
 
     public DirectoryConsumerServiceImpl(final URI providerURI, final Blob authenticationId,
-            final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
+            final String localNamePrefix) throws MALException, MALInteractionException {
         this.connectionDetails = null;
         this.providerURI = providerURI;
 
@@ -58,15 +57,16 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
             try {
                 tmConsumer.close();
             } catch (MALException ex) {
-                Logger.getLogger(DirectoryConsumerServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DirectoryConsumerServiceImpl.class.getName()).log(
+                        Level.SEVERE, "The previous connection could not be closed!", ex);
             }
         }
 
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
 
-        tmConsumer = connection.startService(providerURI, null, domain, DirectoryHelper.DIRECTORY_SERVICE,
-                authenticationId, localNamePrefix);
+        tmConsumer = connection.startService(providerURI, null, domain,
+                DirectoryHelper.DIRECTORY_SERVICE, authenticationId, localNamePrefix);
 
         this.directoryService = new DirectoryStub(tmConsumer);
     }

@@ -20,7 +20,6 @@
  */
 package esa.mo.services.mpd.consumer;
 
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -40,13 +39,13 @@ public class ProductOrderDeliveryConsumerServiceImpl extends ConsumerServiceImpl
     private ProductOrderDeliveryStub productOrderDeliveryService = null;
 
     public ProductOrderDeliveryConsumerServiceImpl(final SingleConnectionDetails connectionDetails)
-            throws MALException, MalformedURLException, MALInteractionException {
+            throws MALException, MALInteractionException {
         this(connectionDetails, null, null);
     }
 
     public ProductOrderDeliveryConsumerServiceImpl(final SingleConnectionDetails connectionDetails,
             final Blob authenticationId, final String localNamePrefix)
-            throws MALException, MalformedURLException, MALInteractionException {
+            throws MALException, MALInteractionException {
         this.connectionDetails = connectionDetails;
 
         // Close previous connection

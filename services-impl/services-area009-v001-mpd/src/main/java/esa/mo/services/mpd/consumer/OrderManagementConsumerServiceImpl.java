@@ -40,12 +40,12 @@ public class OrderManagementConsumerServiceImpl extends ConsumerServiceImpl {
     private OrderManagementStub orderManagementService = null;
 
     public OrderManagementConsumerServiceImpl(final SingleConnectionDetails connectionDetails)
-            throws MALException, MalformedURLException, MALInteractionException {
+            throws MALException, MALInteractionException {
         this(connectionDetails, null, null);
     }
 
-    public OrderManagementConsumerServiceImpl(final SingleConnectionDetails connectionDetails, final Blob authenticationId,
-            final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
+    public OrderManagementConsumerServiceImpl(final SingleConnectionDetails connectionDetails,
+            final Blob authenticationId, final String localNamePrefix) throws MALException, MALInteractionException {
         this.connectionDetails = connectionDetails;
 
         // Close previous connection

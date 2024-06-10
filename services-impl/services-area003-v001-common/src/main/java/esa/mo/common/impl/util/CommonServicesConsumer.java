@@ -52,7 +52,7 @@ public class CommonServicesConsumer {
                 directoryService = new DirectoryConsumerServiceImpl(details.getProviderURI(), authenticationId,
                         localNamePrefix);
             }
-        } catch (MALException | MALInteractionException | MalformedURLException ex) {
+        } catch (MALException | MALInteractionException ex) {
             Logger.getLogger(CommonServicesConsumer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
