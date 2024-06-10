@@ -21,6 +21,7 @@
 package esa.mo.provider;
 
 import esa.mo.common.impl.provider.DirectoryProviderServiceImpl;
+import esa.mo.services.mpd.util.MPDServicesProvider;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -28,8 +29,8 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 
 /**
- * The MOSimpleProvider class contains a provider with a Directory service and
- * a few other services.
+ * The MOSimpleProvider class contains a provider with a Directory service and a
+ * few other services.
  */
 public class MOSimpleProvider {
 
@@ -37,15 +38,12 @@ public class MOSimpleProvider {
     private final static String PROVIDER_NAME = "Simple MO Provider";
 
     private final DirectoryProviderServiceImpl directoryService = new DirectoryProviderServiceImpl();
+    private final MPDServicesProvider mpdServices = new MPDServicesProvider();
 
     private long startTime;
 
     /**
-     * Initializes the MO Simple Provider. The MonitorAndControlAdapter adapter
-     * class can be extended for remote monitoring and control with the CCSDS
-     * Monitor and Control services. One can also extend the
-     * SimpleMonitorAndControlAdapter class which contains a simpler interface.
-     *
+     * Initializes the MO Simple Provider.
      */
     public void init() {
         this.startTime = System.currentTimeMillis();
@@ -59,6 +57,7 @@ public class MOSimpleProvider {
                     "Initializing services...");
 
             directoryService.init();
+            mpdServices.init();
         } catch (MALException ex) {
             Logger.getLogger(MOSimpleProvider.class.getName()).log(Level.SEVERE,
                     "The services could not be initialized. Perhaps there's "

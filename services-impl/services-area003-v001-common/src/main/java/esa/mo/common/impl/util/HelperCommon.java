@@ -55,7 +55,6 @@ public class HelperCommon {
      */
     public static ConnectionConsumer providerSummaryToConnectionConsumer(ProviderSummary provider) {
         final ConnectionConsumer connection = new ConnectionConsumer();
-
         final ServicesConnectionDetails serviceDetails = new ServicesConnectionDetails();
         final HashMap<String, SingleConnectionDetails> services = new HashMap<>();
 
@@ -87,8 +86,8 @@ public class HelperCommon {
             if (malArea == null) {
                 Logger.getLogger(HelperCommon.class.getName()).log(Level.WARNING,
                         "The service could not be found in the MAL factory. "
-                        + "Maybe the Helper for that service was not initialized. " + "The service key is: " + key
-                                .toString());
+                        + "Maybe the Helper for that service was not initialized. "
+                        + "The service key is: " + key.toString());
                 continue;
             }
 
@@ -97,8 +96,8 @@ public class HelperCommon {
             if (malService == null) {
                 Logger.getLogger(HelperCommon.class.getName()).log(Level.WARNING,
                         "The service could not be found in the MAL factory. "
-                        + "Maybe the Helper for that service was not initialized. " + "The service key is: " + key
-                                .toString());
+                        + "Maybe the Helper for that service was not initialized. "
+                        + "The service key is: " + key.toString());
                 continue;
             }
 

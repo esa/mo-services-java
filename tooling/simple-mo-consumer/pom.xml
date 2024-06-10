@@ -51,6 +51,11 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>services-area009-v001-mpd</artifactId>
+            <version>11.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>mal-impl</artifactId>
         </dependency>
         <dependency>

@@ -21,6 +21,8 @@
 package esa.mo.services.mpd.util;
 
 import esa.mo.services.mpd.provider.OrderManagementProviderServiceImpl;
+import esa.mo.services.mpd.provider.ProductOrderDeliveryProviderServiceImpl;
+import esa.mo.services.mpd.provider.ProductRetrievalProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -29,12 +31,24 @@ import org.ccsds.moims.mo.mal.MALException;
 public class MPDServicesProvider {
 
     private final OrderManagementProviderServiceImpl orderManagementService = new OrderManagementProviderServiceImpl();
+    private final ProductOrderDeliveryProviderServiceImpl productOrderDeliveryService = new ProductOrderDeliveryProviderServiceImpl();
+    private final ProductRetrievalProviderServiceImpl productRetrievalService = new ProductRetrievalProviderServiceImpl();
 
     public void init() throws MALException {
         orderManagementService.init();
+        productOrderDeliveryService.init();
+        productRetrievalService.init();
     }
 
     public OrderManagementProviderServiceImpl getOrderManagementService() {
         return this.orderManagementService;
+    }
+
+    public ProductOrderDeliveryProviderServiceImpl getProductOrderDeliveryService() {
+        return this.productOrderDeliveryService;
+    }
+
+    public ProductRetrievalProviderServiceImpl getProductRetrievalService() {
+        return this.productRetrievalService;
     }
 }

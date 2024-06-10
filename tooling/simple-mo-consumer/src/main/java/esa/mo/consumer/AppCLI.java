@@ -20,12 +20,16 @@
  */
 package esa.mo.consumer;
 
+import esa.mo.services.mpd.consumer.OrderManagementConsumerServiceImpl;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
+import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 
 /**
  *
@@ -41,9 +45,18 @@ public class AppCLI {
     public static void main(String[] args) {
         String providerURI = "maltcp://10.36.181.167:1024/Directory";
         MOSimpleConsumer consumer = new MOSimpleConsumer();
-        
+
         try {
             consumer.init(new URI(providerURI));
+
+            OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
+
+            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
+                    DeliveryMethodEnum.SERVICE, "A comment");
+            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
+
+            Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE,
+                    "The returned Identifier is: {0}", id.getValue());
         } catch (MALException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {

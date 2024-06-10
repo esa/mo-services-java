@@ -21,6 +21,8 @@
 package esa.mo.services.mpd.util;
 
 import esa.mo.services.mpd.consumer.OrderManagementConsumerServiceImpl;
+import esa.mo.services.mpd.consumer.ProductOrderDeliveryConsumerServiceImpl;
+import esa.mo.services.mpd.consumer.ProductRetrievalConsumerServiceImpl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
@@ -29,6 +31,8 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo;
+import org.ccsds.moims.mo.mpd.productorderdelivery.ProductOrderDeliveryServiceInfo;
+import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo;
 
 /**
  * The MPD services consumer class that contains all the consumer services.
@@ -36,6 +40,8 @@ import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo;
 public class MPDServicesConsumer {
 
     private OrderManagementConsumerServiceImpl orderManagementService;
+    private ProductOrderDeliveryConsumerServiceImpl productOrderDeliveryService;
+    private ProductRetrievalConsumerServiceImpl productRetrievalService;
 
     public void init(ConnectionConsumer connectionConsumer) {
         init(connectionConsumer, null, null);
@@ -50,6 +56,18 @@ public class MPDServicesConsumer {
             if (details != null) {
                 orderManagementService = new OrderManagementConsumerServiceImpl(details, authenticationId, localNamePrefix);
             }
+
+            // Initialize the Product Order Delivery service
+            details = connectionConsumer.getServicesDetails().get(ProductOrderDeliveryServiceInfo.PRODUCTORDERDELIVERY_SERVICE_NAME);
+            if (details != null) {
+                productOrderDeliveryService = new ProductOrderDeliveryConsumerServiceImpl(details, authenticationId, localNamePrefix);
+            }
+
+            // Initialize the Product Retrieval service
+            details = connectionConsumer.getServicesDetails().get(ProductRetrievalServiceInfo.PRODUCTRETRIEVAL_SERVICE_NAME);
+            if (details != null) {
+                productRetrievalService = new ProductRetrievalConsumerServiceImpl(details, authenticationId, localNamePrefix);
+            }
         } catch (MALException | MALInteractionException ex) {
             Logger.getLogger(MPDServicesConsumer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -60,6 +78,14 @@ public class MPDServicesConsumer {
         return this.orderManagementService;
     }
 
+    public ProductOrderDeliveryConsumerServiceImpl getProductOrderDeliveryService() {
+        return this.productOrderDeliveryService;
+    }
+
+    public ProductRetrievalConsumerServiceImpl getProductRetrievalService() {
+        return this.productRetrievalService;
+    }
+
     /**
      * Closes the service consumer connections
      *
@@ -68,11 +94,23 @@ public class MPDServicesConsumer {
         if (this.orderManagementService != null) {
             this.orderManagementService.closeConnection();
         }
+        if (this.productOrderDeliveryService != null) {
+            this.productOrderDeliveryService.closeConnection();
+        }
+        if (this.productRetrievalService != null) {
+            this.productRetrievalService.closeConnection();
+        }
     }
 
     public void setAuthenticationId(Blob authenticationId) {
         if (this.orderManagementService != null) {
             this.orderManagementService.setAuthenticationId(authenticationId);
+        }
+        if (this.productOrderDeliveryService != null) {
+            this.productOrderDeliveryService.setAuthenticationId(authenticationId);
+        }
+        if (this.productRetrievalService != null) {
+            this.productRetrievalService.setAuthenticationId(authenticationId);
         }
     }
 }
