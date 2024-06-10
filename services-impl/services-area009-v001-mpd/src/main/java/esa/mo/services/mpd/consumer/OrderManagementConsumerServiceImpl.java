@@ -26,11 +26,9 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementHelper;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 
@@ -39,40 +37,31 @@ import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
  */
 public class OrderManagementConsumerServiceImpl extends ConsumerServiceImpl {
 
-    private final URI providerURI;
-
     private OrderManagementStub orderManagementService = null;
 
-    public OrderManagementConsumerServiceImpl(final URI providerURI)
+    public OrderManagementConsumerServiceImpl(final SingleConnectionDetails connectionDetails)
             throws MALException, MalformedURLException, MALInteractionException {
-        this(providerURI, null, null);
+        this(connectionDetails, null, null);
     }
 
-    public OrderManagementConsumerServiceImpl(final URI providerURI, final Blob authenticationId,
+    public OrderManagementConsumerServiceImpl(final SingleConnectionDetails connectionDetails, final Blob authenticationId,
             final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
-        this.connectionDetails = null;
-        this.providerURI = providerURI;
+        this.connectionDetails = connectionDetails;
 
         // Close old connection
         if (tmConsumer != null) {
             try {
                 tmConsumer.close();
             } catch (MALException ex) {
-                Logger.getLogger(OrderManagementConsumerServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OrderManagementConsumerServiceImpl.class.getName()).log(
+                        Level.SEVERE, "The previous connection could not be closed!", ex);
             }
         }
 
-        IdentifierList domain = new IdentifierList();
-        domain.add(new Identifier("*"));
-
-        tmConsumer = connection.startService(providerURI, null, domain,
+        tmConsumer = connection.startService(connectionDetails,
                 OrderManagementHelper.ORDERMANAGEMENT_SERVICE, authenticationId, localNamePrefix);
 
         this.orderManagementService = new OrderManagementStub(tmConsumer);
-    }
-
-    public URI getProviderURI() {
-        return this.providerURI;
     }
 
     @Override

@@ -49,8 +49,7 @@ public class MPDServicesConsumer {
             // Initialize the Order Management service
             details = connectionConsumer.getServicesDetails().get(OrderManagementServiceInfo.ORDERMANAGEMENT_SERVICE_NAME);
             if (details != null) {
-                orderManagementService = new OrderManagementConsumerServiceImpl(details.getProviderURI(), authenticationId,
-                        localNamePrefix);
+                orderManagementService = new OrderManagementConsumerServiceImpl(details, authenticationId, localNamePrefix);
             }
         } catch (MALException | MALInteractionException | MalformedURLException ex) {
             Logger.getLogger(MPDServicesConsumer.class.getName()).log(Level.SEVERE, null, ex);
@@ -60,14 +59,6 @@ public class MPDServicesConsumer {
 
     public OrderManagementConsumerServiceImpl getOrderManagementService() {
         return this.orderManagementService;
-    }
-
-    public void setServices(OrderManagementConsumerServiceImpl orderManagementService) {
-        this.orderManagementService = orderManagementService;
-    }
-
-    public void setDirectoryService(OrderManagementConsumerServiceImpl orderManagementService) {
-        this.orderManagementService = orderManagementService;
     }
 
     /**

@@ -154,6 +154,27 @@ public class ConnectionConsumer {
     }
 
     /**
+     * Starts the MALConsumer and creates the MAL consumer for the provided
+     * URIs, domain and authenticationId.
+     *
+     * @param connectionDetails The connection details
+     * @param malService Definition of the consumed service
+     * @param authenticationId authenticationId of the logged in user
+     * @param localNamePrefix the prefix for the local name of the consumer
+     * @return The MALConsumer
+     * @throws org.ccsds.moims.mo.mal.MALException when there's an error during
+     * the initialization of the MAL
+     * @throws java.net.MalformedURLException when the MALconsumer is not
+     * initialized correctly
+     */
+    public MALConsumer startService(final SingleConnectionDetails connectionDetails,
+            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException,
+            MalformedURLException {
+        return startService(connectionDetails.getProviderURI(), connectionDetails.getBrokerURI(),
+                connectionDetails.getDomain(), malService, authenticationId, localNamePrefix);
+    }
+
+    /**
      * Creates the MAL consumer for the provided URIs and domain.
      *
      * @param uriP The service provider URI

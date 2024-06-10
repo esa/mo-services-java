@@ -26,11 +26,9 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.productorderdelivery.ProductOrderDeliveryHelper;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
 
@@ -39,40 +37,32 @@ import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDelivery
  */
 public class ProductOrderDeliveryConsumerServiceImpl extends ConsumerServiceImpl {
 
-    private final URI providerURI;
-
     private ProductOrderDeliveryStub productOrderDeliveryService = null;
 
-    public ProductOrderDeliveryConsumerServiceImpl(final URI providerURI)
+    public ProductOrderDeliveryConsumerServiceImpl(final SingleConnectionDetails connectionDetails)
             throws MALException, MalformedURLException, MALInteractionException {
-        this(providerURI, null, null);
+        this(connectionDetails, null, null);
     }
 
-    public ProductOrderDeliveryConsumerServiceImpl(final URI providerURI, final Blob authenticationId,
-            final String localNamePrefix) throws MALException, MalformedURLException, MALInteractionException {
-        this.connectionDetails = null;
-        this.providerURI = providerURI;
+    public ProductOrderDeliveryConsumerServiceImpl(final SingleConnectionDetails connectionDetails,
+            final Blob authenticationId, final String localNamePrefix)
+            throws MALException, MalformedURLException, MALInteractionException {
+        this.connectionDetails = connectionDetails;
 
         // Close old connection
         if (tmConsumer != null) {
             try {
                 tmConsumer.close();
             } catch (MALException ex) {
-                Logger.getLogger(ProductOrderDeliveryConsumerServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProductOrderDeliveryConsumerServiceImpl.class.getName()).log(
+                        Level.SEVERE, "The previous connection could not be closed!", ex);
             }
         }
 
-        IdentifierList domain = new IdentifierList();
-        domain.add(new Identifier("*"));
-
-        tmConsumer = connection.startService(providerURI, null, domain,
+        tmConsumer = connection.startService(connectionDetails,
                 ProductOrderDeliveryHelper.PRODUCTORDERDELIVERY_SERVICE, authenticationId, localNamePrefix);
 
         this.productOrderDeliveryService = new ProductOrderDeliveryStub(tmConsumer);
-    }
-
-    public URI getProviderURI() {
-        return this.providerURI;
     }
 
     @Override
