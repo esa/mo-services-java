@@ -139,9 +139,8 @@ public class Blob implements Attribute {
      * byte array is modified then the Blob behaviour is unspecified.
      *
      * @return The Blob value as a byte array.
-     * @throws MALException if an internal error occurs.
      */
-    public byte[] getValue() throws MALException {
+    public byte[] getValue() {
         if (isURLBased()) {
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
 
@@ -232,11 +231,7 @@ public class Blob implements Attribute {
 
         final Blob other = (Blob) obj;
         if ((null != uvalue) || (null != other.uvalue)) {
-            try {
-                return Arrays.equals(this.getValue(), other.getValue());
-            } catch (MALException ex) {
-                return false;
-            }
+            return Arrays.equals(this.getValue(), other.getValue());
         }
 
         return Arrays.equals(this.value, other.value);

@@ -32,7 +32,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
@@ -261,10 +260,7 @@ public class HelperAttributes {
         }
 
         if (in instanceof Blob) {
-            try {
-                return Arrays.toString(((Blob) in).getValue());
-            } catch (MALException ex) {
-            }
+            return Arrays.toString(((Blob) in).getValue());
         }
 
         if (in instanceof ULong) {
@@ -817,9 +813,6 @@ public class HelperAttributes {
                     // ignore close exception
                 }
             }
-        } catch (MALException ex) {
-            Logger.getLogger(HelperAttributes.class.getName()).log(Level.SEVERE, null, ex);
-            return obj; // the object could not be Deserialized, so, just deliver the Blob itself
         } finally {
             try {
                 bis.close();

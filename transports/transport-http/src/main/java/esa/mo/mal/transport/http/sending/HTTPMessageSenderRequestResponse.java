@@ -160,12 +160,8 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      */
     protected void setResponseHeaders(MALMessageHeader malMessageHeader,
             IHttpResponse httpResponse) throws IOException {
-        try {
-            httpResponse.setResponseHeader("X-MAL-Authentication-Id",
-                    HTTPTransport.byteArrayToHexString(malMessageHeader.getAuthenticationId().getValue()));
-        } catch (MALException ex) {
-            throw new IOException("MALException", ex);
-        }
+        httpResponse.setResponseHeader("X-MAL-Authentication-Id",
+                HTTPTransport.byteArrayToHexString(malMessageHeader.getAuthenticationId().getValue()));
 
         try {
             URI from = new URI(malMessageHeader.getFrom().getValue());

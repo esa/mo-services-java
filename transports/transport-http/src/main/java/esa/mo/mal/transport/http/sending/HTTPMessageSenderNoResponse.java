@@ -103,12 +103,8 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
      */
     @Override
     public void setRequestHeaders(MALMessageHeader malMessageHeader, IPostClient client) throws IOException {
-        try {
-            client.setRequestHeader("X-MAL-Authentication-Id",
-                    HTTPTransport.byteArrayToHexString(malMessageHeader.getAuthenticationId().getValue()));
-        } catch (MALException ex) {
-            throw new IOException("MALException", ex);
-        }
+        client.setRequestHeader("X-MAL-Authentication-Id",
+                HTTPTransport.byteArrayToHexString(malMessageHeader.getAuthenticationId().getValue()));
 
         try {
             URI uriFrom = new URI(malMessageHeader.getFrom().getValue());

@@ -29,9 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -48,8 +46,6 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
-
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 public class SupplementsEncoder {
 
@@ -138,12 +134,7 @@ public class SupplementsEncoder {
         }
 
         if (value instanceof Blob) {
-            try {
-                return new String(((Blob) value).getValue(), UTF8_CHARSET);
-            } catch (MALException e) {
-                RLOGGER.log(Level.WARNING, e.getMessage(), e);
-                return null;
-            }
+            return new String(((Blob) value).getValue(), UTF8_CHARSET);
         }
 
         if (value instanceof ULong) {
