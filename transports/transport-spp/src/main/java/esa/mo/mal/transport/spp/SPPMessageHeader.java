@@ -82,7 +82,7 @@ public class SPPMessageHeader extends MALMessageHeader {
      * Constructor.
      *
      * @param secondaryDecoder The secondary stream factory to encode.
-     * @param configuration
+     * @param configuration The SPP configuration object.
      * @param forceTC Should the SPP TC field value be forced. Used in TC to TC
      * situations.
      * @param primaryApidQualifier The APID qualifier to use for the one that

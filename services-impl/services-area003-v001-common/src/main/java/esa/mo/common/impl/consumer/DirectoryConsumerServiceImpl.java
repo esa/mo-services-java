@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
 import org.ccsds.moims.mo.common.directory.consumer.DirectoryStub;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -42,13 +41,12 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
 
     private DirectoryStub directoryService = null;
 
-    public DirectoryConsumerServiceImpl(final URI providerURI)
-            throws MALException, MALInteractionException {
+    public DirectoryConsumerServiceImpl(final URI providerURI) throws MALException {
         this(providerURI, null, null);
     }
 
     public DirectoryConsumerServiceImpl(final URI providerURI, final Blob authenticationId,
-            final String localNamePrefix) throws MALException, MALInteractionException {
+            final String localNamePrefix) throws MALException {
         this.connectionDetails = null;
         this.providerURI = providerURI;
 

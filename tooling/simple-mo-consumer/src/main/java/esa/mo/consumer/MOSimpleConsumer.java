@@ -57,10 +57,10 @@ public class MOSimpleConsumer {
      * @param providerURI The URI of the provider to connect to.
      * @throws org.ccsds.moims.mo.mal.MALException if the service could not be
      * started.
-     * @throws java.net.MalformedURLException
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException
+     * @throws java.net.MalformedURLException if the consumer properties file
+     * could not be loaded.
      */
-    public void init(URI providerURI) throws MALException, MalformedURLException, MALInteractionException {
+    public void init(URI providerURI) throws MALException, MalformedURLException {
         try {
             HelperMisc.loadConsumerProperties();
         } catch (MalformedURLException ex) {
