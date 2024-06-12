@@ -4,8 +4,12 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 11.0 (2024)
+### Version 11.0 (2024 June)
 * Updates all the API artifactIds to include the area number and area version
+* Replaces the auto-generated getShortForm() and getTypeShortForm(), with getTypeId()
+* Adds a simple Directory service implementation
+* Adds the boilerplate code for the MPD services
+* Adds a Simple MO Provider project and a Simple MO Consumer project
 
 ### Version 10.1 (2024 May 17)
 * Updates all the xml files for their respective latest updates
