@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
@@ -132,7 +133,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
         MALBrokerBinding sharedBrokerBinding = brokerManager.createBrokerBinding(
                 broker, brokerName, protocol,
                 Configuration.DEFAULT_SHARED_BROKER_AUTHENTICATION_ID,
-                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), properties);
+                new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), properties, new NamedValueList());
         FileBasedDirectory.storeURI(brokerName, sharedBrokerBinding.getURI(),
                 sharedBrokerBinding.getURI());
         return sharedBrokerBinding;
@@ -155,7 +156,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 handler, new QoSLevel[]{QoSLevel.ASSURED},
                 new UInteger(1),
                 properties, Boolean.TRUE,
-                sharedBrokerUri);
+                sharedBrokerUri, new NamedValueList());
         FileBasedDirectory.storeURI(providerName,
                 provider.getURI(),
                 provider.getBrokerURI());
@@ -177,7 +178,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 .createProvider(providerName, protocol, IPTestHelper.IPTEST_SERVICE,
                         IP_TEST_AUTHENTICATION_ID, handler,
                         new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), properties,
-                        Boolean.TRUE, sharedBrokerUri);
+                        Boolean.TRUE, sharedBrokerUri, new NamedValueList());
         FileBasedDirectory.storeURI(providerName,
                 provider.getURI(),
                 provider.getBrokerURI());
@@ -200,7 +201,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 handler, new QoSLevel[]{QoSLevel.ASSURED},
                 new UInteger(1),
                 properties, Boolean.TRUE,
-                sharedBrokerUri);
+                sharedBrokerUri, new NamedValueList());
         FileBasedDirectory.storeURI(providerName,
                 provider.getURI(),
                 provider.getBrokerURI());
@@ -239,7 +240,7 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 TM_IP_TEST_PROVIDER_NAME, protocol, IPTestHelper.IPTEST_SERVICE,
                 IP_TEST_AUTHENTICATION_ID, iphandler,
                 new QoSLevel[]{QoSLevel.ASSURED}, new UInteger(1), tmProviderProps,
-                Boolean.TRUE, null);
+                Boolean.TRUE, null, new NamedValueList());
         FileBasedDirectory.storeURI(TM_IP_TEST_PROVIDER_NAME,
                 tmPacketIpProvider.getURI(), tmPacketIpProvider.getBrokerURI());
 
@@ -274,7 +275,8 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 new UInteger(1), // number of priority levels
                 null,
                 Boolean.FALSE, // isPublisher
-                null);
+                null,
+                new NamedValueList());
 
         Map<Object, Object> segmentationErrorProps = new HashMap<Object, Object>();
         segmentationErrorProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_REMOTE_APID_QUALIFIER);
@@ -299,7 +301,8 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 new UInteger(1), // number of priority levels
                 segmentationErrorProps,
                 Boolean.FALSE, // isPublisher
-                null);
+                null,
+                new NamedValueList());
 
         Map<Object, Object> segmentationCounterSelectProps = new HashMap<Object, Object>();
         segmentationCounterSelectProps.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_COUNTER_SELECT_REMOTE_APID_QUALIFIER);
@@ -318,7 +321,8 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 new UInteger(1), // number of priority levels
                 segmentationCounterSelectProps,
                 Boolean.FALSE, // isPublisher
-                null);
+                null,
+                new NamedValueList());
 
         FileBasedDirectory.storeURI(SEGMENTATION_TEST_PROVIDER_NAME,
                 segmentationTestProvider.getURI(), segmentationTestProvider.getBrokerURI());
@@ -341,7 +345,8 @@ public class TestServiceProvider extends org.ccsds.moims.mo.mal.test.suite.TestS
                 new UInteger(1),
                 tmProviderProps,
                 Boolean.FALSE,
-                null);
+                null,
+                new NamedValueList());
 
         FileBasedDirectory.storeURI(DATA_TEST_NO_VARINT_PROVIDER_NAME,
                 dataTestProviderNoVarint.getURI(),

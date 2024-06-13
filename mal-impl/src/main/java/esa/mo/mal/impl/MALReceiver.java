@@ -255,7 +255,7 @@ public class MALReceiver implements MALMessageListener {
      * @param address Endpoint address
      */
     public void addProviderEndpoint(final String localURI,
-            final MALService service, final Address address) {
+            final ServiceInfo service, final Address address) {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (!providerEndpointMap.containsKey(key)) {
@@ -271,7 +271,7 @@ public class MALReceiver implements MALMessageListener {
      * @param localURI Local URI
      * @param service Endpoint Service
      */
-    public void removeProviderEndpoint(final String localURI, final MALService service) {
+    public void removeProviderEndpoint(final String localURI, final ServiceInfo service) {
         final EndPointPair key = new EndPointPair(localURI, service);
 
         if (providerEndpointMap.containsKey(key)) {
@@ -635,7 +635,7 @@ public class MALReceiver implements MALMessageListener {
         private final String first;
         private final Long second;
 
-        protected EndPointPair(final String localURI, final MALService service) {
+        protected EndPointPair(final String localURI, final ServiceInfo service) {
             first = localURI;
             if (service != null) {
                 second = (((long) service.getAreaNumber().getValue()) << 32) + ((long) service.getServiceNumber().getValue());

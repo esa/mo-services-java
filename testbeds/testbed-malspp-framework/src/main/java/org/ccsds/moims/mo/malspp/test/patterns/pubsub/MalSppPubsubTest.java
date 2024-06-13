@@ -57,6 +57,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
@@ -516,7 +517,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
                 = new TestPublishRegister(qos, HeaderTestProcedure.PRIORITY,
                         HeaderTestProcedure.getDomain(domain),
                         HeaderTestProcedure.NETWORK_ZONE, session, sessionName, true,
-                        keyNames, expectedErrorCode);
+                        keyNames, new AttributeTypeList(), expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
 
         // Register
@@ -559,9 +560,9 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
          */
         AttributeList keyValues = new AttributeList();
         if (mode.equalsIgnoreCase("abstract service-defined")) {
-            keyValues.add(OTHER_KEY_VALUE);
+            keyValues.add(new Union(OTHER_KEY_VALUE));
         } else if (mode.equalsIgnoreCase("abstract non-service defined")) {
-            keyValues.add(SPECIAL_KEY_VALUE);
+            keyValues.add(new Union(SPECIAL_KEY_VALUE));
         } else {
             logMessage("Unexpected Publish mode: " + mode);
             return false;
@@ -722,7 +723,8 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
             if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
                 return "destination unknown";
             } else {
-                return error.getErrorName().toString();
+                //return error.getErrorName().toString();
+                return error.toString();
             }
         }
         return "Not an error.";

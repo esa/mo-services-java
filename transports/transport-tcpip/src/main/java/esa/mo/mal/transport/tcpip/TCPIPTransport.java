@@ -764,10 +764,12 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
      * @return the random, host unique port number
      */
     private int getRandomClientPort() {
-        // By default the server ports will start on the 1024 range, So we can
-        // exclude the first 1000 range from being hit by nasty randomness
-        int min = 2024;
-        int max = 65536;
+        // https://en.wikipedia.org/wiki/Ephemeral_port
+        // https://www.rfc-editor.org/rfc/rfc6335.html
+        // The Dynamic Ports range, according to
+        // RFC 6335, are defined in the range: 49152-65535
+        int min = 49152;
+        int max = 65535;
         return new Random().nextInt(max - min) + min;
     }
 

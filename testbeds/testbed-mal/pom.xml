@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>10.1</version>
+        <version>11.0</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-mal</artifactId>
     <packaging>jar</packaging>
-    <version>10.1</version>
+    <version>11.0</version>
     <name>CCSDS MOIMS MO Testbed for MAL</name>
 
     <organization>
@@ -89,7 +89,7 @@
   
     <properties>
         <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
-        <esa.mal.test_api.version>10.1</esa.mal.test_api.version>
+        <esa.mal.test_api.version>11.0</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     </properties>
   
@@ -190,7 +190,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -224,7 +224,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -254,7 +254,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -342,7 +342,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -484,7 +484,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -537,7 +537,7 @@
                 <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/cnes-rmi</org.ccsds.moims.mo.testbed.local.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-rmi</org.ccsds.moims.mo.testbed.remote.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.classpath.filter>CNES</org.ccsds.moims.mo.testbed.remote.classpath.filter>
-                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:mal-impl:${esa.api.version},int.esa.ccsds.mo:api-mal:${esa.api.version},int.esa.ccsds.mo:api-mal_TEST:${esa.mal.test_api.version}</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:mal-impl:${esa.api.version},int.esa.ccsds.mo:api-area001-v003-mal:${esa.api.version},int.esa.ccsds.mo:api-mal_TEST:${esa.mal.test_api.version}</org.ccsds.moims.mo.testbed.remote.classpath.maven>
             </properties>
         </profile>
         <profile>
@@ -550,7 +550,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -625,7 +625,7 @@
                 <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/cnes-amqp</org.ccsds.moims.mo.testbed.local.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/esa-amqp</org.ccsds.moims.mo.testbed.remote.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.classpath.filter>CNES</org.ccsds.moims.mo.testbed.remote.classpath.filter>
-                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:mal-impl:${esa.api.version},int.esa.ccsds.mo:api-mal:${esa.api.version},int.esa.ccsds.mo:api-mal-test:${esa.mal.test_api.version},fr.cnes.malamqp:mal-amqp:${cnes.version},fr.cnes.maljoram:mal-joram-malencoding:${cnes.version},fr.cnes.maljoram:mal-joram-client:${cnes.version},fr.cnes.maljoram:mal-joram-remote:${cnes.version},fr.cnes.maljoram:mal-joram-mom:${cnes.version},fr.cnes.maljoram:mal-joram-encoding:${cnes.version},fr.cnes.maljoram:mal-joram-shared:${cnes.version},org.ow2.joram:joram-mom-amqp:${joram.version}</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:mal-impl:${esa.api.version},int.esa.ccsds.mo:api-area001-v003-mal:${esa.api.version},int.esa.ccsds.mo:api-mal-test:${esa.mal.test_api.version},fr.cnes.malamqp:mal-amqp:${cnes.version},fr.cnes.maljoram:mal-joram-malencoding:${cnes.version},fr.cnes.maljoram:mal-joram-client:${cnes.version},fr.cnes.maljoram:mal-joram-remote:${cnes.version},fr.cnes.maljoram:mal-joram-mom:${cnes.version},fr.cnes.maljoram:mal-joram-encoding:${cnes.version},fr.cnes.maljoram:mal-joram-shared:${cnes.version},org.ow2.joram:joram-mom-amqp:${joram.version}</org.ccsds.moims.mo.testbed.remote.classpath.maven>
             </properties>
         </profile>
         <profile>
@@ -638,7 +638,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -714,7 +714,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -751,7 +751,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -777,7 +777,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -803,7 +803,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -835,7 +835,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
@@ -871,7 +871,7 @@
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>

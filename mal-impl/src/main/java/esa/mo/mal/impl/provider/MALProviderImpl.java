@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -69,7 +69,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
             final MALContextImpl contextImpl,
             final String localName,
             final String protocol,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final MALInteractionHandler handler,
             final QoSLevel[] expectedQos,
@@ -136,7 +136,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     MALProviderImpl(final MALProviderManagerImpl parent,
             final MALContextImpl contextImpl,
             final MALEndpoint endPoint,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final MALInteractionHandler handler,
             final QoSLevel[] expectedQos,
@@ -188,7 +188,7 @@ public class MALProviderImpl extends ServiceComponentImpl implements MALProvider
     }
 
     @Override
-    public MALService getService() {
+    public ServiceInfo getService() {
         return service;
     }
 

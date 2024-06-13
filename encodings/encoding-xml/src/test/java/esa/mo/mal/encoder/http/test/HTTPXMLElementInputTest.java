@@ -5,19 +5,22 @@ package esa.mo.mal.encoder.http.test;
 
 import static org.junit.Assert.*;
 
+import esa.mo.mal.encoder.xml.XMLElementInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.ULong;
 import org.ccsds.moims.mo.mal.structures.UOctet;
@@ -27,8 +30,6 @@ import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import esa.mo.mal.encoder.xml.XMLElementInputStream;
 
 /**
  * @author rvangijlswijk
@@ -51,25 +52,25 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<Subscription malxml:type=\"281475027043305\">"
-          + "<Identifier malxml:type=\"281475027042310\">"
+        + "<Subscription malxml:type=\"" + Subscription.TYPE_ID.getTypeId() + "\">"
+          + "<Identifier malxml:type=\"" + Attribute.IDENTIFIER_SHORT_FORM + "\">"
             + "<Identifier>Demo</Identifier>"
           + "</Identifier>"
-          + "<IdentifierList malxml:type=\"281475010265082\">"
+          + "<IdentifierList malxml:type=\"" + IdentifierList.TYPE_ID.getTypeId() + "\">"
             + "<Identifier>Test</Identifier>"
             + "<Identifier>Domain0</Identifier>"
           + "</IdentifierList>"
-          + "<IdentifierList malxml:type=\"281475010265082\">"
+          + "<IdentifierList malxml:type=\"" + IdentifierList.TYPE_ID.getTypeId() + "\">"
             + "<Identifier>SomeKey</Identifier>"
           + "</IdentifierList>"
-          + "<SubscriptionFilterList malxml:type=\"281475010264086\">"
-            + "<SubscriptionFilter malxml:type=\"281474993488874\">"
-              + "<Identifier malxml:type=\"281475027042310\">"
+          + "<SubscriptionFilterList malxml:type=\"" + SubscriptionFilterList.TYPE_ID.getTypeId() + "\">"
+            + "<SubscriptionFilter malxml:type=\"" + SubscriptionFilter.TYPE_ID.getTypeId() + "\">"
+              + "<Identifier malxml:type=\"" + Attribute.IDENTIFIER_SHORT_FORM + "\">"
                 + "<Identifier>TestFilter</Identifier>"
               + "</Identifier>"
               + "<AttributeList>"
-                + "<Blob malxml:type=\"281475027042305\"><Blob>5465737456616c7565</Blob></Blob>"
-                + "<Union malxml:type=\"281475027042306\"><Boolean>true</Boolean></Union>"
+                + "<Blob malxml:type=\"" + Attribute.BLOB_SHORT_FORM + "\"><Blob>5465737456616c7565</Blob></Blob>"
+                + "<Union malxml:type=\"" + Attribute.BOOLEAN_SHORT_FORM + "\"><Boolean>true</Boolean></Union>"
               + "</AttributeList>"
             + "</SubscriptionFilter>"
           + "</SubscriptionFilterList>"
@@ -272,7 +273,7 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<InteractionType malxml:type=\"281475027042405\"><InteractionType>SEND</InteractionType></InteractionType>"
+        + "<InteractionType malxml:type=\"" + InteractionType.TYPE_ID.getTypeId() + "\"><InteractionType>SEND</InteractionType></InteractionType>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
@@ -291,8 +292,8 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<UInteger malxml:type=\"281475027042316\"><UInteger>65549</UInteger></UInteger>"
-        + "<Union malxml:type=\"281475027042319\"><String>4294967295</String></Union>"
+        + "<UInteger malxml:type=\"" + Attribute.UINTEGER_SHORT_FORM + "\"><UInteger>65549</UInteger></UInteger>"
+        + "<Union malxml:type=\"" + Attribute.STRING_SHORT_FORM + "\"><String>4294967295</String></Union>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
@@ -314,7 +315,7 @@ public class HTTPXMLElementInputTest {
 
     String testXml =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<Union malxml:type=\"281475027042306\"><Boolean>true</Boolean></Union>"
+        + "<Union malxml:type=\"" + Attribute.BOOLEAN_SHORT_FORM + "\"><Boolean>true</Boolean></Union>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);
@@ -332,7 +333,7 @@ public class HTTPXMLElementInputTest {
 
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-        + "<Qos malxml:type=\"281475027042407\"><Qos>QUEUED</Qos></Qos>"
+        + "<Qos malxml:type=\"" + QoSLevel.TYPE_ID.getTypeId() + "\"><Qos>QUEUED</Qos></Qos>"
       + "</malxml:Body>";
 
     helper.assertAgainstSchema(testXml);

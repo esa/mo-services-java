@@ -29,9 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -48,8 +46,6 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
-
-import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 
 public class SupplementsEncoder {
 
@@ -78,7 +74,7 @@ public class SupplementsEncoder {
             Attribute attribute = supplement.getValue();
             String value = null;
             if (attribute != null) {
-                Integer shortForm = attribute.getTypeShortForm();
+                Integer shortForm = attribute.getTypeId().getSFP();
                 String encodedAttribute = encodeAttribute(attribute);
                 value = String.format("%d_%s", shortForm, urlEncode(encodedAttribute));
             }
@@ -138,12 +134,7 @@ public class SupplementsEncoder {
         }
 
         if (value instanceof Blob) {
-            try {
-                return new String(((Blob) value).getValue(), UTF8_CHARSET);
-            } catch (MALException e) {
-                RLOGGER.log(Level.WARNING, e.getMessage(), e);
-                return null;
-            }
+            return new String(((Blob) value).getValue(), UTF8_CHARSET);
         }
 
         if (value instanceof ULong) {
@@ -184,56 +175,57 @@ public class SupplementsEncoder {
     }
 
     private static String encodeUnion(Union union) {
-        if (union.getTypeShortForm().equals(Attribute.DOUBLE_TYPE_SHORT_FORM)) {
+        Integer typeShortForm = union.getTypeId().getSFP();
+        if (typeShortForm.equals(Attribute.DOUBLE_TYPE_SHORT_FORM)) {
             if (union.getDoubleValue() == null) {
                 return "";
             }
             return union.getDoubleValue().toString();
         }
 
-        if (union.getTypeShortForm().equals(Attribute.BOOLEAN_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.BOOLEAN_TYPE_SHORT_FORM)) {
             if (union.getBooleanValue() == null) {
                 return "";
             }
             return union.getBooleanValue().booleanValue() ? "true" : "false";
         }
 
-        if (union.getTypeShortForm().equals(Attribute.FLOAT_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.FLOAT_TYPE_SHORT_FORM)) {
             if (union.getFloatValue() == null) {
                 return "";
             }
             return (union.getFloatValue()).toString();
         }
 
-        if (union.getTypeShortForm().equals(Attribute.INTEGER_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.INTEGER_TYPE_SHORT_FORM)) {
             if (union.getIntegerValue() == null) {
                 return "";
             }
             return (union.getIntegerValue()).toString();
         }
 
-        if (union.getTypeShortForm().equals(Attribute.LONG_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.LONG_TYPE_SHORT_FORM)) {
             if (union.getLongValue() == null) {
                 return "";
             }
             return (union.getLongValue()).toString();
         }
 
-        if (union.getTypeShortForm().equals(Attribute.OCTET_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.OCTET_TYPE_SHORT_FORM)) {
             if (union.getOctetValue() == null) {
                 return "";
             }
             return (union.getOctetValue()).toString();
         }
 
-        if (union.getTypeShortForm().equals(Attribute.SHORT_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.SHORT_TYPE_SHORT_FORM)) {
             if (union.getShortValue() == null) {
                 return "";
             }
             return (union.getShortValue()).toString();
         }
 
-        if (union.getTypeShortForm().equals(Attribute.STRING_TYPE_SHORT_FORM)) {
+        if (typeShortForm.equals(Attribute.STRING_TYPE_SHORT_FORM)) {
             if (union.getStringValue() == null) {
                 return "";
             }

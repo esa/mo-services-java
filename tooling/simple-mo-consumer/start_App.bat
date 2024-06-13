@@ -1,0 +1,1 @@
+java -classpath "target/simple-mo-consumer-jar-with-dependencies.jar" esa.mo.consumer.AppCLI

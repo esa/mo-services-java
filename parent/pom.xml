@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>10.1</version>
+    <version>11.0</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -74,7 +74,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <esa.mo.version>10.1</esa.mo.version>
+        <esa.mo.version>11.0</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
         <esa.stubgen.version>${esa.mo.version}</esa.stubgen.version>
@@ -82,6 +82,7 @@
         <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
         <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
         <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
+        <esa.api.mpd.version>${esa.mo.version}</esa.api.mpd.version>
         <esa.mal.version>${esa.mo.version}</esa.mal.version>
         <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
         <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
@@ -124,23 +125,28 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-mal</artifactId>
+                <artifactId>api-area001-v003-mal</artifactId>
                 <version>${esa.api.mal.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-com</artifactId>
+                <artifactId>api-area002-v001-com</artifactId>
                 <version>${esa.api.com.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-common</artifactId>
+                <artifactId>api-area003-v001-common</artifactId>
                 <version>${esa.api.common.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-mc</artifactId>
+                <artifactId>api-area004-v002-mc</artifactId>
                 <version>${esa.api.mc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area009-v001-mpd</artifactId>
+                <version>${esa.api.mpd.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>

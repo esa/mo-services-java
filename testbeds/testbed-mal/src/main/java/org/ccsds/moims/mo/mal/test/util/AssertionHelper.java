@@ -172,19 +172,15 @@ public class AssertionHelper {
         } else if (field instanceof Blob) {
             Blob b = (Blob) field;
             byte[] bytes;
-            try {
-                bytes = b.getValue();
-                StringBuilder buf = new StringBuilder();
-                for (int i = 0; i < bytes.length; i++) {
-                    buf.append(bytes[i]);
-                    if (i < bytes.length - 1) {
-                        buf.append('.');
-                    }
+            bytes = b.getValue();
+            StringBuilder buf = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                buf.append(bytes[i]);
+                if (i < bytes.length - 1) {
+                    buf.append('.');
                 }
-                return buf.toString();
-            } catch (MALException e) {
-                return null;
             }
+            return buf.toString();
         } else if (field instanceof IdentifierList) {
             IdentifierList domainId = (IdentifierList) field;
             StringBuilder buf = new StringBuilder();

@@ -33,6 +33,7 @@
 package org.ccsds.moims.mo.malspp.test.patterns;
 
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -68,6 +69,7 @@ public class SourceDestIdTest extends MalSppPatternTest {
                 HeaderTestProcedure.DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
                 session, sessionName,
+                new NamedValueList(),
                 new IPTestTransitionList(),
                 new Time(System.currentTimeMillis()));
 

@@ -421,7 +421,8 @@ public class MalSppPatternTest extends PatternTest {
             if (error.getErrorNumber().equals(MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER)) {
                 return "destination unknown";
             } else {
-                return error.getErrorName().toString();
+                //return error.getErrorName().toString();
+                return error.toString();
             }
         }
         return "Not an error.";

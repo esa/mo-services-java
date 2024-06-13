@@ -238,7 +238,7 @@ public class JavaEnumerations {
         method.addLine("return fromOrdinal(" + generator.createMethodCall("decoder.decode" + enumOrdinalType + "()" + enumDecoderValue + ")"));
         method.addMethodCloseStatement();
 
-        generator.addShortFormMethods(file, area, service);
+        generator.addTypeIdGetterMethod(file, area, service);
 
         file.addClassCloseStatement();
 

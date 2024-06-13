@@ -191,10 +191,13 @@ public class JavaLists {
                 "A new instance of this type with default field values.", null);
 
         // Wrap in Union if needed:
-        String dummyElement = (listElement.getNewCall().contains("structures"))
-                ? listElement.getNewCall() : "new Union(TYPE_SHORT_FORM * (-1), null)";
-
-        method.addLine("return " + dummyElement);
+        if(listElement.getNewCall().contains("structures")) {
+            method.addLine("return " + listElement.getNewCall());
+        } else {
+            method.addLine("org.ccsds.moims.mo.mal.TypeId typeId = this.getTypeId()");
+            String dummyUnion = "new Union(typeId.generateTypeIdPositive())";
+            method.addLine("return " + dummyUnion);
+        }
         method.addMethodCloseStatement();
 
         // create encode method
@@ -208,7 +211,7 @@ public class JavaLists {
         method.addLine("return this");
         method.addMethodCloseStatement();
 
-        generator.addShortFormMethods(file, area, service);
+        generator.addTypeIdGetterMethod(file, area, service);
 
         file.addClassCloseStatement();
         file.flush();

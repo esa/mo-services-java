@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -360,7 +361,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
     public boolean localReceptionScramblingPattern(String[] pattern) throws Exception {
         StringList p = new StringList();
         p.addAll(Arrays.asList(pattern));
-        IPTestDefinition def = new IPTestDefinition("setScramblingPattern", null, null, null, null, null, null, null, null, null, null);
+        IPTestDefinition def = new IPTestDefinition("setScramblingPattern", null, null, null, null, null, null, null, null, new NamedValueList(), null, null);
         LocalMALInstance.instance().segCounterTestStub().submitMulti(def, p);
         return true;
     }
@@ -381,7 +382,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
 
     public boolean triggerUpdateForGeneratingPackets(String identifier, int nPackets) throws Exception {
         selectAdapter(identifier).addExpectedNPackets(nPackets);
-        IPTestDefinition def = new IPTestDefinition(identifier, null, null, null, null, null, null, null, null, null, null);
+        IPTestDefinition def = new IPTestDefinition(identifier, null, null, null, null, null, null, null, null, new NamedValueList(), null, null);
         LocalMALInstance.instance().segCounterTestStub().sendMulti(def, new Union(nPackets));
         Thread.sleep(50);
         return true;
@@ -397,7 +398,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
     }
 
     public boolean triggerResponseFor(String identifier) throws Exception {
-        IPTestDefinition def = new IPTestDefinition(identifier, null, null, null, null, null, null, null, null, null, null);
+        IPTestDefinition def = new IPTestDefinition(identifier, null, null, null, null, null, null, null, null, new NamedValueList(), null, null);
         LocalMALInstance.instance().segCounterTestStub().sendMulti(def, new Union(0));
         Thread.sleep(100);
         return true;
@@ -415,7 +416,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
         IntegerList list = new IntegerList(2);
         list.add(index);
         list.add(delay);
-        IPTestDefinition def = new IPTestDefinition("setDelay", null, null, null, null, null, null, null, null, null, null);
+        IPTestDefinition def = new IPTestDefinition("setDelay", null, null, null, null, null, null, null, null, new NamedValueList(), null, null);
         LocalMALInstance.instance().segCounterTestStub().submitMulti(def, list);
         Thread.sleep(100);
         return true;

@@ -61,9 +61,13 @@ mvn clean deploy -P release
     * Release it if everything looks alright 
     * Or Drop it if there are errors
 
-4. Tag the release in GitHub  (tag name example: release-10.0)
+4. Tag the release (tag name example: release-10.0)
+    * Tag: `git tag release-XX.Y`
+    * Then push it to the repo: `git push origin --tags`
 
 5. Create a Pull Request from the new version branch to master. Please squash it.
+
+6. Create a GitHub release in: https://github.com/esa/mo-services-java/releases
 
 
 Extra

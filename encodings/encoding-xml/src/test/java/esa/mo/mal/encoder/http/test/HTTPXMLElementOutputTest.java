@@ -141,7 +141,7 @@ public class HTTPXMLElementOutputTest {
     assertNotNull(itNode.getAttributes().item(0));
     Node att = itNode.getAttributes().item(0);
     assertEquals("malxml:type", att.getNodeName());
-    assertEquals("281475027042405", att.getNodeValue());
+    assertEquals(String.valueOf(InteractionType.TYPE_ID.getTypeId()), att.getNodeValue());
   }
 
   @Test

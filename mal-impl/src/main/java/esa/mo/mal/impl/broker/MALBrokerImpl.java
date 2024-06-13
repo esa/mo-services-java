@@ -21,10 +21,8 @@
 package esa.mo.mal.impl.broker;
 
 import esa.mo.mal.impl.util.MALCloseable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBroker;
@@ -79,6 +77,7 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
                 MALBrokerHandlerImpl.class.getName());
 
         MALBrokerHandlerImpl broker = null;
+        /*
         try {
             final Class cls = Thread.currentThread().getContextClassLoader().loadClass(clsName);
 
@@ -101,6 +100,7 @@ public class MALBrokerImpl implements MALBroker, MALCloseable {
             MALBrokerImpl.LOGGER.log(Level.WARNING,
                     "IllegalAccessException when instantiating MAL Broker handler class: {0}", clsName);
         }
+         */
 
         if (broker == null) {
             broker = new MALBrokerHandlerImpl();

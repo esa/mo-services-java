@@ -19,7 +19,7 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>10.1</version>
+        <version>11.0</version>
         <relativePath>parent/pom.xml</relativePath>
     </parent>
   
@@ -53,6 +53,7 @@
         <module>api-generator</module>
         <module>apis</module>
         <module>mal-impl</module>
+        <module>services-impl</module>
         <module>encodings</module>
         <module>transports</module>
         <module>tooling</module>

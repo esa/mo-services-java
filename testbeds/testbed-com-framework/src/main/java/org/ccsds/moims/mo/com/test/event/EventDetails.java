@@ -249,7 +249,7 @@ public class EventDetails {
                     objectId.getType().getService(),
                     EventTestServiceInfo.EVENTTEST_SERVICE_NUMBER, bTypeValid);
             bTypeValid = COMChecker.equalsCheck(strObject, check + ".Type.Version",
-                    objectId.getType().getAreaVersion(),
+                    objectId.getType().getVersion(),
                     COMPrototypeHelper.COMPROTOTYPE_AREA_VERSION, bTypeValid);
             bTypeValid = COMChecker.equalsCheck(strObject, check + ".Type.Number",
                     objectId.getType().getNumber().toString(),

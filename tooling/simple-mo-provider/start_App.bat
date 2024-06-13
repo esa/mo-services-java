@@ -1,0 +1,1 @@
+java -classpath "target/simple-mo-provider-jar-with-dependencies.jar" esa.mo.provider.AppCLI

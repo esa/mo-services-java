@@ -25,7 +25,7 @@ import esa.mo.mal.impl.util.MALCloseable;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALService;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
@@ -52,7 +52,7 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
     public MALProvider createProvider(
             final String localName,
             final String protocol,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final MALInteractionHandler handler,
             final QoSLevel[] expectedQos,
@@ -82,7 +82,7 @@ public class MALProviderManagerImpl implements MALProviderManager, MALCloseable 
     @Override
     public MALProvider createProvider(
             final MALEndpoint endPoint,
-            final MALService service,
+            final ServiceInfo service,
             final Blob authenticationId,
             final MALInteractionHandler handler,
             final QoSLevel[] expectedQos,

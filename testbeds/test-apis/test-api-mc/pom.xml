@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>10.1</version>
+        <version>11.0</version>
         <relativePath>../../testbed-pom/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-mc-test</artifactId>
-    <version>10.1</version>
+    <version>11.0</version>
     <packaging>jar</packaging>
 
     <name>CCSDS MOIMS MO Testbed API - MC</name>
@@ -76,15 +76,15 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-mal</artifactId>
+            <artifactId>api-area001-v003-mal</artifactId>
         </dependency>
         <dependency> 
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-com</artifactId>
+            <artifactId>api-area002-v001-com</artifactId>
         </dependency>
         <dependency> 
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>api-mc</artifactId>
+            <artifactId>api-area004-v002-mc</artifactId>
         </dependency>
     </dependencies>
 

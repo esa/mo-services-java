@@ -329,7 +329,7 @@ public class XMLStreamWriter implements MALEncoder {
             try {
                 writer.writeDTD(TAB);
                 writer.writeStartElement(typeName);
-                writer.writeAttribute("malxml:type", element.getShortForm().toString());
+                writer.writeAttribute("malxml:type", ((Long) element.getTypeId().getTypeId()).toString());
                 writer.writeDTD(LINE_END);
                 writer.writeDTD(TAB);
                 element.encode(this);
@@ -390,7 +390,7 @@ public class XMLStreamWriter implements MALEncoder {
         try {
             if (writeElement) {
                 writer.writeStartElement(name);
-                writer.writeAttribute("malxml:type", composite.getShortForm().toString());
+                writer.writeAttribute("malxml:type", ((Long) composite.getTypeId().getTypeId()).toString());
             }
 
             Class superCls = cls.getSuperclass();
@@ -442,7 +442,7 @@ public class XMLStreamWriter implements MALEncoder {
     private void encodeEnumeration(String typeName, Enumeration element) throws MALException {
         try {
             writer.writeStartElement(typeName);
-            writer.writeAttribute("malxml:type", element.getShortForm().toString());
+            writer.writeAttribute("malxml:type", ((Long) element.getTypeId().getTypeId()).toString());
             addNode(typeName, element.toString());
             writer.writeEndElement();
         } catch (Exception ex) {

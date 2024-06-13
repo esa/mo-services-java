@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>10.1</version>
+        <version>11.0</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-util</artifactId>
     <packaging>jar</packaging>
-    <version>10.1</version>
+    <version>11.0</version>
     <name>CCSDS MOIMS MO Testbed utilities</name>
 
     <organization>
@@ -108,7 +108,7 @@
             <dependencies>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -126,7 +126,7 @@
             <dependencies>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
-                    <artifactId>api-mal</artifactId>
+                    <artifactId>api-area001-v003-mal</artifactId>
                 </dependency>
             </dependencies>
         </profile>
