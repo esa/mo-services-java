@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.0</version>
+        <version>11.1-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>encoding-performance-test</artifactId>
     <packaging>jar</packaging>
-    <version>11.0</version>
+    <version>11.1-SNAPSHOT</version>
 
     <name>ESA MO Performance Tests</name>
     <description>A small set of test applications for the evaluation of CCSDS MAL performance</description>

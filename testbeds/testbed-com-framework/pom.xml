@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.0</version>
+        <version>11.1-SNAPSHOT</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-com-framework</artifactId>
     <packaging>jar</packaging>
-    <version>11.0</version>
+    <version>11.1-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed COM - Harness</name>
   
     <organization>
@@ -79,7 +79,7 @@
     </developers>
   
     <properties>
-        <esa.com.test_api.version>11.0</esa.com.test_api.version>
+        <esa.com.test_api.version>11.1-SNAPSHOT</esa.com.test_api.version>
         <cnes.com.test_api.version>${cnes.version}</cnes.com.test_api.version>
     </properties>
   
