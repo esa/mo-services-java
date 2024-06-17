@@ -158,16 +158,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
         return bodyPart;
     }
 
-    @Override
-    public MALEncodedElement getEncodedBodyElement(final int index) throws MALException {
-        if (index != -1) {
-            return null;
-        }
-
-        // want the complete message body
-        return new MALEncodedElement((Blob) encBodyElements.readElement(new Blob(), null));
-    }
-
     /**
      * Encodes the contents of the message body into the provided stream
      *

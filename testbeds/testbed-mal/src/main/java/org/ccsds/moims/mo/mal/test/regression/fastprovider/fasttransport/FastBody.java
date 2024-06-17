@@ -21,7 +21,6 @@
 package org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 
 /**
@@ -43,10 +42,5 @@ public class FastBody implements MALMessageBody {
     @Override
     public Object getBodyElement(int i, Object o) throws MALException {
         return body[i];
-    }
-
-    @Override
-    public MALEncodedElement getEncodedBodyElement(int i) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

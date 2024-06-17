@@ -78,11 +78,6 @@ public class TestNotifyBody implements MALNotifyBody {
         return 3;
     }
 
-    @Override
-    public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
-        throw new MALException("Invalid call");
-    }
-
     public MALEncodedElement getEncodedUpdate(int listIndex, int updateIndex) throws MALException {
         throw new MALException("Invalid call");
     }
