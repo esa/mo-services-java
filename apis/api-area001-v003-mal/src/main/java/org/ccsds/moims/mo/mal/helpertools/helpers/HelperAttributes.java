@@ -124,7 +124,7 @@ public class HelperAttributes {
         }
 
         if (in instanceof Duration) { // 3
-            return ((Duration) in).getValue();
+            return ((Duration) in).getInSeconds();
         }
 
         if (in instanceof Identifier) { // 6

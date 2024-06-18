@@ -71,7 +71,7 @@ public class Duration implements Attribute {
     /**
      * Returns the duration in seconds.
      *
-     * @return the value.
+     * @return The duration in seconds.
      */
     public double getInSeconds() {
         return value;

@@ -111,7 +111,7 @@ public class XMLStreamWriter implements MALEncoder {
 
     @Override
     public void encodeDuration(final Duration value) throws MALException {
-        java.time.Duration d = java.time.Duration.ofMillis((long) (value.getValue() * 1000));
+        java.time.Duration d = java.time.Duration.ofMillis((long) (value.getInSeconds() * 1000));
         addNode("Duration", d.toString());
     }
 
