@@ -1027,7 +1027,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
         CompositeField providerType = createCompositeElementsDetails(file, false, "provider",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProvider", false),
-                false, true, "The provider to be addded.");
+                false, true, "The provider to be added.");
         MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "malInitialize", Arrays.asList(providerType), throwsMALException,
                 "Adds the supplied MAL provider to the internal list of providers used for PubSub",
