@@ -67,6 +67,7 @@
         <module>xml-tests</module>
         <module>test-apis</module>
         <module>testbed-mal</module>
+        <module>testbed-mpd</module>
         <module>testbed-com-framework</module>
         <module>testbed-com-provider-esa</module>
         <module>testbed-com</module>

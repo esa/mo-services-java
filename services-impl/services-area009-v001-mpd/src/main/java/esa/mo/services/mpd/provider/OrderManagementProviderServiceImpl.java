@@ -42,9 +42,8 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
     private static final Logger LOGGER = Logger.getLogger(OrderManagementProviderServiceImpl.class.getName());
 
     private final ConnectionProvider connection = new ConnectionProvider();
-
-    private boolean running = false;
     private MALProvider service;
+    private boolean running = false;
 
     /**
      * Initializes the service.
