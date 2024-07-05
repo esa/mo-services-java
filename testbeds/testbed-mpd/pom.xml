@@ -109,7 +109,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <testbed.provider>${testbed.provider}</testbed.provider>
-                        <testbed.consumer>${testbed.comsumer}</testbed.consumer>
+                        <testbed.consumer>${testbed.consumer}</testbed.consumer>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

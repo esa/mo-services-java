@@ -21,11 +21,13 @@
 package org.ccsds.mo.mpd.testbed;
 
 import esa.mo.services.mpd.util.OrderManagementServicesFactory;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
+import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -51,7 +53,7 @@ public class OrderManagementScenario1Test {
     }
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws IOException {
         System.out.println("Entered: setUpClass()");
         System.out.println("The Provider and Consumer will be started here!");
 
@@ -63,18 +65,33 @@ public class OrderManagementScenario1Test {
             // And also the consumer and provider need to be selectable!
             // This can be achieved with the Factory pattern
 
-            String prop1 = System.getProperty("testbed.provider");
-            String prop2 = System.getProperty("testbed.consumer");
-            System.out.println(prop1);
-            System.out.println(prop2);
+            String factoryClassForProvider = System.getProperty("testbed.provider");
+            String factoryClassForConsumer = System.getProperty("testbed.consumer");
+            System.out.println("factoryClassForProvider: " + factoryClassForProvider);
+            System.out.println("factoryClassForConsumer: " + factoryClassForConsumer);
 
-            String className = "esa.mo.services.mpd.util.ESAOrderManagementServicesFactory";
-            Class factoryClass = Class.forName(className);
-            OrderManagementServicesFactory factory = (OrderManagementServicesFactory) factoryClass.newInstance();
+            if ("null".equals(factoryClassForProvider) || "".equals(factoryClassForProvider)) {
+                throw new IOException("The classname is empty or null for the provider side!");
+            }
 
-            //OrderManagementServicesFactory factory = new ESAOrderManagementServicesFactory();
-            providerService = factory.createProvider();
-            consumerStub = factory.createConsumerStub();
+            if ("null".equals(factoryClassForConsumer) || "".equals(factoryClassForConsumer)) {
+                throw new IOException("The classname is empty or null for the consumer side!");
+            }
+
+            //factoryClassForProvider = "esa.mo.services.mpd.util.ESAOrderManagementServicesFactory";
+            Class factoryClass = Class.forName(factoryClassForProvider);
+            OrderManagementServicesFactory factoryProvider = (OrderManagementServicesFactory) factoryClass.newInstance();
+            providerService = factoryProvider.createProvider();
+
+            if (providerService == null) {
+                throw new MALException("The provider was not created!");
+            }
+
+            SingleConnectionDetails details = providerService.getConnection().getConnectionDetails();
+
+            Class factoryClassConsumer = Class.forName(factoryClassForConsumer);
+            OrderManagementServicesFactory factoryConsumer = (OrderManagementServicesFactory) factoryClassConsumer.newInstance();
+            consumerStub = factoryConsumer.createConsumerStub(details);
 
         } catch (InstantiationException ex) {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
