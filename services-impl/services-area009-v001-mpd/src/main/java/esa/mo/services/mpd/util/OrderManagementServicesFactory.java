@@ -22,6 +22,7 @@ package esa.mo.services.mpd.util;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 
@@ -32,5 +33,5 @@ public abstract class OrderManagementServicesFactory {
 
     public abstract OrderManagementInheritanceSkeleton createProvider() throws MALException;
 
-    public abstract OrderManagementStub createConsumerStub() throws MALException, MALInteractionException;
+    public abstract OrderManagementStub createConsumerStub(SingleConnectionDetails details) throws MALException, MALInteractionException;
 }

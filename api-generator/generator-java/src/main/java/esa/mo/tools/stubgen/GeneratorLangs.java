@@ -1015,6 +1015,21 @@ public abstract class GeneratorLangs extends GeneratorBase {
             method.addLine(createMethodCall("delegate.setSkeleton(this)"));
             method.addMethodCloseStatement();
         } else {
+            // Connection object method
+            CompositeField connectionName = createCompositeElementsDetails(file, false, "connection",
+                TypeUtils.createTypeReference(StdStrings.MAL, "helpertools.connections", "ConnectionProvider", false),
+                false, true, "Returns the connection object for this provider.");
+
+            ArrayList throwsList = new ArrayList();
+            throwsList.add("java.io.IOException if the method was not implemented yet.");
+            MethodWriter method1 = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                    false, true, connectionName, "getConnection", null, "java.io.IOException",
+                    "Returns the connection object for this provider.",
+                    "the connection object for this provider", throwsList);
+            method1.addLine("throw new java.io.IOException(\"This method needs to be overridden!\")");
+            method1.addMethodCloseStatement();
+
+            // SetSkeleton method
             CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
                     TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false),
                     false, true, "Not used in the inheritance pattern (the skeleton is 'this'");
@@ -1024,8 +1039,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     null, null);
             method.addLine("// Not used in the inheritance pattern (the skeleton is 'this')");
             method.addMethodCloseStatement();
-
         }
+
         CompositeField providerType = createCompositeElementsDetails(file, false, "provider",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProvider", false),
                 false, true, "The provider to be added.");

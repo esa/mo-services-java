@@ -47,13 +47,7 @@ public class ESAOrderManagementServicesFactory extends OrderManagementServicesFa
     }
 
     @Override
-    public OrderManagementStub createConsumerStub() throws MALException, MALInteractionException {
-        if (providerService == null) {
-            throw new MALException("The provider was not created!");
-        }
-
-        SingleConnectionDetails details = providerService.getConnection().getConnectionDetails();
-
+    public OrderManagementStub createConsumerStub(SingleConnectionDetails details) throws MALException, MALInteractionException {
         if (details == null) {
             throw new MALException("The provider details are null!");
         }
