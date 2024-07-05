@@ -493,12 +493,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createServiceProviderFolderComment(providerFolder, area, service);
         createServiceProviderHandler(providerFolder, area, service, summary);
         createServiceProviderSkeleton(providerFolder, area, service, summary, requiredPublishers);
-        createServiceProviderDelegation(providerFolder, area, service, summary);
+        //createServiceProviderDelegation(providerFolder, area, service, summary);
         createServiceProviderInheritance(providerFolder, area, service, summary);
         createServiceProviderInteractions(providerFolder, area, service, summary);
     }
 
-    protected void createServiceProviderDelegation(File providerFolder, AreaType area,
+    @Deprecated
+    private void createServiceProviderDelegation(File providerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
         logger.info(" > Creating provider delegate class: " + service.getName());
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, true);
