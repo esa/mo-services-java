@@ -48,7 +48,7 @@ public class TCPIPTransportFactoryImpl extends MALTransportFactory {
 
     @Override
     public synchronized MALTransport createTransport(final Map properties) throws MALException {
-        if (null == transport) {
+        if (transport == null) {
             transport = new TCPIPTransport(getProtocol(),
                     SERVICE_DELIMITER, true, this, properties);
             transport.init();

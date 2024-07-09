@@ -31,7 +31,6 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  */
 public class RMITransportFactoryImpl extends MALTransportFactory {
 
-    private static final Object MUTEX = new Object();
     private Transport transport = null;
 
     /**
@@ -44,14 +43,12 @@ public class RMITransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final Map properties) throws MALException {
-        synchronized (MUTEX) {
-            if (null == transport) {
-                transport = new RMITransport(getProtocol(), this, properties);
-                transport.init();
-            }
-
-            return transport;
+    public synchronized MALTransport createTransport(final Map properties) throws MALException {
+        if (transport == null) {
+            transport = new RMITransport(getProtocol(), this, properties);
+            transport.init();
         }
+
+        return transport;
     }
 }

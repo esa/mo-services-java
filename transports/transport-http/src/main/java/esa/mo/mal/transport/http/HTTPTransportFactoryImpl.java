@@ -30,7 +30,6 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  */
 public class HTTPTransportFactoryImpl extends MALTransportFactory {
 
-    private static final Object MUTEX = new Object();
     private HTTPTransport transport = null;
 
     /**
@@ -43,14 +42,12 @@ public class HTTPTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final Map properties) throws MALException {
-        synchronized (MUTEX) {
-            if (null == transport) {
-                transport = new HTTPTransport(getProtocol(), '/', false, this, properties);
-                transport.init();
-            }
-
-            return transport;
+    public synchronized MALTransport createTransport(final Map properties) throws MALException {
+        if (transport == null) {
+            transport = new HTTPTransport(getProtocol(), '/', false, this, properties);
+            transport.init();
         }
+
+        return transport;
     }
 }
