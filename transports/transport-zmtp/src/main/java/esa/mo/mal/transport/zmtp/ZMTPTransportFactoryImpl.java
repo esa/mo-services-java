@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.zmtp;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -44,8 +43,7 @@ public class ZMTPTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final MALContext malContext,
-            final Map properties) throws MALException {
+    public MALTransport createTransport(final Map properties) throws MALException {
         synchronized (MUTEX) {
             if (null == transport) {
                 transport = new ZMTPTransport(getProtocol(), false,

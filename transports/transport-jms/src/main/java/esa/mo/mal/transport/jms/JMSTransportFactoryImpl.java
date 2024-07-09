@@ -22,7 +22,6 @@ package esa.mo.mal.transport.jms;
 
 import java.util.Map;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -44,7 +43,7 @@ public class JMSTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(MALContext ctx, Map properties) throws MALException {
+    public MALTransport createTransport(Map properties) throws MALException {
         synchronized (mutex) {
             init(properties);
 

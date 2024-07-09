@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
@@ -153,12 +152,9 @@ public abstract class MALTransportFactory {
     /**
      * The method to instantiate a MALTransport.
      *
-     * @param malContext The MAL context that is creating the transport, may be
-     * null.
      * @param properties Configuration properties
      * @return The transport instance.
      * @throws MALException If no MALTransport can be returned
      */
-    public abstract MALTransport createTransport(MALContext malContext,
-            java.util.Map properties) throws MALException;
+    public abstract MALTransport createTransport(java.util.Map properties) throws MALException;
 }
