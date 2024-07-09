@@ -40,7 +40,7 @@ public class XMLStreamFactory extends MALElementStreamFactory {
     public static final Logger RLOGGER = Logger.getLogger("org.ccsds.moims.mo.mal.encoding.xml");
 
     @Override
-    protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException {
+    protected void init(Map properties) throws IllegalArgumentException, MALException {
         // TODO Auto-generated method stub
     }
 

@@ -45,8 +45,8 @@ public class FixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.base.Bas
     }
 
     @Override
-    protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException {
-        super.init(protocol, properties);
+    protected void init(final Map properties) throws IllegalArgumentException, MALException {
+        super.init(properties);
         if (properties != null) {
             if (properties.containsKey(SHORT_LENGTH_FIELD)
                     && Boolean.parseBoolean(properties.get(SHORT_LENGTH_FIELD).toString())) {

@@ -29,9 +29,8 @@ import org.ccsds.moims.mo.mal.MALException;
 public class SPPVarBinaryStreamFactory extends esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory {
 
     @Override
-    protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-            MALException {
-        super.init(protocol, properties);
+    protected void init(final Map properties) throws IllegalArgumentException, MALException {
+        super.init(properties);
 
         // Override default binary time encoding handler
         timeHandler = new SPPTimeHandler(properties);

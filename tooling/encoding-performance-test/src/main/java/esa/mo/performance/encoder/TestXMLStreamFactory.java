@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class TestXMLStreamFactory extends MALElementStreamFactory {
 
     @Override
-    protected void init(String protocol, Map properties) throws IllegalArgumentException, MALException {
+    protected void init(Map properties) throws IllegalArgumentException, MALException {
     }
 
     @Override

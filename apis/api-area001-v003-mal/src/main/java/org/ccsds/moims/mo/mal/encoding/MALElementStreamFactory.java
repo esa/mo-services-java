@@ -100,10 +100,8 @@ public abstract class MALElementStreamFactory {
                             className);
                 }
 
-                final MALElementStreamFactory factory
-                        = (MALElementStreamFactory) factoryClass.newInstance();
-                factory.init(protocol, qosProperties);
-
+                MALElementStreamFactory factory = (MALElementStreamFactory) factoryClass.newInstance();
+                factory.init(qosProperties);
                 return factory;
             } catch (ClassNotFoundException exc) {
                 throw new MALException(exc.getLocalizedMessage(), exc);
@@ -121,16 +119,13 @@ public abstract class MALElementStreamFactory {
      * The method enables the specific implementation class to initialize the
      * encoding module.
      *
-     * @param protocol Name of the protocol passed through the instantiation
-     * method
      * @param properties Properties passed through the instantiation method, may
      * be null
      * @throws java.lang.IllegalArgumentException If the protocol string is
      * null.
      * @throws MALException If an internal error occurs
      */
-    protected abstract void init(String protocol, Map properties)
-            throws java.lang.IllegalArgumentException, MALException;
+    protected abstract void init(Map properties) throws java.lang.IllegalArgumentException, MALException;
 
     /**
      * Creates a MALElementInputStream using a java.io.InputStream as the data

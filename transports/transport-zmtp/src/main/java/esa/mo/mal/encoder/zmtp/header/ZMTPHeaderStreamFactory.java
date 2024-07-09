@@ -44,8 +44,8 @@ public class ZMTPHeaderStreamFactory extends esa.mo.mal.encoder.binary.fixed.Fix
     }
 
     @Override
-    protected void init(final String protocol, final Map properties) throws IllegalArgumentException, MALException {
-        super.init(protocol, properties);
+    protected void init(final Map properties) throws IllegalArgumentException, MALException {
+        super.init(properties);
     }
 
     @Override
