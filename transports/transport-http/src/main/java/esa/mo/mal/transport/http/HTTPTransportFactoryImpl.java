@@ -44,7 +44,7 @@ public class HTTPTransportFactoryImpl extends MALTransportFactory {
     @Override
     public synchronized MALTransport createTransport(final Map properties) throws MALException {
         if (transport == null) {
-            transport = new HTTPTransport(getProtocol(), '/', false, this, properties);
+            transport = new HTTPTransport(getProtocol(), '/', false, properties);
             transport.init();
         }
 

@@ -84,10 +84,6 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected static final Random RANDOM_NAME = new Random();
     /**
-     * Reference to our factory.
-     */
-    protected final MALTransportFactory factory;
-    /**
      * The delimiter to use to separate the protocol part from the address part
      * of the URL.
      */
@@ -181,7 +177,6 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param supportsRouting True if routing is supported by the naming
      * convention
      * @param wrapBodyParts True is body parts should be wrapped in BLOBs
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
@@ -189,10 +184,9 @@ public abstract class Transport<I, O> implements MALTransport {
             final char serviceDelim,
             final boolean supportsRouting,
             final boolean wrapBodyParts,
-            final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
         this(protocol, "://", serviceDelim, '@',
-                supportsRouting, wrapBodyParts, factory, properties);
+                supportsRouting, wrapBodyParts, properties);
     }
 
     /**
@@ -217,9 +211,7 @@ public abstract class Transport<I, O> implements MALTransport {
             final char routingDelim,
             final boolean supportsRouting,
             final boolean wrapBodyParts,
-            final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        this.factory = factory;
         this.protocol = protocol;
         this.supportsRouting = supportsRouting;
         this.protocolDelim = protocolDelim;

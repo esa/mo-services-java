@@ -37,8 +37,7 @@ public abstract class HTTPMessageSenderBaseTest {
 
   @Before
   public void setUp() throws Exception {
-
-    transport = new HTTPTransport("malhttp", ':', false, null, null);
+    transport = new HTTPTransport("malhttp", ':', false, null);
   }
 
   @Test

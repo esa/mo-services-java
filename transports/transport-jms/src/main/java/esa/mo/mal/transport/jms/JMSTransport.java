@@ -63,7 +63,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     public JMSTransport(MALTransportFactory factory, String protocol,
             JMSAbstractAdministrator administrator, java.util.Map properties) throws Exception {
-        super(protocol, JMS_SERVICE_DELIM, true, true, factory, properties);
+        super(protocol, JMS_SERVICE_DELIM, true, true, properties);
 
         this.administrator = administrator;
 

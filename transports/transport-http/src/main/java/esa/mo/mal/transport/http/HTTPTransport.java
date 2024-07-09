@@ -71,7 +71,6 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
  * An implementation of the transport interface for the HTTP protocol.
@@ -202,14 +201,13 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      * @param serviceDelim The delimiter to use for separating the URL
      * @param supportsRouting True if routing is supported by the naming
      * convention
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    public HTTPTransport(final String protocol, final char serviceDelim, final boolean supportsRouting,
-            final MALTransportFactory factory, final Map properties) throws MALException {
+    public HTTPTransport(final String protocol, final char serviceDelim,
+            final boolean supportsRouting, final Map properties) throws MALException {
 
-        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
+        super(protocol, serviceDelim, supportsRouting, false, properties);
 
         // decode configuration
         if (properties != null) {

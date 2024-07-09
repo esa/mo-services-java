@@ -47,7 +47,6 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
  * An implementation of the transport interface for the RMI protocol.
@@ -73,14 +72,11 @@ public class RMITransport extends Transport<byte[], byte[]> {
      * Constructor.
      *
      * @param protocol The protocol string.
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    public RMITransport(final String protocol,
-            final MALTransportFactory factory,
-            final java.util.Map properties) throws MALException {
-        super(protocol, '-', true, true, factory, properties);
+    public RMITransport(final String protocol, final java.util.Map properties) throws MALException {
+        super(protocol, '-', true, true, properties);
 
         String lhost = null;
 

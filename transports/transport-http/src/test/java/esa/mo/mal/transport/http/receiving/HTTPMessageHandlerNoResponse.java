@@ -42,7 +42,7 @@ public class HTTPMessageHandlerNoResponse {
 
   @Before
   public void setUp() throws Exception {
-    transport = new HTTPTransport("malhttp", ':', false, null, null);
+    transport = new HTTPTransport("malhttp", ':', false, null);
     handler = new HTTPContextHandlerNoResponse(transport);
     request = createTestRequest();
   }

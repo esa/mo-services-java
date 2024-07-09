@@ -44,8 +44,7 @@ public class ZMTPTransportFactoryImpl extends MALTransportFactory {
     @Override
     public synchronized MALTransport createTransport(final Map properties) throws MALException {
         if (transport == null) {
-            transport = new ZMTPTransport(getProtocol(), false,
-                    this, properties, new ZMTPURIMapping(properties));
+            transport = new ZMTPTransport(getProtocol(), false, properties, new ZMTPURIMapping(properties));
             transport.init();
         }
 

@@ -50,7 +50,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import org.ccsds.moims.mo.mal.BadEncodingException;
 import org.ccsds.moims.mo.mal.DeliveryFailedException;
@@ -190,15 +189,13 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
      * @param serviceDelim The delimiter to use for separating the URL
      * @param supportsRouting True if routing is supported by the naming
      * convention
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
     @SuppressWarnings("rawtypes")
     public TCPIPTransport(final String protocol, final char serviceDelim,
-            final boolean supportsRouting, final MALTransportFactory factory,
-            final java.util.Map properties) throws MALException {
-        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
+            final boolean supportsRouting, final java.util.Map properties) throws MALException {
+        super(protocol, serviceDelim, supportsRouting, false, properties);
 
         RLOGGER.fine("TCPIPTransport (constructor)");
 

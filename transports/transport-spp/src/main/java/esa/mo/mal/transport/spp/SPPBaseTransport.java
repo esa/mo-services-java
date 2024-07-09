@@ -94,7 +94,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
             boolean wrapBodyParts, MALTransportFactory factory, Map properties)
             throws MALException {
         super(protocol, protocolDelim, serviceDelim, routingDelim,
-                supportsRouting, wrapBodyParts, factory, properties);
+                supportsRouting, wrapBodyParts, properties);
 
         this.defaultConfiguration = configuration;
         this.uriRep = uriRep;

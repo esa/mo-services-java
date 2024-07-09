@@ -45,7 +45,7 @@ public class RMITransportFactoryImpl extends MALTransportFactory {
     @Override
     public synchronized MALTransport createTransport(final Map properties) throws MALException {
         if (transport == null) {
-            transport = new RMITransport(getProtocol(), this, properties);
+            transport = new RMITransport(getProtocol(), properties);
             transport.init();
         }
 

@@ -52,7 +52,6 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import org.zeromq.ZMQ;
 import org.zeromq.ZContext;
 
@@ -185,14 +184,12 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
    * @param protocol The protocol string.
    * @param supportsRouting True if routing is supported by the naming convention
    * @param wrapBodyParts True is body parts should be wrapped in BLOBs
-   * @param factory The factory that created us.
    * @param properties The transport binding properties.
    * @throws MALException On error.
      */
     public ZMTPTransport(final String protocol, final boolean supportsRouting,
-            final MALTransportFactory factory, final java.util.Map properties,
-            final ZMTPURIMapping uriMapping) throws MALException {
-        super(protocol, '/', supportsRouting, false, factory, properties);
+            final java.util.Map properties, final ZMTPURIMapping uriMapping) throws MALException {
+        super(protocol, '/', supportsRouting, false, properties);
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 
