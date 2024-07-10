@@ -24,7 +24,6 @@ import org.ccsds.moims.mo.mpd.OrderManagementServicesFactory;
 import esa.mo.services.mpd.consumer.OrderManagementConsumerServiceImpl;
 import esa.mo.services.mpd.provider.OrderManagementProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
@@ -48,7 +47,7 @@ public class ESAOrderManagementServicesFactory extends OrderManagementServicesFa
     }
 
     @Override
-    public OrderManagementStub createConsumerStub(SingleConnectionDetails details) throws MALException, MALInteractionException {
+    public OrderManagementStub createConsumerStub(SingleConnectionDetails details) throws MALException {
         if (details == null) {
             throw new MALException("The provider details are null!");
         }
