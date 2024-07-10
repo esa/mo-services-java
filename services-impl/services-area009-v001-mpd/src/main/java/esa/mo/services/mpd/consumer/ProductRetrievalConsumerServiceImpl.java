@@ -23,7 +23,6 @@ package esa.mo.services.mpd.consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
@@ -38,13 +37,12 @@ public class ProductRetrievalConsumerServiceImpl extends ConsumerServiceImpl {
 
     private ProductRetrievalStub productRetrievalService = null;
 
-    public ProductRetrievalConsumerServiceImpl(final SingleConnectionDetails connectionDetails)
-            throws MALException, MALInteractionException {
+    public ProductRetrievalConsumerServiceImpl(final SingleConnectionDetails connectionDetails) throws MALException {
         this(connectionDetails, null, null);
     }
 
-    public ProductRetrievalConsumerServiceImpl(final SingleConnectionDetails connectionDetails, final Blob authenticationId,
-            final String localNamePrefix) throws MALException, MALInteractionException {
+    public ProductRetrievalConsumerServiceImpl(final SingleConnectionDetails connectionDetails,
+            final Blob authenticationId, final String localNamePrefix) throws MALException {
         this.connectionDetails = connectionDetails;
 
         // Close previous connection
