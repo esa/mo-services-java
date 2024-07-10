@@ -20,6 +20,7 @@
  */
 package esa.mo.services.mpd.util;
 
+import org.ccsds.moims.mo.mpd.OrderManagementServicesFactory;
 import esa.mo.services.mpd.consumer.OrderManagementConsumerServiceImpl;
 import esa.mo.services.mpd.provider.OrderManagementProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;

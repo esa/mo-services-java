@@ -20,7 +20,7 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
-import esa.mo.services.mpd.util.OrderManagementServicesFactory;
+import org.ccsds.moims.mo.mpd.OrderManagementServicesFactory;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

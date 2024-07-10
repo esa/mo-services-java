@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.services.mpd.util;
+package org.ccsds.moims.mo.mpd;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -27,7 +27,7 @@ import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 
 /**
- *
+ * The interface for the Order Management service Factory.
  */
 public abstract class OrderManagementServicesFactory {
 
