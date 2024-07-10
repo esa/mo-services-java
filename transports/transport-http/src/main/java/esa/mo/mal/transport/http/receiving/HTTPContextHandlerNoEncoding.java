@@ -67,7 +67,7 @@ public class HTTPContextHandlerNoEncoding implements IContextHandler {
     @Override
     public void finishHandling() {
         try {
-            GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
+            GENMessage malMsg = new GENMessage(true, new MALMessageHeader(),
                     new HashMap(), data, transport.getStreamFactory());
             IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(data));
             transport.receive(null, msgHolder);

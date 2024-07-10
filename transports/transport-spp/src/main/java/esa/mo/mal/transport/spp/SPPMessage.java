@@ -25,7 +25,6 @@ import esa.mo.mal.transport.gen.GENMessage;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -53,8 +52,6 @@ public class SPPMessage extends GENMessage {
      * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
      * @param segmentCounter The segment counter.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The encoding factory.
@@ -64,9 +61,9 @@ public class SPPMessage extends GENMessage {
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
             final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
-            boolean wrapBodyParts, MALMessageHeader header, Map qosProperties,
-            MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, encFactory, body);
+            MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
+            Object... body) throws MALInteractionException {
+        super(header, qosProperties, encFactory, body);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;
@@ -79,8 +76,6 @@ public class SPPMessage extends GENMessage {
      * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
      * @param segmentCounter The segment counter.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param readHeader True if the header should be read from the packet.
      * @param header An instance of the header class to use.
      * @param qosProperties The QoS properties for this message.
@@ -89,11 +84,10 @@ public class SPPMessage extends GENMessage {
      * @throws MALException On decoding error.
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
-            final SPPConfiguration configuration,
-            final SPPSegmentCounter segmentCounter, boolean wrapBodyParts,
+            final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
             boolean readHeader, MALMessageHeader header, Map qosProperties,
             byte[] packet, MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, readHeader, header, qosProperties, packet, encFactory);
+        super(readHeader, header, qosProperties, packet, encFactory);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;

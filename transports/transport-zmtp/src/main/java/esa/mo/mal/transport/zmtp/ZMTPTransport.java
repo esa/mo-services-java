@@ -189,7 +189,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
      */
     public ZMTPTransport(final String protocol, final boolean supportsRouting,
             final java.util.Map properties, final ZMTPURIMapping uriMapping) throws MALException {
-        super(protocol, '/', supportsRouting, false, properties);
+        super(protocol, '/', supportsRouting, properties);
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 
@@ -236,9 +236,6 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
             RLOGGER.log(Level.INFO,
                     "No local URI set. Generated a random URI: {0}", this.localURI);
         }
-
-        RLOGGER.log(Level.INFO,
-                "ZMTP Wrapping body parts set to : {0}", this.wrapBodyParts);
     }
 
     @Override
@@ -412,7 +409,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new ZMTPEndpoint(this, defaultConfiguration, localName,
-                routingName, uriBase + routingName, wrapBodyParts, supplements, properties);
+                routingName, uriBase + routingName, supplements, properties);
     }
 
     /**

@@ -76,7 +76,7 @@ public class RMITransport extends Transport<byte[], byte[]> {
      * @throws MALException On error.
      */
     public RMITransport(final String protocol, final java.util.Map properties) throws MALException {
-        super(protocol, '-', true, true, properties);
+        super(protocol, '-', true, properties);
 
         String lhost = null;
 
@@ -203,7 +203,7 @@ public class RMITransport extends Transport<byte[], byte[]> {
 
     @Override
     public GENMessage decodeMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
+        return new GENMessage(true, new MALMessageHeader(),
                 qosProperties, packet, getStreamFactory());
     }
 

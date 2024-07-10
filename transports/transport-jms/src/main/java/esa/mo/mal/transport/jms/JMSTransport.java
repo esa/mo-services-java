@@ -63,7 +63,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     public JMSTransport(MALTransportFactory factory, String protocol,
             JMSAbstractAdministrator administrator, java.util.Map properties) throws Exception {
-        super(protocol, JMS_SERVICE_DELIM, true, true, properties);
+        super(protocol, JMS_SERVICE_DELIM, true, properties);
 
         this.administrator = administrator;
 
@@ -187,8 +187,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     @Override
     public GENMessage decodeMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
-                qosProperties, packet, getStreamFactory());
+        return new GENMessage(true, new MALMessageHeader(), qosProperties, packet, getStreamFactory());
     }
 
     @Override

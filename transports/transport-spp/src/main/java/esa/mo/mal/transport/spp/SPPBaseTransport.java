@@ -91,10 +91,9 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     public SPPBaseTransport(SPPConfiguration configuration, SPPURIRepresentation uriRep,
             SPPSourceSequenceCounterSimple ssc, String protocol, String protocolDelim,
             char serviceDelim, char routingDelim, boolean supportsRouting,
-            boolean wrapBodyParts, MALTransportFactory factory, Map properties)
-            throws MALException {
+            MALTransportFactory factory, Map properties) throws MALException {
         super(protocol, protocolDelim, serviceDelim, routingDelim,
-                supportsRouting, wrapBodyParts, properties);
+                supportsRouting, properties);
 
         this.defaultConfiguration = configuration;
         this.uriRep = uriRep;
@@ -206,8 +205,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier,
-                uriRep, ssc, localName, routingName, uriBase + routingName,
-                wrapBodyParts, properties);
+                uriRep, ssc, localName, routingName, uriBase + routingName, properties);
     }
 
     @Override
@@ -267,7 +265,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
 
             // now full message including body
             try {
-                return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
+                return new SPPMessage(hdrStreamFactory, configuration, null, false,
                         (MALMessageHeader) dummyMessage.getHeader(), qosProperties, packet,
                         localBodyStreamFactory);
             } catch (MALException ex) {
@@ -324,7 +322,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
         }
 
         // need to decode in two stages, first message header
-        return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, true,
+        return new SPPMessage(hdrStreamFactory, configuration, null, true,
                 new SPPMessageHeader(hdrStreamFactory, configuration, null, apidQualifier, uriRep, ssc),
                 qosProperties, packet, hdrStreamFactory);
     }

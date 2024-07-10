@@ -56,7 +56,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     protected MALMessageHeader header;
     protected LazyMessageBody body;
     protected Map qosProperties;
-    protected boolean wrapBodyParts;
     protected MALElementStreamFactory encFactory;
 
     public GENMessage() {
@@ -65,8 +64,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     /**
      * Constructor.
      *
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The stream factory to use for decoding.
@@ -74,7 +71,7 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
      * is unknown.
      */
-    public GENMessage(final boolean wrapBodyParts,
+    public GENMessage(
             final MALMessageHeader header,
             final Map qosProperties,
             final MALElementStreamFactory encFactory,
@@ -83,14 +80,11 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         this.encFactory = encFactory;
         this.body = createMessageBody(body);
         this.qosProperties = qosProperties;
-        this.wrapBodyParts = wrapBodyParts;
     }
 
     /**
      * Constructor.
      *
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param readHeader True if the header should be read from the packet.
      * @param header An instance of the header class to use.
      * @param qosProperties The QoS properties for this message.
@@ -98,14 +92,13 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      * @param encFactory The stream factory to use for decoding.
      * @throws MALException On decoding error.
      */
-    public GENMessage(final boolean wrapBodyParts,
+    public GENMessage(
             final boolean readHeader,
             final MALMessageHeader header,
             final Map qosProperties,
             final byte[] packet,
             final MALElementStreamFactory encFactory) throws MALException {
         this.qosProperties = qosProperties;
-        this.wrapBodyParts = wrapBodyParts;
         this.encFactory = encFactory;
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
@@ -166,28 +159,28 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
         if (header.getIsErrorMessage()) {
-            return new ErrorBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+            return new ErrorBody(ctx, encFactory, encBodyElements);
         }
 
         if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
             final short stage = header.getInteractionStage().getValue();
             switch (stage) {
                 case MALPubSubOperation._REGISTER_STAGE:
-                    return new RegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+                    return new RegisterBody(ctx, encFactory, encBodyElements);
                 case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return new PublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+                    return new PublishRegisterBody(ctx, encFactory, encBodyElements);
                 case MALPubSubOperation._PUBLISH_STAGE:
-                    return new PublishBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+                    return new PublishBody(ctx, encFactory, encBodyElements);
                 case MALPubSubOperation._NOTIFY_STAGE:
-                    return new NotifyBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+                    return new NotifyBody(ctx, encFactory, encBodyElements);
                 case MALPubSubOperation._DEREGISTER_STAGE:
-                    return new DeregisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+                    return new DeregisterBody(ctx, encFactory, encBodyElements);
                 default:
-                    return new LazyMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+                    return new LazyMessageBody(ctx, encFactory, encBodyElements);
             }
         }
 
-        return new LazyMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
+        return new LazyMessageBody(ctx, encFactory, encBodyElements);
     }
 
     /**

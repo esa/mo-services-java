@@ -38,9 +38,9 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
  */
 public class TCPIPEndpoint extends Endpoint {
 
-    public TCPIPEndpoint(Transport transport, String localName, String routingName,
-            String uri, boolean wrapBodyParts, NamedValueList supplements) {
-        super(transport, localName, routingName, uri, wrapBodyParts, supplements);
+    public TCPIPEndpoint(Transport transport, String localName,
+            String routingName, String uri, NamedValueList supplements) {
+        super(transport, localName, routingName, uri, supplements);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TCPIPEndpoint extends Endpoint {
                 service, operation, serviceVersion,
                 isErrorMessage, supplements, qosProperties);
         try {
-            return new TCPIPMessage(false, (TCPIPMessageHeader) hdr, qosProperties,
+            return new TCPIPMessage((TCPIPMessageHeader) hdr, qosProperties,
                     transport.getStreamFactory(), body);
         } catch (MALInteractionException e) {
             throw new MALException("Error creating message", e);

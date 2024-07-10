@@ -51,17 +51,14 @@ public class RegisterBody extends LazyMessageBody implements MALRegisterBody {
      * Constructor.
      *
      * @param ctx The encoding context to use.
-     * @param wrappedBodyParts True if the encoded body parts are wrapped in
-     * BLOBs.
      * @param encFactory The encoder stream factory to use.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
     public RegisterBody(final MALEncodingContext ctx,
-            final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final MALElementInputStream encBodyElements) {
-        super(ctx, wrappedBodyParts, encFactory, encBodyElements);
+        super(ctx, encFactory, encBodyElements);
     }
 
     @Override

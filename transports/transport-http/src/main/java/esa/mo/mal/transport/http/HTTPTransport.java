@@ -207,7 +207,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
     public HTTPTransport(final String protocol, final char serviceDelim,
             final boolean supportsRouting, final Map properties) throws MALException {
 
-        super(protocol, serviceDelim, supportsRouting, false, properties);
+        super(protocol, serviceDelim, supportsRouting, properties);
 
         // decode configuration
         if (properties != null) {
@@ -330,7 +330,6 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         }
 
         RLOGGER.log(Level.INFO, "HTTP Host/port: {0}:{1}", new Object[]{this.host, this.port});
-        RLOGGER.log(Level.INFO, "HTTP Wrapping body parts set to : {0}", this.wrapBodyParts);
         String bindingMode = "Request-response";
         if (this.selectedHttpBindingMode != HTTP_BINDING_MODE_REQUEST_RESPONSE) {
             if (this.selectedHttpBindingMode == HTTP_BINDING_MODE_NO_RESPONSE) {
@@ -626,8 +625,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         sb.append("Encoded received message:\n");
         sb.append(encodedMsg);
 
-        returnable = new GENMessage(wrapBodyParts, false, header,
-                qosProperties, packetData, getStreamFactory());
+        returnable = new GENMessage(false, header, qosProperties, packetData, getStreamFactory());
 
         sb.append("\nDecoded message:");
         sb.append(returnable.getBody().toString());

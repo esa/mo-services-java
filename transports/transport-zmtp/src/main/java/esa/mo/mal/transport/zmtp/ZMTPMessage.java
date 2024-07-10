@@ -46,8 +46,6 @@ public class ZMTPMessage extends GENMessage {
      *
      * @param hdrStreamFactory The stream factory to use for message header
      * encoding.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The stream factory to use for message body encoding.
@@ -55,10 +53,10 @@ public class ZMTPMessage extends GENMessage {
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
      * is unknown.
      */
-    public ZMTPMessage(final ZMTPHeaderStreamFactory hdrStreamFactory, boolean wrapBodyParts,
+    public ZMTPMessage(final ZMTPHeaderStreamFactory hdrStreamFactory,
             MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
             Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, encFactory, body);
+        super(header, qosProperties, encFactory, body);
         this.hdrStreamFactory = hdrStreamFactory;
     }
 

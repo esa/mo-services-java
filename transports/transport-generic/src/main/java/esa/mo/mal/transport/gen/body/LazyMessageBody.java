@@ -37,7 +37,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
@@ -55,6 +54,7 @@ import org.ccsds.moims.mo.mal.TypeId;
  */
 public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
 
+    private static final long serialVersionUID = 222222222222223L;
     /**
      * Factory used to create encoders/decoders.
      */
@@ -76,8 +76,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      * The decoded body parts.
      */
     protected Object[] messageParts;
-    private final boolean wrappedBodyParts;
-    private static final long serialVersionUID = 222222222222223L;
 
     /**
      * Constructor.
@@ -90,7 +88,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             final MALElementStreamFactory encFactory,
             final Object[] messageParts) {
         this.ctx = ctx;
-        wrappedBodyParts = false;
         this.bodyPartCount = (messageParts != null) ? messageParts.length : 0;
         this.messageParts = messageParts;
         this.encFactory = encFactory;
@@ -101,18 +98,14 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      * Constructor.
      *
      * @param ctx The encoding context to use.
-     * @param wrappedBodyParts True if the encoded body parts are wrapped in
-     * BLOBs.
      * @param encFactory The encoder stream factory to use.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
     public LazyMessageBody(final MALEncodingContext ctx,
-            final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final MALElementInputStream encBodyElements) {
         this.ctx = ctx;
-        this.wrappedBodyParts = wrappedBodyParts;
         this.encFactory = encFactory;
         this.encBodyElements = encBodyElements;
     }
@@ -163,8 +156,8 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      *
      * @param streamFactory The stream factory to use for encoder creation.
      * @param enc The output stream to use for encoding.
-     * @param outStream Low level output stream to use when have an
-     * already encoded body.
+     * @param outStream Low level output stream to use when have an already
+     * encoded body.
      * @param ctx The encoding context.
      * @throws MALException On encoding error.
      */
@@ -191,30 +184,14 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             MALElementOutputStream benc = enc;
             ByteArrayOutputStream bbaos = null;
 
-            if (wrappedBodyParts) {
-                // we have more than one body part, therefore encode each part 
-                // into a separate byte buffer, and then encode that byte buffer 
-                // as a whole. This allows use to be able to return the complete 
-                // body of the message as a single unit if required.
-                bbaos = new ByteArrayOutputStream();
-                benc = streamFactory.createOutputStream(bbaos);
-            }
-
             try {
                 OperationField[] fields = ctx.getOperationFields();
                 for (int i = 0; i < count; i++) {
-                    encodeBodyPart(streamFactory, benc, wrappedBodyParts,
-                            getBodyElement(i, null), fields[i]);
+                    encodeBodyPart(streamFactory, benc, getBodyElement(i, null), fields[i]);
                 }
             } catch (NotFoundException ex) {
                 Logger.getLogger(LazyMessageBody.class.getName()).log(Level.SEVERE,
                         "The Operation fields could not be found!", ex);
-            }
-
-            if (wrappedBodyParts) {
-                benc.flush();
-                benc.close();
-                enc.writeElement(new Blob(bbaos.toByteArray()), null);
             }
         }
 
@@ -223,8 +200,7 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
     }
 
     protected void encodeBodyPart(final MALElementStreamFactory streamFactory,
-            final MALElementOutputStream enc, final boolean wrapBodyParts,
-            final Object obj, final OperationField field) throws MALException {
+            final MALElementOutputStream enc, final Object obj, final OperationField field) throws MALException {
         // Attempt to convert if not Element
         Object o = (obj instanceof Element) ? obj : Attribute.javaType2Attribute(obj);
 
@@ -236,22 +212,8 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             MALElementOutputStream lenc = enc;
             ByteArrayOutputStream lbaos = null;
 
-            if (wrapBodyParts) {
-                // we encode it into a byte buffer so that it can be extracted as a MALEncodedElement if required
-                lbaos = new ByteArrayOutputStream();
-                lenc = streamFactory.createOutputStream(lbaos);
-            }
-
             // now encode the element
             lenc.writeElement((Element) o, field);
-
-            if (wrapBodyParts) {
-                lenc.flush();
-                lenc.close();
-
-                // write the encoded blob to the stream
-                enc.writeElement(new Blob(lbaos.toByteArray()), null);
-            }
         } else {
             throw new MALException("Unable to encode body object of type: "
                     + o.getClass().getSimpleName());
@@ -276,12 +238,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             messageParts = new Object[bodyPartCount];
 
             MALElementInputStream benc = encBodyElements;
-            if (wrappedBodyParts) {
-                Transport.LOGGER.fine("GEN Message decoding body wrapper");
-                final Blob body = (Blob) encBodyElements.readElement(new Blob(), null);
-                final ByteArrayInputStream bais = new ByteArrayInputStream(body.getValue());
-                benc = encFactory.createInputStream(bais);
-            }
 
             // Iterate through each message part and decode it
             for (int i = 0; i < bodyPartCount; i++) {
@@ -361,12 +317,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
     protected Object decodeBodyPart(final MALElementInputStream decoder,
             OperationField field, Object sf) throws MALException {
         MALElementInputStream lenc = decoder;
-
-        if (wrappedBodyParts) {
-            final Blob ele = (Blob) decoder.readElement(new Blob(), null);
-            final ByteArrayInputStream lbais = new ByteArrayInputStream(ele.getValue());
-            lenc = encFactory.createInputStream(lbais);
-        }
 
         // work out whether it is a MAL element or JAXB element we have received
         if (sf instanceof String) {

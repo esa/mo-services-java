@@ -44,15 +44,14 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
  */
 public class TCPIPMessage extends GENMessage {
 
-    public TCPIPMessage(boolean wrapBodyParts,
-            TCPIPMessageHeader header, Map qosProperties, byte[] packet,
+    public TCPIPMessage(TCPIPMessageHeader header, Map qosProperties, byte[] packet,
             MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, false, header, qosProperties, packet, encFactory);
+        super(false, header, qosProperties, packet, encFactory);
     }
 
-    public TCPIPMessage(boolean wrapBodyParts, TCPIPMessageHeader header, Map qosProperties,
+    public TCPIPMessage(TCPIPMessageHeader header, Map qosProperties,
             MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, encFactory, body);
+        super(header, qosProperties, encFactory, body);
     }
 
     /**

@@ -195,7 +195,7 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
     @SuppressWarnings("rawtypes")
     public TCPIPTransport(final String protocol, final char serviceDelim,
             final boolean supportsRouting, final java.util.Map properties) throws MALException {
-        super(protocol, serviceDelim, supportsRouting, false, properties);
+        super(protocol, serviceDelim, supportsRouting, properties);
 
         RLOGGER.fine("TCPIPTransport (constructor)");
 
@@ -319,8 +319,6 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
             this.clientHost = getDefaultHost();
             this.clientPort = getRandomClientPort();
         }
-
-        RLOGGER.log(Level.FINE, "TCPIP Wrapping body parts set to  : {0}", this.wrapBodyParts);
     }
 
     private static void loadHostAliases(Map properties) {
@@ -495,7 +493,7 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}", uriBase);
-        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts, supplements);
+        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, supplements);
     }
 
     /**
@@ -571,8 +569,7 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
             System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
             // Decode the body
-            return new TCPIPMessage(wrapBodyParts, header, qosProperties,
-                    bodyPacketData, getStreamFactory());
+            return new TCPIPMessage(header, qosProperties, bodyPacketData, getStreamFactory());
         } catch (Exception ex) {
             RLOGGER.log(Level.WARNING, "The header is: " + header.toString(), ex);
             throw ex; // Rethrow the exception upwards!

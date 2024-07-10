@@ -59,9 +59,8 @@ public class SPPEndpoint extends Endpoint {
             String localName,
             String routingName,
             String uri,
-            boolean wrapBodyParts,
             final Map properties) {
-        super(transport, localName, routingName, uri, wrapBodyParts, new NamedValueList());
+        super(transport, localName, routingName, uri, new NamedValueList());
 
         this.configuration = new SPPConfiguration(configuration, properties);
 
@@ -125,8 +124,7 @@ public class SPPEndpoint extends Endpoint {
             return new SPPMessage(((SPPBaseTransport) transport).getHeaderStreamFactory(),
                     hdr.getConfiguration(),
                     getMessageSegmentCounter(hdr),
-                    false, hdr,
-                    qosProperties, transport.getStreamFactory(), body);
+                    hdr, qosProperties, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }

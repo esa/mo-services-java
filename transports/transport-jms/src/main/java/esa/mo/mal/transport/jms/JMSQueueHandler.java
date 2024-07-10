@@ -93,7 +93,7 @@ public class JMSQueueHandler implements MessageListener {
                     UShort s = new UShort(objMsg.getIntProperty(JMSEndpoint.SVC_PROPERTY));
                     UShort o = new UShort(objMsg.getIntProperty(JMSEndpoint.OPN_PROPERTY));
 
-                    GENMessage malMsg = new GENMessage(false, true, new MALMessageHeader(),
+                    GENMessage malMsg = new GENMessage(true, new MALMessageHeader(),
                             new HashMap(), (byte[]) dat, endPoint.getJtransport().getStreamFactory());
                     IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(null));
                     endPoint.getJtransport().receive(null, msgHolder);
