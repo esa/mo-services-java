@@ -288,7 +288,7 @@ jobs:
           name: testbed-mal-report-tcpip
           path: testbeds/testbed-mal/target/surefire-reports/
 
-  testbed-mal-jdk11-http:
+  testbed-mal-jdk11-zmtp:
     needs: build-testbeds-jdk11
     runs-on: ubuntu-latest
     steps:
@@ -308,13 +308,13 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL
-        run: mvn --batch-mode --update-snapshots -P ESA_HTTP test
+        run: mvn --batch-mode --update-snapshots -P ESA_ZMTP test
         working-directory: testbeds/testbed-mal
       - name: Upload report for MAL testbed
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: testbed-mal-report-http
+          name: testbed-mal-report-zmtp
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk17:
