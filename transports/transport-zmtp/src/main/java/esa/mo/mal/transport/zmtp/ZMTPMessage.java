@@ -23,14 +23,12 @@ package esa.mo.mal.transport.zmtp;
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.body.LazyMessageBody;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -48,6 +46,23 @@ public class ZMTPMessage extends GENMessage {
      * @param hdrStreamFactory The stream factory to use for message header
      * encoding.
      * @param header The message header to use.
+     * @param body the body of the message.
+     * @param qosProperties The QoS properties for this message.
+     * @param encFactory The stream factory to use for message body encoding.
+     */
+    public ZMTPMessage(final ZMTPHeaderStreamFactory hdrStreamFactory,
+            MALMessageHeader header, LazyMessageBody body,
+            MALElementStreamFactory encFactory, Map qosProperties) {
+        super(header, body, encFactory, qosProperties);
+        this.hdrStreamFactory = hdrStreamFactory;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param hdrStreamFactory The stream factory to use for message header
+     * encoding.
+     * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The stream factory to use for message body encoding.
      * @param body the body of the message.
@@ -58,26 +73,6 @@ public class ZMTPMessage extends GENMessage {
             MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
             Object... body) throws MALInteractionException {
         super(header, qosProperties, encFactory, body);
-        this.hdrStreamFactory = hdrStreamFactory;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param hdrStreamFactory The stream factory to use for message header
-     * encoding.
-     * @param header An instance of the header class to use.
-     * @param qosProperties The QoS properties for this message.
-     * @param bais The ByteArrayInputStream in encoded form.
-     * @param encFactory The stream factory to use for message body encoding.
-     * @throws MALException On decoding error.
-     */
-    public ZMTPMessage(final ZMTPHeaderStreamFactory hdrStreamFactory,
-            MALMessageHeader header, Map qosProperties, ByteArrayInputStream bais,
-            MALElementStreamFactory encFactory) throws MALException {
-        this.header = header;
-        final MALElementInputStream enc = encFactory.createInputStream(bais);
-        this.body = LazyMessageBody.createMessageBody(header, encFactory, enc);
         this.hdrStreamFactory = hdrStreamFactory;
     }
 

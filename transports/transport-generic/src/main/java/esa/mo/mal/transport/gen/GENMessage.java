@@ -48,11 +48,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     protected Map qosProperties;
     protected MALElementStreamFactory encFactory;
 
-    public GENMessage() {
-    }
-
     public GENMessage(MALMessageHeader header, LazyMessageBody body,
-            MALElementStreamFactory encFactory, Map qosProperties){
+            MALElementStreamFactory encFactory, Map qosProperties) {
         this.header = header;
         this.body = body;
         this.encFactory = encFactory;

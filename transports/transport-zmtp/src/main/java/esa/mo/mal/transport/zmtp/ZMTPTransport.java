@@ -26,6 +26,7 @@ import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
@@ -44,6 +45,7 @@ import java.util.Random;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -369,8 +371,9 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
             byte[] remainingData = headerDecoder.getRemainingEncodedData();
             MALElementStreamFactory bodyStreamFactory = getBodyEncodingSelector().getDecoderStreamFactory(header);
 
-            return new ZMTPMessage(hdrStreamFactory, header, qosProperties,
-                    new ByteArrayInputStream(remainingData), bodyStreamFactory);
+            final MALElementInputStream enc = bodyStreamFactory.createInputStream(new ByteArrayInputStream(remainingData));
+            LazyMessageBody body = LazyMessageBody.createMessageBody(header, bodyStreamFactory, enc);
+            return new ZMTPMessage(hdrStreamFactory, header, body, bodyStreamFactory, qosProperties);
         } catch (MALException ex) {
             RLOGGER.log(Level.INFO, "Something went wrong!", ex);
             returnErrorMessage(header, MALHelper.INTERNAL_ERROR_NUMBER,
