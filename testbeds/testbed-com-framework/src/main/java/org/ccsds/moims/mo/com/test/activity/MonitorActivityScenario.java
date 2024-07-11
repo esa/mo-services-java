@@ -439,7 +439,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      */
     protected StringList convertStringList(StringList lst, String[] arr) {
         if (null != arr) {
-            if (null == lst) {
+            if (lst == null) {
                 lst = new StringList();
             }
 

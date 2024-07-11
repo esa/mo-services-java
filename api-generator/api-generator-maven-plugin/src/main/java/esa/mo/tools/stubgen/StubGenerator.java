@@ -341,7 +341,7 @@ public class StubGenerator extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         loadGenerators(getLog());
 
-        if (null == extraProperties) {
+        if (extraProperties == null) {
             extraProperties = new HashMap<>();
         }
 

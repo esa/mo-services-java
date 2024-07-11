@@ -157,7 +157,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
     @Override
     public void invoke(IPTestDefinition _IPTestDefinition, InvokeInteraction interaction)
             throws MALInteractionException, MALException {
-        if (null == _IPTestDefinition) {
+        if (_IPTestDefinition == null) {
             // this is the access control test then
             interaction.sendAcknowledgement(null);
 
@@ -233,7 +233,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
     @Override
     public void progress(IPTestDefinition _IPTestDefinition, ProgressInteraction interaction)
             throws MALInteractionException, MALException {
-        if (null == _IPTestDefinition) {
+        if (_IPTestDefinition == null) {
             // this is the access control test then
             interaction.sendAcknowledgement(null);
 

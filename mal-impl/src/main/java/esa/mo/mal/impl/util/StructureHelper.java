@@ -138,7 +138,7 @@ public class StructureHelper {
                 return true;
             }
         } else {
-            if ((null == srcDomain) && (null == testDomain)) {
+            if ((srcDomain == null) && (testDomain == null)) {
                 return true;
             }
         }

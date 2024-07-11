@@ -577,7 +577,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case REQUEST_OP: {
                     List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    String opRetComment = (null == opRetType) ? null : "The return value of the interaction";
+                    String opRetComment = (opRetType == null) ? null : "The return value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
                             throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
@@ -600,7 +600,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case PROGRESS_OP: {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getArgTypes()), serviceAdapterArg);
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    String opRetComment = (null == opRetType) ? null : "The acknowledge value of the interaction";
+                    String opRetComment = (opRetType == null) ? null : "The acknowledge value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
                             throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
@@ -1373,7 +1373,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         List<CompositeField> compElements = createCompositeElementsList(file, composite);
         List<CompositeField> superCompElements = createCompositeSuperElementsList(file, parentType);
 
-        boolean abstractComposite = (null == composite.getShortFormPart());
+        boolean abstractComposite = (composite.getShortFormPart() == null);
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
                 parentClass, parentInterface, composite.getComment());
         String fqName = createElementType(area, service, className);

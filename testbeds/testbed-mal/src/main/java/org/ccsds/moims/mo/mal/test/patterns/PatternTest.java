@@ -935,7 +935,7 @@ public class PatternTest {
 
             ++receivedMessages;
 
-            if (null == progressUpdate1ReceivedMsgHeader) {
+            if (progressUpdate1ReceivedMsgHeader == null) {
                 progressUpdate1ReceivedMsgHeader = msgHeader;
             } else {
                 progressUpdate2ReceivedMsgHeader = msgHeader;

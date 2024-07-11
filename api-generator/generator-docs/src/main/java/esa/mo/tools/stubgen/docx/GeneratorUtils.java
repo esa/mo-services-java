@@ -44,13 +44,13 @@ public class GeneratorUtils {
     }
 
     public static String createFQTypeName(AreaType area, ServiceType service, TypeReference type, boolean isList) {
-        String servicename = (null == service) ? "" : service.getName();
+        String servicename = (service == null) ? "" : service.getName();
         return createFQTypeName(area.getName(), servicename, type.getArea(),
                 type.getService(), type.getName(), isList);
     }
 
     public static String createFQTypeName(AreaType area, ServiceType service, ObjectReference type) {
-        String servicename = (null == service) ? "" : service.getName();
+        String servicename = (service == null) ? "" : service.getName();
         return createFQTypeName(area.getName(), servicename, type.getArea(),
                 type.getService(), String.valueOf(type.getNumber()), false);
     }

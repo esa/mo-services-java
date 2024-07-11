@@ -662,13 +662,13 @@ public class MALReceiver implements MALMessageListener {
 
             if (0 == irv) {
                 if (null != this.second) {
-                    if (null == otherPair.second) {
+                    if (otherPair.second == null) {
                         return -1;
                     } else {
                         return this.second.compareTo(otherPair.second);
                     }
                 } else {
-                    return (null == otherPair.second) ? 0 : -1;
+                    return (otherPair.second == null) ? 0 : -1;
                 }
             }
 

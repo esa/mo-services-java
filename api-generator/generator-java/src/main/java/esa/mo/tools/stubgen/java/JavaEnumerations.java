@@ -65,7 +65,7 @@ public class JavaEnumerations {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                 true, true, null);
         CompositeField enumType = generator.createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                 true, true, null);
 
         generator.addTypeShortFormDetails(file, area, service, enumeration.getShortFormPart());
@@ -84,7 +84,7 @@ public class JavaEnumerations {
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false,
                     "Enumeration numeric value for value " + value);
             CompositeField eInstVar = generator.createCompositeElementsDetails(file, false, value,
-                    TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                    TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                     true, false, "Enumeration singleton for value " + value);
             file.addClassVariable(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
             file.addClassVariable(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
@@ -101,7 +101,7 @@ public class JavaEnumerations {
             vaStr.add(enumeration.getItem().get(i).getValue() + "_NUM_VALUE");
         }
         CompositeField eInstArrVar = generator.createCompositeElementsDetails(file, false, "_ENUMERATIONS",
-                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                 true, true, "Set of enumeration instances.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
         if (generator.supportsToString) {
@@ -246,7 +246,7 @@ public class JavaEnumerations {
 
         generator.createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
         CompositeField fld = generator.createCompositeElementsDetails(file, false, "fld",
-                TypeUtils.createTypeReference(area.getName(), null == service ? null : service.getName(), enumName, false),
+                TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                 true, true, "cmt");
     }
 

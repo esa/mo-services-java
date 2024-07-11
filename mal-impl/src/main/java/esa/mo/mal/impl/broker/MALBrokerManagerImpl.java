@@ -74,7 +74,7 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
         MALBrokerBinding retVal = null;
 
         MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
-        if (null == optionalMALBroker) {
+        if (optionalMALBroker == null) {
             tparent = (MALBrokerImpl) createBroker();
 
             final MALTransport transport = TransportSingleton.instance(protocol, impl.getInitialProperties());
@@ -119,7 +119,7 @@ public class MALBrokerManagerImpl implements MALBrokerManager, MALCloseable {
         MALBrokerBinding retVal = null;
 
         MALBrokerImpl tparent = (MALBrokerImpl) optionalMALBroker;
-        if (null == optionalMALBroker) {
+        if (optionalMALBroker == null) {
             tparent = (MALBrokerImpl) createBroker();
 
             final MALTransport transport = TransportSingleton.instance(endPoint.getURI(), impl.getInitialProperties());

@@ -861,7 +861,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         public MALMessageHeader getMonitorNotifyHeader() {
-            if (null == monitorNotifyHeader) {
+            if (monitorNotifyHeader == null) {
                 try {
                     monitorNotifyCond.waitFor(Configuration.WAIT_TIME_OUT);
                 } catch (InterruptedException e) {
@@ -873,7 +873,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         }
 
         public MALMessageHeader getMonitorNotifyErrorHeader() {
-            if (null == monitorNotifyErrorHeader) {
+            if (monitorNotifyErrorHeader == null) {
                 try {
                     monitorNotifyErrorCond.waitFor(Configuration.WAIT_TIME_OUT);
                 } catch (InterruptedException e) {

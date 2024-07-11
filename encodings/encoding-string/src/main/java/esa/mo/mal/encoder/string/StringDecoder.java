@@ -354,7 +354,7 @@ public class StringDecoder extends Decoder {
         }
 
         private void preLoadBuffer() throws MALException {
-            if ((null != inputStream) && (null == buf)) {
+            if ((inputStream != null) && (buf == null)) {
                 // need to load in some
                 final byte[] tbuf = new byte[BLOCK_SIZE];
 

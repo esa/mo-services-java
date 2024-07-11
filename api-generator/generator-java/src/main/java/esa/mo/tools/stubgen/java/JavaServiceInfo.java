@@ -176,7 +176,7 @@ public class JavaServiceInfo {
                     typeName = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
                     typeName = ((CompositeType) oType).getName();
-                    isAbstract = (null == ((CompositeType) oType).getShortFormPart());
+                    isAbstract = (((CompositeType) oType).getShortFormPart() == null);
                 }
 
                 if (!isAbstract) {

@@ -138,7 +138,7 @@ public class GeneratorConfiguration {
     public String getAreaPackage(String area) {
         String value = areaPackages.get(area.toUpperCase());
 
-        return (null == value) ? defaultPackage : value;
+        return (value == null) ? defaultPackage : value;
     }
 
     /**

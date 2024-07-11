@@ -695,7 +695,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                 TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
                 allTypesMap.put(key, object);
                 compositeTypesMap.put(key, ty);
-                if (null == ((CompositeType) object).getShortFormPart()) {
+                if (((CompositeType) object).getShortFormPart() == null) {
                     abstractTypesSet.add(key);
                 }
             }

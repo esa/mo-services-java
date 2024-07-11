@@ -360,7 +360,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         logger.info("Creating composite class " + compName);
 
-        boolean abstractComposite = (null == composite.getShortFormPart());
+        boolean abstractComposite = (composite.getShortFormPart() == null);
 
         svgFile.addTitle(3, "Composite: ", createId(service, compName), compName, abstractComposite);
 
@@ -446,7 +446,7 @@ public class GeneratorSvg extends GeneratorDocument {
             List<CompositeField> compElements) throws IOException {
         svgFile.startDrawing();
 
-        if (null == compElements) {
+        if (compElements == null) {
             compElements = createCompositeElementsList(svgFile, composite);
         }
 
@@ -493,17 +493,17 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     private String createXlink(String areaName, String serviceName, String section) {
-        if (null == serviceName) {
+        if (serviceName == null) {
             serviceName = "_";
         } else {
             serviceName += "_";
         }
 
-        if (null == section) {
+        if (section == null) {
             section = "";
         }
 
-        if ((null != areaName) && (0 < areaName.length())) {
+        if ((areaName != null) && (areaName.length() > 0)) {
             return "output" + areaName + ".xhtml#" + serviceName + section;
         } else {
             return "#" + serviceName + section;
@@ -939,7 +939,7 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         protected void addTitle(int level, String section, String id, String text, boolean italic) throws IOException {
-            if (null == id) {
+            if (id == null) {
                 id = "";
             } else {
                 id = " id=\"" + id + "\"";

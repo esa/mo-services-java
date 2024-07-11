@@ -338,7 +338,7 @@ public class GeneratorJava extends GeneratorLangs {
         createFolderComment(structureFolder, area, service,
                 getConfig().getStructureFolder() + "." + getConfig().getFactoryFolder(),
                 "Factory classes for the types defined in the "
-                + ((null == service) ? (area.getName() + " area.") : (service.getName() + " service.")));
+                + ((service == null) ? (area.getName() + " area.") : (service.getName() + " service.")));
     }
 
     /**

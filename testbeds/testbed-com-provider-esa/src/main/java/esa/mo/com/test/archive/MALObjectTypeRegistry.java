@@ -56,7 +56,7 @@ public class MALObjectTypeRegistry {
      */
     public void registerElements(final ObjectType objectType, final Element element,
             final ElementList elementList) throws IllegalArgumentException {
-        if ((null == elementList)) {
+        if ((elementList == null)) {
             throw new IllegalArgumentException("NULL argument");
         }
 
@@ -72,7 +72,7 @@ public class MALObjectTypeRegistry {
      * @throws IllegalArgumentException If supplied argument is null.
      */
     public Element lookupElement(final ObjectType objectType) throws IllegalArgumentException {
-        if (null == objectType) {
+        if (objectType == null) {
             throw new IllegalArgumentException("NULL argument");
         }
 
@@ -89,7 +89,7 @@ public class MALObjectTypeRegistry {
      */
     public ElementList lookupElementlist(final ObjectType objectType)
             throws IllegalArgumentException {
-        if (null == objectType) {
+        if (objectType == null) {
             throw new IllegalArgumentException("NULL argument");
         }
         if (elements.get(objectType.toString()) != null) {

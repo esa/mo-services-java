@@ -125,16 +125,16 @@ public abstract class MALContextFactory {
      */
     public static MALArea lookupArea(final Identifier areaName, final UOctet version)
             throws IllegalArgumentException {
-        if (null == areaName) {
+        if (areaName == null) {
             throw new IllegalArgumentException("NULL area argument");
         }
-        if (null == version) {
+        if (version == null) {
             throw new IllegalArgumentException("NULL version argument");
         }
 
         final Integer num = AREA_NAME_MAP.get(areaName.getValue());
 
-        if (num == null) {
+        if (null == num) {
             return null;
         }
 
@@ -152,10 +152,10 @@ public abstract class MALContextFactory {
      */
     public static MALArea lookupArea(final UShort areaNumber, final UOctet version)
             throws IllegalArgumentException {
-        if (null == areaNumber) {
+        if (areaNumber == null) {
             throw new IllegalArgumentException("NULL area argument");
         }
-        if (null == version) {
+        if (version == null) {
             throw new IllegalArgumentException("NULL version argument");
         }
 

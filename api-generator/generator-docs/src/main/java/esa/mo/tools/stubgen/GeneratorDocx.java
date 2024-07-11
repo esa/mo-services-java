@@ -832,7 +832,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 List<String> pcmts = GeneratorUtils.addSplitStrings(null, err.getComment());
                 String errorNumber = "UNKNOWN ERROR NUMBER!";
                 String es;
-                if ((null == err.getType().getArea()) || (err.getType().getArea().equals(area.getName()))) {
+                if ((err.getType().getArea() == null) || (err.getType().getArea().equals(area.getName()))) {
                     ErrorDefinitionType edt = getErrorDefinition(err.getType().getName());
                     if (edt != null) {
                         errorNumber = String.valueOf(edt.getNumber());
@@ -1016,7 +1016,7 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(extendsClass), STD_COLOUR, 3);
         docxFile.endRow();
 
-        if (null == composite.getShortFormPart()) {
+        if (composite.getShortFormPart() == null) {
             docxFile.startRow();
             docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, "Abstract", HEADER_COLOUR, 4);
             docxFile.endRow();

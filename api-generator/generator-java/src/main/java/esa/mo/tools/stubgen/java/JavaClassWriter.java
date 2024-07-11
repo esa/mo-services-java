@@ -351,7 +351,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     public void addPackageStatement(AreaType area, ServiceType service, String extraPackage) throws IOException {
         String packageName = "";
 
-        if (null == area) {
+        if (area == null) {
             packageName = generator.getConfig().getAreaPackage("");
         } else {
             packageName += generator.getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase();
@@ -388,7 +388,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
-        List<String> comments = normaliseArgComments(comment, null == rtype ? null : returnComment, args, throwsComment);
+        List<String> comments = normaliseArgComments(comment, (rtype == null) ? null : returnComment, args, throwsComment);
         addMultilineComment(1, false, comments, false);
 
         StringBuilder buf = new StringBuilder();

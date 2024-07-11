@@ -140,8 +140,8 @@ public class FastProviderScenario {
             // do nothing, we are expecting this
         }
 
-        boolean ackNotReceived = null == monitor.invokeAckReceivedMsgHeader;
-        boolean responseReceived = null != monitor.invokeResponseReceivedMsgHeader;
+        boolean ackNotReceived = monitor.invokeAckReceivedMsgHeader == null;
+        boolean responseReceived = monitor.invokeResponseReceivedMsgHeader != null;
 
         LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
         LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
@@ -176,8 +176,8 @@ public class FastProviderScenario {
             }
         }
 
-        boolean ackNotReceived = (null == monitor.invokeAckReceivedMsgHeader) && (null == monitor.invokeAckErrorReceivedMsgHeader);
-        boolean responseNotReceived = (null == monitor.invokeResponseReceivedMsgHeader) && (null == monitor.invokeResponseErrorReceivedMsgHeader);
+        boolean ackNotReceived = (monitor.invokeAckReceivedMsgHeader == null) && (monitor.invokeAckErrorReceivedMsgHeader == null);
+        boolean responseNotReceived = (monitor.invokeResponseReceivedMsgHeader == null) && (monitor.invokeResponseErrorReceivedMsgHeader == null);
 
         LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
         LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
@@ -203,10 +203,10 @@ public class FastProviderScenario {
             // do nothing, we are expecting this
         }
 
-        boolean ackNotReceived = null == monitor.progressAckReceivedMsgHeader;
-        boolean update1Received = null != monitor.progressUpdate1ReceivedMsgHeader;
-        boolean update2Received = null != monitor.progressUpdate2ReceivedMsgHeader;
-        boolean responseReceived = null != monitor.progressResponseReceivedMsgHeader;
+        boolean ackNotReceived = (monitor.progressAckReceivedMsgHeader == null);
+        boolean update1Received = (monitor.progressUpdate1ReceivedMsgHeader != null);
+        boolean update2Received = (monitor.progressUpdate2ReceivedMsgHeader != null);
+        boolean responseReceived = (monitor.progressResponseReceivedMsgHeader != null);
 
         LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
         LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");
@@ -243,10 +243,10 @@ public class FastProviderScenario {
             }
         }
 
-        boolean ackNotReceived = (null == monitor.progressAckReceivedMsgHeader) && (null == monitor.progressAckErrorReceivedMsgHeader);
-        boolean update1NotReceived = (null == monitor.progressUpdate1ReceivedMsgHeader) && (null == monitor.progressUpdateErrorReceivedMsgHeader);
-        boolean update2NotReceived = (null == monitor.progressUpdate2ReceivedMsgHeader);
-        boolean responseNotReceived = (null == monitor.progressResponseReceivedMsgHeader) && (null == monitor.progressResponseErrorReceivedMsgHeader);
+        boolean ackNotReceived = (monitor.progressAckReceivedMsgHeader == null) && (monitor.progressAckErrorReceivedMsgHeader == null);
+        boolean update1NotReceived = (monitor.progressUpdate1ReceivedMsgHeader == null) && (monitor.progressUpdateErrorReceivedMsgHeader == null);
+        boolean update2NotReceived = (monitor.progressUpdate2ReceivedMsgHeader == null);
+        boolean responseNotReceived = (monitor.progressResponseReceivedMsgHeader == null) && (monitor.progressResponseErrorReceivedMsgHeader == null);
 
         LoggingBase.logMessage("FastProvider.waiting(" + retVal + ")");
         LoggingBase.logMessage("FastProvider.checkCorrectNumberOfReceivedMessages(" + monitor.checkCorrectNumberOfReceivedMessages() + ")");

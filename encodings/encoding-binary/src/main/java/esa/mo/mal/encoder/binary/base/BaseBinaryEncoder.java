@@ -93,7 +93,7 @@ public abstract class BaseBinaryEncoder extends Encoder {
 
         @Override
         public void writeBytes(final byte[] value) throws IOException {
-            if (null == value) {
+            if (value == null) {
                 writeUnsignedInt(0);
                 throw new IOException("StreamHolder.writeBytes: null value supplied!");
             } else {

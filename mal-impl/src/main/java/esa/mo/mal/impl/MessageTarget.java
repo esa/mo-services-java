@@ -62,7 +62,7 @@ public final class MessageTarget {
         this.uriTo = uriTo;
         this.brokerUri = brokerUri;
         this.authenticationId = authenticationId;
-        this.qosProps = (null == qosProps) ? new HashMap() : qosProps;
+        this.qosProps = (qosProps == null) ? new HashMap() : qosProps;
     }
 
     public void setAuthenticationId(Blob authenticationId) {

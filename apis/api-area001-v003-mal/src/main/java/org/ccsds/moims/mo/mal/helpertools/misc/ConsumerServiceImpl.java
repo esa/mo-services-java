@@ -122,7 +122,7 @@ public abstract class ConsumerServiceImpl {
 
     public void setAuthenticationId(Blob authenticationId) {
         if (null != tmConsumer) {
-            tmConsumer.setAuthenticationId(null == authenticationId ? new Blob("".getBytes()) : authenticationId);
+            tmConsumer.setAuthenticationId(authenticationId == null ? new Blob("".getBytes()) : authenticationId);
         }
     }
 }

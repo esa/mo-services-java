@@ -234,9 +234,9 @@ public class BrokerMatcher {
      */
     @Deprecated
     public static int compareSubkey(final String myKeyPart, final String theirKeyPart) {
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            if ((null != myKeyPart) || (null != theirKeyPart)) {
-                if (null == myKeyPart) {
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            if ((myKeyPart != null) || (theirKeyPart != null)) {
+                if (myKeyPart == null) {
                     return -1;
                 }
                 return 1;
@@ -286,8 +286,8 @@ public class BrokerMatcher {
             return true;
         }
 
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            return (myKeyPart == null) && (theirKeyPart == null);
         }
 
         return myKeyPart.equals(theirKeyPart);
@@ -308,8 +308,8 @@ public class BrokerMatcher {
             return true;
         }
 
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            return (myKeyPart == null) && (theirKeyPart == null);
         }
 
         return myKeyPart.equals(theirKeyPart);
@@ -328,8 +328,8 @@ public class BrokerMatcher {
             return true;
         }
 
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            return (myKeyPart == null) && (theirKeyPart == null);
         }
 
         return myKeyPart.equals(theirKeyPart);

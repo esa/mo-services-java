@@ -47,13 +47,13 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     public void testSubmit(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
-        if (null == iptd) {
+        if (iptd == null) {
             throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
         }
     }
 
     public String request(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
-        if (null == iptd) {
+        if (iptd == null) {
             throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
         }
 
@@ -65,7 +65,7 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
             LoggingBase.logMessage("invoke called");
             Thread.sleep(1000);
 
-            if (null == iptd) {
+            if (iptd == null) {
                 ri.sendError(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
                 return;
             }
@@ -89,7 +89,7 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
             LoggingBase.logMessage("progress called");
             Thread.sleep(1000);
 
-            if (null == iptd) {
+            if (iptd == null) {
                 qi.sendError(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
                 return;
             }
