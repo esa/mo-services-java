@@ -22,9 +22,10 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -58,12 +59,10 @@ public class TCPIPEndpoint extends Endpoint {
                 interactionStage, transactionId, serviceArea,
                 service, operation, serviceVersion,
                 isErrorMessage, supplements, qosProperties);
-        try {
-            return new TCPIPMessage((TCPIPMessageHeader) hdr, qosProperties,
-                    transport.getStreamFactory(), body);
-        } catch (MALInteractionException e) {
-            throw new MALException("Error creating message", e);
-        }
+
+        MALElementStreamFactory encFactory = transport.getStreamFactory();
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(hdr, encFactory, body);
+        return new TCPIPMessage(hdr, lazyBody, encFactory, qosProperties);
     }
 
     /**

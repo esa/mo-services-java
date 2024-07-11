@@ -22,16 +22,20 @@ package esa.mo.mal.transport.http.receiving;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.api.IContextHandler;
 import esa.mo.mal.transport.http.api.IHttpRequest;
 import esa.mo.mal.transport.http.api.IHttpResponse;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -67,8 +71,14 @@ public class HTTPContextHandlerNoEncoding implements IContextHandler {
     @Override
     public void finishHandling() {
         try {
-            GENMessage malMsg = new GENMessage(true, new MALMessageHeader(),
-                    new HashMap(), data, transport.getStreamFactory());
+            MALElementStreamFactory encFactory = transport.getStreamFactory();
+            final ByteArrayInputStream bais = new ByteArrayInputStream(data);
+            final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+            MALMessageHeader header = enc.readHeader(new MALMessageHeader());
+            LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+            GENMessage malMsg = new GENMessage(header, lazyBody, encFactory, new HashMap());
+
             IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(data));
             transport.receive(null, msgHolder);
         } catch (MALException ex) {

@@ -22,6 +22,7 @@ package esa.mo.mal.transport.tcpip;
 
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryDecoder;
 import esa.mo.mal.transport.gen.*;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.gen.util.MessagePoller;
 import java.io.ByteArrayOutputStream;
@@ -51,10 +52,13 @@ import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import esa.mo.mal.transport.gen.sending.MessageSender;
+import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.BadEncodingException;
 import org.ccsds.moims.mo.mal.DeliveryFailedException;
 import org.ccsds.moims.mo.mal.DestinationTransientException;
 import org.ccsds.moims.mo.mal.DestinationUnknownException;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 
 /**
@@ -569,7 +573,12 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
             System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
             // Decode the body
-            return new TCPIPMessage(header, qosProperties, bodyPacketData, getStreamFactory());
+            MALElementStreamFactory encFactory = getStreamFactory();
+            final ByteArrayInputStream bais = new ByteArrayInputStream(bodyPacketData);
+            final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+            LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+            return new TCPIPMessage(header, lazyBody, encFactory, qosProperties);
         } catch (Exception ex) {
             RLOGGER.log(Level.WARNING, "The header is: " + header.toString(), ex);
             throw ex; // Rethrow the exception upwards!

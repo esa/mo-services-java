@@ -23,6 +23,7 @@ package esa.mo.mal.transport.http;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.http.api.IHttpResponse;
@@ -36,6 +37,7 @@ import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoResponse;
 import esa.mo.mal.transport.http.sending.HTTPMessageSenderRequestResponse;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.StatusCodeHelper;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -61,7 +63,9 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -625,7 +629,12 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         sb.append("Encoded received message:\n");
         sb.append(encodedMsg);
 
-        returnable = new GENMessage(false, header, qosProperties, packetData, getStreamFactory());
+        MALElementStreamFactory encFactory = getStreamFactory();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(packetData);
+        final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+        returnable = new GENMessage(header, lazyBody, encFactory, qosProperties);
 
         sb.append("\nDecoded message:");
         sb.append(returnable.getBody().toString());

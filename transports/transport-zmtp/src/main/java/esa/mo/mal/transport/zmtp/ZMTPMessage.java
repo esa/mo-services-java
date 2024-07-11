@@ -22,6 +22,7 @@ package esa.mo.mal.transport.zmtp;
 
 import esa.mo.mal.encoder.zmtp.header.ZMTPHeaderStreamFactory;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -76,7 +77,7 @@ public class ZMTPMessage extends GENMessage {
             MALElementStreamFactory encFactory) throws MALException {
         this.header = header;
         final MALElementInputStream enc = encFactory.createInputStream(bais);
-        this.body = super.createMessageBody(enc);
+        this.body = LazyMessageBody.createMessageBody(header, encFactory, enc);
         this.hdrStreamFactory = hdrStreamFactory;
     }
 

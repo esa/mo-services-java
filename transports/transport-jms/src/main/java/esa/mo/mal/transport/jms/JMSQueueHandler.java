@@ -22,11 +22,15 @@ package esa.mo.mal.transport.jms;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.jms.util.StructureHelper;
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import javax.jms.*;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -83,9 +87,9 @@ public class JMSQueueHandler implements MessageListener {
         try {
             if (msg instanceof ObjectMessage) {
                 ObjectMessage objMsg = (ObjectMessage) msg;
-                Object dat = objMsg.getObject();
+                Object data = objMsg.getObject();
                 // we use the same message container as RMI protocol
-                if (dat instanceof byte[]) {
+                if (data instanceof byte[]) {
                     IdentifierList d = StructureHelper.stringToDomain(objMsg.getStringProperty(
                             JMSEndpoint.DOM_PROPERTY));
                     Identifier n = new Identifier(objMsg.getStringProperty(JMSEndpoint.NET_PROPERTY));
@@ -93,8 +97,14 @@ public class JMSQueueHandler implements MessageListener {
                     UShort s = new UShort(objMsg.getIntProperty(JMSEndpoint.SVC_PROPERTY));
                     UShort o = new UShort(objMsg.getIntProperty(JMSEndpoint.OPN_PROPERTY));
 
-                    GENMessage malMsg = new GENMessage(true, new MALMessageHeader(),
-                            new HashMap(), (byte[]) dat, endPoint.getJtransport().getStreamFactory());
+                    MALElementStreamFactory encFactory = endPoint.getJtransport().getStreamFactory();
+                    final ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) data);
+                    final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+                    MALMessageHeader header = enc.readHeader(new MALMessageHeader());
+                    LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+                    GENMessage malMsg = new GENMessage(header, lazyBody, encFactory, new HashMap());
+
                     IncomingMessageHolder msgHolder = new IncomingMessageHolder(malMsg, new PacketToString(null));
                     endPoint.getJtransport().receive(null, msgHolder);
                 } else {

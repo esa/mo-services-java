@@ -20,13 +20,14 @@
  */
 package esa.mo.mal.transport.gen;
 
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -109,26 +110,23 @@ public class Endpoint implements MALEndpoint {
             final NamedValueList supplements,
             final Map qosProperties,
             final Object... body) throws IllegalArgumentException, MALException {
-        try {
-            return new GENMessage(
-                    createMessageHeader(getURI(),
-                            authenticationId,
-                            uriTo,
-                            timestamp,
-                            interactionType,
-                            interactionStage,
-                            transactionId,
-                            serviceArea,
-                            service,
-                            operation,
-                            serviceVersion,
-                            isErrorMessage,
-                            supplements,
-                            qosProperties),
-                    qosProperties, transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
+        MALMessageHeader header = createMessageHeader(getURI(),
+                authenticationId,
+                uriTo,
+                timestamp,
+                interactionType,
+                interactionStage,
+                transactionId,
+                serviceArea,
+                service,
+                operation,
+                serviceVersion,
+                isErrorMessage,
+                supplements,
+                qosProperties);
+        MALElementStreamFactory encFactory = transport.getStreamFactory();
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, body);
+        return new GENMessage(header, lazyBody, encFactory, qosProperties);
     }
 
     @Override

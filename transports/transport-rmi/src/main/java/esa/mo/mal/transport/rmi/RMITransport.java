@@ -22,8 +22,10 @@ package esa.mo.mal.transport.rmi;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -40,6 +42,8 @@ import org.ccsds.moims.mo.mal.DeliveryFailedException;
 import org.ccsds.moims.mo.mal.DestinationUnknownException;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -203,8 +207,13 @@ public class RMITransport extends Transport<byte[], byte[]> {
 
     @Override
     public GENMessage decodeMessage(byte[] packet) throws MALException {
-        return new GENMessage(true, new MALMessageHeader(),
-                qosProperties, packet, getStreamFactory());
+        MALElementStreamFactory encFactory = getStreamFactory();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+        final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+        MALMessageHeader header = enc.readHeader(new MALMessageHeader());
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+        return new GENMessage(header, lazyBody, encFactory, qosProperties);
     }
 
     @Override

@@ -22,6 +22,7 @@ package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,14 +57,15 @@ public class SPPMessage extends GENMessage {
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The encoding factory.
      * @param body the body of the message.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
-     * is unknown.
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
-            final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
-            MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
-            Object... body) throws MALInteractionException {
-        super(header, qosProperties, encFactory, body);
+            final SPPConfiguration configuration,
+            final SPPSegmentCounter segmentCounter,
+            final MALMessageHeader header,
+            final LazyMessageBody body,
+            final MALElementStreamFactory encFactory,
+            final Map qosProperties) {
+        super(header, body, encFactory, qosProperties);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;
@@ -76,18 +78,18 @@ public class SPPMessage extends GENMessage {
      * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
      * @param segmentCounter The segment counter.
-     * @param readHeader True if the header should be read from the packet.
-     * @param header An instance of the header class to use.
+     * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
-     * @param packet The message in encoded form.
-     * @param encFactory The stream factory to use for decoding.
-     * @throws MALException On decoding error.
+     * @param encFactory The encoding factory.
+     * @param body the body of the message.
+     * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
+     * is unknown.
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
             final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
-            boolean readHeader, MALMessageHeader header, Map qosProperties,
-            byte[] packet, MALElementStreamFactory encFactory) throws MALException {
-        super(readHeader, header, qosProperties, packet, encFactory);
+            MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
+            Object... body) throws MALInteractionException {
+        super(header, qosProperties, encFactory, body);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;

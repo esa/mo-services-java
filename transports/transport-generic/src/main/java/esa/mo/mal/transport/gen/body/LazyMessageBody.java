@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Attribute;
@@ -45,6 +46,8 @@ import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALEncodedElementList;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * Implementation of the MALMessageBody interface. The class will only decode
@@ -341,5 +344,63 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
         }
 
         return lenc.readElement(element, field);
+    }
+
+    public static LazyMessageBody createMessageBody(MALMessageHeader header,
+            MALElementStreamFactory encFactory, Object[] bodyElements) {
+        MALEncodingContext ctx = new MALEncodingContext(header);
+
+        if (header.getIsErrorMessage()) {
+            return new ErrorBody(ctx, encFactory, bodyElements);
+        }
+
+        if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
+            final short stage = header.getInteractionStage().getValue();
+            switch (stage) {
+                case MALPubSubOperation._REGISTER_STAGE:
+                    return new RegisterBody(ctx, encFactory, bodyElements);
+                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+                    return new PublishRegisterBody(ctx, encFactory, bodyElements);
+                case MALPubSubOperation._PUBLISH_STAGE:
+                    return new PublishBody(ctx, encFactory, bodyElements);
+                case MALPubSubOperation._NOTIFY_STAGE:
+                    return new NotifyBody(ctx, encFactory, bodyElements);
+                case MALPubSubOperation._DEREGISTER_STAGE:
+                    return new DeregisterBody(ctx, encFactory, bodyElements);
+                default:
+                    return new LazyMessageBody(ctx, encFactory, bodyElements);
+            }
+        }
+
+        return new LazyMessageBody(ctx, encFactory, bodyElements);
+    }
+
+    public static LazyMessageBody createMessageBody(MALMessageHeader header,
+            MALElementStreamFactory encFactory, MALElementInputStream encBodyElements) {
+        MALEncodingContext ctx = new MALEncodingContext(header);
+
+        if (header.getIsErrorMessage()) {
+            return new ErrorBody(ctx, encFactory, encBodyElements);
+        }
+
+        if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
+            final short stage = header.getInteractionStage().getValue();
+            switch (stage) {
+                case MALPubSubOperation._REGISTER_STAGE:
+                    return new RegisterBody(ctx, encFactory, encBodyElements);
+                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
+                    return new PublishRegisterBody(ctx, encFactory, encBodyElements);
+                case MALPubSubOperation._PUBLISH_STAGE:
+                    return new PublishBody(ctx, encFactory, encBodyElements);
+                case MALPubSubOperation._NOTIFY_STAGE:
+                    return new NotifyBody(ctx, encFactory, encBodyElements);
+                case MALPubSubOperation._DEREGISTER_STAGE:
+                    return new DeregisterBody(ctx, encFactory, encBodyElements);
+                default:
+                    return new LazyMessageBody(ctx, encFactory, encBodyElements);
+            }
+        }
+
+        return new LazyMessageBody(ctx, encFactory, encBodyElements);
     }
 }
