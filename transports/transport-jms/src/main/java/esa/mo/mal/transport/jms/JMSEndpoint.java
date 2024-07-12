@@ -145,7 +145,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
             if (msg.getHeader().getInteractionType() == InteractionType.PUBSUB) {
                 switch (msg.getHeader().getInteractionStage().getValue()) {
                     case MALPubSubOperation._REGISTER_STAGE: {
-                        if (null == lqs) {
+                        if (lqs == null) {
                             lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
                             localSession = true;
                         }
@@ -154,7 +154,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
                         break;
                     }
                     case MALPubSubOperation._PUBLISH_REGISTER_STAGE: {
-                        if (null == lqs) {
+                        if (lqs == null) {
                             lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
                             localSession = true;
                         }
@@ -163,7 +163,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
                         break;
                     }
                     case MALPubSubOperation._PUBLISH_STAGE: {
-                        if (null == lqs) {
+                        if (lqs == null) {
                             lqs = jtransport.getCurrentConnection().createSession(true, Session.AUTO_ACKNOWLEDGE);
                             localSession = true;
                         }
@@ -179,7 +179,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
                         break;
                     }
                     case MALPubSubOperation._DEREGISTER_STAGE: {
-                        if (null == lqs) {
+                        if (lqs == null) {
                             lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
                             localSession = true;
                         }
@@ -188,7 +188,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
                         break;
                     }
                     case MALPubSubOperation._PUBLISH_DEREGISTER_STAGE: {
-                        if (null == lqs) {
+                        if (lqs == null) {
                             lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
                             localSession = true;
                         }
@@ -203,7 +203,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
                     }
                 }
             } else {
-                if (null == lqs) {
+                if (lqs == null) {
                     lqs = jtransport.getCurrentConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
                 }
 
@@ -278,7 +278,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
 
         JMSPublishHandler details = publishHandlerMap.get(createProviderKey(hdr));
 
-        if (null == details) {
+        if (details == null) {
             details = new JMSPublishHandler(jtransport, msg);
             publishHandlerMap.put(createProviderKey(hdr), details);
             JMSTransport.RLOGGER.log(Level.FINE, "New JMS publisher registering: {0}", hdr);
@@ -296,7 +296,7 @@ public class JMSEndpoint extends Endpoint implements MALEndpoint {
         JMSTransport.RLOGGER.fine("Starting PUBLISH");
         JMSPublishHandler details = publishHandlerMap.get(createProviderKey(msg.getHeader()));
 
-        if (null == details) {
+        if (details == null) {
             JMSTransport.RLOGGER.warning("JMS : ERR Provider not known");
             throw new MALInteractionException(
                     new MOErrorException(MALHelper.INCORRECT_STATE_ERROR_NUMBER, null)

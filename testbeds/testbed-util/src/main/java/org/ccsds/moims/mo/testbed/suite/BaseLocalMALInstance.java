@@ -56,7 +56,7 @@ public abstract class BaseLocalMALInstance extends LoggingBase {
 
     public static BaseLocalMALInstance binstance() throws MALException {
         synchronized (instanceCondition) {
-            if (null == instance) {
+            if (instance == null) {
                 String clsName = System.getProperty(Configuration.LOCAL_MAL_CLASS);
                 try {
                     Class cls = Class.forName(clsName);

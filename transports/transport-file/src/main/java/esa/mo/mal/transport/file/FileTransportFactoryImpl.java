@@ -48,7 +48,7 @@ public class FileTransportFactoryImpl extends MALTransportFactory {
     public MALTransport createTransport(final MALContext malContext,
             final Map properties) throws MALException {
         synchronized (MUTEX) {
-            if (null == transport) {
+            if (transport == null) {
                 transport = new FileTransport(getProtocol(), this, properties);
                 transport.init();
             }

@@ -49,7 +49,7 @@ public abstract class LoggingBase {
     }
 
     static protected void setRuntime(long newValue) {
-        if (null == runTime) {
+        if (runTime == null) {
             runTime = new Date(newValue);
         }
     }
@@ -72,7 +72,7 @@ public abstract class LoggingBase {
     }
 
     static protected void openLogFile(String filename, String dirname) {
-        if (null == out) {
+        if (out == null) {
             File outDir = null;
 
             if (null != dirname) {

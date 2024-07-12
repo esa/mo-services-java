@@ -287,14 +287,14 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
             QualifiedApid qAPID = new QualifiedApid(apidQualifier, apid);
             Map<Long, SPPSegmentsHandler> map = segmentHandlers.get(qAPID);
 
-            if (null == map) {
+            if (map == null) {
                 map = new HashMap<>();
                 segmentHandlers.put(qAPID, map);
             }
 
             SPPSegmentsHandler segmentHandler = map.get(transactionId);
 
-            if (null == segmentHandler) {
+            if (segmentHandler == null) {
                 segmentHandler = new SPPSegmentsHandler(this, apidQualifier, apid);
                 map.put(transactionId, segmentHandler);
             }
@@ -323,7 +323,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     protected SPPMessage internalDecodeMessageHeader(final int apidQualifier,
             final int apid, final byte[] packet) throws MALException {
         SPPConfiguration configuration = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
-        if (null == configuration) {
+        if (configuration == null) {
             configuration = defaultConfiguration;
         }
 

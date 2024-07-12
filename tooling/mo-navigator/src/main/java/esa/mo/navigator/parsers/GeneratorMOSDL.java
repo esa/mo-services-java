@@ -613,7 +613,7 @@ public class GeneratorMOSDL extends Generator {
         if (dataType instanceof CompositeType) {
             CompositeType composite = (CompositeType) dataType;
             writeDoc(composite.getComment());
-            boolean isAbstract = null == composite.getShortFormPart() || 0 == composite.getShortFormPart();
+            boolean isAbstract = (composite.getShortFormPart() == null) || (composite.getShortFormPart() == 0);
             writeIndent();
             if (isAbstract) {
                 write("abstract ");
@@ -661,7 +661,7 @@ public class GeneratorMOSDL extends Generator {
     }
 
     private void writeErrors(List<ErrorDefinitionType> errorList) throws IOException {
-        if (null == errorList) {
+        if (errorList == null) {
             return;
         }
         for (ErrorDefinitionType error : errorList) {
@@ -679,10 +679,10 @@ public class GeneratorMOSDL extends Generator {
 
     private String resolveType(TypeReference typeRef, boolean isCanBeNull) {
         boolean isFundamental = MAL_AREA.equals(typeRef.getArea())
-                && null == typeRef.getService()
+                && (typeRef.getService() == null)
                 && MAL_FUNDAMENTALS.contains(typeRef.getName());
-        boolean isSameArea = null != currentArea && currentArea.getName().equals(typeRef.getArea());
-        boolean isSameService = null != currentService && currentService.getName().equals(typeRef.getService());
+        boolean isSameArea = (currentArea != null) && currentArea.getName().equals(typeRef.getArea());
+        boolean isSameService = (currentService != null) && currentService.getName().equals(typeRef.getService());
 
         StringBuilder sb = new StringBuilder();
         if (typeRef.isList()) {
@@ -759,9 +759,9 @@ public class GeneratorMOSDL extends Generator {
             // continue
         }
 
-        StringBuilder sb = new StringBuilder(null == op.getComment() ? "" : op.getComment());
+        StringBuilder sb = new StringBuilder(op.getComment() == null ? "" : op.getComment());
         for (MessageDetails msg : messages) {
-            if (null != msg.getComment() || !msg.getFields().isEmpty()) {
+            if (msg.getComment() != null || !msg.getFields().isEmpty()) {
                 sb.append(System.lineSeparator());
             }
 
@@ -803,12 +803,12 @@ public class GeneratorMOSDL extends Generator {
                 ErrorReferenceType errRef = (ErrorReferenceType) error;
                 errorName = resolveType(errRef.getType());
                 errorComment = errRef.getComment();
-                extraComment = null == errRef.getExtraInformation() ? null : errRef.getExtraInformation().getComment();
+                extraComment = (errRef.getExtraInformation() == null) ? null : errRef.getExtraInformation().getComment();
             } else if (error instanceof ErrorDefinitionType) {
                 ErrorDefinitionType errDef = (ErrorDefinitionType) error;
                 errorName = errDef.getName();
                 errorComment = errDef.getComment();
-                extraComment = null == errDef.getExtraInformation() ? null : errDef.getExtraInformation().getComment();
+                extraComment = (errDef.getExtraInformation() == null) ? null : errDef.getExtraInformation().getComment();
             } else {
                 continue;
             }
@@ -858,7 +858,7 @@ public class GeneratorMOSDL extends Generator {
             default:
                 return Collections.emptyList();
         }
-        if (null == errors) {
+        if (errors == null) {
             return Collections.emptyList();
         }
         return errors;
@@ -876,7 +876,7 @@ public class GeneratorMOSDL extends Generator {
     }
 
     private void writeDoc(CharSequence doc) throws IOException {
-        if (docType == DocType.SUPPRESS || null == doc) {
+        if (docType == DocType.SUPPRESS || doc == null) {
             return;
         }
         if (doc.toString().contains("\n")) {
@@ -918,7 +918,7 @@ public class GeneratorMOSDL extends Generator {
     }
 
     private void write(Object... text) throws IOException {
-        if (null == text) {
+        if (text == null) {
             return;
         }
         for (Object cs : text) {
@@ -938,12 +938,12 @@ public class GeneratorMOSDL extends Generator {
     }
 
     private static String createFQTypeName(AreaType area, ServiceType service, TypeReference type, boolean isList) {
-        String servicename = (null == service) ? "" : service.getName();
+        String servicename = (service == null) ? "" : service.getName();
         return createFQTypeName(area.getName(), servicename, type.getArea(), type.getService(), type.getName(), isList);
     }
 
     private static String createFQTypeName(AreaType area, ServiceType service, ObjectReference type) {
-        String servicename = (null == service) ? "" : service.getName();
+        String servicename = (service == null) ? "" : service.getName();
         return createFQTypeName(area.getName(), servicename, type.getArea(), type.getService(), String.valueOf(type.getNumber()), false);
     }
 

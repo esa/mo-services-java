@@ -351,7 +351,7 @@ public class MosdlSpecLoader implements SpecLoader {
             currentArea = spec.getArea().stream()
                     .filter(a -> a.getName().equals(areaName))
                     .findAny().orElse(null);
-            boolean isNewArea = null == currentArea;
+            boolean isNewArea = (currentArea == null);
             if (isNewArea) {
                 currentArea = new AreaType();
                 spec.getArea().add(currentArea);
@@ -496,7 +496,7 @@ public class MosdlSpecLoader implements SpecLoader {
             // add composite to service or area
             if (null != currentService) {
                 DataTypeList dataTypeList = currentService.getDataTypes();
-                if (null == dataTypeList) {
+                if (dataTypeList == null) {
                     dataTypeList = new DataTypeList();
                     currentService.setDataTypes(dataTypeList);
                 }
@@ -506,7 +506,7 @@ public class MosdlSpecLoader implements SpecLoader {
                 dataTypeList.getCompositeOrEnumeration().add(compType);
             } else {
                 AreaDataTypeList dataTypeList = currentArea.getDataTypes();
-                if (null == dataTypeList) {
+                if (dataTypeList == null) {
                     dataTypeList = new AreaDataTypeList();
                     currentArea.setDataTypes(dataTypeList);
                 }
@@ -527,7 +527,7 @@ public class MosdlSpecLoader implements SpecLoader {
             NamedElementReferenceWithCommentType field = new NamedElementReferenceWithCommentType();
             field.setName(getId(ctx.ID()));
             String doc = getDoc(ctx.doc());
-            if (null == ctx.nullableType().QUEST()) {
+            if (ctx.nullableType().QUEST() == null) {
                 field.setCanBeNull(Boolean.FALSE);
             }
             field.setType(getType(ctx.nullableType()));
@@ -557,7 +557,7 @@ public class MosdlSpecLoader implements SpecLoader {
             // add enum to service or area
             if (null != currentService) {
                 DataTypeList dataTypeList = currentService.getDataTypes();
-                if (null == dataTypeList) {
+                if (dataTypeList == null) {
                     dataTypeList = new DataTypeList();
                     currentService.setDataTypes(dataTypeList);
                 }
@@ -565,7 +565,7 @@ public class MosdlSpecLoader implements SpecLoader {
                 dataTypeList.getCompositeOrEnumeration().add(enumType);
             } else {
                 AreaDataTypeList dataTypeList = currentArea.getDataTypes();
-                if (null == dataTypeList) {
+                if (dataTypeList == null) {
                     dataTypeList = new AreaDataTypeList();
                     currentArea.setDataTypes(dataTypeList);
                 }
@@ -594,13 +594,13 @@ public class MosdlSpecLoader implements SpecLoader {
             FundamentalType fundamentalType = new FundamentalType();
             fundamentalType.setName(getId(ctx.ID()));
             fundamentalType.setComment(getDoc(ctx.doc()));
-            if (null != ctx.EXTENDS()) {
+            if (ctx.EXTENDS() != null) {
                 ElementReferenceType refType = new ElementReferenceType();
                 refType.setType(getType(ctx.type()));
                 fundamentalType.setExtends(refType);
             }
             AreaDataTypeList dataTypeList = currentArea.getDataTypes();
-            if (null == dataTypeList) {
+            if (dataTypeList == null) {
                 dataTypeList = new AreaDataTypeList();
                 currentArea.setDataTypes(dataTypeList);
             }
@@ -614,7 +614,7 @@ public class MosdlSpecLoader implements SpecLoader {
             attrType.setComment(getDoc(ctx.doc()));
             attrType.setShortFormPart(claimNumber(ctx.nidentifier(), areaTypeCounter).longValue());
             AreaDataTypeList dataTypeList = currentArea.getDataTypes();
-            if (null == dataTypeList) {
+            if (dataTypeList == null) {
                 dataTypeList = new AreaDataTypeList();
                 currentArea.setDataTypes(dataTypeList);
             }
@@ -761,7 +761,7 @@ public class MosdlSpecLoader implements SpecLoader {
             String comment = currentOpDoc.getOperationDoc();
             currentOperation.setComment(comment);
             CapabilitySetType cs = currentCapabilitySet;
-            if (null == cs) {
+            if (cs == null) {
                 // if operation defined outside of capability set, put it in its own cap set
                 cs = new CapabilitySetType();
                 cs.setNumber(claimNumber((TerminalNode) null, capabilitySetCounter));
@@ -844,11 +844,11 @@ public class MosdlSpecLoader implements SpecLoader {
         }
 
         private static String getDoc(final MOSDLParser.DocContext doc) {
-            if (null == doc) {
+            if (doc == null) {
                 return null;
             }
             String text;
-            if (null != doc.DOC()) {
+            if (doc.DOC() != null) {
                 text = doc.DOC().getText().replace(DOC_TOKEN, "");
             } else {
                 text = doc.LINE_DOC().getText().substring(LINE_DOC_TOKEN.length());
@@ -882,7 +882,7 @@ public class MosdlSpecLoader implements SpecLoader {
          * @return a number usable as identifier
          */
         private static Integer claimNumber(final TerminalNode number, final AtomicInteger counter) {
-            if (null == number) {
+            if (number == null) {
                 return counter.getAndIncrement();
             }
             int n = Integer.decode(number.getText());
@@ -1018,7 +1018,7 @@ public class MosdlSpecLoader implements SpecLoader {
                 if (null != importedType) {
                     typeRef.setArea(importedType.getArea());
                     typeRef.setService(importedType.getService());
-                } else if (null == currentService) {
+                } else if (currentService == null) {
                     typeRef.setArea(currentArea.getName());
                 } else {
                     // postpone final type resolution until we can decide whether a current service or current area type is meant
@@ -1073,7 +1073,7 @@ public class MosdlSpecLoader implements SpecLoader {
         private final String opDoc;
 
         public OperationDoc(final String doc) {
-            if (null == doc) {
+            if (doc == null) {
                 opDoc = null;
                 return;
             }
@@ -1185,13 +1185,13 @@ public class MosdlSpecLoader implements SpecLoader {
 
         private String getDoc(TagKey tagKey, String localDoc) {
             String tag = tags.get(tagKey);
-            if (null == tag && null == localDoc) {
+            if (tag == null && localDoc == null) {
                 return null;
             }
-            if (null == tag) {
+            if (tag == null) {
                 return localDoc;
             }
-            if (null == localDoc) {
+            if (localDoc == null) {
                 return tag;
             }
             return tag + System.lineSeparator() + localDoc;

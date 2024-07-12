@@ -615,7 +615,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public PubsubErrorIPTestHandler getTcTcHandlerForPublishRegister() throws Exception {
-        if (null == tcTcPublishErrorHandler) {
+        if (tcTcPublishErrorHandler == null) {
             FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
                     .loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
             tcTcPublishErrorHandler = new PubsubErrorIPTestHandler();
@@ -634,7 +634,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public PubsubErrorIPTestHandler getTcTmHandlerForPublishRegister() throws Exception {
-        if (null == tcTmPublishErrorHandler) {
+        if (tcTmPublishErrorHandler == null) {
             FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
                     .loadURIs(TestServiceProvider.TM_ERROR_BROKER_NAME);
             tcTmPublishErrorHandler = new PubsubErrorIPTestHandler();
@@ -661,7 +661,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public PubsubErrorIPTestHandler getTmTcHandlerForPublishRegister() throws Exception {
-        if (null == tmTcPublishErrorHandler) {
+        if (tmTcPublishErrorHandler == null) {
             FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
                     .loadURIs(TestServiceProvider.ERROR_BROKER_NAME);
             tmTcPublishErrorHandler = new PubsubErrorIPTestHandler();
@@ -688,7 +688,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public PubsubErrorIPTestHandler getTmTmHandlerForPublishRegister() throws Exception {
-        if (null == tmTmPublishErrorHandler) {
+        if (tmTmPublishErrorHandler == null) {
             FileBasedDirectory.URIpair errorBrokerUris = FileBasedDirectory
                     .loadURIs(TestServiceProvider.TM_ERROR_BROKER_NAME);
             tmTmPublishErrorHandler = new PubsubErrorIPTestHandler();
@@ -724,7 +724,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public synchronized DataTestStub segmentationStub() throws MALException {
-        if (null == segstub) {
+        if (segstub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_TEST_PROVIDER_NAME);
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -748,7 +748,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public synchronized DataTestStub segmentationErrorSmallHeaderStub() throws MALException {
-        if (null == segErrorSmallStub) {
+        if (segErrorSmallStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
             HashMap<Object, Object> props = new HashMap<>();
             props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER);
@@ -780,7 +780,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public synchronized DataTestStub segmentationErrorLargeHeaderStub() throws MALException {
-        if (null == segErrorLargeStub) {
+        if (segErrorLargeStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_ERROR_TEST_PROVIDER_NAME);
             HashMap<Object, Object> props = new HashMap<>();
             props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_ERROR_LOCAL_APID_QUALIFIER);
@@ -812,7 +812,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public synchronized IPTestStub segCounterTestStub() throws MALException {
-        if (null == segCounterStub) {
+        if (segCounterStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(TestServiceProvider.SEGMENTATION_COUNTER_SELECT_TEST_PROVIDER_NAME);
             HashMap<Object, Object> props = new HashMap<>();
             props.put(TestHelper.APID_QUALIFIER_PROPERTY, SEGMENTATION_COUNTER_SELECT_LOCAL_APID_QUALIFIER);
@@ -838,7 +838,7 @@ public class LocalMALInstance extends org.ccsds.moims.mo.mal.test.suite.LocalMAL
     }
 
     public synchronized DataTestStub alternateDataTestStub() throws MALException {
-        if (null == dataTestStubNoVarint) {
+        if (dataTestStubNoVarint == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory
                     .loadURIs(TestServiceProvider.DATA_TEST_NO_VARINT_PROVIDER_NAME);
 

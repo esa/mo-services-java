@@ -169,7 +169,7 @@ public class SPPEndpoint extends Endpoint {
 
         SPPSegmentCounter cnt = segmentCounterMap.get(idx);
 
-        if (null == cnt) {
+        if (cnt == null) {
             cnt = new SPPSegmentCounter();
             segmentCounterMap.put(idx, cnt);
         }

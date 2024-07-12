@@ -249,9 +249,9 @@ public class LineEncoder {
 
     private void encodeBlob(final String name, final Blob value) throws MALException {
         //should encode to 64 bit char string
-        if ((null == value)
-                || (value.isURLBased() && (null == value.getURL()))
-                || (!value.isURLBased() && (null == value.getValue()))) {
+        if ((value == null)
+                || (value.isURLBased() && (value.getURL() == null))
+                || (!value.isURLBased() && (value.getValue() == null))) {
             add(name, STR_NULL);
         } else {
             add(name, byteArrayToHexString(value.getValue()));

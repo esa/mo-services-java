@@ -60,7 +60,7 @@ public class JMSConsumeHandler extends JMSQueueHandler {
         MALMessageHeader hdr = msg.getHeader();
         URIFrom = hdr.getToURI();
 
-        if (null == transactionId) {
+        if (transactionId == null) {
             transactionId = hdr.getTransactionId();
         }
 

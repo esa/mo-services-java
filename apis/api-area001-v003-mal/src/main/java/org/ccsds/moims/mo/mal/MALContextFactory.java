@@ -134,7 +134,7 @@ public abstract class MALContextFactory {
 
         final Integer num = AREA_NAME_MAP.get(areaName.getValue());
 
-        if (null == num) {
+        if (num == null) {
             return null;
         }
 
