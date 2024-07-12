@@ -120,10 +120,10 @@ public class URI implements Attribute {
     public static int nthIndexOf(String uri, char delimiter, int count) {
         int index = -1;
 
-        while (0 <= count) {
+        while (count >= 0) {
             index = uri.indexOf(delimiter, index + 1);
 
-            if (-1 == index) {
+            if (index == -1) {
                 return index;
             }
 

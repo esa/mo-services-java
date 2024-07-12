@@ -138,7 +138,7 @@ public class ReceiveMultipleTestProcedure {
 
         ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
-        if (0 == listener.getNotifyHeaders().size()) {
+        if (listener.getNotifyHeaders().isEmpty()) {
             return false;
         }
 

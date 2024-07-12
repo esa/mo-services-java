@@ -660,7 +660,7 @@ public class MALReceiver implements MALMessageListener {
 
             final int irv = this.first.compareTo(otherPair.first);
 
-            if (0 == irv) {
+            if (irv == 0) {
                 if (null != this.second) {
                     if (otherPair.second == null) {
                         return -1;

@@ -74,7 +74,7 @@ public abstract class Enumeration implements Element {
             return true;
         }
         if (other instanceof Enumeration) {
-            return 0 == ordinal.compareTo(((Enumeration) other).ordinal);
+            return (ordinal.compareTo(((Enumeration) other).ordinal) == 0);
         }
         return false;
     }

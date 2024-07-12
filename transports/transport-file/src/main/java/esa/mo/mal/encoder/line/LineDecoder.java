@@ -668,14 +668,14 @@ public class LineDecoder implements MALDecoder {
 
         // ensure that we have loaded enough buffer from the input stream
         // (if we are stream based) for the next read
-        if (-1 == index) {
+        if (index == -1) {
             boolean needMore = true;
             while (needMore) {
                 final boolean haveMore = loadExtraBuffer();
 
                 index = sourceBuffer.buf.indexOf(STR_DELIM, sourceBuffer.offset);
 
-                needMore = haveMore && (-1 == index);
+                needMore = haveMore && (index == -1);
             }
         }
 

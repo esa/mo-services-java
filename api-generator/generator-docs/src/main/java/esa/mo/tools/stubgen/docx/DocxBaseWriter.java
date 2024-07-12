@@ -280,7 +280,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addNumberedComment(List<String> strings) throws IOException {
         if ((null != strings) && (!strings.isEmpty())) {
-            if (1 == strings.size()) {
+            if (strings.size() == 1) {
                 addComment(strings.get(0));
             } else {
                 int instance = 0;

@@ -633,9 +633,8 @@ public abstract class Transport<I, O> implements MALTransport {
 
         if (routingPart == null) {
             final int iFirst = URI.nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
-            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim)
-                    : uriValue.length();
-            if (0 > iSecond) {
+            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim) : uriValue.length();
+            if (iSecond < 0) {
                 iSecond = uriValue.length();
             }
 

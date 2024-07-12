@@ -148,7 +148,7 @@ public abstract class BaseBinaryDecoder extends Decoder {
 
         @Override
         public boolean readBool() throws MALException {
-            return !(0 == read8());
+            return !(read8() == 0);
         }
 
         @Override

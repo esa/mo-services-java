@@ -135,7 +135,7 @@ public class SPPMessage extends GENMessage {
                 final int adjustedSegmentSize = configuration.getSegmentSize() - (hdrBuf.length - 6);
                 // first check to see if we can actually fit any data in the 
                 // body when we have a large header and small segment size
-                if (0 >= adjustedSegmentSize) {
+                if (adjustedSegmentSize <= 0) {
                     throw new MALException(
                             "SPP Segment size of " + configuration.getSegmentSize()
                             + " is too small for encoded MAL Message header or size "

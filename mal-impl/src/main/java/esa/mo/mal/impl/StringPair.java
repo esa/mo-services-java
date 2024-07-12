@@ -51,7 +51,7 @@ public class StringPair implements Comparable {
         final StringPair p = (StringPair) o;
 
         final int i = first.compareTo(p.first);
-        if (0 == i) {
+        if (i == 0) {
             return second.compareTo(p.second);
         }
 
