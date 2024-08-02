@@ -47,6 +47,9 @@ import org.ccsds.moims.mo.mal.structures.URI;
  */
 public class ConnectionProvider {
 
+    private static final ServicesConnectionDetails GLOBAL_PROVIDERS_DETAILS_PRIMARY = new ServicesConnectionDetails();
+    private static final ServicesConnectionDetails GLOBAL_PROVIDERS_DETAILS_SECONDARY = new ServicesConnectionDetails();
+
     private MALContextFactory malFactory;
     private MALContext mal;
     private MALProviderManager providerMgr;
@@ -54,8 +57,6 @@ public class ConnectionProvider {
     private MALProvider secondaryMALServiceProvider = null;
     private final SingleConnectionDetails primaryConnectionDetails = new SingleConnectionDetails();
     private SingleConnectionDetails secondaryConnectionDetails = null;
-    private static final ServicesConnectionDetails globalProvidersDetailsPrimary = new ServicesConnectionDetails();
-    private static final ServicesConnectionDetails globalProvidersDetailsSecondary = new ServicesConnectionDetails();
 
     /**
      * Getter for the primaryConnectionDetails object.
@@ -91,7 +92,7 @@ public class ConnectionProvider {
      * @return Primary connection details of all providers in the application.
      */
     public static ServicesConnectionDetails getGlobalProvidersDetailsPrimary() {
-        return globalProvidersDetailsPrimary;
+        return GLOBAL_PROVIDERS_DETAILS_PRIMARY;
     }
 
     /**
@@ -101,7 +102,7 @@ public class ConnectionProvider {
      * @return Secondary connection details of all providers in the application.
      */
     public static ServicesConnectionDetails getGlobalProvidersDetailsSecondary() {
-        return globalProvidersDetailsSecondary;
+        return GLOBAL_PROVIDERS_DETAILS_SECONDARY;
     }
 
     /**
@@ -221,7 +222,7 @@ public class ConnectionProvider {
                 serviceName,
                 HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME);
 
-        globalProvidersDetailsPrimary.add(serviceName, primaryConnectionDetails);
+        GLOBAL_PROVIDERS_DETAILS_PRIMARY.add(serviceName, primaryConnectionDetails);
         primaryMALServiceProvider = serviceProvider;
 
         final String secondaryProtocol = System.getProperty(HelperMisc.SECONDARY_PROTOCOL);
@@ -265,7 +266,7 @@ public class ConnectionProvider {
                     serviceName,
                     HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME);
 
-            globalProvidersDetailsSecondary.add(serviceName, secondaryConnectionDetails);
+            GLOBAL_PROVIDERS_DETAILS_SECONDARY.add(serviceName, secondaryConnectionDetails);
             secondaryMALServiceProvider = serviceProvider2;
         }
 
@@ -322,6 +323,15 @@ public class ConnectionProvider {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
                     "Exception during close down of the provider {0}", ex);
         }
+    }
+
+    /**
+     * Indicates whether the URI Files should be initialised. Defaults to false.
+     *
+     * @return true if URI Files should be initialised
+     */
+    public static boolean shouldInitUriFiles() {
+        return Boolean.valueOf(System.getProperty(HelperMisc.PROP_INIT_URI_FILES, "false"));
     }
 
     /**
