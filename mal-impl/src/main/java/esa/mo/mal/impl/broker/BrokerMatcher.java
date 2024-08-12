@@ -28,7 +28,6 @@ import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
@@ -39,15 +38,7 @@ public class BrokerMatcher {
     /**
      * Match all string constant.
      */
-    public static final String ALL_ID = "*";
-    /**
-     * Match all numeric constant.
-     */
-    public static final Long ALL_NUMBER = 0L;
-    /**
-     * Match all ushort constant.
-     */
-    public static final UShort ALL_SHORT = new UShort(0);
+    public static final String ASTERISK_WILDCARD = "*";
 
     /**
      * Compare provider's UpdateKeyValues with consumer's subscription filters
@@ -96,7 +87,7 @@ public class BrokerMatcher {
         if (!consumerIsNull && Attribute.isStringAttribute(consumer)) {
             String str = HelperAttributes.attribute2string(consumer);
             // Check the asterisk case
-            if (ALL_ID.equals(str)) {
+            if (ASTERISK_WILDCARD.equals(str)) {
                 return true;
             }
         }
