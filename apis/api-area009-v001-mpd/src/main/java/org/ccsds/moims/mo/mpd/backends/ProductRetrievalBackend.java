@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mpd.backends;
 
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mpd.structures.Product;
+import org.ccsds.moims.mo.mpd.structures.ProductSummary;
 import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
 
 /**
@@ -44,5 +45,7 @@ public interface ProductRetrievalBackend {
      * @return The Product or NULL if not found.
      */
     public Product getProduct(ObjectRef productRef);
+
+    public ProductSummary getMetadata(ObjectRef productRef);
 
 }
