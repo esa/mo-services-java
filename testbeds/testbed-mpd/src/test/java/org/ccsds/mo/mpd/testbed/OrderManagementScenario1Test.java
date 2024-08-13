@@ -54,8 +54,7 @@ public class OrderManagementScenario1Test {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        System.out.println("Entered: setUpClass()");
-        System.out.println("The Provider and Consumer will be started here!");
+        System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
 
         HelperMisc.loadPropertiesFile();
         ConnectionProvider.resetURILinksFile(); // Resets the providerURIs.properties file
@@ -67,15 +66,17 @@ public class OrderManagementScenario1Test {
 
             String factoryClassForProvider = System.getProperty("testbed.provider");
             String factoryClassForConsumer = System.getProperty("testbed.consumer");
-            System.out.println("factoryClassForProvider: " + factoryClassForProvider);
-            System.out.println("factoryClassForConsumer: " + factoryClassForConsumer);
+            System.out.println("  >> factoryClassForProvider: " + factoryClassForProvider);
+            System.out.println("  >> factoryClassForConsumer: " + factoryClassForConsumer);
 
             if ("null".equals(factoryClassForProvider) || "".equals(factoryClassForProvider)) {
-                throw new IOException("The classname is empty or null for the provider side!");
+                throw new IOException("The classname is empty or null for the provider side! "
+                        + "Please select the correct Maven profile before running the test!");
             }
 
             if ("null".equals(factoryClassForConsumer) || "".equals(factoryClassForConsumer)) {
-                throw new IOException("The classname is empty or null for the consumer side!");
+                throw new IOException("The classname is empty or null for the consumer side! "
+                        + "Please select the correct Maven profile before running the test!");
             }
 
             //factoryClassForProvider = "esa.mo.services.mpd.util.ESAOrderManagementServicesFactory";
@@ -100,8 +101,6 @@ public class OrderManagementScenario1Test {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MALInteractionException ex) {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -129,7 +128,7 @@ public class OrderManagementScenario1Test {
      */
     @Test
     public void testCase_1() {
-        System.out.println("testCase_1");
+        System.out.println("Running: testCase_1()");
 
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
