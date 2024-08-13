@@ -182,9 +182,11 @@ public class JavaServiceInfo {
                 if (!isAbstract) {
                     String clsName = generator.createElementType(area.getName(), service.getName(), typeName);
                     String text = "new " + clsName + "()";
+                    /* Old code for Enumerations
                     if (oType instanceof EnumerationType) {
                         text = clsName + ".fromOrdinal(0)";
                     }
+                    */
 
                     String lclsName = generator.createElementType(area.getName(), service.getName(), typeName + "List");
                     elementInstantiations.add(text);

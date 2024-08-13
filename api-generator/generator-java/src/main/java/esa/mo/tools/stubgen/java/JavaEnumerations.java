@@ -115,16 +115,16 @@ public class JavaEnumerations {
                 true, false, "Set of enumeration values.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eValueArrVar, true, true, vaStr);
 
+        file.addStatement("    public " + enumName + "() {");
+        file.addStatement("        super(0);");
+        file.addStatement("    }");
+
         // create private constructor
-        MethodWriter method = file.addConstructor(StdStrings.PRIVATE, enumName,
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
                 generator.createCompositeElementsDetails(file, false, "ordinal",
                         TypeUtils.createTypeReference(null, null, "int", false),
                         false, false, null), true, null, null, null);
         method.addMethodCloseStatement();
-
-        if (generator.requiresDefaultConstructors) {
-            file.addConstructorDefault(enumName);
-        }
 
         // add getters and setters
         if (generator.supportsToString) {
@@ -170,7 +170,7 @@ public class JavaEnumerations {
         CompositeField ordType = generator.createCompositeElementsDetails(file, false, "ordinal",
                 TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "ordinal The index of the enumeration element to return.");
-        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
+        method = file.addMethodOpenStatement(false, false, false, false, StdStrings.PUBLIC,
                 false, false, enumType, "fromOrdinal", Arrays.asList(ordType), null,
                 "Returns the nth element of the enumeration", "The matched enumeration element", null);
         method.addArrayMethodStatement("_ENUMERATIONS", "ordinal", highestIndex);
@@ -228,6 +228,7 @@ public class JavaEnumerations {
         method.addLine("return _ENUMERATIONS[0]");
         method.addMethodCloseStatement();
 
+        /*
         // create encode method
         method = generator.encodeMethodOpen(file);
         method.addLine(generator.createMethodCall("encoder.encode") + enumOrdinalType + "(" + enumEncoderValue + ")");
@@ -237,7 +238,7 @@ public class JavaEnumerations {
         method = generator.decodeMethodOpen(file, elementType);
         method.addLine("return fromOrdinal(" + generator.createMethodCall("decoder.decode" + enumOrdinalType + "()" + enumDecoderValue + ")"));
         method.addMethodCloseStatement();
-
+         */
         generator.addTypeIdGetterMethod(file, area, service);
 
         file.addClassCloseStatement();

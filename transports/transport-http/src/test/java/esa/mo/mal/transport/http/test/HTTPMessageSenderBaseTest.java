@@ -112,7 +112,7 @@ public abstract class HTTPMessageSenderBaseTest {
     assertNotNull(connection2);
     assertEquals("PROGRESS", connection2.getRequestProperty("X-MAL-Interaction-Type"));
 
-    message = messageBuilder.interactionType(InteractionType.fromOrdinal(1)).build();
+    message = messageBuilder.interactionType(new InteractionType(1)).build();
     HttpURLConnection connection3 = createClient(message);
 
     assertNotNull(connection3);
@@ -123,7 +123,7 @@ public abstract class HTTPMessageSenderBaseTest {
   public void testInteractionStageHeader() throws Exception {
 
     message = messageBuilder
-        .interactionType(InteractionType.fromOrdinal(0))
+        .interactionType(new InteractionType(0))
         .interactionStage(new UOctet((short) 3))
         .build();
     HttpURLConnection connection = createClient(message);

@@ -153,8 +153,11 @@ public class JavaHelpers {
                     EnumerationType dt = (EnumerationType) oType;
                     String clsName = generator.createElementType(area.getName(), null, dt.getName());
                     String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
-                    elementList.add(clsName + ".fromOrdinal(0)");
+                    elementList.add("new " + clsName + "()");
                     elementList.add("new " + lclsName + "()");
+                    // Old code for Enumerations
+                    //elementList.add(clsName + ".fromOrdinal(0)");
+                    //elementList.add("new " + lclsName + "()");
                 }
             }
         }
