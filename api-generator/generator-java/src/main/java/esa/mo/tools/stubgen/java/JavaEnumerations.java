@@ -228,6 +228,12 @@ public class JavaEnumerations {
         method.addLine("return _ENUMERATIONS[0]");
         method.addMethodCloseStatement();
 
+        // Generate the getEnumSize() operation
+        file.addStatement("    @Override");
+        file.addStatement("    public int getEnumSize() {");
+        file.addStatement("        return " + enumSize + ";");
+        file.addStatement("    }");
+
         /*
         // create encode method
         method = generator.encodeMethodOpen(file);

@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.structures;
 
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * The abstract class represents the MAL Enumeration type. The class is extended
@@ -65,7 +66,13 @@ public abstract class Enumeration implements Element {
      */
     @Override
     public void encode(MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
-        encoder.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+        int enumSize = this.getEnumSize();
+
+        if (enumSize < 256) {
+            encoder.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+        } else if (enumSize < 65536) {
+            encoder.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+        }
     }
 
     /**
@@ -78,8 +85,23 @@ public abstract class Enumeration implements Element {
      */
     @Override
     public Element decode(MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        return fromOrdinal(decoder.decodeUOctet().getValue());
+        int enumSize = this.getEnumSize();
+
+        if (enumSize < 256) {
+            return fromOrdinal(decoder.decodeUOctet().getValue());
+        } else if (enumSize < 65536) {
+            return fromOrdinal(decoder.decodeUShort().getValue());
+        }
+
+        throw new MALException("The Enumeration could not be decoded!");
     }
+
+    /**
+     * Returns the size of the enumeration.
+     *
+     * @return the size of the enumeration.
+     */
+    public abstract int getEnumSize();
 
     /**
      * Returns the numeric value of the enumerated item.
