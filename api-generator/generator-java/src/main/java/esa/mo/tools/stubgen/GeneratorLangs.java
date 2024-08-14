@@ -1017,8 +1017,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         } else {
             // Connection object method
             CompositeField connectionName = createCompositeElementsDetails(file, false, "connection",
-                TypeUtils.createTypeReference(StdStrings.MAL, "helpertools.connections", "ConnectionProvider", false),
-                false, true, "Returns the connection object for this provider.");
+                    TypeUtils.createTypeReference(StdStrings.MAL, "helpertools.connections", "ConnectionProvider", false),
+                    false, true, "Returns the connection object for this provider.");
 
             ArrayList throwsList = new ArrayList();
             throwsList.add("java.io.IOException if the method was not implemented yet.");
@@ -1455,10 +1455,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         if (!abstractComposite) {
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, false, elementType, "createElement", null, null,
-                    "Creates an instance of this type using the default constructor. It is a generic factory method.",
-                    "A new instance of this type with default field values.", null);
+            MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
             method.addLine("return new " + fqName + "()");
             method.addMethodCloseStatement();
         }
@@ -1480,11 +1477,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField objType = createCompositeElementsDetails(file, false, "obj",
                     TypeUtils.createTypeReference(null, null, "Object", false),
                     false, true, "The object to compare with.");
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, true, boolType, "equals", Arrays.asList(objType), null,
-                    "Compares this object to the specified object. The result is true if and only if the "
-                    + "argument is not null and is the same type that contains the same value as this object.",
-                    "true if the objects are the same; false otherwise.", null);
+
+            MethodWriter method = file.addMethodOpenStatementOverride(boolType, "equals", Arrays.asList(objType), null);
             method.addLine("if (obj instanceof " + className + ") {", false);
 
             if (null != parentClass) {
@@ -1511,9 +1505,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             method.addLine("return false");
             method.addMethodCloseStatement();
 
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, true, intType, "hashCode", null, null,
-                    "Returns a hash code for this object", "a hash code value for this object.", null);
+            method = file.addMethodOpenStatementOverride(intType, "hashCode", null, null);
+
             if (null != parentClass) {
                 method.addLine("int hash = super.hashCode()");
             } else {
@@ -1531,10 +1524,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField strType = createCompositeElementsDetails(file, false, "return",
                     TypeUtils.createTypeReference(null, null, "_String", false),
                     false, true, "return value");
-            MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, true, strType, "toString", null, null,
-                    "Returns a String object representing this type's value.",
-                    "a string representation of the value of this object", null);
+
+            MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
             method.addLine("StringBuilder buf = new StringBuilder()");
             method.addLine("buf.append(\"(" + className + ": \")");
 
@@ -1742,10 +1733,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "TypeId", false),
                 true, true, null);
 
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, typeIdType, "getTypeId", null, null,
-                "Returns the TypeId of this element.",
-                "The TypeId of this element.", null);
+        MethodWriter method = file.addMethodOpenStatementOverride(typeIdType, "getTypeId", null, null);
         method.addLine("return TYPE_ID");
         method.addMethodCloseStatement();
     }
@@ -2067,10 +2055,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField fld = createCompositeElementsDetails(file, false, "encoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALEncoder", false),
                 false, true, "The encoder to use for encoding.");
-        return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "encode", Arrays.asList(fld), throwsMALException,
-                "Encodes the value of this object using the provided MALEncoder.", null,
-                Arrays.asList(throwsMALException + " if any encoding errors are detected."));
+
+        return file.addMethodOpenStatementOverride(null, "encode", Arrays.asList(fld), throwsMALException);
     }
 
     public MethodWriter decodeMethodOpen(ClassWriter file, CompositeField returnType) throws IOException {
@@ -2078,10 +2064,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField fld = createCompositeElementsDetails(file, false, "decoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false),
                 false, true, "The decoder to use for decoding.");
-        return file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, false, returnType, "decode", Arrays.asList(fld),
-                throwsMALException, "Decodes the value of this object using the provided MALDecoder.", "Returns this object.",
-                Arrays.asList(throwsMALException + " if any decoding errors are detected."));
+
+        return file.addMethodOpenStatementOverride(returnType, "decode", Arrays.asList(fld), throwsMALException);
     }
 
     protected String createProviderSkeletonHandlerSwitch() {

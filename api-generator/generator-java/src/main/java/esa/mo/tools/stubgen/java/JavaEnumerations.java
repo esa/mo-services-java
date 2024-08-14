@@ -131,10 +131,8 @@ public class JavaEnumerations {
             CompositeField strType = generator.createCompositeElementsDetails(file, false, "s",
                     TypeUtils.createTypeReference(null, null, "_String", false),
                     false, true, "s The string to search for.");
-            method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                    false, true, strType, "toString", null, null,
-                    "Returns a String object representing this type's value.",
-                    "a string representation of the value of this object", null);
+
+            method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
             method.addLine("switch (getOrdinal()) {", false);
 
             for (EnumerationType.Item item : enumeration.getItem()) {
@@ -219,12 +217,7 @@ public class JavaEnumerations {
         method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, false, elementType, "createElement", null, null,
-                "Returns an instance of this type using the first element of the enumeration. "
-                + "It is a generic factory method but just returns an existing element of the "
-                + "enumeration as new values of enumerations cannot be created at runtime.",
-                "The first element of the enumeration.", null);
+        method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
         method.addLine("return _ENUMERATIONS[0]");
         method.addMethodCloseStatement();
 

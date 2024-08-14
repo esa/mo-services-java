@@ -186,6 +186,19 @@ public interface ClassWriter extends LanguageWriter {
     /**
      * Add a method to the class.
      *
+     * @param rtype The return type of the method.
+     * @param methodName The method name.
+     * @param args The arguments of the method.
+     * @param throwsSpec The throws specification.
+     * @return Returns a method writer for the method.
+     * @throws IOException If there is an IO error.
+     */
+    MethodWriter addMethodOpenStatementOverride(CompositeField rtype, String methodName,
+            List<CompositeField> args, String throwsSpec) throws IOException;
+
+    /**
+     * Add a method to the class.
+     *
      * @param isVirtual Is the method a virtual method.
      * @param isConst Is the method constant.
      * @param isStatic Is it is static method.

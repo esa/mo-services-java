@@ -315,6 +315,26 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
+    public MethodWriter addMethodOpenStatementOverride(CompositeField rtype,
+            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
+        String srtype = createLocalType(rtype);
+        String argString = processArgs(args, true);
+
+        StringBuilder methodSignature = new StringBuilder();
+        methodSignature.append("public ").append(srtype).append(" ").append(methodName);
+        methodSignature.append("(").append(argString).append(")");
+
+        if (null != throwsSpec) {
+            methodSignature.append(" throws ").append(throwsSpec);
+        }
+
+        methodSignature.append(" {");
+        file.append(makeLine(1, "@Override"));
+        file.append(makeLine(1, methodSignature.toString()));
+        return this;
+    }
+
+    @Override
     public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
             boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
@@ -555,5 +575,4 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         return fullType;
     }
-
 }

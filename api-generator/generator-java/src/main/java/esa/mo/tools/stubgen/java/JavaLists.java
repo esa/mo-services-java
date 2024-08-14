@@ -178,10 +178,7 @@ public class JavaLists {
         method.addLine("return super.add(element)");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
-                true, elementType, "createElement", null, null,
-                "Creates an instance of this type using the default constructor. It is a generic factory method.",
-                "A new instance of this type with default field values.", null);
+        method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
         method.addLine("return new " + listName + "()");
         method.addMethodCloseStatement();
 
@@ -191,7 +188,7 @@ public class JavaLists {
                 "A new instance of this type with default field values.", null);
 
         // Wrap in Union if needed:
-        if(listElement.getNewCall().contains("structures")) {
+        if (listElement.getNewCall().contains("structures")) {
             method.addLine("return " + listElement.getNewCall());
         } else {
             method.addLine("org.ccsds.moims.mo.mal.TypeId typeId = this.getTypeId()");
