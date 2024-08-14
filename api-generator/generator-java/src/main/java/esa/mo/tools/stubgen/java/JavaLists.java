@@ -85,11 +85,8 @@ public class JavaLists {
         type.setName("boolean");
         CompositeField rtype = generator.createCompositeElementsDetails(file, false, "element",
                 type, false, true, "List element.");
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, rtype, "add", argList, null,
-                "Adds an element to the list and checks if the type is correct.",
-                "The success status.", null);
 
+        MethodWriter method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
         method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {", false);
         method.addLine("    throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
         method.addLine("}", false);
@@ -167,10 +164,8 @@ public class JavaLists {
         type.setName("boolean");
         CompositeField rtype = generator.createCompositeElementsDetails(file, false, "element",
                 type, false, true, "List element.");
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, rtype, "add", argList, null,
-                "Adds an element to the list.", "The success status.", null);
 
+        method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
         method.addLine("if (element == null) {", false);
         method.addLine("    throw new IllegalArgumentException(\"The added argument cannot be null!\")");
         method.addLine("}", false);
@@ -182,10 +177,7 @@ public class JavaLists {
         method.addLine("return new " + listName + "()");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
-                true, elementType, "createTypedElement", null, null,
-                "Creates an instance of the selected generic type for this list.",
-                "A new instance of this type with default field values.", null);
+        method = file.addMethodOpenStatementOverride(elementType, "createTypedElement", null, null);
 
         // Wrap in Union if needed:
         if (listElement.getNewCall().contains("structures")) {
