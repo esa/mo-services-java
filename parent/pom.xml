@@ -82,7 +82,6 @@
         <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
         <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
         <esa.api.mpd.version>${esa.mo.version}</esa.api.mpd.version>
-        <esa.mal.version>${esa.mo.version}</esa.mal.version>
         <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
         <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
         <esa.xml.encoder.version>${esa.mo.version}</esa.xml.encoder.version>
@@ -143,7 +142,7 @@
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>mal-impl</artifactId>
-                <version>${esa.mal.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
