@@ -77,7 +77,6 @@
         <esa.mo.version>11.1-SNAPSHOT</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
-        <esa.stubgen.version>${esa.mo.version}</esa.stubgen.version>
         <esa.api.mal.version>${esa.mo.version}</esa.api.mal.version>
         <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
         <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
@@ -335,7 +334,7 @@
                 <plugin>
                     <groupId>int.esa.ccsds.mo</groupId>
                     <artifactId>api-generator-maven-plugin</artifactId>
-                    <version>${esa.stubgen.version}</version>
+                    <version>${esa.mo.version}</version>
                     <executions>
                         <execution>
                             <phase>generate-sources</phase>
@@ -355,7 +354,7 @@
                         <dependency>
                             <groupId>int.esa.ccsds.mo</groupId>
                             <artifactId>generator-java</artifactId>
-                            <version>${esa.stubgen.version}</version>
+                            <version>${esa.mo.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -495,7 +494,7 @@
                         <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                         <autoReleaseAfterClose>false</autoReleaseAfterClose>
                     </configuration>
-                </plugin>                      
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
