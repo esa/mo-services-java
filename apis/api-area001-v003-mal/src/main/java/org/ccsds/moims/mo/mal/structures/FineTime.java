@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.TypeId;
 public class FineTime implements Attribute {
 
     private static final long serialVersionUID = Attribute.FINETIME_SHORT_FORM;
-    private long value;
+    private final long value;
 
     /**
      * Default constructor.
@@ -114,7 +114,7 @@ public class FineTime implements Attribute {
 
     @Override
     public int hashCode() {
-        return (int) value;
+        return (int) Long.hashCode(value);
     }
 
     @Override

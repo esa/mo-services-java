@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.TypeId;
 public class Time implements Attribute {
 
     private static final long serialVersionUID = Attribute.TIME_SHORT_FORM;
-    private long value;
+    private final long value;
 
     /**
      * Default constructor.
@@ -44,7 +44,7 @@ public class Time implements Attribute {
      * Initialises the object with a certain time. The value shall be the
      * difference, measured in milliseconds, between the current time and
      * midnight, January 1, 1970 UTC. This is based on the native Java operation
-     * from the System.currentTimeMillis()
+     * from the System.currentTimeMillis().
      *
      * <p>
      * See the description of the class <code>Date</code> for a discussion of
@@ -115,7 +115,7 @@ public class Time implements Attribute {
 
     @Override
     public int hashCode() {
-        return (int) value;
+        return (int) Long.hashCode(value);
     }
 
     @Override
