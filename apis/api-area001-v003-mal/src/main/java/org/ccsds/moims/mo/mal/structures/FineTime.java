@@ -41,12 +41,12 @@ public class FineTime implements Attribute {
     }
 
     /**
-     * Initialises the object with a certain time. The value shall be the 
-     * difference, measured in milliseconds, between the current time and 
+     * Initialises the object with a certain time. The value shall be the
+     * difference, measured in nanoseconds, between the current time and
      * midnight, January 1, 1970 UTC.
-     * 
+     *
      * The FineTime structure max date is: <b>2262-April-12 01:47:16.854</b>
-     * Make sure your mission lifetime is not longer than that date or the 
+     * Make sure your mission lifetime is not longer than that date or the
      * software might experience inconveniences with this FineTime structure.
      *
      * @param value The time to instantiate the object (Unix time).
@@ -80,9 +80,9 @@ public class FineTime implements Attribute {
     }
 
     public Time toTime() {
-      return new Time(value / ONE_MILLION);
+        return new Time(value / ONE_MILLION);
     }
-    
+
     @Override
     public TypeId getTypeId() {
         return new TypeId(Attribute.FINETIME_SHORT_FORM);

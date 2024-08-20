@@ -41,9 +41,15 @@ public class Time implements Attribute {
     }
 
     /**
-     * Initialises the object with a certain time. The value shall be the 
-     * difference, measured in milliseconds, between the current time and 
-     * midnight, January 1, 1970 UTC.
+     * Initialises the object with a certain time. The value shall be the
+     * difference, measured in milliseconds, between the current time and
+     * midnight, January 1, 1970 UTC. This is based on the native Java operation
+     * from the System.currentTimeMillis()
+     *
+     * <p>
+     * See the description of the class <code>Date</code> for a discussion of
+     * slight discrepancies that may arise between "computer time" and
+     * coordinated universal time (UTC).
      *
      * @param value The time to instantiate the object (Unix time).
      */
@@ -73,9 +79,9 @@ public class Time implements Attribute {
     public static Time now() {
         return new Time(System.currentTimeMillis());
     }
-    
+
     public FineTime toFineTime() {
-      return new FineTime(value * ONE_MILLION);
+        return new FineTime(value * ONE_MILLION);
     }
 
     @Override
