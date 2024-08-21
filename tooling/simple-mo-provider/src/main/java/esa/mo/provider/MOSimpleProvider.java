@@ -57,7 +57,9 @@ public class MOSimpleProvider {
                     "Initializing services...");
 
             directoryService.init();
-            mpdServices.init();
+
+            DummyProductsBackend backend = new DummyProductsBackend();
+            mpdServices.init(backend);
         } catch (MALException ex) {
             Logger.getLogger(MOSimpleProvider.class.getName()).log(Level.SEVERE,
                     "The services could not be initialized. Perhaps there's "
