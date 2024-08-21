@@ -1536,8 +1536,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 prefixSeparator = ", ";
             }
             for (CompositeField element : compElements) {
-                method.addLine("buf.append(\"" + prefixSeparator + element.getFieldName() + "=\")");
-                method.addLine("buf.append(" + element.getFieldName() + ")");
+                StringBuilder str = new StringBuilder();
+                str.append("buf.append(\"").append(prefixSeparator).append(element.getFieldName());
+                str.append("=\")").append(".append(").append(element.getFieldName()).append(")");
+                method.addLine(str.toString());
                 prefixSeparator = ", ";
             }
             method.addLine("buf.append(')')");
