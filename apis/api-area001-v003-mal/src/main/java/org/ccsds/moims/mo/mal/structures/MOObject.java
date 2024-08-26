@@ -58,6 +58,19 @@ public abstract class MOObject implements Composite {
      * @return The Object reference to this MO Object.
      */
     public ObjectRef getObjectRef() {
+        if (objectIdentity == null) {
+            throw new NullPointerException("The objectIdentity cannot be null!");
+        }
+        if (objectIdentity.getDomain() == null) {
+            throw new NullPointerException("The objectIdentity.domain cannot be null!");
+        }
+        if (objectIdentity.getKey() == null) {
+            throw new NullPointerException("The objectIdentity.key cannot be null!");
+        }
+        if (objectIdentity.getVersion() == null) {
+            throw new NullPointerException("The objectIdentity.version cannot be null!");
+        }
+
         return new ObjectRef(objectIdentity.getDomain(),
                 this.getTypeId().getTypeId(),
                 objectIdentity.getKey(),
@@ -65,35 +78,17 @@ public abstract class MOObject implements Composite {
         );
     }
 
-    /**
-     * Encodes the value of this object using the provided MALEncoder.
-     *
-     * @param encoder encoder - the encoder to use for encoding.
-     * @throws org.ccsds.moims.mo.mal.MALException if any encoding errors are
-     * detected.
-     */
+    @Override
     public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
         encoder.encodeElement(objectIdentity);
     }
 
-    /**
-     * Decodes the value of this object using the provided MALDecoder.
-     *
-     * @param decoder decoder - the decoder to use for decoding.
-     * @return Returns this object.
-     * @throws org.ccsds.moims.mo.mal.MALException if any decoding errors are
-     * detected.
-     */
+    @Override
     public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
         objectIdentity = (ObjectIdentity) decoder.decodeElement(new ObjectIdentity());
         return this;
     }
 
-    /**
-     * Returns a String object representing this type's value.
-     *
-     * @return a string representation of the value of this object.
-     */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
@@ -102,14 +97,6 @@ public abstract class MOObject implements Composite {
         return buf.toString();
     }
 
-    /**
-     * Compares this object to the specified object. The result is true if and
-     * only if the argument is not null and is the same type that contains the
-     * same value as this object.
-     *
-     * @param obj The object to compare with.
-     * @return true if the objects are the same; false otherwise.
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
