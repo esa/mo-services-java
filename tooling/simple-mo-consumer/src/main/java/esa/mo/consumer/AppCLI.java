@@ -54,24 +54,24 @@ public class AppCLI {
         try {
             consumer.init(new URI(providerURI));
 
-            OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
-
-            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
-                    DeliveryMethodEnum.SERVICE, "A comment");
-            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
-
-            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
-
+            // Register on the Broker for service delivery of products
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
                     "Registering in the Broker for service: Product Order Delivery...");
 
             ProductOrderDeliveryConsumerServiceImpl pod = consumer.getMPDServices().getProductOrderDeliveryService();
             Subscription subscription = ConnectionConsumer.subscriptionWildcard();
             pod.getProductOrderDeliveryStub().deliverProductsRegister(subscription, new PODAdapter());
-
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO, "Registered!");
 
+            // Submit a Standing Order
+            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
+                    DeliveryMethodEnum.SERVICE, "A comment");
+
+            OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
+            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
+
+            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
+                    "The returned Identifier is: {0}", id.getValue());
         } catch (MALException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
