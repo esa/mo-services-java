@@ -30,11 +30,14 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
+import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
 
 /**
  *
@@ -68,10 +71,32 @@ public class AppCLI {
                     DeliveryMethodEnum.SERVICE, "A comment");
 
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
-            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
+            OrderManagementStub stub = orderManagement.getOrderManagementStub();
+            Identifier id = stub.submitStandingOrder(orderDetails);
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
                     "The returned Identifier is: {0}", id.getValue());
+
+            // Request the list of standing orders
+            IdentifierList domain = new IdentifierList();
+            domain.add(new Identifier("*"));
+            StandingOrderList list = stub.listStandingOrders(new Identifier("*"), domain);
+            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
+                    "The returned list of standing orders is: {0}", list.toString());
+
+            try {
+                // Wait 15 seconds...
+                Logger.getLogger(AppCLI.class.getName()).log(Level.INFO, "Waiting 15 seconds...");
+                Thread.sleep(15 * 1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            // Cancel all standing orders
+            stub.cancelStandingOrder(id);
+
+            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
+                    "The following order was cancelled: {0}", id.toString());
         } catch (MALException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {

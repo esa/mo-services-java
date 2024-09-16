@@ -46,6 +46,13 @@ public interface ProductRetrievalBackend {
      */
     public Product getProduct(ObjectRef productRef);
 
+    /**
+     * Returns the corresponding metadata for the given productRef or NULL if
+     * not found.
+     *
+     * @param productRef The product reference.
+     * @return The Metadata or NULL if not found.
+     */
     public ProductSummary getMetadata(ObjectRef productRef);
 
 }

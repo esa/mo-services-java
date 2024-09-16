@@ -120,8 +120,8 @@
         <profile>
             <id>ESA</id>
             <properties>
-                <testbed.provider>esa.mo.services.mpd.util.ESAOrderManagementServicesFactory</testbed.provider>
-                <testbed.consumer>esa.mo.services.mpd.util.ESAOrderManagementServicesFactory</testbed.consumer>
+                <testbed.provider>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.provider>
+                <testbed.consumer>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.consumer>
             </properties>
             <dependencies>
                 <dependency>
