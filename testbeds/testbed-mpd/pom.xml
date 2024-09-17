@@ -120,8 +120,8 @@
         <profile>
             <id>ESA</id>
             <properties>
-                <testbed.provider>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.provider>
                 <testbed.consumer>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.consumer>
+                <testbed.provider>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.provider>
             </properties>
             <dependencies>
                 <dependency>
@@ -134,10 +134,48 @@
         <profile>
             <id>NASA</id>
             <properties>
-                <testbed.provider>TBD</testbed.provider>
                 <testbed.consumer>TBD</testbed.consumer>
+                <testbed.provider>TBD</testbed.provider>
             </properties>
             <dependencies>
+                <dependency>
+                    <groupId>gov.nasa.mo</groupId>
+                    <artifactId>services-area009-v001-mpd-nasa</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ESA-NASA</id>
+            <properties>
+                <testbed.consumer>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.consumer>
+                <testbed.provider>TBD</testbed.provider>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>services-area009-v001-mpd</artifactId>
+                    <version>11.1-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>gov.nasa.mo</groupId>
+                    <artifactId>services-area009-v001-mpd-nasa</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>NASA-ESA</id>
+            <properties>
+                <testbed.consumer>TBD</testbed.consumer>
+                <testbed.provider>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.provider>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>int.esa.ccsds.mo</groupId>
+                    <artifactId>services-area009-v001-mpd</artifactId>
+                    <version>11.1-SNAPSHOT</version>
+                </dependency>
                 <dependency>
                     <groupId>gov.nasa.mo</groupId>
                     <artifactId>services-area009-v001-mpd-nasa</artifactId>
