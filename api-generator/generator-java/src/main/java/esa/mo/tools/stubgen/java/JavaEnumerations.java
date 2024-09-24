@@ -168,9 +168,7 @@ public class JavaEnumerations {
         CompositeField ordType = generator.createCompositeElementsDetails(file, false, "ordinal",
                 TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "ordinal The index of the enumeration element to return.");
-        method = file.addMethodOpenStatement(false, false, false, false, StdStrings.PUBLIC,
-                false, false, enumType, "fromOrdinal", Arrays.asList(ordType), null,
-                "Returns the nth element of the enumeration", "The matched enumeration element", null);
+        method = file.addMethodOpenStatementOverride(enumType, "fromOrdinal", Arrays.asList(ordType), null);
         method.addArrayMethodStatement("_ENUMERATIONS", "ordinal", highestIndex);
         method.addMethodCloseStatement();
 
@@ -211,9 +209,7 @@ public class JavaEnumerations {
             method.addMethodCloseStatement();
         }
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, uintType, "getNumericValue", null, null,
-                "Returns the numeric value of the enumeration element.", "The numeric value", null);
+        method = file.addMethodOpenStatementOverride(uintType, "getNumericValue", null, null);
         method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
         method.addMethodCloseStatement();
 
