@@ -153,7 +153,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 // create services
                 for (ServiceType service : area.getService()) {
                     docxServiceFile.addTitle(2, "Service: ", service.getName(), "SERVICE", true);
-                    docxServiceFile.addTitle(3, "General");
+                    docxServiceFile.addTitle(3, "Overview");
                     docxServiceFile.addComment(service.getComment());
                     drawServiceTable(docxServiceFile, area, service);
 
@@ -183,7 +183,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     for (CapabilitySetType cSet : service.getCapabilitySet()) {
                         for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
                             docxServiceFile.addTitle(3, "OPERATION: ", op.getName(), "OPERATION_" + service.getName(), true);
-                            docxServiceFile.addTitle(4, "General");
+                            docxServiceFile.addTitle(4, "Overview");
                             docxServiceFile.addComment(op.getComment());
                             drawOperationTable(docxServiceFile, area, service, op);
                             addOperationStructureDetails(docxServiceFile, op);
