@@ -136,11 +136,11 @@ public class JavaEnumerations {
             method.addLine("switch (getOrdinal()) {", false);
 
             for (EnumerationType.Item item : enumeration.getItem()) {
-                method.addLine("  case _" + item.getValue() + "_INDEX:", false);
-                method.addLine("    return \"" + item.getValue() + "\"");
+                method.addLine("    case _" + item.getValue() + "_INDEX:", false);
+                method.addLine("        return \"" + item.getValue() + "\"");
             }
-            method.addLine("  default:", false);
-            method.addLine("    throw new RuntimeException(\"Unknown ordinal!\")");
+            method.addLine("    default:", false);
+            method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
             method.addLine("}", false);
             method.addMethodCloseStatement();
 
@@ -149,9 +149,9 @@ public class JavaEnumerations {
                     "Returns the enumeration element represented by the supplied string, or null if not matched.",
                     "The matched enumeration element, or null if not matched.", null);
             method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++) {", false);
-            method.addLine("  if (_ENUMERATION_NAMES[i].equals(s)) {", false);
-            method.addLine("    return _ENUMERATIONS[i]");
-            method.addLine("  }", false);
+            method.addLine("    if (_ENUMERATION_NAMES[i].equals(s)) {", false);
+            method.addLine("        return _ENUMERATIONS[i]");
+            method.addLine("    }", false);
             method.addLine("}", false);
             method.addLine("return null");
             method.addMethodCloseStatement();
@@ -180,9 +180,9 @@ public class JavaEnumerations {
                 "Returns the enumeration element represented by the supplied numeric value, or null if not matched.",
                 "The matched enumeration value, or null if not matched.", null);
         method.addLine("for (int i = 0; i < _ENUMERATION_NUMERIC_VALUES.length; i++) {", false);
-        method.addLine("  if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ") {", false);
-        method.addLine("    return _ENUMERATIONS[i]");
-        method.addLine("  }", false);
+        method.addLine("    if (" + getEnumValueCompare("_ENUMERATION_NUMERIC_VALUES[i]", "value") + ") {", false);
+        method.addLine("        return _ENUMERATIONS[i]");
+        method.addLine("    }", false);
         method.addLine("}", false);
         method.addLine("return " + generator.getNullValue());
         method.addMethodCloseStatement();
