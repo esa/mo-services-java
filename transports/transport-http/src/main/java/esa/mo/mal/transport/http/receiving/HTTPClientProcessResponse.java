@@ -138,16 +138,20 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
         UShort serviceArea = new UShort(Integer.parseInt(client.getResponseHeader("X-MAL-Service-Area")));
         UShort service = new UShort(Integer.parseInt(client.getResponseHeader("X-MAL-Service")));
         UShort operation = new UShort(Integer.parseInt(client.getResponseHeader("X-MAL-Operation")));
-        UOctet serviceVersion = new UOctet(Short.parseShort(client.getResponseHeader("X-MAL-Service-Version")));
+        UOctet serviceVersion = new UOctet(Short.parseShort(client.getResponseHeader("X-MAL-Area-Version")));
         Boolean isErrorMessage = client.getResponseHeader("X-MAL-Is-Error-Message")
                 .equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
 
-        String supplementsString = decodeMimeText(client.getResponseHeader("X-MAL-Supplements"));
+ 
         NamedValueList supplements = new NamedValueList();
-        try {
-            supplements = SupplementsEncoder.decode(supplementsString);
-        } catch (IOException e) {
-            RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+        String supplementsStringOrNull = client.getResponseHeader("X-MAL-Supplements");
+        if (supplementsStringOrNull != null) {
+            String supplementsString = decodeMimeText(supplementsStringOrNull);
+            try {
+                supplements = SupplementsEncoder.decode(supplementsString);
+            } catch (IOException e) {
+                RLOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         return new MALMessageHeader(from, authenticationId, to, timestamp, interactionType,

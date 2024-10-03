@@ -115,7 +115,7 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
         UShort service = new UShort(Integer.parseInt(decodeAscii(request.getRequestHeader("X-MAL-Service"))));
         UShort operation = new UShort(Integer.parseInt(decodeAscii(request.getRequestHeader("X-MAL-Operation"))));
         UOctet serviceVersion = new UOctet(
-                Short.parseShort(decodeAscii(request.getRequestHeader("X-MAL-Service-Version"))));
+                Short.parseShort(decodeAscii(request.getRequestHeader("X-MAL-Area-Version"))));
         Boolean isErrorMessage = request.getRequestHeader("X-MAL-Is-Error-Message")
                 .equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
 
