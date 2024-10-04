@@ -30,6 +30,7 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.*;
 import esa.mo.xsd.EnumerationType.Item;
+import esa.mo.xsd.util.XmlSpecification;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -114,8 +115,10 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     @Override
-    public void compile(String destinationFolderName, SpecificationType spec,
+    public void compile(String destinationFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
+        SpecificationType spec = xml.getSpecType();
+
         for (AreaType area : spec.getArea()) {
             Map<String, String> indexMap = new HashMap<>();
 

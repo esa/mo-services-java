@@ -489,7 +489,7 @@ public class StubGenerator extends AbstractMojo {
         // pre process the reference specifications
         for (XmlSpecification spec : refSpecs) {
             try {
-                generator.preProcess(spec.getSpecType());
+                generator.preProcess(spec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
@@ -513,7 +513,7 @@ public class StubGenerator extends AbstractMojo {
         // pre process the specifications
         for (XmlSpecification spec : specs) {
             try {
-                generator.preProcess(spec.getSpecType());
+                generator.preProcess(spec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
@@ -526,7 +526,7 @@ public class StubGenerator extends AbstractMojo {
         for (XmlSpecification spec : specs) {
             try {
                 getLog().info("Generating " + generator.getShortName());
-                generator.compile(outputDirectory.getPath(), spec.getSpecType(), spec.getRootElement());
+                generator.compile(outputDirectory.getPath(), spec, spec.getRootElement());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(

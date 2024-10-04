@@ -30,6 +30,7 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.xsd.*;
 import esa.mo.xsd.EnumerationType.Item;
+import esa.mo.xsd.util.XmlSpecification;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -121,8 +122,10 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     @Override
-    public void compile(String destFolderName, SpecificationType spec,
+    public void compile(String destFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
+        SpecificationType spec = xml.getSpecType();
+
         for (AreaType area : spec.getArea()) {
             String destinationFolderName = destFolderName + "/" + area.getName();
             String folder = destinationFolderName + "/word";

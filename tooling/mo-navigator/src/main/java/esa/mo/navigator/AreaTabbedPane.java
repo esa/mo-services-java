@@ -172,8 +172,8 @@ public class AreaTabbedPane extends JTabbedPane {
                     // now generator from each specification
                     for (XmlSpecification spec : specs) {
                         try {
-                            generator.preProcess(spec.getSpecType());
-                            generator.compile(destFolder, spec.getSpecType(), spec.getRootElement());
+                            generator.preProcess(spec);
+                            generator.compile(destFolder, spec, spec.getRootElement());
                         } catch (Exception ex) {
                             Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                                     "Exception thrown during the processing of XML file: "

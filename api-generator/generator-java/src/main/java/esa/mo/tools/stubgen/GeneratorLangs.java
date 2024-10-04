@@ -40,6 +40,7 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
+import esa.mo.xsd.util.XmlSpecification;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -169,8 +170,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     @Override
-    public void preProcess(SpecificationType spec) throws IOException, JAXBException {
-        super.preProcess(spec);
+    public void preProcess(XmlSpecification xml) throws IOException, JAXBException {
+        super.preProcess(xml);
+        SpecificationType spec = xml.getSpecType();
 
         // load in COM object/event definitions
         for (AreaType area : spec.getArea()) {
@@ -201,9 +203,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     @Override
-    public void compile(String destinationFolderName, SpecificationType spec,
+    public void compile(String destinationFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
         long totalTime = System.currentTimeMillis();
+        SpecificationType spec = xml.getSpecType();
 
         for (AreaType area : spec.getArea()) {
             long timestamp = System.currentTimeMillis();
