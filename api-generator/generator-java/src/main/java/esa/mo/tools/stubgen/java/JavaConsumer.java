@@ -70,7 +70,6 @@ public class JavaConsumer {
 
         String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String areaHelper = generator.createElementType(areaName, null, null, areaName + "Helper");
-        String serviceHelper = generator.createElementType(areaName, serviceName, null, serviceName + "Helper");
         String serviceInfoName = generator.createElementType(areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
 
         CompositeField stdHeaderArg = generator.createCompositeElementsDetails(file, false, "msgHeader",
@@ -519,7 +518,7 @@ public class JavaConsumer {
         }
 
         for (OperationSummary op : summary.getOperations()) {
-            String operationInstanceVar = generator.addressOf(serviceInfoType) + op.getName().toUpperCase() + "_OP";
+            String operationInstanceVar = serviceInfoType + op.getName().toUpperCase() + "_OP";
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());

@@ -204,10 +204,5 @@ public class JavaLists {
 
         file.addClassCloseStatement();
         file.flush();
-
-        srcType.setList(Boolean.TRUE);
-        CompositeField listType = generator.createCompositeElementsDetails(file, false, null,
-                srcType, true, true, "List element.");
     }
-
 }

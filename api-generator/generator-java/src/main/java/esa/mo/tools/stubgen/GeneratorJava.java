@@ -397,23 +397,8 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    public String getNullValue() {
-        return "null";
-    }
-
-    @Override
-    public String addressOf(String type) {
-        return type;
-    }
-
-    @Override
     protected String malStringAsElement(LanguageWriter file) {
         return createElementType(StdStrings.MAL, null, StdStrings.UNION);
-    }
-
-    @Override
-    protected String errorCodeAsReference(LanguageWriter file, String ref) {
-        return ref;
     }
 
     @Override
@@ -429,10 +414,5 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     protected InterfaceWriter createInterfaceFile(File folder, String className) throws IOException {
         return new JavaClassWriter(folder, className, this);
-    }
-
-    @Override
-    protected InterfaceWriter createInterfaceFile(String destinationFolderName, String className) throws IOException {
-        return new JavaClassWriter(destinationFolderName, className, this);
     }
 }

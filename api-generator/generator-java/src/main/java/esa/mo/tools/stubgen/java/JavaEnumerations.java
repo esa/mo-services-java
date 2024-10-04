@@ -184,7 +184,7 @@ public class JavaEnumerations {
         method.addLine("        return _ENUMERATIONS[i]");
         method.addLine("    }", false);
         method.addLine("}", false);
-        method.addLine("return " + generator.getNullValue());
+        method.addLine("return null");
         method.addMethodCloseStatement();
 
         String enumOrdinalType = StdStrings.UINTEGER;

@@ -1860,7 +1860,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return (replacementWord != null) ? replacementWord : arg;
     }
 
-    public static String createConsumerPatternCall(OperationSummary op) {
+    public String createConsumerPatternCall(OperationSummary op) {
         switch (op.getPattern()) {
             case SEND_OP:
                 return "send";
@@ -2110,19 +2110,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
 
-    public abstract String addressOf(String object);
-
     protected abstract String malStringAsElement(LanguageWriter file);
-
-    protected abstract String errorCodeAsReference(LanguageWriter file, String ref);
-
-    public abstract String getNullValue();
 
     public abstract ClassWriter createClassFile(File folder, String className) throws IOException;
 
     public abstract ClassWriter createClassFile(String destinationFolderName, String className) throws IOException;
 
     protected abstract InterfaceWriter createInterfaceFile(File folder, String className) throws IOException;
-
-    protected abstract InterfaceWriter createInterfaceFile(String destinationFolderName, String className) throws IOException;
 }
