@@ -21,7 +21,6 @@
 package esa.mo.tools.stubgen.specification;
 
 import esa.mo.xsd.ServiceType;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -30,27 +29,17 @@ import java.util.List;
 public final class ServiceSummary {
 
     private final ServiceType service;
-    private final boolean comService;
-    private final List<OperationSummary> operations = new LinkedList<>();
+    private final List<OperationSummary> operations;
 
     /**
      * Constructor.
      *
      * @param service The XML service.
-     * @param isComService True if the COM service.
+     * @param operations The list of operations.
      */
-    public ServiceSummary(ServiceType service, boolean isComService) {
+    public ServiceSummary(ServiceType service, List<OperationSummary> operations) {
         this.service = service;
-        this.comService = isComService;
-    }
-
-    /**
-     * Returns true if is the COM service.
-     *
-     * @return TYrue if the COM service.
-     */
-    public boolean isComService() {
-        return comService;
+        this.operations = operations;
     }
 
     /**

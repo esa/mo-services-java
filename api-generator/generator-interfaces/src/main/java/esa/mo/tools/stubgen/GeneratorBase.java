@@ -584,18 +584,19 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the operation summary.
      */
     protected ServiceSummary createOperationElementList(ServiceType service) {
-        ServiceSummary summary = new ServiceSummary(service, StdStrings.COM.equalsIgnoreCase(service.getName()));
+        boolean isComService = StdStrings.COM.equalsIgnoreCase(service.getName());
+        List<OperationSummary> operations = new LinkedList<>();
 
         // only load operations if this is not the COM service
-        if (!summary.isComService()) {
+        if (!isComService) {
             for (CapabilitySetType capabilitySet : service.getCapabilitySet()) {
                 for (OperationType op : capabilitySet.getSendIPOrSubmitIPOrRequestIP()) {
-                    OperationSummary ele = extractOperationSummary(op, capabilitySet.getNumber());
-                    summary.getOperations().add(ele);
+                    operations.add(extractOperationSummary(op, capabilitySet.getNumber()));
                 }
             }
         }
-        return summary;
+
+        return new ServiceSummary(service, operations);
     }
 
     private OperationSummary extractOperationSummary(OperationType op, int capNum) {
