@@ -239,11 +239,11 @@ public class TypeUtils {
 
         if (any instanceof List) {
             List li = (List) any;
-            ArrayList<TypeRef> rv = new ArrayList<>(li.size());
+            ArrayList<TypeRef> list = new ArrayList<>(li.size());
             for (Object e : li) {
-                rv.add(getTypeViaXSDAny(e));
+                list.add(getTypeViaXSDAny(e));
             }
-            return rv;
+            return list;
         } else {
             throw new IllegalArgumentException(
                     "Unexpected type in message body of : " + any.getClass().getSimpleName());

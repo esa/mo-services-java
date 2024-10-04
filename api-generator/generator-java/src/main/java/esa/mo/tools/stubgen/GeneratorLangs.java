@@ -570,7 +570,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case SEND_OP: {
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, op.getName(),
                             createOperationArguments(getConfig(), file, op.getArgTypes()),
-                            throwsInteractionAndMALException, op.getOriginalOp().getComment(),
+                            throwsInteractionAndMALException, op.getComment(),
                             "the MAL message sent to initiate the interaction",
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                                     throwsMALException + " if there is an implementation exception"));
@@ -582,7 +582,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     String opRetComment = (opRetType == null) ? null : "The return value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            throwsInteractionAndMALException, op.getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                                     throwsMALException + " if there is an implementation exception"));
                     if (supportsAsync) {
@@ -605,7 +605,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     String opRetComment = (opRetType == null) ? null : "The acknowledge value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            throwsInteractionAndMALException, op.getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                                     throwsMALException + " if there is an implementation exception"));
                     if (supportsAsync) {

@@ -20,7 +20,9 @@
  */
 package esa.mo.tools.stubgen.specification;
 
+import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.OperationType;
+import esa.mo.xsd.PubSubOperationType;
 import java.util.List;
 
 /**
@@ -100,8 +102,8 @@ public final class OperationSummary {
      *
      * @return the originalOp
      */
-    public OperationType getOriginalOp() {
-        return originalOp;
+    public String getComment() {
+        return originalOp.getComment();
     }
 
     /**
@@ -216,5 +218,10 @@ public final class OperationSummary {
      */
     public String getRetComment() {
         return retComment;
+    }
+
+    public AnyTypeReference getSubscriptionKeys() {
+        PubSubOperationType lop = (PubSubOperationType) originalOp;
+        return lop.getMessages().getSubscriptionKeys();
     }
 }

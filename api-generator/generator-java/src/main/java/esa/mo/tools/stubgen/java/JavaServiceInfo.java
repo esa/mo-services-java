@@ -128,8 +128,7 @@ public class JavaServiceInfo {
 
             if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
                 StringBuilder arrayList = new StringBuilder("{");
-                PubSubOperationType lop = (PubSubOperationType) op.getOriginalOp();
-                AnyTypeReference subsKeys = lop.getMessages().getSubscriptionKeys();
+                AnyTypeReference subsKeys = op.getSubscriptionKeys();
 
                 if (subsKeys != null) {
                     List<TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());

@@ -75,13 +75,13 @@ public class GeneratorGwt extends GeneratorJava {
     @Override
     protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
             ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating consumer interface: " + service.getName());
-
-        InterfaceWriter file = createInterfaceFile(consumerFolder, service.getName() + "GWT");
         String serviceName = service.getName();
+        logger.info(" > Creating consumer interface: " + serviceName);
+
+        InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWT");
         file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
-        file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service.getName() + "GWT\")");
+        file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + serviceName + "GWT\")");
         file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);

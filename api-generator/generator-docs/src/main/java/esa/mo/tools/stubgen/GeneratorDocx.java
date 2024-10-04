@@ -1046,7 +1046,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 for (CompositeField element : superCompElements) {
                     docxFile.startRow();
                     docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, element.getFieldName(), FIXED_COLOUR);
-                    docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(element.getTypeReference()), FIXED_COLOUR, 0);
+                    docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, element.getTypeRef(), FIXED_COLOUR, 0);
                     docxFile.addCell(2, COMPOSITE_TABLE_WIDTHS, element.isCanBeNull() ? "Yes" : "No", FIXED_COLOUR);
                     docxFile.addCell(3, COMPOSITE_TABLE_WIDTHS, element.getComment(), FIXED_COLOUR, false);
                     docxFile.endRow();
@@ -1056,7 +1056,7 @@ public class GeneratorDocx extends GeneratorDocument {
             for (CompositeField element : compElements) {
                 docxFile.startRow();
                 docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, element.getFieldName());
-                docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(element.getTypeReference()), null, 0);
+                docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, element.getTypeRef(), null, 0);
                 docxFile.addCell(2, COMPOSITE_TABLE_WIDTHS, element.isCanBeNull() ? "Yes" : "No");
                 docxFile.addCell(3, COMPOSITE_TABLE_WIDTHS, element.getComment(), false);
                 docxFile.endRow();

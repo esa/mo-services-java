@@ -36,7 +36,6 @@ import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ServiceType;
-import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -399,9 +398,12 @@ public class JavaConsumer {
                         TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
 
                 for (TypeInfo ti : op.getRetTypes()) {
+                    /*
                     TypeReference source = ti.getSourceType();
                     opTypes.add(TypeUtils.convertTypeReference(generator,
                             TypeUtils.createTypeReference(source.getArea(), source.getService(), source.getName(), source.isList())));
+                            */
+                    opTypes.add(ti);
                 }
 
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
@@ -523,7 +525,7 @@ public class JavaConsumer {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
                             msgType, op.getName(), opArgs, throwsInteractionAndMALException,
-                            op.getOriginalOp().getComment(), "the MAL message sent to initiate the interaction",
+                            op.getComment(), "the MAL message sent to initiate the interaction",
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement("return " + consumerMethodCall
                             + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
@@ -544,7 +546,7 @@ public class JavaConsumer {
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op)
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
-                            op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            op.getName(), opArgs, throwsInteractionAndMALException, op.getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
                     createOperationReturn(file, method, op, opRetType);
@@ -581,7 +583,7 @@ public class JavaConsumer {
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, false, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            throwsInteractionAndMALException, op.getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                                     throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);

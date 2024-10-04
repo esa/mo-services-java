@@ -382,7 +382,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         if (extraPackage != null) {
-            if (0 < packageName.length()) {
+            if (packageName.length() > 0) {
                 packageName += ".";
             }
             packageName += extraPackage;

@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen;
 
-import esa.mo.xsd.SpecificationType;
 import esa.mo.xsd.util.XmlSpecification;
 import java.io.IOException;
 import java.util.Map;

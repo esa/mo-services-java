@@ -148,7 +148,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                     for (OperationSummary op : summary.getOperations()) {
                         serviceBodyBuff.addTitle(3, "Operation: ", createId(service, op.getName()), op.getName(), false);
-                        serviceBodyBuff.addComment(op.getOriginalOp().getComment());
+                        serviceBodyBuff.addComment(op.getComment());
 
                         opTocMap.add(new AbstractMap.SimpleEntry<>(op.getName(), createXlink(null, service.getName(), op.getName())));
 
@@ -749,7 +749,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 if (null != e) {
                     String pname = "Part";
 
-                    if ((null != e.getFieldName()) && (0 < e.getFieldName().length())) {
+                    if ((e.getFieldName() != null) && (e.getFieldName().length() > 0)) {
                         pname = e.getFieldName();
                     }
 
