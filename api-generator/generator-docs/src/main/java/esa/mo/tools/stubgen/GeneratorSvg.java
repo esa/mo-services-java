@@ -115,7 +115,7 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     @Override
-    public void compile(String destinationFolderName, XmlSpecification xml,
+    public void generate(String destinationFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
         SpecificationType spec = xml.getSpecType();
 

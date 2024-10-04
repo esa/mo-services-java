@@ -122,7 +122,7 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     @Override
-    public void compile(String destFolderName, XmlSpecification xml,
+    public void generate(String destFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
         SpecificationType spec = xml.getSpecType();
 

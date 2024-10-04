@@ -86,27 +86,27 @@ public interface Generator {
             Map<String, String> extraProperties) throws IOException;
 
     /**
-     * Pre process a specification to load in the type definitions.
+     * Load an XML specification in the type definitions.
      *
-     * @param xml The xml specification to process.
+     * @param xml The xml specification to load.
      * @throws IOException If there are problems reading the file.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void preProcess(XmlSpecification xml) throws IOException, JAXBException;
+    void loadXML(XmlSpecification xml) throws IOException, JAXBException;
 
     /**
-     * Pre process an XSD specification to load in the type definitions.
+     * Load an XSD specification in the type definitions.
      *
      * @param spec The schema spec to process.
      * @throws IOException If there are problems reading the file.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void preProcess(Schema spec) throws IOException, JAXBException;
+    void loadXSD(Schema spec) throws IOException, JAXBException;
 
     /**
-     * Compiles the specification into the appropriate form for the generator.
+     * Generates the specification into the appropriate form.
      *
      * @param destinationFolderName The folder to generate in to.
      * @param xml The xml specification to process.
@@ -115,7 +115,7 @@ public interface Generator {
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void compile(String destinationFolderName, XmlSpecification xml, JAXBElement rootNode) throws IOException, JAXBException;
+    void generate(String destinationFolderName, XmlSpecification xml, JAXBElement rootNode) throws IOException, JAXBException;
 
     /**
      * Closes the generator allowing it to write out any final files or

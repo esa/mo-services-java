@@ -486,22 +486,22 @@ public class StubGenerator extends AbstractMojo {
                     "Exception thrown during the opening of the generator", ex);
         }
 
-        // pre process the reference specifications
-        for (XmlSpecification spec : refSpecs) {
+        // Load the reference specifications
+        for (XmlSpecification refSpec : refSpecs) {
             try {
-                generator.preProcess(spec);
+                generator.loadXML(refSpec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XML file: "
-                        + spec.getFile().getPath(), ex);
+                        + refSpec.getFile().getPath(), ex);
             }
         }
 
-        // pre process the reference XSD specifications
+        // Load the XSD specifications
         for (XsdSpecification spec : refXsd) {
             try {
-                generator.preProcess(spec.getSchema());
+                generator.loadXSD(spec.getSchema());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
@@ -510,10 +510,10 @@ public class StubGenerator extends AbstractMojo {
             }
         }
 
-        // pre process the specifications
+        // Load the XML specifications
         for (XmlSpecification spec : specs) {
             try {
-                generator.preProcess(spec);
+                generator.loadXML(spec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
@@ -526,7 +526,7 @@ public class StubGenerator extends AbstractMojo {
         for (XmlSpecification spec : specs) {
             try {
                 getLog().info("Generating " + generator.getShortName());
-                generator.compile(outputDirectory.getPath(), spec, spec.getRootElement());
+                generator.generate(outputDirectory.getPath(), spec, spec.getRootElement());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(

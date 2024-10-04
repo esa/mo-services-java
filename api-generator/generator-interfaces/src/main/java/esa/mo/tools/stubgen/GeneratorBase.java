@@ -97,7 +97,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     @Override
-    public void preProcess(XmlSpecification xml) throws IOException, JAXBException {
+    public void loadXML(XmlSpecification xml) throws IOException, JAXBException {
         SpecificationType spec = xml.getSpecType();
         // load in types and error definitions
         for (AreaType area : spec.getArea()) {
@@ -128,7 +128,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     @Override
-    public void preProcess(Schema spec) throws IOException, JAXBException {
+    public void loadXSD(Schema spec) throws IOException, JAXBException {
         // load in types
         if (spec.getSimpleTypeOrComplexTypeOrGroup() != null) {
             loadTypesFromXsdList(StdStrings.XML, spec.getTargetNamespace(),

@@ -170,8 +170,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     @Override
-    public void preProcess(XmlSpecification xml) throws IOException, JAXBException {
-        super.preProcess(xml);
+    public void loadXML(XmlSpecification xml) throws IOException, JAXBException {
+        super.loadXML(xml);
         SpecificationType spec = xml.getSpecType();
 
         // load in COM object/event definitions
@@ -203,7 +203,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     @Override
-    public void compile(String destinationFolderName, XmlSpecification xml,
+    public void generate(String destinationFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
         long totalTime = System.currentTimeMillis();
         SpecificationType spec = xml.getSpecType();
