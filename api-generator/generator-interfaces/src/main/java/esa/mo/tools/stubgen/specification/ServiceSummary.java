@@ -47,8 +47,18 @@ public final class ServiceSummary {
      *
      * @return the service.
      */
+    @Deprecated
     public ServiceType getService() {
         return service;
+    }
+
+    /**
+     * Returns the service number.
+     *
+     * @return the service number.
+     */
+    public int getServiceNumber() {
+        return service.getNumber();
     }
 
     /**

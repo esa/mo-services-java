@@ -49,7 +49,8 @@ public class JavaHelpers {
         this.generator = generator;
     }
 
-    public void createServiceHelperClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    public void createServiceHelperClass(File serviceFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();

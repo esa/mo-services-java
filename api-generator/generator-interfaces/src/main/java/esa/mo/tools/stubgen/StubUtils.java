@@ -192,7 +192,7 @@ public abstract class StubUtils {
      * @return the converted string.
      */
     public static String preCap(String str) {
-        if ((null != str) && (0 < str.length())) {
+        if ((str != null) && (str.length() > 0)) {
             str = String.valueOf(str.charAt(0)).toUpperCase() + str.substring(1);
         }
 

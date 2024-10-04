@@ -397,55 +397,13 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected String getIntCallMethod() {
-        return "intValue";
-    }
-
-    @Override
-    protected String getOctetCallMethod() {
-        return "byteValue";
-    }
-
-    @Override
-    public String getRegisterMethodName() {
-        return "register";
-    }
-
-    @Override
-    public String getDeregisterMethodName() {
-        return "deregister";
-    }
-
-    @Override
     public String getNullValue() {
         return "null";
     }
 
     @Override
-    protected void addVectorAddStatement(LanguageWriter file, MethodWriter method,
-            String variable, String parameter) throws IOException {
-        method.addLine(variable + ".addElement(" + parameter + ")");
-    }
-
-    @Override
-    protected void addVectorRemoveStatement(LanguageWriter file, MethodWriter method,
-            String variable, String parameter) throws IOException {
-        method.addLine(variable + ".removeElement(" + parameter + ")");
-    }
-
-    @Override
-    protected String createStaticClassReference(String type) {
-        return type + ".class";
-    }
-
-    @Override
     public String addressOf(String type) {
         return type;
-    }
-
-    @Override
-    protected String createArraySize(boolean isActual, String type, String variable) {
-        return variable + ".length";
     }
 
     @Override

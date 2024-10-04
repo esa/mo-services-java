@@ -496,16 +496,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createServiceProviderFolderComment(providerFolder, area, service);
         createServiceProviderHandler(providerFolder, area, service, summary);
         createServiceProviderSkeleton(providerFolder, area, service, summary, requiredPublishers);
-        //createServiceProviderDelegation(providerFolder, area, service, summary);
         createServiceProviderInheritance(providerFolder, area, service, summary);
         createServiceProviderInteractions(providerFolder, area, service, summary);
-    }
-
-    @Deprecated
-    private void createServiceProviderDelegation(File providerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating provider delegate class: " + service.getName());
-        createServiceProviderSkeletonHandler(providerFolder, area, service, summary, true);
     }
 
     protected void createServiceProviderInheritance(File providerFolder, AreaType area,
@@ -1868,7 +1860,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return (replacementWord != null) ? replacementWord : arg;
     }
 
-    public String createConsumerPatternCall(OperationSummary op) {
+    public static String createConsumerPatternCall(OperationSummary op) {
         switch (op.getPattern()) {
             case SEND_OP:
                 return "send";
@@ -1930,7 +1922,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             return new LinkedList<>();
         }
 
-        List<CompositeField> rv = new LinkedList<>();
+        List<CompositeField> outputArgs = new LinkedList<>();
 
         for (int i = 0; i < opArgs.size(); i++) {
             TypeInfo ti = opArgs.get(i);
@@ -1956,10 +1948,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField argType = createCompositeElementsDetails(file, true,
                     argName, tir, true, true, cmt);
 
-            rv.add(argType);
+            outputArgs.add(argType);
         }
 
-        return rv;
+        return outputArgs;
     }
 
     public String createOperationArgReturn(LanguageWriter file, MethodWriter method,
@@ -2002,7 +1994,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         String shortName = StubUtils.preCap(opName) + messageType;
-        String rt = getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase() + "." + service.getName().toLowerCase() + "." + getConfig().getBodyFolder() + "." + shortName;
+        String rt = getConfig().getAreaPackage(area.getName())
+                + area.getName().toLowerCase() + "."
+                + service.getName().toLowerCase() + "."
+                + getConfig().getBodyFolder() + "."
+                + shortName;
+
         if (!multiReturnTypeMap.containsKey(rt)) {
             multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
         }
@@ -2113,27 +2110,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
 
-    protected abstract void addVectorAddStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException;
-
-    protected abstract void addVectorRemoveStatement(LanguageWriter file, MethodWriter method, String variable, String parameter) throws IOException;
-
-    protected abstract String createStaticClassReference(String type);
-
     public abstract String addressOf(String object);
-
-    protected abstract String createArraySize(boolean isActual, String type, String variable);
 
     protected abstract String malStringAsElement(LanguageWriter file);
 
     protected abstract String errorCodeAsReference(LanguageWriter file, String ref);
-
-    protected abstract String getIntCallMethod();
-
-    protected abstract String getOctetCallMethod();
-
-    public abstract String getRegisterMethodName();
-
-    public abstract String getDeregisterMethodName();
 
     public abstract String getNullValue();
 

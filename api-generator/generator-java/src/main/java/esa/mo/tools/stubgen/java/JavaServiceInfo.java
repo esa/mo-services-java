@@ -39,7 +39,6 @@ import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ExtendedServiceType;
 import esa.mo.xsd.ModelObjectType;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
-import esa.mo.xsd.PubSubOperationType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.SupportedFeatures;
 import esa.mo.xsd.TypeReference;
@@ -185,7 +184,7 @@ public class JavaServiceInfo {
                     if (oType instanceof EnumerationType) {
                         text = clsName + ".fromOrdinal(0)";
                     }
-                    */
+                     */
 
                     String lclsName = generator.createElementType(area.getName(), service.getName(), typeName + "List");
                     elementInstantiations.add(text);

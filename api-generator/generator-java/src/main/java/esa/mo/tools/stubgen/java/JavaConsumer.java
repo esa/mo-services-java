@@ -618,7 +618,7 @@ public class JavaConsumer {
                             false, true, null, op.getName() + "Register",
                             StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                    method.addMethodWithDependencyStatement(consumerMethodCall + generator.getRegisterMethodName() + "(" + operationInstanceVar + ", subscription, adapter)", helperType, true);
+                    method.addMethodWithDependencyStatement(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter)", helperType, true);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -628,7 +628,7 @@ public class JavaConsumer {
                                 StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException,
                                 "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction",
                                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.getRegisterMethodName()) + "(" + operationInstanceVar + ", subscription, adapter)");
+                        method.addLine("return " + consumerMethodCall + "asyncRegister(" + operationInstanceVar + ", subscription, adapter)");
                         method.addMethodCloseStatement();
                     }
 
@@ -637,7 +637,7 @@ public class JavaConsumer {
                             Arrays.asList(idStr), throwsInteractionAndMALException,
                             "Deregister method for the " + op.getName() + " PubSub interaction", null,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                    method.addLine(consumerMethodCall + generator.getDeregisterMethodName() + "(" + operationInstanceVar + ", identifierList)");
+                    method.addLine(consumerMethodCall + "deregister(" + operationInstanceVar + ", identifierList)");
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -647,7 +647,7 @@ public class JavaConsumer {
                                 throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister",
                                 "the MAL message sent to initiate the interaction",
                                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.getDeregisterMethodName()) + "(" + operationInstanceVar + ", identifierList, adapter)");
+                        method.addLine("return " + consumerMethodCall + "asyncDeregister(" + operationInstanceVar + ", identifierList, adapter)");
                         method.addMethodCloseStatement();
                     }
                     break;

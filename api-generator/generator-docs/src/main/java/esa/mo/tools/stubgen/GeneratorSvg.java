@@ -519,7 +519,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         if (splitOutSvg) {
             try {
-                String filename = mainSvgFile.getClassName() + "_" + service.getService().getNumber() + "_" + number + "_" + name + "_" + phase;
+                String filename = mainSvgFile.getClassName() + "_" + service.getServiceNumber() + "_" + number + "_" + name + "_" + phase;
                 rv = new SvgWriter(mainSvgFile.getFolder(), filename, "svg", false);
                 mainSvgFile.addComment(filename, true);
             } catch (IOException ex) {
