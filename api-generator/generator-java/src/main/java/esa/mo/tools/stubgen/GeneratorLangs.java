@@ -27,12 +27,12 @@ import esa.mo.tools.stubgen.java.JavaEnumerations;
 import esa.mo.tools.stubgen.java.JavaHelpers;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.MultiReturnType;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
@@ -1254,7 +1254,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     private void createRequestResponseDecompose(MethodWriter method, OperationSummary op,
             String opCall, CompositeField opRetType) throws IOException {
-        List<TypeInfo> targetTypes = op.getRetTypes();
+        List<FieldInfo> targetTypes = op.getRetTypes();
 
         if ((targetTypes != null) && (!targetTypes.isEmpty())) {
             if (targetTypes.size() == 1) {
@@ -1274,7 +1274,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StringBuilder buf = new StringBuilder();
 
                 for (int i = 0; i < targetTypes.size(); i++) {
-                    TypeInfo ti = targetTypes.get(i);
+                    FieldInfo ti = targetTypes.get(i);
                     if (i > 0) {
                         buf.append(", ");
                     }
@@ -1301,7 +1301,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String rv = null;
 
         if ((null != ref) && (null != ref.getAny()) && (!ref.getAny().isEmpty())) {
-            List<TypeInfo> refs = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(ref.getAny()));
+            List<FieldInfo> refs = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(ref.getAny()));
             rv = refs.get(0).getMalShortFormField();
         }
 
@@ -1779,7 +1779,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, argumentComment);
     }
 
-    public String createAdapterMethodsArgs(List<TypeInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(List<FieldInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
         if (typeInfos == null) {
             return "";
         }
@@ -1787,7 +1787,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         StringBuilder buf = new StringBuilder();
 
         for (int i = 0; i < typeInfos.size(); i++) {
-            TypeInfo ti = typeInfos.get(i);
+            FieldInfo ti = typeInfos.get(i);
 
             boolean morePrecedingArgs = precedingArgs || (i > 0);
             boolean evenMoreArgs = moreArgs && i == (typeInfos.size() - 1);
@@ -1797,7 +1797,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return buf.toString();
     }
 
-    public String createAdapterMethodsArgs(TypeInfo typeInfo, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(FieldInfo typeInfo, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
         String retStr = "";
 
         if ((typeInfo.getTargetType() != null) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
@@ -1831,7 +1831,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return retStr;
     }
 
-    private String generateExpectedType(TypeInfo ti) {
+    private String generateExpectedType(FieldInfo ti) {
         // Not Java native...
         String cast = ti.getTargetType();
         String at = null;
@@ -1917,7 +1917,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public List<CompositeField> createOperationArguments(GeneratorConfiguration config,
-            LanguageWriter file, List<TypeInfo> opArgs) {
+            LanguageWriter file, List<FieldInfo> opArgs) {
         if (opArgs == null) {
             return new LinkedList<>();
         }
@@ -1925,7 +1925,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         List<CompositeField> outputArgs = new LinkedList<>();
 
         for (int i = 0; i < opArgs.size(); i++) {
-            TypeInfo ti = opArgs.get(i);
+            FieldInfo ti = opArgs.get(i);
             TypeReference tir = ti.getSourceType();
             String argName = ti.getFieldName();
 
@@ -1955,7 +1955,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public String createOperationArgReturn(LanguageWriter file, MethodWriter method,
-            TypeInfo typeInfo, String argName, int argIndex) throws IOException {
+            FieldInfo typeInfo, String argName, int argIndex) throws IOException {
         if ((typeInfo.getTargetType() != null) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
             String eleType = "Object";
             String tv = argName + argIndex;
@@ -1983,7 +1983,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected CompositeField createReturnType(LanguageWriter file, AreaType area,
-            ServiceType service, String opName, String messageType, List<TypeInfo> returnTypes) {
+            ServiceType service, String opName, String messageType, List<FieldInfo> returnTypes) {
         if (returnTypes == null || returnTypes.isEmpty()) {
             return null;
         }
@@ -2005,7 +2005,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         return createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(area.getName().toLowerCase(), service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
+                TypeUtils.createTypeReference(area.getName().toLowerCase(),
+                        service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
                 false, true, null);
     }
 
@@ -2016,7 +2017,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
      * @param typeNames The list of arguments.
      * @return The argument string.
      */
-    public String createArgNameOrNull(List<TypeInfo> typeNames) {
+    public String createArgNameOrNull(List<FieldInfo> typeNames) {
         if (typeNames == null || typeNames.isEmpty()) {
             return getConfig().getNullValue();
         }
@@ -2024,7 +2025,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         StringBuilder buf = new StringBuilder();
 
         for (int i = 0; i < typeNames.size(); i++) {
-            TypeInfo ti = typeNames.get(i);
+            FieldInfo ti = typeNames.get(i);
             if (i > 0) {
                 buf.append(", ");
             }
@@ -2105,8 +2106,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
     }
-
-    public abstract String createAreaHelperClassInitialValue(String areaVar, short areaVersion);
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
 

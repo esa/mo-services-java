@@ -22,10 +22,10 @@ package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.docx.GeneratorUtils;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.*;
@@ -174,7 +174,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                                 evTocMap.add(new AbstractMap.SimpleEntry<>(evt.getName(), createXlink(null, service.getName(), evt.getName())));
 
-                                List<TypeInfo> types = new LinkedList<>();
+                                List<FieldInfo> types = new LinkedList<>();
                                 if (null != evt.getObjectType()) {
                                     types = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(evt.getObjectType().getAny()));
                                 }
@@ -279,7 +279,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 break;
             }
             case PUBSUB_OP: {
-                List<esa.mo.tools.stubgen.specification.TypeInfo> types = new ArrayList<>();
+                List<esa.mo.tools.stubgen.specification.FieldInfo> types = new ArrayList<>();
                 TypeReference subId = new TypeReference();
                 subId.setArea("MAL");
                 subId.setName("Identifier");
@@ -290,7 +290,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 types.add(0, TypeUtils.convertTypeReference(this, subId));
                 types.add(1, TypeUtils.convertTypeReference(this, updateHdr));
 
-                for (TypeInfo typeInfo : op.getRetTypes()) {
+                for (FieldInfo typeInfo : op.getRetTypes()) {
                     TypeReference refType = typeInfo.getSourceType();
                     refType.setList(Boolean.TRUE);
                     types.add(TypeUtils.convertTypeReference(this, refType));
@@ -385,7 +385,7 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary,
-            Integer number, String title, List<TypeInfo> types, String comment,
+            Integer number, String title, List<FieldInfo> types, String comment,
             String name, String phase) throws IOException {
         if (!types.isEmpty()) {
             svgFile.addTitle(4, title, null, "", false);
@@ -395,7 +395,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         List<String> cmts = new LinkedList<>();
         cmts.add(comment);
-        for (TypeInfo e : types) {
+        for (FieldInfo e : types) {
             cmts.add(e.getFieldComment());
         }
 
@@ -403,7 +403,7 @@ public class GeneratorSvg extends GeneratorDocument {
             if (!types.isEmpty()) {
                 SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
                 svgOutput.startDrawing();
-                for (TypeInfo e : types) {
+                for (FieldInfo e : types) {
                     drawOperationPart(svgOutput, e);
                     cmts.add(e.getFieldComment());
                 }
@@ -427,7 +427,7 @@ public class GeneratorSvg extends GeneratorDocument {
         svgFile.addComment(cmts);
     }
 
-    private void drawOperationPart(SvgBaseWriter svgFile, TypeInfo type) throws IOException {
+    private void drawOperationPart(SvgBaseWriter svgFile, FieldInfo type) throws IOException {
         if (null != type) {
             String partName = "Part";
 
@@ -744,8 +744,8 @@ public class GeneratorSvg extends GeneratorDocument {
             super(null, null, "", "", false, false);
         }
 
-        public void addOperationTypes(List<TypeInfo> types) {
-            for (TypeInfo e : types) {
+        public void addOperationTypes(List<FieldInfo> types) {
+            for (FieldInfo e : types) {
                 if (null != e) {
                     String pname = "Part";
 

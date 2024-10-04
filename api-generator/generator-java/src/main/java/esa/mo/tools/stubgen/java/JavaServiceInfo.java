@@ -22,11 +22,11 @@ package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
@@ -357,11 +357,11 @@ public class JavaServiceInfo {
     }
 
     // Generates the OperationField[] (...)
-    private String addMalTypes(List<TypeInfo> ti) {
+    private String addMalTypes(List<FieldInfo> ti) {
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
 
-        for (TypeInfo typeInfo : ti) {
+        for (FieldInfo typeInfo : ti) {
             TypeReference type = typeInfo.getSourceType();
 
             if (StdStrings.XML.equals(type.getArea())) {
@@ -383,11 +383,11 @@ public class JavaServiceInfo {
         return new_line_0 + "new " + OP_FIELD + "[] {" + arrayArgs + "}";
     }
 
-    private String generateOperationFieldsArray(List<TypeInfo> ti, String newLine) {
+    private String generateOperationFieldsArray(List<FieldInfo> ti, String newLine) {
         StringBuilder buffer = new StringBuilder();
 
         for (int i = 0; i < ti.size(); i++) {
-            TypeInfo typeInfo = ti.get(i);
+            FieldInfo typeInfo = ti.get(i);
             buffer.append(newLine);
             buffer.append("new ").append(OP_FIELD).append("(");
             String argName = typeInfo.getFieldName();

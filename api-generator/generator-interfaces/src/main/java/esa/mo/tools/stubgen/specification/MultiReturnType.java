@@ -34,7 +34,7 @@ public class MultiReturnType {
     private final AreaType area;
     private final ServiceType service;
     private final String shortName;
-    private final List<TypeInfo> returnTypes;
+    private final List<FieldInfo> returnTypes;
 
     /**
      * Constructor.
@@ -49,7 +49,7 @@ public class MultiReturnType {
             final AreaType area,
             final ServiceType service,
             final String shortName,
-            final List<TypeInfo> returnTypes) {
+            final List<FieldInfo> returnTypes) {
         this.returnType = returnType;
         this.area = area;
         this.service = service;
@@ -73,7 +73,7 @@ public class MultiReturnType {
         return shortName;
     }
 
-    public List<TypeInfo> getReturnTypes() {
+    public List<FieldInfo> getReturnTypes() {
         return returnTypes;
     }
 }

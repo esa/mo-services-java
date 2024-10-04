@@ -33,13 +33,13 @@ public final class OperationSummary {
     private final InteractionPatternEnum pattern;
     private final OperationType originalOp;
     private final Integer set;
-    private final List<TypeInfo> argTypes;
+    private final List<FieldInfo> argTypes;
     private final String argComment;
-    private final List<TypeInfo> ackTypes;
+    private final List<FieldInfo> ackTypes;
     private final String ackComment;
-    private final List<TypeInfo> updateTypes;
+    private final List<FieldInfo> updateTypes;
     private final String updateComment;
-    private final List<TypeInfo> retTypes;
+    private final List<FieldInfo> retTypes;
     private final String retComment;
 
     /**
@@ -66,13 +66,13 @@ public final class OperationSummary {
     public OperationSummary(InteractionPatternEnum pattern,
             OperationType op,
             Integer set,
-            List<TypeInfo> argTypes,
+            List<FieldInfo> argTypes,
             String argComment,
-            List<TypeInfo> ackTypes,
+            List<FieldInfo> ackTypes,
             String ackComment,
-            List<TypeInfo> updateTypes,
+            List<FieldInfo> updateTypes,
             String updateComment,
-            List<TypeInfo> retTypes,
+            List<FieldInfo> retTypes,
             String retComment) {
         super();
         this.pattern = pattern;
@@ -147,7 +147,7 @@ public final class OperationSummary {
      *
      * @return the argTypes
      */
-    public List<TypeInfo> getArgTypes() {
+    public List<FieldInfo> getArgTypes() {
         return argTypes;
     }
 
@@ -166,7 +166,7 @@ public final class OperationSummary {
      *
      * @return the ackTypes
      */
-    public List<TypeInfo> getAckTypes() {
+    public List<FieldInfo> getAckTypes() {
         return ackTypes;
     }
 
@@ -186,7 +186,7 @@ public final class OperationSummary {
      *
      * @return the updateTypes
      */
-    public List<TypeInfo> getUpdateTypes() {
+    public List<FieldInfo> getUpdateTypes() {
         return updateTypes;
     }
 
@@ -206,7 +206,7 @@ public final class OperationSummary {
      *
      * @return the retTypes
      */
-    public List<TypeInfo> getRetTypes() {
+    public List<FieldInfo> getRetTypes() {
         return retTypes;
     }
 

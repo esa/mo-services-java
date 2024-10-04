@@ -191,7 +191,7 @@ public class JavaHelpers {
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, areaServices,
                 false, true, buf_2.toString(), false);
 
-        String areaObjectInitialValue = generator.createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
+        String areaObjectInitialValue = createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
         file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
         // create error numbers
@@ -210,5 +210,10 @@ public class JavaHelpers {
 
         file.addClassCloseStatement();
         file.flush();
+    }
+
+    public String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
+        return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, "
+                + areaVar + "_AREA_VERSION, " + areaVar + "_AREA_ELEMENTS, " + areaVar + "_AREA_SERVICES)";
     }
 }

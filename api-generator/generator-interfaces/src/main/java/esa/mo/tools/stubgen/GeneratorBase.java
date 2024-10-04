@@ -22,12 +22,12 @@ package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.TargetWriter;
@@ -661,9 +661,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
             AnyTypeReference subs = lop.getMessages().getSubscriptionKeys();
-            List<TypeInfo> subKeysList = (subs == null) ? null
+            List<FieldInfo> subKeysList = (subs == null) ? null
                     : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(subs.getAny()));
-            List<TypeInfo> riList = TypeUtils.convertTypeReferences(this,
+            List<FieldInfo> riList = TypeUtils.convertTypeReferences(this,
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
             return new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,

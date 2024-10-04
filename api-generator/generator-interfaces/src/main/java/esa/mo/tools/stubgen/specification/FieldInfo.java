@@ -25,7 +25,7 @@ import esa.mo.xsd.TypeReference;
 /**
  * Holds information about a type.
  */
-public class TypeInfo {
+public class FieldInfo {
 
     private final TypeReference sourceType;
     private final String fieldName;
@@ -51,7 +51,7 @@ public class TypeInfo {
      * @param versionInfo The version information for the type.
      * @param canBeNull The canBeNull flag for the type.
      */
-    public TypeInfo(TypeReference sourceType, String fieldName,
+    public FieldInfo(TypeReference sourceType, String fieldName,
             String fieldComment, String actualMalType, String targetType,
             boolean isNative, String malShortFormField, String versionInfo,
             boolean canBeNull) {
@@ -149,7 +149,7 @@ public class TypeInfo {
 
     @Override
     public String toString() {
-        return "TypeInfo{"
+        return "FieldInfo{"
                 + "sourceType=" + sourceType + ", fieldName=" + fieldName
                 + ", actualMalType=" + actualMalType + ", targetType=" + targetType
                 + ", nativeType=" + nativeType + ", malShortFormField=" + malShortFormField

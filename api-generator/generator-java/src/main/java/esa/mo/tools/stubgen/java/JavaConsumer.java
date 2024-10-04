@@ -25,11 +25,11 @@ import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorLangs.CONSUMER_FOLDER;
 import static esa.mo.tools.stubgen.GeneratorLangs.TRANSPORT_FOLDER;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
@@ -206,7 +206,7 @@ public class JavaConsumer {
                     break;
                 }
                 case PUBSUB_OP: {
-                    List<TypeInfo> retTypes = new LinkedList<>();
+                    List<FieldInfo> retTypes = new LinkedList<>();
                     boolean nullableField = false; // Just for subscriptionId, and updateHeader
 
                     retTypes.add(0, TypeUtils.convertTypeReference(generator,
@@ -216,7 +216,7 @@ public class JavaConsumer {
                             TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
                             "updateHeader", "The Update header.", nullableField));
 
-                    for (TypeInfo ti : op.getRetTypes()) {
+                    for (FieldInfo ti : op.getRetTypes()) {
                         retTypes.add(ti);
                     }
 
@@ -348,7 +348,7 @@ public class JavaConsumer {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
-                List<TypeInfo> opTypes = null;
+                List<FieldInfo> opTypes = null;
                 switch (opTypeIndex) {
                     case 1:
                         opTypes = op.getAckTypes();
@@ -390,13 +390,13 @@ public class JavaConsumer {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("    case " + ns, ns, false);
-                List<TypeInfo> opTypes = new LinkedList<>();
+                List<FieldInfo> opTypes = new LinkedList<>();
                 opTypes.add(0, TypeUtils.convertTypeReference(generator,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
                 opTypes.add(1, TypeUtils.convertTypeReference(generator,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
 
-                for (TypeInfo ti : op.getRetTypes()) {
+                for (FieldInfo ti : op.getRetTypes()) {
                     /*
                     TypeReference source = ti.getSourceType();
                     opTypes.add(TypeUtils.convertTypeReference(generator,
@@ -660,7 +660,7 @@ public class JavaConsumer {
 
     private void createOperationReturn(LanguageWriter file, MethodWriter method,
             OperationSummary op, CompositeField opRetType) throws IOException {
-        List<TypeInfo> targetTypes = op.getRetTypes();
+        List<FieldInfo> targetTypes = op.getRetTypes();
 
         if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
             targetTypes = op.getAckTypes();
@@ -673,7 +673,7 @@ public class JavaConsumer {
                 StringBuilder buf = new StringBuilder();
 
                 for (int i = 0; i < targetTypes.size(); i++) {
-                    TypeInfo ti = targetTypes.get(i);
+                    FieldInfo ti = targetTypes.get(i);
                     if (i > 0) {
                         buf.append(", ");
                     }
