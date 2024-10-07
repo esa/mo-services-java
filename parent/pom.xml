@@ -111,11 +111,6 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>xml-jaxb</artifactId>
-                <version>${esa.api.mal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area001-v003-mal</artifactId>
                 <version>${esa.api.mal.version}</version>
             </dependency>
