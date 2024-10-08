@@ -33,6 +33,7 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
 import esa.mo.xsd.util.XmlSpecification;
+import esa.mo.xsd.util.XsdSpecification;
 import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.JAXBElement;
@@ -128,7 +129,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     @Override
-    public void loadXSD(Schema spec) throws IOException, JAXBException {
+    public void loadXSD(XsdSpecification xsd) throws IOException, JAXBException {
+        Schema spec = xsd.getSchema();
         // load in types
         if (spec.getSimpleTypeOrComplexTypeOrGroup() != null) {
             loadTypesFromXsdList(StdStrings.XML, spec.getTargetNamespace(),

@@ -446,27 +446,29 @@ public class StubGenerator extends AbstractMojo {
     }
 
     private void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
-        if (!generatorsLoaded) {
-            generatorsLoaded = true;
+        if (generatorsLoaded) {
+            return;
+        }
 
-            final Reflections reflections = new Reflections(new ConfigurationBuilder()
-                    .setUrls(ClasspathHelper.forClassLoader())
-                    .setScanners(new SubTypesScanner()));
+        generatorsLoaded = true;
 
-            final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
+        final Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forClassLoader())
+                .setScanners(new SubTypesScanner()));
 
-            for (Class<? extends Generator> cls : classes) {
-                final int mods = cls.getModifiers();
-                if (!Modifier.isAbstract(mods)) {
-                    try {
-                        final Generator g = (Generator) cls.getConstructor(new Class[]{
-                            org.apache.maven.plugin.logging.Log.class
-                        }).newInstance(new Object[]{logger});
+        final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
 
-                        GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
-                    } catch (Exception ex) {
-                        logger.warn("Could not construct generator : " + cls.getName());
-                    }
+        for (Class<? extends Generator> cls : classes) {
+            final int mods = cls.getModifiers();
+            if (!Modifier.isAbstract(mods)) {
+                try {
+                    final Generator g = (Generator) cls.getConstructor(new Class[]{
+                        org.apache.maven.plugin.logging.Log.class
+                    }).newInstance(new Object[]{logger});
+
+                    GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
+                } catch (Exception ex) {
+                    logger.warn("Could not construct generator : " + cls.getName());
                 }
             }
         }
@@ -501,7 +503,7 @@ public class StubGenerator extends AbstractMojo {
         // Load the XSD specifications
         for (XsdSpecification spec : refXsd) {
             try {
-                generator.loadXSD(spec.getSchema());
+                generator.loadXSD(spec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(

@@ -21,11 +21,11 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.xsd.util.XmlSpecification;
+import esa.mo.xsd.util.XsdSpecification;
 import java.io.IOException;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import w3c.xsd.Schema;
 
 /**
  * Interface class for a language generator.
@@ -98,12 +98,12 @@ public interface Generator {
     /**
      * Load an XSD specification in the type definitions.
      *
-     * @param spec The schema spec to process.
+     * @param xsd The sd schema spec to process.
      * @throws IOException If there are problems reading the file.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void loadXSD(Schema spec) throws IOException, JAXBException;
+    void loadXSD(XsdSpecification xsd) throws IOException, JAXBException;
 
     /**
      * Generates the specification into the appropriate form.
