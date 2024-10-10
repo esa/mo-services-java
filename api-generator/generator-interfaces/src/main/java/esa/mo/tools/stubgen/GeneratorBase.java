@@ -114,12 +114,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
 
             for (ServiceType service : area.getService()) {
-                if (null != service.getDataTypes()) {
+                if (service.getDataTypes() != null) {
                     loadTypesFromObjectList(area.getName(), service.getName(),
                             service.getDataTypes().getCompositeOrEnumeration());
                 }
 
-                if ((null != service.getErrors()) && (null != service.getErrors().getError())) {
+                if ((service.getErrors() != null) && (service.getErrors().getError() != null)) {
                     for (ErrorDefinitionType error : service.getErrors().getError()) {
                         errorDefinitionMap.put(error.getName(), error);
                     }
@@ -386,8 +386,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type The type.
      * @return the full name of the type.
      */
-    public String createElementType(String area,
-            String service, String extraPackageLevel, String type) {
+    public String createElementType(String area, String service, String extraPackageLevel, String type) {
         if (area == null) {
             return type;
         }
@@ -599,7 +598,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
         }
 
-        return new ServiceSummary(service, operations);
+        return new ServiceSummary(service.getNumber(), operations);
     }
 
     private OperationSummary extractOperationSummary(OperationType op, int capNum) {

@@ -85,7 +85,7 @@ public final class TypeKey implements Comparable<TypeKey> {
         StringBuilder buf = new StringBuilder();
         buf.append(type.getArea());
 
-        if (null != type.getService()) {
+        if (type.getService() != null) {
             buf.append(':').append(type.getService()).append(':');
         } else {
             buf.append(":_:");

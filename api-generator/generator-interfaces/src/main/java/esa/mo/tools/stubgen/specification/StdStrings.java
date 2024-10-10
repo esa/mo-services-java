@@ -23,7 +23,7 @@ package esa.mo.tools.stubgen.specification;
 /**
  * This class holds the standard set of MAL type names.
  */
-public abstract class StdStrings {
+public final class StdStrings {
 
     public static final String MAL = "MAL";
     public static final String COM = "COM";

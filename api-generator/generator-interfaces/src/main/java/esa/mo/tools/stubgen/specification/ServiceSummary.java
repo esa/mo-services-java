@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.xsd.ServiceType;
 import java.util.List;
 
 /**
@@ -28,28 +27,18 @@ import java.util.List;
  */
 public final class ServiceSummary {
 
-    private final ServiceType service;
+    private final int serviceNumber;
     private final List<OperationSummary> operations;
 
     /**
      * Constructor.
      *
-     * @param service The XML service.
+     * @param serviceNumber The XML service.
      * @param operations The list of operations.
      */
-    public ServiceSummary(ServiceType service, List<OperationSummary> operations) {
-        this.service = service;
+    public ServiceSummary(int serviceNumber, List<OperationSummary> operations) {
+        this.serviceNumber = serviceNumber;
         this.operations = operations;
-    }
-
-    /**
-     * Returns the original service definition.
-     *
-     * @return the service.
-     */
-    @Deprecated
-    public ServiceType getService() {
-        return service;
     }
 
     /**
@@ -58,7 +47,7 @@ public final class ServiceSummary {
      * @return the service number.
      */
     public int getServiceNumber() {
-        return service.getNumber();
+        return serviceNumber;
     }
 
     /**
