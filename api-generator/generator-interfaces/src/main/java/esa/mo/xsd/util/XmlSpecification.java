@@ -34,7 +34,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 /**
- * The XML Specification
+ * The XML Specification.
  */
 public final class XmlSpecification {
 
@@ -83,7 +83,7 @@ public final class XmlSpecification {
      * is not saved with these changes. This method is a hack to have the new
      * "ServiceSchema-v003" specifications, to be compatible with the old code.
      * This method will have to be removed after the mo-services-java codebase
-     * fully removes support for the old MAL.
+     * fully deprecate support for the old MAL.
      *
      * @param file The file with the specification.
      * @return An input stream with the modified content.
