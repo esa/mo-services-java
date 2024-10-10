@@ -368,7 +368,7 @@ public class StubGenerator extends AbstractMojo {
 
                 // run the specifications through each generator
                 // first process the list of languages to generate
-                if ((null != targetLanguages) && (0 < targetLanguages.length)) {
+                if ((targetLanguages != null) && (targetLanguages.length > 0)) {
 
                     if (forceGeneration || (outputDirectory.lastModified() < inputTimestamp)) {
                         if (forceGeneration) {
@@ -376,7 +376,7 @@ public class StubGenerator extends AbstractMojo {
                         }
                         for (String targetLanguage : targetLanguages) {
                             final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
-                            if (null != gen) {
+                            if (gen != null) {
                                 processWithGenerator(gen, refSpecs, refXsd, specs);
                             } else {
                                 getLog().warn("Could not find generator for language: " + targetLanguage);

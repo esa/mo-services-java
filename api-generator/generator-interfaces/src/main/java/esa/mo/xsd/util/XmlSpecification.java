@@ -21,8 +21,13 @@
 package esa.mo.xsd.util;
 
 import esa.mo.xsd.SpecificationType;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -73,14 +78,51 @@ public final class XmlSpecification {
         return specType;
     }
 
-    public synchronized static XmlSpecification loadSpecification(final File is) throws IOException, JAXBException {
+    /**
+     * Modifies the content from a XML file and returns it. Note that the file
+     * is not saved with these changes. This method is a hack to have the new
+     * "ServiceSchema-v003" specifications, to be compatible with the old code.
+     * This method will have to be removed after the mo-services-java codebase
+     * fully removes support for the old MAL.
+     *
+     * @param file The file with the specification.
+     * @return An input stream with the modified content.
+     * @throws IOException if something went while modifying the content.
+     */
+    private static InputStream modifyFileToBeBackwardsCompatible(File file) throws IOException {
+        // Read the file content into a StringBuilder
+        StringBuilder fileContent = new StringBuilder();
+        try ( BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                fileContent.append(line).append(System.lineSeparator());
+            }
+        }
+
+        // Replace the text "ServiceSchema-v003" with "ServiceSchema"
+        String modifiedContent = fileContent.toString().replace("ServiceSchema-v003", "ServiceSchema");
+
+        // Convert the modified content to an InputStream
+        return new ByteArrayInputStream(modifiedContent.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Loads an XML Specification.
+     *
+     * @param file The file with the specification.
+     * @return The representation of the XML specification.
+     * @throws IOException if something went while modifying the content.
+     * @throws JAXBException if the xml could not be parsed.
+     */
+    public synchronized static XmlSpecification loadSpecification(final File file) throws IOException, JAXBException {
         if (jc == null) {
             jc = JAXBContext.newInstance("esa.mo.xsd");
         }
 
         final Unmarshaller unmarshaller = jc.createUnmarshaller();
+        final InputStream is = XmlSpecification.modifyFileToBeBackwardsCompatible(file);
         final JAXBElement rootElement = (JAXBElement) unmarshaller.unmarshal(is);
         SpecificationType specType = (SpecificationType) rootElement.getValue();
-        return new XmlSpecification(is, rootElement, specType);
+        return new XmlSpecification(file, rootElement, specType);
     }
 }
