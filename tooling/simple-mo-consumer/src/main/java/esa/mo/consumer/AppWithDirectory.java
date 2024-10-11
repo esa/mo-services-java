@@ -43,7 +43,7 @@ import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
  *
  * @author Cesar Coelho
  */
-public class AppCLIwithDirectory {
+public class AppWithDirectory {
 
     /**
      * The main method.
@@ -58,13 +58,13 @@ public class AppCLIwithDirectory {
             consumer.init(new URI(providerURI));
 
             // Register on the Broker for service delivery of products
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO,
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
                     "Registering in the Broker for service: Product Order Delivery...");
 
             ProductOrderDeliveryConsumerServiceImpl pod = consumer.getMPDServices().getProductOrderDeliveryService();
             Subscription subscription = ConnectionConsumer.subscriptionWildcard();
             pod.getProductOrderDeliveryStub().deliverProductsRegister(subscription, new PODAdapter());
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO, "Registered!");
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO, "Registered!");
 
             // Submit a Standing Order
             StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
@@ -74,35 +74,35 @@ public class AppCLIwithDirectory {
             OrderManagementStub stub = orderManagement.getOrderManagementStub();
             Identifier id = stub.submitStandingOrder(orderDetails);
 
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO,
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
                     "The returned Identifier is: {0}", id.getValue());
 
             // Request the list of standing orders
             IdentifierList domain = new IdentifierList();
             domain.add(new Identifier("*"));
             StandingOrderList list = stub.listStandingOrders(new Identifier("*"), domain);
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO,
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
                     "The returned list of standing orders is: {0}", list.toString());
 
             try {
                 // Wait 15 seconds...
-                Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO, "Waiting 15 seconds...");
+                Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO, "Waiting 15 seconds...");
                 Thread.sleep(15 * 1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AppWithDirectory.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             // Cancel all standing orders
             stub.cancelStandingOrder(id);
 
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO,
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
                     "The following order was cancelled: {0}", id.toString());
         } catch (MALException ex) {
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -117,7 +117,7 @@ public class AppCLIwithDirectory {
             Blob productBody = product.getProductBody();
             byte[] value = productBody.getValue();
             int number = (int) value[0];
-            Logger.getLogger(AppCLIwithDirectory.class.getName()).log(Level.INFO,
+            Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
                     "Deliver Products received: {0}", number);
         }
     }
