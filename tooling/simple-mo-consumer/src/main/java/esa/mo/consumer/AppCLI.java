@@ -30,14 +30,10 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
-import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
 
 /**
  *
@@ -50,58 +46,36 @@ public class AppCLI {
      *
      * @param args The arguments
      */
-    public static void main(String[] args) {
-        String providerURI = "maltcp://xxx.xxx.xxx.xxx:1024/Directory";
+    public static void main(String[] args) throws MalformedURLException,java.io.FileNotFoundException {
         MOSimpleConsumer consumer = new MOSimpleConsumer();
 
         try {
-            consumer.init(new URI(providerURI));
+            consumer.init();
+            OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
 
-            // Register on the Broker for service delivery of products
+            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
+                    DeliveryMethodEnum.SERVICE, "A comment");
+            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
+
+            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
+                    "The returned Identifier is: {0}", id.getValue());
+
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
                     "Registering in the Broker for service: Product Order Delivery...");
 
             ProductOrderDeliveryConsumerServiceImpl pod = consumer.getMPDServices().getProductOrderDeliveryService();
             Subscription subscription = ConnectionConsumer.subscriptionWildcard();
             pod.getProductOrderDeliveryStub().deliverProductsRegister(subscription, new PODAdapter());
+
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO, "Registered!");
 
-            // Submit a Standing Order
-            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
-                    DeliveryMethodEnum.SERVICE, "A comment");
-
-            OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
-            OrderManagementStub stub = orderManagement.getOrderManagementStub();
-            Identifier id = stub.submitStandingOrder(orderDetails);
-
-            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
-
-            // Request the list of standing orders
-            IdentifierList domain = new IdentifierList();
-            domain.add(new Identifier("*"));
-            StandingOrderList list = stub.listStandingOrders(new Identifier("*"), domain);
-            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
-                    "The returned list of standing orders is: {0}", list.toString());
-
-            try {
-                // Wait 15 seconds...
-                Logger.getLogger(AppCLI.class.getName()).log(Level.INFO, "Waiting 15 seconds...");
-                Thread.sleep(15 * 1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            // Cancel all standing orders
-            stub.cancelStandingOrder(id);
-
-            Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
-                    "The following order was cancelled: {0}", id.toString());
         } catch (MALException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALInteractionException ex) {
+            Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (java.io.FileNotFoundException ex ) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

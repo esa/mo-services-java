@@ -70,7 +70,7 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
                     transport.getKeystorePassword());
 
             client.setRequestReferer(malMessageHeader.getFrom().getValue());
-            client.setRequestHeader("X-MAL-Version-Number", "1"); // according to 3.4.2 in recommended standard.
+            client.setRequestHeader("X-MAL-Version-Number", "2"); // according to 3.4.2 in recommended standard.
 
             if (malMessageHeader.getIsErrorMessage()) {
                 RLOGGER.severe("sendEncodedMessage: This is an untreated error message!");
@@ -110,7 +110,7 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
             URI uriFrom = new URI(malMessageHeader.getFrom().getValue());
             URI uriTo = new URI(malMessageHeader.getTo().getValue());
             client.setRequestReferer(uriFrom.toASCIIString());
-            client.setRequestHeader("X-MAL-Version-Number", "1"); // according to 3.4.2 in recommended standard.
+            client.setRequestHeader("X-MAL-Version-Number", "2"); // according to 3.4.2 in recommended standard.
             client.setRequestHeader("X-MAL-To", uriTo.toASCIIString());
             client.setRequestHeader("Host", uriTo.getHost());
             client.setRequestHeader("request-target", uriTo.getPath());
@@ -136,7 +136,7 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
         client.setRequestHeader("X-MAL-Service", encodeAscii(String.valueOf(malMessageHeader.getService().getValue())));
         client.setRequestHeader("X-MAL-Operation",
                 encodeAscii(String.valueOf(malMessageHeader.getOperation().getValue())));
-        client.setRequestHeader("X-MAL-Service-Version",
+        client.setRequestHeader("X-MAL-Area-Version",
                 encodeAscii(String.valueOf(malMessageHeader.getServiceVersion().getValue())));
         client.setRequestHeader("X-MAL-Is-Error-Message", malMessageHeader.getIsErrorMessage() ? "True" : "False");
 

@@ -20,7 +20,6 @@
  */
 package esa.mo.provider;
 
-import esa.mo.common.impl.provider.DirectoryProviderServiceImpl;
 import esa.mo.services.mpd.util.MPDServicesProvider;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,15 +28,10 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 
 /**
- * The MOSimpleProvider class contains a provider with a Directory service and a
- * few other services.
+ * The MOSimpleProvider class contains a provider with a few services.
  */
 public class MOSimpleProvider {
 
-    // Create provider name to be registerd on the Directory service...
-    private final static String PROVIDER_NAME = "Simple MO Provider";
-
-    private final DirectoryProviderServiceImpl directoryService = new DirectoryProviderServiceImpl();
     private final MPDServicesProvider mpdServices = new MPDServicesProvider();
 
     private long startTime;
@@ -56,10 +50,7 @@ public class MOSimpleProvider {
             Logger.getLogger(MOSimpleProvider.class.getName()).log(Level.INFO,
                     "Initializing services...");
 
-            directoryService.init();
-
-            DummyProductsBackend backend = new DummyProductsBackend();
-            mpdServices.init(backend);
+            mpdServices.init();
         } catch (MALException ex) {
             Logger.getLogger(MOSimpleProvider.class.getName()).log(Level.SEVERE,
                     "The services could not be initialized. Perhaps there's "
@@ -67,16 +58,11 @@ public class MOSimpleProvider {
             return;
         }
 
-        // Populate the Directory service with the entries from the URIs File
-        Logger.getLogger(MOSimpleProvider.class.getName()).log(
-                Level.INFO, "Populating Directory service...");
-        directoryService.loadURIs(PROVIDER_NAME);
-
         Logger.getLogger(MOSimpleProvider.class.getName()).log(Level.INFO,
                 "Simple MO Provider initialized in {0} seconds!",
                 ((float) (System.currentTimeMillis() - this.startTime)) / 1000);
 
-        final String uri = directoryService.getConnection().getConnectionDetails().getProviderURI().toString();
+        final String uri = mpdServices.getOrderManagementService().getConnection().getConnectionDetails().getProviderURI().toString();
         Logger.getLogger(MOSimpleProvider.class.getName()).log(
                 Level.INFO, "URI: {0}\n", uri);
     }
