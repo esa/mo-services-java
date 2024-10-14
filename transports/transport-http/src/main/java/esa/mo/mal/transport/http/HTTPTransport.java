@@ -419,6 +419,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      */
     protected IHttpServer createServer() throws HttpApiImplException {
         try {
+            RLOGGER.log(Level.INFO, "Dynamicaly instantiating class with name: " + abstractServerImpl);
             IHttpServer serverImpl = (IHttpServer) Class.forName(abstractServerImpl).newInstance();
             return serverImpl;
         } catch (ClassNotFoundException ex) {

@@ -787,11 +787,6 @@
                     <groupId>int.esa.ccsds.mo</groupId>
                     <artifactId>transport-http</artifactId>
                 </dependency>
-                <dependency>
-                    <groupId>com.sun.net.httpserver</groupId>
-                    <artifactId>http</artifactId>
-                    <version>20070405</version>
-                </dependency>
             </dependencies>
             <properties>
                 <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/esa-http</org.ccsds.moims.mo.testbed.local.configuration.dir>
