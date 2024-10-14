@@ -288,7 +288,7 @@ jobs:
           name: testbed-mal-report-tcpip
           path: testbeds/testbed-mal/target/surefire-reports/
 
-  testbed-mal-jdk11-http:
+  testbed-mal-jdk8-http:
     needs: build-testbeds-jdk8
     runs-on: ubuntu-latest
     steps:
