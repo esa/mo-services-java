@@ -46,7 +46,7 @@ public class AppCLI {
      *
      * @param args The arguments
      */
-    public static void main(String[] args) throws MalformedURLException,java.io.FileNotFoundException {
+    public static void main(String[] args) {
         MOSimpleConsumer consumer = new MOSimpleConsumer();
 
         try {
@@ -75,7 +75,7 @@ public class AppCLI {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALInteractionException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (java.io.FileNotFoundException ex ) {
+        } catch (java.io.FileNotFoundException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

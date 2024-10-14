@@ -27,17 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
-import org.ccsds.moims.mo.mal.helpertools.connections.ServicesConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.IntegerList;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.UShortList;
 import org.ccsds.moims.mo.mpd.MPDHelper;
 
 /**
@@ -54,8 +45,10 @@ public class MOSimpleConsumer {
      * started.
      * @throws java.net.MalformedURLException if the consumer properties file
      * could not be loaded.
+     * @throws java.io.FileNotFoundException if the URIs file could not be
+     * found.
      */
-    public void init() throws MALException, MalformedURLException,java.io.FileNotFoundException {
+    public void init() throws MALException, MalformedURLException, java.io.FileNotFoundException {
         try {
             HelperMisc.loadConsumerProperties();
         } catch (MalformedURLException ex) {

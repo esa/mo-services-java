@@ -51,8 +51,8 @@ public class ConnectionSharedBroker {
     /**
      * Closes any existing service brokers and recreates them.
      *
-     * @param brokerName
-     * @return
+     * @param brokerName The broker name.
+     * @return The broker binding.
      * @throws MALException On error.
      */
     public MALBrokerBinding startBroker(String brokerName) throws MALException {
@@ -62,9 +62,9 @@ public class ConnectionSharedBroker {
     /**
      * Closes any existing service brokers and recreates them.
      *
-     * @param brokerName
-     * @param authenticationId authenticationId of the logged in user
-     * @return
+     * @param brokerName The broker name.
+     * @param authenticationId authenticationId of the logged in user.
+     * @return The broker binding.
      * @throws MALException On error.
      */
     public MALBrokerBinding startBroker(String brokerName, Blob authenticationId) throws MALException {
