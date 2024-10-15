@@ -118,12 +118,12 @@ public class OrderManagementScenario1Test {
     @Test
     public void testCase_2() {
         try {
-            System.out.println("testCase_2");
+            System.out.println("Running: testCase_2");
 
             // Input Data
             Identifier user = new Identifier("User");
-            String comments = "A comment";
             DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE;
+            String comments = "A comment";
             StandingOrder orderDetails = new StandingOrder(user, dMethod, comments);
 
             // Submit a Standing Order
