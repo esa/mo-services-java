@@ -477,4 +477,7 @@ public class DocxBaseWriter extends AbstractWriter {
         return t;
     }
 
+    public void addPageBreak() {
+        buffer.append("<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>");
+    }
 }

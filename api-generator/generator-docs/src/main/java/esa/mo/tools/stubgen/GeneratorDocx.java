@@ -185,6 +185,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                     for (CapabilitySetType cSet : service.getCapabilitySet()) {
                         for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
+                            docxServiceFile.addPageBreak();
                             docxServiceFile.addTitle(3, "OPERATION: ", op.getName(), "OPERATION_" + service.getName(), true);
                             docxServiceFile.addTitle(4, "Overview");
                             docxServiceFile.addComment(op.getComment());
