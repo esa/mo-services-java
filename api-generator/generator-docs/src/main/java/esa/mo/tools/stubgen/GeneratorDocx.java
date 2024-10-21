@@ -147,7 +147,17 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxServiceFile.addTitle(1, "Specification: " + area.getName());
 
                 docxServiceFile.addTitle(2, "General");
+                docxServiceFile.addComment("This section contains the service specifications for the " + area.getName() + " services.");
                 docxServiceFile.addComment(area.getComment());
+                docxServiceFile.addComment("This area contains the following services:");
+                ArrayList<String> serviceNames = new ArrayList<>();
+
+                for (ServiceType service : area.getService()) {
+                    serviceNames.add(service.getName());
+                }
+
+                docxServiceFile.addNumberedComment(serviceNames);
+
                 for (DocumentationType documentation : area.getDocumentation()) {
                     docxServiceFile.addTitle(2, documentation.getName());
                     docxServiceFile.addNumberedComment(GeneratorUtils.addSplitStrings(null, documentation.getContent()));
@@ -155,6 +165,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
                 // create services
                 for (ServiceType service : area.getService()) {
+                    docxServiceFile.addPageBreak();
                     docxServiceFile.addTitle(2, "Service: ", service.getName(), "SERVICE", true);
                     docxServiceFile.addTitle(3, "Overview");
                     docxServiceFile.addComment(service.getComment());
@@ -197,6 +208,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 }
 
                 // process data types
+                docxDataFile.addPageBreak();
                 docxDataFile.addTitle(1, "Data types");
                 boolean hasDataTypes = false;
                 AreaDataTypeList areaTypes = area.getDataTypes();
