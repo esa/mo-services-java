@@ -147,7 +147,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxServiceFile.addTitle(1, "Specification: " + area.getName());
 
                 docxServiceFile.addTitle(2, "General");
-                docxServiceFile.addComment("This section contains the service specifications for the " + area.getName() + " services.");
+                docxServiceFile.addComment("This section contains the specifications for the " + area.getName() + " services.");
                 docxServiceFile.addComment(area.getComment());
                 docxServiceFile.addComment("This area contains the following services:");
                 ArrayList<String> serviceNames = new ArrayList<>();
@@ -382,7 +382,7 @@ public class GeneratorDocx extends GeneratorDocument {
             for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
                 docxFile.startRow();
                 docxFile.addCell(0, SERVICE_OVERVIEW_TABLE_WIDTHS, operationType(op), colour);
-                docxFile.addCell(1, SERVICE_OVERVIEW_TABLE_WIDTHS, op.getName(), colour, "OPERATION_" + service.getName() + "_" + op.getName(), 2);
+                docxFile.addCellWithHyperlink(1, SERVICE_OVERVIEW_TABLE_WIDTHS, op.getName(), colour, "OPERATION_" + service.getName() + "_" + op.getName(), 2);
                 docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(op.getNumber()), colour);
                 docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(cSet.getNumber()), colour, true, firstRow);
                 docxFile.endRow();
@@ -772,7 +772,7 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     private void addOperationErrorDetails(DocxBaseWriter docxFile, AreaType area, ServiceType service, OperationType op) throws IOException {
-        docxFile.addTitle(4, "Errors");
+        docxFile.addTitle(4, "MO Errors");
 
         if (op instanceof SendOperationType) {
             docxFile.addComment("The operation cannot return any errors.");
@@ -819,15 +819,17 @@ public class GeneratorDocx extends GeneratorDocument {
             }
         });
 
+        String defaultErrorText = "Not Used";
+
         for (Object object : errors.getErrorOrErrorRef()) {
             if (object instanceof ErrorDefinitionType) {
                 ErrorDefinitionType err = (ErrorDefinitionType) object;
                 List<String> pcmts = GeneratorUtils.addSplitStrings(null, err.getComment());
-                String ev = "Not Used";
+                String errorType = defaultErrorText;
                 String errorTypeDescription = "-";
 
                 if (err.getExtraInformation() != null) {
-                    ev = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
+                    errorType = GeneratorUtils.createFQTypeName(area, service, err.getExtraInformation().getType());
 
                     if (err.getExtraInformation().getComment() != null) {
                         errorTypeDescription = err.getExtraInformation().getComment();
@@ -842,7 +844,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     m.put(String.valueOf(err.getNumber()), v);
                 }
 
-                v.add(new Object[]{err.getName(), pcmts, err.getNumber(), ev, errorTypeDescription});
+                v.add(new Object[]{err.getName(), pcmts, err.getNumber(), errorType, errorTypeDescription});
             } else if (object instanceof ErrorReferenceType) {
                 ErrorReferenceType err = (ErrorReferenceType) object;
                 List<String> pcmts = GeneratorUtils.addSplitStrings(null, err.getComment());
@@ -859,7 +861,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     es = "0";
                 }
 
-                String errorType = "Not Used";
+                String errorType = defaultErrorText;
                 String errorTypeDescription = "-";
 
                 if (err.getExtraInformation() != null) {
@@ -899,7 +901,13 @@ public class GeneratorDocx extends GeneratorDocument {
                 docxFile.startRow();
                 docxFile.addCell(0, OPERATION_ERROR_TABLE_WIDTHS, (String) err[0]);
                 docxFile.addCell(1, OPERATION_ERROR_TABLE_WIDTHS, String.valueOf(err[2]));
-                docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, (String) err[3]);
+                String errorType = (String) err[3];
+
+                if (errorType.contains("::") || errorType.equals(defaultErrorText)) {
+                    docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, (String) err[3]);
+                } else {
+                    docxFile.addCellWithHyperlink(2, OPERATION_ERROR_TABLE_WIDTHS, errorType, STD_COLOUR, "DATATYPE_" + errorType, 1);
+                }
                 docxFile.addCell(3, OPERATION_ERROR_TABLE_WIDTHS, (String) err[4]);
                 docxFile.endRow();
                 docxFile.endTable();
@@ -1029,7 +1037,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
         docxFile.startRow();
         docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, "Extends", HEADER_COLOUR);
-        docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(extendsClass), STD_COLOUR, 3);
+        docxFile.addCellWithHyperlink(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, new TypeRef(extendsClass), STD_COLOUR, 3);
         docxFile.endRow();
 
         if (composite.getShortFormPart() == null) {
@@ -1059,7 +1067,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 for (CompositeField element : superCompElements) {
                     docxFile.startRow();
                     docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, element.getFieldName(), FIXED_COLOUR);
-                    docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, element.getTypeRef(), FIXED_COLOUR, 0);
+                    docxFile.addCellWithHyperlink(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, element.getTypeRef(), FIXED_COLOUR, 0);
                     docxFile.addCell(2, COMPOSITE_TABLE_WIDTHS, element.isCanBeNull() ? "Yes" : "No", FIXED_COLOUR);
                     docxFile.addCell(3, COMPOSITE_TABLE_WIDTHS, element.getComment(), FIXED_COLOUR, false);
                     docxFile.endRow();
@@ -1069,7 +1077,7 @@ public class GeneratorDocx extends GeneratorDocument {
             for (CompositeField element : compElements) {
                 docxFile.startRow();
                 docxFile.addCell(0, COMPOSITE_TABLE_WIDTHS, element.getFieldName());
-                docxFile.addCell(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, element.getTypeRef(), null, 0);
+                docxFile.addCellWithHyperlink(1, COMPOSITE_TABLE_WIDTHS, false, oldStyle, area, service, element.getTypeRef(), null, 0);
                 docxFile.addCell(2, COMPOSITE_TABLE_WIDTHS, element.isCanBeNull() ? "Yes" : "No");
                 docxFile.addCell(3, COMPOSITE_TABLE_WIDTHS, element.getComment(), false);
                 docxFile.endRow();

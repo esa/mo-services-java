@@ -133,16 +133,6 @@ public class DocxBaseWriter extends AbstractWriter {
         addCell(index, widths, text, shade, true, 0, false, false);
     }
 
-    public void addCell(int index, int[] widths, String text, String shade, String linkTo) throws IOException {
-        String str = createHyperLink("", text, "", linkTo, true);
-        actualAddCell(index, widths, str, shade, true, 0, false, false);
-    }
-
-    public void addCell(int index, int[] widths, String text, String shade, String linkTo, int span) throws IOException {
-        String str = createHyperLink("", text, "", linkTo, true);
-        actualAddCell(index, widths, str, shade, true, span, false, false);
-    }
-
     public void addCell(int index, int[] widths, String text, String shade, boolean centered) throws IOException {
         addCell(index, widths, text, shade, centered, 0, false, false);
     }
@@ -151,7 +141,17 @@ public class DocxBaseWriter extends AbstractWriter {
         addCell(index, widths, text, shade, true, span, false, false);
     }
 
-    public void addCell(int index, int[] widths, boolean includeMessageFieldNames,
+    public void addCellWithHyperlink(int index, int[] widths, String text, String shade, String linkTo) throws IOException {
+        String str = createHyperLink("", text, "", linkTo, true);
+        actualAddCell(index, widths, str, shade, true, 0, false, false);
+    }
+
+    public void addCellWithHyperlink(int index, int[] widths, String text, String shade, String linkTo, int span) throws IOException {
+        String str = createHyperLink("", text, "", linkTo, true);
+        actualAddCell(index, widths, str, shade, true, span, false, false);
+    }
+
+    public void addCellWithHyperlink(int index, int[] widths, boolean includeMessageFieldNames,
             boolean oldStyle, AreaType area, ServiceType service, TypeRef type, String shade, int span) throws IOException {
         String str = createTypeHyperLink(includeMessageFieldNames, oldStyle, area, service, type);
         actualAddCell(index, widths, str, shade, true, span, false, false);
@@ -418,7 +418,7 @@ public class DocxBaseWriter extends AbstractWriter {
         return createHyperLink(prefix, typeName, postfix, "DATATYPE_" + typeName, hyperlink);
     }
 
-    private String createHyperLink(String prefix, String typeName, String postfix,
+    public String createHyperLink(String prefix, String typeName, String postfix,
             String linkTo, boolean withHyperlink) throws IOException {
         boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
         StringBuilder buf = new StringBuilder();
