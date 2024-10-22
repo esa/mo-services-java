@@ -37,7 +37,6 @@ public class Blob implements Attribute {
     private static final long serialVersionUID = Attribute.BLOB_SHORT_FORM;
     private static final int T_BUFFER_SIZE = 4096;
     private byte[] value;
-    private int offset;
     private int length;
     private String uvalue;
     private URL urlValue;
@@ -48,7 +47,6 @@ public class Blob implements Attribute {
     public Blob() {
         this.value = null;
         this.uvalue = null;
-        this.offset = 0;
         this.length = 0;
     }
 
@@ -64,27 +62,7 @@ public class Blob implements Attribute {
     public Blob(final byte[] value) throws java.lang.IllegalArgumentException {
         this.value = value;
         this.uvalue = null;
-        this.offset = 0;
         this.length = value.length;
-    }
-
-    /**
-     * Byte array constructor, does not copy the passed array. The byte array
-     * should not be modified after the constructor has been called. If the byte
-     * array is modified after the constructor has been called then the Blob
-     * behaviour is unspecified.
-     *
-     * @param value Byte array to be wrapped.
-     * @param offset Offset into supplied array to start from.
-     * @param length Length in supplied array to use.
-     * @throws java.lang.IllegalArgumentException If the argument is null.
-     */
-    public Blob(final byte[] value, final int offset, final int length)
-            throws java.lang.IllegalArgumentException {
-        this.value = value;
-        this.uvalue = null;
-        this.offset = offset;
-        this.length = length;
     }
 
     /**
@@ -98,7 +76,6 @@ public class Blob implements Attribute {
      */
     public Blob(final String sourceUrl) throws java.lang.IllegalArgumentException {
         this.value = null;
-        this.offset = 0;
         this.length = 0;
         this.uvalue = sourceUrl;
         urlValue = null;
@@ -118,20 +95,6 @@ public class Blob implements Attribute {
         return uvalue != null;
     }
 
-//  This might be required for XML serialisation and technologies that use that.  
-//  public void setValue(byte[] value)
-//  {
-//    this.urlValue = null;
-//    this.uvalue = null;
-//    this.value = value;
-//  }
-//  public void setURL(String nvalue)
-//  {
-//    detach();
-//    this.urlValue = null;
-//    this.uvalue = nvalue;
-//    this.value = null;
-//  }
     /**
      * Return the value of this Blob as a byte array. If the Blob contains a URL
      * then the designated content is loaded and copied in the returned byte
@@ -163,15 +126,6 @@ public class Blob implements Attribute {
         }
 
         return value;
-    }
-
-    /**
-     * Returns the offset of the supplied byte array.
-     *
-     * @return The offset.
-     */
-    public int getOffset() {
-        return offset;
     }
 
     /**
