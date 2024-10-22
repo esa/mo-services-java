@@ -30,7 +30,6 @@ import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
-import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
@@ -118,7 +117,7 @@ public class JavaServiceInfo {
             file.addClassVariable(true, true, StdStrings.PUBLIC, _opNumberVar, false, op.getNumber().toString());
             file.addClassVariable(true, true, StdStrings.PUBLIC, opNumberVar, false, "(_" + operationInstanceVar + "_OP_NUMBER)");
 
-            List<String> opArgs = this.generateOperationArgs(file, op);
+            List<String> opArgs = this.generateOperationArgs(op);
             String operationName = operationInstanceVar + "_OP";
             CompositeField opInstVar = generator.createCompositeElementsDetails(file, false, operationName,
                     TypeUtils.createTypeReference(StdStrings.MAL, null, generator.getOperationInstanceType(op), false),
@@ -259,10 +258,7 @@ public class JavaServiceInfo {
         CompositeField opType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALArea", false),
                 false, true, null);
-        MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, opType, "getArea", null, null,
-                "Returns the corresponding MALArea from this service.",
-                "Returns the corresponding MALArea from this service.", null);
+        MethodWriter method = file.addMethodOpenStatementOverride(opType, "getArea", null, null);
 
         method.addLine("return " + namespace, true);
         method.addMethodCloseStatement();
@@ -316,7 +312,7 @@ public class JavaServiceInfo {
                 + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ", " + isEvent + ")");
     }
 
-    private List<String> generateOperationArgs(LanguageWriter file, OperationSummary op) {
+    private List<String> generateOperationArgs(OperationSummary op) {
         String initNewLine = "\n            ";
         // Operation Number
         List<String> opArgs = new LinkedList<>();
