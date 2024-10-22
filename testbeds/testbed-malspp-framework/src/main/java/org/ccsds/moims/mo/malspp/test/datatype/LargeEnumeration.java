@@ -33,6 +33,7 @@
 package org.ccsds.moims.mo.malspp.test.datatype;
 
 import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
@@ -53,10 +54,6 @@ public final class LargeEnumeration extends org.ccsds.moims.mo.mal.structures.En
         super(ordinal);
     }
 
-    public static LargeEnumeration fromOrdinal(int ordinal) {
-        return new LargeEnumeration(ordinal);
-    }
-
     public static LargeEnumeration fromNumericValue(org.ccsds.moims.mo.mal.structures.UInteger numericValue) {
         return null;
     }
@@ -73,16 +70,19 @@ public final class LargeEnumeration extends org.ccsds.moims.mo.mal.structures.En
         return null;
     }
 
+    @Override
     public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
         encoder.encodeUInteger(new UInteger(getOrdinal()));
     }
 
+    @Override
     public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
         int ordinal;
         ordinal = (int) decoder.decodeUInteger().getValue();
         return fromOrdinal(ordinal);
     }
 
+    @Override
     public org.ccsds.moims.mo.mal.structures.Element createElement() {
         return new LargeEnumeration(null);
     }
@@ -90,6 +90,16 @@ public final class LargeEnumeration extends org.ccsds.moims.mo.mal.structures.En
     @Override
     public TypeId getTypeId() {
         return new TypeId(SHORT_FORM);
+    }
+
+    @Override
+    public int getEnumSize() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Element fromOrdinal(int ordinal) {
+        return new LargeEnumeration(ordinal);
     }
 
 }
