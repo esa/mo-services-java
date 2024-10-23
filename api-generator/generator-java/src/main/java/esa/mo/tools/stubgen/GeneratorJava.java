@@ -33,7 +33,9 @@ import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
+import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
+import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
@@ -43,6 +45,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.JAXBElement;
 
 /**
  * Generates stubs and skeletons for CCSDS MO Service specifications for the
@@ -176,6 +179,8 @@ public class GeneratorJava extends GeneratorLangs {
         argPSListenerList.add(keyNamesList);
         argPSListenerList.add(keyTypesList);
         argPSListenerList.add(psListener);
+
+        // register method
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "register", argPSListenerList, throwsExceptions,
                 "Registers this provider implementation to the set of broker connections", null,
@@ -185,6 +190,34 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("publisherSet.register(keyNames, keyTypes, listener)");
         method.addMethodCloseStatement();
 
+        // registerWithDefaultKeys method
+        List<CompositeField> listenerAuto = new LinkedList<>();
+        listenerAuto.add(psListener);
+        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
+                false, true, null, "registerWithDefaultKeys", listenerAuto, throwsExceptions,
+                "Registers this provider implementation to the set of broker connections with the default subscription keys", null,
+                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
+                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                        throwsMALException + " if there is an implementation exception"));
+        method.addLine("org.ccsds.moims.mo.mal.structures.IdentifierList keyNames = new org.ccsds.moims.mo.mal.structures.IdentifierList()");
+        method.addLine("org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList()");
+
+        if (publisher.operation != null) {
+            AnyTypeReference keys = publisher.operation.getSubscriptionKeys();
+
+            if (keys != null) {
+                for(Object key: keys.getAny()) {
+                    JAXBElement jaxbElement = (JAXBElement) key;
+                    NamedElementReferenceWithCommentType aaa = (NamedElementReferenceWithCommentType) jaxbElement.getValue();
+                    method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + aaa.getName() + "\"))");
+                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + aaa.getType().getName().toUpperCase() + ")");
+                }
+            }
+        }
+        method.addLine("publisherSet.register(keyNames, keyTypes, listener)");
+        method.addMethodCloseStatement();
+
+        // asyncRegister method
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
                 "Asynchronously registers this provider implementation to the set of broker connections", null,

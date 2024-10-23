@@ -27,7 +27,6 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingleton;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
-import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -81,9 +80,7 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
 
         try {
             // Register the provider on the broker:
-            IdentifierList keys = new IdentifierList();
-            AttributeTypeList keyTypes = new AttributeTypeList();
-            publisher.register(keys, keyTypes, new PublishInteractionListener());
+            publisher.registerWithDefaultKeys(new PublishInteractionListener());
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ProductOrderDeliveryProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALInteractionException ex) {

@@ -33,13 +33,11 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
-import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -53,7 +51,6 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.maldemo.MALDemoHelper;
 import org.ccsds.moims.mo.maldemo.basicmonitor.BasicMonitorHelper;
 import org.ccsds.moims.mo.maldemo.basicmonitor.body.ReturnMultipleResponse;
 import org.ccsds.moims.mo.maldemo.basicmonitor.provider.BasicMonitorInheritanceSkeleton;
@@ -341,8 +338,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 
     private void registerPublisher() throws MALException, MALInteractionException {
         if (!isRegistered) {
-            IdentifierList keys = new IdentifierList();
-            publisher.register(keys, new AttributeTypeList(), new PublishInteractionListener());
+            publisher.registerWithDefaultKeys(new PublishInteractionListener());
             isRegistered = true;
         }
     }
@@ -353,7 +349,7 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 
             final List<Map.Entry<UpdateHeader, BasicUpdate>> updateList = generateUpdates();
 
-            if (0 < updateList.size()) {
+            if (updateList.size() > 0) {
                 for (Map.Entry<UpdateHeader, BasicUpdate> entry : updateList) {
                     publisher.publish(entry.getKey(), entry.getValue());
                 }
