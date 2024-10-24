@@ -125,14 +125,13 @@ public class GeneratorGwt extends GeneratorJava {
         file.flush();
     }
 
-    protected void createServiceConsumerStub2(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating consumer stub: " + service.getName());
-
-        String serviceName = service.getName();
+    @Deprecated
+    protected void createServiceConsumerStub2(File consumerFolder, String area,
+            String serviceName, ServiceSummary summary) throws IOException {
+        logger.info(" > Creating consumer stub: " + serviceName);
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWTAsync");
-        file.addPackageStatement(area.getName(), service.getName(), CONSUMER_FOLDER);
+        file.addPackageStatement(area, serviceName, CONSUMER_FOLDER);
         file.addInterfaceOpenStatement(serviceName + "GWTAsync", null, null);
 
         for (OperationSummary op : summary.getOperations()) {
@@ -244,20 +243,20 @@ public class GeneratorGwt extends GeneratorJava {
 
     @Override
     protected void createServiceProviderSkeleton(File providerFolder,
-            AreaType area, ServiceType service, ServiceSummary summary,
+            String area, String service, ServiceSummary summary,
             Map<String, RequiredPublisher> requiredPublishers) throws IOException {
     }
 
     @Override
     protected void createServiceProviderInteractions(File providerFolder,
-            AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+            String area, String service, ServiceSummary summary) throws IOException {
     }
 
     @Override
     protected void createServiceProviderSkeletonHandler(File providerFolder,
-            AreaType area, ServiceType service, ServiceSummary summary,
+            String area, String service, ServiceSummary summary,
             boolean isDelegate) throws IOException {
-        String className = service.getName();
+        String className = service;
         String comment;
         if (isDelegate) {
             className += "DelegationSkeletonGWT";
@@ -269,15 +268,13 @@ public class GeneratorGwt extends GeneratorJava {
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
 
-        String implementsList = createElementType(area.getName(),
-                service.getName(), CONSUMER_FOLDER, service.getName() + "GWT");
+        String implementsList = createElementType(area, service, CONSUMER_FOLDER, service + "GWT");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(area.getName(),
-                    service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
+            implementsList += ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
         }
 
         file.addClassOpenStatement(className, false, !isDelegate,
@@ -285,8 +282,7 @@ public class GeneratorGwt extends GeneratorJava {
 
         if (isDelegate) {
             CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate",
-                    TypeUtils.createTypeReference(area.getName(), service.getName()
-                            + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                    TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Handler", false),
                     false, true, null);
             file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
         }
@@ -294,8 +290,7 @@ public class GeneratorGwt extends GeneratorJava {
         if (isDelegate) {
             MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
                     createCompositeElementsDetails(file, false, "delegate",
-                            TypeUtils.createTypeReference(area.getName(),
-                                    service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                            TypeUtils.createTypeReference(area, service.toLowerCase() + "." + PROVIDER_FOLDER, service + "Handler", false),
                             false, false, null), false, null, null, null);
             method.addLine(createMethodCall("this.delegate = delegate"));
             method.addMethodCloseStatement();
@@ -340,7 +335,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case REQUEST_OP: {
-                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     MethodWriter method = file.addMethodOpenStatement(false, false,
                             StdStrings.PUBLIC, false, true, opRetType, op.getName(),
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);

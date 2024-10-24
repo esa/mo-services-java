@@ -206,7 +206,7 @@ public class GeneratorJava extends GeneratorLangs {
             AnyTypeReference keys = publisher.getOperation().getSubscriptionKeys();
 
             if (keys != null) {
-                for(Object key: keys.getAny()) {
+                for (Object key : keys.getAny()) {
                     JAXBElement jaxbElement = (JAXBElement) key;
                     NamedElementReferenceWithCommentType aaa = (NamedElementReferenceWithCommentType) jaxbElement.getValue();
                     method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + aaa.getName() + "\"))");
@@ -363,15 +363,6 @@ public class GeneratorJava extends GeneratorLangs {
             String area, String service) throws IOException {
         createFolderComment(structureFolder, area, service, getConfig().getStructureFolder(),
                 "Package containing types defined in the " + service + " service.");
-    }
-
-    @Override
-    protected void createStructureFactoryFolderComment(File structureFolder,
-            String area, String service) throws IOException {
-        createFolderComment(structureFolder, area, service,
-                getConfig().getStructureFolder() + "." + getConfig().getFactoryFolder(),
-                "Factory classes for the types defined in the "
-                + ((service == null) ? (area + " area.") : (service + " service.")));
     }
 
     /**

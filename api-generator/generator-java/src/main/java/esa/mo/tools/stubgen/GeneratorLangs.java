@@ -495,19 +495,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create a comment for the provider folder if supported
         createServiceProviderFolderComment(providerFolder, area.getName(), service.getName());
         createServiceProviderHandler(providerFolder, area, service, summary);
-        createServiceProviderSkeleton(providerFolder, area, service, summary, requiredPublishers);
-        createServiceProviderInheritance(providerFolder, area, service, summary);
-        createServiceProviderInteractions(providerFolder, area, service, summary);
+        createServiceProviderSkeleton(providerFolder, area.getName(), service.getName(), summary, requiredPublishers);
+        createServiceProviderInheritance(providerFolder, area.getName(), service.getName(), summary);
+        createServiceProviderInteractions(providerFolder, area.getName(), service.getName(), summary);
     }
 
-    protected void createServiceProviderInheritance(File providerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating provider inheritance class: " + service.getName());
+    protected void createServiceProviderInheritance(File providerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        logger.info(" > Creating provider inheritance class: " + service);
         createServiceProviderSkeletonHandler(providerFolder, area, service, summary, false);
     }
 
-    protected void createServiceProviderInteractions(File providerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceProviderInteractions(File providerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 createServiceProviderInvokeInteractionClass(providerFolder, area, service, op);
@@ -706,13 +706,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void createServiceProviderInvokeInteractionClass(File providerFolder,
-            AreaType area, ServiceType service, OperationSummary op) throws IOException {
+            String area, String service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
         logger.info(" > Creating provider invoke interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -731,7 +731,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, "The MAL error to send to the consumer.");
 
         file.addClassOpenStatement(className, false, false, null, null,
-                "Provider INVOKE interaction class for " + service.getName() + "::" + op.getName() + " operation.");
+                "Provider INVOKE interaction class for " + service + "::" + op.getName() + " operation.");
 
         file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar, false, (String) null);
 
@@ -776,13 +776,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void createServiceProviderProgressInteractionClass(File providerFolder,
-            AreaType area, ServiceType service, OperationSummary op) throws IOException {
+            String area, String service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
         logger.info(" > Creating provider progress interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -801,7 +801,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, "error The MAL error to send to the consumer.");
 
         file.addClassOpenStatement(className, false, false, null, null,
-                "Provider PROGRESS interaction class for " + service.getName() + "::" + op.getName() + " operation.");
+                "Provider PROGRESS interaction class for " + service + "::" + op.getName() + " operation.");
 
         file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar,
                 false, (String) null);
@@ -871,11 +871,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
-    protected void createServiceProviderSkeleton(File providerFolder, AreaType area, ServiceType service,
+    protected void createServiceProviderSkeleton(File providerFolder, String area, String service,
             ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        logger.info(" > Creating provider skeleton interface: " + service.getName());
+        logger.info(" > Creating provider skeleton interface: " + service);
 
-        String skeletonName = service.getName() + "Skeleton";
+        String skeletonName = service + "Skeleton";
         InterfaceWriter file = createInterfaceFile(providerFolder, skeletonName);
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField malDomId = createCompositeElementsDetails(file, false, "domain",
@@ -900,20 +900,20 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                 true, true, "The priority used for publishing");
 
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        file.addInterfaceOpenStatement(skeletonName, null, "The skeleton interface for the " + service.getName() + " service.");
+        file.addInterfaceOpenStatement(skeletonName, null, "The skeleton interface for the " + service + " service.");
 
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case PUBSUB_OP: {
-                    String updateType = getConfig().getAreaPackage(area.getName())
-                            + area.getName().toLowerCase() + "." + service.getName().toLowerCase()
+                    String updateType = getConfig().getAreaPackage(area)
+                            + area.toLowerCase() + "." + service.toLowerCase()
                             + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
-                    requiredPublishers.put(updateType, new RequiredPublisher(area.getName(), service.getName(), op));
+                    requiredPublishers.put(updateType, new RequiredPublisher(area, service, op));
                     CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher",
-                            TypeUtils.createTypeReference(area.getName(),
-                                    service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
+                            TypeUtils.createTypeReference(area,
+                                    service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
                             false, true, null);
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, updateTypeField, "create" + StubUtils.preCap(op.getName()) + "Publisher",
                             StubUtils.concatenateArguments(malDomId, malNetworkZone, malSession, malSessionName, malqos, malqosprops, malPriority), throwsMALException,
@@ -929,9 +929,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceProviderSkeletonHandler(File providerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary, boolean isDelegate) throws IOException {
-        String className = service.getName();
+    protected void createServiceProviderSkeletonHandler(File providerFolder, String area,
+            String service, ServiceSummary summary, boolean isDelegate) throws IOException {
+        String className = service;
         String comment;
         if (isDelegate) {
             className += "DelegationSkeleton";
@@ -943,14 +943,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsMALAndInteractionException = throwsInteractionException + ", " + throwsMALException;
         String malHelper = createElementType(StdStrings.MAL, null, null, "MALHelper");
-        String helperName = createElementType(area.getName(), service.getName(), null, service.getName() + "Helper");
-        String serviceInfoName = createElementType(area.getName(), service.getName(), null, service.getName() + JavaServiceInfo.SERVICE_INFO);
+        String helperName = createElementType(area, service, null, service + "Helper");
+        String serviceInfoName = createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO);
         String malString = malStringAsElement(file);
         String malInteger = createElementType(StdStrings.MAL, null, StdStrings.INTEGER);
         String stdError = createElementType(StdStrings.MAL, null, null, "MOErrorException");
@@ -986,18 +986,18 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 malSession, malSessionName, malqos, malqosprops, malPriority);
 
         String implementsList = createElementType(StdStrings.MAL, null, PROVIDER_FOLDER, "MALInteractionHandler")
-                + ", " + createElementType(area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Skeleton");
+                + ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Skeleton");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(area.getName(), service.getName(), PROVIDER_FOLDER, service.getName() + "Handler");
+            implementsList += ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
         }
         file.addClassOpenStatement(className, false, !isDelegate, null, implementsList, comment);
 
         file.addClassVariable(false, false, StdStrings.PRIVATE, proviedrSetVar, false,
-                "(" + helperName + getConfig().getNamingSeparator() + service.getName().toUpperCase() + "_SERVICE)");
+                "(" + helperName + getConfig().getNamingSeparator() + service.toUpperCase() + "_SERVICE)");
 
         if (isDelegate) {
             CompositeField handlerName = createCompositeElementsDetails(file, false, "delegate",
-                    TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                    TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Handler", false),
                     false, true, null);
             file.addClassVariable(false, false, StdStrings.PRIVATE, handlerName, false, (String) null);
         }
@@ -1005,7 +1005,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         if (isDelegate) {
             MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
                     createCompositeElementsDetails(file, false, "delegate",
-                            TypeUtils.createTypeReference(area.getName(), service.getName().toLowerCase() + "." + PROVIDER_FOLDER, service.getName() + "Handler", false),
+                            TypeUtils.createTypeReference(area, service.toLowerCase() + "." + PROVIDER_FOLDER, service + "Handler", false),
                             false, true, "The interaction handler used for delegation"), false, null,
                     "Creates a delegation skeleton using the supplied delegate.", null);
             method.addLine(createMethodCall("this.delegate = delegate"));
@@ -1028,7 +1028,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             // SetSkeleton method
             CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
-                    TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false),
+                    TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
                     false, true, "Not used in the inheritance pattern (the skeleton is 'this'");
             MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                     false, true, null, "setSkeleton", Arrays.asList(skeletonName), null,
@@ -1060,7 +1060,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             switch (op.getPattern()) {
                 case PUBSUB_OP: {
                     CompositeField updateType = createCompositeElementsDetails(file, false, "publisher",
-                            TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
+                            TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
                             false, true, null);
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false,
                             updateType, "create" + StubUtils.preCap(op.getName()) + "Publisher", psArgs, throwsMALException,
@@ -1167,7 +1167,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createRequestResponseDecompose(
                         method, op,
                         opResp,
-                        createReturnType(file, area.getName(), service.getName(), op.getName(), "Response", op.getRetTypes())
+                        createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes())
                 );
                 method.addLine("    break");
             }
@@ -2106,9 +2106,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected void createServiceStructureFolderComment(File structureFolder, String area, String service) throws IOException {
-    }
-
-    protected void createStructureFactoryFolderComment(File structureFolder, String area, String service) throws IOException {
     }
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;
