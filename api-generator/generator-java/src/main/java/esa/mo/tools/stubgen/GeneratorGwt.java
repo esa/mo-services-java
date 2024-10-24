@@ -73,16 +73,15 @@ public class GeneratorGwt extends GeneratorJava {
     }
 
     @Override
-    protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        String serviceName = service.getName();
-        logger.info(" > Creating consumer interface: " + serviceName);
+    protected void createServiceConsumerInterface(File consumerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        logger.info(" > Creating consumer interface: " + service);
 
-        InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWT");
-        file.addPackageStatement(area.getName(), serviceName, CONSUMER_FOLDER);
+        InterfaceWriter file = createInterfaceFile(consumerFolder, service + "GWT");
+        file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
-        file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + serviceName + "GWT\")");
-        file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
+        file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service + "GWT\")");
+        file.addInterfaceOpenStatement(service + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField msgType = createCompositeElementsDetails(file, false,
@@ -104,7 +103,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case REQUEST_OP: {
-                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType,
                             op.getName(), opArgs, throwsMALException, null, null, null);
                     break;

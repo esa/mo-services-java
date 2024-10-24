@@ -427,7 +427,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // load service operation details
         ServiceSummary summary = createOperationElementList(service);
         // create a comment for the service folder if supported
-        createServiceFolderComment(serviceFolder, area, service);
+        createServiceFolderComment(serviceFolder, area.getName(), service);
         // create service helper
         JavaHelpers helper = new JavaHelpers(this);
         logger.info(" > Creating service Helper class: " + service.getName());
@@ -480,7 +480,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
         createServiceConsumerFolderComment(consumerFolder, area.getName(), service.getName());
-        createServiceConsumerInterface(consumerFolder, area, service, summary);
+        createServiceConsumerInterface(consumerFolder, area.getName(), service.getName(), summary);
         JavaConsumer consumer = new JavaConsumer(this, supportsToValue, supportsAsync);
         logger.info(" > Creating consumer adapter: " + service.getName());
         consumer.createServiceConsumerAdapter(consumerFolder, area.getName(), service.getName(), summary);
@@ -517,20 +517,20 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
-    protected void createServiceConsumerInterface(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        String serviceName = service.getName();
+    protected void createServiceConsumerInterface(File consumerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        String serviceName = service;
 
         logger.info(" > Creating consumer interface: " + serviceName);
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName);
 
-        file.addPackageStatement(area.getName(), service.getName(), CONSUMER_FOLDER);
+        file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
         file.addInterfaceOpenStatement(serviceName, null, "Consumer interface for " + serviceName + " service.");
 
         CompositeField serviceAdapterArg = createCompositeElementsDetails(file, false, "adapter",
-                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
+                TypeUtils.createTypeReference(area, service + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
                 false, true, "Listener in charge of receiving the messages from the service provider");
         CompositeField lastInteractionStage = createCompositeElementsDetails(file, false, "lastInteractionStage",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
@@ -571,7 +571,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case SUBMIT_OP:
                 case REQUEST_OP: {
                     List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     String opRetComment = (opRetType == null) ? null : "The return value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
                             throwsInteractionAndMALException, op.getComment(), opRetComment,
@@ -594,7 +594,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case INVOKE_OP:
                 case PROGRESS_OP: {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getArgTypes()), serviceAdapterArg);
-                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     String opRetComment = (opRetType == null) ? null : "The acknowledge value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
                             throwsInteractionAndMALException, op.getComment(), opRetComment,
@@ -2090,7 +2090,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void createAreaFolderComment(File structureFolder, AreaType area) throws IOException {
     }
 
-    protected void createServiceFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceFolderComment(File structureFolder, String area, ServiceType service) throws IOException {
     }
 
     protected void createAreaStructureFolderComment(File structureFolder, String area) throws IOException {

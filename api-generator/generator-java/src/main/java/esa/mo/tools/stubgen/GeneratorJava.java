@@ -317,8 +317,8 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     protected void createServiceFolderComment(File structureFolder,
-            AreaType area, ServiceType service) throws IOException {
-        createFolderComment(structureFolder, area.getName(), service.getName(), null, service.getComment());
+            String area, ServiceType service) throws IOException {
+        createFolderComment(structureFolder, area, service.getName(), null, service.getComment());
     }
 
     @Override
