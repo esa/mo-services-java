@@ -79,7 +79,7 @@ public class GeneratorGwt extends GeneratorJava {
         logger.info(" > Creating consumer interface: " + serviceName);
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWT");
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addPackageStatement(area.getName(), serviceName, CONSUMER_FOLDER);
 
         file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + serviceName + "GWT\")");
         file.addInterfaceOpenStatement(serviceName + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
@@ -133,7 +133,7 @@ public class GeneratorGwt extends GeneratorJava {
         String serviceName = service.getName();
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWTAsync");
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), CONSUMER_FOLDER);
         file.addInterfaceOpenStatement(serviceName + "GWTAsync", null, null);
 
         for (OperationSummary op : summary.getOperations()) {
@@ -179,7 +179,7 @@ public class GeneratorGwt extends GeneratorJava {
 
         String handlerName = service.getName() + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
         file.addInterfaceOpenStatement(handlerName, null, null);
 
         CompositeField intHandlerStr = createCompositeElementsDetails(file, false,
@@ -270,7 +270,7 @@ public class GeneratorGwt extends GeneratorJava {
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
 

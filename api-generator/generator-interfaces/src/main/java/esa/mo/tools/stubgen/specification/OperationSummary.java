@@ -46,7 +46,7 @@ public final class OperationSummary {
      * Constructor.
      *
      * @param pattern The interaction pattern of the operation.
-     * @param op The XML operation details.
+     * @param originalOp The XML operation details.
      * @param set The capability set of the operation.
      * @param argTypes The initial argument types of the operation.
      * @param argComment The initial argument comments of the operation.
@@ -64,7 +64,7 @@ public final class OperationSummary {
      * support by the pattern.
      */
     public OperationSummary(InteractionPatternEnum pattern,
-            OperationType op,
+            OperationType originalOp,
             Integer set,
             List<FieldInfo> argTypes,
             String argComment,
@@ -76,7 +76,7 @@ public final class OperationSummary {
             String retComment) {
         super();
         this.pattern = pattern;
-        this.originalOp = op;
+        this.originalOp = originalOp;
         this.set = set;
         this.argTypes = argTypes;
         this.argComment = argComment;

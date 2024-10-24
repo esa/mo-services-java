@@ -56,7 +56,7 @@ public class JavaHelpers {
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
 
-        file.addPackageStatement(area, service, null);
+        file.addPackageStatement(area.getName(), service.getName(), null);
         file.addClassOpenStatement(serviceName + "Helper", false, false, null,
                 null, "Helper class for " + serviceName + " service.");
 
@@ -94,7 +94,7 @@ public class JavaHelpers {
         String areaNameCAPS = area.getName().toUpperCase();
         String areaNumber = areaNameCAPS + "_AREA_NUMBER";
 
-        file.addPackageStatement(area, null, null);
+        file.addPackageStatement(area.getName(), null, null);
 
         CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNumber,
                 TypeUtils.createTypeReference(null, null, "int", false),

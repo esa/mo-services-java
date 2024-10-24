@@ -20,8 +20,6 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
 import java.util.List;
 
 /**
@@ -31,8 +29,8 @@ import java.util.List;
 public class MultiReturnType {
 
     private final String returnType;
-    private final AreaType area;
-    private final ServiceType service;
+    private final String area;
+    private final String service;
     private final String shortName;
     private final List<FieldInfo> returnTypes;
 
@@ -46,8 +44,8 @@ public class MultiReturnType {
      * @param returnTypes The types contained in the return type.
      */
     public MultiReturnType(final String returnType,
-            final AreaType area,
-            final ServiceType service,
+            final String area,
+            final String service,
             final String shortName,
             final List<FieldInfo> returnTypes) {
         this.returnType = returnType;
@@ -61,11 +59,11 @@ public class MultiReturnType {
         return returnType;
     }
 
-    public AreaType getArea() {
+    public String getArea() {
         return area;
     }
 
-    public ServiceType getService() {
+    public String getService() {
         return service;
     }
 

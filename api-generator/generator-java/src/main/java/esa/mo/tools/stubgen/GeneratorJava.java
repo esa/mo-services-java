@@ -142,7 +142,7 @@ public class GeneratorJava extends GeneratorLangs {
         String publisherName = fqPublisherName.substring(fqPublisherName.lastIndexOf('.') + 1);
         ClassWriter file = createClassFile(destinationFolderName, fqPublisherName.replace('.', '/'));
 
-        file.addPackageStatement(publisher.area, publisher.service, PROVIDER_FOLDER);
+        file.addPackageStatement(publisher.getArea(), publisher.getService(), PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -153,7 +153,7 @@ public class GeneratorJava extends GeneratorLangs {
                 false, true, null);
 
         file.addClassOpenStatement(publisherName, true, false, null, null,
-                "Publisher class for the " + publisher.operation.getName() + " operation.");
+                "Publisher class for the " + publisher.getOperation().getName() + " operation.");
 
         file.addClassVariable(false, false, StdStrings.PRIVATE, publisherSetType, false, (String) null);
 
@@ -202,8 +202,8 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("org.ccsds.moims.mo.mal.structures.IdentifierList keyNames = new org.ccsds.moims.mo.mal.structures.IdentifierList()");
         method.addLine("org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList()");
 
-        if (publisher.operation != null) {
-            AnyTypeReference keys = publisher.operation.getSubscriptionKeys();
+        if (publisher.getOperation() != null) {
+            AnyTypeReference keys = publisher.getOperation().getSubscriptionKeys();
 
             if (keys != null) {
                 for(Object key: keys.getAny()) {
@@ -231,7 +231,7 @@ public class GeneratorJava extends GeneratorLangs {
         argList.add(createCompositeElementsDetails(file, true, "updateHeader",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
                 true, true, "The headers of the updates being added"));
-        argList.addAll(createOperationArguments(getConfig(), file, publisher.operation.getUpdateTypes()));
+        argList.addAll(createOperationArguments(getConfig(), file, publisher.getOperation().getUpdateTypes()));
 
         String argNameList = "";
 
@@ -290,7 +290,7 @@ public class GeneratorJava extends GeneratorLangs {
 
         if (isAbstract) {
             logger.info(" > Creating HeterogeneousList class: " + listName);
-            javaLists.createHeterogeneousListClass(folder, area, service, srcTypeName);
+            javaLists.createHeterogeneousListClass(folder, area.getName(), service == null ? null : service.getName(), srcTypeName);
         } else {
             logger.info(" > Creating List class: " + listName);
             javaLists.createHomogeneousListClass(folder, area, service, srcTypeName, shortFormPart);
@@ -312,36 +312,36 @@ public class GeneratorJava extends GeneratorLangs {
             cmt = "The " + area.getName() + " area.";
         }
 
-        createFolderComment(structureFolder, area, null, null, cmt);
+        createFolderComment(structureFolder, area.getName(), null, null, cmt);
     }
 
     @Override
     protected void createServiceFolderComment(File structureFolder,
             AreaType area, ServiceType service) throws IOException {
-        createFolderComment(structureFolder, area, service, null, service.getComment());
+        createFolderComment(structureFolder, area.getName(), service.getName(), null, service.getComment());
     }
 
     @Override
     protected void createServiceConsumerFolderComment(File structureFolder,
-            AreaType area, ServiceType service) throws IOException {
+            String area, String service) throws IOException {
         createFolderComment(structureFolder, area, service, CONSUMER_FOLDER,
-                "Package containing the consumer stubs for the " + service.getName() + " service.");
+                "Package containing the consumer stubs for the " + service + " service.");
     }
 
     @Override
     protected void createServiceProviderFolderComment(File structureFolder,
-            AreaType area, ServiceType service) throws IOException {
+            String area, String service) throws IOException {
         createFolderComment(structureFolder, area, service, PROVIDER_FOLDER,
-                "Package containing the provider skeletons for the " + service.getName() + " service.");
+                "Package containing the provider skeletons for the " + service + " service.");
     }
 
     @Override
     protected void createServiceMessageBodyFolderComment(String baseFolder,
-            AreaType area, ServiceType service) throws IOException {
-        String basePackageName = getConfig().getAreaPackage(area.getName());
-        String packageName = basePackageName + "." + area.getName().toLowerCase();
+            String area, String service) throws IOException {
+        String basePackageName = getConfig().getAreaPackage(area);
+        String packageName = basePackageName + "." + area.toLowerCase();
         if (service != null) {
-            packageName += "." + service.getName().toLowerCase();
+            packageName += "." + service.toLowerCase();
         }
 
         String className = packageName + "." + getConfig().getBodyFolder() + "." + JAVA_PACKAGE_COMMENT_FILE_NAME;
@@ -353,25 +353,25 @@ public class GeneratorJava extends GeneratorLangs {
     }
 
     @Override
-    protected void createAreaStructureFolderComment(File structureFolder, AreaType area) throws IOException {
+    protected void createAreaStructureFolderComment(File structureFolder, String area) throws IOException {
         createFolderComment(structureFolder, area, null, getConfig().getStructureFolder(),
-                "Package containing types defined in the " + area.getName() + " area.");
+                "Package containing types defined in the " + area + " area.");
     }
 
     @Override
     protected void createServiceStructureFolderComment(File structureFolder,
-            AreaType area, ServiceType service) throws IOException {
+            String area, String service) throws IOException {
         createFolderComment(structureFolder, area, service, getConfig().getStructureFolder(),
-                "Package containing types defined in the " + service.getName() + " service.");
+                "Package containing types defined in the " + service + " service.");
     }
 
     @Override
     protected void createStructureFactoryFolderComment(File structureFolder,
-            AreaType area, ServiceType service) throws IOException {
+            String area, String service) throws IOException {
         createFolderComment(structureFolder, area, service,
                 getConfig().getStructureFolder() + "." + getConfig().getFactoryFolder(),
                 "Factory classes for the types defined in the "
-                + ((service == null) ? (area.getName() + " area.") : (service.getName() + " service.")));
+                + ((service == null) ? (area + " area.") : (service + " service.")));
     }
 
     /**
@@ -384,8 +384,8 @@ public class GeneratorJava extends GeneratorLangs {
      * @param comment the comment.
      * @throws IOException if there is a problem.
      */
-    protected void createFolderComment(File structureFolder, AreaType area,
-            ServiceType service, String extraPackage, String comment) throws IOException {
+    protected void createFolderComment(File structureFolder, String area,
+            String service, String extraPackage, String comment) throws IOException {
         ClassWriter file = createClassFile(structureFolder, JAVA_PACKAGE_COMMENT_FILE_NAME);
         createFolderComment(file, area, service, extraPackage, comment);
     }
@@ -400,8 +400,8 @@ public class GeneratorJava extends GeneratorLangs {
      * @param comment the comment.
      * @throws IOException if there is a problem.
      */
-    protected void createFolderComment(ClassWriter file, AreaType area,
-            ServiceType service, String extraPackage, String comment) throws IOException {
+    protected void createFolderComment(ClassWriter file, String area,
+            String service, String extraPackage, String comment) throws IOException {
         List<String> list = AbstractLanguageWriter.normaliseComment(new ArrayList(), comment);
 
         file.addStatement("/**");

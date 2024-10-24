@@ -54,12 +54,12 @@ public class JavaLists {
      * @param srcTypeName The name of the element in the list.
      * @throws IOException if there is a problem writing the file.
      */
-    public void createHeterogeneousListClass(File folder, AreaType area,
-            ServiceType service, String srcTypeName) throws IOException {
+    public void createHeterogeneousListClass(File folder, String area,
+            String service, String srcTypeName) throws IOException {
         TypeReference srcType = new TypeReference();
-        srcType.setArea(area.getName());
+        srcType.setArea(area);
         if (service != null) {
-            srcType.setService(service.getName());
+            srcType.setService(service);
         }
 
         srcType.setName(srcTypeName);
@@ -119,7 +119,7 @@ public class JavaLists {
         }
 
         ClassWriter file = generator.createClassFile(folder, listName);
-        file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
+        file.addPackageStatement(area.getName(), service == null ? null : service.getName(), generator.getConfig().getStructureFolder());
 
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),

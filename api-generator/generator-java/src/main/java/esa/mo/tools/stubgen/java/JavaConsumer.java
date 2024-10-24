@@ -58,15 +58,13 @@ public class JavaConsumer {
         this.supportsAsync = supportsAsync;
     }
 
-    public void createServiceConsumerAdapter(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        String areaName = area.getName();
-        String serviceName = service.getName();
+    public void createServiceConsumerAdapter(File consumerFolder, String areaName,
+            String serviceName, ServiceSummary summary) throws IOException {
         String className = serviceName + "Adapter";
 
         ClassWriter file = generator.createClassFile(consumerFolder, className);
 
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addPackageStatement(areaName, serviceName, CONSUMER_FOLDER);
 
         String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String areaHelper = generator.createElementType(areaName, null, null, areaName + "Helper");
@@ -401,7 +399,7 @@ public class JavaConsumer {
                     TypeReference source = ti.getSourceType();
                     opTypes.add(TypeUtils.convertTypeReference(generator,
                             TypeUtils.createTypeReference(source.getArea(), source.getService(), source.getName(), source.isList())));
-                            */
+                     */
                     opTypes.add(ti);
                 }
 
@@ -449,7 +447,7 @@ public class JavaConsumer {
 
         ClassWriter file = generator.createClassFile(consumerFolder, className);
 
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), CONSUMER_FOLDER);
 
         CompositeField serviceAdapterArg = generator.createCompositeElementsDetails(file, false, "adapter",
                 TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),

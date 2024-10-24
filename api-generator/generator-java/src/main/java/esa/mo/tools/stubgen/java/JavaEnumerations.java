@@ -51,7 +51,7 @@ public class JavaEnumerations {
         long enumSize = enumeration.getItem().size();
         ClassWriter file = generator.createClassFile(folder, enumName);
 
-        file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
+        file.addPackageStatement(area.getName(), service == null ? null : service.getName(), generator.getConfig().getStructureFolder());
 
         file.addClassOpenStatement(enumName, true, false,
                 generator.createElementType(StdStrings.MAL, null, StdStrings.ENUMERATION),

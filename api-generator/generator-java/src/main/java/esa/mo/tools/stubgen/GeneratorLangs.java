@@ -371,7 +371,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 // create area structure folder
                 File structureFolder = StubUtils.createFolder(areaFolder, getConfig().getStructureFolder());
                 // create a comment for the structure folder if supported
-                createAreaStructureFolderComment(structureFolder, area);
+                createAreaStructureFolderComment(structureFolder, area.getName());
 
                 ConcurrentLinkedQueue<Exception> errors_1 = new ConcurrentLinkedQueue<>();
 
@@ -379,7 +379,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 area.getDataTypes().getFundamentalOrAttributeOrComposite().parallelStream().forEach(oType -> {
                     try {
                         if (oType instanceof FundamentalType) {
-                            createFundamentalClass(structureFolder, area, null, (FundamentalType) oType);
+                            createFundamentalClass(structureFolder, area.getName(), null, (FundamentalType) oType);
                         } else if (oType instanceof AttributeType) {
                             String aName = ((AttributeType) oType).getName();
                             createListClass(structureFolder, area, null, aName,
@@ -448,7 +448,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             // create structure folder
             File structureFolder = StubUtils.createFolder(serviceFolder, getConfig().getStructureFolder());
             // create a comment for the structure folder if supported
-            createServiceStructureFolderComment(structureFolder, area, service);
+            createServiceStructureFolderComment(structureFolder, area.getName(), service.getName());
             String name;
 
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
@@ -479,11 +479,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
         logger.info(" > Creating consumer classes: " + service.getName());
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
-        createServiceConsumerFolderComment(consumerFolder, area, service);
+        createServiceConsumerFolderComment(consumerFolder, area.getName(), service.getName());
         createServiceConsumerInterface(consumerFolder, area, service, summary);
         JavaConsumer consumer = new JavaConsumer(this, supportsToValue, supportsAsync);
         logger.info(" > Creating consumer adapter: " + service.getName());
-        consumer.createServiceConsumerAdapter(consumerFolder, area, service, summary);
+        consumer.createServiceConsumerAdapter(consumerFolder, area.getName(), service.getName(), summary);
         logger.info(" > Creating consumer stub: " + service.getName());
         consumer.createServiceConsumerStub(consumerFolder, area, service, summary);
     }
@@ -493,7 +493,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         logger.info(" > Creating provider classes: " + service.getName());
         File providerFolder = StubUtils.createFolder(serviceFolder, PROVIDER_FOLDER);
         // create a comment for the provider folder if supported
-        createServiceProviderFolderComment(providerFolder, area, service);
+        createServiceProviderFolderComment(providerFolder, area.getName(), service.getName());
         createServiceProviderHandler(providerFolder, area, service, summary);
         createServiceProviderSkeleton(providerFolder, area, service, summary, requiredPublishers);
         createServiceProviderInheritance(providerFolder, area, service, summary);
@@ -525,7 +525,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName);
 
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), CONSUMER_FOLDER);
 
         file.addInterfaceOpenStatement(serviceName, null, "Consumer interface for " + serviceName + " service.");
 
@@ -650,13 +650,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceProviderHandler(File providerFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    protected void createServiceProviderHandler(File providerFolder, AreaType area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         logger.info(" > Creating provider handler interface: " + service.getName());
 
         String handlerName = service.getName() + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
 
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
 
         file.addInterfaceOpenStatement(handlerName, null,
                 "Interface that providers of the " + service.getName() + " service must implement to handle the operations of that service.");
@@ -704,13 +705,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceProviderInvokeInteractionClass(File providerFolder, AreaType area, ServiceType service, OperationSummary op) throws IOException {
+    protected void createServiceProviderInvokeInteractionClass(File providerFolder,
+            AreaType area, ServiceType service, OperationSummary op) throws IOException {
         String className = StubUtils.preCap(op.getName()) + "Interaction";
         logger.info(" > Creating provider invoke interaction class: " + className);
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -780,7 +782,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -898,7 +900,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                 true, true, "The priority used for publishing");
 
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
 
         file.addInterfaceOpenStatement(skeletonName, null, "The skeleton interface for the " + service.getName() + " service.");
 
@@ -908,7 +910,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     String updateType = getConfig().getAreaPackage(area.getName())
                             + area.getName().toLowerCase() + "." + service.getName().toLowerCase()
                             + "." + PROVIDER_FOLDER + "." + StubUtils.preCap(op.getName()) + "Publisher";
-                    requiredPublishers.put(updateType, new RequiredPublisher(area, service, op));
+                    requiredPublishers.put(updateType, new RequiredPublisher(area.getName(), service.getName(), op));
                     CompositeField updateTypeField = createCompositeElementsDetails(file, false, "publisher",
                             TypeUtils.createTypeReference(area.getName(),
                                     service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
@@ -941,7 +943,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         ClassWriter file = createClassFile(providerFolder, className);
 
-        file.addPackageStatement(area, service, PROVIDER_FOLDER);
+        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
@@ -1327,7 +1329,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + "." + refObj.getName().toUpperCase() + "_OBJECT_TYPE");
     }
 
-    protected void createFundamentalClass(File folder, AreaType area, ServiceType service, FundamentalType enumeration) throws IOException {
+    protected void createFundamentalClass(File folder, String area, String service, FundamentalType enumeration) throws IOException {
         // fundamental types are usually hand created as part of a language mapping, but we have this here in case this
         // is not the case for a particular language
     }
@@ -1359,7 +1361,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
         }
 
-        file.addPackageStatement(area, service, getConfig().getStructureFolder());
+        file.addPackageStatement(area.getName(), service == null ? null : service.getName(), getConfig().getStructureFolder());
 
         CompositeField elementType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
@@ -1371,7 +1373,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         boolean abstractComposite = (composite.getShortFormPart() == null);
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
                 parentClass, parentInterface, composite.getComment());
-        String fqName = createElementType(area, service, className);
+        String fqName = createElementType(area.getName(), service == null ? null : service.getName(), className);
 
         if (!abstractComposite) {
             addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
@@ -2001,7 +2003,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + shortName;
 
         if (!multiReturnTypeMap.containsKey(rt)) {
-            multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
+            multiReturnTypeMap.put(rt, new MultiReturnType(rt, area.getName(), service.getName(), shortName, returnTypes));
         }
 
         return createCompositeElementsDetails(file, false, "return",
@@ -2089,22 +2091,22 @@ public abstract class GeneratorLangs extends GeneratorBase {
     protected void createServiceFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
     }
 
-    protected void createAreaStructureFolderComment(File structureFolder, AreaType area) throws IOException {
+    protected void createAreaStructureFolderComment(File structureFolder, String area) throws IOException {
     }
 
-    protected void createServiceConsumerFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceConsumerFolderComment(File structureFolder, String area, String service) throws IOException {
     }
 
-    protected void createServiceProviderFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceProviderFolderComment(File structureFolder, String area, String service) throws IOException {
     }
 
-    protected void createServiceMessageBodyFolderComment(String baseFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceMessageBodyFolderComment(String baseFolder, String area, String service) throws IOException {
     }
 
-    protected void createServiceStructureFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createServiceStructureFolderComment(File structureFolder, String area, String service) throws IOException {
     }
 
-    protected void createStructureFactoryFolderComment(File structureFolder, AreaType area, ServiceType service) throws IOException {
+    protected void createStructureFactoryFolderComment(File structureFolder, String area, String service) throws IOException {
     }
 
     protected abstract void createRequiredPublisher(String destinationFolderName, String fqPublisherName, RequiredPublisher op) throws IOException;

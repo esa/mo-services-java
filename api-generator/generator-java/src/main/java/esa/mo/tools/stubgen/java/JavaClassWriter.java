@@ -31,8 +31,6 @@ import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -368,16 +366,16 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addPackageStatement(AreaType area, ServiceType service, String extraPackage) throws IOException {
+    public void addPackageStatement(String area, String service, String extraPackage) throws IOException {
         String packageName = "";
 
         if (area == null) {
             packageName = generator.getConfig().getAreaPackage("");
         } else {
-            packageName += generator.getConfig().getAreaPackage(area.getName()) + area.getName().toLowerCase();
+            packageName += generator.getConfig().getAreaPackage(area) + area.toLowerCase();
 
             if (service != null) {
-                packageName += "." + service.getName().toLowerCase();
+                packageName += "." + service.toLowerCase();
             }
         }
 

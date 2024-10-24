@@ -69,7 +69,7 @@ public class JavaServiceInfo {
         String namespace = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
-        file.addPackageStatement(area, service, null);
+        file.addPackageStatement(area.getName(), service.getName(), null);
 
         // Appends the class name
         if (service instanceof ExtendedServiceType) {
