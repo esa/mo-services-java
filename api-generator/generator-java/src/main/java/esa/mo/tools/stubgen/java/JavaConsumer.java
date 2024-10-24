@@ -533,7 +533,7 @@ public class JavaConsumer {
                 case SUBMIT_OP:
                 case REQUEST_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
-                    CompositeField opRetType = generator.createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = generator.createOperationReturnType(file, area.getName(), service.getName(), op);
                     String opRetComment = null;
                     String rv = "";
                     if (null != opRetType) {
@@ -570,7 +570,7 @@ public class JavaConsumer {
                 case INVOKE_OP:
                 case PROGRESS_OP: {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes()), serviceAdapterArg);
-                    CompositeField opRetType = generator.createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = generator.createOperationReturnType(file, area.getName(), service.getName(), op);
                     String opRetComment = null;
                     String rv = "";
                     if (null != opRetType) {

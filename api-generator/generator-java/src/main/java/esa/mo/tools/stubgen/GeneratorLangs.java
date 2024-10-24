@@ -571,7 +571,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case SUBMIT_OP:
                 case REQUEST_OP: {
                     List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
                     String opRetComment = (opRetType == null) ? null : "The return value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
                             throwsInteractionAndMALException, op.getComment(), opRetComment,
@@ -594,7 +594,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 case INVOKE_OP:
                 case PROGRESS_OP: {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getArgTypes()), serviceAdapterArg);
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
                     String opRetComment = (opRetType == null) ? null : "The acknowledge value of the interaction";
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
                             throwsInteractionAndMALException, op.getComment(), opRetComment,
@@ -677,7 +677,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 CompositeField serviceHandler = intHandler;
 
                 if (InteractionPatternEnum.REQUEST_OP == op.getPattern()) {
-                    opRetType = createOperationReturnType(file, area, service, op);
+                    opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
                     opRetComment = "The return value of the operation";
                 } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
                     serviceHandler = createCompositeElementsDetails(file, false, "interaction",
@@ -1167,7 +1167,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createRequestResponseDecompose(
                         method, op,
                         opResp,
-                        createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes())
+                        createReturnType(file, area.getName(), service.getName(), op.getName(), "Response", op.getRetTypes())
                 );
                 method.addLine("    break");
             }
@@ -1898,18 +1898,20 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    public CompositeField createOperationReturnType(LanguageWriter file, AreaType area, ServiceType service, OperationSummary op) {
+    public CompositeField createOperationReturnType(LanguageWriter file, String area, String service, OperationSummary op) {
         switch (op.getPattern()) {
             case REQUEST_OP: {
                 if (op.getRetTypes() != null) {
-                    return createReturnReference(createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes()));
+                    CompositeField ret = createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes());
+                    return createReturnReference(ret);
                 }
                 break;
             }
             case INVOKE_OP:
             case PROGRESS_OP: {
                 if ((op.getAckTypes() != null) && (!op.getAckTypes().isEmpty())) {
-                    return createReturnReference(createReturnType(file, area, service, op.getName(), "Ack", op.getAckTypes()));
+                    CompositeField ret = createReturnType(file, area, service, op.getName(), "Ack", op.getAckTypes());
+                    return createReturnReference(ret);
                 }
                 break;
             }
@@ -1984,8 +1986,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return "";
     }
 
-    protected CompositeField createReturnType(LanguageWriter file, AreaType area,
-            ServiceType service, String opName, String messageType, List<FieldInfo> returnTypes) {
+    protected CompositeField createReturnType(LanguageWriter file, String area,
+            String service, String opName, String messageType, List<FieldInfo> returnTypes) {
         if (returnTypes == null || returnTypes.isEmpty()) {
             return null;
         }
@@ -1996,19 +1998,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         String shortName = StubUtils.preCap(opName) + messageType;
-        String rt = getConfig().getAreaPackage(area.getName())
-                + area.getName().toLowerCase() + "."
-                + service.getName().toLowerCase() + "."
+        String rt = getConfig().getAreaPackage(area)
+                + area.toLowerCase() + "."
+                + service.toLowerCase() + "."
                 + getConfig().getBodyFolder() + "."
                 + shortName;
 
         if (!multiReturnTypeMap.containsKey(rt)) {
-            multiReturnTypeMap.put(rt, new MultiReturnType(rt, area.getName(), service.getName(), shortName, returnTypes));
+            multiReturnTypeMap.put(rt, new MultiReturnType(rt, area, service, shortName, returnTypes));
         }
 
         return createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(area.getName().toLowerCase(),
-                        service.getName().toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
+                TypeUtils.createTypeReference(area.toLowerCase(),
+                        service.toLowerCase() + "." + getConfig().getBodyFolder(), shortName, false),
                 false, true, null);
     }
 

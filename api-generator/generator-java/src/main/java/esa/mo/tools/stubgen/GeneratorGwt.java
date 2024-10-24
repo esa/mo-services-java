@@ -104,7 +104,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case REQUEST_OP: {
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType,
                             op.getName(), opArgs, throwsMALException, null, null, null);
                     break;
@@ -203,7 +203,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case REQUEST_OP: {
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
                             StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
                     break;
@@ -341,7 +341,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case REQUEST_OP: {
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
+                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
                     MethodWriter method = file.addMethodOpenStatement(false, false,
                             StdStrings.PUBLIC, false, true, opRetType, op.getName(),
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
