@@ -299,8 +299,7 @@ public class TypeUtils {
 
                 return new TypeRef(newField);
             } else {
-                throw new IllegalArgumentException(
-                        "Unexpected XML type in message body of : " + re);
+                throw new IllegalArgumentException("Unexpected XML type in message body of : " + re);
             }
         } else {
             throw new IllegalArgumentException(

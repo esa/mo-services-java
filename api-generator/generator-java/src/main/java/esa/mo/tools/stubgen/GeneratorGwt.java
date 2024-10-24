@@ -29,8 +29,6 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -84,9 +82,8 @@ public class GeneratorGwt extends GeneratorJava {
         file.addInterfaceOpenStatement(service + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        CompositeField msgType = createCompositeElementsDetails(file, false,
-                "return", TypeUtils.createTypeReference(StdStrings.MAL,
-                        TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
+        CompositeField msgType = createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
                 false, true, null);
 
         for (OperationSummary op : summary.getOperations()) {
