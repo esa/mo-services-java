@@ -439,7 +439,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         serviceInfo.createServiceInfoClass(serviceFolder, area, service, summary);
 
         // create consumer classes
-        createServiceConsumerClasses(serviceFolder, area, service, summary);
+        createServiceConsumerClasses(serviceFolder, area.getName(), service.getName(), summary);
         // create provider classes
         createServiceProviderClasses(serviceFolder, area, service, summary, requiredPublishers);
 
@@ -474,17 +474,17 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
-    protected void createServiceConsumerClasses(File serviceFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating consumer classes: " + service.getName());
+    protected void createServiceConsumerClasses(File serviceFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        logger.info(" > Creating consumer classes: " + service);
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
-        createServiceConsumerFolderComment(consumerFolder, area.getName(), service.getName());
-        createServiceConsumerInterface(consumerFolder, area.getName(), service.getName(), summary);
+        createServiceConsumerFolderComment(consumerFolder, area, service);
+        createServiceConsumerInterface(consumerFolder, area, service, summary);
         JavaConsumer consumer = new JavaConsumer(this, supportsToValue, supportsAsync);
-        logger.info(" > Creating consumer adapter: " + service.getName());
-        consumer.createServiceConsumerAdapter(consumerFolder, area.getName(), service.getName(), summary);
-        logger.info(" > Creating consumer stub: " + service.getName());
+        logger.info(" > Creating consumer adapter: " + service);
+        consumer.createServiceConsumerAdapter(consumerFolder, area, service, summary);
+        logger.info(" > Creating consumer stub: " + service);
         consumer.createServiceConsumerStub(consumerFolder, area, service, summary);
     }
 

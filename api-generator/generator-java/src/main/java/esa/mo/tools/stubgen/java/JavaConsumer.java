@@ -440,17 +440,16 @@ public class JavaConsumer {
         method.addMethodCloseStatement();
     }
 
-    public void createServiceConsumerStub(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        String serviceName = service.getName();
-        String className = serviceName + "Stub";
+    public void createServiceConsumerStub(File consumerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        String className = service + "Stub";
 
         ClassWriter file = generator.createClassFile(consumerFolder, className);
 
-        file.addPackageStatement(area.getName(), service.getName(), CONSUMER_FOLDER);
+        file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
         CompositeField serviceAdapterArg = generator.createCompositeElementsDetails(file, false, "adapter",
-                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
+                TypeUtils.createTypeReference(area, service + "." + CONSUMER_FOLDER, service + "Adapter", false),
                 false, true, "adapter Listener in charge of receiving the messages from the service provider");
 
         CompositeField lastInteractionStage = generator.createCompositeElementsDetails(file, false, "lastInteractionStage",
@@ -477,8 +476,8 @@ public class JavaConsumer {
         CompositeField uriType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false),
                 true, true, null);
-        String helperType = generator.createElementType(area.getName(), service.getName(), null, serviceName + "Helper") + generator.getConfig().getNamingSeparator();
-        String serviceInfoType = generator.createElementType(area.getName(), service.getName(), null, serviceName + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
+        String helperType = generator.createElementType(area, service, null, service + "Helper") + generator.getConfig().getNamingSeparator();
+        String serviceInfoType = generator.createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
         CompositeField consumerType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
@@ -488,8 +487,8 @@ public class JavaConsumer {
                 false, true, null);
 
         file.addClassOpenStatement(className, false, false, null,
-                generator.createElementType(area.getName(), serviceName, CONSUMER_FOLDER, serviceName),
-                "Consumer stub for " + serviceName + " service.");
+                generator.createElementType(area, service, CONSUMER_FOLDER, service),
+                "Consumer stub for " + service + " service.");
 
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
 
@@ -533,7 +532,7 @@ public class JavaConsumer {
                 case SUBMIT_OP:
                 case REQUEST_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
-                    CompositeField opRetType = generator.createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = generator.createOperationReturnType(file, area, service, op);
                     String opRetComment = null;
                     String rv = "";
                     if (null != opRetType) {
@@ -570,7 +569,7 @@ public class JavaConsumer {
                 case INVOKE_OP:
                 case PROGRESS_OP: {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes()), serviceAdapterArg);
-                    CompositeField opRetType = generator.createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = generator.createOperationReturnType(file, area, service, op);
                     String opRetComment = null;
                     String rv = "";
                     if (null != opRetType) {
