@@ -179,7 +179,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
             for (ServiceType service : area.getService()) {
                 if (service instanceof ExtendedServiceType) {
                     ExtendedServiceType eService = (ExtendedServiceType) service;
-
                     SupportedFeatures features = eService.getFeatures();
 
                     if (null != features) {
@@ -431,7 +430,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create service helper
         JavaHelpers helper = new JavaHelpers(this);
         logger.info(" > Creating service Helper class: " + service.getName());
-        helper.createServiceHelperClass(serviceFolder, area, service, summary);
+        helper.createServiceHelperClass(serviceFolder, area.getName(), service, summary);
 
         // create service info
         JavaServiceInfo serviceInfo = new JavaServiceInfo(this);
@@ -441,7 +440,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create consumer classes
         createServiceConsumerClasses(serviceFolder, area.getName(), service.getName(), summary);
         // create provider classes
-        createServiceProviderClasses(serviceFolder, area, service, summary, requiredPublishers);
+        createServiceProviderClasses(serviceFolder, area.getName(), service.getName(), summary, requiredPublishers);
 
         // if service level types exist
         if (generateStructures && (service.getDataTypes() != null) && !service.getDataTypes().getCompositeOrEnumeration().isEmpty()) {
@@ -488,16 +487,16 @@ public abstract class GeneratorLangs extends GeneratorBase {
         consumer.createServiceConsumerStub(consumerFolder, area, service, summary);
     }
 
-    protected void createServiceProviderClasses(File serviceFolder, AreaType area, ServiceType service,
+    protected void createServiceProviderClasses(File serviceFolder, String area, String service,
             ServiceSummary summary, Map<String, RequiredPublisher> requiredPublishers) throws IOException {
-        logger.info(" > Creating provider classes: " + service.getName());
+        logger.info(" > Creating provider classes: " + service);
         File providerFolder = StubUtils.createFolder(serviceFolder, PROVIDER_FOLDER);
         // create a comment for the provider folder if supported
-        createServiceProviderFolderComment(providerFolder, area.getName(), service.getName());
+        createServiceProviderFolderComment(providerFolder, area, service);
         createServiceProviderHandler(providerFolder, area, service, summary);
-        createServiceProviderSkeleton(providerFolder, area.getName(), service.getName(), summary, requiredPublishers);
-        createServiceProviderInheritance(providerFolder, area.getName(), service.getName(), summary);
-        createServiceProviderInteractions(providerFolder, area.getName(), service.getName(), summary);
+        createServiceProviderSkeleton(providerFolder, area, service, summary, requiredPublishers);
+        createServiceProviderInheritance(providerFolder, area, service, summary);
+        createServiceProviderInteractions(providerFolder, area, service, summary);
     }
 
     protected void createServiceProviderInheritance(File providerFolder, String area,
@@ -650,17 +649,17 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.flush();
     }
 
-    protected void createServiceProviderHandler(File providerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating provider handler interface: " + service.getName());
+    protected void createServiceProviderHandler(File providerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        logger.info(" > Creating provider handler interface: " + service);
 
-        String handlerName = service.getName() + "Handler";
+        String handlerName = service + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
 
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
         file.addInterfaceOpenStatement(handlerName, null,
-                "Interface that providers of the " + service.getName() + " service must implement to handle the operations of that service.");
+                "Interface that providers of the " + service + " service must implement to handle the operations of that service.");
 
         CompositeField intHandler = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
@@ -677,12 +676,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 CompositeField serviceHandler = intHandler;
 
                 if (InteractionPatternEnum.REQUEST_OP == op.getPattern()) {
-                    opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
+                    opRetType = createOperationReturnType(file, area, service, op);
                     opRetComment = "The return value of the operation";
                 } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
                     serviceHandler = createCompositeElementsDetails(file, false, "interaction",
-                            TypeUtils.createTypeReference(area.getName(),
-                                    service.getName() + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
+                            TypeUtils.createTypeReference(area,
+                                    service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
                             false, true, "The MAL object representing the interaction in the provider.");
                 }
 
@@ -695,7 +694,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         CompositeField skel = createCompositeElementsDetails(file, false, "skeleton",
-                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false),
+                TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
                 false, true, "The skeleton to be used.");
         file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "setSkeleton", Arrays.asList(skel), null,
                 "Sets the skeleton to be used for creation of publishers.", null, null);

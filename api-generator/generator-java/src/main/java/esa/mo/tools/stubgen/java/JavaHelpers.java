@@ -49,14 +49,14 @@ public class JavaHelpers {
         this.generator = generator;
     }
 
-    public void createServiceHelperClass(File serviceFolder, AreaType area,
+    public void createServiceHelperClass(File serviceFolder, String area,
             ServiceType service, ServiceSummary summary) throws IOException {
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
 
-        file.addPackageStatement(area.getName(), service.getName(), null);
+        file.addPackageStatement(area, service.getName(), null);
         file.addClassOpenStatement(serviceName + "Helper", false, false, null,
                 null, "Helper class for " + serviceName + " service.");
 
@@ -79,7 +79,7 @@ public class JavaHelpers {
         }
 
         CompositeField serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE",
-                TypeUtils.createTypeReference(area.getName(), service.getName(), serviceName + JavaServiceInfo.SERVICE_INFO, false),
+                TypeUtils.createTypeReference(area, service.getName(), serviceName + JavaServiceInfo.SERVICE_INFO, false),
                 false, true, "Service singleton instance.");
 
         file.addClassVariable(true, false, StdStrings.PUBLIC, serviceInstVar, true, "()");

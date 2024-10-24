@@ -171,13 +171,13 @@ public class GeneratorGwt extends GeneratorJava {
     }
 
     @Override
-    protected void createServiceProviderHandler(File providerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating provider handler interface: " + service.getName());
+    protected void createServiceProviderHandler(File providerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        logger.info(" > Creating provider handler interface: " + service);
 
-        String handlerName = service.getName() + "Handler";
+        String handlerName = service + "Handler";
         InterfaceWriter file = createInterfaceFile(providerFolder, handlerName);
-        file.addPackageStatement(area.getName(), service.getName(), PROVIDER_FOLDER);
+        file.addPackageStatement(area, service, PROVIDER_FOLDER);
         file.addInterfaceOpenStatement(handlerName, null, null);
 
         CompositeField intHandlerStr = createCompositeElementsDetails(file, false,
@@ -201,7 +201,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case REQUEST_OP: {
-                    CompositeField opRetType = createOperationReturnType(file, area.getName(), service.getName(), op);
+                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
                     file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
                             StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
                     break;
@@ -209,7 +209,7 @@ public class GeneratorGwt extends GeneratorJava {
                 case INVOKE_OP: {
                     CompositeField serviceHandlerStr = createCompositeElementsDetails(
                             file, false, "interaction",
-                            TypeUtils.createTypeReference(area.getName(), service.getName()
+                            TypeUtils.createTypeReference(area, service
                                     + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
                                     + "Interaction", false), false, true,
                             "interaction The MAL object representing the interaction in the provider.");
@@ -221,7 +221,7 @@ public class GeneratorGwt extends GeneratorJava {
                 case PROGRESS_OP: {
                     CompositeField serviceHandlerStr = createCompositeElementsDetails(
                             file, false, "interaction",
-                            TypeUtils.createTypeReference(area.getName(), service.getName()
+                            TypeUtils.createTypeReference(area, service
                                     + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
                                     + "Interaction", false), false, true,
                             "interaction The MAL object representing the interaction in the provider.");

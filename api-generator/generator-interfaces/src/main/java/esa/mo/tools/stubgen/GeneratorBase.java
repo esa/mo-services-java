@@ -53,13 +53,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * The configuration of the generator.
      */
     private final GeneratorConfiguration config;
-    protected final Set<TypeKey> enumTypesSet = new TreeSet<>();
-    protected final Set<TypeKey> abstractTypesSet = new TreeSet<>();
-    protected final Map<TypeKey, Object> allTypesMap = new HashMap<>();
-    protected final Map<TypeKey, CompositeType> compositeTypesMap = new HashMap<>();
-    protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
-    protected final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
-    protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
+    private final Set<TypeKey> enumTypesSet = new TreeSet<>();
+    private final Set<TypeKey> abstractTypesSet = new TreeSet<>();
+    private final Map<TypeKey, Object> allTypesMap = new HashMap<>();
+    private final Map<TypeKey, CompositeType> compositeTypesMap = new HashMap<>();
+    private final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
+    private final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
+    private final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
     private boolean generateCOM;
 
     /**

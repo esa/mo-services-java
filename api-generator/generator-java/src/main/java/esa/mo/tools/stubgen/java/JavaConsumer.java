@@ -34,8 +34,6 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
