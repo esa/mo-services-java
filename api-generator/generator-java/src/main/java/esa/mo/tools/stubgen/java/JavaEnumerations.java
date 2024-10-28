@@ -157,6 +157,20 @@ public class JavaEnumerations {
             method.addMethodCloseStatement();
         }
 
+        CompositeField encodedType1 = generator.createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(null, null, "java.util.Map<Integer, String>", false),
+                true, true, null);
+        MethodWriter method2 = file.addMethodOpenStatement(false, false, StdStrings.PRIVATE,
+                false, false, encodedType1, "createMap", null, null,
+                "Creates a Map with the numerical values and the Enumeration.",
+                "the created Map.", null);
+        method2.addLine("java.util.Map<Integer, String> enumMap = new java.util.HashMap<>()");
+        for (EnumerationType.Item item : enumeration.getItem()) {
+            method2.addLine("enumMap.put(" + item.getNvalue() + ", \"" + item.getValue() + "\")");
+        }
+        method2.addLine("return enumMap");
+        method2.addMethodCloseStatement();
+
         // create getMALValue method
         if (generator.supportsToValue) {
             method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
