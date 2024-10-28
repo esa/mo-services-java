@@ -280,6 +280,13 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addNumberedComment(List<String> strings) throws IOException {
         if ((null != strings) && (!strings.isEmpty())) {
+            int instance = 0;
+            if (null != this.numberWriter) {
+                instance = this.numberWriter.getNextNumberingInstance();
+            }
+
+            addNumberedComment(instance, 0, strings.iterator());
+            /*
             if (strings.size() == 1) {
                 addComment(strings.get(0));
             } else {
@@ -290,6 +297,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
                 addNumberedComment(instance, 0, strings.iterator());
             }
+            */
         }
     }
 
