@@ -58,7 +58,7 @@ public class GeneratorDocx extends GeneratorDocument {
         2250, 1685, 2801, 1185, 1185
     };
     private static final int[] OPERATION_OVERVIEW_TABLE_WIDTHS = new int[]{
-        2100, 1700, 800, 4400
+        2200, 1700, 800, 4300
     };
     private static final int[] OPERATION_ERROR_TABLE_WIDTHS = new int[]{
         1500, 1500, 2500, 3500
