@@ -354,7 +354,10 @@ public class GeneratorDocx extends GeneratorDocument {
                 filenames.add("word/media/image" + j + ".png");
             }
 
-            StubUtils.createZipfile(destinationFolderName, filenames.toArray(new String[0]), "/ServiceSpec" + area.getName() + ".docx");
+            String areaNumber = String.format("%03d", area.getNumber());
+            String areaVersion = String.format("%03d", area.getVersion());
+            String filename = "/Service_Specification_area" + areaNumber + "-v" + areaVersion + "-" + area.getName() + ".docx";
+            StubUtils.createZipfile(destinationFolderName, filenames.toArray(new String[0]), filename);
         }
     }
 
