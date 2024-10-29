@@ -677,7 +677,7 @@ public class GeneratorDocx extends GeneratorDocument {
             if (subKeys != null) {
                 //drawOperationMessageDetails(docxFile, area, service, true, "SUBSCRIPTION KEYS", TypeUtils.getTypeListViaXSDAny(subKeys.getAny()));
             }
-            drawOperationMessageDetails(docxFile, area, service, false, "PUBLISH/NOTIFY",
+            drawOperationMessageDetails(docxFile, area, service, false, "PUBLISH",
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
         }
 
