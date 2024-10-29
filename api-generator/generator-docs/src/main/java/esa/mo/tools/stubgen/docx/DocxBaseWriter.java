@@ -190,7 +190,7 @@ public class DocxBaseWriter extends AbstractWriter {
             if (types.get(i).isField()) {
                 nullable = types.get(i).getFieldRef().isCanBeNull();
             }
-            buf.append("<w:r><w:t>");
+            buf.append("<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>");
             buf.append(nullable ? "Yes" : "No");
             buf.append("</w:t></w:r>");
 
@@ -206,7 +206,8 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addCell(int index, int[] widths, String text, String shade,
             boolean centered, int span, boolean vMerge, boolean vRestart) throws IOException {
-        actualAddCell(index, widths, "<w:r><w:t>" + escape(text) + "</w:t></w:r>", shade, centered, span, vMerge, vRestart);
+        String txt = "<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>" + escape(text) + "</w:t></w:r>";
+        actualAddCell(index, widths, txt, shade, centered, span, vMerge, vRestart);
     }
 
     protected void actualAddCell(int index, int[] widths, String text, String shade,
@@ -297,7 +298,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
                 addNumberedComment(instance, 0, strings.iterator());
             }
-            */
+             */
         }
     }
 
@@ -430,7 +431,7 @@ public class DocxBaseWriter extends AbstractWriter {
             String linkTo, boolean withHyperlink) throws IOException {
         boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
         StringBuilder buf = new StringBuilder();
-        buf.append("<w:r><w:t>");
+        buf.append("<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>");
         buf.append(escape(prefix));
 
         if (isObjectRef) {
@@ -443,9 +444,11 @@ public class DocxBaseWriter extends AbstractWriter {
         buf.append("</w:t></w:r>");
 
         if (withHyperlink) {
-            buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
+            buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r>");
+            buf.append("<w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
             buf.append(isObjectRef ? escape(objectRefRemoved) : escape(linkTo));
-            buf.append("\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
+            buf.append("\" </w:instrText></w:r>");
+            buf.append("<w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
         }
 
         buf.append("<w:r>");
