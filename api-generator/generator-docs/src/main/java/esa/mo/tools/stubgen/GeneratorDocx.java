@@ -940,9 +940,15 @@ public class GeneratorDocx extends GeneratorDocument {
                 String errorType = (String) err[3];
 
                 if (errorType.contains("::") || errorType.equals(defaultErrorText)) {
-                    docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, (String) err[3]);
+                    String textType = (String) err[3];
+                    // No need to append the MAL prefix as those types are very well known
+                    if (textType.contains("MAL::")) {
+                        textType = textType.replace("MAL::", "");
+                    }
+                    docxFile.addCell(2, OPERATION_ERROR_TABLE_WIDTHS, textType);
                 } else {
-                    docxFile.addCellWithHyperlink(2, OPERATION_ERROR_TABLE_WIDTHS, errorType, STD_COLOUR, "DATATYPE_" + errorType, 1);
+                    docxFile.addCellWithHyperlink(2, OPERATION_ERROR_TABLE_WIDTHS,
+                            errorType, STD_COLOUR, "DATATYPE_" + errorType, 1);
                 }
                 docxFile.addCell(3, OPERATION_ERROR_TABLE_WIDTHS, (String) err[4]);
                 docxFile.endRow();
