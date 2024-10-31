@@ -93,6 +93,19 @@ public class StringDecoder extends Decoder {
         return dSourceBuffer.buf.substring(dSourceBuffer.offset).getBytes(UTF8_CHARSET);
     }
 
+    @Override
+    public Element decodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+
+        if (enumSize < 256) {
+            return enumeration.fromOrdinal(this.decodeUOctet().getValue());
+        } else if (enumSize < 65536) {
+            return enumeration.fromOrdinal(this.decodeUShort().getValue());
+        }
+
+        throw new MALException("The Enumeration could not be decoded!");
+    }
+
     /**
      * Simple class for holding the source string and the offset into that
      * string for the next read.

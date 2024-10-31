@@ -29,6 +29,8 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.encoding.Decoder;
 import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
@@ -75,6 +77,19 @@ public abstract class BaseBinaryDecoder extends Decoder {
     @Override
     public FineTime decodeFineTime() throws MALException {
         return timeHandler.decodeFineTime((BaseBinaryBufferHolder) sourceBuffer);
+    }
+
+    @Override
+    public Element decodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+
+        if (enumSize < 256) {
+            return enumeration.fromOrdinal(this.decodeUOctet().getValue());
+        } else if (enumSize < 65536) {
+            return enumeration.fromOrdinal(this.decodeUShort().getValue());
+        }
+
+        throw new MALException("The Enumeration could not be decoded!");
     }
 
     public BaseBinaryBufferHolder getBufferHolder() {

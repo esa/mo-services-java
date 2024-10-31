@@ -409,4 +409,13 @@ public interface MALDecoder {
      * @throws MALException If an error detected during decoding.
      */
     HeterogeneousList decodeHeterogeneousList(HeterogeneousList list) throws MALException;
+
+    /**
+     * Decodes an Enumeration
+     *
+     * @param enumeration The enumeration to decode.
+     * @return The decoded enumeration.
+     * @throws MALException If an error detected during decoding.
+     */
+    public Element decodeEnumeration(Enumeration enumeration) throws MALException;
 }

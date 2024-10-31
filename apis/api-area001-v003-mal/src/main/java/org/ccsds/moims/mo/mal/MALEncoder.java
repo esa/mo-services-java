@@ -417,6 +417,14 @@ public interface MALEncoder {
     void encodeHeterogeneousList(HeterogeneousList list) throws MALException;
 
     /**
+     * Encodes an Enumeration
+     *
+     * @param enumeration The enumeration to encode.
+     * @throws MALException If an error detected during encoding.
+     */
+    public void encodeEnumeration(Enumeration enumeration) throws MALException;
+
+    /**
      * Closes the encoder
      */
     void close();
