@@ -85,9 +85,9 @@ public class GeneratorMOSDL extends Generator {
     private static final Set<String> MAL_FUNDAMENTALS = new HashSet<>(
             Arrays.asList(
                     "Blob", "Boolean", "Double", "Duration", "FineTime",
-                    "Float", "Identifier", "Integer", "Long", "Octet", "Short",
-                    "String", "Time", "UInteger", "ULong", "UOctet", "URI",
-                    "UShort", "Attribute", "Composite", "Element"
+                    "Float", "Identifier", "Integer", "Long", "ObjectRef", "Octet",
+                    "Short", "String", "Time", "UInteger", "ULong", "UOctet",
+                    "URI", "UShort", "Attribute", "Composite", "Element"
             ));
     private static final Set<String> KEYWORDS = new HashSet<>(
             Arrays.asList(
@@ -318,7 +318,6 @@ public class GeneratorMOSDL extends Generator {
                     }
 
                     // writeCOMFeatures(service, area);
-
                     if (null != service.getDataTypes()) {
                         for (Object dataType : service.getDataTypes().getCompositeOrEnumeration()) {
                             writeDataType(dataType);

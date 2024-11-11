@@ -167,11 +167,11 @@ public class MosdlSpecLoader implements SpecLoader {
         }
 
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, 
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                 int line, int charPositionInLine, String msg, RecognitionException e) {
-            String errorMsg = String.format("Syntax error in %s:%d:%d - %s", 
+            String errorMsg = String.format("Syntax error in %s:%d:%d - %s",
                     recognizer.getInputStream().getSourceName(), line, charPositionInLine, msg);
-            
+
             if (isLaxMode) {
                 errorMsg += ". Trying to recover.";
             }
@@ -193,8 +193,8 @@ public class MosdlSpecLoader implements SpecLoader {
         private static final String MAL_AREA = "MAL";
         private static final String[] MAL_FUNDAMENTALS = {
             "Blob", "Boolean", "Double", "Duration", "FineTime", "Float",
-            "Identifier", "Integer", "Long", "Octet", "Short", "String",
-            "Time", "UInteger", "ULong", "UOctet", "URI", "UShort",
+            "Identifier", "Integer", "Long", "ObjectRef", "Octet", "Short",
+            "String", "Time", "UInteger", "ULong", "UOctet", "URI", "UShort",
             "Attribute", "Composite", "Element", "Object"
         };
         private static final String DOC_TOKEN = "\"\"\"";
@@ -527,10 +527,13 @@ public class MosdlSpecLoader implements SpecLoader {
             NamedElementReferenceWithCommentType field = new NamedElementReferenceWithCommentType();
             field.setName(getId(ctx.ID()));
             String doc = getDoc(ctx.doc());
-            if (ctx.nullableType().QUEST() == null) {
+
+            MOSDLParser.NullableTypeContext nullableType = ctx.nullableType();
+
+            if (nullableType != null && ctx.nullableType().QUEST() == null) {
                 field.setCanBeNull(Boolean.FALSE);
             }
-            field.setType(getType(ctx.nullableType()));
+            field.setType(nullableType == null ? null : getType(nullableType));
 
             // fields can be fields of composite or fields of message parameter list
             if (null != currentComposite) {
@@ -1030,9 +1033,9 @@ public class MosdlSpecLoader implements SpecLoader {
         }
 
         private void conditionallyFailOnError(String msg, ParserRuleContext context) {
-            String errorMsg = String.format("Error in %s:%d:%d - %s", 
-                    context.getStart().getInputStream().getSourceName(), 
-                    context.getStart().getLine(), 
+            String errorMsg = String.format("Error in %s:%d:%d - %s",
+                    context.getStart().getInputStream().getSourceName(),
+                    context.getStart().getLine(),
                     context.getStart().getCharPositionInLine(), msg);
             if (isLaxMode) {
                 errorMsg += " Trying to recover.";
