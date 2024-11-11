@@ -23,7 +23,7 @@ package org.ccsds.mo.mpd.testbed;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.mo.mpd.testbed.backends.OneProductBackend;
+import org.ccsds.mo.mpd.testbed.backends.OneProductDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -56,7 +56,7 @@ public class OrderManagementScenario1Test {
     public static void setUpClass() throws IOException {
         System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
 
-        setUp.setUp(new OneProductBackend());
+        setUp.setUp(new OneProductDataset());
         providerService = setUp.getProviderService();
         consumerStub = setUp.getOrderManagementService();
     }
