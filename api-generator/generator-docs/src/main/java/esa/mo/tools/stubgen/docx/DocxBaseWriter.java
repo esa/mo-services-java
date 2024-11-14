@@ -429,7 +429,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public String createHyperLink(String prefix, String typeName, String postfix,
             String linkTo, boolean withHyperlink) throws IOException {
-        boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
+        boolean isObjectRef = typeName.startsWith("ObjectRef");
         StringBuilder buf = new StringBuilder();
         buf.append("<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>");
         buf.append(escape(prefix));

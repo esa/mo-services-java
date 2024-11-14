@@ -1378,7 +1378,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
         }
 
-        // create attributes
+        // Create the composite fields
         if (!compElements.isEmpty()) {
             for (CompositeField element : compElements) {
                 file.addClassVariable(false, false, StdStrings.PRIVATE, element, false, (String) null);

@@ -336,8 +336,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             return null;
         }
 
+        String typeName = type.isObjectRef() ? "ObjectRef<" + type.getName() + ">": type.getName();
         return createElementType(type.getArea(), type.getService(),
-                isStructure ? config.getStructureFolder() : null, type.getName());
+                isStructure ? config.getStructureFolder() : null, typeName);
     }
 
     @Override
@@ -372,7 +373,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         return type;
     }
 
-    public static boolean isObjectRef(String type) {
+    public static boolean isObjectRef(TypeReference elementType) {
+        if (elementType.isObjectRef()) {
+            return true;
+        }
+
+        // The code below is to allow compatibility with the old style. Example: ObjectRef(xyz)
+        String type = elementType.getName();
         return !extractTypeFromObjectRef(type).equals(type);
     }
 

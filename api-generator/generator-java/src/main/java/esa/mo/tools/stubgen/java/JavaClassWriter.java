@@ -113,18 +113,18 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addClassVariableDeprecated(boolean isStatic, boolean isFinal, String scope,
-            CompositeField arg, boolean isObject, String initialValue) throws IOException {
-        addClassVariable(true, isStatic, isFinal, scope, arg, isObject, false, initialValue);
+            CompositeField field, boolean isObject, String initialValue) throws IOException {
+        addClassVariable(true, isStatic, isFinal, scope, field, isObject, false, initialValue);
     }
 
     @Override
     public void addClassVariable(boolean isStatic, boolean isFinal, String scope,
-            CompositeField arg, boolean isObject, String initialValue) throws IOException {
-        addClassVariable(false, isStatic, isFinal, scope, arg, isObject, false, initialValue);
+            CompositeField field, boolean isObject, String initialValue) throws IOException {
+        addClassVariable(false, isStatic, isFinal, scope, field, isObject, false, initialValue);
     }
 
     @Override
-    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField arg,
+    public void addClassVariable(boolean isStatic, boolean isFinal, String scope, CompositeField field,
             boolean isObject, boolean isArray, List<String> initialValues) throws IOException {
         StringBuilder iniVal = new StringBuilder();
 
@@ -137,12 +137,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         }
 
         String val = (isArray) ? iniVal.toString() : "(" + iniVal.toString() + ")";
-        addClassVariable(false, isStatic, isFinal, scope, arg, isObject, isArray, val);
+        addClassVariable(false, isStatic, isFinal, scope, field, isObject, isArray, val);
     }
 
     protected void addClassVariable(boolean isDeprecated, boolean isStatic, boolean isFinal, String scope,
-            CompositeField arg, boolean isObject, boolean isArray, String initialValue) throws IOException {
-        addMultilineComment(1, false, arg.getComment(), false);
+            CompositeField field, boolean isObject, boolean isArray, String initialValue) throws IOException {
+        addMultilineComment(1, false, field.getComment(), false);
 
         StringBuilder buf = new StringBuilder(scope);
         buf.append(" ");
@@ -152,19 +152,19 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
         if (isFinal) {
             buf.append("final ");
         }
-        String ltype = createLocalType(arg);
+        String ltype = createLocalType(field);
         buf.append(ltype);
         if (isArray) {
             buf.append("[]");
         }
         buf.append(" ");
-        buf.append(arg.getFieldName());
+        buf.append(field.getFieldName());
 
         if (initialValue != null) {
             if (isArray) {
                 buf.append(" = {").append(initialValue).append("}");
-            } else if (generator.isNativeType(arg.getTypeName())) {
-                NativeTypeDetails dets = generator.getNativeType(arg.getTypeName());
+            } else if (generator.isNativeType(field.getTypeName())) {
+                NativeTypeDetails dets = generator.getNativeType(field.getTypeName());
                 if (dets.isObject()) {
                     buf.append(" = new ").append(ltype).append(initialValue);
                 } else {

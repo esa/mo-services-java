@@ -512,6 +512,7 @@
       <xsd:documentation xml:lang="en">Allows another element in the specification to be referenced, if the area or the service attributes are missing then the area and/or service of the refering element shall be assumed.</xsd:documentation>
     </xsd:annotation>
     <xsd:attribute name="list" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="objectRef" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="area" type="xsd:NCName" use="required"/>
     <xsd:attribute name="service" type="xsd:NCName" use="optional"/>
     <xsd:attribute name="name" type="xsd:NCName" use="required"/>

@@ -88,7 +88,7 @@ public class TypeUtils {
                     fqName + ".SHORT_FORM", argVersionStr, fieldNullability);
         }
 
-        if (GeneratorBase.isObjectRef(argTypeStr)) {
+        if (GeneratorBase.isObjectRef(tr)) {
             return new FieldInfo(tr, fieldName, fieldComment, tr.getName() + "List",
                     "org.ccsds.moims.mo.mal.structures.ObjectRefList", false,
                     getTypeShortForm(tiSource, tr, "ObjectRefList"),
