@@ -33,6 +33,8 @@ import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
 import org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDeliveryInheritanceSkeleton;
+import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
+import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 
 /**
  *
@@ -46,7 +48,11 @@ public class SetUpProvidersAndConsumers {
     private static OrderManagementInheritanceSkeleton orderManagementProviderService = null;
     private static OrderManagementStub orderManagementConsumerStub = null;
 
-    public void setUp(ProductRetrievalBackend backend) throws IOException {
+    private static ProductRetrievalInheritanceSkeleton productRetrievalProviderService = null;
+    private static ProductRetrievalStub productRetrievalConsumerStub = null;
+
+    public void setUp(ProductRetrievalBackend backend, boolean startProductOrderDelivery,
+            boolean startOrderManagement, boolean startProductRetrieval) throws IOException {
         HelperMisc.loadPropertiesFile();
         ConnectionProvider.resetURILinksFile(); // Resets the providerURIs.properties file
 
@@ -70,23 +76,45 @@ public class SetUpProvidersAndConsumers {
                         + "Please select the correct Maven profile before running the test!");
             }
 
-            //factoryClassForProvider = "esa.mo.services.mpd.util.ESAOrderManagementServicesFactory";
-            Class factoryClass = Class.forName(factoryClassForProvider);
-            MPDServicesFactory factoryProvider = (MPDServicesFactory) factoryClass.newInstance();
-
-            factoryProvider.createProviderProductOrderDelivery(backend);
-            orderManagementProviderService = factoryProvider.createProviderOrderManagement();
-
-            if (orderManagementProviderService == null) {
-                throw new MALException("The provider was not created!");
-            }
-
-            SingleConnectionDetails details = orderManagementProviderService.getConnection().getConnectionDetails();
-
+            // Provider Factory:
+            Class factoryClassProvider = Class.forName(factoryClassForProvider);
+            MPDServicesFactory factoryProvider = (MPDServicesFactory) factoryClassProvider.newInstance();
+            // Consumer Factory:
             Class factoryClassConsumer = Class.forName(factoryClassForConsumer);
             MPDServicesFactory factoryConsumer = (MPDServicesFactory) factoryClassConsumer.newInstance();
-            orderManagementConsumerStub = factoryConsumer.createConsumerStubOrderManagement(details);
 
+            if (startProductOrderDelivery) {
+                productOrderDeliveryProviderService = factoryProvider.createProviderProductOrderDelivery(backend);
+
+                if (productOrderDeliveryProviderService == null) {
+                    throw new MALException("The Product Order Delivery provider was not created!");
+                }
+
+                SingleConnectionDetails details = productOrderDeliveryProviderService.getConnection().getConnectionDetails();
+                productOrderDeliveryConsumerStub = factoryConsumer.createConsumerStubProductOrderDelivery(details);
+            }
+
+            if (startOrderManagement) {
+                orderManagementProviderService = factoryProvider.createProviderOrderManagement();
+
+                if (orderManagementProviderService == null) {
+                    throw new MALException("The Order Management provider was not created!");
+                }
+
+                SingleConnectionDetails details = orderManagementProviderService.getConnection().getConnectionDetails();
+                orderManagementConsumerStub = factoryConsumer.createConsumerStubOrderManagement(details);
+            }
+
+            if (startProductRetrieval) {
+                productRetrievalProviderService = factoryProvider.createProviderProductRetrieval(backend);
+
+                if (productRetrievalProviderService == null) {
+                    throw new MALException("The Product Retrieval provider was not created!");
+                }
+
+                SingleConnectionDetails details = productRetrievalProviderService.getConnection().getConnectionDetails();
+                productRetrievalConsumerStub = factoryConsumer.createConsumerStubProductRetrieval(details);
+            }
         } catch (InstantiationException ex) {
             Logger.getLogger(SetUpProvidersAndConsumers.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -96,15 +124,30 @@ public class SetUpProvidersAndConsumers {
         } catch (MALException ex) {
             Logger.getLogger(SetUpProvidersAndConsumers.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
-    public OrderManagementInheritanceSkeleton getProviderService() {
+    public ProductOrderDeliveryInheritanceSkeleton getProductOrderDeliveryProvider() {
+        return productOrderDeliveryProviderService;
+    }
+
+    public ProductOrderDeliveryStub getProductOrderConsumer() {
+        return productOrderDeliveryConsumerStub;
+    }
+
+    public OrderManagementInheritanceSkeleton getOrderManagementProvider() {
         return orderManagementProviderService;
     }
 
-    public OrderManagementStub getOrderManagementService() {
+    public OrderManagementStub getOrderManagementConsumer() {
         return orderManagementConsumerStub;
+    }
+
+    public ProductRetrievalInheritanceSkeleton getProductRetrievalProvider() {
+        return productRetrievalProviderService;
+    }
+
+    public ProductRetrievalStub getProductRetrievalConsumer() {
+        return productRetrievalConsumerStub;
     }
 
     public void tearDown() throws IOException {

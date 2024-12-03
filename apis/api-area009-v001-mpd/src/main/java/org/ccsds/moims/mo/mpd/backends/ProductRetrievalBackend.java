@@ -31,11 +31,11 @@ import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
 public interface ProductRetrievalBackend {
 
     /**
-     * Retrieves the metadata for all available Products.
+     * Retrieves the metadata from all available Products.
      *
-     * @return The metadata of all available products.
+     * @return The metadata from all available products.
      */
-    public ProductSummaryList getMetadataForAllProducts();
+    public ProductSummaryList getMetadataFromAllProducts();
 
     /**
      * Returns the corresponding product for the given productRef or NULL if not

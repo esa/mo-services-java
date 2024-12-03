@@ -20,7 +20,6 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
-import java.util.HashMap;
 import org.ccsds.moims.mo.mal.structures.AttributeType;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -31,29 +30,22 @@ import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.structures.ParameterDef;
 import org.ccsds.moims.mo.mpd.structures.ParameterDefList;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductSummary;
-import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
 /**
  * A dummy backend in order to try out the provider.
  */
-public class TMPacketsDataset implements ProductRetrievalBackend {
+public class TMPacketsDataset extends Dataset {
 
     private final static Time APID100_TIME_START = Time.now();
     private final static Time APID100_TIME_END = Time.now();
     private final static Time APID200_TIME_START = Time.now();
     private final static Time APID200_TIME_END = Time.now();
-
-    private final HashMap<ObjectRef, ProductType> productTypes = new HashMap();
-    private final HashMap<ObjectRef, Product> products = new HashMap();
-    private final HashMap<ObjectRef, ProductSummary> metadatas = new HashMap();
-    private final ProductSummaryList allMetadatas = new ProductSummaryList();
 
     public TMPacketsDataset() {
         IdentifierList domain = new IdentifierList();
@@ -85,7 +77,6 @@ public class TMPacketsDataset implements ProductRetrievalBackend {
         ProductSummary metadata1 = new ProductSummary(productTypeRefTM, ref1, Time.now(), null, timeWindow, parameters1, "description");
         products.put(ref1, product1);
         metadatas.put(ref1, metadata1);
-        allMetadatas.add(metadata1);
 
         // product2
         ObjectIdentity productId2 = new ObjectIdentity(domain, new Identifier("tmData2"), new UInteger(1));
@@ -98,22 +89,5 @@ public class TMPacketsDataset implements ProductRetrievalBackend {
         ProductSummary metadata2 = new ProductSummary(productTypeRefTM, ref2, Time.now(), null, timeWindow, parameters2, "description");
         products.put(ref2, product2);
         metadatas.put(ref2, metadata2);
-        allMetadatas.add(metadata2);
     }
-
-    @Override
-    public ProductSummaryList getMetadataForAllProducts() {
-        return allMetadatas;
-    }
-
-    @Override
-    public Product getProduct(ObjectRef productRef) {
-        return products.get(productRef);
-    }
-
-    @Override
-    public ProductSummary getMetadata(ObjectRef productRef) {
-        return metadatas.get(productRef);
-    }
-
 }

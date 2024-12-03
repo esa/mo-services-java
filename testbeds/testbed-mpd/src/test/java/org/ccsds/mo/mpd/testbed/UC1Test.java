@@ -26,13 +26,22 @@ import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.OneProductDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
-import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
-import org.ccsds.moims.mo.mpd.structures.StandingOrder;
-import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
+import org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDeliveryInheritanceSkeleton;
+import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
+import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
+import org.ccsds.moims.mo.mpd.structures.ParameterFilterList;
+import org.ccsds.moims.mo.mpd.structures.ProductFilter;
+import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
+import org.ccsds.moims.mo.mpd.structures.ProductType;
+import org.ccsds.moims.mo.mpd.structures.TimeWindow;
+import org.ccsds.moims.mo.mpd.structures.ValueSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,22 +52,31 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class OrderManagementScenario1Test {
+public class UC1Test {
 
     private static SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
-    private static OrderManagementInheritanceSkeleton providerService;
-    private static OrderManagementStub consumerStub;
+    private static OneProductDataset backend = null;
+    private static OrderManagementInheritanceSkeleton providerOM;
+    private static OrderManagementStub consumerOM;
+    private static ProductOrderDeliveryInheritanceSkeleton providerPOD = null;
+    private static ProductOrderDeliveryStub consumerPOD = null;
+    private static ProductRetrievalInheritanceSkeleton providerPR = null;
+    private static ProductRetrievalStub consumerPR = null;
 
-    public OrderManagementScenario1Test() {
+    public UC1Test() {
     }
 
     @BeforeClass
     public static void setUpClass() throws IOException {
         System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
-
-        setUp.setUp(new OneProductDataset(), true, true, false);
-        providerService = setUp.getOrderManagementProvider();
-        consumerStub = setUp.getOrderManagementConsumer();
+        backend = new OneProductDataset();
+        setUp.setUp(backend, true, true, true);
+        providerOM = setUp.getOrderManagementProvider();
+        consumerOM = setUp.getOrderManagementConsumer();
+        providerPOD = setUp.getProductOrderDeliveryProvider();
+        consumerPOD = setUp.getProductOrderConsumer();
+        providerPR = setUp.getProductRetrievalProvider();
+        consumerPR = setUp.getProductRetrievalConsumer();
     }
 
     @AfterClass
@@ -70,7 +88,7 @@ public class OrderManagementScenario1Test {
             // Initialize the Order Management service
             setUp.tearDown();
         } catch (IOException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(
+            Logger.getLogger(UC1Test.class.getName()).log(
                     Level.SEVERE, "The tearDown() operation failed!", ex);
         }
     }
@@ -86,67 +104,29 @@ public class OrderManagementScenario1Test {
     }
 
     /**
-     * Test Case 1 - Lists the available orders. There should be zero standing
-     * orders.
+     * Test Case 1 - Match APID.
      */
     @Test
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
 
-        Identifier user = new Identifier("john.doe");
+        ObjectRef<ProductType> productType = backend.productTypeRef1;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
-        domain.add(new Identifier("*"));
+        domain.add(new Identifier("myDomain"));
 
+        ParameterFilterList parameterFilter = new ParameterFilterList();
+        AttributeList values = new AttributeList();
+        values.add(new Identifier("100"));
+        parameterFilter.add(new ValueSet(new Identifier("APID"), true, values));
+
+        ProductFilter productFilter = new ProductFilter(productType, domain, null, parameterFilter);
+
+        TimeWindow creationDate = null;
+        TimeWindow timeWindow = null;
         try {
-            StandingOrderList standingOrders = consumerStub.listStandingOrders(user, domain);
-            int size = standingOrders.size();
-            assertEquals(0, size);
-        } catch (MALInteractionException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
-            fail(ex.toString());
-        } catch (MALException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
-            fail(ex.toString());
-        }
-    }
-
-    /**
-     * Test Case 2 - Submits a standing order, then requests the list of
-     * standing orders. Checks if there is one standing order, and if the data
-     * matches what was submitted.
-     */
-    @Test
-    public void testCase_2() {
-        try {
-            System.out.println("Running: testCase_2");
-
-            // Input Data
-            Identifier user = new Identifier("User");
-            DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE;
-            String comments = "A comment";
-            StandingOrder orderDetails = new StandingOrder(user, dMethod, comments);
-
-            // Submit a Standing Order
-            Identifier id = consumerStub.submitStandingOrder(orderDetails);
-            assertNotEquals(null, id);
-
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
-
-            // Request the list of standing orders
-            IdentifierList domain = new IdentifierList();
-            domain.add(new Identifier("*"));
-            StandingOrderList standingOrders = consumerStub.listStandingOrders(new Identifier("*"), domain);
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
-                    "The returned list of standing orders is: {0}", standingOrders.toString());
-
-            int size = standingOrders.size();
+            ProductSummaryList list = consumerPR.listProducts(productFilter, creationDate, timeWindow);
+            int size = list.size();
             assertEquals(1, size);
-
-            StandingOrder standingOrder = standingOrders.get(0);
-            assertEquals(user, standingOrder.getUser());
-            assertEquals(comments, standingOrder.getComments());
-            assertEquals(dMethod, standingOrder.getDeliveryMethod());
         } catch (MALInteractionException ex) {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -154,5 +134,7 @@ public class OrderManagementScenario1Test {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
+
+        // The rest of the code is TBD!!!
     }
 }

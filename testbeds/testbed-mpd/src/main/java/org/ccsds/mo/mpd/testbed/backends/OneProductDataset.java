@@ -20,7 +20,6 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
-import java.util.HashMap;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -28,22 +27,17 @@ import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductSummary;
-import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
 /**
  * A dummy backend in order to try out the provider.
  */
-public class OneProductDataset implements ProductRetrievalBackend {
+public class OneProductDataset extends Dataset {
 
-    private final HashMap<ObjectRef, ProductType> productTypes = new HashMap();
-    private final HashMap<ObjectRef, Product> products = new HashMap();
-    private final HashMap<ObjectRef, ProductSummary> metadatas = new HashMap();
-    private final ProductSummaryList allMetadatas = new ProductSummaryList();
+    public ObjectRef<ProductType> productTypeRef1 = null;
 
     public OneProductDataset() {
         IdentifierList domain = new IdentifierList();
@@ -54,7 +48,7 @@ public class OneProductDataset implements ProductRetrievalBackend {
         // ---------------------------------------------------
         ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("image.eo.rgb"), new UInteger(1));
         ProductType type1 = new ProductType(typeId1, "An Earth Observation RGB image.");
-        ObjectRef<ProductType> productTypeRef1 = type1.getObjectRef();
+        productTypeRef1 = type1.getObjectRef();
         productTypes.put(productTypeRef1, type1);
 
         // ---------------------------------------------------
@@ -69,22 +63,5 @@ public class OneProductDataset implements ProductRetrievalBackend {
 
         products.put(ref, product);
         metadatas.put(ref, metadata);
-        allMetadatas.add(metadata);
     }
-
-    @Override
-    public ProductSummaryList getMetadataForAllProducts() {
-        return allMetadatas;
-    }
-
-    @Override
-    public Product getProduct(ObjectRef productRef) {
-        return products.get(productRef);
-    }
-
-    @Override
-    public ProductSummary getMetadata(ObjectRef productRef) {
-        return metadatas.get(productRef);
-    }
-
 }

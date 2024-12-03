@@ -73,7 +73,7 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
     }
 
     @Override
-    public ProductSummaryList getMetadataForAllProducts() {
+    public ProductSummaryList getMetadataFromAllProducts() {
         return allMetadatas;
     }
 
