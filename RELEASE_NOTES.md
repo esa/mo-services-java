@@ -4,7 +4,10 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 11.1 (TBD)
+### Version 11.2 (2025)
+* TBD
+
+### Version 11.1 (05 December 2024)
 * Adds dedicated yaml workflows for testing the MAL with tcpip, http, and zmtp
 * Merges the xml-jaxb project into the generator-interfaces project
 * Improves the Enumerations auto-generated code
