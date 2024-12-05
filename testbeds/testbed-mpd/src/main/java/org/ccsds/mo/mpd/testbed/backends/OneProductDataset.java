@@ -53,13 +53,12 @@ public class OneProductDataset extends Dataset {
         // Products
         // ---------------------------------------------------
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
-        ObjectIdentity productId = new ObjectIdentity(domain, new Identifier("key1"), new UInteger(1));
-        Product product = new Product(productId, productTypeRef1,
-                Time.now(), timeWindow, "description", new Blob());
-        ObjectRef<Product> ref = product.getObjectRef();
-        ProductMetadata metadata = new ProductMetadata();
+        ObjectRef<Product> ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
+        Blob productBody = new Blob();
+        ProductMetadata metadata = new ProductMetadata(productTypeRef1, ref,
+                Time.now(), timeWindow, "description");
 
-        products.put(ref, product);
+        productBodies.put(ref, productBody);
         metadatas.put(ref, metadata);
     }
 }

@@ -179,7 +179,7 @@ public class UC1Test {
     }
 
     private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow timeWindow) {
-        ObjectRef<ProductType> productType = backend.getTMPacketsProductRef();  //  productType=typeTMPacket
+        ObjectRef<ProductType> productType = backend.productTypeRefTM;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
 

@@ -21,6 +21,8 @@
 package org.ccsds.mo.mpd.testbed.backends;
 
 import java.util.HashMap;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.structures.Product;
@@ -34,7 +36,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductType;
 public abstract class Dataset implements ProductRetrievalBackend {
 
     protected final HashMap<ObjectRef, ProductType> productTypes = new HashMap();
-    protected final HashMap<ObjectRef, Product> products = new HashMap();
+    protected final HashMap<ObjectRef, Blob> productBodies = new HashMap();
     protected final HashMap<ObjectRef, ProductMetadata> metadatas = new HashMap();
     private ProductMetadataList allMetadatas = null;
 
@@ -52,12 +54,24 @@ public abstract class Dataset implements ProductRetrievalBackend {
 
     @Override
     public Product getProduct(ObjectRef productRef) {
-        return products.get(productRef);
+        ProductMetadata metadata = getMetadata(productRef);
+        Blob productBody = productBodies.get(productRef);
+        ObjectIdentity objId = new ObjectIdentity(productRef.getDomain(), productRef.getKey(), productRef.getObjectVersion());
+
+        return new Product(
+                objId,
+                metadata.getProductType(),
+                metadata.getCreationDate(),
+                metadata.getSource(),
+                metadata.getTimeWindow(),
+                metadata.getParameters(),
+                metadata.getDescription(),
+                productBody
+        );
     }
 
     @Override
     public ProductMetadata getMetadata(ObjectRef productRef) {
         return metadatas.get(productRef);
     }
-
 }

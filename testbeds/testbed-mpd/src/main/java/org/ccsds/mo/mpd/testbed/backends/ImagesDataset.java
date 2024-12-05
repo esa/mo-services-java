@@ -67,26 +67,20 @@ public class ImagesDataset extends Dataset {
         NamedValueList parameters1 = new NamedValueList();
         parameters1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
         parameters1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
-        ObjectIdentity productId1 = new ObjectIdentity(domain, new Identifier("imageData1"), new UInteger(1));
-        Product product1 = new Product(productId1, productTypeRef1,
-                Time.now(), null, timeWindow, parameters1, "description",
-                new Blob(new byte[]{0x01, 0x02, 0x03}));
-        ObjectRef<Product> ref1 = product1.getObjectRef();
+        Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
+        ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
         ProductMetadata metadata1 = new ProductMetadata(productTypeRef1, ref1, Time.now(), null, timeWindow, parameters1, "description");
-        products.put(ref1, product1);
+        productBodies.put(ref1, productBody1);
         metadatas.put(ref1, metadata1);
 
         // product2
         NamedValueList parameters2 = new NamedValueList();
         parameters2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
         parameters2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
-        ObjectIdentity productId2 = new ObjectIdentity(domain, new Identifier("imageData2"), new UInteger(1));
-        Product product2 = new Product(productId2, productTypeRef1,
-                Time.now(), null, timeWindow, parameters1, "description",
-                new Blob(new byte[]{0x09, 0x08, 0x07}));
-        ObjectRef<Product> ref2 = product2.getObjectRef();
+        ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
+        Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(productTypeRef1, ref2, Time.now(), null, timeWindow, parameters2, "description");
-        products.put(ref2, product2);
+        productBodies.put(ref2, productBody2);
         metadatas.put(ref2, metadata2);
     }
 }

@@ -46,7 +46,7 @@ public class TMPacketsDataset extends Dataset {
     public final static Time APID100_TIME_END = Time.now();
     public final static Time APID200_TIME_START = Time.now();
     public final static Time APID200_TIME_END = Time.now();
-    private final ObjectRef<ProductType> productTypeRefTM;
+    public final ObjectRef<ProductType> productTypeRefTM;
 
     public TMPacketsDataset() {
         IdentifierList domain = new IdentifierList();
@@ -70,30 +70,20 @@ public class TMPacketsDataset extends Dataset {
         // product1
         NamedValueList parameters1 = new NamedValueList();
         parameters1.add(new NamedValue(new Identifier("APID"), new UInteger(100)));
-        ObjectIdentity productId1 = new ObjectIdentity(domain, new Identifier("tmData1"), new UInteger(1));
-        Product product1 = new Product(productId1, productTypeRefTM,
-                Time.now(), null, timeWindow, parameters1, "description",
-                new Blob(new byte[]{0x01, 0x02, 0x03}));
-        ObjectRef<Product> ref1 = product1.getObjectRef();
+        ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
+        Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ProductMetadata metadata1 = new ProductMetadata(productTypeRefTM, ref1, Time.now(), null, timeWindow, parameters1, "description");
-        products.put(ref1, product1);
+        productBodies.put(ref1, productBody1);
         metadatas.put(ref1, metadata1);
 
         // product2
         NamedValueList parameters2 = new NamedValueList();
         parameters2.add(new NamedValue(new Identifier("APID"), new UInteger(200)));
-        ObjectIdentity productId2 = new ObjectIdentity(domain, new Identifier("tmData2"), new UInteger(1));
-        Product product2 = new Product(productId2, productTypeRefTM,
-                Time.now(), null, timeWindow, parameters2, "description",
-                new Blob(new byte[]{0x09, 0x08, 0x07}));
-        ObjectRef<Product> ref2 = product2.getObjectRef();
+        ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData2"), new UInteger(1));
+        Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(productTypeRefTM, ref2, Time.now(), null, timeWindow, parameters2, "description");
-        products.put(ref2, product2);
+        productBodies.put(ref2, productBody2);
         metadatas.put(ref2, metadata2);
     }
 
-    public ObjectRef<ProductType> getTMPacketsProductRef() {
-        return productTypeRefTM;
-
-    }
 }
