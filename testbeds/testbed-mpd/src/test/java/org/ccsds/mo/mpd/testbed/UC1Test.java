@@ -68,7 +68,7 @@ public class UC1Test {
 
     private static final int TIMEOUT = 1000; // In milliseconds
     private static final String BUMPER = "-------- Running New Test --------";
-    private static SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
+    private static final SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
     private static TMPacketsDataset backend = null;
     private static OrderManagementInheritanceSkeleton providerOM;
     private static OrderManagementStub consumerOM;
@@ -126,7 +126,7 @@ public class UC1Test {
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
         UInteger apidValue = new UInteger(100);
-        testGeneric(apidValue, 1);
+        test(apidValue, 1);
     }
 
     /**
@@ -136,7 +136,7 @@ public class UC1Test {
     public void testCase_2() {
         System.out.println("Running: testCase_2()");
         UInteger apidValue = new UInteger(200);
-        testGeneric(apidValue, 1);
+        test(apidValue, 1);
     }
 
     /**
@@ -146,7 +146,7 @@ public class UC1Test {
     public void testCase_3() {
         System.out.println("Running: testCase_3()");
         UInteger apidValue = new UInteger(300);
-        testGeneric(apidValue, 0);
+        test(apidValue, 0);
     }
 
     /**
@@ -156,10 +156,29 @@ public class UC1Test {
     public void testCase_4() {
         System.out.println("Running: testCase_4()");
         UInteger apidValue = null;
-        testGeneric(apidValue, 2);
+        test(apidValue, 2);
     }
 
-    private void testGeneric(UInteger apidValue, int expectedNumberOfResults) {
+    /**
+     * Test Case 5 - Match APID = 100 and timeWindow = [APID100_TIME_START,
+     * APID100_TIME_END].
+     */
+    @Test
+    public void testCase_5() {
+        System.out.println("Running: testCase_5()");
+        // TBD
+        /*
+        UInteger apidValue = new UInteger(100);
+        TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        testWithTimeWindow(apidValue, 1, timeWindow);
+         */
+    }
+
+    private void test(UInteger apidValue, int expectedNumberOfResults) {
+        testWithTimeWindow(apidValue, expectedNumberOfResults, null);
+    }
+
+    private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow timeWindow) {
         ObjectRef<ProductType> productType = backend.getTMPacketsProductRef();  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -179,7 +198,6 @@ public class UC1Test {
 
         try {
             TimeWindow creationDate = null;
-            TimeWindow timeWindow = null;
             list = consumerPR.listProducts(productFilter, creationDate, timeWindow);
             int size = list.size();
             assertEquals(expectedNumberOfResults, size);

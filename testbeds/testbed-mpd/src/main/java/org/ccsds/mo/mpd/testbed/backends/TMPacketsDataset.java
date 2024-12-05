@@ -42,10 +42,10 @@ import org.ccsds.moims.mo.mpd.structures.TimeWindow;
  */
 public class TMPacketsDataset extends Dataset {
 
-    private final static Time APID100_TIME_START = Time.now();
-    private final static Time APID100_TIME_END = Time.now();
-    private final static Time APID200_TIME_START = Time.now();
-    private final static Time APID200_TIME_END = Time.now();
+    public final static Time APID100_TIME_START = Time.now();
+    public final static Time APID100_TIME_END = Time.now();
+    public final static Time APID200_TIME_START = Time.now();
+    public final static Time APID200_TIME_END = Time.now();
     private final ObjectRef<ProductType> productTypeRefTM;
 
     public TMPacketsDataset() {
