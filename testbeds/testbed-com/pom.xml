@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.1</version>
+        <version>11.2-SNAPSHOT</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-com</artifactId>
     <packaging>jar</packaging>
-    <version>11.1</version>
+    <version>11.2-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed for COM</name>
 
     <organization>
@@ -80,9 +80,9 @@
   
     <properties>
         <fitnesse.toplevel.test>ComTests</fitnesse.toplevel.test>
-        <ccsds.testbed.com.version>11.1</ccsds.testbed.com.version>
-        <esa.com.test_api.version>11.1</esa.com.test_api.version>
-        <esa.com.test_provider.version>11.1</esa.com.test_provider.version>
+        <ccsds.testbed.com.version>11.2-SNAPSHOT</ccsds.testbed.com.version>
+        <esa.com.test_api.version>11.2-SNAPSHOT</esa.com.test_api.version>
+        <esa.com.test_provider.version>11.2-SNAPSHOT</esa.com.test_provider.version>
         <cnes.com.test_api.version>${cnes.version}</cnes.com.test_api.version>
         <joram.amqp.version>0.4</joram.amqp.version>
     </properties>
