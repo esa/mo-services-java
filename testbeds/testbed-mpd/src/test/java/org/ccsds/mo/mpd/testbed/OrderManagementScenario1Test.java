@@ -54,6 +54,7 @@ public class OrderManagementScenario1Test {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
+        System.out.println("-----------------------------------------------------------------------------");
         System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
 
         setUp.setUp(new OneProductDataset(), true, true, false);

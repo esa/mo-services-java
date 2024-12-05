@@ -21,17 +21,23 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.TMPacketsDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
@@ -40,7 +46,9 @@ import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.structures.ParameterFilterList;
+import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
+import org.ccsds.moims.mo.mpd.structures.ProductList;
 import org.ccsds.moims.mo.mpd.structures.ProductSummary;
 import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
@@ -58,6 +66,8 @@ import static org.junit.Assert.*;
  */
 public class UC1Test {
 
+    private static final int TIMEOUT = 1000; // In milliseconds
+    private static final String BUMPER = "-------- Running New Test --------";
     private static SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
     private static TMPacketsDataset backend = null;
     private static OrderManagementInheritanceSkeleton providerOM;
@@ -72,6 +82,7 @@ public class UC1Test {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
+        System.out.println("-----------------------------------------------------------------------------");
         System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
         backend = new TMPacketsDataset();
         setUp.setUp(backend, true, true, true);
@@ -99,6 +110,7 @@ public class UC1Test {
 
     @Before
     public void setUp() {
+        System.out.println(BUMPER);
         System.out.println("Entered: setUp()");
     }
 
@@ -108,20 +120,59 @@ public class UC1Test {
     }
 
     /**
-     * Test Case 1 - Match APID.
+     * Test Case 1 - Match APID = 100.
      */
     @Test
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
+        UInteger apidValue = new UInteger(100);
+        testGeneric(apidValue, 1);
+    }
 
+    /**
+     * Test Case 2 - Match APID = 200.
+     */
+    @Test
+    public void testCase_2() {
+        System.out.println("Running: testCase_2()");
+        UInteger apidValue = new UInteger(200);
+        testGeneric(apidValue, 1);
+    }
+
+    /**
+     * Test Case 3 - Match APID = 300.
+     */
+    @Test
+    public void testCase_3() {
+        System.out.println("Running: testCase_3()");
+        UInteger apidValue = new UInteger(300);
+        testGeneric(apidValue, 0);
+    }
+
+    /**
+     * Test Case 4 - parameterFilter = NULL.
+     */
+    @Test
+    public void testCase_4() {
+        System.out.println("Running: testCase_4()");
+        UInteger apidValue = null;
+        testGeneric(apidValue, 2);
+    }
+
+    private void testGeneric(UInteger apidValue, int expectedNumberOfResults) {
         ObjectRef<ProductType> productType = backend.getTMPacketsProductRef();  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
 
-        ParameterFilterList parameterFilter = new ParameterFilterList();
-        AttributeList values = new AttributeList();
-        values.add(new UInteger(100));
-        parameterFilter.add(new ValueSet(new Identifier("APID"), true, values));
+        ParameterFilterList parameterFilter = null;
+
+        // When the apidValue is NULL, then the filtering is off!
+        if (apidValue != null) {
+            parameterFilter = new ParameterFilterList();
+            AttributeList values = new AttributeList();
+            values.add(apidValue);
+            parameterFilter.add(new ValueSet(new Identifier("APID"), true, values));
+        }
 
         ProductFilter productFilter = new ProductFilter(productType, domain, null, parameterFilter);
         ProductSummaryList list = null;
@@ -131,7 +182,7 @@ public class UC1Test {
             TimeWindow timeWindow = null;
             list = consumerPR.listProducts(productFilter, creationDate, timeWindow);
             int size = list.size();
-            assertEquals(1, size);
+            assertEquals(expectedNumberOfResults, size);
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -142,6 +193,7 @@ public class UC1Test {
 
         if (list == null) {
             fail("The list cannot be null");
+            return;
         }
 
         // Prepare the ObjectRefList with the returned data from the previous step
@@ -152,47 +204,105 @@ public class UC1Test {
         }
 
         try {
-            consumerPR.getProducts(productRefs, new ProductRetrievalAdapter() {
+            ProductList returnedProducts = new ProductList();
+            long startTime = System.currentTimeMillis();
+            final AtomicBoolean ackReceived = new AtomicBoolean(false);
+            final AtomicBoolean rspReceived = new AtomicBoolean(false);
+            consumerPR.asyncGetProducts(productRefs, new ProductRetrievalAdapter() {
 
                 @Override
-                public void getProductsAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-                        java.util.Map qosProperties) {
+                public void getProductsAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
+                    long duration = System.currentTimeMillis() - startTime;
+                    System.out.println("ACK received in: " + duration + " ms");
+                    ackReceived.set(true);
                 }
 
                 @Override
-                public void getProductsUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-                        org.ccsds.moims.mo.mpd.structures.Product product,
-                        java.util.Map qosProperties) {
+                public void getProductsUpdateReceived(MALMessageHeader msgHeader, Product product, Map qosProperties) {
+                    returnedProducts.add(product);
                 }
 
                 @Override
-                public void getProductsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-                        java.util.Map qosProperties) {
+                public void getProductsResponseReceived(MALMessageHeader msgHeader, Map qosProperties) {
+                    long duration = System.currentTimeMillis() - startTime;
+                    System.out.println("RESPONSE received in: " + duration + " ms");
+                    rspReceived.set(true);
                 }
 
                 @Override
-                public void getProductsAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-                        org.ccsds.moims.mo.mal.MOErrorException error,
-                        java.util.Map qosProperties) {
+                public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
                 }
 
                 @Override
-                public void getProductsUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-                        org.ccsds.moims.mo.mal.MOErrorException error,
-                        java.util.Map qosProperties) {
+                public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
+                        MOErrorException error, Map qosProperties) {
+                    Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE,
+                            "Something went wrong...", error);
+                    fail(error.toString());
                 }
 
                 @Override
-                public void getProductsResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-                        org.ccsds.moims.mo.mal.MOErrorException error,
-                        java.util.Map qosProperties) {
+                public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
+                        MOErrorException error, Map qosProperties) {
+                    Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE,
+                            "Something went wrong...", error);
+                    fail(error.toString());
                 }
 
             });
 
+            // ------------------------------------------------------------------------
+            // Wait while ACK has not been received and 1 second has not passed yet...
+            long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!ackReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            if (!ackReceived.get()) {
+                Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, "The ACK was not received!");
+                fail("The ACK was not received!");
+            }
+
+            // ------------------------------------------------------------------------
+            // Wait while RESPONSE has not been received and 1 second has not passed yet...
+            timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!rspReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            if (!rspReceived.get()) {
+                Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, "The RESPONSE was not received!");
+                fail("The RESPONSE was not received!");
+            }
+
+            assertNotNull(returnedProducts);
+            int size = returnedProducts.size();
+            System.out.println("Number of products returned: " + size);
+            assertEquals(expectedNumberOfResults, size);
+
+            // Finish the test if there's nothing else to check
+            if (size == 0) {
+                return;
+            }
+
+            // If there is only one entry, then check if the APID matches
+            if (size == 1) {
+                Product product = returnedProducts.get(0);
+                NamedValueList attributes = product.getParameters();
+
+                // Find the Attribute with the APID and check:
+                for (NamedValue att : attributes) {
+                    if ("APID".equals(att.getName().toString())) {
+                        assertEquals(apidValue, att.getValue());
+                    }
+                }
+            }
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -200,6 +310,5 @@ public class UC1Test {
             Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
-
     }
 }
