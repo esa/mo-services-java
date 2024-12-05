@@ -28,7 +28,7 @@ import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
@@ -57,7 +57,7 @@ public class OneProductDataset extends Dataset {
         Product product = new Product(productId, productTypeRef1,
                 Time.now(), timeWindow, "description", new Blob());
         ObjectRef<Product> ref = product.getObjectRef();
-        ProductSummary metadata = new ProductSummary();
+        ProductMetadata metadata = new ProductMetadata();
 
         products.put(ref, product);
         metadatas.put(ref, metadata);

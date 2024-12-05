@@ -49,8 +49,8 @@ import org.ccsds.moims.mo.mpd.structures.ParameterFilterList;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
 import org.ccsds.moims.mo.mpd.structures.ProductList;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
-import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 import org.ccsds.moims.mo.mpd.structures.ValueSet;
@@ -194,7 +194,7 @@ public class UC1Test {
         }
 
         ProductFilter productFilter = new ProductFilter(productType, domain, null, parameterFilter);
-        ProductSummaryList list = null;
+        ProductMetadataList list = null;
 
         try {
             TimeWindow creationDate = null;
@@ -217,7 +217,7 @@ public class UC1Test {
         // Prepare the ObjectRefList with the returned data from the previous step
         ObjectRefList productRefs = new ObjectRefList();
 
-        for (ProductSummary metadata : list) {
+        for (ProductMetadata metadata : list) {
             productRefs.add(metadata.getProduct());
         }
 

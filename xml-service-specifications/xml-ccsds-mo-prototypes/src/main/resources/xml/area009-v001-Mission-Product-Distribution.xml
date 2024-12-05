@@ -22,7 +22,7 @@
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation can be used to obtain a list of available products of a specified product type that pass a set filter criteria.  The service consumer sends the required filter criteria to the service provider, which then builds a list of products that pass the filter and returns this to the consumer.  
 The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products.  To pass the filter a product must match all of the individual filter criteria specified (source, metadata parameters, creation date and time window).
-The response consists of a list of ProductSummaries that pass the specified filter.  These contain the metadata of the products but not the product body itself.">
+The response consists of a list of ProductMetadatas that pass the specified filter.  These contain the metadata of the products but not the product body itself.">
                     <mal:messages>
                         <mal:request>
                             <mal:field name="productFilter" canBeNull="false" comment="">
@@ -36,8 +36,8 @@ The response consists of a list of ProductSummaries that pass the specified filt
                             </mal:field>
                         </mal:request>
                         <mal:response>
-                            <mal:field name="productList" canBeNull="false" comment="">
-                                <mal:type area="MPD" list="true" name="ProductSummary"/>
+                            <mal:field name="metadatas" canBeNull="false" comment="">
+                                <mal:type area="MPD" list="true" name="ProductMetadata"/>
                             </mal:field>
                         </mal:response>
                     </mal:messages>
@@ -79,7 +79,7 @@ Each requested product is then returned in a separate Update message, with the f
                 </mal:progressIP>
                 <mal:progressIP name="getProductFiles" number="3" supportInReplay="true" comment="This variant of the getProduct operation allows consumers to retrieve one or more mission data products with the delivery of the products being effected by file transfer outside the service interface.  
 The consumer sends a list of one or more product references (as ObjectRefs) to the service provider, their identity having previously been established using the listProducts operation.  The message also contains the file delivery address as a URI.
-After each requested product has been delivered by file transfer, a separate Update message is returned with a product delivery notification comprising ProductSummary, filename and delivery address as a URI, with the final Response message indicating that all requested products have been delivered.">
+After each requested product has been delivered by file transfer, a separate Update message is returned with a product delivery notification comprising ProductMetadata, filename and delivery address as a URI, with the final Response message indicating that all requested products have been delivered.">
                     <mal:messages>
                         <mal:progress>
                             <mal:field name="productRefs" canBeNull="false" comment="">
@@ -92,8 +92,8 @@ After each requested product has been delivered by file transfer, a separate Upd
                         <mal:acknowledgement>
                         </mal:acknowledgement>
                         <mal:update>
-                            <mal:field name="productSummary" canBeNull="false" comment="">
-                                <mal:type area="MPD" list="false" name="ProductSummary"/>
+                            <mal:field name="metadata" canBeNull="false" comment="">
+                                <mal:type area="MPD" list="false" name="ProductMetadata"/>
                             </mal:field>
                             <mal:field name="filename" canBeNull="false" comment="">
                                 <mal:type area="MAL" list="false" name="String"/>
@@ -230,7 +230,7 @@ to receive the ordered products via message transfer rather than file delivery">
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" supportInReplay="true" comment="The notifyProductDelivery operation can be used to receive notification when products have been delivered by file transfer or email in accordance with an existing product order.  
 The service provider publishes the delivery notification together with subscription keys corresponding to the identities of the associated user and standing order.  The service consumer can subscribe to receive notifications for individual standing orders, or for all product orders belonging to a user.
-The service consumer then receives a notification, in the form of a productSummary together with the filename and URI to which it was transferred, each time delivery of a product file has been completed.">
+The service consumer then receives a notification, in the form of a ProductMetadata together with the filename and URI to which it was transferred, each time delivery of a product file has been completed.">
                     <mal:messages>
                         <mal:subscriptionKeys>
                             <mal:field name="userID" canBeNull="false" comment="">
@@ -241,8 +241,8 @@ The service consumer then receives a notification, in the form of a productSumma
                             </mal:field>
                         </mal:subscriptionKeys>
                         <mal:publishNotify>
-                            <mal:field name="productSummary" canBeNull="false" comment="">
-                                <mal:type area="MPD" list="false" name="ProductSummary"/>
+                            <mal:field name="metadata" canBeNull="false" comment="">
+                                <mal:type area="MPD" list="false" name="ProductMetadata"/>
                             </mal:field>
                             <mal:field name="filename" canBeNull="false" comment="">
                                 <mal:type area="MAL" list="false" name="String"/>
@@ -376,8 +376,8 @@ Note that the ProductTypes are not contained within the service messages of any 
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductSummary" shortFormPart="103" comment="The ProductSummary comprises the product metadata without the product body and is used when returning a list of available products for retrieval.
-A ProductSummary relates to a specific Product instance.">
+            <mal:composite name="ProductMetadata" shortFormPart="103" comment="The ProductMetadata comprises the product metadata without the product body and is used when returning a list of available products for retrieval.
+A ProductMetadata relates to a specific Product instance.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>

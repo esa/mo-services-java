@@ -30,8 +30,8 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
-import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
@@ -42,8 +42,8 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
 
     private final HashMap<ObjectRef, ProductType> productTypes = new HashMap();
     private final HashMap<ObjectRef, Product> products = new HashMap();
-    private final HashMap<ObjectRef, ProductSummary> metadatas = new HashMap();
-    private final ProductSummaryList allMetadatas = new ProductSummaryList();
+    private final HashMap<ObjectRef, ProductMetadata> metadatas = new HashMap();
+    private final ProductMetadataList allMetadatas = new ProductMetadataList();
 
     public DummyProductsBackend() {
         IdentifierList domain = new IdentifierList();
@@ -65,7 +65,7 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
         Product product = new Product(productId, productTypeRef1,
                 Time.now(), timeWindow, "description", new Blob());
         ObjectRef<Product> ref = product.getObjectRef();
-        ProductSummary metadata = new ProductSummary();
+        ProductMetadata metadata = new ProductMetadata();
 
         products.put(ref, product);
         metadatas.put(ref, metadata);
@@ -73,7 +73,7 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
     }
 
     @Override
-    public ProductSummaryList getMetadataFromAllProducts() {
+    public ProductMetadataList getMetadataFromAllProducts() {
         return allMetadatas;
     }
 
@@ -83,7 +83,7 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
     }
 
     @Override
-    public ProductSummary getMetadata(ObjectRef productRef) {
+    public ProductMetadata getMetadata(ObjectRef productRef) {
         return metadatas.get(productRef);
     }
 

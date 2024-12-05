@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mpd.structures.ParameterDef;
 import org.ccsds.moims.mo.mpd.structures.ParameterDefList;
 import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
@@ -75,7 +75,7 @@ public class TMPacketsDataset extends Dataset {
                 Time.now(), null, timeWindow, parameters1, "description",
                 new Blob(new byte[]{0x01, 0x02, 0x03}));
         ObjectRef<Product> ref1 = product1.getObjectRef();
-        ProductSummary metadata1 = new ProductSummary(productTypeRefTM, ref1, Time.now(), null, timeWindow, parameters1, "description");
+        ProductMetadata metadata1 = new ProductMetadata(productTypeRefTM, ref1, Time.now(), null, timeWindow, parameters1, "description");
         products.put(ref1, product1);
         metadatas.put(ref1, metadata1);
 
@@ -87,7 +87,7 @@ public class TMPacketsDataset extends Dataset {
                 Time.now(), null, timeWindow, parameters2, "description",
                 new Blob(new byte[]{0x09, 0x08, 0x07}));
         ObjectRef<Product> ref2 = product2.getObjectRef();
-        ProductSummary metadata2 = new ProductSummary(productTypeRefTM, ref2, Time.now(), null, timeWindow, parameters2, "description");
+        ProductMetadata metadata2 = new ProductMetadata(productTypeRefTM, ref2, Time.now(), null, timeWindow, parameters2, "description");
         products.put(ref2, product2);
         metadatas.put(ref2, metadata2);
     }
