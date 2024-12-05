@@ -37,8 +37,6 @@ import org.ccsds.moims.mo.mpd.structures.TimeWindow;
  */
 public class OneProductDataset extends Dataset {
 
-    public ObjectRef<ProductType> productTypeRef1 = null;
-
     public OneProductDataset() {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -48,7 +46,7 @@ public class OneProductDataset extends Dataset {
         // ---------------------------------------------------
         ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("image.eo.rgb"), new UInteger(1));
         ProductType type1 = new ProductType(typeId1, "An Earth Observation RGB image.");
-        productTypeRef1 = type1.getObjectRef();
+        ObjectRef<ProductType> productTypeRef1 = type1.getObjectRef();
         productTypes.put(productTypeRef1, type1);
 
         // ---------------------------------------------------

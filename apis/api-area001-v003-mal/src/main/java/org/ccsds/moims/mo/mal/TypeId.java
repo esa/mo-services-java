@@ -20,6 +20,8 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.Objects;
+
 /**
  * Class representing a Type Id of a MAL Element.
  */
@@ -197,5 +199,21 @@ public class TypeId {
                 + " serviceNumber=" + serviceNumber
                 + " sfp=" + sfp
                 + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof TypeId)) {
+            return false;
+        }
+        return this.getTypeId() == ((TypeId) obj).getTypeId();
+    }
+
+    @Override
+    public int hashCode() {
+        return (Long.valueOf(this.getTypeId())).hashCode();
     }
 }
