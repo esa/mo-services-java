@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.1-SNAPSHOT</version>
+        <version>11.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>generator-docs</artifactId>
-    <version>11.1-SNAPSHOT</version>
+    <version>11.1</version>
     <packaging>jar</packaging>
   
     <name>ESA MO API Generator - Documentation</name>
