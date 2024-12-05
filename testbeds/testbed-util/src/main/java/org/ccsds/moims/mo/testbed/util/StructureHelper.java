@@ -164,7 +164,7 @@ public abstract class StructureHelper {
      */
     public static void storeURIs(String filename, String propertyPrefix, URI serviceUri, URI brokerUri) {
         if ((null != filename) && (0 < filename.length())) {
-            if (null == propertyPrefix) {
+            if (propertyPrefix == null) {
                 propertyPrefix = "";
             }
 

@@ -72,7 +72,7 @@ public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementI
             MALInteraction interaction) throws MALInteractionException, MALException {
         ActivityRelayNode relay;
 
-        if (null == relayName) {
+        if (relayName == null) {
             relay = initialRelay;
         } else {
             relay = relayMap.get(relayName);

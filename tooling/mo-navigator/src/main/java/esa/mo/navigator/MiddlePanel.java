@@ -43,20 +43,19 @@ import org.fife.ui.rtextarea.RTextArea;
 public class MiddlePanel extends javax.swing.JPanel {
 
     private final JLabel statusBar;
-    private final static String DEFAULT_XMLS_DIR = "_xmls";
     private File currentFolder;
 
     /**
      * Creates new form MiddlePanel
      * @param statusBar The status bar to report status information.
      */
-    public MiddlePanel(JLabel statusBar) {
+    public MiddlePanel(JLabel statusBar, File xmlDirs) {
         this.statusBar = statusBar;
         initComponents();
         tabsServices.removeAll();
 
         // Iterate through all the files in the xmls folder...
-        this.setWorkingDirectory(new File(DEFAULT_XMLS_DIR));
+        this.setWorkingDirectory(xmlDirs);
     }
 
     public final void setWorkingDirectory(File folder) {

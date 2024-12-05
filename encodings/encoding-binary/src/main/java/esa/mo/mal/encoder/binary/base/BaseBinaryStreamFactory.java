@@ -56,7 +56,7 @@ public abstract class BaseBinaryStreamFactory extends MALElementStreamFactory {
     }
 
     @Override
-    protected void init(final String protocol, final Map properties) throws MALException {
+    protected void init(final Map properties) throws MALException {
         // nothing required here
     }
 

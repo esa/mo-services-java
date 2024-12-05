@@ -121,7 +121,7 @@ public class HelperDomain {
             }
         }
 
-        return false;
+        return true;
     }
 
 }

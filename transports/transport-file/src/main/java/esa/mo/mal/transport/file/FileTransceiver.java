@@ -98,7 +98,7 @@ public class FileTransceiver implements MessageReceiver<InputStream>, MessageSen
 
     @Override
     public InputStream readEncodedMessage() throws IOException, InterruptedException {
-        if (null == key) {
+        if (key == null) {
             // wait for key to be signalled
             key = watcher.take();
             events = key.pollEvents().iterator();

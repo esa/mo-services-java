@@ -22,14 +22,15 @@ package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.docx.GeneratorUtils;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.*;
 import esa.mo.xsd.EnumerationType.Item;
+import esa.mo.xsd.util.XmlSpecification;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -114,8 +115,10 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     @Override
-    public void compile(String destinationFolderName, SpecificationType spec,
+    public void generate(String destinationFolderName, XmlSpecification xml,
             JAXBElement rootNode) throws IOException, JAXBException {
+        SpecificationType spec = xml.getSpecType();
+
         for (AreaType area : spec.getArea()) {
             Map<String, String> indexMap = new HashMap<>();
 
@@ -145,7 +148,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                     for (OperationSummary op : summary.getOperations()) {
                         serviceBodyBuff.addTitle(3, "Operation: ", createId(service, op.getName()), op.getName(), false);
-                        serviceBodyBuff.addComment(op.getOriginalOp().getComment());
+                        serviceBodyBuff.addComment(op.getComment());
 
                         opTocMap.add(new AbstractMap.SimpleEntry<>(op.getName(), createXlink(null, service.getName(), op.getName())));
 
@@ -171,7 +174,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                                 evTocMap.add(new AbstractMap.SimpleEntry<>(evt.getName(), createXlink(null, service.getName(), evt.getName())));
 
-                                List<TypeInfo> types = new LinkedList<>();
+                                List<FieldInfo> types = new LinkedList<>();
                                 if (null != evt.getObjectType()) {
                                     types = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(evt.getObjectType().getAny()));
                                 }
@@ -276,7 +279,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 break;
             }
             case PUBSUB_OP: {
-                List<esa.mo.tools.stubgen.specification.TypeInfo> types = new ArrayList<>();
+                List<esa.mo.tools.stubgen.specification.FieldInfo> types = new ArrayList<>();
                 TypeReference subId = new TypeReference();
                 subId.setArea("MAL");
                 subId.setName("Identifier");
@@ -287,7 +290,7 @@ public class GeneratorSvg extends GeneratorDocument {
                 types.add(0, TypeUtils.convertTypeReference(this, subId));
                 types.add(1, TypeUtils.convertTypeReference(this, updateHdr));
 
-                for (TypeInfo typeInfo : op.getRetTypes()) {
+                for (FieldInfo typeInfo : op.getRetTypes()) {
                     TypeReference refType = typeInfo.getSourceType();
                     refType.setList(Boolean.TRUE);
                     types.add(TypeUtils.convertTypeReference(this, refType));
@@ -360,7 +363,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         logger.info("Creating composite class " + compName);
 
-        boolean abstractComposite = (null == composite.getShortFormPart());
+        boolean abstractComposite = (composite.getShortFormPart() == null);
 
         svgFile.addTitle(3, "Composite: ", createId(service, compName), compName, abstractComposite);
 
@@ -382,7 +385,7 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     private void drawOperationTypes(SvgBaseWriter svgFile, ServiceSummary summary,
-            Integer number, String title, List<TypeInfo> types, String comment,
+            Integer number, String title, List<FieldInfo> types, String comment,
             String name, String phase) throws IOException {
         if (!types.isEmpty()) {
             svgFile.addTitle(4, title, null, "", false);
@@ -392,7 +395,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         List<String> cmts = new LinkedList<>();
         cmts.add(comment);
-        for (TypeInfo e : types) {
+        for (FieldInfo e : types) {
             cmts.add(e.getFieldComment());
         }
 
@@ -400,7 +403,7 @@ public class GeneratorSvg extends GeneratorDocument {
             if (!types.isEmpty()) {
                 SvgBaseWriter svgOutput = getSvgOutputFile(summary, number, name, phase, svgFile);
                 svgOutput.startDrawing();
-                for (TypeInfo e : types) {
+                for (FieldInfo e : types) {
                     drawOperationPart(svgOutput, e);
                     cmts.add(e.getFieldComment());
                 }
@@ -424,7 +427,7 @@ public class GeneratorSvg extends GeneratorDocument {
         svgFile.addComment(cmts);
     }
 
-    private void drawOperationPart(SvgBaseWriter svgFile, TypeInfo type) throws IOException {
+    private void drawOperationPart(SvgBaseWriter svgFile, FieldInfo type) throws IOException {
         if (null != type) {
             String partName = "Part";
 
@@ -446,7 +449,7 @@ public class GeneratorSvg extends GeneratorDocument {
             List<CompositeField> compElements) throws IOException {
         svgFile.startDrawing();
 
-        if (null == compElements) {
+        if (compElements == null) {
             compElements = createCompositeElementsList(svgFile, composite);
         }
 
@@ -493,17 +496,17 @@ public class GeneratorSvg extends GeneratorDocument {
     }
 
     private String createXlink(String areaName, String serviceName, String section) {
-        if (null == serviceName) {
+        if (serviceName == null) {
             serviceName = "_";
         } else {
             serviceName += "_";
         }
 
-        if (null == section) {
+        if (section == null) {
             section = "";
         }
 
-        if ((null != areaName) && (0 < areaName.length())) {
+        if ((areaName != null) && (areaName.length() > 0)) {
             return "output" + areaName + ".xhtml#" + serviceName + section;
         } else {
             return "#" + serviceName + section;
@@ -516,7 +519,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
         if (splitOutSvg) {
             try {
-                String filename = mainSvgFile.getClassName() + "_" + service.getService().getNumber() + "_" + number + "_" + name + "_" + phase;
+                String filename = mainSvgFile.getClassName() + "_" + service.getServiceNumber() + "_" + number + "_" + name + "_" + phase;
                 rv = new SvgWriter(mainSvgFile.getFolder(), filename, "svg", false);
                 mainSvgFile.addComment(filename, true);
             } catch (IOException ex) {
@@ -741,12 +744,12 @@ public class GeneratorSvg extends GeneratorDocument {
             super(null, null, "", "", false, false);
         }
 
-        public void addOperationTypes(List<TypeInfo> types) {
-            for (TypeInfo e : types) {
+        public void addOperationTypes(List<FieldInfo> types) {
+            for (FieldInfo e : types) {
                 if (null != e) {
                     String pname = "Part";
 
-                    if ((null != e.getFieldName()) && (0 < e.getFieldName().length())) {
+                    if ((e.getFieldName() != null) && (e.getFieldName().length() > 0)) {
                         pname = e.getFieldName();
                     }
 
@@ -939,7 +942,7 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         protected void addTitle(int level, String section, String id, String text, boolean italic) throws IOException {
-            if (null == id) {
+            if (id == null) {
                 id = "";
             } else {
                 id = " id=\"" + id + "\"";

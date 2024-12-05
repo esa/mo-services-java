@@ -28,7 +28,6 @@ import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.ErrorDefinitionType;
-import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,17 +59,16 @@ public class JavaExceptions {
         }
     }
      */
-
     public void createAreaExceptions(File areaFolder, AreaType area) throws IOException {
         if (area.getErrors() != null && area.getErrors().getError() != null) {
             for (ErrorDefinitionType error : area.getErrors().getError()) {
-                this.generateException(areaFolder, area, null, error);
+                this.generateException(areaFolder, area.getName(), null, error);
             }
         }
     }
 
-    public void generateException(File folder, AreaType area,
-            ServiceType service, ErrorDefinitionType error) throws IOException {
+    public void generateException(File folder, String area,
+            String service, ErrorDefinitionType error) throws IOException {
         // Needs to be converted to Camel case in the future!
         String inCamelCase = convertToCamelCase(error.getName());
         String className = inCamelCase + EXCEPTION;
@@ -90,7 +88,7 @@ public class JavaExceptions {
 
         // Construct path to Error in the Helper
         String errorNameCaps = convertToUppercaseWithUnderscores(error.getName());
-        String errorPath = area.getName() + "Helper." + errorNameCaps + "_ERROR_NUMBER";
+        String errorPath = area + "Helper." + errorNameCaps + "_ERROR_NUMBER";
 
         // Constructor without parameters
         MethodWriter method_1 = file.addConstructor(StdStrings.PUBLIC, className,

@@ -21,8 +21,8 @@ Prerequisites
   <servers>
     <server>
       <id>sonatype-nexus-staging</id>
-      <username>your-nexus-username</username>
-      <password>your-nexus-password</password>
+      <username>your-nexus-tokenuser</username>
+      <password>your-nexus-tokenkey</password>
     </server>
   </servers>
   <profiles>
@@ -33,7 +33,7 @@ Prerequisites
       </activation>
       <properties>
         <gpg.keyname>Firstname.Lastname</gpg.keyname>
-        <gpg.passphrase>the_passphrase</gpg.passphrase>
+        <gpg.passphrase>the-passphrase</gpg.passphrase>
       </properties>
     </profile>
   </profiles>

@@ -25,18 +25,15 @@ import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorLangs.CONSUMER_FOLDER;
 import static esa.mo.tools.stubgen.GeneratorLangs.TRANSPORT_FOLDER;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
-import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,19 +56,16 @@ public class JavaConsumer {
         this.supportsAsync = supportsAsync;
     }
 
-    public void createServiceConsumerAdapter(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        String areaName = area.getName();
-        String serviceName = service.getName();
+    public void createServiceConsumerAdapter(File consumerFolder, String areaName,
+            String serviceName, ServiceSummary summary) throws IOException {
         String className = serviceName + "Adapter";
 
         ClassWriter file = generator.createClassFile(consumerFolder, className);
 
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
+        file.addPackageStatement(areaName, serviceName, CONSUMER_FOLDER);
 
         String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String areaHelper = generator.createElementType(areaName, null, null, areaName + "Helper");
-        String serviceHelper = generator.createElementType(areaName, serviceName, null, serviceName + "Helper");
         String serviceInfoName = generator.createElementType(areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
 
         CompositeField stdHeaderArg = generator.createCompositeElementsDetails(file, false, "msgHeader",
@@ -208,7 +202,7 @@ public class JavaConsumer {
                     break;
                 }
                 case PUBSUB_OP: {
-                    List<TypeInfo> retTypes = new LinkedList<>();
+                    List<FieldInfo> retTypes = new LinkedList<>();
                     boolean nullableField = false; // Just for subscriptionId, and updateHeader
 
                     retTypes.add(0, TypeUtils.convertTypeReference(generator,
@@ -218,7 +212,7 @@ public class JavaConsumer {
                             TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
                             "updateHeader", "The Update header.", nullableField));
 
-                    for (TypeInfo ti : op.getRetTypes()) {
+                    for (FieldInfo ti : op.getRetTypes()) {
                         retTypes.add(ti);
                     }
 
@@ -350,7 +344,7 @@ public class JavaConsumer {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("  case " + ns, ns, false);
-                List<TypeInfo> opTypes = null;
+                List<FieldInfo> opTypes = null;
                 switch (opTypeIndex) {
                     case 1:
                         opTypes = op.getAckTypes();
@@ -392,16 +386,19 @@ public class JavaConsumer {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addMethodWithDependencyStatement("    case " + ns, ns, false);
-                List<TypeInfo> opTypes = new LinkedList<>();
+                List<FieldInfo> opTypes = new LinkedList<>();
                 opTypes.add(0, TypeUtils.convertTypeReference(generator,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
                 opTypes.add(1, TypeUtils.convertTypeReference(generator,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
 
-                for (TypeInfo ti : op.getRetTypes()) {
+                for (FieldInfo ti : op.getRetTypes()) {
+                    /*
                     TypeReference source = ti.getSourceType();
                     opTypes.add(TypeUtils.convertTypeReference(generator,
                             TypeUtils.createTypeReference(source.getArea(), source.getService(), source.getName(), source.isList())));
+                     */
+                    opTypes.add(ti);
                 }
 
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
@@ -441,17 +438,16 @@ public class JavaConsumer {
         method.addMethodCloseStatement();
     }
 
-    public void createServiceConsumerStub(File consumerFolder, AreaType area,
-            ServiceType service, ServiceSummary summary) throws IOException {
-        String serviceName = service.getName();
-        String className = serviceName + "Stub";
+    public void createServiceConsumerStub(File consumerFolder, String area,
+            String service, ServiceSummary summary) throws IOException {
+        String className = service + "Stub";
 
         ClassWriter file = generator.createClassFile(consumerFolder, className);
 
         file.addPackageStatement(area, service, CONSUMER_FOLDER);
 
         CompositeField serviceAdapterArg = generator.createCompositeElementsDetails(file, false, "adapter",
-                TypeUtils.createTypeReference(area.getName(), service.getName() + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
+                TypeUtils.createTypeReference(area, service + "." + CONSUMER_FOLDER, service + "Adapter", false),
                 false, true, "adapter Listener in charge of receiving the messages from the service provider");
 
         CompositeField lastInteractionStage = generator.createCompositeElementsDetails(file, false, "lastInteractionStage",
@@ -478,8 +474,8 @@ public class JavaConsumer {
         CompositeField uriType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false),
                 true, true, null);
-        String helperType = generator.createElementType(area.getName(), service.getName(), null, serviceName + "Helper") + generator.getConfig().getNamingSeparator();
-        String serviceInfoType = generator.createElementType(area.getName(), service.getName(), null, serviceName + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
+        String helperType = generator.createElementType(area, service, null, service + "Helper") + generator.getConfig().getNamingSeparator();
+        String serviceInfoType = generator.createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
         CompositeField consumerType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
@@ -489,8 +485,8 @@ public class JavaConsumer {
                 false, true, null);
 
         file.addClassOpenStatement(className, false, false, null,
-                generator.createElementType(area.getName(), serviceName, CONSUMER_FOLDER, serviceName),
-                "Consumer stub for " + serviceName + " service.");
+                generator.createElementType(area, service, CONSUMER_FOLDER, service),
+                "Consumer stub for " + service + " service.");
 
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
 
@@ -517,13 +513,13 @@ public class JavaConsumer {
         }
 
         for (OperationSummary op : summary.getOperations()) {
-            String operationInstanceVar = generator.addressOf(serviceInfoType) + op.getName().toUpperCase() + "_OP";
+            String operationInstanceVar = serviceInfoType + op.getName().toUpperCase() + "_OP";
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
                             msgType, op.getName(), opArgs, throwsInteractionAndMALException,
-                            op.getOriginalOp().getComment(), "the MAL message sent to initiate the interaction",
+                            op.getComment(), "the MAL message sent to initiate the interaction",
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement("return " + consumerMethodCall
                             + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
@@ -544,7 +540,7 @@ public class JavaConsumer {
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op)
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
-                            op.getName(), opArgs, throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            op.getName(), opArgs, throwsInteractionAndMALException, op.getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
                     createOperationReturn(file, method, op, opRetType);
@@ -581,7 +577,7 @@ public class JavaConsumer {
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, false, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getOriginalOp().getComment(), opRetComment,
+                            throwsInteractionAndMALException, op.getComment(), opRetComment,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                                     throwsMALException + " if there is an implementation exception"));
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
@@ -616,7 +612,7 @@ public class JavaConsumer {
                             false, true, null, op.getName() + "Register",
                             StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                    method.addMethodWithDependencyStatement(consumerMethodCall + generator.getRegisterMethodName() + "(" + operationInstanceVar + ", subscription, adapter)", helperType, true);
+                    method.addMethodWithDependencyStatement(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter)", helperType, true);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -626,7 +622,7 @@ public class JavaConsumer {
                                 StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException,
                                 "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction",
                                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.getRegisterMethodName()) + "(" + operationInstanceVar + ", subscription, adapter)");
+                        method.addLine("return " + consumerMethodCall + "asyncRegister(" + operationInstanceVar + ", subscription, adapter)");
                         method.addMethodCloseStatement();
                     }
 
@@ -635,7 +631,7 @@ public class JavaConsumer {
                             Arrays.asList(idStr), throwsInteractionAndMALException,
                             "Deregister method for the " + op.getName() + " PubSub interaction", null,
                             Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                    method.addLine(consumerMethodCall + generator.getDeregisterMethodName() + "(" + operationInstanceVar + ", identifierList)");
+                    method.addLine(consumerMethodCall + "deregister(" + operationInstanceVar + ", identifierList)");
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -645,7 +641,7 @@ public class JavaConsumer {
                                 throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister",
                                 "the MAL message sent to initiate the interaction",
                                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.getDeregisterMethodName()) + "(" + operationInstanceVar + ", identifierList, adapter)");
+                        method.addLine("return " + consumerMethodCall + "asyncDeregister(" + operationInstanceVar + ", identifierList, adapter)");
                         method.addMethodCloseStatement();
                     }
                     break;
@@ -659,7 +655,7 @@ public class JavaConsumer {
 
     private void createOperationReturn(LanguageWriter file, MethodWriter method,
             OperationSummary op, CompositeField opRetType) throws IOException {
-        List<TypeInfo> targetTypes = op.getRetTypes();
+        List<FieldInfo> targetTypes = op.getRetTypes();
 
         if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
             targetTypes = op.getAckTypes();
@@ -672,7 +668,7 @@ public class JavaConsumer {
                 StringBuilder buf = new StringBuilder();
 
                 for (int i = 0; i < targetTypes.size(); i++) {
-                    TypeInfo ti = targetTypes.get(i);
+                    FieldInfo ti = targetTypes.get(i);
                     if (i > 0) {
                         buf.append(", ");
                     }

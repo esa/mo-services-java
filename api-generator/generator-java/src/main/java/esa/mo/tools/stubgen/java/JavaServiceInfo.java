@@ -22,15 +22,14 @@ package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
-import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
@@ -39,7 +38,6 @@ import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ExtendedServiceType;
 import esa.mo.xsd.ModelObjectType;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
-import esa.mo.xsd.PubSubOperationType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.SupportedFeatures;
 import esa.mo.xsd.TypeReference;
@@ -71,7 +69,7 @@ public class JavaServiceInfo {
         String namespace = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
-        file.addPackageStatement(area, service, null);
+        file.addPackageStatement(area.getName(), service.getName(), null);
 
         // Appends the class name
         if (service instanceof ExtendedServiceType) {
@@ -119,7 +117,7 @@ public class JavaServiceInfo {
             file.addClassVariable(true, true, StdStrings.PUBLIC, _opNumberVar, false, op.getNumber().toString());
             file.addClassVariable(true, true, StdStrings.PUBLIC, opNumberVar, false, "(_" + operationInstanceVar + "_OP_NUMBER)");
 
-            List<String> opArgs = this.generateOperationArgs(file, op);
+            List<String> opArgs = this.generateOperationArgs(op);
             String operationName = operationInstanceVar + "_OP";
             CompositeField opInstVar = generator.createCompositeElementsDetails(file, false, operationName,
                     TypeUtils.createTypeReference(StdStrings.MAL, null, generator.getOperationInstanceType(op), false),
@@ -128,8 +126,7 @@ public class JavaServiceInfo {
 
             if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
                 StringBuilder arrayList = new StringBuilder("{");
-                PubSubOperationType lop = (PubSubOperationType) op.getOriginalOp();
-                AnyTypeReference subsKeys = lop.getMessages().getSubscriptionKeys();
+                AnyTypeReference subsKeys = op.getSubscriptionKeys();
 
                 if (subsKeys != null) {
                     List<TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());
@@ -176,15 +173,17 @@ public class JavaServiceInfo {
                     typeName = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
                     typeName = ((CompositeType) oType).getName();
-                    isAbstract = (null == ((CompositeType) oType).getShortFormPart());
+                    isAbstract = (((CompositeType) oType).getShortFormPart() == null);
                 }
 
                 if (!isAbstract) {
                     String clsName = generator.createElementType(area.getName(), service.getName(), typeName);
                     String text = "new " + clsName + "()";
+                    /* Old code for Enumerations
                     if (oType instanceof EnumerationType) {
                         text = clsName + ".fromOrdinal(0)";
                     }
+                     */
 
                     String lclsName = generator.createElementType(area.getName(), service.getName(), typeName + "List");
                     elementInstantiations.add(text);
@@ -259,10 +258,7 @@ public class JavaServiceInfo {
         CompositeField opType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALArea", false),
                 false, true, null);
-        MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, opType, "getArea", null, null,
-                "Returns the corresponding MALArea from this service.",
-                "Returns the corresponding MALArea from this service.", null);
+        MethodWriter method = file.addMethodOpenStatementOverride(opType, "getArea", null, null);
 
         method.addLine("return " + namespace, true);
         method.addMethodCloseStatement();
@@ -316,7 +312,7 @@ public class JavaServiceInfo {
                 + hasRelated + ", " + relatedShortForm + ", " + hasSource + ", " + sourceShortForm + ", " + isEvent + ")");
     }
 
-    private List<String> generateOperationArgs(LanguageWriter file, OperationSummary op) {
+    private List<String> generateOperationArgs(OperationSummary op) {
         String initNewLine = "\n            ";
         // Operation Number
         List<String> opArgs = new LinkedList<>();
@@ -357,11 +353,11 @@ public class JavaServiceInfo {
     }
 
     // Generates the OperationField[] (...)
-    private String addMalTypes(List<TypeInfo> ti) {
+    private String addMalTypes(List<FieldInfo> ti) {
         boolean needXmlSchema = false;
         boolean needMalTypes = false;
 
-        for (TypeInfo typeInfo : ti) {
+        for (FieldInfo typeInfo : ti) {
             TypeReference type = typeInfo.getSourceType();
 
             if (StdStrings.XML.equals(type.getArea())) {
@@ -383,11 +379,11 @@ public class JavaServiceInfo {
         return new_line_0 + "new " + OP_FIELD + "[] {" + arrayArgs + "}";
     }
 
-    private String generateOperationFieldsArray(List<TypeInfo> ti, String newLine) {
+    private String generateOperationFieldsArray(List<FieldInfo> ti, String newLine) {
         StringBuilder buffer = new StringBuilder();
 
         for (int i = 0; i < ti.size(); i++) {
-            TypeInfo typeInfo = ti.get(i);
+            FieldInfo typeInfo = ti.get(i);
             buffer.append(newLine);
             buffer.append("new ").append(OP_FIELD).append("(");
             String argName = typeInfo.getFieldName();

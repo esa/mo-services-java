@@ -176,7 +176,7 @@ public final class TransportSingleton {
                 }
             }
 
-            transport = ohandler.createTransport(null, properties);
+            transport = ohandler.createTransport(properties);
 
             if (transport != null) {
                 synchronized (TRANSPORT_MAP) {

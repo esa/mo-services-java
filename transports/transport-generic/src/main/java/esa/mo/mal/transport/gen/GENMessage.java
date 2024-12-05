@@ -21,14 +21,7 @@
 package esa.mo.mal.transport.gen;
 
 import static esa.mo.mal.transport.gen.Transport.LOGGER;
-import esa.mo.mal.transport.gen.body.DeregisterBody;
-import esa.mo.mal.transport.gen.body.ErrorBody;
 import esa.mo.mal.transport.gen.body.LazyMessageBody;
-import esa.mo.mal.transport.gen.body.NotifyBody;
-import esa.mo.mal.transport.gen.body.PublishBody;
-import esa.mo.mal.transport.gen.body.PublishRegisterBody;
-import esa.mo.mal.transport.gen.body.RegisterBody;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -36,12 +29,9 @@ import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.BadEncodingException;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -56,17 +46,19 @@ public class GENMessage implements MALMessage, java.io.Serializable {
     protected MALMessageHeader header;
     protected LazyMessageBody body;
     protected Map qosProperties;
-    protected boolean wrapBodyParts;
     protected MALElementStreamFactory encFactory;
 
-    public GENMessage() {
+    public GENMessage(MALMessageHeader header, LazyMessageBody body,
+            MALElementStreamFactory encFactory, Map qosProperties) {
+        this.header = header;
+        this.body = body;
+        this.encFactory = encFactory;
+        this.qosProperties = qosProperties;
     }
 
     /**
      * Constructor.
      *
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The stream factory to use for decoding.
@@ -74,45 +66,16 @@ public class GENMessage implements MALMessage, java.io.Serializable {
      * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
      * is unknown.
      */
-    public GENMessage(final boolean wrapBodyParts,
+    @Deprecated
+    public GENMessage(
             final MALMessageHeader header,
             final Map qosProperties,
             final MALElementStreamFactory encFactory,
             final Object... body) throws MALInteractionException {
         this.header = header;
         this.encFactory = encFactory;
-        this.body = createMessageBody(body);
+        this.body = LazyMessageBody.createMessageBody(header, encFactory, body);
         this.qosProperties = qosProperties;
-        this.wrapBodyParts = wrapBodyParts;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
-     * @param readHeader True if the header should be read from the packet.
-     * @param header An instance of the header class to use.
-     * @param qosProperties The QoS properties for this message.
-     * @param packet The message in encoded form.
-     * @param encFactory The stream factory to use for decoding.
-     * @throws MALException On decoding error.
-     */
-    public GENMessage(final boolean wrapBodyParts,
-            final boolean readHeader,
-            final MALMessageHeader header,
-            final Map qosProperties,
-            final byte[] packet,
-            final MALElementStreamFactory encFactory) throws MALException {
-        this.qosProperties = qosProperties;
-        this.wrapBodyParts = wrapBodyParts;
-        this.encFactory = encFactory;
-
-        final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
-        final MALElementInputStream enc = encFactory.createInputStream(bais);
-
-        this.header = readHeader ? enc.readHeader(header) : header;
-        this.body = createMessageBody(enc);
     }
 
     @Override
@@ -162,34 +125,6 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    protected LazyMessageBody createMessageBody(final MALElementInputStream encBodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header);
-
-        if (header.getIsErrorMessage()) {
-            return new ErrorBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-        }
-
-        if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
-            final short stage = header.getInteractionStage().getValue();
-            switch (stage) {
-                case MALPubSubOperation._REGISTER_STAGE:
-                    return new RegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return new PublishRegisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-                case MALPubSubOperation._PUBLISH_STAGE:
-                    return new PublishBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-                case MALPubSubOperation._NOTIFY_STAGE:
-                    return new NotifyBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-                case MALPubSubOperation._DEREGISTER_STAGE:
-                    return new DeregisterBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-                default:
-                    return new LazyMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-            }
-        }
-
-        return new LazyMessageBody(ctx, wrapBodyParts, encFactory, encBodyElements);
-    }
-
     /**
      * Encodes the message.
      *
@@ -214,31 +149,4 @@ public class GENMessage implements MALMessage, java.io.Serializable {
         }
     }
 
-    protected LazyMessageBody createMessageBody(final Object[] bodyElements) {
-        MALEncodingContext ctx = new MALEncodingContext(header);
-
-        if (header.getIsErrorMessage()) {
-            return new ErrorBody(ctx, encFactory, bodyElements);
-        }
-
-        if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
-            final short stage = header.getInteractionStage().getValue();
-            switch (stage) {
-                case MALPubSubOperation._REGISTER_STAGE:
-                    return new RegisterBody(ctx, encFactory, bodyElements);
-                case MALPubSubOperation._PUBLISH_REGISTER_STAGE:
-                    return new PublishRegisterBody(ctx, encFactory, bodyElements);
-                case MALPubSubOperation._PUBLISH_STAGE:
-                    return new PublishBody(ctx, encFactory, bodyElements);
-                case MALPubSubOperation._NOTIFY_STAGE:
-                    return new NotifyBody(ctx, encFactory, bodyElements);
-                case MALPubSubOperation._DEREGISTER_STAGE:
-                    return new DeregisterBody(ctx, encFactory, bodyElements);
-                default:
-                    return new LazyMessageBody(ctx, encFactory, bodyElements);
-            }
-        }
-
-        return new LazyMessageBody(ctx, encFactory, bodyElements);
-    }
 }

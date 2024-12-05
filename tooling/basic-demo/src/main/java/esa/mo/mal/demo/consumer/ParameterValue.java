@@ -36,7 +36,7 @@ class ParameterValue {
 
     public ParameterValue(final int index, final DelayManager delayManager) {
         this.delayManager = delayManager;
-        this.isFirst = (0 == index);
+        this.isFirst = (index == 0);
     }
 
     public short getLabelValue() {

@@ -23,6 +23,7 @@ package esa.mo.navigator;
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -33,6 +34,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class AppGUI extends javax.swing.JFrame {
 
     private final static String FRAME_NAME = "MO Navigator";
+    //private final static String DEFAULT_XMLS_DIR = "_xmls";
+    private final static String DEFAULT_XMLS_DIR = "../../xml-service-specifications/xml-ccsds-mo-prototypes/src/main/resources/xml";
 
     /**
      * Creates the GUI form
@@ -89,7 +92,7 @@ public class AppGUI extends javax.swing.JFrame {
             }
         });
 
-        middlePanel.add(new MiddlePanel(statusLabel));
+        middlePanel.add(new MiddlePanel(statusLabel, new File(DEFAULT_XMLS_DIR)));
         statusLabel.setText("Ready!");
     }
 

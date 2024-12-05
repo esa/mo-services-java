@@ -27,9 +27,9 @@ import esa.mo.com.test.archive.ArchiveEventHandlerImpl;
 import esa.mo.com.test.archive.ArchiveHandlerImpl;
 import esa.mo.com.test.archive.ArchiveTestHandlerImpl;
 import esa.mo.com.test.event.EventHandlerImpl;
+import esa.mo.com.test.event.EventTestDelegationSkeleton;
 import esa.mo.com.test.event.EventTestHandlerImpl;
 import org.ccsds.moims.mo.com.test.suite.BaseCOMTestServiceProvider;
-import org.ccsds.moims.mo.comprototype.eventtest.provider.EventTestDelegationSkeleton;
 import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
 
 /**

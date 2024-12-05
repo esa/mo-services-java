@@ -341,7 +341,7 @@ public class StubGenerator extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         loadGenerators(getLog());
 
-        if (null == extraProperties) {
+        if (extraProperties == null) {
             extraProperties = new HashMap<>();
         }
 
@@ -368,7 +368,7 @@ public class StubGenerator extends AbstractMojo {
 
                 // run the specifications through each generator
                 // first process the list of languages to generate
-                if ((null != targetLanguages) && (0 < targetLanguages.length)) {
+                if ((targetLanguages != null) && (targetLanguages.length > 0)) {
 
                     if (forceGeneration || (outputDirectory.lastModified() < inputTimestamp)) {
                         if (forceGeneration) {
@@ -376,7 +376,7 @@ public class StubGenerator extends AbstractMojo {
                         }
                         for (String targetLanguage : targetLanguages) {
                             final Generator gen = GENERATOR_MAP.get(targetLanguage.toLowerCase());
-                            if (null != gen) {
+                            if (gen != null) {
                                 processWithGenerator(gen, refSpecs, refXsd, specs);
                             } else {
                                 getLog().warn("Could not find generator for language: " + targetLanguage);
@@ -446,27 +446,29 @@ public class StubGenerator extends AbstractMojo {
     }
 
     private void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
-        if (!generatorsLoaded) {
-            generatorsLoaded = true;
+        if (generatorsLoaded) {
+            return;
+        }
 
-            final Reflections reflections = new Reflections(new ConfigurationBuilder()
-                    .setUrls(ClasspathHelper.forClassLoader())
-                    .setScanners(new SubTypesScanner()));
+        generatorsLoaded = true;
 
-            final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
+        final Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forClassLoader())
+                .setScanners(new SubTypesScanner()));
 
-            for (Class<? extends Generator> cls : classes) {
-                final int mods = cls.getModifiers();
-                if (!Modifier.isAbstract(mods)) {
-                    try {
-                        final Generator g = (Generator) cls.getConstructor(new Class[]{
-                            org.apache.maven.plugin.logging.Log.class
-                        }).newInstance(new Object[]{logger});
+        final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
 
-                        GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
-                    } catch (Exception ex) {
-                        logger.warn("Could not construct generator : " + cls.getName());
-                    }
+        for (Class<? extends Generator> cls : classes) {
+            final int mods = cls.getModifiers();
+            if (!Modifier.isAbstract(mods)) {
+                try {
+                    final Generator g = (Generator) cls.getConstructor(new Class[]{
+                        org.apache.maven.plugin.logging.Log.class
+                    }).newInstance(new Object[]{logger});
+
+                    GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
+                } catch (Exception ex) {
+                    logger.warn("Could not construct generator : " + cls.getName());
                 }
             }
         }
@@ -486,22 +488,22 @@ public class StubGenerator extends AbstractMojo {
                     "Exception thrown during the opening of the generator", ex);
         }
 
-        // pre process the reference specifications
-        for (XmlSpecification spec : refSpecs) {
+        // Load the reference specifications
+        for (XmlSpecification refSpec : refSpecs) {
             try {
-                generator.preProcess(spec.getSpecType());
+                generator.loadXML(refSpec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
                         "Exception thrown during the pre-processing of reference XML file: "
-                        + spec.getFile().getPath(), ex);
+                        + refSpec.getFile().getPath(), ex);
             }
         }
 
-        // pre process the reference XSD specifications
+        // Load the XSD specifications
         for (XsdSpecification spec : refXsd) {
             try {
-                generator.preProcess(spec.getSchema());
+                generator.loadXSD(spec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
@@ -510,10 +512,10 @@ public class StubGenerator extends AbstractMojo {
             }
         }
 
-        // pre process the specifications
+        // Load the XML specifications
         for (XmlSpecification spec : specs) {
             try {
-                generator.preProcess(spec.getSpecType());
+                generator.loadXML(spec);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(
@@ -526,7 +528,7 @@ public class StubGenerator extends AbstractMojo {
         for (XmlSpecification spec : specs) {
             try {
                 getLog().info("Generating " + generator.getShortName());
-                generator.compile(outputDirectory.getPath(), spec.getSpecType(), spec.getRootElement());
+                generator.generate(outputDirectory.getPath(), spec, spec.getRootElement());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new MojoExecutionException(

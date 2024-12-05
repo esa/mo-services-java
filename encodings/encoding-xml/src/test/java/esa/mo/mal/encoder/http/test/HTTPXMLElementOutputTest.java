@@ -121,7 +121,7 @@ public class HTTPXMLElementOutputTest {
   @Test
   public void testEncodeEnumeration() throws Exception {
 
-    InteractionType it = InteractionType.fromOrdinal(0);
+    InteractionType it = new InteractionType(0);
 
     httpElementOutputStream.writeElement(it, null);
     httpElementOutputStream.close();

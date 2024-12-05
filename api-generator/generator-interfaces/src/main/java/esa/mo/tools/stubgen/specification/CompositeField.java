@@ -107,6 +107,15 @@ public final class CompositeField {
     }
 
     /**
+     * Returns the type ref.
+     *
+     * @return the type ref
+     */
+    public TypeRef getTypeRef() {
+        return new TypeRef(typeReference);
+    }
+
+    /**
      * Returns the field name.
      *
      * @return the fieldName

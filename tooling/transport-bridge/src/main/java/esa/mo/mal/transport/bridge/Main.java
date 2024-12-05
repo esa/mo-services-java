@@ -73,7 +73,7 @@ public class Main {
 
     protected static MALTransport createTransport(String protocol) throws Exception {
         System.out.println("Creating transport " + protocol);
-        return MALTransportFactory.newFactory(protocol).createTransport(null, null);
+        return MALTransportFactory.newFactory(protocol).createTransport(null);
     }
 
     protected static MALEndpoint createEndpoint(String protocol, MALTransport trans) throws Exception {
@@ -209,6 +209,6 @@ public class Main {
         destMessage.getHeader().setFrom(from);
 
         return destMessage;
-        */
+         */
     }
 }

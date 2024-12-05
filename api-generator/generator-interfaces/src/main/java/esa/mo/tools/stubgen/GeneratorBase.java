@@ -22,16 +22,18 @@ package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInfo;
 import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
+import esa.mo.xsd.util.XmlSpecification;
+import esa.mo.xsd.util.XsdSpecification;
 import java.io.IOException;
 import java.util.*;
 import javax.xml.bind.JAXBElement;
@@ -51,13 +53,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * The configuration of the generator.
      */
     private final GeneratorConfiguration config;
-    protected final Set<TypeKey> enumTypesSet = new TreeSet<>();
-    protected final Set<TypeKey> abstractTypesSet = new TreeSet<>();
-    protected final Map<TypeKey, Object> allTypesMap = new HashMap<>();
-    protected final Map<TypeKey, CompositeType> compositeTypesMap = new HashMap<>();
-    protected final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
-    protected final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
-    protected final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
+    private final Set<TypeKey> enumTypesSet = new TreeSet<>();
+    private final Set<TypeKey> abstractTypesSet = new TreeSet<>();
+    private final Map<TypeKey, Object> allTypesMap = new HashMap<>();
+    private final Map<TypeKey, CompositeType> compositeTypesMap = new HashMap<>();
+    private final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
+    private final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
+    private final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
     private boolean generateCOM;
 
     /**
@@ -96,7 +98,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     @Override
-    public void preProcess(SpecificationType spec) throws IOException, JAXBException {
+    public void loadXML(XmlSpecification xml) throws IOException, JAXBException {
+        SpecificationType spec = xml.getSpecType();
         // load in types and error definitions
         for (AreaType area : spec.getArea()) {
             if (null != area.getDataTypes()) {
@@ -111,12 +114,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             }
 
             for (ServiceType service : area.getService()) {
-                if (null != service.getDataTypes()) {
+                if (service.getDataTypes() != null) {
                     loadTypesFromObjectList(area.getName(), service.getName(),
                             service.getDataTypes().getCompositeOrEnumeration());
                 }
 
-                if ((null != service.getErrors()) && (null != service.getErrors().getError())) {
+                if ((service.getErrors() != null) && (service.getErrors().getError() != null)) {
                     for (ErrorDefinitionType error : service.getErrors().getError()) {
                         errorDefinitionMap.put(error.getName(), error);
                     }
@@ -126,9 +129,10 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
     }
 
     @Override
-    public void preProcess(Schema spec) throws IOException, JAXBException {
+    public void loadXSD(XsdSpecification xsd) throws IOException, JAXBException {
+        Schema spec = xsd.getSchema();
         // load in types
-        if (null != spec.getSimpleTypeOrComplexTypeOrGroup()) {
+        if (spec.getSimpleTypeOrComplexTypeOrGroup() != null) {
             loadTypesFromXsdList(StdStrings.XML, spec.getTargetNamespace(),
                     spec.getSimpleTypeOrComplexTypeOrGroup());
         }
@@ -332,8 +336,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             return null;
         }
 
+        String typeName = type.isObjectRef() ? "ObjectRef<" + type.getName() + ">": type.getName();
         return createElementType(type.getArea(), type.getService(),
-                isStructure ? config.getStructureFolder() : null, type.getName());
+                isStructure ? config.getStructureFolder() : null, typeName);
     }
 
     @Override
@@ -368,7 +373,13 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         return type;
     }
 
-    public static boolean isObjectRef(String type) {
+    public static boolean isObjectRef(TypeReference elementType) {
+        if (elementType.isObjectRef()) {
+            return true;
+        }
+
+        // The code below is to allow compatibility with the old style. Example: ObjectRef(xyz)
+        String type = elementType.getName();
         return !extractTypeFromObjectRef(type).equals(type);
     }
 
@@ -382,8 +393,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type The type.
      * @return the full name of the type.
      */
-    public String createElementType(String area,
-            String service, String extraPackageLevel, String type) {
+    public String createElementType(String area, String service, String extraPackageLevel, String type) {
         if (area == null) {
             return type;
         }
@@ -584,18 +594,18 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @return the operation summary.
      */
     protected ServiceSummary createOperationElementList(ServiceType service) {
-        ServiceSummary summary = new ServiceSummary(service, StdStrings.COM.equalsIgnoreCase(service.getName()));
+        List<OperationSummary> operations = new LinkedList<>();
 
         // only load operations if this is not the COM service
-        if (!summary.isComService()) {
+        if (!StdStrings.COM.equalsIgnoreCase(service.getName())) {
             for (CapabilitySetType capabilitySet : service.getCapabilitySet()) {
                 for (OperationType op : capabilitySet.getSendIPOrSubmitIPOrRequestIP()) {
-                    OperationSummary ele = extractOperationSummary(op, capabilitySet.getNumber());
-                    summary.getOperations().add(ele);
+                    operations.add(extractOperationSummary(op, capabilitySet.getNumber()));
                 }
             }
         }
-        return summary;
+
+        return new ServiceSummary(service.getNumber(), operations);
     }
 
     private OperationSummary extractOperationSummary(OperationType op, int capNum) {
@@ -659,9 +669,9 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
             AnyTypeReference subs = lop.getMessages().getSubscriptionKeys();
-            List<TypeInfo> subKeysList = (subs == null) ? null
+            List<FieldInfo> subKeysList = (subs == null) ? null
                     : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(subs.getAny()));
-            List<TypeInfo> riList = TypeUtils.convertTypeReferences(this,
+            List<FieldInfo> riList = TypeUtils.convertTypeReferences(this,
                     TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
 
             return new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
@@ -695,7 +705,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                 TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
                 allTypesMap.put(key, object);
                 compositeTypesMap.put(key, ty);
-                if (null == ((CompositeType) object).getShortFormPart()) {
+                if (((CompositeType) object).getShortFormPart() == null) {
                     abstractTypesSet.add(key);
                 }
             }
@@ -731,100 +741,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     abstractTypesSet.add(key);
                 }
             }
-        }
-    }
-
-    /**
-     * Simple comparable class that allows indexing on an MO type.
-     */
-    public static final class TypeKey implements Comparable<TypeKey> {
-
-        private final String key;
-
-        /**
-         * Constructor.
-         *
-         * @param type The type reference to create the key from.
-         */
-        public TypeKey(TypeReference type) {
-            this.key = createTypeKey(type);
-        }
-
-        /**
-         * Constructor.
-         *
-         * @param area The area of the type.
-         * @param service The service of the type.
-         * @param name The name of the type.
-         */
-        public TypeKey(String area, String service, String name) {
-            this.key = createTypeKey(TypeUtils.createTypeReference(area, service, name, false));
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 59 * hash + (this.key != null ? this.key.hashCode() : 0);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final TypeKey other = (TypeKey) obj;
-
-            return !((this.key == null) ? (other.key != null) : !this.key.equals(other.key));
-        }
-
-        @Override
-        public int compareTo(TypeKey o) {
-            return this.key.compareTo(o.key);
-        }
-
-        @Override
-        public String toString() {
-            return "TypeKey{" + key + '}';
-        }
-
-        private static String createTypeKey(TypeReference type) {
-            StringBuilder buf = new StringBuilder();
-            buf.append(type.getArea());
-
-            if (null != type.getService()) {
-                buf.append(':').append(type.getService()).append(':');
-            } else {
-                buf.append(":_:");
-            }
-
-            buf.append(type.getName());
-            return buf.toString();
-        }
-
-        public TypeReference getTypeReference(boolean isList) {
-            StringTokenizer st = new StringTokenizer(key, ":");
-            String area = st.nextToken();
-            if (!st.hasMoreTokens()) {
-                throw new IllegalStateException("missing : delimiters in key " + key);
-            }
-            String service = st.nextToken();
-            if (!st.hasMoreTokens()) {
-                throw new IllegalStateException("missing : delimiters in key " + key);
-            }
-            String name = st.nextToken();
-            if (st.hasMoreTokens()) {
-                throw new IllegalStateException("too many : delimiters in key " + key);
-            }
-            TypeReference typeRef = new TypeReference();
-            typeRef.setList(isList);
-            typeRef.setArea(area);
-            typeRef.setService("_".equals(service) ? null : service);
-            typeRef.setName(name);
-            return typeRef;
         }
     }
 

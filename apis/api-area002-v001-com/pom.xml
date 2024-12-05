@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.0</version>
+        <version>11.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-area002-v001-com</artifactId>
-    <version>11.0</version>
+    <version>11.1</version>
     <packaging>jar</packaging>
 
     <name>ESA MO API - COM v001</name>
@@ -92,7 +92,7 @@
                 <targetPath>xml</targetPath>
             </resource>
         </resources>
-    
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

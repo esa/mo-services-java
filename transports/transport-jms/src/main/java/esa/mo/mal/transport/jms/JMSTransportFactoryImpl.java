@@ -22,7 +22,6 @@ package esa.mo.mal.transport.jms;
 
 import java.util.Map;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -36,7 +35,6 @@ public class JMSTransportFactoryImpl extends MALTransportFactory {
     private static final String AMQP_ADMIN_CLASS = "org.ccsds.moims.mo.jms.amqp.admin.class";
     private static final String JMSPS = "ccsdsjms";
     private static final String AMQPPS = "amqpjms";
-    private static final Object mutex = "JMSTransportFactoryImpl.mutex";
     private JMSTransport transport = null;
 
     public JMSTransportFactoryImpl(String protocol) {
@@ -44,16 +42,13 @@ public class JMSTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(MALContext ctx, Map properties) throws MALException {
-        synchronized (mutex) {
-            init(properties);
-
-            return transport;
-        }
+    public synchronized MALTransport createTransport(Map properties) throws MALException {
+        init(properties);
+        return transport;
     }
 
     protected void init(Map properties) throws MALException {
-        if (null == transport) {
+        if (transport == null) {
             try {
                 String prot = getProtocol();
                 if (JMSPS.equals(prot)) {

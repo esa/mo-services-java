@@ -634,11 +634,11 @@ public class LineDecoder implements MALDecoder {
     private String removeFirst() throws MALException {
         String rv;
 
-        if (null == sourceBuffer.head) {
+        if (sourceBuffer.head == null) {
             final int index = findNextOffset();
 
             // No more chars
-            if (-1 == index) {
+            if (index == -1) {
                 rv = sourceBuffer.buf.substring(sourceBuffer.offset, sourceBuffer.buf.length());
                 sourceBuffer.offset = sourceBuffer.buf.length();
             } else {
@@ -668,14 +668,14 @@ public class LineDecoder implements MALDecoder {
 
         // ensure that we have loaded enough buffer from the input stream
         // (if we are stream based) for the next read
-        if (-1 == index) {
+        if (index == -1) {
             boolean needMore = true;
             while (needMore) {
                 final boolean haveMore = loadExtraBuffer();
 
                 index = sourceBuffer.buf.indexOf(STR_DELIM, sourceBuffer.offset);
 
-                needMore = haveMore && (-1 == index);
+                needMore = haveMore && (index == -1);
             }
         }
 
@@ -683,7 +683,7 @@ public class LineDecoder implements MALDecoder {
     }
 
     private void preLoadBuffer() throws MALException {
-        if ((null != inputStream) && (null == sourceBuffer.buf)) {
+        if ((inputStream != null) && (sourceBuffer.buf == null)) {
             // need to load in some
             final byte[] tbuf = new byte[BLOCK_SIZE];
 

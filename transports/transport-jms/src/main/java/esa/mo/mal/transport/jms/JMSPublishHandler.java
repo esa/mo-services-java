@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import javax.jms.*;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
@@ -64,7 +63,7 @@ public class JMSPublishHandler {
             preCheckAllowedToPublish(hdr, header);
         } catch (MALTransmitErrorException ex) {
             // create response and do callback
-            return new GENMessage(false,
+            return new GENMessage(
                     JMSEndpoint.createReturnHeader(msg, true, MALPubSubOperation._PUBLISH_STAGE),
                     null, null, jtransport.getStreamFactory(),
                     ex.getStandardError().getErrorNumber(),

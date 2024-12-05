@@ -93,6 +93,19 @@ public class StringDecoder extends Decoder {
         return dSourceBuffer.buf.substring(dSourceBuffer.offset).getBytes(UTF8_CHARSET);
     }
 
+    @Override
+    public Element decodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+
+        if (enumSize < 256) {
+            return enumeration.fromOrdinal(this.decodeUOctet().getValue());
+        } else if (enumSize < 65536) {
+            return enumeration.fromOrdinal(this.decodeUShort().getValue());
+        }
+
+        throw new MALException("The Enumeration could not be decoded!");
+    }
+
     /**
      * Simple class for holding the source string and the offset into that
      * string for the next read.
@@ -265,7 +278,7 @@ public class StringDecoder extends Decoder {
             final int index = findNextOffset();
 
             // No more chars
-            if (-1 == index) {
+            if (index == -1) {
                 str = buf.substring(offset, buf.length());
                 offset = buf.length();
             } else {
@@ -284,7 +297,7 @@ public class StringDecoder extends Decoder {
             final int index = findNextOffset();
 
             // No more chars
-            if (-1 == index) {
+            if (index == -1) {
                 str = buf.substring(offset, buf.length());
             } else {
                 str = buf.substring(offset, index);
@@ -297,7 +310,7 @@ public class StringDecoder extends Decoder {
             final int index = findNextOffset();
 
             // No more chars
-            if (-1 == index) {
+            if (index == -1) {
                 offset = buf.length();
             } else {
                 offset = index + 1;
@@ -310,12 +323,12 @@ public class StringDecoder extends Decoder {
 
             // ensure that we have loaded enough buffer from the 
             // input stream (if we are stream based) for the next read
-            if (-1 == index) {
+            if (index == -1) {
                 boolean needMore = true;
                 while (needMore) {
                     final boolean haveMore = loadExtraBuffer();
                     index = findNextIndex();
-                    needMore = haveMore && (-1 == index);
+                    needMore = haveMore && (index == -1);
                 }
             }
 
@@ -354,7 +367,7 @@ public class StringDecoder extends Decoder {
         }
 
         private void preLoadBuffer() throws MALException {
-            if ((null != inputStream) && (null == buf)) {
+            if ((inputStream != null) && (buf == null)) {
                 // need to load in some
                 final byte[] tbuf = new byte[BLOCK_SIZE];
 

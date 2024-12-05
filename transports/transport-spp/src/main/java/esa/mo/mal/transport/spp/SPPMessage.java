@@ -22,10 +22,10 @@ package esa.mo.mal.transport.spp;
 
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -53,20 +53,19 @@ public class SPPMessage extends GENMessage {
      * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
      * @param segmentCounter The segment counter.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
      * @param encFactory The encoding factory.
      * @param body the body of the message.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
-     * is unknown.
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
-            final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
-            boolean wrapBodyParts, MALMessageHeader header, Map qosProperties,
-            MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, encFactory, body);
+            final SPPConfiguration configuration,
+            final SPPSegmentCounter segmentCounter,
+            final MALMessageHeader header,
+            final LazyMessageBody body,
+            final MALElementStreamFactory encFactory,
+            final Map qosProperties) {
+        super(header, body, encFactory, qosProperties);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;
@@ -79,21 +78,18 @@ public class SPPMessage extends GENMessage {
      * @param hdrStreamFactory The header stream factory.
      * @param configuration The SPP configuration to use for this message.
      * @param segmentCounter The segment counter.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
-     * @param readHeader True if the header should be read from the packet.
-     * @param header An instance of the header class to use.
+     * @param header The message header to use.
      * @param qosProperties The QoS properties for this message.
-     * @param packet The message in encoded form.
-     * @param encFactory The stream factory to use for decoding.
-     * @throws MALException On decoding error.
+     * @param encFactory The encoding factory.
+     * @param body the body of the message.
+     * @throws org.ccsds.moims.mo.mal.MALInteractionException If the operation
+     * is unknown.
      */
     public SPPMessage(final MALElementStreamFactory hdrStreamFactory,
-            final SPPConfiguration configuration,
-            final SPPSegmentCounter segmentCounter, boolean wrapBodyParts,
-            boolean readHeader, MALMessageHeader header, Map qosProperties,
-            byte[] packet, MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, readHeader, header, qosProperties, packet, encFactory);
+            final SPPConfiguration configuration, final SPPSegmentCounter segmentCounter,
+            MALMessageHeader header, Map qosProperties, MALElementStreamFactory encFactory,
+            Object... body) throws MALInteractionException {
+        super(header, qosProperties, encFactory, body);
 
         this.hdrStreamFactory = hdrStreamFactory;
         this.configuration = configuration;
@@ -139,7 +135,7 @@ public class SPPMessage extends GENMessage {
                 final int adjustedSegmentSize = configuration.getSegmentSize() - (hdrBuf.length - 6);
                 // first check to see if we can actually fit any data in the 
                 // body when we have a large header and small segment size
-                if (0 >= adjustedSegmentSize) {
+                if (adjustedSegmentSize <= 0) {
                     throw new MALException(
                             "SPP Segment size of " + configuration.getSegmentSize()
                             + " is too small for encoded MAL Message header or size "

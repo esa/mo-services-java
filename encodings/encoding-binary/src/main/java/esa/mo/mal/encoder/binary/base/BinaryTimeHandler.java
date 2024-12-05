@@ -143,7 +143,7 @@ public class BinaryTimeHandler {
      */
     public void encodeDuration(final BaseBinaryStreamHolder streamHolder, Duration value) throws MALException {
         try {
-            streamHolder.writeDouble(value.getValue());
+            streamHolder.writeDouble(value.getInSeconds());
         } catch (IOException ex) {
             throw new MALException(IO_EXCEPTION_STR, ex);
         }

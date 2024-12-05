@@ -122,7 +122,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
         LoggingBase.logMessage(CLS + ":resetTest " + eventDomain);
         eventDomainId = new IdentifierList();
         eventDomainId.add(new Identifier(eventDomain));
-        // if (null == monitorEventPublisher) 
+        // if (monitorEventPublisher == null) 
         {
             createMonitorEventPublisher(eventDomainId);
 
@@ -403,7 +403,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
     }
 
     public synchronized ArchiveStub archiveStub() throws MALException {
-        if (null == archiveStub) {
+        if (archiveStub == null) {
 
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME.getValue());
 

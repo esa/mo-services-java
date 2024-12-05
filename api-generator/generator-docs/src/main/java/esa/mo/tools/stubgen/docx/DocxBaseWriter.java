@@ -133,16 +133,6 @@ public class DocxBaseWriter extends AbstractWriter {
         addCell(index, widths, text, shade, true, 0, false, false);
     }
 
-    public void addCell(int index, int[] widths, String text, String shade, String linkTo) throws IOException {
-        String str = createHyperLink("", text, "", linkTo, true);
-        actualAddCell(index, widths, str, shade, true, 0, false, false);
-    }
-
-    public void addCell(int index, int[] widths, String text, String shade, String linkTo, int span) throws IOException {
-        String str = createHyperLink("", text, "", linkTo, true);
-        actualAddCell(index, widths, str, shade, true, span, false, false);
-    }
-
     public void addCell(int index, int[] widths, String text, String shade, boolean centered) throws IOException {
         addCell(index, widths, text, shade, centered, 0, false, false);
     }
@@ -151,7 +141,17 @@ public class DocxBaseWriter extends AbstractWriter {
         addCell(index, widths, text, shade, true, span, false, false);
     }
 
-    public void addCell(int index, int[] widths, boolean includeMessageFieldNames,
+    public void addCellWithHyperlink(int index, int[] widths, String text, String shade, String linkTo) throws IOException {
+        String str = createHyperLink("", text, "", linkTo, true);
+        actualAddCell(index, widths, str, shade, true, 0, false, false);
+    }
+
+    public void addCellWithHyperlink(int index, int[] widths, String text, String shade, String linkTo, int span) throws IOException {
+        String str = createHyperLink("", text, "", linkTo, true);
+        actualAddCell(index, widths, str, shade, true, span, false, false);
+    }
+
+    public void addCellWithHyperlink(int index, int[] widths, boolean includeMessageFieldNames,
             boolean oldStyle, AreaType area, ServiceType service, TypeRef type, String shade, int span) throws IOException {
         String str = createTypeHyperLink(includeMessageFieldNames, oldStyle, area, service, type);
         actualAddCell(index, widths, str, shade, true, span, false, false);
@@ -190,7 +190,7 @@ public class DocxBaseWriter extends AbstractWriter {
             if (types.get(i).isField()) {
                 nullable = types.get(i).getFieldRef().isCanBeNull();
             }
-            buf.append("<w:r><w:t>");
+            buf.append("<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>");
             buf.append(nullable ? "Yes" : "No");
             buf.append("</w:t></w:r>");
 
@@ -206,7 +206,8 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addCell(int index, int[] widths, String text, String shade,
             boolean centered, int span, boolean vMerge, boolean vRestart) throws IOException {
-        actualAddCell(index, widths, "<w:r><w:t>" + escape(text) + "</w:t></w:r>", shade, centered, span, vMerge, vRestart);
+        String txt = "<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>" + escape(text) + "</w:t></w:r>";
+        actualAddCell(index, widths, txt, shade, centered, span, vMerge, vRestart);
     }
 
     protected void actualAddCell(int index, int[] widths, String text, String shade,
@@ -280,7 +281,14 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addNumberedComment(List<String> strings) throws IOException {
         if ((null != strings) && (!strings.isEmpty())) {
-            if (1 == strings.size()) {
+            int instance = 0;
+            if (null != this.numberWriter) {
+                instance = this.numberWriter.getNextNumberingInstance();
+            }
+
+            addNumberedComment(instance, 0, strings.iterator());
+            /*
+            if (strings.size() == 1) {
                 addComment(strings.get(0));
             } else {
                 int instance = 0;
@@ -290,6 +298,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
                 addNumberedComment(instance, 0, strings.iterator());
             }
+             */
         }
     }
 
@@ -418,11 +427,11 @@ public class DocxBaseWriter extends AbstractWriter {
         return createHyperLink(prefix, typeName, postfix, "DATATYPE_" + typeName, hyperlink);
     }
 
-    private String createHyperLink(String prefix, String typeName, String postfix,
+    public String createHyperLink(String prefix, String typeName, String postfix,
             String linkTo, boolean withHyperlink) throws IOException {
-        boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
+        boolean isObjectRef = typeName.startsWith("ObjectRef");
         StringBuilder buf = new StringBuilder();
-        buf.append("<w:r><w:t>");
+        buf.append("<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>");
         buf.append(escape(prefix));
 
         if (isObjectRef) {
@@ -435,9 +444,11 @@ public class DocxBaseWriter extends AbstractWriter {
         buf.append("</w:t></w:r>");
 
         if (withHyperlink) {
-            buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
+            buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r>");
+            buf.append("<w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
             buf.append(isObjectRef ? escape(objectRefRemoved) : escape(linkTo));
-            buf.append("\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
+            buf.append("\" </w:instrText></w:r>");
+            buf.append("<w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
         }
 
         buf.append("<w:r>");
@@ -477,4 +488,7 @@ public class DocxBaseWriter extends AbstractWriter {
         return t;
     }
 
+    public void addPageBreak() {
+        buffer.append("<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>");
+    }
 }

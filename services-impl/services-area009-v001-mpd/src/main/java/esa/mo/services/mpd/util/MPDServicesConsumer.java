@@ -68,7 +68,7 @@ public class MPDServicesConsumer {
             if (details != null) {
                 productRetrievalService = new ProductRetrievalConsumerServiceImpl(details, authenticationId, localNamePrefix);
             }
-        } catch (MALException | MALInteractionException ex) {
+        } catch (MALException ex) {
             Logger.getLogger(MPDServicesConsumer.class.getName()).log(Level.SEVERE, null, ex);
         }
 

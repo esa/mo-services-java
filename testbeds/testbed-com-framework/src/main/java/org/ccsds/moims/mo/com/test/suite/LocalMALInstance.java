@@ -107,7 +107,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
 
     public synchronized ActivityTestStub activityTestStub(String extraNamePart) throws MALException {
         ActivityTestStub stub = activityTestStubs.get(extraNamePart);
-        if (null == stub) {
+        if (stub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityTestServiceInfo.ACTIVITYTEST_SERVICE_NAME.getValue());
 
             final IdentifierList domain = new IdentifierList();
@@ -136,7 +136,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized ActivityRelayManagementStub activityRelayManagementStub() throws MALException {
-        if (null == activityRelayManagementStub) {
+        if (activityRelayManagementStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ActivityRelayManagementServiceInfo.ACTIVITYRELAYMANAGEMENT_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -161,7 +161,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized EventStub activityEventStub(String serviceNameSuffix, IdentifierList domain) throws MALException {
-        if (null == activityEventStub) {
+        if (activityEventStub == null) {
             LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + serviceNameSuffix + " " + domain);
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(LocalMALInstance.ACTIVITY_EVENT_NAME + serviceNameSuffix);
 
@@ -187,7 +187,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized ArchiveStub archiveStub() throws MALException {
-        if (null == archiveStub) {
+        if (archiveStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveServiceInfo.ARCHIVE_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -212,7 +212,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized ArchiveTestStub archiveTestStub() throws MALException {
-        if (null == archiveTestStub) {
+        if (archiveTestStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ArchiveTestServiceInfo.ARCHIVETEST_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -237,7 +237,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized EventStub archiveEventStub() throws MALException {
-        if (null == archiveEventStub) {
+        if (archiveEventStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ARCHIVE_EVENT_NAME);
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -262,7 +262,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized EventTestStub eventTestStub() throws MALException {
-        if (null == eventTestStub) {
+        if (eventTestStub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(
                     EventTestServiceInfo.EVENTTEST_SERVICE_NAME.getValue());
 
@@ -291,7 +291,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized EventStub eventStub(IdentifierList domain) throws MALException {
-        if (null == eventStub) {
+        if (eventStub == null) {
             LoggingBase.logMessage("LocalMALInstance:event stub creating consumer " + domain);
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(EventServiceInfo.EVENT_SERVICE_NAME.getValue());
 

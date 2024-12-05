@@ -45,7 +45,7 @@ public class JavaCompositeFields {
     public CompositeField createCompositeElementsDetails(LanguageWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
         String typeName = elementType.getName();
-        boolean isObjectRef = GeneratorBase.isObjectRef(typeName);
+        boolean isObjectRef = GeneratorBase.isObjectRef(elementType);
 
         if (elementType.isList()) {
             String fqTypeName;

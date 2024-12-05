@@ -30,8 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
- * @author Cesar.Coelho
+ * A set of utils methods for the generators.
  */
 public class GeneratorUtils {
 
@@ -44,13 +43,15 @@ public class GeneratorUtils {
     }
 
     public static String createFQTypeName(AreaType area, ServiceType service, TypeReference type, boolean isList) {
-        String servicename = (null == service) ? "" : service.getName();
+        String servicename = (service == null) ? "" : service.getName();
+        String typeName = type.isObjectRef() ? "ObjectRef<" + type.getName() + ">" : type.getName();
+
         return createFQTypeName(area.getName(), servicename, type.getArea(),
-                type.getService(), type.getName(), isList);
+                type.getService(), typeName, isList);
     }
 
     public static String createFQTypeName(AreaType area, ServiceType service, ObjectReference type) {
-        String servicename = (null == service) ? "" : service.getName();
+        String servicename = (service == null) ? "" : service.getName();
         return createFQTypeName(area.getName(), servicename, type.getArea(),
                 type.getService(), String.valueOf(type.getNumber()), false);
     }

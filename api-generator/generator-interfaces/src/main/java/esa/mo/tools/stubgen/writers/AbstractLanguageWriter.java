@@ -84,7 +84,7 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
      * @return the supplied list.
      */
     public static List<String> normaliseComment(List<String> output, String comment) {
-        if ((null != output) && (comment != null) && (comment.length() > 0)) {
+        if ((output != null) && (comment != null) && (comment.length() > 0)) {
             if (!comment.endsWith(".")) {
                 comment += ".";
             }

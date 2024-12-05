@@ -167,7 +167,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
             URI from = new URI(malMessageHeader.getFrom().getValue());
             URI to = new URI(malMessageHeader.getTo().getValue());
             httpResponse.setReferer(from.toASCIIString());
-            httpResponse.setResponseHeader("X-MAL-Version-Number", "1"); // according to 3.4.2 in recommended standard.
+            httpResponse.setResponseHeader("X-MAL-Version-Number", "2"); // according to 3.4.2 in recommended standard.
             httpResponse.setResponseHeader("X-MAL-To", to.toASCIIString());
             httpResponse.setResponseHeader("Host", to.getHost());
             httpResponse.setResponseHeader("request-target", to.getPath());
@@ -191,7 +191,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
                 encodeAscii(String.valueOf(malMessageHeader.getService().getValue())));
         httpResponse.setResponseHeader("X-MAL-Operation",
                 encodeAscii(String.valueOf(malMessageHeader.getOperation().getValue())));
-        httpResponse.setResponseHeader("X-MAL-Service-Version",
+        httpResponse.setResponseHeader("X-MAL-Area-Version",
                 encodeAscii(String.valueOf(malMessageHeader.getServiceVersion().getValue())));
         httpResponse.setResponseHeader("X-MAL-Is-Error-Message",
                 encodeAscii(String.valueOf(malMessageHeader.getIsErrorMessage())));

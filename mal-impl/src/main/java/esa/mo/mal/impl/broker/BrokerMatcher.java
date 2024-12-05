@@ -28,7 +28,6 @@ import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
@@ -39,15 +38,7 @@ public class BrokerMatcher {
     /**
      * Match all string constant.
      */
-    public static final String ALL_ID = "*";
-    /**
-     * Match all numeric constant.
-     */
-    public static final Long ALL_NUMBER = 0L;
-    /**
-     * Match all ushort constant.
-     */
-    public static final UShort ALL_SHORT = new UShort(0);
+    public static final String ASTERISK_WILDCARD = "*";
 
     /**
      * Compare provider's UpdateKeyValues with consumer's subscription filters
@@ -96,7 +87,7 @@ public class BrokerMatcher {
         if (!consumerIsNull && Attribute.isStringAttribute(consumer)) {
             String str = HelperAttributes.attribute2string(consumer);
             // Check the asterisk case
-            if (ALL_ID.equals(str)) {
+            if (ASTERISK_WILDCARD.equals(str)) {
                 return true;
             }
         }
@@ -222,116 +213,5 @@ public class BrokerMatcher {
         }
 
         return matched;
-    }
-
-    /**
-     * Compares a String based sub-key.
-     *
-     * @param myKeyPart The first key part.
-     * @param theirKeyPart The second key part.
-     * @return -1, 0, or 1 based on how the two values compare using normal
-     * comparable rules.
-     */
-    @Deprecated
-    public static int compareSubkey(final String myKeyPart, final String theirKeyPart) {
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            if ((null != myKeyPart) || (null != theirKeyPart)) {
-                if (null == myKeyPart) {
-                    return -1;
-                }
-                return 1;
-            }
-        } else {
-            if (!myKeyPart.equals(theirKeyPart)) {
-                return myKeyPart.compareTo(theirKeyPart);
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Compares an Long based sub-key.
-     *
-     * @param myKeyPart The first key part.
-     * @param theirKeyPart The second key part.
-     * @return -1, 0, or 1 based on how the two values compare using normal
-     * comparable rules.
-     */
-    @Deprecated
-    public static int compareSubkey(final Long myKeyPart, final Long theirKeyPart) {
-        if ((myKeyPart == null) || (theirKeyPart == null)) {
-            if ((myKeyPart != null) || (theirKeyPart != null)) {
-                return (myKeyPart == null) ? -1 : 1;
-            }
-        } else {
-            if (!myKeyPart.equals(theirKeyPart)) {
-                return myKeyPart.compareTo(theirKeyPart);
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Compares two String sub-keys taking into account wildcard values. This
-     * method is deprecated because it was being used before we changed to MO
-     * v2.0 as the subscription to PUBSUB has now changed.
-     *
-     * @param myKeyPart The first key part.
-     * @param theirKeyPart The second key part.
-     * @return True if they match or one is the wildcard.
-     */
-    @Deprecated
-    public static boolean matchedSubkeyWithWildcard(final String myKeyPart, final String theirKeyPart) {
-        if (ALL_ID.equals(myKeyPart) || ALL_ID.equals(theirKeyPart)) {
-            return true;
-        }
-
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
-        }
-
-        return myKeyPart.equals(theirKeyPart);
-    }
-
-    /**
-     * Compares two Long sub-keys taking into account wildcard values. This
-     * method is deprecated because it was being used before we changed to MO
-     * v2.0 as the subscription to PUBSUB has now changed.
-     *
-     * @param myKeyPart The first key part.
-     * @param theirKeyPart The second key part.
-     * @return True if they match or one is the wildcard.
-     */
-    @Deprecated
-    public static boolean matchedSubkeyWithWildcard(final Long myKeyPart, final Long theirKeyPart) {
-        if (ALL_NUMBER.equals(myKeyPart) || ALL_NUMBER.equals(theirKeyPart)) {
-            return true;
-        }
-
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
-        }
-
-        return myKeyPart.equals(theirKeyPart);
-    }
-
-    /**
-     * Compares two UShort sub-keys taking into account wildcard values.
-     *
-     * @param myKeyPart The first key part.
-     * @param theirKeyPart The second key part.
-     * @return True if they match or one is the wildcard.
-     */
-    @Deprecated
-    public static boolean matchedSubkeyWithWildcard(final UShort myKeyPart, final UShort theirKeyPart) {
-        if (ALL_SHORT.equals(myKeyPart) || ALL_SHORT.equals(theirKeyPart)) {
-            return true;
-        }
-
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
-        }
-
-        return myKeyPart.equals(theirKeyPart);
     }
 }

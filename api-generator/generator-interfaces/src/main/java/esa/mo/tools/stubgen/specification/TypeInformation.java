@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.TypeReference;
 
 /**
@@ -94,8 +93,5 @@ public interface TypeInformation {
      * @param type The type.
      * @return the full name of the type.
      */
-    String createElementType(
-            String area,
-            String service,
-            String type);
+    String createElementType(String area, String service, String type);
 }

@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.0</version>
+        <version>11.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-area004-v001-mc</artifactId>
-    <version>11.0</version>
+    <version>11.1</version>
     <packaging>jar</packaging>
 
     <name>ESA MO API - MC v001</name>

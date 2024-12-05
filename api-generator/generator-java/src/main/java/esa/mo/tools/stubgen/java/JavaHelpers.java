@@ -49,13 +49,14 @@ public class JavaHelpers {
         this.generator = generator;
     }
 
-    public void createServiceHelperClass(File serviceFolder, AreaType area, ServiceType service, ServiceSummary summary) throws IOException {
+    public void createServiceHelperClass(File serviceFolder, String area,
+            ServiceType service, ServiceSummary summary) throws IOException {
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + "Helper");
 
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
 
-        file.addPackageStatement(area, service, null);
+        file.addPackageStatement(area, service.getName(), null);
         file.addClassOpenStatement(serviceName + "Helper", false, false, null,
                 null, "Helper class for " + serviceName + " service.");
 
@@ -78,7 +79,7 @@ public class JavaHelpers {
         }
 
         CompositeField serviceInstVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE",
-                TypeUtils.createTypeReference(area.getName(), service.getName(), serviceName + JavaServiceInfo.SERVICE_INFO, false),
+                TypeUtils.createTypeReference(area, service.getName(), serviceName + JavaServiceInfo.SERVICE_INFO, false),
                 false, true, "Service singleton instance.");
 
         file.addClassVariable(true, false, StdStrings.PUBLIC, serviceInstVar, true, "()");
@@ -93,7 +94,7 @@ public class JavaHelpers {
         String areaNameCAPS = area.getName().toUpperCase();
         String areaNumber = areaNameCAPS + "_AREA_NUMBER";
 
-        file.addPackageStatement(area, null, null);
+        file.addPackageStatement(area.getName(), null, null);
 
         CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNumber,
                 TypeUtils.createTypeReference(null, null, "int", false),
@@ -153,8 +154,11 @@ public class JavaHelpers {
                     EnumerationType dt = (EnumerationType) oType;
                     String clsName = generator.createElementType(area.getName(), null, dt.getName());
                     String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
-                    elementList.add(clsName + ".fromOrdinal(0)");
+                    elementList.add("new " + clsName + "()");
                     elementList.add("new " + lclsName + "()");
+                    // Old code for Enumerations
+                    //elementList.add(clsName + ".fromOrdinal(0)");
+                    //elementList.add("new " + lclsName + "()");
                 }
             }
         }
@@ -187,7 +191,7 @@ public class JavaHelpers {
         file.addClassVariableNewInit(true, true, StdStrings.PUBLIC, areaServices,
                 false, true, buf_2.toString(), false);
 
-        String areaObjectInitialValue = generator.createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
+        String areaObjectInitialValue = createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
         file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
         // create error numbers
@@ -206,5 +210,10 @@ public class JavaHelpers {
 
         file.addClassCloseStatement();
         file.flush();
+    }
+
+    public String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
+        return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, "
+                + areaVar + "_AREA_VERSION, " + areaVar + "_AREA_ELEMENTS, " + areaVar + "_AREA_SERVICES)";
     }
 }

@@ -20,6 +20,9 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+
 /**
  * The abstract class represents the MAL Enumeration type. The class is extended
  * by the classes representing MAL enumeration types.
@@ -54,11 +57,51 @@ public abstract class Enumeration implements Element {
     }
 
     /**
+     * Encodes the value of this object using the provided MALEncoder.
+     *
+     * @param encoder The encoder to use for encoding.
+     * @throws org.ccsds.moims.mo.mal.MALException if any encoding errors are
+     * detected.
+     */
+    @Override
+    public void encode(MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+        encoder.encodeEnumeration(this);
+    }
+
+    /**
+     * Decodes the value of this object using the provided MALDecoder.
+     *
+     * @param decoder The decoder to use for decoding.
+     * @return Returns this object.
+     * @throws org.ccsds.moims.mo.mal.MALException if any decoding errors are
+     * detected.
+     */
+    @Override
+    public Element decode(MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+        return decoder.decodeEnumeration(this);
+    }
+
+    /**
+     * Returns the size of the enumeration.
+     *
+     * @return the size of the enumeration.
+     */
+    public abstract int getEnumSize();
+
+    /**
      * Returns the numeric value of the enumerated item.
      *
      * @return the numeric value of the enumerated item.
      */
     public abstract UInteger getNumericValue();
+
+    /**
+     * Returns the respective Enumeration for a given ordinal value.
+     *
+     * @param ordinal The ordinal value of this Enumeration.
+     * @return The respective Enumeration.
+     */
+    public abstract Element fromOrdinal(int ordinal);
 
     @Override
     public int hashCode() {
@@ -74,7 +117,7 @@ public abstract class Enumeration implements Element {
             return true;
         }
         if (other instanceof Enumeration) {
-            return 0 == ordinal.compareTo(((Enumeration) other).ordinal);
+            return (ordinal.compareTo(((Enumeration) other).ordinal) == 0);
         }
         return false;
     }

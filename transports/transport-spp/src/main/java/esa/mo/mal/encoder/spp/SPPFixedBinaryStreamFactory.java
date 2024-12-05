@@ -39,15 +39,14 @@ public class SPPFixedBinaryStreamFactory extends esa.mo.mal.encoder.binary.fixed
     public static long FINETIME_EPOCH = 9223372036854775807L;
 
     @Override
-    protected void init(final String protocol, final Map properties) throws IllegalArgumentException,
-            MALException {
-        super.init(protocol, properties);
+    protected void init(final Map properties) throws IllegalArgumentException, MALException {
+        super.init(properties);
 
         // Override default binary time encoding handler
         timeHandler = new SPPTimeHandler(properties);
 
         // Backward compatible short length field property name
-        if (null != properties) {
+        if (properties != null) {
             if (properties.containsKey(SMALL_LENGTH_FIELD)
                     && Boolean.parseBoolean(properties.get(SMALL_LENGTH_FIELD).toString())) {
                 shortLengthField = true;

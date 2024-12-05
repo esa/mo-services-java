@@ -20,12 +20,12 @@
  */
 package esa.mo.tools.stubgen;
 
-import esa.mo.xsd.SpecificationType;
+import esa.mo.xsd.util.XmlSpecification;
+import esa.mo.xsd.util.XsdSpecification;
 import java.io.IOException;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import w3c.xsd.Schema;
 
 /**
  * Interface class for a language generator.
@@ -86,36 +86,36 @@ public interface Generator {
             Map<String, String> extraProperties) throws IOException;
 
     /**
-     * Pre process a specification to load in the type definitions.
+     * Load an XML specification in the type definitions.
      *
-     * @param spec The specification to process.
+     * @param xml The xml specification to load.
      * @throws IOException If there are problems reading the file.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void preProcess(SpecificationType spec) throws IOException, JAXBException;
+    void loadXML(XmlSpecification xml) throws IOException, JAXBException;
 
     /**
-     * Pre process an XSD specification to load in the type definitions.
+     * Load an XSD specification in the type definitions.
      *
-     * @param spec The schema spec to process.
+     * @param xsd The sd schema spec to process.
      * @throws IOException If there are problems reading the file.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void preProcess(Schema spec) throws IOException, JAXBException;
+    void loadXSD(XsdSpecification xsd) throws IOException, JAXBException;
 
     /**
-     * Compiles the specification into the appropriate form for the generator.
+     * Generates the specification into the appropriate form.
      *
      * @param destinationFolderName The folder to generate in to.
-     * @param spec The specification to process.
+     * @param xml The xml specification to process.
      * @param rootNode The JAXB root node for the specification
      * @throws IOException If there are problems writing the files.
      * @throws JAXBException If there are problems reading any XML Schema
      * definitions.
      */
-    void compile(String destinationFolderName, SpecificationType spec, JAXBElement rootNode) throws IOException, JAXBException;
+    void generate(String destinationFolderName, XmlSpecification xml, JAXBElement rootNode) throws IOException, JAXBException;
 
     /**
      * Closes the generator allowing it to write out any final files or

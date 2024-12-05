@@ -54,12 +54,12 @@ public class JavaLists {
      * @param srcTypeName The name of the element in the list.
      * @throws IOException if there is a problem writing the file.
      */
-    public void createHeterogeneousListClass(File folder, AreaType area,
-            ServiceType service, String srcTypeName) throws IOException {
+    public void createHeterogeneousListClass(File folder, String area,
+            String service, String srcTypeName) throws IOException {
         TypeReference srcType = new TypeReference();
-        srcType.setArea(area.getName());
+        srcType.setArea(area);
         if (service != null) {
-            srcType.setService(service.getName());
+            srcType.setService(service);
         }
 
         srcType.setName(srcTypeName);
@@ -85,11 +85,8 @@ public class JavaLists {
         type.setName("boolean");
         CompositeField rtype = generator.createCompositeElementsDetails(file, false, "element",
                 type, false, true, "List element.");
-        MethodWriter method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, rtype, "add", argList, null,
-                "Adds an element to the list and checks if the type is correct.",
-                "The success status.", null);
 
+        MethodWriter method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
         method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {", false);
         method.addLine("    throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
         method.addLine("}", false);
@@ -122,7 +119,7 @@ public class JavaLists {
         }
 
         ClassWriter file = generator.createClassFile(folder, listName);
-        file.addPackageStatement(area, service, generator.getConfig().getStructureFolder());
+        file.addPackageStatement(area.getName(), service == null ? null : service.getName(), generator.getConfig().getStructureFolder());
 
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
@@ -167,10 +164,8 @@ public class JavaLists {
         type.setName("boolean");
         CompositeField rtype = generator.createCompositeElementsDetails(file, false, "element",
                 type, false, true, "List element.");
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC,
-                false, true, rtype, "add", argList, null,
-                "Adds an element to the list.", "The success status.", null);
 
+        method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
         method.addLine("if (element == null) {", false);
         method.addLine("    throw new IllegalArgumentException(\"The added argument cannot be null!\")");
         method.addLine("}", false);
@@ -178,20 +173,14 @@ public class JavaLists {
         method.addLine("return super.add(element)");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
-                true, elementType, "createElement", null, null,
-                "Creates an instance of this type using the default constructor. It is a generic factory method.",
-                "A new instance of this type with default field values.", null);
+        method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
         method.addLine("return new " + listName + "()");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(true, false, StdStrings.PUBLIC, false,
-                true, elementType, "createTypedElement", null, null,
-                "Creates an instance of the selected generic type for this list.",
-                "A new instance of this type with default field values.", null);
+        method = file.addMethodOpenStatementOverride(elementType, "createTypedElement", null, null);
 
         // Wrap in Union if needed:
-        if(listElement.getNewCall().contains("structures")) {
+        if (listElement.getNewCall().contains("structures")) {
             method.addLine("return " + listElement.getNewCall());
         } else {
             method.addLine("org.ccsds.moims.mo.mal.TypeId typeId = this.getTypeId()");
@@ -215,10 +204,5 @@ public class JavaLists {
 
         file.addClassCloseStatement();
         file.flush();
-
-        srcType.setList(Boolean.TRUE);
-        CompositeField listType = generator.createCompositeElementsDetails(file, false, null,
-                srcType, true, true, "List element.");
     }
-
 }

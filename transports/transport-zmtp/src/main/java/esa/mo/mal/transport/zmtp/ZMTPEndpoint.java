@@ -48,10 +48,9 @@ public class ZMTPEndpoint extends Endpoint {
             String localName,
             String routingName,
             String uri,
-            boolean wrapBodyParts,
             NamedValueList supplements,
             final Map properties) {
-        super(transport, localName, routingName, uri, wrapBodyParts, supplements);
+        super(transport, localName, routingName, uri, supplements);
         this.configuration = new ZMTPConfiguration(configuration, properties);
     }
 
@@ -87,8 +86,7 @@ public class ZMTPEndpoint extends Endpoint {
                     qosProperties);
             return new ZMTPMessage(
                     ((ZMTPTransport) transport).getHeaderStreamFactory(),
-                    wrapBodyParts, hdr, qosProperties,
-                    transport.getStreamFactory(), body);
+                    hdr, qosProperties, transport.getStreamFactory(), body);
         } catch (MALInteractionException ex) {
             throw new MALException("Error creating message", ex);
         }

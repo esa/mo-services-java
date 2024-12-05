@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import java.io.IOException;
 import javax.naming.NameNotFoundException;
@@ -43,6 +44,9 @@ import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
 import esa.mo.mal.transport.gen.sending.MessageSender;
+import java.io.ByteArrayInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 
 /**
  *
@@ -63,7 +67,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     public JMSTransport(MALTransportFactory factory, String protocol,
             JMSAbstractAdministrator administrator, java.util.Map properties) throws Exception {
-        super(protocol, JMS_SERVICE_DELIM, true, true, factory, properties);
+        super(protocol, JMS_SERVICE_DELIM, true, properties);
 
         this.administrator = administrator;
 
@@ -187,8 +191,13 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     @Override
     public GENMessage decodeMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
-                qosProperties, packet, getStreamFactory());
+        MALElementStreamFactory encFactory = getStreamFactory();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+        final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+        MALMessageHeader header = enc.readHeader(new MALMessageHeader());
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+        return new GENMessage(header, lazyBody, encFactory, qosProperties);
     }
 
     @Override

@@ -36,7 +36,6 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
-import org.ccsds.moims.mo.mal.transport.MALEncodedElement;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 public class TestErrorBody implements MALErrorBody {
@@ -69,11 +68,6 @@ public class TestErrorBody implements MALErrorBody {
     @Override
     public int getElementCount() {
         return 2;
-    }
-
-    @Override
-    public MALEncodedElement getEncodedBodyElement(int index) throws MALException {
-        throw new MALException("Invalid call");
     }
 
     @Override

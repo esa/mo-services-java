@@ -145,6 +145,18 @@ public class AreaTabbedPane extends JTabbedPane {
                 panel.revalidate();
                 panel.repaint();
 
+                Thread t1 = generateDocumentThread(textEditorFrom, panel);
+                t1.start();
+            }
+        });
+
+        return buttonB;
+    }
+
+    private Thread generateDocumentThread(final RTextScrollPane textEditorFrom, final JPanel panel) {
+        return new Thread() {
+            @Override
+            public void run() {
                 long timestamp = System.currentTimeMillis();
                 org.apache.maven.plugin.logging.SystemStreamLog logger = new org.apache.maven.plugin.logging.SystemStreamLog();
                 GeneratorDocx generator = new GeneratorDocx(logger);
@@ -172,8 +184,8 @@ public class AreaTabbedPane extends JTabbedPane {
                     // now generator from each specification
                     for (XmlSpecification spec : specs) {
                         try {
-                            generator.preProcess(spec.getSpecType());
-                            generator.compile(destFolder, spec.getSpecType(), spec.getRootElement());
+                            generator.loadXML(spec);
+                            generator.generate(destFolder, spec, spec.getRootElement());
                         } catch (Exception ex) {
                             Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                                     "Exception thrown during the processing of XML file: "
@@ -202,8 +214,6 @@ public class AreaTabbedPane extends JTabbedPane {
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                             "Success! Generated the Book in " + timestamp + " miliseconds! "
                             + "Location:\n >> " + destFolder, text);
-                    buttonB.revalidate();
-                    buttonB.repaint();
                 } catch (JAXBException ex) {
                     panel.remove(LABEL_GENERATING);
                     panel.add(LABEL_ERROR_GENERATION);
@@ -215,10 +225,9 @@ public class AreaTabbedPane extends JTabbedPane {
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(
                             Level.SEVERE, "(2) Something went wrong...", ex);
                 }
-            }
-        });
 
-        return buttonB;
+            }
+        };
     }
 
     private RTextScrollPane createTextEditorXML(JPanel panelXML) {

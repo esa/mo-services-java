@@ -61,7 +61,7 @@ public abstract class Configuration {
     private static String _os = null;
 
     public static String getOSname() {
-        if (null == _os) {
+        if (_os == null) {
             _os = System.getProperty("os.name").replace(' ', '_');
         }
 

@@ -24,6 +24,7 @@ import esa.mo.services.mpd.provider.OrderManagementProviderServiceImpl;
 import esa.mo.services.mpd.provider.ProductOrderDeliveryProviderServiceImpl;
 import esa.mo.services.mpd.provider.ProductRetrievalProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 
 /**
  * The MPD services consumer class that contains all the provider services.
@@ -34,7 +35,7 @@ public class MPDServicesProvider {
     private final ProductOrderDeliveryProviderServiceImpl productOrderDeliveryService = new ProductOrderDeliveryProviderServiceImpl();
     private final ProductRetrievalProviderServiceImpl productRetrievalService = new ProductRetrievalProviderServiceImpl();
 
-    public void init() throws MALException {
+    public void init(ProductRetrievalBackend backendProductRetrievalProvider) throws MALException {
         orderManagementService.init();
         productOrderDeliveryService.init();
         productRetrievalService.init();

@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.tcpip;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -48,11 +47,9 @@ public class TCPIPTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public synchronized MALTransport createTransport(final MALContext malContext,
-            final Map properties) throws MALException {
-        if (null == transport) {
-            transport = new TCPIPTransport(getProtocol(),
-                    SERVICE_DELIMITER, true, this, properties);
+    public synchronized MALTransport createTransport(final Map properties) throws MALException {
+        if (transport == null) {
+            transport = new TCPIPTransport(getProtocol(), SERVICE_DELIMITER, true, properties);
             transport.init();
         }
 

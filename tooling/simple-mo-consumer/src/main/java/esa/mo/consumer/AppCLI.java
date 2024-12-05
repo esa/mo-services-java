@@ -31,7 +31,6 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
@@ -48,12 +47,10 @@ public class AppCLI {
      * @param args The arguments
      */
     public static void main(String[] args) {
-        String providerURI = "maltcp://xxx.xxx.xxx.xxx:1024/Directory";
         MOSimpleConsumer consumer = new MOSimpleConsumer();
 
         try {
-            consumer.init(new URI(providerURI));
-
+            consumer.init();
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
 
             StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
@@ -77,6 +74,8 @@ public class AppCLI {
         } catch (MalformedURLException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALInteractionException ex) {
+            Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (java.io.FileNotFoundException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

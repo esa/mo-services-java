@@ -63,7 +63,7 @@ public class AssertionHelper {
     public static void checkHeader(String procedureName,
             AssertionList assertions, MALMessageHeader header,
             MALMessageHeader expectedHeader, boolean limited) {
-        if ((null == header) || (null == expectedHeader)) {
+        if ((header == null) || (expectedHeader == null)) {
             checkEquality(procedureName, assertions, "Header", header, expectedHeader);
         } else {
             checkEquality(procedureName, assertions, "Area", header.getServiceArea(),
@@ -167,7 +167,7 @@ public class AssertionHelper {
     }
 
     private static String toString(Object field) {
-        if (null == field) {
+        if (field == null) {
             return "null";
         } else if (field instanceof Blob) {
             Blob b = (Blob) field;

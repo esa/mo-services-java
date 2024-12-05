@@ -32,7 +32,7 @@ public class RemoteMALInstance extends RemoteProcessRunner {
     static private RemoteMALInstance instance = null;
 
     public static RemoteMALInstance instance() throws Exception {
-        if (null == instance) {
+        if (instance == null) {
             // load test specific properties
             Properties prp = Configuration.getProperties("RemoteMALInstance.properties", true);
             System.getProperties().putAll(prp);

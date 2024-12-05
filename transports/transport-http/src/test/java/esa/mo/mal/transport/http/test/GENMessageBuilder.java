@@ -59,7 +59,7 @@ public class GENMessageBuilder {
   public GENMessage build() throws MALInteractionException {
     MALMessageHeader header = new MALMessageHeader(from, authenticationId, to, timestamp, interactionType, interactionStage, transactionId,
         serviceArea, service, operation, serviceVersion, isErrorMessage, supplements);
-    return new GENMessage(false, header, qosProperties, null, body);
+    return new GENMessage(header, qosProperties, null, body);
   }
 
   public GENMessageBuilder from(final Identifier from) {

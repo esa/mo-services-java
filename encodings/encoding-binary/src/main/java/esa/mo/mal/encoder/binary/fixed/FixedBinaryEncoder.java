@@ -149,7 +149,7 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
 
         @Override
         public void writeBytes(final byte[] value) throws IOException {
-            if (null == value) {
+            if (value == null) {
                 if (shortLengthField) {
                     writeUnsignedShort(0);
                 } else {

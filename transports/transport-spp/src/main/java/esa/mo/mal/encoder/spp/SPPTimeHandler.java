@@ -77,7 +77,7 @@ public class SPPTimeHandler extends BinaryTimeHandler {
                     min = (int) ((bits & 0x03));
                 }
 
-                if (1 == tcf) {
+                if (tcf == 1) {
                     ltimeEpoch = true;
                     ltimeScaleIsUTC = false;
                 } else {

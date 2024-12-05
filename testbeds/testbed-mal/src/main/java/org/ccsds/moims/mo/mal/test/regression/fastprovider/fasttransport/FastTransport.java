@@ -95,7 +95,7 @@ public class FastTransport implements MALTransport {
     }
 
     protected String getLocalName(String localName, final java.util.Map properties) {
-        if ((null == localName) || (0 == localName.length())) {
+        if ((localName == null) || (localName.length() == 0)) {
             localName = String.valueOf(RANDOM_NAME.nextInt());
         }
 

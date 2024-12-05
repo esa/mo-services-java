@@ -21,21 +21,31 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.specification.OperationSummary;
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
 
 /**
  * Small class holding required publisher details.
  */
 public class RequiredPublisher {
 
-    public final AreaType area;
-    public final ServiceType service;
-    public final OperationSummary operation;
+    private final String area;
+    private final String service;
+    private final OperationSummary operation;
 
-    public RequiredPublisher(AreaType area, ServiceType service, OperationSummary operation) {
+    public RequiredPublisher(String area, String service, OperationSummary operation) {
         this.area = area;
         this.service = service;
         this.operation = operation;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public OperationSummary getOperation() {
+        return operation;
     }
 }

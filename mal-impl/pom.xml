@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.0</version>
+        <version>11.1</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>mal-impl</artifactId>
     <packaging>jar</packaging>
-    <version>11.0</version>
+    <version>11.1</version>
 
     <name>ESA MO MAL Java Implementation</name>
     <description>The ESA implementation of the CCSDS MAL in Java</description>
@@ -79,7 +79,7 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
 
     <build>

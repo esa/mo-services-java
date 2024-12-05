@@ -20,7 +20,9 @@
  */
 package esa.mo.tools.stubgen.specification;
 
+import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.OperationType;
+import esa.mo.xsd.PubSubOperationType;
 import java.util.List;
 
 /**
@@ -31,20 +33,20 @@ public final class OperationSummary {
     private final InteractionPatternEnum pattern;
     private final OperationType originalOp;
     private final Integer set;
-    private final List<TypeInfo> argTypes;
+    private final List<FieldInfo> argTypes;
     private final String argComment;
-    private final List<TypeInfo> ackTypes;
+    private final List<FieldInfo> ackTypes;
     private final String ackComment;
-    private final List<TypeInfo> updateTypes;
+    private final List<FieldInfo> updateTypes;
     private final String updateComment;
-    private final List<TypeInfo> retTypes;
+    private final List<FieldInfo> retTypes;
     private final String retComment;
 
     /**
      * Constructor.
      *
      * @param pattern The interaction pattern of the operation.
-     * @param op The XML operation details.
+     * @param originalOp The XML operation details.
      * @param set The capability set of the operation.
      * @param argTypes The initial argument types of the operation.
      * @param argComment The initial argument comments of the operation.
@@ -62,19 +64,19 @@ public final class OperationSummary {
      * support by the pattern.
      */
     public OperationSummary(InteractionPatternEnum pattern,
-            OperationType op,
+            OperationType originalOp,
             Integer set,
-            List<TypeInfo> argTypes,
+            List<FieldInfo> argTypes,
             String argComment,
-            List<TypeInfo> ackTypes,
+            List<FieldInfo> ackTypes,
             String ackComment,
-            List<TypeInfo> updateTypes,
+            List<FieldInfo> updateTypes,
             String updateComment,
-            List<TypeInfo> retTypes,
+            List<FieldInfo> retTypes,
             String retComment) {
         super();
         this.pattern = pattern;
-        this.originalOp = op;
+        this.originalOp = originalOp;
         this.set = set;
         this.argTypes = argTypes;
         this.argComment = argComment;
@@ -100,8 +102,8 @@ public final class OperationSummary {
      *
      * @return the originalOp
      */
-    public OperationType getOriginalOp() {
-        return originalOp;
+    public String getComment() {
+        return originalOp.getComment();
     }
 
     /**
@@ -145,7 +147,7 @@ public final class OperationSummary {
      *
      * @return the argTypes
      */
-    public List<TypeInfo> getArgTypes() {
+    public List<FieldInfo> getArgTypes() {
         return argTypes;
     }
 
@@ -164,7 +166,7 @@ public final class OperationSummary {
      *
      * @return the ackTypes
      */
-    public List<TypeInfo> getAckTypes() {
+    public List<FieldInfo> getAckTypes() {
         return ackTypes;
     }
 
@@ -184,7 +186,7 @@ public final class OperationSummary {
      *
      * @return the updateTypes
      */
-    public List<TypeInfo> getUpdateTypes() {
+    public List<FieldInfo> getUpdateTypes() {
         return updateTypes;
     }
 
@@ -204,7 +206,7 @@ public final class OperationSummary {
      *
      * @return the retTypes
      */
-    public List<TypeInfo> getRetTypes() {
+    public List<FieldInfo> getRetTypes() {
         return retTypes;
     }
 
@@ -216,5 +218,10 @@ public final class OperationSummary {
      */
     public String getRetComment() {
         return retComment;
+    }
+
+    public AnyTypeReference getSubscriptionKeys() {
+        PubSubOperationType lop = (PubSubOperationType) originalOp;
+        return lop.getMessages().getSubscriptionKeys();
     }
 }

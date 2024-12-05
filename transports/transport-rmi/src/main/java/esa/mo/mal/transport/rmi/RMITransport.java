@@ -22,8 +22,10 @@ package esa.mo.mal.transport.rmi;
 
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -40,6 +42,8 @@ import org.ccsds.moims.mo.mal.DeliveryFailedException;
 import org.ccsds.moims.mo.mal.DestinationUnknownException;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -47,7 +51,6 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
  * An implementation of the transport interface for the RMI protocol.
@@ -73,14 +76,11 @@ public class RMITransport extends Transport<byte[], byte[]> {
      * Constructor.
      *
      * @param protocol The protocol string.
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    public RMITransport(final String protocol,
-            final MALTransportFactory factory,
-            final java.util.Map properties) throws MALException {
-        super(protocol, '-', true, true, factory, properties);
+    public RMITransport(final String protocol, final java.util.Map properties) throws MALException {
+        super(protocol, '-', true, properties);
 
         String lhost = null;
 
@@ -207,8 +207,13 @@ public class RMITransport extends Transport<byte[], byte[]> {
 
     @Override
     public GENMessage decodeMessage(byte[] packet) throws MALException {
-        return new GENMessage(wrapBodyParts, true, new MALMessageHeader(),
-                qosProperties, packet, getStreamFactory());
+        MALElementStreamFactory encFactory = getStreamFactory();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+        final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+        MALMessageHeader header = enc.readHeader(new MALMessageHeader());
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+        return new GENMessage(header, lazyBody, encFactory, qosProperties);
     }
 
     @Override

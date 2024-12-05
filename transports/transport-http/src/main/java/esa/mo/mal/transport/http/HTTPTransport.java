@@ -23,6 +23,7 @@ package esa.mo.mal.transport.http;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
 import esa.mo.mal.transport.http.api.IHttpResponse;
@@ -36,6 +37,7 @@ import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoResponse;
 import esa.mo.mal.transport.http.sending.HTTPMessageSenderRequestResponse;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
 import esa.mo.mal.transport.http.util.StatusCodeHelper;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -61,7 +63,9 @@ import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.MALSubmitOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
@@ -71,7 +75,6 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 
 /**
  * An implementation of the transport interface for the HTTP protocol.
@@ -202,14 +205,13 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      * @param serviceDelim The delimiter to use for separating the URL
      * @param supportsRouting True if routing is supported by the naming
      * convention
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
-    public HTTPTransport(final String protocol, final char serviceDelim, final boolean supportsRouting,
-            final MALTransportFactory factory, final Map properties) throws MALException {
+    public HTTPTransport(final String protocol, final char serviceDelim,
+            final boolean supportsRouting, final Map properties) throws MALException {
 
-        super(protocol, serviceDelim, supportsRouting, false, factory, properties);
+        super(protocol, serviceDelim, supportsRouting, properties);
 
         // decode configuration
         if (properties != null) {
@@ -332,7 +334,6 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         }
 
         RLOGGER.log(Level.INFO, "HTTP Host/port: {0}:{1}", new Object[]{this.host, this.port});
-        RLOGGER.log(Level.INFO, "HTTP Wrapping body parts set to : {0}", this.wrapBodyParts);
         String bindingMode = "Request-response";
         if (this.selectedHttpBindingMode != HTTP_BINDING_MODE_REQUEST_RESPONSE) {
             if (this.selectedHttpBindingMode == HTTP_BINDING_MODE_NO_RESPONSE) {
@@ -418,6 +419,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      */
     protected IHttpServer createServer() throws HttpApiImplException {
         try {
+            RLOGGER.log(Level.INFO, "Dynamicaly instantiating class with name: {0}", abstractServerImpl);
             IHttpServer serverImpl = (IHttpServer) Class.forName(abstractServerImpl).newInstance();
             return serverImpl;
         } catch (ClassNotFoundException ex) {
@@ -521,7 +523,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
 
     @Override
     protected String getLocalName(String localName, final Map properties) {
-        if ((null == localName) || (0 == localName.length())) {
+        if ((localName == null) || (localName.length() == 0)) {
             localName = String.valueOf(RANDOM_NAME.nextInt(Integer.MAX_VALUE));
         }
 
@@ -628,8 +630,12 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
         sb.append("Encoded received message:\n");
         sb.append(encodedMsg);
 
-        returnable = new GENMessage(wrapBodyParts, false, header,
-                qosProperties, packetData, getStreamFactory());
+        MALElementStreamFactory encFactory = getStreamFactory();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(packetData);
+        final MALElementInputStream enc = encFactory.createInputStream(bais);
+
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, enc);
+        returnable = new GENMessage(header, lazyBody, encFactory, qosProperties);
 
         sb.append("\nDecoded message:");
         sb.append(returnable.getBody().toString());

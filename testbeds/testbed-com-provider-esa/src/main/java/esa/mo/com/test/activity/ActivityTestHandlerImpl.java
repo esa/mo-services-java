@@ -64,7 +64,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
     public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:resetTest");
 
-        if (null == monitorEventPublisher) {
+        if (monitorEventPublisher == null) {
             LoggingBase.logMessage("ActivityTestHandlerImpl:creating event publisher");
 
             final IdentifierList domain = new IdentifierList();

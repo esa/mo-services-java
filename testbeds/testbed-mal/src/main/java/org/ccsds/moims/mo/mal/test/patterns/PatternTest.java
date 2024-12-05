@@ -338,9 +338,9 @@ public class PatternTest {
         MALMessageHeader msgHeaderFinal = null;
         Boolean isError = expectedFinalHeader.getIsErrorMessage();
 
-        if ((1 == procedureId) || (3 == procedureId)) {
+        if ((procedureId == 1) || (procedureId == 3)) {
             msgHeaderFinal = monitor.submitAckReceivedMsgHeader;
-        } else if ((2 == procedureId) || (4 == procedureId)) {
+        } else if ((procedureId == 2) || (procedureId == 4)) {
             isError = Boolean.TRUE;
             msgHeaderFinal = monitor.submitErrorReceivedMsgHeader;
         }
@@ -371,9 +371,9 @@ public class PatternTest {
         MALMessageHeader msgHeaderFinal = null;
         Boolean isError = expectedFinalHeader.getIsErrorMessage();
 
-        if ((1 == procedureId) || (3 == procedureId)) {
+        if ((procedureId == 1) || (procedureId == 3)) {
             msgHeaderFinal = monitor.requestResponseReceivedMsgHeader;
-        } else if ((2 == procedureId) || (4 == procedureId)) {
+        } else if ((procedureId == 2) || (procedureId == 4)) {
             isError = Boolean.TRUE;
             msgHeaderFinal = monitor.requestErrorReceivedMsgHeader;
         }
@@ -406,10 +406,10 @@ public class PatternTest {
         MALMessageHeader msgHeaderAck;
         boolean limitedCheck = false;
 
-        if ((3 == procedureId) || (6 == procedureId)) {
+        if ((procedureId == 3) || (procedureId == 6)) {
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
-        } else if (7 == procedureId) {
+        } else if (procedureId == 7) {
             expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
             msgHeaderAck = monitor.invokeAckErrorReceivedMsgHeader;
             // the former version of the testbed expects a RESPONSE_ERROR message,
@@ -419,7 +419,7 @@ public class PatternTest {
             // The MAL should then issue an ACK_ERROR indication, with an INCORRECT_STATE error
             // as specified in section 3.3.6.
             limitedCheck = true;
-        } else if (8 == procedureId) {
+        } else if (procedureId == 8) {
             msgHeaderAck = monitor.invokeAckReceivedMsgHeader;
             // the former version of the testbed includes a bug that handles the[ACK,_ACK_] as a [_ACK_,ACK].
             // This test case should receive a regular ACK, followed by a RESPONSE_ERROR.
@@ -431,14 +431,14 @@ public class PatternTest {
         expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALInvokeOperation.INVOKE_RESPONSE_STAGE);
         MALMessageHeader msgHeaderFinal;
 
-        if ((2 == procedureId) || (5 == procedureId)) {
+        if ((procedureId == 2) || (procedureId == 5)) {
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
-        } else if ((1 == procedureId) || (4 == procedureId)) {
+        } else if ((procedureId == 1) || (procedureId == 4)) {
             msgHeaderFinal = monitor.invokeResponseReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
-        } else if (8 == procedureId) {
+        } else if (procedureId == 8) {
             msgHeaderFinal = monitor.invokeResponseErrorReceivedMsgHeader;
             // The header will be unchanged. However, the error field shall
             // contain an INCORRECT_STATE error as specified in section 3.3.6.
@@ -480,18 +480,18 @@ public class PatternTest {
         MALMessageHeader msgHeaderFinal = null;
         boolean limitedCheck = false;
 
-        if ((3 == procedureId) || (15 == procedureId)) {
+        if ((procedureId == 3) || (procedureId == 15)) {
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-        } else if ((10 == procedureId)) {
+        } else if ((procedureId == 10)) {
             expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.FALSE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-        } else if ((11 == procedureId)) {
+        } else if ((procedureId == 11)) {
             expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_UPDATE_STAGE);
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
-        } else if ((12 == procedureId)) {
+        } else if ((procedureId == 12)) {
             expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.FALSE);
             msgHeaderAck = monitor.progressAckErrorReceivedMsgHeader;
@@ -535,14 +535,14 @@ public class PatternTest {
 
         expectedFinalHeader = generateHeaderWithInteractionStage(expectedFinalHeader, MALProgressOperation.PROGRESS_RESPONSE_STAGE);
 
-        if ((2 == procedureId) || (6 == procedureId) || (8 == procedureId) || (14 == procedureId)) {
+        if ((procedureId == 2) || (procedureId == 6) || (procedureId == 8) || (procedureId == 14)) {
             expectedFinalHeader = generateHeaderWithIsError(expectedFinalHeader, Boolean.TRUE);
             msgHeaderFinal = monitor.progressResponseErrorReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
-        } else if ((1 == procedureId) || (4 == procedureId) || (7 == procedureId)) {
+        } else if ((procedureId == 1) || (procedureId == 4) || (procedureId == 7)) {
             msgHeaderFinal = monitor.progressResponseReceivedMsgHeader;
             AssertionHelper.checkHeader("PatternTest.checkFinalHeader", assertions, msgHeaderFinal, expectedFinalHeader);
-        } else if ((5 != procedureId) || (12 != procedureId) || (13 != procedureId)) {
+        } else if ((procedureId != 5) || (procedureId != 12) || (procedureId != 13)) {
             // this is so that we return true on return
             msgHeaderFinal = msgHeaderAck;
         }
@@ -935,7 +935,7 @@ public class PatternTest {
 
             ++receivedMessages;
 
-            if (null == progressUpdate1ReceivedMsgHeader) {
+            if (progressUpdate1ReceivedMsgHeader == null) {
                 progressUpdate1ReceivedMsgHeader = msgHeader;
             } else {
                 progressUpdate2ReceivedMsgHeader = msgHeader;

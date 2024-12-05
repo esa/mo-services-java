@@ -50,11 +50,6 @@ import org.ccsds.moims.mo.mal.transport.*;
 public abstract class Transport<I, O> implements MALTransport {
 
     /**
-     * System property to control whether message parts of wrapped in BLOBs.
-     */
-    public static final String WRAP_PROPERTY
-            = "org.ccsds.moims.mo.mal.transport.gen.wrap";
-    /**
      * System property to control whether in-process processing supported.
      */
     public static final String INPROC_PROPERTY
@@ -84,10 +79,6 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected static final Random RANDOM_NAME = new Random();
     /**
-     * Reference to our factory.
-     */
-    protected final MALTransportFactory factory;
-    /**
      * The delimiter to use to separate the protocol part from the address part
      * of the URL.
      */
@@ -110,11 +101,6 @@ public abstract class Transport<I, O> implements MALTransport {
      * True if protocol supports the concept of routing.
      */
     protected final boolean supportsRouting;
-    /**
-     * True if body parts should be wrapped in blobs for encoded element
-     * support.
-     */
-    protected final boolean wrapBodyParts;
     /**
      * True if calls to ourselves should be handled in-process i.e. not via the
      * underlying transport.
@@ -180,19 +166,14 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param serviceDelim The delimiter to use for separating the URL
      * @param supportsRouting True if routing is supported by the naming
      * convention
-     * @param wrapBodyParts True is body parts should be wrapped in BLOBs
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
     public Transport(final String protocol,
             final char serviceDelim,
             final boolean supportsRouting,
-            final boolean wrapBodyParts,
-            final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        this(protocol, "://", serviceDelim, '@',
-                supportsRouting, wrapBodyParts, factory, properties);
+        this(protocol, "://", serviceDelim, '@', supportsRouting, properties);
     }
 
     /**
@@ -206,8 +187,6 @@ public abstract class Transport<I, O> implements MALTransport {
      * routing
      * @param supportsRouting True if routing is supported by the naming
      * convention
-     * @param wrapBodyParts True is body parts should be wrapped in BLOBs
-     * @param factory The factory that created us.
      * @param properties The QoS properties.
      * @throws MALException On error.
      */
@@ -216,10 +195,7 @@ public abstract class Transport<I, O> implements MALTransport {
             final char serviceDelim,
             final char routingDelim,
             final boolean supportsRouting,
-            final boolean wrapBodyParts,
-            final MALTransportFactory factory,
             final java.util.Map properties) throws MALException {
-        this.factory = factory;
         this.protocol = protocol;
         this.supportsRouting = supportsRouting;
         this.protocolDelim = protocolDelim;
@@ -239,16 +215,11 @@ public abstract class Transport<I, O> implements MALTransport {
         }
 
         // default values
-        boolean lWrapBodyParts = wrapBodyParts;
         boolean lInProcessSupport = true;
         int lDeliveryTime = 10;
 
         // decode configuration
         if (properties != null) {
-            if (properties.containsKey(WRAP_PROPERTY)) {
-                lWrapBodyParts = Boolean.parseBoolean((String) properties.get(WRAP_PROPERTY));
-            }
-
             if (properties.containsKey(INPROC_PROPERTY)) {
                 lInProcessSupport = Boolean.parseBoolean((String) properties.get(INPROC_PROPERTY));
             }
@@ -258,7 +229,6 @@ public abstract class Transport<I, O> implements MALTransport {
             }
         }
 
-        this.wrapBodyParts = lWrapBodyParts;
         this.inProcessSupport = lInProcessSupport;
         this.deliveryTimeout = lDeliveryTime;
         this.outgoingDataChannelsManager = new OutgoingDataChannels(this, properties);
@@ -266,8 +236,6 @@ public abstract class Transport<I, O> implements MALTransport {
         TransportThreadFactory decFactory = new TransportThreadFactory("Transport_Decoder");
         this.decoderExecutor = Executors.newSingleThreadExecutor(decFactory);
         this.dispatcherExecutor = TransportThreadFactory.createDispatcherExecutor(properties);
-
-        LOGGER.log(Level.FINE, "Wrapping body parts set to: {0}", this.wrapBodyParts);
     }
 
     /**
@@ -665,9 +633,8 @@ public abstract class Transport<I, O> implements MALTransport {
 
         if (routingPart == null) {
             final int iFirst = URI.nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
-            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim)
-                    : uriValue.length();
-            if (0 > iSecond) {
+            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim) : uriValue.length();
+            if (iSecond < 0) {
                 iSecond = uriValue.length();
             }
 
@@ -691,7 +658,7 @@ public abstract class Transport<I, O> implements MALTransport {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map qosProperties,
             final NamedValueList supplements) throws MALException {
-        return new Endpoint(this, localName, routingName, uriBase + routingName, wrapBodyParts, supplements);
+        return new Endpoint(this, localName, routingName, uriBase + routingName, supplements);
     }
 
     /**

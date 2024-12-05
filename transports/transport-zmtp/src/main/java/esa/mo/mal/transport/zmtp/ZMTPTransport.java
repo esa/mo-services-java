@@ -26,6 +26,7 @@ import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.PacketToString;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.receivers.IncomingMessageHolder;
 import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
@@ -44,6 +45,7 @@ import java.util.Random;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -52,7 +54,6 @@ import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEndpoint;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
 import org.zeromq.ZMQ;
 import org.zeromq.ZContext;
 
@@ -185,14 +186,12 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
    * @param protocol The protocol string.
    * @param supportsRouting True if routing is supported by the naming convention
    * @param wrapBodyParts True is body parts should be wrapped in BLOBs
-   * @param factory The factory that created us.
    * @param properties The transport binding properties.
    * @throws MALException On error.
      */
     public ZMTPTransport(final String protocol, final boolean supportsRouting,
-            final MALTransportFactory factory, final java.util.Map properties,
-            final ZMTPURIMapping uriMapping) throws MALException {
-        super(protocol, '/', supportsRouting, false, factory, properties);
+            final java.util.Map properties, final ZMTPURIMapping uriMapping) throws MALException {
+        super(protocol, '/', supportsRouting, properties);
         // First assume minimal default config
         defaultConfiguration = new ZMTPConfiguration();
 
@@ -239,9 +238,6 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
             RLOGGER.log(Level.INFO,
                     "No local URI set. Generated a random URI: {0}", this.localURI);
         }
-
-        RLOGGER.log(Level.INFO,
-                "ZMTP Wrapping body parts set to : {0}", this.wrapBodyParts);
     }
 
     @Override
@@ -375,8 +371,9 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
             byte[] remainingData = headerDecoder.getRemainingEncodedData();
             MALElementStreamFactory bodyStreamFactory = getBodyEncodingSelector().getDecoderStreamFactory(header);
 
-            return new ZMTPMessage(hdrStreamFactory, header, qosProperties,
-                    new ByteArrayInputStream(remainingData), bodyStreamFactory);
+            final MALElementInputStream enc = bodyStreamFactory.createInputStream(new ByteArrayInputStream(remainingData));
+            LazyMessageBody body = LazyMessageBody.createMessageBody(header, bodyStreamFactory, enc);
+            return new ZMTPMessage(hdrStreamFactory, header, body, bodyStreamFactory, qosProperties);
         } catch (MALException ex) {
             RLOGGER.log(Level.INFO, "Something went wrong!", ex);
             returnErrorMessage(header, MALHelper.INTERNAL_ERROR_NUMBER,
@@ -415,7 +412,7 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new ZMTPEndpoint(this, defaultConfiguration, localName,
-                routingName, uriBase + routingName, wrapBodyParts, supplements, properties);
+                routingName, uriBase + routingName, supplements, properties);
     }
 
     /**

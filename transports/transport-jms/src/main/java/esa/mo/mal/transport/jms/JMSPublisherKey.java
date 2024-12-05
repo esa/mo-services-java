@@ -140,9 +140,9 @@ public final class JMSPublisherKey implements Comparable {
     }
 
     private static int compareSubkey(final String myKeyPart, final String theirKeyPart) {
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            if ((null != myKeyPart) || (null != theirKeyPart)) {
-                if (null == myKeyPart) {
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            if ((myKeyPart != null) || (theirKeyPart != null)) {
+                if (myKeyPart == null) {
                     return -1;
                 }
 
@@ -158,9 +158,9 @@ public final class JMSPublisherKey implements Comparable {
     }
 
     private static int compareSubkey(final Long myKeyPart, final Long theirKeyPart) {
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            if ((null != myKeyPart) || (null != theirKeyPart)) {
-                if (null == myKeyPart) {
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            if ((myKeyPart != null) || (theirKeyPart != null)) {
+                if (myKeyPart == null) {
                     return -1;
                 }
 
@@ -205,8 +205,8 @@ public final class JMSPublisherKey implements Comparable {
             }
         }
         
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            return (myKeyPart == null) && (theirKeyPart == null);
         }
 
         return myKeyPart.equals(theirKeyPart);
@@ -218,8 +218,8 @@ public final class JMSPublisherKey implements Comparable {
             return true;
         }
 
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            return (myKeyPart == null) && (theirKeyPart == null);
         }
 
         return myKeyPart.equals(theirKeyPart);
@@ -231,8 +231,8 @@ public final class JMSPublisherKey implements Comparable {
             return true;
         }
 
-        if ((null == myKeyPart) || (null == theirKeyPart)) {
-            return (null == myKeyPart) && (null == theirKeyPart);
+        if ((myKeyPart == null) || (theirKeyPart == null)) {
+            return (myKeyPart == null) && (theirKeyPart == null);
         }
 
         return myKeyPart.equals(theirKeyPart);

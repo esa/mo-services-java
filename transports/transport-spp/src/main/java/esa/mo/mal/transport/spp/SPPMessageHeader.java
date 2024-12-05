@@ -130,7 +130,7 @@ public class SPPMessageHeader extends MALMessageHeader {
         int secondaryApidQualifier;
         short secondaryApid;
 
-        if (0 == pktType) {
+        if (pktType == 0) {
             //TM
             primaryApid = uriRepresentation.getApid(from);
             secondaryApidQualifier = uriRepresentation.getQualifier(to);
@@ -234,7 +234,7 @@ public class SPPMessageHeader extends MALMessageHeader {
         final int moHdrPt1 = decoder.decodeUShort().getValue();
         int apidQualifier = decoder.decodeUShort().getValue();
         transactionId = decoder.decodeLong();
-        if (0 == transactionId) {
+        if (transactionId == 0) {
             transactionId = (long) ssc;
         }
         short flags = decoder.decodeUOctet().getValue();
@@ -351,7 +351,7 @@ public class SPPMessageHeader extends MALMessageHeader {
     }
 
     public int getApidQualifier() {
-        if (0 == getPacketType()) {
+        if (getPacketType() == 0) {
             //TM
             return uriRepresentation.getQualifier(from);
         } else {
@@ -361,7 +361,7 @@ public class SPPMessageHeader extends MALMessageHeader {
     }
 
     public short getApid() {
-        if (0 == getPacketType()) {
+        if (getPacketType() == 0) {
             //TM
             return uriRepresentation.getApid(from);
         } else {
@@ -371,7 +371,7 @@ public class SPPMessageHeader extends MALMessageHeader {
     }
 
     public short getSSC() {
-        if (-1 == ssc) {
+        if (ssc == -1) {
             return transactionId.shortValue();
         }
 

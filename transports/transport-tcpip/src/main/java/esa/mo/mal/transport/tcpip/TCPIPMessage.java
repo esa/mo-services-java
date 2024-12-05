@@ -23,6 +23,7 @@ package esa.mo.mal.transport.tcpip;
 import esa.mo.mal.encoder.tcpip.TCPIPFixedBinaryEncoder;
 import static esa.mo.mal.transport.tcpip.TCPIPTransport.RLOGGER;
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,7 +32,6 @@ import java.nio.ByteOrder;
 import java.util.logging.Level;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 
@@ -44,15 +44,9 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
  */
 public class TCPIPMessage extends GENMessage {
 
-    public TCPIPMessage(boolean wrapBodyParts,
-            TCPIPMessageHeader header, Map qosProperties, byte[] packet,
-            MALElementStreamFactory encFactory) throws MALException {
-        super(wrapBodyParts, false, header, qosProperties, packet, encFactory);
-    }
-
-    public TCPIPMessage(boolean wrapBodyParts, TCPIPMessageHeader header, Map qosProperties,
-            MALElementStreamFactory encFactory, Object... body) throws MALInteractionException {
-        super(wrapBodyParts, header, qosProperties, encFactory, body);
+    public TCPIPMessage(TCPIPMessageHeader header, LazyMessageBody body,
+            MALElementStreamFactory encFactory, Map qosProperties) throws MALException {
+        super(header, body, encFactory, qosProperties);
     }
 
     /**

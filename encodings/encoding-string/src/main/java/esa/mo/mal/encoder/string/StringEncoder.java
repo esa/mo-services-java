@@ -68,6 +68,18 @@ public class StringEncoder extends Encoder {
         }
     }
 
+    @Override
+    public void encodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+        Integer ordinal = (Integer) enumeration.getOrdinal();
+
+        if (enumSize < 256) {
+            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+        } else if (enumSize < 65536) {
+            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+        }
+    }
+
     /**
      * Internal class for accessing the string stream. Overridden by sub-classes
      * to alter the low level encoding.
@@ -187,7 +199,7 @@ public class StringEncoder extends Encoder {
         private void add(final String val) throws IOException {
             buffer.append(val.replace(STR_ESC, STR_ESC_ESC)
                     .replace(STR_NULL, STR_NULL_ESC)
-                    .replace( STR_DELIM, STR_DELIM_ESC));
+                    .replace(STR_DELIM, STR_DELIM_ESC));
             buffer.append(STR_DELIM);
         }
 

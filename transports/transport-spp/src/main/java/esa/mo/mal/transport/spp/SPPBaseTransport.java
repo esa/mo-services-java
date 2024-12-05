@@ -23,7 +23,9 @@ package esa.mo.mal.transport.spp;
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.Transport;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import esa.mo.mal.transport.gen.sending.OutgoingMessageHolder;
+import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
+import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -91,10 +94,9 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     public SPPBaseTransport(SPPConfiguration configuration, SPPURIRepresentation uriRep,
             SPPSourceSequenceCounterSimple ssc, String protocol, String protocolDelim,
             char serviceDelim, char routingDelim, boolean supportsRouting,
-            boolean wrapBodyParts, MALTransportFactory factory, Map properties)
-            throws MALException {
+            MALTransportFactory factory, Map properties) throws MALException {
         super(protocol, protocolDelim, serviceDelim, routingDelim,
-                supportsRouting, wrapBodyParts, factory, properties);
+                supportsRouting, properties);
 
         this.defaultConfiguration = configuration;
         this.uriRep = uriRep;
@@ -206,8 +208,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier,
-                uriRep, ssc, localName, routingName, uriBase + routingName,
-                wrapBodyParts, properties);
+                uriRep, ssc, localName, routingName, uriBase + routingName, properties);
     }
 
     @Override
@@ -250,10 +251,10 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
 
     protected GENMessage internalCreateMessage(final int apidQualifier, final int apid,
             int sequenceFlags, final byte[] packet) throws MALException {
-        if (3 == sequenceFlags) {
+        if (sequenceFlags == 3) {
             SPPConfiguration configuration
                     = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
-            if (null == configuration) {
+            if (configuration == null) {
                 configuration = defaultConfiguration;
             }
 
@@ -267,9 +268,12 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
 
             // now full message including body
             try {
-                return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, false,
-                        (MALMessageHeader) dummyMessage.getHeader(), qosProperties, packet,
-                        localBodyStreamFactory);
+                final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+                final MALElementInputStream enc = localBodyStreamFactory.createInputStream(bais);
+                LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(dummyMessage.getHeader(), localBodyStreamFactory, enc);
+
+                return new SPPMessage(hdrStreamFactory, configuration, null,
+                        (MALMessageHeader) dummyMessage.getHeader(), lazyBody, localBodyStreamFactory, qosProperties);
             } catch (MALException ex) {
                 returnErrorMessage(dummyMessage.getHeader(),
                         MALHelper.INTERNAL_ERROR_NUMBER,
@@ -283,14 +287,14 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
             QualifiedApid qAPID = new QualifiedApid(apidQualifier, apid);
             Map<Long, SPPSegmentsHandler> map = segmentHandlers.get(qAPID);
 
-            if (null == map) {
+            if (map == null) {
                 map = new HashMap<>();
                 segmentHandlers.put(qAPID, map);
             }
 
             SPPSegmentsHandler segmentHandler = map.get(transactionId);
 
-            if (null == segmentHandler) {
+            if (segmentHandler == null) {
                 segmentHandler = new SPPSegmentsHandler(this, apidQualifier, apid);
                 map.put(transactionId, segmentHandler);
             }
@@ -319,14 +323,20 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     protected SPPMessage internalDecodeMessageHeader(final int apidQualifier,
             final int apid, final byte[] packet) throws MALException {
         SPPConfiguration configuration = apidConfigurations.get(new QualifiedApid(apidQualifier, apid));
-        if (null == configuration) {
+        if (configuration == null) {
             configuration = defaultConfiguration;
         }
 
         // need to decode in two stages, first message header
-        return new SPPMessage(hdrStreamFactory, configuration, null, wrapBodyParts, true,
-                new SPPMessageHeader(hdrStreamFactory, configuration, null, apidQualifier, uriRep, ssc),
-                qosProperties, packet, hdrStreamFactory);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+        final MALElementInputStream enc = hdrStreamFactory.createInputStream(bais);
+
+        SPPMessageHeader header = new SPPMessageHeader(hdrStreamFactory, configuration, null, apidQualifier, uriRep, ssc);
+        header = (SPPMessageHeader) enc.readHeader(header);
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, hdrStreamFactory, enc);
+
+        return new SPPMessage(hdrStreamFactory, configuration, null,
+                (MALMessageHeader) header, lazyBody, hdrStreamFactory, qosProperties);
     }
 
     protected MALElementStreamFactory getHeaderStreamFactory() {

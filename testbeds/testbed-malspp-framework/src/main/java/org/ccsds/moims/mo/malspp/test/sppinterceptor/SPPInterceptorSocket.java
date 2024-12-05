@@ -74,11 +74,11 @@ public class SPPInterceptorSocket implements SPPSocket {
                 return;
             }
         }
-        if (null == scramblePattern) {
+        if (scramblePattern == null) {
             internalSend(packet);
         } else {
             synchronized (this) {
-                if (null == scrambleThread || !scrambleThread.isAlive()) {
+                if (scrambleThread == null || !scrambleThread.isAlive()) {
                     scrambleThread = createScrambleThread(scramblePattern.clone());
                     scrambleThread.start();
                 }

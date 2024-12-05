@@ -17,12 +17,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>11.0</version>
+    <version>11.1</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
     <description>ESA top level POM for CCSDS MO based artifacts</description>
-    <url>http://github.com/esa/CCSDS_MO_POM</url>
+    <url>http://www.esa.int</url>
   
     <organization>
         <name>ESA</name>
@@ -74,26 +74,17 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <esa.mo.version>11.0</esa.mo.version>
+        <esa.mo.version>11.1</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
-        <esa.stubgen.version>${esa.mo.version}</esa.stubgen.version>
         <esa.api.mal.version>${esa.mo.version}</esa.api.mal.version>
         <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
         <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
         <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
         <esa.api.mpd.version>${esa.mo.version}</esa.api.mpd.version>
-        <esa.mal.version>${esa.mo.version}</esa.mal.version>
         <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
         <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
         <esa.xml.encoder.version>${esa.mo.version}</esa.xml.encoder.version>
-        <esa.gen.transport.version>${esa.mo.version}</esa.gen.transport.version>
-        <esa.rmi.transport.version>${esa.mo.version}</esa.rmi.transport.version>
-        <esa.tcpip.transport.version>${esa.mo.version}</esa.tcpip.transport.version>
-        <esa.jms.transport.version>${esa.mo.version}</esa.jms.transport.version>
-        <esa.zmtp.transport.version>${esa.mo.version}</esa.zmtp.transport.version>
-        <esa.spp.transport.version>${esa.mo.version}</esa.spp.transport.version>
-        <esa.http.transport.version>${esa.mo.version}</esa.http.transport.version>
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
@@ -116,11 +107,6 @@
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>generator-interfaces</artifactId>
-                <version>${esa.api.mal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>xml-jaxb</artifactId>
                 <version>${esa.api.mal.version}</version>
             </dependency>
             <dependency>
@@ -151,7 +137,7 @@
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>mal-impl</artifactId>
-                <version>${esa.mal.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
@@ -171,42 +157,42 @@
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-generic</artifactId>
-                <version>${esa.gen.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-rmi</artifactId>
-                <version>${esa.rmi.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-tcpip</artifactId>
-                <version>${esa.tcpip.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-http</artifactId>
-                <version>${esa.http.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-jms</artifactId>
-                <version>${esa.jms.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-zmtp</artifactId>
-                <version>${esa.zmtp.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-activemq</artifactId>
-                <version>${esa.jms.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-spp</artifactId>
-                <version>${esa.spp.transport.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.xml.bind</groupId>
@@ -342,7 +328,7 @@
                 <plugin>
                     <groupId>int.esa.ccsds.mo</groupId>
                     <artifactId>api-generator-maven-plugin</artifactId>
-                    <version>${esa.stubgen.version}</version>
+                    <version>${esa.mo.version}</version>
                     <executions>
                         <execution>
                             <phase>generate-sources</phase>
@@ -362,7 +348,7 @@
                         <dependency>
                             <groupId>int.esa.ccsds.mo</groupId>
                             <artifactId>generator-java</artifactId>
-                            <version>${esa.stubgen.version}</version>
+                            <version>${esa.mo.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -464,7 +450,7 @@
                     <configuration>
                         <skip>true</skip>
                     </configuration>                    
-                </plugin>                
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -502,7 +488,7 @@
                         <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                         <autoReleaseAfterClose>false</autoReleaseAfterClose>
                     </configuration>
-                </plugin>                      
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

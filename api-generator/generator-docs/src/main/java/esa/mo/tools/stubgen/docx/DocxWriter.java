@@ -160,5 +160,4 @@ public class DocxWriter extends DocxBaseWriter {
 
         return dimensions;
     }
-
 }

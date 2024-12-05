@@ -36,8 +36,8 @@ public class SPPSegment {
         this.segmentIndex = segmentIndex;
         this.ssc = ssc;
         this.packet = packet;
-        this.isFirst = (1 == segmentFlags);
-        this.isLast = (2 == segmentFlags);
+        this.isFirst = (segmentFlags == 1);
+        this.isLast = (segmentFlags == 2);
     }
 
     public boolean isFirst() {

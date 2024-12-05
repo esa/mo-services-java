@@ -20,13 +20,14 @@
  */
 package esa.mo.mal.transport.gen;
 
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.*;
 
@@ -39,7 +40,6 @@ public class Endpoint implements MALEndpoint {
     protected final String localName;
     protected final String routingName;
     protected final String localURI;
-    protected final boolean wrapBodyParts;
     private final NamedValueList endpointSupplements;
     private boolean active = false;
     private MALMessageListener messageListener = null;
@@ -51,18 +51,14 @@ public class Endpoint implements MALEndpoint {
      * @param localName Endpoint local MAL name.
      * @param routingName Endpoint local routing name.
      * @param uri The URI string for this end point.
-     * @param wrapBodyParts True if the encoded body parts should be wrapped in
-     * BLOBs.
      * @param supplements Endpoint supplements.
      */
     public Endpoint(final Transport transport, final String localName,
-            final String routingName, final String uri,
-            final boolean wrapBodyParts, final NamedValueList supplements) {
+            final String routingName, final String uri, final NamedValueList supplements) {
         this.transport = transport;
         this.localName = localName;
         this.routingName = routingName;
         this.localURI = uri;
-        this.wrapBodyParts = wrapBodyParts;
         this.endpointSupplements = (supplements != null) ? supplements : new NamedValueList();
     }
 
@@ -114,26 +110,23 @@ public class Endpoint implements MALEndpoint {
             final NamedValueList supplements,
             final Map qosProperties,
             final Object... body) throws IllegalArgumentException, MALException {
-        try {
-            return new GENMessage(wrapBodyParts,
-                    createMessageHeader(getURI(),
-                            authenticationId,
-                            uriTo,
-                            timestamp,
-                            interactionType,
-                            interactionStage,
-                            transactionId,
-                            serviceArea,
-                            service,
-                            operation,
-                            serviceVersion,
-                            isErrorMessage,
-                            supplements,
-                            qosProperties),
-                    qosProperties, transport.getStreamFactory(), body);
-        } catch (MALInteractionException ex) {
-            throw new MALException("Error creating message", ex);
-        }
+        MALMessageHeader header = createMessageHeader(getURI(),
+                authenticationId,
+                uriTo,
+                timestamp,
+                interactionType,
+                interactionStage,
+                transactionId,
+                serviceArea,
+                service,
+                operation,
+                serviceVersion,
+                isErrorMessage,
+                supplements,
+                qosProperties);
+        MALElementStreamFactory encFactory = transport.getStreamFactory();
+        LazyMessageBody lazyBody = LazyMessageBody.createMessageBody(header, encFactory, body);
+        return new GENMessage(header, lazyBody, encFactory, qosProperties);
     }
 
     @Override

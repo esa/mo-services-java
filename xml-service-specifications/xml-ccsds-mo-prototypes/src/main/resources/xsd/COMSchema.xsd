@@ -5,7 +5,7 @@
             xmlns:com="http://www.ccsds.org/schema/COMSchema"
             elementFormDefault="qualified">
 
-  <xsd:import namespace="http://www.ccsds.org/schema/ServiceSchema" schemaLocation="ServiceSchema-v003.xsd"/>
+  <xsd:import namespace="http://www.ccsds.org/schema/ServiceSchema" schemaLocation="ServiceSchema-v003-backwards-compatible-hybrid.xsd"/>
 
   <xsd:complexType name="ExtendedServiceType">
     <xsd:annotation>

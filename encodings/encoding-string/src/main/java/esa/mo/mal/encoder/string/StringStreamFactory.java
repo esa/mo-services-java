@@ -34,8 +34,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 public class StringStreamFactory extends MALElementStreamFactory {
 
     @Override
-    protected void init(final String protocol, final Map properties)
-            throws IllegalArgumentException, MALException {
+    protected void init(final Map properties) throws IllegalArgumentException, MALException {
     }
 
     @Override

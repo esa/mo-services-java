@@ -40,7 +40,7 @@ public class TypeUtils {
      * @param tr The XML type reference.
      * @return the converted type information.
      */
-    public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeReference tr) {
+    public static FieldInfo convertTypeReference(TypeInformation tiSource, TypeReference tr) {
         return convertTypeReference(tiSource, tr, null, null, false);
     }
 
@@ -54,7 +54,7 @@ public class TypeUtils {
      * @param fieldNullability The nullability of the field.
      * @return the converted type information.
      */
-    public static TypeInfo convertTypeReference(TypeInformation tiSource,
+    public static FieldInfo convertTypeReference(TypeInformation tiSource,
             TypeReference tr, String fieldName, String fieldComment, boolean fieldNullability) {
         if (tr == null) {
             return null;
@@ -66,7 +66,7 @@ public class TypeUtils {
                 + "Helper." + tr.getArea().toUpperCase() + "_AREA_VERSION";
 
         if (!tr.isList()) {
-            return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
+            return new FieldInfo(tr, fieldName, fieldComment, tr.getName(),
                     argTypeStr, tiSource.isAttributeNativeType(tr),
                     getTypeShortForm(tiSource, tr, argTypeStr),
                     argVersionStr, fieldNullability);
@@ -74,7 +74,7 @@ public class TypeUtils {
 
         if (StdStrings.XML.equals(tr.getArea())) {
             // ToDo proper support for lists of XML types
-            return new TypeInfo(tr, fieldName, fieldComment, tr.getName(),
+            return new FieldInfo(tr, fieldName, fieldComment, tr.getName(),
                     argTypeStr, tiSource.isAttributeNativeType(tr),
                     getTypeShortForm(tiSource, tr, argTypeStr),
                     argVersionStr, fieldNullability);
@@ -83,19 +83,19 @@ public class TypeUtils {
         if (tiSource.isAttributeNativeType(tr)) {
             String fqName = tiSource.getAreaPackage(StdStrings.MAL)
                     + "mal.structures." + tr.getName() + "List";
-            return new TypeInfo(tr, fieldName, fieldComment,
+            return new FieldInfo(tr, fieldName, fieldComment,
                     tr.getName() + "List", fqName, false,
                     fqName + ".SHORT_FORM", argVersionStr, fieldNullability);
         }
 
-        if (GeneratorBase.isObjectRef(argTypeStr)) {
-            return new TypeInfo(tr, fieldName, fieldComment, tr.getName() + "List",
+        if (GeneratorBase.isObjectRef(tr)) {
+            return new FieldInfo(tr, fieldName, fieldComment, tr.getName() + "List",
                     "org.ccsds.moims.mo.mal.structures.ObjectRefList", false,
                     getTypeShortForm(tiSource, tr, "ObjectRefList"),
                     argVersionStr, fieldNullability);
         }
 
-        return new TypeInfo(tr, fieldName, fieldComment,
+        return new FieldInfo(tr, fieldName, fieldComment,
                 tr.getName() + "List", argTypeStr + "List", false,
                 getTypeShortForm(tiSource, tr, argTypeStr + "List"),
                 argVersionStr, fieldNullability);
@@ -108,7 +108,7 @@ public class TypeUtils {
      * @param ttr The XML type reference.
      * @return the converted type information.
      */
-    public static TypeInfo convertTypeReference(TypeInformation tiSource, TypeRef ttr) {
+    public static FieldInfo convertTypeReference(TypeInformation tiSource, TypeRef ttr) {
         if (ttr == null) {
             return null;
         }
@@ -132,12 +132,12 @@ public class TypeUtils {
      * @param trList The XML type reference list.
      * @return the converted type information.
      */
-    public static List<TypeInfo> convertTypeReferences(TypeInformation tiSource, List<TypeRef> trList) {
+    public static List<FieldInfo> convertTypeReferences(TypeInformation tiSource, List<TypeRef> trList) {
         if (trList == null) {
             return null;
         }
 
-        List<TypeInfo> tiList = new ArrayList<>(trList.size());
+        List<FieldInfo> tiList = new ArrayList<>(trList.size());
         for (TypeRef tr : trList) {
             tiList.add(convertTypeReference(tiSource, tr));
         }
@@ -239,11 +239,11 @@ public class TypeUtils {
 
         if (any instanceof List) {
             List li = (List) any;
-            ArrayList<TypeRef> rv = new ArrayList<>(li.size());
+            ArrayList<TypeRef> list = new ArrayList<>(li.size());
             for (Object e : li) {
-                rv.add(getTypeViaXSDAny(e));
+                list.add(getTypeViaXSDAny(e));
             }
-            return rv;
+            return list;
         } else {
             throw new IllegalArgumentException(
                     "Unexpected type in message body of : " + any.getClass().getSimpleName());
@@ -299,8 +299,7 @@ public class TypeUtils {
 
                 return new TypeRef(newField);
             } else {
-                throw new IllegalArgumentException(
-                        "Unexpected XML type in message body of : " + re);
+                throw new IllegalArgumentException("Unexpected XML type in message body of : " + re);
             }
         } else {
             throw new IllegalArgumentException(

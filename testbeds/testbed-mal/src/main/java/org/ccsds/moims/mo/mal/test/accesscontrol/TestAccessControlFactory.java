@@ -41,7 +41,7 @@ public class TestAccessControlFactory extends MALAccessControlFactory {
     }
 
     public MALAccessControl createAccessControl(Map properties) throws MALException {
-        if (null == manager) {
+        if (manager == null) {
             manager = new TestAccessControl();
         }
 

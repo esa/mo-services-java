@@ -20,8 +20,6 @@
  */
 package esa.mo.tools.stubgen.writers;
 
-import esa.mo.xsd.AreaType;
-import esa.mo.xsd.ServiceType;
 import java.io.IOException;
 import java.util.List;
 
@@ -47,8 +45,7 @@ public interface LanguageWriter extends TargetWriter {
      * @param packageName The package name.
      * @throws IOException If there is an IO error.
      */
-    void addPackageStatement(AreaType area,
-            ServiceType service, String packageName) throws IOException;
+    void addPackageStatement(String area, String service, String packageName) throws IOException;
 
     /**
      * Adds a multiline comment to the file.

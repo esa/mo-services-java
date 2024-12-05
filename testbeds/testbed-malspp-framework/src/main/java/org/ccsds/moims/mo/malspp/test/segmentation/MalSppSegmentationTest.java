@@ -123,7 +123,7 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
             firstPrimaryHeader = primaryHeader;
             firstSecondaryHeader = secondaryHeader;
         }
-        if (null == firstPrimaryHeader || null == firstSecondaryHeader) {
+        if (firstPrimaryHeader == null || firstSecondaryHeader == null) {
             return false;
         }
         return true;
@@ -368,16 +368,16 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
 
     public boolean establishProgressIp(String identifier) throws Exception {
         ProgressAdapter progressAdapter;
-        if (null == progressAdapterA) {
+        if (progressAdapterA == null) {
             progressAdapterA = new ProgressAdapter();
         }
-        if (null == progressAdapterB) {
+        if (progressAdapterB == null) {
             progressAdapterB = new ProgressAdapter();
         }
         selectAdapter(identifier).resetAdapter();
         ProgressMultiAck ack = LocalMALInstance.instance().segCounterTestStub().progressMulti(null, new Union(identifier), selectAdapter(identifier));
         Thread.sleep(100);
-        return null == ack.getBodyElement0() && null == ack.getBodyElement1();
+        return ack.getBodyElement0() == null && ack.getBodyElement1() == null;
     }
 
     public boolean triggerUpdateForGeneratingPackets(String identifier, int nPackets) throws Exception {
@@ -438,13 +438,13 @@ public class MalSppSegmentationTest extends MalSppDataTypeTest {
 
     private class ProgressAdapter extends IPTestAdapter {
 
-        private final List<Blob> payloads = new ArrayList<Blob>();
-        private final List<Integer> packetNumbers = new ArrayList<Integer>();
+        private final List<Blob> payloads = new ArrayList<>();
+        private final List<Integer> packetNumbers = new ArrayList<>();
         private boolean correctResponseReceived = false;
 
         @Override
         public void progressMultiResponseReceived(MALMessageHeader msgHeader, String str, Element elem, Map qosProperties) {
-            correctResponseReceived = null == str && null == elem;
+            correctResponseReceived = (str == null) && (elem == null);
         }
 
         @Override

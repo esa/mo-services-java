@@ -21,7 +21,6 @@
 package esa.mo.mal.transport.zmtp;
 
 import java.util.Map;
-import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALTransport;
 import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
@@ -31,7 +30,6 @@ import org.ccsds.moims.mo.mal.transport.MALTransportFactory;
  */
 public class ZMTPTransportFactoryImpl extends MALTransportFactory {
 
-    private static final Object MUTEX = new Object();
     private ZMTPTransport transport = null;
 
     /**
@@ -44,16 +42,12 @@ public class ZMTPTransportFactoryImpl extends MALTransportFactory {
     }
 
     @Override
-    public MALTransport createTransport(final MALContext malContext,
-            final Map properties) throws MALException {
-        synchronized (MUTEX) {
-            if (null == transport) {
-                transport = new ZMTPTransport(getProtocol(), false,
-                        this, properties, new ZMTPURIMapping(properties));
-                transport.init();
-            }
-
-            return transport;
+    public synchronized MALTransport createTransport(final Map properties) throws MALException {
+        if (transport == null) {
+            transport = new ZMTPTransport(getProtocol(), false, properties, new ZMTPURIMapping(properties));
+            transport.init();
         }
+
+        return transport;
     }
 }

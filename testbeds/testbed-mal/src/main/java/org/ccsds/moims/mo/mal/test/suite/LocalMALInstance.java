@@ -125,7 +125,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized DataTestStub dataTestStub() throws MALException {
-        if (null == dtstub) {
+        if (dtstub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(DataTestServiceInfo.DATATEST_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(
@@ -150,7 +150,7 @@ public class LocalMALInstance extends BaseLocalMALInstance {
     }
 
     public synchronized ErrorTestStub errorTestStub() throws MALException {
-        if (null == erstub) {
+        if (erstub == null) {
             FileBasedDirectory.URIpair uris = FileBasedDirectory.loadURIs(ErrorTestServiceInfo.ERRORTEST_SERVICE_NAME.getValue());
 
             MALConsumer consumer = defaultConsumerMgr.createConsumer(

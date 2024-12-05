@@ -20,7 +20,6 @@
  */
 package esa.mo.mal.transport.gen.body;
 
-import java.io.ByteArrayInputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
@@ -53,17 +52,14 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
      * Constructor.
      *
      * @param ctx The encoding context to use.
-     * @param wrappedBodyParts True if the encoded body parts are wrapped in
-     * BLOBs.
      * @param encFactory The encoder stream factory to use.
      * @param encBodyElements The input stream that holds the encoded body
      * parts.
      */
     public ErrorBody(final MALEncodingContext ctx,
-            final boolean wrappedBodyParts,
             final MALElementStreamFactory encFactory,
             final MALElementInputStream encBodyElements) {
-        super(ctx, wrappedBodyParts, encFactory, encBodyElements);
+        super(ctx, encFactory, encBodyElements);
     }
 
     @Override

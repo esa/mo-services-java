@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.HomogeneousList;
@@ -509,4 +510,18 @@ public class XMLStreamReader implements MALDecoder {
 
         return decodeLong();
     }
+
+    @Override
+    public Element decodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+
+        if (enumSize < 256) {
+            return enumeration.fromOrdinal(this.decodeUOctet().getValue());
+        } else if (enumSize < 65536) {
+            return enumeration.fromOrdinal(this.decodeUShort().getValue());
+        }
+
+        throw new MALException("The Enumeration could not be decoded!");
+    }
+
 }

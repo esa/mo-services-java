@@ -111,7 +111,7 @@ public class XMLStreamWriter implements MALEncoder {
 
     @Override
     public void encodeDuration(final Duration value) throws MALException {
-        java.time.Duration d = java.time.Duration.ofMillis((long) (value.getValue() * 1000));
+        java.time.Duration d = java.time.Duration.ofMillis((long) (value.getInSeconds() * 1000));
         addNode("Duration", d.toString());
     }
 
@@ -557,5 +557,17 @@ public class XMLStreamWriter implements MALEncoder {
             }
         }
         listEncoder.close();
+    }
+
+    @Override
+    public void encodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+        Integer ordinal = (Integer) enumeration.getOrdinal();
+
+        if (enumSize < 256) {
+            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+        } else if (enumSize < 65536) {
+            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+        }
     }
 }

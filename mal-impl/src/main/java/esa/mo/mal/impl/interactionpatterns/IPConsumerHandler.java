@@ -89,7 +89,7 @@ public abstract class IPConsumerHandler {
         MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                 "Unexpected transition IP({0}) Stage({1})",
                 new Object[]{
-                    InteractionType.fromOrdinal(interactionType), interactionStage
+                    new InteractionType(interactionType), interactionStage
                 });
     }
 }

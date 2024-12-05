@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
 import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
@@ -68,6 +69,18 @@ public abstract class BaseBinaryEncoder extends Encoder {
         timeHandler.encodeFineTime((BaseBinaryStreamHolder) outputStream, value);
     }
 
+    @Override
+    public void encodeEnumeration(Enumeration enumeration) throws MALException {
+        int enumSize = enumeration.getEnumSize();
+        Integer ordinal = (Integer) enumeration.getOrdinal();
+
+        if (enumSize < 256) {
+            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+        } else if (enumSize < 65536) {
+            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+        }
+    }
+
     public BaseBinaryStreamHolder getStreamHolder() {
         return (BaseBinaryStreamHolder) outputStream;
     }
@@ -93,7 +106,7 @@ public abstract class BaseBinaryEncoder extends Encoder {
 
         @Override
         public void writeBytes(final byte[] value) throws IOException {
-            if (null == value) {
+            if (value == null) {
                 writeUnsignedInt(0);
                 throw new IOException("StreamHolder.writeBytes: null value supplied!");
             } else {

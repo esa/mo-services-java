@@ -71,7 +71,7 @@ public class Duration implements Attribute {
     /**
      * Returns the duration in seconds.
      *
-     * @return the value.
+     * @return The duration in seconds.
      */
     public double getInSeconds() {
         return value;
@@ -94,7 +94,7 @@ public class Duration implements Attribute {
 
     @Override
     public boolean equals(final Object obj) {
-        if (null == obj) {
+        if (obj == null) {
             return false;
         }
         if (this == obj) {

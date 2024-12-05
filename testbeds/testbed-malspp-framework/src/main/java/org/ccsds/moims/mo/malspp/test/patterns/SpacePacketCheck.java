@@ -568,7 +568,7 @@ public class SpacePacketCheck {
         // only valid for sent packets, not for received ones (does not make sense for received
         // packets, because packetDataLength itself is used for determining the body size)
         if (isSent) {
-            return packetDataLengthIs() + 1 == (spacePacket.getBody().length - spacePacket.getOffset());
+            return (packetDataLengthIs() + 1) == (spacePacket.getBody().length - spacePacket.getOffset());
         }
         return true;
     }

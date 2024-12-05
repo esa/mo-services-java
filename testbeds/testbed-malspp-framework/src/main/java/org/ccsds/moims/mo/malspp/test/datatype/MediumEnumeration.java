@@ -33,9 +33,9 @@
 package org.ccsds.moims.mo.malspp.test.datatype;
 
 import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
-import static org.ccsds.moims.mo.malspp.test.datatype.LargeEnumeration.SHORT_FORM;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
 
 public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.Enumeration {
@@ -54,7 +54,13 @@ public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.E
         super(ordinal);
     }
 
-    public static MediumEnumeration fromOrdinal(int ordinal) {
+    @Override
+    public int getEnumSize() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Element fromOrdinal(int ordinal) {
         return new MediumEnumeration(ordinal);
     }
 
@@ -74,16 +80,19 @@ public final class MediumEnumeration extends org.ccsds.moims.mo.mal.structures.E
         return null;
     }
 
+    @Override
     public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
         encoder.encodeUShort(new UShort(getOrdinal()));
     }
 
+    @Override
     public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
         int ordinal;
         ordinal = (int) decoder.decodeUShort().getValue();
         return fromOrdinal(ordinal);
     }
 
+    @Override
     public org.ccsds.moims.mo.mal.structures.Element createElement() {
         return new MediumEnumeration(null);
     }

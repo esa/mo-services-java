@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.TypeId;
 public class Time implements Attribute {
 
     private static final long serialVersionUID = Attribute.TIME_SHORT_FORM;
-    private long value;
+    private final long value;
 
     /**
      * Default constructor.
@@ -41,9 +41,15 @@ public class Time implements Attribute {
     }
 
     /**
-     * Initialises the object with a certain time. The value shall be the 
-     * difference, measured in milliseconds, between the current time and 
-     * midnight, January 1, 1970 UTC.
+     * Initialises the object with a certain time. The value shall be the
+     * difference, measured in milliseconds, between the current time and
+     * midnight, January 1, 1970 UTC. This is based on the native Java operation
+     * from the System.currentTimeMillis().
+     *
+     * <p>
+     * See the description of the class <code>Date</code> for a discussion of
+     * slight discrepancies that may arise between "computer time" and
+     * coordinated universal time (UTC).
      *
      * @param value The time to instantiate the object (Unix time).
      */
@@ -73,9 +79,9 @@ public class Time implements Attribute {
     public static Time now() {
         return new Time(System.currentTimeMillis());
     }
-    
+
     public FineTime toFineTime() {
-      return new FineTime(value * ONE_MILLION);
+        return new FineTime(value * ONE_MILLION);
     }
 
     @Override
@@ -95,7 +101,7 @@ public class Time implements Attribute {
 
     @Override
     public boolean equals(final Object obj) {
-        if (null == obj) {
+        if (obj == null) {
             return false;
         }
         if (this == obj) {
@@ -109,7 +115,7 @@ public class Time implements Attribute {
 
     @Override
     public int hashCode() {
-        return (int) value;
+        return (int) Long.hashCode(value);
     }
 
     @Override

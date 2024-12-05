@@ -98,7 +98,7 @@ public class ActivityRelayNode {
     protected void resetTest() throws MALException {
         LoggingBase.logMessage("ActivityRelayNode:resetTest");
 
-        if (null == monitorEventPublisher) {
+        if (monitorEventPublisher == null) {
             createMonitorEventPublisher();
         }
 
@@ -224,7 +224,7 @@ public class ActivityRelayNode {
 
     private EventStub getEventStub() throws MALException {
         LoggingBase.logMessage("ActivityRelayNode:getEventStub " + relayName);
-        if (null == evstub) {
+        if (evstub == null) {
             String extraName = relayTo;
 
             if ("Provider".equalsIgnoreCase(extraName)) {

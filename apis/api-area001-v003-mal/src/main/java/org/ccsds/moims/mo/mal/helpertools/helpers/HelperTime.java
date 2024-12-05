@@ -92,6 +92,26 @@ public class HelperTime {
     }
 
     /**
+     * Converts a readable time string to a MAL Time data type.
+     *
+     * @param time The readable time string. Expected format is
+     * {@value #DATE_PATTERN}.
+     * @return The MAL Time object or null if a ParseException occurred
+     */
+    public static Time readableString2Time(String time) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        Date date;
+        try {
+            date = format.parse(time);
+        } catch (ParseException e) {
+            Logger.getLogger(HelperTime.class.getName()).log(Level.SEVERE,
+                    String.format("Error while parsing %s", time), e);
+            return null;
+        }
+        return new Time(date.getTime());
+    }
+
+    /**
      * Returns the current time encapsulated in a FineTime type
      *
      * @return The current time

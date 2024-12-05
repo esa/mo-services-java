@@ -94,7 +94,7 @@ public class UInteger implements Attribute {
 
     @Override
     public boolean equals(final Object obj) {
-        if (null == obj) {
+        if (obj == null) {
             return false;
         }
         if (this == obj) {
