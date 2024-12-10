@@ -293,10 +293,14 @@
     <xsd:annotation>
       <xsd:documentation xml:lang="en">Base type that the operations extend, defines the common aspects of all operations.</xsd:documentation>
     </xsd:annotation>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
-    <xsd:attribute name="number" type="xsd:unsignedShort" use="required"/>
-    <xsd:attribute name="supportInReplay" type="xsd:boolean" use="required"/>
-    <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+        <xsd:attribute name="number" type="xsd:unsignedShort" use="required"/>
+        <xsd:attribute name="supportInReplay" type="xsd:boolean" use="required"/>
+        <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+     </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="AreaDataTypeList">
