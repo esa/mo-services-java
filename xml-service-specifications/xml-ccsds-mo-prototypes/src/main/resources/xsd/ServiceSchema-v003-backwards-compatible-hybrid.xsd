@@ -488,6 +488,12 @@
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
+  <xsd:complexType name="MessageBodyType">
+    <xsd:sequence>
+      <xsd:element name="field" type="mal:NamedElementReferenceWithCommentType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+  </xsd:complexType>
   <xsd:complexType name="NamedElementReferenceWithCommentType">
     <xsd:complexContent>
       <xsd:extension base="mal:ElementReferenceWithCommentType">
