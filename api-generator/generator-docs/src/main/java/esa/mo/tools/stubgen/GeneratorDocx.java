@@ -627,50 +627,50 @@ public class GeneratorDocx extends GeneratorDocument {
             drawOperationPattern(docxFile, "SEND");
             drawOperationMessageHeader(docxFile);
             drawOperationMessageDetails(docxFile, area, service, true, "SEND",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getSend().getField()));
         } else if (op instanceof SubmitOperationType) {
             SubmitOperationType lop = (SubmitOperationType) op;
             drawOperationPattern(docxFile, "SUBMIT");
             drawOperationMessageHeader(docxFile);
             drawOperationMessageDetails(docxFile, area, service, true, "SUBMIT",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getSubmit().getField()));
         } else if (op instanceof RequestOperationType) {
             RequestOperationType lop = (RequestOperationType) op;
             drawOperationPattern(docxFile, "REQUEST");
             drawOperationMessageHeader(docxFile);
             drawOperationMessageDetails(docxFile, area, service, true, "REQUEST",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getRequest().getField()));
             drawOperationMessageDetails(docxFile, area, service, false, "RESPONSE",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField()));
         } else if (op instanceof InvokeOperationType) {
             InvokeOperationType lop = (InvokeOperationType) op;
             drawOperationPattern(docxFile, "INVOKE");
             drawOperationMessageHeader(docxFile);
             drawOperationMessageDetails(docxFile, area, service, true, "INVOKE",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getInvoke().getField()));
             drawOperationMessageDetails(docxFile, area, service, false, "ACK",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getAcknowledgement().getField()));
             drawOperationMessageDetails(docxFile, area, service, false, "RESPONSE",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField()));
         } else if (op instanceof ProgressOperationType) {
             ProgressOperationType lop = (ProgressOperationType) op;
             drawOperationPattern(docxFile, "PROGRESS");
             drawOperationMessageHeader(docxFile);
             drawOperationMessageDetails(docxFile, area, service, true, "PROGRESS",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getProgress().getField()));
             drawOperationMessageDetails(docxFile, area, service, false, "ACK",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getAcknowledgement().getField()));
             drawOperationMessageDetails(docxFile, area, service, false, "UPDATE",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getUpdate().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getUpdate().getField()));
             drawOperationMessageDetails(docxFile, area, service, false, "RESPONSE",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField()));
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
             drawOperationPattern(docxFile, "PUBLISH-SUBSCRIBE");
-            AnyTypeReference subKeys = lop.getMessages().getSubscriptionKeys();
+            MessageBodyType subKeys = lop.getMessages().getSubscriptionKeys();
             if (subKeys != null) {
                 drawOperationPubSubKeys(docxFile, area, service,
-                        TypeUtils.getTypeListViaXSDAny(subKeys.getAny()));
+                        TypeUtils.getTypeListViaField(subKeys.getField()));
             }
             drawOperationMessageHeader(docxFile);
             // Probably looks cooler like this:
@@ -678,7 +678,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 //drawOperationMessageDetails(docxFile, area, service, true, "SUBSCRIPTION KEYS", TypeUtils.getTypeListViaXSDAny(subKeys.getAny()));
             }
             drawOperationMessageDetails(docxFile, area, service, false, "PUBLISH",
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getPublishNotify().getField()));
         }
 
         docxFile.endTable();
@@ -731,7 +731,7 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     private void addOperationStructureDetails(DocxBaseWriter docxFile, OperationType op) throws IOException {
-        List<AnyTypeReference> msgs = new LinkedList<>();
+        List<MessageBodyType> msgs = new LinkedList<>();
 
         if (op instanceof SendOperationType) {
             SendOperationType lop = (SendOperationType) op;
@@ -768,14 +768,14 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addTitle(4, "Requirements");
 
         if (!msgs.isEmpty()) {
-            addRequirementsDetails(docxFile, msgs);
+            addRequirementsDetails(docxFile, op.getDocumentation());
         }
     }
 
-    private void addTypeSignatureDetails(DocxBaseWriter docxFile, List<AnyTypeReference> msgs) throws IOException {
+    private void addTypeSignatureDetails(DocxBaseWriter docxFile, List<MessageBodyType> msgs) throws IOException {
         List<String> signatureDetails = null;
-        for (AnyTypeReference msg : msgs) {
-            List<TypeRef> refs = TypeUtils.getTypeListViaXSDAny(msg.getAny());
+        for (MessageBodyType msg : msgs) {
+            List<TypeRef> refs = TypeUtils.getTypeListViaField(msg.getField());
             for (TypeRef typeRef : refs) {
                 if (typeRef.isField()) {
                     signatureDetails = GeneratorUtils.addSplitStrings(signatureDetails, typeRef.getFieldRef().getComment());
@@ -786,10 +786,10 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addNumberedComment(signatureDetails);
     }
 
-    private void addRequirementsDetails(DocxBaseWriter docxFile, List<AnyTypeReference> msgs) throws IOException {
+    private void addRequirementsDetails(DocxBaseWriter docxFile, List<DocumentationType> docs) throws IOException {
         List<String> requirements = null;
-        for (AnyTypeReference msg : msgs) {
-            requirements = GeneratorUtils.addSplitStrings(requirements, msg.getComment());
+        for (DocumentationType doc : docs) {
+            requirements = GeneratorUtils.addSplitStrings(requirements, doc.getContent());
         }
 
         docxFile.addNumberedComment(requirements);

@@ -33,8 +33,8 @@ import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.tools.stubgen.writers.TargetWriter;
-import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
+import esa.mo.xsd.MessageBodyType;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
@@ -45,7 +45,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.JAXBElement;
 
 /**
  * Generates stubs and skeletons for CCSDS MO Service specifications for the
@@ -203,14 +202,12 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList()");
 
         if (publisher.getOperation() != null) {
-            AnyTypeReference keys = publisher.getOperation().getSubscriptionKeys();
+            MessageBodyType keys = publisher.getOperation().getSubscriptionKeys();
 
             if (keys != null) {
-                for (Object key : keys.getAny()) {
-                    JAXBElement jaxbElement = (JAXBElement) key;
-                    NamedElementReferenceWithCommentType aaa = (NamedElementReferenceWithCommentType) jaxbElement.getValue();
-                    method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + aaa.getName() + "\"))");
-                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + aaa.getType().getName().toUpperCase() + ")");
+                for (NamedElementReferenceWithCommentType key : keys.getField()) {
+                    method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + key.getName() + "\"))");
+                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + key.getType().getName().toUpperCase() + ")");
                 }
             }
         }

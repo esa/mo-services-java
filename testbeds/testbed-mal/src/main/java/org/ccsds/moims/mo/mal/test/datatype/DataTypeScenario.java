@@ -481,14 +481,14 @@ public class DataTypeScenario extends LoggingBase {
             TestAbstractMultiReturnResponse tv = getDataTestStub().testAbstractMultiReturn(
                     TestData.testUOctet, TestData.testUShort,
                     TestData.testUInteger, TestData.testULong);
-            rv = subMultiTest(TestData.testMultiReturnAbstract.get_UOctet0(),
-                    tv.get_UOctet0(), rv, "abstract Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.get_UShort1(),
-                    tv.get_UShort1(), rv, "abstract Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.get_UInteger2(),
-                    tv.get_UInteger2(), rv, "abstract Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnAbstract.get_Element3(),
-                    tv.get_Element3(), rv, "abstract Multi return part 4");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getOut1(),
+                    tv.getOut1(), rv, "abstract Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getOut2(),
+                    tv.getOut2(), rv, "abstract Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getOut3(),
+                    tv.getOut3(), rv, "abstract Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnAbstract.getOut4(),
+                    tv.getOut4(), rv, "abstract Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subMultiTestExceptionHandler(ex, rv, "abstract Multi return");
         }
@@ -505,14 +505,14 @@ public class DataTypeScenario extends LoggingBase {
             TestInnerAbstractMultiReturnResponse tv = getDataTestStub().testInnerAbstractMultiReturn(
                     TestData.testUOctet, TestData.testULong,
                     TestData.testUShort, TestData.testUInteger);
-            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UOctet0(),
-                    tv.get_UOctet0(), rv, "inner abstract Multi return part 1");
-            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element1(),
-                    tv.get_Element1(), rv, "inner abstract Multi return part 2");
-            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_Element2(),
-                    tv.get_Element2(), rv, "inner abstract Multi return part 3");
-            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.get_UInteger3(),
-                    tv.get_UInteger3(), rv, "inner abstract Multi return part 4");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.getOut1(),
+                    tv.getOut1(), rv, "inner abstract Multi return part 1");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.getOut2(),
+                    tv.getOut2(), rv, "inner abstract Multi return part 2");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.getOut3(),
+                    tv.getOut3(), rv, "inner abstract Multi return part 3");
+            rv = subMultiTest(TestData.testMultiReturnInnerAbstract.getOut4(),
+                    tv.getOut4(), rv, "inner abstract Multi return part 4");
         } catch (MALInteractionException ex) {
             rv = subMultiTestExceptionHandler(ex, rv, "inner abstract Multi return");
         }
@@ -683,13 +683,13 @@ public class DataTypeScenario extends LoggingBase {
                     TestData.testGarage.getCarsAsObjects());
 
             rv = subMultiTest(TestData.testGarage,
-                    res.get_Garage0(), rv, "polymorphicObjectRefTypesWork param 1");
+                    res.getOutput1(), rv, "polymorphicObjectRefTypesWork param 1");
             rv = subMultiTest(TestData.testGarage.getCarsAsPorsches(),
-                    res.get_ObjectRefList1(), rv, "polymorphicObjectRefTypesWork param 2");
+                    res.getOutput2(), rv, "polymorphicObjectRefTypesWork param 2");
             rv = subMultiTest(TestData.testGarage.getCarsAsAutos(),
-                    res.get_ObjectRefList2(), rv, "polymorphicObjectRefTypesWork param 3");
+                    res.getOutput3(), rv, "polymorphicObjectRefTypesWork param 3");
             rv = subMultiTest(TestData.testGarage.getCarsAsObjects(),
-                    res.get_ObjectRefList3(), rv, "polymorphicObjectRefTypesWork param 4");
+                    res.getOutput4(), rv, "polymorphicObjectRefTypesWork param 4");
         } catch (MALInteractionException ex) {
             rv = subMultiTestExceptionHandler(ex, rv, "polymorphicObjectRefTypesWork");
         }

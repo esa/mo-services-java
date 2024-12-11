@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.xsd.AnyTypeReference;
+import esa.mo.xsd.MessageBodyType;
 import esa.mo.xsd.OperationType;
 import esa.mo.xsd.PubSubOperationType;
 import java.util.List;
@@ -220,7 +220,7 @@ public final class OperationSummary {
         return retComment;
     }
 
-    public AnyTypeReference getSubscriptionKeys() {
+    public MessageBodyType getSubscriptionKeys() {
         PubSubOperationType lop = (PubSubOperationType) originalOp;
         return lop.getMessages().getSubscriptionKeys();
     }

@@ -173,7 +173,7 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="send" type="mal:AnyTypeReference"/>
+                <xsd:element name="send" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -192,7 +192,7 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="submit" type="mal:AnyTypeReference"/>
+                <xsd:element name="submit" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -212,8 +212,8 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="request" type="mal:AnyTypeReference"/>
-                <xsd:element name="response" type="mal:AnyTypeReference"/>
+                <xsd:element name="request" type="mal:MessageBodyType"/>
+                <xsd:element name="response" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -233,9 +233,9 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="invoke" type="mal:AnyTypeReference"/>
-                <xsd:element name="acknowledgement" type="mal:AnyTypeReference"/>
-                <xsd:element name="response" type="mal:AnyTypeReference"/>
+                <xsd:element name="invoke" type="mal:MessageBodyType"/>
+                <xsd:element name="acknowledgement" type="mal:MessageBodyType"/>
+                <xsd:element name="response" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -255,10 +255,10 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="progress" type="mal:AnyTypeReference"/>
-                <xsd:element name="acknowledgement" type="mal:AnyTypeReference"/>
-                <xsd:element name="update" type="mal:AnyTypeReference"/>
-                <xsd:element name="response" type="mal:AnyTypeReference"/>
+                <xsd:element name="progress" type="mal:MessageBodyType"/>
+                <xsd:element name="acknowledgement" type="mal:MessageBodyType"/>
+                <xsd:element name="update" type="mal:MessageBodyType"/>
+                <xsd:element name="response" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -278,8 +278,8 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="subscriptionKeys" type="mal:AnyTypeReference"/>
-                <xsd:element name="publishNotify" type="mal:AnyTypeReference"/>
+                <xsd:element name="subscriptionKeys" type="mal:MessageBodyType"/>
+                <xsd:element name="publishNotify" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>

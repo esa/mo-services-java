@@ -31,11 +31,11 @@ import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
-import esa.mo.xsd.AnyTypeReference;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.CompositeType;
 import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ExtendedServiceType;
+import esa.mo.xsd.MessageBodyType;
 import esa.mo.xsd.ModelObjectType;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import esa.mo.xsd.ServiceType;
@@ -126,10 +126,10 @@ public class JavaServiceInfo {
 
             if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
                 StringBuilder arrayList = new StringBuilder("{");
-                AnyTypeReference subsKeys = op.getSubscriptionKeys();
+                MessageBodyType subsKeys = op.getSubscriptionKeys();
 
                 if (subsKeys != null) {
-                    List<TypeRef> types = TypeUtils.getTypeListViaXSDAny(subsKeys.getAny());
+                    List<TypeRef> types = TypeUtils.getTypeListViaField(subsKeys.getField());
                     if (types != null && !types.isEmpty()) {
                         String prefix = "";
                         for (TypeRef type : types) {
