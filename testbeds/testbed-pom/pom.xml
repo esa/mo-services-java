@@ -74,8 +74,6 @@
   
     <properties>
         <ant.plugin.version>1.7</ant.plugin.version>
-        <ant.version>1.8.1</ant.version>
-        <ant.trax.version>1.8.0</ant.trax.version>
         <fitnesse.version>20201213</fitnesse.version>
         <jacoco.version>0.8.10</jacoco.version>
         <junit.version>4.13.2</junit.version>
@@ -369,17 +367,17 @@
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant</artifactId>
-                            <version>${ant.version}</version>
+                            <version>1.9.16</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant-nodeps</artifactId>
-                            <version>${ant.version}</version>
+                            <version>1.8.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant-trax</artifactId>
-                            <version>${ant.trax.version}</version>
+                            <version>1.8.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.jacoco</groupId>
