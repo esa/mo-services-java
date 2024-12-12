@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.Calendar;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
@@ -82,6 +83,12 @@ public class Time implements Attribute {
 
     public FineTime toFineTime() {
         return new FineTime(value * ONE_MILLION);
+    }
+
+    public static Time generateTime(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 0, 0, 0);
+        return new Time(calendar.getTime().getTime());
     }
 
     @Override
