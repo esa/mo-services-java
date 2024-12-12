@@ -21,7 +21,6 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
