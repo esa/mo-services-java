@@ -99,7 +99,7 @@ public class UC1_Ex1_Test {
     @AfterClass
     public static void tearDownClass() {
         System.out.println("Entered: tearDownClass()");
-        System.out.println("The Provider and Consumer being closed!");
+        System.out.println("The Provider and Consumer are being closed!");
 
         try {
             setUp.tearDown(); // Close all the services
