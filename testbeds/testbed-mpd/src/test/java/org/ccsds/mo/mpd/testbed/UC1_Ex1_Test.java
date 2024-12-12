@@ -179,14 +179,40 @@ public class UC1_Ex1_Test {
     public void testCase_6() {
         System.out.println("Running: testCase_6()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow timeWindow = new TimeWindow(generateTime(1970, 1, 1), generateTime(1970, 12, 31));
+        TimeWindow timeWindow = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
         testWithTimeWindow(apidValue, 0, timeWindow);
     }
 
-    private Time generateTime(int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, 23, 59, 59);
-        return new Time(calendar.getTime().getTime());
+    /**
+     * Test Case 7 - Match NOT APID = 200 and Date. With: timeWindow =
+     * [APID100_TIME_START, APID100_TIME_END].
+     */
+    @Test
+    public void testCase_7() {
+        System.out.println("Running: testCase_7()");
+        UInteger apidValue = new UInteger(200);
+        TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        testWithTimeWindow(apidValue, 0, timeWindow);
+    }
+
+    /**
+     * Test Case 8 - With timeWindow = [1970-01-01, 1970-12-31].
+     */
+    @Test
+    public void testCase_8() {
+        System.out.println("Running: testCase_8()");
+        TimeWindow timeWindow = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        testWithTimeWindow(null, 0, timeWindow);
+    }
+
+    /**
+     * Test Case 9 - With timeWindow = [APID100_TIME_START, APID200_TIME_END].
+     */
+    @Test
+    public void testCase_9() {
+        System.out.println("Running: testCase_9()");
+        TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID200_TIME_END);
+        testWithTimeWindow(null, 2, timeWindow);
     }
 
     private void test(UInteger apidValue, int expectedNumberOfResults) {
