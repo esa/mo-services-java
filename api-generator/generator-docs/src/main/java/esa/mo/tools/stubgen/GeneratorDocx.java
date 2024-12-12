@@ -767,7 +767,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
         docxFile.addTitle(4, "Requirements");
 
-        if (!msgs.isEmpty()) {
+        if (op.getDocumentation() != null) {
             addRequirementsDetails(docxFile, op.getDocumentation());
         }
     }
