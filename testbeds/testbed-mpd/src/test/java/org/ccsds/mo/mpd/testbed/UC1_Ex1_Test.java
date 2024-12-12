@@ -64,7 +64,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class UC1Test {
+public class UC1_Ex1_Test {
 
     private static final int TIMEOUT = 1000; // In milliseconds
     private static final String BUMPER = "-------- Running New Test --------";
@@ -77,7 +77,7 @@ public class UC1Test {
     private static ProductRetrievalInheritanceSkeleton providerPR = null;
     private static ProductRetrievalStub consumerPR = null;
 
-    public UC1Test() {
+    public UC1_Ex1_Test() {
     }
 
     @BeforeClass
@@ -103,7 +103,7 @@ public class UC1Test {
             // Initialize the Order Management service
             setUp.tearDown();
         } catch (IOException ex) {
-            Logger.getLogger(UC1Test.class.getName()).log(
+            Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
                     Level.SEVERE, "The tearDown() operation failed!", ex);
         }
     }
@@ -202,10 +202,10 @@ public class UC1Test {
             int size = list.size();
             assertEquals(expectedNumberOfResults, size);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
 
@@ -250,7 +250,7 @@ public class UC1Test {
                 @Override
                 public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE,
+                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
                 }
@@ -258,7 +258,7 @@ public class UC1Test {
                 @Override
                 public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE,
+                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
                 }
@@ -266,7 +266,7 @@ public class UC1Test {
                 @Override
                 public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE,
+                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
                 }
@@ -282,7 +282,7 @@ public class UC1Test {
             }
 
             if (!ackReceived.get()) {
-                Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, "The ACK was not received!");
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, "The ACK was not received!");
                 fail("The ACK was not received!");
             }
 
@@ -295,7 +295,7 @@ public class UC1Test {
             }
 
             if (!rspReceived.get()) {
-                Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, "The RESPONSE was not received!");
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, "The RESPONSE was not received!");
                 fail("The RESPONSE was not received!");
             }
 
@@ -322,10 +322,10 @@ public class UC1Test {
                 }
             }
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(UC1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
     }
