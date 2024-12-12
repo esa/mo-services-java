@@ -151,8 +151,14 @@ public class SetUpProvidersAndConsumers {
     }
 
     public void tearDown() throws IOException {
+        if (productOrderDeliveryProviderService != null) {
+            productOrderDeliveryProviderService.getConnection().closeAll();
+        }
         if (orderManagementProviderService != null) {
             orderManagementProviderService.getConnection().closeAll();
+        }
+        if (productRetrievalProviderService != null) {
+            productRetrievalProviderService.getConnection().closeAll();
         }
     }
 }

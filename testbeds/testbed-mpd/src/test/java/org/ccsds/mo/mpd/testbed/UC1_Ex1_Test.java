@@ -69,7 +69,7 @@ import static org.junit.Assert.*;
 public class UC1_Ex1_Test {
 
     private static final int TIMEOUT = 1000; // In milliseconds
-    private static final String BUMPER = "-------- Running New Test --------";
+    private static final String TEST_START = "-------- Running New Test --------";
     private static final SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
     private static TMPacketsDataset backend = null;
     private static OrderManagementInheritanceSkeleton providerOM;
@@ -99,11 +99,10 @@ public class UC1_Ex1_Test {
     @AfterClass
     public static void tearDownClass() {
         System.out.println("Entered: tearDownClass()");
-        System.out.println("The Provider and Consumer need to be closed here!");
+        System.out.println("The Provider and Consumer being closed!");
 
         try {
-            // Initialize the Order Management service
-            setUp.tearDown();
+            setUp.tearDown(); // Close all the services
         } catch (IOException ex) {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
                     Level.SEVERE, "The tearDown() operation failed!", ex);
@@ -112,13 +111,12 @@ public class UC1_Ex1_Test {
 
     @Before
     public void setUp() {
-        System.out.println(BUMPER);
-        System.out.println("Entered: setUp()");
+        System.out.println(TEST_START); // Right before running a test
     }
 
     @After
     public void tearDown() {
-        System.out.println("Entered: tearDown()");
+        System.out.println("Test is completed!");
     }
 
     /**
