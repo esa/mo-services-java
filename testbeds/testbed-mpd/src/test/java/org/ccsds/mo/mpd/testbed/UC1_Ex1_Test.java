@@ -21,6 +21,7 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -36,6 +37,7 @@ import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
@@ -160,18 +162,33 @@ public class UC1_Ex1_Test {
     }
 
     /**
-     * Test Case 5 - Match APID = 100 and timeWindow = [APID100_TIME_START,
-     * APID100_TIME_END].
+     * Test Case 5 - Match APID = 100 and Date. With: timeWindow =
+     * [APID100_TIME_START, APID100_TIME_END].
      */
     @Test
     public void testCase_5() {
         System.out.println("Running: testCase_5()");
-        // TBD
-        /*
         UInteger apidValue = new UInteger(100);
         TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
         testWithTimeWindow(apidValue, 1, timeWindow);
-         */
+    }
+
+    /**
+     * Test Case 6 - Match APID = 100 and NOT Date. With: timeWindow =
+     * [1970-01-01, 1970-12-31].
+     */
+    @Test
+    public void testCase_6() {
+        System.out.println("Running: testCase_6()");
+        UInteger apidValue = new UInteger(100);
+        TimeWindow timeWindow = new TimeWindow(generateTime(1970, 1, 1), generateTime(1970, 12, 31));
+        testWithTimeWindow(apidValue, 0, timeWindow);
+    }
+
+    private Time generateTime(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 23, 59, 59);
+        return new Time(calendar.getTime().getTime());
     }
 
     private void test(UInteger apidValue, int expectedNumberOfResults) {
@@ -304,9 +321,32 @@ public class UC1_Ex1_Test {
             System.out.println("Number of products returned: " + size);
             assertEquals(expectedNumberOfResults, size);
 
-            // Finish the test if there's nothing else to check
+            // Finish the test if nothing was returned.. (there's nothing else to check)
             if (size == 0) {
                 return;
+            }
+
+            // Check the timeWindows for all the received products, if one was selected
+            if (timeWindow != null) {
+                for (Product p : returnedProducts) {
+                    TimeWindow receivedTW = p.getTimeWindow();
+
+                    if (receivedTW.getStart().getValue() > timeWindow.getEnd().getValue()) {
+                        fail("The received TimeWindow start time is after the requested TimeWindow end time!");
+                    }
+                    if (receivedTW.getEnd().getValue() < timeWindow.getStart().getValue()) {
+                        fail("The received TimeWindow end time is before the requested TimeWindow start time!");
+                    }
+                }
+            }
+
+            // Check that the productType matches
+            if (productType != null) {
+                for (Product p : returnedProducts) {
+                    if (!p.getProductType().equals(productType)) {
+                        fail("The productTypes are not the same!");
+                    }
+                }
             }
 
             // If there is only one entry, then check if the APID matches
