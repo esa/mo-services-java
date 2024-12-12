@@ -241,6 +241,7 @@ public class UC1_Ex1_Test {
             TimeWindow creationDate = null;
             list = consumerPR.listProducts(productFilter, creationDate, timeWindow);
             int size = list.size();
+            System.out.println("Number of listed products returned: " + size);
             assertEquals(expectedNumberOfResults, size);
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
