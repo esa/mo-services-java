@@ -121,7 +121,7 @@
 
   <xsd:complexType name="ServiceType">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Element represents a Service specification inside an Area. May also optionally include data type and error definitions.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Element represents a Service specification inside an Area.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="mal:DocumentationBaseType">
@@ -225,7 +225,7 @@
 
   <xsd:complexType name="InvokeOperationType">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Element represents a INVOKE operation.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Element represents an INVOKE operation.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="mal:OperationType">
@@ -299,7 +299,7 @@
         <xsd:attribute name="number" type="xsd:unsignedShort" use="required"/>
         <xsd:attribute name="supportInReplay" type="xsd:boolean" use="required"/>
         <xsd:attribute name="comment" type="xsd:string" use="optional"/>
-     </xsd:extension>
+      </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
@@ -375,7 +375,7 @@
 
   <xsd:complexType name="OperationErrorList">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Represents that list of Errors that an operation may raise, these may reference existing error definitions or define new ones.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Represents the list of Errors that an operation may raise, these reference existing error definitions.</xsd:documentation>
     </xsd:annotation>
     <xsd:choice maxOccurs="unbounded">
       <xsd:element name="error" type="mal:ErrorDefinitionType"/>
@@ -494,6 +494,7 @@
     </xsd:sequence>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
   </xsd:complexType>
+
   <xsd:complexType name="NamedElementReferenceWithCommentType">
     <xsd:complexContent>
       <xsd:extension base="mal:ElementReferenceWithCommentType">
@@ -519,7 +520,7 @@
 
   <xsd:complexType name="TypeReference">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Allows another element in the specification to be referenced, if the area or the service attributes are missing then the area and/or service of the refering element shall be assumed.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Allows another element in the specification to be referenced.</xsd:documentation>
     </xsd:annotation>
     <xsd:attribute name="list" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="objectRef" type="xsd:boolean" use="optional" default="false"/>
