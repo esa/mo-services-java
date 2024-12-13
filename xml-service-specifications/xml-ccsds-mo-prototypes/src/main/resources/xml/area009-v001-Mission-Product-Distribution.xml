@@ -13,18 +13,21 @@
         <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service allows browsing and retrieval of existing products.">
             <mal:documentation name="High-level Requirements" order="1">
                 The following set of mission data product configuration data shall be available to both provider and consumers in any deployment of the product retrieval service:
-				- Product definitions;
+				- Product definitions (as ProductType data structure)
             </mal:documentation>
             <mal:documentation name="Functional Requirements" order="2">
-                3.2.4.2 In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message, the final, empty Response message signalling that all products have been returned.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
-                <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation retrieves a list of available products of a specified product type that pass a set filter criteria. The service consumer sends the required filter criteria to the service provider, which then builds a list of products that pass the filter and returns this to the consumer.  
-The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products.  To pass the filter a product must match all of the individual filter criteria specified (source, metadata parameters, creation date and time window).
-The response consists of a list of ProductMetadatas that pass the specified filter.  These contain the metadata of the products but not the product body itself.">
+                <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected time window.">
                     <mal:documentation name="Requirement" order="1">
                         In response to a listProducts operation, the service provider shall compile a list of Products that satisfy the specified criteria and return this list (as object references) to the service consumer.
                         Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="2">
+						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all of the individual filter criteria specified (source, metadata parameters, creation date and time window).
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="3">
+						The response consists of a list of ProductMetadatas that pass the specified filter. These contain the metadata of the products but not the product body itself.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -39,7 +42,7 @@ The response consists of a list of ProductMetadatas that pass the specified filt
                             </mal:field>
                         </mal:request>
                         <mal:response>
-                            <mal:field name="metadatas" canBeNull="false" comment="">
+                            <mal:field name="metadatas" canBeNull="false" comment="The list of metadata entries that match the selected filters.">
                                 <mal:type area="MPD" list="true" name="ProductMetadata"/>
                             </mal:field>
                         </mal:response>
@@ -55,6 +58,9 @@ The response consists of a list of ProductMetadatas that pass the specified filt
                 </mal:requestIP>
                 <mal:progressIP name="getProducts" number="2" supportInReplay="true" comment="The getProduct operation allows consumers to retrieve one or more mission data products.  The consumer sends a list of one or more product references (as ObjectRefs) to the service provider, their identity having previously been established using the listProducts operation.
 Each requested product is then returned in a separate Update message, with the final Response message indicating that all requested products have been delivered.">
+                    <mal:documentation name="Requirement" order="1">
+						In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message, the final, empty Response message signalling that all products have been returned.
+                    </mal:documentation>
                     <mal:messages>
                         <mal:progress>
                             <mal:field name="productRefs" canBeNull="false" comment="">
@@ -128,20 +134,19 @@ After each requested product has been delivered by file transfer, a separate Upd
         <mal:service name="OrderManagement" number="2" comment="The Order Management Service is used to submit and manage standing orders. Standing orders specify a product filter to subscribe to a subset of automatically generated products and define the method and destination for product delivery.">
             <mal:documentation name="High-level Requirements" order="1">
                 3.3.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order management service:
+                - Product definitions (as ProductType data structure)
             </mal:documentation>
             <mal:documentation name="Functional Requirements" order="2">
-                3.3.4.1 In response to a listStandingOrders operation, the service provider shall compile a list of standing orders that satisfy the specified criteria and return this list (as StandingOrder data structures) to the service consumer.
-                Note: depending on any mission specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
-                3.3.4.2 On receipt of a Standing Order through a submitStandingOrder operation that has an empty orderID, the service provider shall create a new standing order, assign a unique orderID to this and return the orderID to the service consumer.
-                3.3.4.3 On receipt of a Standing Order through a submitStandingOrder operation that has an specified orderID, the service provider shall verify the uniqueness of this orderID, before creating a new standing order.  If the orderID already exists, an error is returned to the service consumer.
-                3.3.4.4 Following successful creation of a new standing order in response to a submitStandingOrder operation, the delivery of requested products shall be automatically commenced by the service provider from the start of the specified validity window.  Where the specified delivery method is by file transfer, the delivery proceeds without further intervention from the service consumer.  Where the specified delivery method is by service, delivery is subject to the operations of the ProductDelivery service.
-                3.3.4.5 If the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation retrieves the list of existing standing orders relating to a specified domain and/or product user.
 The response consists of a list of standing orders that satisfy the specified criteria.  This may be restricted to those belonging to the service user requesting them.
 The domain field in the request refers to the domain of the products to which the standing order relates.  The standing order itself is not associated with a domain.">
                     <mal:messages>
+                    <mal:documentation name="Requirement" order="1">
+						In response to a listStandingOrders operation, the service provider shall compile a list of standing orders that satisfy the specified criteria and return this list (as StandingOrder data structures) to the service consumer.
+						Note: depending on any mission specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
+                    </mal:documentation>
                         <mal:request>
                             <mal:field name="user" canBeNull="true" comment="">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
@@ -169,6 +174,12 @@ The domain field in the request refers to the domain of the products to which th
 The service consumer sends an StandingOrder structure in the Request message to the service.
 In most implementations, the service provider is responsible for assigning a unique ID for the standing order.  In this case, the orderID field of the submitted StandingOrder structure shall be set to an empty string.  The orderID assigned by the service provider is then returned in the Response message as a MAL::Identifier.
 In some implementations, the service consumer may be responsible for assigning a unique ID for the standing order.  In this case, the orderID field of the submitted StandingOrder structure is set to the required identifier.  The service provider checks the uniqueness of the submitted orderID and where this already exists returns an ID_Already_Used error.">
+                    <mal:documentation name="Requirement" order="1">
+						On receipt of a Standing Order through a submitStandingOrder operation that has an empty orderID, the service provider shall create a new standing order, assign a unique orderID to this and return the orderID to the service consumer.
+						On receipt of a Standing Order through a submitStandingOrder operation that has an specified orderID, the service provider shall verify the uniqueness of this orderID, before creating a new standing order.  If the orderID already exists, an error is returned to the service consumer.
+						Following successful creation of a new standing order in response to a submitStandingOrder operation, the delivery of requested products shall be automatically commenced by the service provider from the start of the specified validity window.  Where the specified delivery method is by file transfer, the delivery proceeds without further intervention from the service consumer.  Where the specified delivery method is by service, delivery is subject to the operations of the ProductDelivery service.
+						If the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
+                    </mal:documentation>
                     <mal:messages>
                         <mal:request>
                             <mal:field name="orderDetails" canBeNull="false" comment="">
@@ -190,7 +201,7 @@ In some implementations, the service consumer may be responsible for assigning a
                         </mal:errorRef>
                         <mal:errorRef comment="Creation of a new product order failed.">
                             <mal:type name="Order Failed" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo provides additional information on the reason for failure as a free format string.  If the order could not be created because a non-unique orderID was specified then the ExtraInfo field is set to “ID Already Exists”.">
+                            <mal:extraInformation comment="ExtraInfo provides additional information on the reason for failure as a free format string.  If the order could not be created because a non-unique orderID was specified then the ExtraInfo field is set to: ID Already Exists">
                                 <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -223,17 +234,18 @@ to receive notifications each time their ordered products have been delivered as
 to receive the ordered products via message transfer rather than file delivery">
             <mal:documentation name="High-level Requirements" order="1">
                 3.4.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order delivery service:
-                a) Product definitions (as ProductType objects [§4.2.2] )
+                - Product definitions (as ProductType data structure)
             </mal:documentation>
             <mal:documentation name="Functional Requirements" order="2">
-                3.4.4.1 In response to subscription using the notifyProductDelivery operation, the service provider shall forward delivery notifications to the service consumer following the successful transfer of each product file that is associated with the specified standing order, or all standing orders associated with the specified user.
-                Note: The provision of delivery notifications continues until the service consumer deregisters or the service session is terminated.  It is implementation dependent whether notifications relating to product deliveries that occur when the service consumer is not subscribed are queued awaiting subscription or discarded.
-                3.4.4.2 In response to subscription using the deliverProducts operation, the service provider shall forward products associated with the specified standing order, or all standing orders associated with the specified user, to the service consumer as they become available
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" supportInReplay="true" comment="The notifyProductDelivery operation can be used to receive notification when products have been delivered by file transfer or email in accordance with an existing product order.  
 The service provider publishes the delivery notification together with subscription keys corresponding to the identities of the associated user and standing order.  The service consumer can subscribe to receive notifications for individual standing orders, or for all product orders belonging to a user.
 The service consumer then receives a notification, in the form of a ProductMetadata together with the filename and URI to which it was transferred, each time delivery of a product file has been completed.">
+                    <mal:documentation name="Requirement" order="1">
+						In response to subscription using the notifyProductDelivery operation, the service provider shall forward delivery notifications to the service consumer following the successful transfer of each product file that is associated with the specified standing order, or all standing orders associated with the specified user.
+						Note: The provision of delivery notifications continues until the service consumer deregisters or the service session is terminated.  It is implementation dependent whether notifications relating to product deliveries that occur when the service consumer is not subscribed are queued awaiting subscription or discarded.
+					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
                             <mal:field name="userID" canBeNull="false" comment="">
@@ -279,6 +291,9 @@ The service consumer then receives a notification, in the form of a ProductMetad
                 <mal:pubsubIP name="deliverProducts" number="2" supportInReplay="true" comment="The deliverProducts operation can be used to receive products via the service interface where this has been specified as the delivery method for an existing standing order.  
 The service provider publishes the product together with subscription keys corresponding to the identifiers of the associated user and standing order.  The service consumer can subscribe to receive products relating to individual standing orders, or to all product orders belonging to a user.
 The service consumer then receives the product each time it becomes available.">
+                    <mal:documentation name="Requirement" order="1">
+						In response to subscription using the deliverProducts operation, the service provider shall forward products associated with the specified standing order, or all standing orders associated with the specified user, to the service consumer as they become available
+					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
                             <mal:field name="userID" canBeNull="false" comment="">
@@ -408,21 +423,21 @@ A ProductMetadata relates to a specific Product instance.">
             </mal:composite>
 
             <mal:composite name="ProductFilter" shortFormPart="104" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products.  It specifies a filter in terms of productType, domain, sources and metadata parameter values.  To pass the filter, the product must satisfy all criteria specified:  the productType, one of any listed source objects and all specified metadata parameter filters.  If no filter is specified for source or parameterFilters then all products of the specified type pass the filter.
-A ProductFilter relates to a specific ProductType.  Note that the domain filter relates to the domain of the product and not of the product type.  The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.
-Note that in the case of requesting a list of available products, filtering by a range of product creation or time window dates may also be required.  These are specified as additional fields of the corresponding service message structure.">
+A ProductFilter relates to a specific ProductType.  Note that the domain filter relates to the domain of the product and not of the product type. The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.
+Note that in the case of requesting a list of available products, filtering by a range of product creation or time window dates may also be required. These are specified as additional fields of the corresponding service message structure.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
                 <mal:field name="productType" canBeNull="true" comment="Reference to the ProductType definition">
                     <mal:type area="MPD" list="false" name="ObjectRef(ProductType)"/>
                 </mal:field>
-                <mal:field name="domain" canBeNull="true" comment="An ordered list of hierarchical domain Identifiers, “*” may be used as a wildcard.">
+                <mal:field name="domain" canBeNull="true" comment="The domain to filter on. A wildcard may be used in order to select all possibilities within a sub-domain.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
-                <mal:field name="sources" canBeNull="true" comment="Set of references to MO Objects associated with triggering the generation of filtered products.  For example an MPS planning request, an event or an M&amp;C alert.  If the product source matches one of the listed sources, then it passes the filter.">
+                <mal:field name="sources" canBeNull="true" comment="Set of references to MO Objects associated with triggering the generation of filtered products. For example an MPS planning request, an event or an M&amp;C alert.  If the product source matches one of the listed sources, then it passes the filter.">
                     <mal:type area="MAL" list="true" name="ObjectRef"/>
                 </mal:field>
-                <mal:field name="parameterFilter" canBeNull="true" comment="Set of parameterFilters defining the desired values of product metadata parameters.  If multiple parameterFilters are defined then the product metadata must match all specified criteria to pass the filter.">
+                <mal:field name="parameterFilter" canBeNull="true" comment="Set of parameterFilters defining the desired values of product metadata parameters. If multiple parameterFilters are defined then the product metadata must match all specified criteria to pass the filter.">
                     <mal:type area="MPD" list="true" name="ParameterFilter"/>
                 </mal:field>
             </mal:composite>
