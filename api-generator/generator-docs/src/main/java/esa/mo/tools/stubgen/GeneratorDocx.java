@@ -218,7 +218,7 @@ public class GeneratorDocx extends GeneratorDocument {
                     for (CapabilitySetType cSet : service.getCapabilitySet()) {
                         for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
                             docxServiceFile.addPageBreak();
-                            docxServiceFile.addTitle(3, "OPERATION: ", op.getName(), "OPERATION_" + service.getName(), true);
+                            docxServiceFile.addTitle(3, "Operation: ", op.getName(), "OPERATION_" + service.getName(), true);
                             docxServiceFile.addTitle(4, "Overview");
                             docxServiceFile.addComment(op.getComment());
                             drawOperationTable(docxServiceFile, area, service, op);
@@ -1022,7 +1022,7 @@ public class GeneratorDocx extends GeneratorDocument {
 
         logger.info("Creating enumeration class " + enumName);
 
-        docxFile.addTitle(3, "ENUMERATION: ", enumName, "DATATYPE", true);
+        docxFile.addTitle(3, "Enumeration: ", enumName, "DATATYPE", true);
 
         if ((null != enumeration.getComment()) && (0 < enumeration.getComment().length())) {
             docxFile.addComment(enumeration.getComment());
