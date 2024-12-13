@@ -281,7 +281,7 @@ public class GeneratorJava extends GeneratorLangs {
 
     @Override
     public void createListClass(File folder, AreaType area, ServiceType service,
-            String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException {
+            String srcTypeName, boolean isAbstract, Integer shortFormPart) throws IOException {
         JavaLists javaLists = new JavaLists(this);
         String listName = srcTypeName + "List";
 

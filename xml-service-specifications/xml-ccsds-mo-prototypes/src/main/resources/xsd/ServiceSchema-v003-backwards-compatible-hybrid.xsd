@@ -569,9 +569,9 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="ShortFormPart">
-    <xsd:restriction base="xsd:unsignedInt">
+    <xsd:restriction base="xsd:unsignedShort">
       <xsd:minInclusive value="1"/>
-      <xsd:maxInclusive value="8388607"/>
+      <xsd:maxInclusive value="32767"/>
     </xsd:restriction>
   </xsd:simpleType>
 
