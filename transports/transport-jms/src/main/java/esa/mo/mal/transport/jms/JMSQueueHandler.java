@@ -110,7 +110,7 @@ public class JMSQueueHandler implements MessageListener {
                 } else {
                     JMSTransport.RLOGGER.log(Level.WARNING,
                             "JMS received bad message format: {0}",
-                            objMsg.getObject().getClass().getName());
+                            data.getClass().getName());
                 }
             } else {
                 JMSTransport.RLOGGER.log(Level.WARNING,
