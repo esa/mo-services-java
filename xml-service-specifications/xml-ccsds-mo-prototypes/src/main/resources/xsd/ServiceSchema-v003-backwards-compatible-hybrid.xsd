@@ -403,7 +403,7 @@
         </xsd:annotation>
       </xsd:element>
     </xsd:sequence>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+    <xsd:attribute name="name" type="xsd:token" use="required"/>
     <xsd:attribute name="number" type="xsd:unsignedInt" use="required"/>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
   </xsd:complexType>
@@ -526,7 +526,7 @@
     <xsd:attribute name="objectRef" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="area" type="xsd:NCName" use="required"/>
     <xsd:attribute name="service" type="xsd:NCName" use="optional"/>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+    <xsd:attribute name="name" type="xsd:token" use="required"/>
   </xsd:complexType>
 
   <xsd:complexType name="DocumentationBaseType">
