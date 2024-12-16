@@ -287,28 +287,19 @@ public class DocxBaseWriter extends AbstractWriter {
             }
 
             addNumberedComment(instance, 0, strings.iterator());
-            /*
-            if (strings.size() == 1) {
-                addComment(strings.get(0));
-            } else {
-                int instance = 0;
-                if (null != this.numberWriter) {
-                    instance = this.numberWriter.getNextNumberingInstance();
-                }
-
-                addNumberedComment(instance, 0, strings.iterator());
-            }
-             */
         }
     }
 
-    public void addNumberedComment(int instance, int level, Iterator<String> iterator) throws IOException {
-        while (iterator.hasNext()) {
-            String text = iterator.next();
+    public void addNumberedComment(int instance, int level, Iterator<String> lines) throws IOException {
+        while (lines.hasNext()) {
+            String text = lines.next();
 
             if (text != null) {
+                if (text.trim().isEmpty()) { // Jump over empty lines
+                    continue;
+                }
                 if ("<ol>".equalsIgnoreCase(text)) {
-                    addNumberedComment(instance, level + 1, iterator);
+                    addNumberedComment(instance, level + 1, lines);
                 } else if ("</ol>".equalsIgnoreCase(text)) {
                     return;
                 } else {
@@ -342,7 +333,7 @@ public class DocxBaseWriter extends AbstractWriter {
             }
 
             for (String str : strings) {
-                if (null != str) {
+                if (str != null) {
                     buffer.append(makeLine(2, str));
                 }
             }
@@ -369,6 +360,7 @@ public class DocxBaseWriter extends AbstractWriter {
                     addNumberedComment(instance, level, str);
                 }
             } else {
+                // Case when strings.size() == 1
                 String str = strings.get(0);
                 if (str != null && str.length() > 0) {
                     buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
