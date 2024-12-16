@@ -31,13 +31,13 @@
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
-                            <mal:field name="productFilter" canBeNull="false" comment="">
+                            <mal:field name="productFilter" canBeNull="false" comment="The product filter used to refine the selection of products.">
                                 <mal:type area="MPD" list="false" name="ProductFilter"/>
                             </mal:field>
-                            <mal:field name="creationDate" canBeNull="true" comment="">
+                            <mal:field name="creationDate" canBeNull="true" comment="The time window used to filter products based on their creation date.">
                                 <mal:type area="MPD" list="false" name="TimeWindow"/>
                             </mal:field>
-                            <mal:field name="timeWindow" canBeNull="true" comment="">
+                            <mal:field name="timeWindow" canBeNull="true" comment="The time window used to filter products based on their content creation period.">
                                 <mal:type area="MPD" list="false" name="TimeWindow"/>
                             </mal:field>
                         </mal:request>
@@ -56,21 +56,20 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
-                <mal:progressIP name="getProducts" number="2" supportInReplay="true" comment="The getProduct operation allows consumers to retrieve one or more mission data products.  The consumer sends a list of one or more product references (as ObjectRefs) to the service provider, their identity having previously been established using the listProducts operation.
-Each requested product is then returned in a separate Update message, with the final Response message indicating that all requested products have been delivered.">
+                <mal:progressIP name="getProducts" number="2" supportInReplay="true" comment="The getProduct operation retrieves the selected mission data products from the provider. The consumer sends a list of one or more product references (as ObjectRefs) to the service provider, their identity having previously been established using the listProducts operation. Each requested product is then returned in a separate Update message, with the final Response message indicating that all requested products have been delivered.">
                     <mal:documentation name="Requirement" order="1">
 						In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message, the final, empty Response message signalling that all products have been returned.
                     </mal:documentation>
                     <mal:messages>
                         <mal:progress>
-                            <mal:field name="productRefs" canBeNull="false" comment="">
+                            <mal:field name="productRefs" canBeNull="false" comment="The references to the products to be retrieved.">
                                 <mal:type area="MPD" list="true" name="ObjectRef(Product)"/>
                             </mal:field>
                         </mal:progress>
                         <mal:acknowledgement>
                         </mal:acknowledgement>
                         <mal:update>
-                            <mal:field name="product" canBeNull="false" comment="">
+                            <mal:field name="product" canBeNull="false" comment="The mission data product.">
                                 <mal:type area="MPD" list="false" name="Product"/>
                             </mal:field>
                         </mal:update>
@@ -86,28 +85,28 @@ Each requested product is then returned in a separate Update message, with the f
                         </mal:errorRef>
                     </mal:errors>
                 </mal:progressIP>
-                <mal:progressIP name="getProductFiles" number="3" supportInReplay="true" comment="This variant of the getProduct operation allows consumers to retrieve one or more mission data products with the delivery of the products being effected by file transfer outside the service interface.  
+                <mal:progressIP name="getProductFiles" number="3" supportInReplay="true" comment="The getProductFiles operation allows consumers to retrieve one or more mission data products with the delivery of the products being performed by file transfer outside the service interface.  
 The consumer sends a list of one or more product references (as ObjectRefs) to the service provider, their identity having previously been established using the listProducts operation.  The message also contains the file delivery address as a URI.
 After each requested product has been delivered by file transfer, a separate Update message is returned with a product delivery notification comprising ProductMetadata, filename and delivery address as a URI, with the final Response message indicating that all requested products have been delivered.">
                     <mal:messages>
                         <mal:progress>
-                            <mal:field name="productRefs" canBeNull="false" comment="">
+                            <mal:field name="productRefs" canBeNull="false" comment="The references to the products to be delivered.">
                                 <mal:type area="MPD" list="true" name="ObjectRef(Product)"/>
                             </mal:field>
-                            <mal:field name="deliverTo" canBeNull="false" comment="">
+                            <mal:field name="deliverTo" canBeNull="false" comment="The location's URI where the mission data product should be delivered.">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:field>
                         </mal:progress>
                         <mal:acknowledgement>
                         </mal:acknowledgement>
                         <mal:update>
-                            <mal:field name="metadata" canBeNull="false" comment="">
+                            <mal:field name="metadata" canBeNull="false" comment="The metadata of the selected mission data product(s).">
                                 <mal:type area="MPD" list="false" name="ProductMetadata"/>
                             </mal:field>
-                            <mal:field name="filename" canBeNull="false" comment="">
+                            <mal:field name="filename" canBeNull="false" comment="The filename of the selected mission data product(s).">
                                 <mal:type area="MAL" list="false" name="String"/>
                             </mal:field>
-                            <mal:field name="deliveredTo" canBeNull="false" comment="">
+                            <mal:field name="deliveredTo" canBeNull="false" comment="The location's URI where the selected mission data product(s) was delivered.">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:field>
                         </mal:update>
@@ -115,7 +114,7 @@ After each requested product has been delivered by file transfer, a separate Upd
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.  If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
                                 <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
@@ -133,7 +132,7 @@ After each requested product has been delivered by file transfer, a separate Upd
         </mal:service>
         <mal:service name="OrderManagement" number="2" comment="The Order Management Service is used to submit and manage standing orders. Standing orders specify a product filter to subscribe to a subset of automatically generated products and define the method and destination for product delivery.">
             <mal:documentation name="High-level Requirements" order="1">
-                3.3.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order management service:
+                The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order management service:
                 - Product definitions (as ProductType data structure)
             </mal:documentation>
             <mal:documentation name="Functional Requirements" order="2">
@@ -148,15 +147,15 @@ The domain field in the request refers to the domain of the products to which th
 						Note: depending on any mission specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
                     </mal:documentation>
                         <mal:request>
-                            <mal:field name="user" canBeNull="true" comment="">
+                            <mal:field name="user" canBeNull="true" comment="The user of the standing order(s) to be listed.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="domain" canBeNull="true" comment="">
+                            <mal:field name="domain" canBeNull="true" comment="The domain of the standing order(s) to be listed.">
                                 <mal:type area="MAL" list="true" name="Identifier"/>
                             </mal:field>
                         </mal:request>
                         <mal:response>
-                            <mal:field name="standingOrders" canBeNull="false" comment="">
+                            <mal:field name="standingOrders" canBeNull="false" comment="The standing orders that match the selected criteria.">
                                 <mal:type area="MPD" list="true" name="StandingOrder"/>
                             </mal:field>
                         </mal:response>
@@ -182,12 +181,12 @@ In some implementations, the service consumer may be responsible for assigning a
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
-                            <mal:field name="orderDetails" canBeNull="false" comment="">
+                            <mal:field name="orderDetails" canBeNull="false" comment="The details of the order to be submitted for processing.">
                                 <mal:type area="MPD" list="false" name="StandingOrder"/>
                             </mal:field>
                         </mal:request>
                         <mal:response>
-                            <mal:field name="orderRef" canBeNull="false" comment="">
+                            <mal:field name="orderID" canBeNull="false" comment="The unique identifier for the standing order.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                         </mal:response>
@@ -212,7 +211,7 @@ The service consumer sends the orderID of the standing order to be cancelled to 
 The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.">
                     <mal:messages>
                         <mal:submit>
-                            <mal:field name="orderRef" canBeNull="false" comment="">
+                            <mal:field name="orderID" canBeNull="false" comment="The unique identifier of the standing order to be cancelled.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                         </mal:submit>
@@ -244,31 +243,31 @@ The service provider publishes the delivery notification together with subscript
 The service consumer then receives a notification, in the form of a ProductMetadata together with the filename and URI to which it was transferred, each time delivery of a product file has been completed.">
                     <mal:documentation name="Requirement" order="1">
 						In response to subscription using the notifyProductDelivery operation, the service provider shall forward delivery notifications to the service consumer following the successful transfer of each product file that is associated with the specified standing order, or all standing orders associated with the specified user.
-						Note: The provision of delivery notifications continues until the service consumer deregisters or the service session is terminated.  It is implementation dependent whether notifications relating to product deliveries that occur when the service consumer is not subscribed are queued awaiting subscription or discarded.
+						Note: The provision of delivery notifications continues until the service consumer deregisters or the service session is terminated. It is implementation dependent whether notifications relating to product deliveries that occur when the service consumer is not subscribed are queued awaiting subscription or discarded.
 					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
-                            <mal:field name="userID" canBeNull="false" comment="">
+                            <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="orderID" canBeNull="false" comment="">
+                            <mal:field name="orderID" canBeNull="false" comment="The orderId associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                         </mal:subscriptionKeys>
                         <mal:publishNotify>
-                            <mal:field name="metadata" canBeNull="false" comment="">
+                            <mal:field name="metadata" canBeNull="false" comment="The metadata of the mission data product.">
                                 <mal:type area="MPD" list="false" name="ProductMetadata"/>
                             </mal:field>
-                            <mal:field name="filename" canBeNull="false" comment="">
+                            <mal:field name="filename" canBeNull="false" comment="The filename of the mission data product.">
                                 <mal:type area="MAL" list="false" name="String"/>
                             </mal:field>
-                            <mal:field name="deliveredTo" canBeNull="false" comment="">
+                            <mal:field name="deliveredTo" canBeNull="false" comment="The location's URI where the mission data product was delivered.">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:field>
                         </mal:publishNotify>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.  If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
                                 <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
@@ -288,29 +287,28 @@ The service consumer then receives a notification, in the form of a ProductMetad
                         </mal:errorRef>
                     </mal:errors>
                 </mal:pubsubIP>
-                <mal:pubsubIP name="deliverProducts" number="2" supportInReplay="true" comment="The deliverProducts operation can be used to receive products via the service interface where this has been specified as the delivery method for an existing standing order.  
-The service provider publishes the product together with subscription keys corresponding to the identifiers of the associated user and standing order.  The service consumer can subscribe to receive products relating to individual standing orders, or to all product orders belonging to a user.
+                <mal:pubsubIP name="deliverProducts" number="2" supportInReplay="true" comment="The deliverProducts operation can be used to receive products via the service interface where this has been specified as the delivery method for an existing standing order. The service provider publishes the product together with subscription keys corresponding to the identifiers of the associated user and standing order.  The service consumer can subscribe to receive products relating to individual standing orders, or to all product orders belonging to a user.
 The service consumer then receives the product each time it becomes available.">
                     <mal:documentation name="Requirement" order="1">
-						In response to subscription using the deliverProducts operation, the service provider shall forward products associated with the specified standing order, or all standing orders associated with the specified user, to the service consumer as they become available
+						In response to subscription using the deliverProducts operation, the service provider shall forward products associated with the specified standing order, or all standing orders associated with the specified user, to the service consumer as they become available.
 					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
-                            <mal:field name="userID" canBeNull="false" comment="">
+                            <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="orderID" canBeNull="false" comment="">
+                            <mal:field name="orderID" canBeNull="false" comment="The orderId associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                         </mal:subscriptionKeys>
                         <mal:publishNotify>
-                            <mal:field name="product" canBeNull="false" comment="">
+                            <mal:field name="product" canBeNull="false" comment="The mission data product.">
                                 <mal:type area="MPD" list="false" name="Product"/>
                             </mal:field>
                         </mal:publishNotify>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.  If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
                                 <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
