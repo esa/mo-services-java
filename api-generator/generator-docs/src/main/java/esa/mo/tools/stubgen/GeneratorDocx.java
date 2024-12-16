@@ -770,20 +770,16 @@ public class GeneratorDocx extends GeneratorDocument {
     }
 
     private void addTypeSignatureDetails(DocxBaseWriter docxFile, List<MessageBodyType> msgs) throws IOException {
-        List<String> signatureDetails = null;
         for (MessageBodyType msg : msgs) {
             List<TypeRef> refs = TypeUtils.getTypeListViaField(msg.getField());
             for (TypeRef typeRef : refs) {
                 if (typeRef.isField()) {
                     String fieldName = typeRef.getFieldRef().getName();
                     String fieldComment = typeRef.getFieldRef().getComment();
-                    String signature = fieldName + " - " + fieldComment;
-                    signatureDetails = GeneratorUtils.addSplitStrings(signatureDetails, signature);
+                    docxFile.addSingleTypeSignature(fieldName, fieldComment);
                 }
             }
         }
-
-        docxFile.addNumberedComment(signatureDetails);
     }
 
     private void addRequirementsDetails(DocxBaseWriter docxFile, List<DocumentationType> docs) throws IOException {

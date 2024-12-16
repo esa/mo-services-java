@@ -371,6 +371,16 @@ public class DocxBaseWriter extends AbstractWriter {
         }
     }
 
+    public void addSingleTypeSignature(String fieldName, String fieldComment) throws IOException {
+        int instance = 1;
+        int level = 0;
+
+        buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
+                + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr>"
+                + "<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>" + escape(fieldName) + "</w:t></w:r><w:r><w:t  xml:space=\"preserve\">"
+                + " - " + escape(fieldComment) + "</w:t></w:r></w:p>"));
+    }
+
     private String createTypeHyperLink(boolean includeMessageFieldNames, boolean oldStyle,
             AreaType area, ServiceType service, TypeRef ref) throws IOException {
         String prefix = "";
