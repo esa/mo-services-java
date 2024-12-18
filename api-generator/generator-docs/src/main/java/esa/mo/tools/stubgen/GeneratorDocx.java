@@ -220,7 +220,7 @@ public class GeneratorDocx extends GeneratorDocument {
                             docxServiceFile.addComment(op.getComment());
                             drawOperationTable(docxServiceFile, area, service, op);
                             addOperationStructureDetails(docxServiceFile, op);
-                            addOperationErrorDetails(docxServiceFile, area, service, op);
+                            addOperationMOErrorDetails(docxServiceFile, area, service, op);
                         }
                     }
                 }
@@ -791,7 +791,8 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addNumberedComment(requirements);
     }
 
-    private void addOperationErrorDetails(DocxBaseWriter docxFile, AreaType area, ServiceType service, OperationType op) throws IOException {
+    private void addOperationMOErrorDetails(DocxBaseWriter docxFile, AreaType area,
+            ServiceType service, OperationType op) throws IOException {
         docxFile.addTitle(4, "MO Errors");
 
         if (op instanceof SendOperationType) {
@@ -904,28 +905,32 @@ public class GeneratorDocx extends GeneratorDocument {
             }
         }
 
+        ArrayList<String> allMOErrors = new ArrayList<>();
+
         for (String key : m.navigableKeySet()) {
             for (Object[] err : m.get(key)) {
                 List<String> listErrors = (List<String>) err[1];
                 if (listErrors.isEmpty()) {
                     ArrayList<String> list = new ArrayList<>();
                     list.add((String) err[0] + ": Not described");
-                    docxFile.addNumberedComment(list);
+                    allMOErrors.addAll(list);
                 }
                 if (listErrors.size() == 1) {
                     ArrayList<String> list = new ArrayList<>();
                     list.add((String) err[0] + ": " + listErrors.get(0));
-                    docxFile.addNumberedComment(list);
+                    allMOErrors.addAll(list);
                 }
                 if (listErrors.size() > 1) {
                     ArrayList<String> list = new ArrayList<>();
                     for (String txt : (List<String>) err[1]) {
                         list.add((String) err[0] + ": " + txt);
                     }
-                    docxFile.addNumberedComment(list);
+                    allMOErrors.addAll(list);
                 }
             }
         }
+
+        docxFile.addNumberedComment(allMOErrors);
 
         docxFile.startTable(OPERATION_ERROR_TABLE_WIDTHS);
         docxFile.startRow();
