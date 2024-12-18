@@ -87,7 +87,7 @@ public class Time implements Attribute {
 
     public static Time generateTime(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, 0, 0, 0);
+        calendar.set(year, month, day, 12, 0, 0);
         return new Time(calendar.getTime().getTime());
     }
 
