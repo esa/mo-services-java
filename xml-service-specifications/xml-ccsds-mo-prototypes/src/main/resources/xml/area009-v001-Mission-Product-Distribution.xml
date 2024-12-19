@@ -8,7 +8,7 @@
     xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
     xmlns:svg = "http://www.w3.org/2000/svg"
     xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" comment="">
-    <mal:area name="MPD" number="9" version="1" comment="Mission Operation services - Mission Product Distribution">
+    <mal:area name="MPD" number="9" version="1" comment="Mission Operations services - Mission Product Distribution">
 
         <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service allows browsing and retrieval of existing products.">
             <mal:documentation name="High-level Requirements" order="1">
@@ -389,7 +389,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="creationDate" canBeNull="false" comment="Date and time at which the product was generated.">
                     <mal:type area="MAL" list="false" name="Time"/>
                 </mal:field>
-                <mal:field name="source" canBeNull="true" comment="The source associated with triggering the generation of the product.">
+                <mal:field name="source" canBeNull="true" comment="The source that triggered the generation of the product.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
                 <mal:field name="timeWindow" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
@@ -443,7 +443,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="creationDate" canBeNull="false" comment="Date and time at which the product was generated.">
                     <mal:type area="MAL" list="false" name="Time"/>
                 </mal:field>
-                <mal:field name="source" canBeNull="true" comment="The source associated with triggering the generation of the product.">
+                <mal:field name="source" canBeNull="true" comment="The source that triggered the generation of the product.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
                 <mal:field name="externalURI" canBeNull="true" comment="An external URI for the products to be retrieved. For example, this can be used to for pulling a mission data product file via an http URL link.">
