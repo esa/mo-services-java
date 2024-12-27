@@ -977,7 +977,6 @@ public class GeneratorDocx extends GeneratorDocument {
 
     private void createFundamentalClass(DocxBaseWriter docxFile, FundamentalType fundamental) throws IOException {
         String fundName = fundamental.getName();
-
         logger.info("Creating fundamental class " + fundName);
 
         docxFile.addTitle(3, "Fundamental: ", fundName, "DATATYPE", true);
@@ -989,7 +988,6 @@ public class GeneratorDocx extends GeneratorDocument {
 
     private void createAttributeClass(DocxBaseWriter docxFile, AttributeType attribute) throws IOException {
         String attrName = attribute.getName();
-
         logger.info("Creating attribute class " + attrName);
 
         docxFile.addTitle(3, "Attribute: ", attrName, "DATATYPE", true);
@@ -1020,7 +1018,6 @@ public class GeneratorDocx extends GeneratorDocument {
 
     private void createEnumerationClass(DocxBaseWriter docxFile, EnumerationType enumeration) throws IOException {
         String enumName = enumeration.getName();
-
         logger.info("Creating enumeration class " + enumName);
 
         docxFile.addTitle(3, "Enumeration: ", enumName, "DATATYPE", true);
@@ -1061,10 +1058,14 @@ public class GeneratorDocx extends GeneratorDocument {
 
     private void createCompositeClass(DocxBaseWriter docxFile, AreaType area, ServiceType service, CompositeType composite) throws IOException {
         String compName = composite.getName();
-
         logger.info("Creating composite class " + compName);
 
-        docxFile.addTitle(3, "Composite: ", compName, "DATATYPE", true);
+        // Check if it is an "MO Object"
+        String extendsName = composite.getExtends().getType().getName();
+        boolean isMOObject = extendsName.equals("Object");
+
+        String prefixSection = isMOObject ? "MO Object: " : "Composite: ";
+        docxFile.addTitle(3, prefixSection, compName, "DATATYPE", true);
 
         if ((null != composite.getComment()) && (0 < composite.getComment().length())) {
             docxFile.addComment(composite.getComment());
