@@ -54,10 +54,10 @@ public class AppCLI {
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
 
             StandingOrder orderDetails = new StandingOrder(new Identifier("User"), DeliveryMethodEnum.SERVICE);
-            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
+            Long id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
+                    "The returned Identifier is: {0}", id);
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
                     "Registering in the Broker for service: Product Order Delivery...");

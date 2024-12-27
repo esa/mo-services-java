@@ -88,13 +88,13 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
     }
 
     @Override
-    public Identifier submitStandingOrder(StandingOrder orderDetails,
+    public Long submitStandingOrder(StandingOrder orderDetails,
             MALInteraction interaction) throws MALInteractionException, MALException {
-        return new Identifier("Hello World!");
+        return 1L;
     }
 
     @Override
-    public void cancelStandingOrder(Identifier orderRef,
+    public void cancelStandingOrder(Long orderID,
             MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

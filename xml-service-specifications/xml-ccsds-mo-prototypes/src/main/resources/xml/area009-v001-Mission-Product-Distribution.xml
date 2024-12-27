@@ -176,9 +176,9 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="The referenced item (user or orderID) does not exist.">
+                        <mal:errorRef comment="The referenced user does not exist.">
                             <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo contains the specified user or domain ID that does not exist.">
+                            <mal:extraInformation comment="ExtraInfo contains the user that does not exist.">
                                 <mal:type area="MAL" name="Identifier" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -205,8 +205,8 @@
                             </mal:field>
                         </mal:request>
                         <mal:response>
-                            <mal:field name="orderID" canBeNull="false" comment="The unique identifier of the standing order.">
-                                <mal:type area="MAL" list="false" name="Identifier"/>
+                            <mal:field name="orderID" canBeNull="false" comment="The unique id of the standing order.">
+                                <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:response>
                     </mal:messages>
@@ -229,7 +229,7 @@
                     <mal:messages>
                         <mal:submit>
                             <mal:field name="orderID" canBeNull="false" comment="The unique identifier of the standing order to be cancelled.">
-                                <mal:type area="MAL" list="false" name="Identifier"/>
+                                <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:submit>
                     </mal:messages>
@@ -276,7 +276,7 @@ to receive the ordered products via message transfer rather than file delivery">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                             <mal:field name="orderID" canBeNull="false" comment="The orderID associated with the standing order of the product being notified.">
-                                <mal:type area="MAL" list="false" name="Identifier"/>
+                                <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:subscriptionKeys>
                         <mal:publishNotify>
@@ -304,12 +304,6 @@ to receive the ordered products via message transfer rather than file delivery">
                                 <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
-                        <mal:errorRef comment="The referenced item (user or orderID) does not exist.">
-                            <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo contains the specified user or order ID that does not exist.">
-                                <mal:type area="MAL" name="Identifier" list="false"/>
-                            </mal:extraInformation>
-                        </mal:errorRef>
                     </mal:errors>
                 </mal:pubsubIP>
                 <mal:pubsubIP name="deliverProducts" number="2" supportInReplay="true" comment="The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.">
@@ -331,7 +325,7 @@ to receive the ordered products via message transfer rather than file delivery">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                             <mal:field name="orderID" canBeNull="false" comment="The orderID associated with the standing order of the product being notified.">
-                                <mal:type area="MAL" list="false" name="Identifier"/>
+                                <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:subscriptionKeys>
                         <mal:publishNotify>
@@ -345,12 +339,6 @@ to receive the ordered products via message transfer rather than file delivery">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
                                 <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
-                            </mal:extraInformation>
-                        </mal:errorRef>
-                        <mal:errorRef comment="The referenced item (user or orderID) does not exist.">
-                            <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo contains the specified user or order ID that does not exist.">
-                                <mal:type area="MAL" name="Identifier" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -407,6 +395,9 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
+                <mal:field name="orderID" canBeNull="true" comment="The orderID of the standing order. It shall be NULL when the order is being submitted.">
+                    <mal:type area="MAL" list="false" name="Long"/>
+                </mal:field>
                 <mal:field name="user" canBeNull="false" comment="Reference to the user that is the owner of the product order.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>

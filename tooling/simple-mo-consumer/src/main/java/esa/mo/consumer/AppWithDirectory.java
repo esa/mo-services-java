@@ -71,10 +71,10 @@ public class AppWithDirectory {
 
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
             OrderManagementStub stub = orderManagement.getOrderManagementStub();
-            Identifier id = stub.submitStandingOrder(orderDetails);
+            Long id = stub.submitStandingOrder(orderDetails);
 
             Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
+                    "The returned Identifier is: {0}", id);
 
             // Request the list of standing orders
             IdentifierList domain = new IdentifierList();
@@ -95,7 +95,7 @@ public class AppWithDirectory {
             stub.cancelStandingOrder(id);
 
             Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO,
-                    "The following order was cancelled: {0}", id.toString());
+                    "The following order was cancelled: {0}", id);
         } catch (MALException ex) {
             Logger.getLogger(AppWithDirectory.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {

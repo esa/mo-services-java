@@ -127,11 +127,11 @@ public class OrderManagementScenario1Test {
             StandingOrder orderDetails = new StandingOrder(user, dMethod);
 
             // Submit a Standing Order
-            Identifier id = consumerStub.submitStandingOrder(orderDetails);
+            Long id = consumerStub.submitStandingOrder(orderDetails);
             assertNotEquals(null, id);
 
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
+                    "The returned Identifier is: {0}", id);
 
             // Request the list of standing orders
             IdentifierList domain = new IdentifierList();
