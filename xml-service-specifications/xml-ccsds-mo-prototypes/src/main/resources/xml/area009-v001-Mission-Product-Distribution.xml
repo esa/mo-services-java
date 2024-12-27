@@ -359,23 +359,6 @@ to receive the ordered products via message transfer rather than file delivery">
         </mal:service>
 
         <mal:dataTypes>
-            <mal:composite name="ProductType" shortFormPart="101" comment="A ProductType is an MO object that contains the static definition associated with multiple occurrences of a mission data product. Its identity includes a constant key and an evolving version that is updated each time the definition is revised. The ProductType defines the metadata parameters associated with the product and implies (but does not specify) the structure of the product body.
-Note that the domain of the ProductType and associated Products may not be the same. Typically the domain of generic ProductTypes (for example an orbit file) may be defined at agency level, while the generated Products may be associated with a mission specific domain.
-Note that the ProductTypes are not contained within the service messages of any operation defined in this specification, but are referenced by Products and other service data structures. A future service may support the distribution and access to mission product configuration data, including ProductTypes.">
-                <mal:extends>
-                    <mal:type area="MAL" list="false" name="Composite"/>
-                </mal:extends>
-                <mal:field name="name" canBeNull="false" comment="Name of the Product Type.">
-                    <mal:type area="MAL" list="false" name="Identifier"/>
-                </mal:field>
-                <mal:field name="description" canBeNull="true" comment="Description of the Product Type.">
-                    <mal:type area="MAL" list="false" name="String"/>
-                </mal:field>
-                <mal:field name="parameterDefs" canBeNull="true" comment="List of metadata Parameter Definitions.">
-                    <mal:type area="MPD" list="true" name="ParameterDef"/>
-                </mal:field>
-            </mal:composite>
-
             <mal:composite name="Product" shortFormPart="102" comment="A Product is an MO object that corresponds to a specific occurrence of a generated mission data product. It comprises both metadata about the product and the product body itself, whose structure is opaque to the MPD services but known to both the product generator and consumer, given the referenced ProductType.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Object"/>
@@ -400,6 +383,23 @@ Note that the ProductTypes are not contained within the service messages of any 
                 </mal:field>
                 <mal:field name="productBody" canBeNull="false" comment="Product body of opaque structure known to both product generator and product user.">
                     <mal:type area="MAL" list="false" name="Blob"/>
+                </mal:field>
+            </mal:composite>
+
+            <mal:composite name="ProductType" shortFormPart="101" comment="A ProductType is an MO object that contains the static definition associated with multiple occurrences of a mission data product. Its identity includes a constant key and an evolving version that is updated each time the definition is revised. The ProductType defines the metadata parameters associated with the product and implies (but does not specify) the structure of the product body.
+Note that the domain of the ProductType and associated Products may not be the same. Typically the domain of generic ProductTypes (for example an orbit file) may be defined at agency level, while the generated Products may be associated with a mission specific domain.
+Note that the ProductTypes are not contained within the service messages of any operation defined in this specification, but are referenced by Products and other service data structures. A future service may support the distribution and access to mission product configuration data, including ProductTypes.">
+                <mal:extends>
+                    <mal:type area="MAL" list="false" name="Composite"/>
+                </mal:extends>
+                <mal:field name="name" canBeNull="false" comment="Name of the Product Type.">
+                    <mal:type area="MAL" list="false" name="Identifier"/>
+                </mal:field>
+                <mal:field name="description" canBeNull="true" comment="Description of the Product Type.">
+                    <mal:type area="MAL" list="false" name="String"/>
+                </mal:field>
+                <mal:field name="parameterDefs" canBeNull="true" comment="List of metadata Parameter Definitions.">
+                    <mal:type area="MPD" list="true" name="ParameterDef"/>
                 </mal:field>
             </mal:composite>
 
