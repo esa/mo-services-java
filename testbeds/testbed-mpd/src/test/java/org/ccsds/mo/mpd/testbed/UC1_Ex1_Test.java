@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -219,7 +218,7 @@ public class UC1_Ex1_Test {
     }
 
     private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow timeWindow) {
-        ObjectRef<ProductType> productType = backend.productTypeRefTM;  //  productType=typeTMPacket
+        ProductType productType = backend.typeTMPacketDailyExtract;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
 
@@ -233,7 +232,7 @@ public class UC1_Ex1_Test {
             parameterFilter.add(new ValueSet(new Identifier("APID"), true, values));
         }
 
-        ProductFilter productFilter = new ProductFilter(productType, domain, null, parameterFilter);
+        ProductFilter productFilter = new ProductFilter(productType.getName(), domain, null, parameterFilter);
         ProductMetadataList list = null;
 
         try {

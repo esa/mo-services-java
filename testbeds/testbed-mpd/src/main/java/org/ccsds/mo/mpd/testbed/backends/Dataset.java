@@ -28,14 +28,12 @@ import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
-import org.ccsds.moims.mo.mpd.structures.ProductType;
 
 /**
  * A abstract class for all Datasets.
  */
 public abstract class Dataset implements ProductRetrievalBackend {
 
-    protected final HashMap<ObjectRef, ProductType> productTypes = new HashMap();
     protected final HashMap<ObjectRef, Blob> productBodies = new HashMap();
     protected final HashMap<ObjectRef, ProductMetadata> metadatas = new HashMap();
     private ProductMetadataList allMetadatas = null;

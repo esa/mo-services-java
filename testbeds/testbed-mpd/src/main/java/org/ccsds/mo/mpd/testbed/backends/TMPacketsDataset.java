@@ -26,7 +26,6 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
-import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -46,7 +45,7 @@ public class TMPacketsDataset extends Dataset {
     public final static Time APID100_TIME_END = Time.generateTime(2010, 12, 31);
     public final static Time APID200_TIME_START = Time.generateTime(2020, 1, 1);
     public final static Time APID200_TIME_END = Time.generateTime(2020, 12, 31);
-    public final ObjectRef<ProductType> productTypeRefTM;
+    public final ProductType typeTMPacketDailyExtract;
 
     public TMPacketsDataset() {
         IdentifierList domain = new IdentifierList();
@@ -55,12 +54,10 @@ public class TMPacketsDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("tmPacketDailyExtract"), new UInteger(1));
+        Identifier name = new Identifier("tmPacketDailyExtract");
         ParameterDefList parameterDefs = new ParameterDefList();
         parameterDefs.add(new ParameterDef(new Identifier("APID"), AttributeType.UINTEGER));
-        ProductType typeTMPacketDailyExtract = new ProductType(typeId1, "A TM Packet Daily Extract type", parameterDefs);
-        productTypeRefTM = typeTMPacketDailyExtract.getObjectRef();
-        productTypes.put(productTypeRefTM, typeTMPacketDailyExtract);
+        typeTMPacketDailyExtract = new ProductType(name, "A TM Packet Daily Extract type", parameterDefs);
 
         // ---------------------------------------------------
         // Products
@@ -73,7 +70,7 @@ public class TMPacketsDataset extends Dataset {
         parameters1.add(new NamedValue(new Identifier("APID"), new UInteger(100)));
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
-        ProductMetadata metadata1 = new ProductMetadata(productTypeRefTM, ref1, Time.now(),
+        ProductMetadata metadata1 = new ProductMetadata(typeTMPacketDailyExtract, ref1, Time.now(),
                 null, null, timeWindowAPID100, parameters1, "description");
         productBodies.put(ref1, productBody1);
         metadatas.put(ref1, metadata1);
@@ -83,7 +80,7 @@ public class TMPacketsDataset extends Dataset {
         parameters2.add(new NamedValue(new Identifier("APID"), new UInteger(200)));
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
-        ProductMetadata metadata2 = new ProductMetadata(productTypeRefTM, ref2, Time.now(),
+        ProductMetadata metadata2 = new ProductMetadata(typeTMPacketDailyExtract, ref2, Time.now(),
                 null, null, timeWindowAPID200, parameters2, "description");
         productBodies.put(ref2, productBody2);
         metadatas.put(ref2, metadata2);

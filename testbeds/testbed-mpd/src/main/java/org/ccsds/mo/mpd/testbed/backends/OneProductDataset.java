@@ -23,7 +23,6 @@ package org.ccsds.mo.mpd.testbed.backends;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -44,10 +43,7 @@ public class OneProductDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("image.eo.rgb"), new UInteger(1));
-        ProductType type1 = new ProductType(typeId1, "An Earth Observation RGB image.");
-        ObjectRef<ProductType> productTypeRef1 = type1.getObjectRef();
-        productTypes.put(productTypeRef1, type1);
+        ProductType type1 = new ProductType(new Identifier("image.eo.rgb"));
 
         // ---------------------------------------------------
         // Products
@@ -55,7 +51,7 @@ public class OneProductDataset extends Dataset {
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
         ObjectRef<Product> ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
         Blob productBody = new Blob();
-        ProductMetadata metadata = new ProductMetadata(productTypeRef1, ref,
+        ProductMetadata metadata = new ProductMetadata(type1, ref,
                 Time.now(), timeWindow, "description");
 
         productBodies.put(ref, productBody);

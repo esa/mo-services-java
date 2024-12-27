@@ -52,17 +52,15 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("image.eo.rgb"), new UInteger(1));
-        ProductType type1 = new ProductType(typeId1, "An Earth Observation RGB image.");
-        ObjectRef<ProductType> productTypeRef1 = type1.getObjectRef();
-        productTypes.put(productTypeRef1, type1);
+        Identifier name = new Identifier("image.eo.rgb");
+        ProductType type1 = new ProductType(name, "An Earth Observation RGB image.", null);
 
         // ---------------------------------------------------
         // Products
         // ---------------------------------------------------
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
         ObjectIdentity productId = new ObjectIdentity(domain, new Identifier("key1"), new UInteger(1));
-        Product product = new Product(productId, productTypeRef1, Time.now(), timeWindow, new Blob());
+        Product product = new Product(productId, type1, Time.now(), timeWindow, new Blob());
         ObjectRef<Product> ref = product.getObjectRef();
         ProductMetadata metadata = new ProductMetadata();
 

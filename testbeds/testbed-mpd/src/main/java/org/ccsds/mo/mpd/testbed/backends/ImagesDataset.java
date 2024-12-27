@@ -26,7 +26,6 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
-import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -50,13 +49,10 @@ public class ImagesDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("Image"), new UInteger(1));
         ParameterDefList parameterDefs = new ParameterDefList();
         parameterDefs.add(new ParameterDef(new Identifier("ImageSubject"), AttributeType.STRING));
         parameterDefs.add(new ParameterDef(new Identifier("imageType"), AttributeType.STRING));
-        ProductType typeImage = new ProductType(typeId1, "An Image type", parameterDefs);
-        ObjectRef<ProductType> productTypeRef1 = typeImage.getObjectRef();
-        productTypes.put(productTypeRef1, typeImage);
+        ProductType typeImage = new ProductType(new Identifier("Image"), "An Image type", parameterDefs);
 
         // ---------------------------------------------------
         // Products
@@ -69,7 +65,7 @@ public class ImagesDataset extends Dataset {
         parameters1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
-        ProductMetadata metadata1 = new ProductMetadata(productTypeRef1, ref1, Time.now(),
+        ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1, Time.now(),
                 null, null, timeWindow, parameters1, "description");
         productBodies.put(ref1, productBody1);
         metadatas.put(ref1, metadata1);
@@ -80,7 +76,7 @@ public class ImagesDataset extends Dataset {
         parameters2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
-        ProductMetadata metadata2 = new ProductMetadata(productTypeRef1, ref2, Time.now(),
+        ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2, Time.now(),
                 null, null, timeWindow, parameters2, "description");
         productBodies.put(ref2, productBody2);
         metadatas.put(ref2, metadata2);
