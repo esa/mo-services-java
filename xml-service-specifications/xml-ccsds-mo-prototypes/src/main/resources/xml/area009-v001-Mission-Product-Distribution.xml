@@ -425,7 +425,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="deliverTo" canBeNull="true" comment="Delivery address for file transfer.  Not required if deliveryMethod is SERVICE.">
                     <mal:type area="MAL" list="false" name="URI"/>
                 </mal:field>
-                <mal:field name="comments" canBeNull="false" comment="Any additional notes.">
+                <mal:field name="comments" canBeNull="true" comment="Any additional notes.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
             </mal:composite>

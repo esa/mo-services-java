@@ -124,8 +124,7 @@ public class OrderManagementScenario1Test {
             // Input Data
             Identifier user = new Identifier("User");
             DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE;
-            String comments = "A comment";
-            StandingOrder orderDetails = new StandingOrder(user, dMethod, comments);
+            StandingOrder orderDetails = new StandingOrder(user, dMethod);
 
             // Submit a Standing Order
             Identifier id = consumerStub.submitStandingOrder(orderDetails);
@@ -146,7 +145,6 @@ public class OrderManagementScenario1Test {
 
             StandingOrder standingOrder = standingOrders.get(0);
             assertEquals(user, standingOrder.getUser());
-            assertEquals(comments, standingOrder.getComments());
             assertEquals(dMethod, standingOrder.getDeliveryMethod());
         } catch (MALInteractionException ex) {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);

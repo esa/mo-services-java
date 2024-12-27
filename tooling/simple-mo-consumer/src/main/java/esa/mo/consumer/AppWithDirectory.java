@@ -67,8 +67,7 @@ public class AppWithDirectory {
             Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO, "Registered!");
 
             // Submit a Standing Order
-            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
-                    DeliveryMethodEnum.SERVICE, "A comment");
+            StandingOrder orderDetails = new StandingOrder(new Identifier("User"), DeliveryMethodEnum.SERVICE);
 
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
             OrderManagementStub stub = orderManagement.getOrderManagementStub();
