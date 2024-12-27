@@ -62,8 +62,7 @@ public class DummyProductsBackend implements ProductRetrievalBackend {
         // ---------------------------------------------------
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
         ObjectIdentity productId = new ObjectIdentity(domain, new Identifier("key1"), new UInteger(1));
-        Product product = new Product(productId, productTypeRef1,
-                Time.now(), timeWindow, "description", new Blob());
+        Product product = new Product(productId, productTypeRef1, Time.now(), timeWindow, new Blob());
         ObjectRef<Product> ref = product.getObjectRef();
         ProductMetadata metadata = new ProductMetadata();
 

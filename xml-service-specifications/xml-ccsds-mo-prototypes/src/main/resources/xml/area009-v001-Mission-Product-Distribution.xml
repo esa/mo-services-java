@@ -99,7 +99,7 @@
 						The provider shall transfer the referenced mission data products to the selected deliverTo URI.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						After each referenced product has been delivered by file transfer, a separate Update message is returned with a product delivery notification comprising ProductMetadata, filename and delivery address as a URI.
+						After each referenced product has been delivered by file transfer, a separate Update message is returned with a product delivery notification with the ProductMetadata and the respective filename.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="4">
 						The final Response message shall be empty and it indicates to the consumer that all products have been delivered.
@@ -109,7 +109,7 @@
                             <mal:field name="productRefs" canBeNull="false" comment="The references to the products to be delivered.">
                                 <mal:type area="MPD" list="true" name="ObjectRef(Product)"/>
                             </mal:field>
-                            <mal:field name="deliverTo" canBeNull="false" comment="The location's URI where the mission data product should be delivered.">
+                            <mal:field name="deliverTo" canBeNull="false" comment="The location's URI where the mission data product must be delivered.">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:field>
                         </mal:progress>
@@ -121,9 +121,6 @@
                             </mal:field>
                             <mal:field name="filename" canBeNull="false" comment="The filename of the selected mission data product(s).">
                                 <mal:type area="MAL" list="false" name="String"/>
-                            </mal:field>
-                            <mal:field name="deliveredTo" canBeNull="false" comment="The location's URI where the selected mission data product(s) was delivered.">
-                                <mal:type area="MAL" list="false" name="URI"/>
                             </mal:field>
                         </mal:update>
                         <mal:response>
@@ -148,14 +145,13 @@
         </mal:service>
         <mal:service name="OrderManagement" number="2" comment="The Order Management Service is used to submit and manage standing orders. Standing orders specify a product filter to subscribe to a subset of automatically generated products and define the method and destination for product delivery.">
             <mal:documentation name="High-level Requirements" order="1">
-                The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order management service:
+                The following set of mission data product configuration data shall be available to both provider and consumers in a deployment of the product order management service:
                 - Product definitions (as ProductType data structure)
             </mal:documentation>
             <mal:documentation name="Functional Requirements" order="2">
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given domain and/or product user.">
-                    <mal:messages>
                     <mal:documentation name="Requirement" order="1">
 						In response to a listStandingOrders operation, the service provider shall compile a list of standing orders that satisfy the specified criteria and return this list to the service consumer.
 						Note: depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
@@ -166,6 +162,7 @@
                     <mal:documentation name="Requirement" order="3">
 						The domain field in the request refers to the domain of the products to which the standing order relates. The standing order itself is not associated with a domain.
                     </mal:documentation>
+                    <mal:messages>
                         <mal:request>
                             <mal:field name="user" canBeNull="true" comment="The user of the standing order(s) to be listed.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
@@ -254,7 +251,7 @@ The service provides two capabilities to the the consumer:
 to receive notifications each time their ordered products have been delivered as files
 to receive the ordered products via message transfer rather than file delivery">
             <mal:documentation name="High-level Requirements" order="1">
-                3.4.3.1 The following set of mission data product configuration data shall be available to both provider and consumers in a any deployment of the product order delivery service:
+                The following set of mission data product configuration data shall be available to both provider and consumers in a deployment of the product order delivery service:
                 - Product definitions (as ProductType data structure)
             </mal:documentation>
             <mal:documentation name="Functional Requirements" order="2">
@@ -265,13 +262,13 @@ to receive the ordered products via message transfer rather than file delivery">
 						Upon successful file transfer of a mission data product that is associated with a standing order, the service provider shall publish a delivery notification.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall publish the delivery notification together with subscription keys corresponding to the associated user and orderId.
+						The service provider shall publish the delivery notification together with subscription keys corresponding to the associated user and orderID.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						A service consumer may subscribe to notifications for a specific user, or for all users with the use of the wildcard in the user field.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						A service consumer may subscribe to notifications for a specific standing order, or for all standing orders with the use of the wildcard in the orderId field.
+						A service consumer may subscribe to notifications for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="5">
 						The published message shall contain the metadata, filename, and delivered location of the mission data product that was delivered.
@@ -281,7 +278,7 @@ to receive the ordered products via message transfer rather than file delivery">
                             <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="orderID" canBeNull="false" comment="The orderId associated with the standing order of the product being notified.">
+                            <mal:field name="orderID" canBeNull="false" comment="The orderID associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                         </mal:subscriptionKeys>
@@ -323,20 +320,20 @@ to receive the ordered products via message transfer rather than file delivery">
 						Upon the creation (or availability) of a new mission data product that matches a certain standing order, the service provider shall publish this mission data product via the service interface.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall publish the mission data product together with subscription keys corresponding to the associated user and orderId.
+						The service provider shall publish the mission data product together with subscription keys corresponding to the associated user and orderID.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						A service consumer may subscribe to mission data products for a specific user, or for all users with the use of the wildcard in the user field.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						A service consumer may subscribe to mission data products for a specific standing order, or for all standing orders with the use of the wildcard in the orderId field.
+						A service consumer may subscribe to mission data products for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
 					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
                             <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="orderID" canBeNull="false" comment="The orderId associated with the standing order of the product being notified.">
+                            <mal:field name="orderID" canBeNull="false" comment="The orderID associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
                         </mal:subscriptionKeys>
@@ -398,7 +395,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="parameters" canBeNull="true" comment="Named values for metadata parameters whose name and type correspond to those defined in the referenced ProductType.">
                     <mal:type area="MAL" list="true" name="NamedValue"/>
                 </mal:field>
-                <mal:field name="description" canBeNull="false" comment="Free text description of this specific occurrence of the product.">
+                <mal:field name="description" canBeNull="true" comment="Free text description of this specific occurrence of the product.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
                 <mal:field name="productBody" canBeNull="false" comment="Product body of opaque structure known to both product generator and product user.">

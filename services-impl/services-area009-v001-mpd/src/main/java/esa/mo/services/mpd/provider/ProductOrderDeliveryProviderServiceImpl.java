@@ -130,7 +130,7 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
                     byte[] byteArray = new byte[]{(byte) counter};
                     counter++;
                     Product product = new Product(id, productType, Time.now(),
-                            new TimeWindow(Time.now(), Time.now()), "description", new Blob(byteArray));
+                            new TimeWindow(Time.now(), Time.now()), new Blob(byteArray));
                     publisher.publish(updateHeader, product);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ProductOrderDeliveryProviderServiceImpl.class.getName()).log(
