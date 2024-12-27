@@ -17,13 +17,13 @@
             <mal:documentation name="Functional Requirements" order="2">
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
-                <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected time window.">
+                <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
                         In response to a listProducts operation, the service provider shall compile a list of Product Metadatas that satisfy the specified criteria and return this list to the service consumer.
                         Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all of the individual filter criteria specified (source, metadata parameters, creation date and time window).
+						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all of the individual filter criteria specified (source, metadata parameters, creation date and content date).
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						The Response message shall contain the list of metadatas for the products that pass the specified filter.
@@ -36,7 +36,7 @@
                             <mal:field name="creationDate" canBeNull="true" comment="The time window used to filter products based on their creation date.">
                                 <mal:type area="MPD" list="false" name="TimeWindow"/>
                             </mal:field>
-                            <mal:field name="timeWindow" canBeNull="true" comment="The time window used to filter products based on their content creation period.">
+                            <mal:field name="contentDate" canBeNull="true" comment="The time window used to filter products based on their content creation period.">
                                 <mal:type area="MPD" list="false" name="TimeWindow"/>
                             </mal:field>
                         </mal:request>
@@ -360,7 +360,7 @@ to receive the ordered products via message transfer rather than file delivery">
                 <mal:field name="source" canBeNull="true" comment="The source that triggered the generation of the product.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
-                <mal:field name="timeWindow" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
+                <mal:field name="contentDate" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
                     <mal:type area="MPD" list="false" name="TimeWindow"/>
                 </mal:field>
                 <mal:field name="parameters" canBeNull="true" comment="Named values for metadata parameters whose name and type correspond to those defined in the referenced ProductType.">
@@ -437,7 +437,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="externalURI" canBeNull="true" comment="An external URI for the products to be retrieved. For example, this can be used to for pulling a mission data product file via an http URL link.">
                     <mal:type area="MAL" list="false" name="URI"/>
                 </mal:field>
-                <mal:field name="timeWindow" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
+                <mal:field name="contentDate" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
                     <mal:type area="MPD" list="false" name="TimeWindow"/>
                 </mal:field>
                 <mal:field name="parameters" canBeNull="true" comment="Named values for metadata parameters whose name and type correspond to those defined in the referenced ProductType.">

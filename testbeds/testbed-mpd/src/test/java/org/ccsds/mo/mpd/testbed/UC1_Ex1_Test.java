@@ -165,8 +165,8 @@ public class UC1_Ex1_Test {
     public void testCase_5() {
         System.out.println("Running: testCase_5()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
-        testWithTimeWindow(apidValue, 1, timeWindow);
+        TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        testWithTimeWindow(apidValue, 1, contentDate);
     }
 
     /**
@@ -177,8 +177,8 @@ public class UC1_Ex1_Test {
     public void testCase_6() {
         System.out.println("Running: testCase_6()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow timeWindow = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
-        testWithTimeWindow(apidValue, 0, timeWindow);
+        TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        testWithTimeWindow(apidValue, 0, contentDate);
     }
 
     /**
@@ -189,8 +189,8 @@ public class UC1_Ex1_Test {
     public void testCase_7() {
         System.out.println("Running: testCase_7()");
         UInteger apidValue = new UInteger(200);
-        TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
-        testWithTimeWindow(apidValue, 0, timeWindow);
+        TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        testWithTimeWindow(apidValue, 0, contentDate);
     }
 
     /**
@@ -199,8 +199,8 @@ public class UC1_Ex1_Test {
     @Test
     public void testCase_8() {
         System.out.println("Running: testCase_8()");
-        TimeWindow timeWindow = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
-        testWithTimeWindow(null, 0, timeWindow);
+        TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        testWithTimeWindow(null, 0, contentDate);
     }
 
     /**
@@ -209,15 +209,15 @@ public class UC1_Ex1_Test {
     @Test
     public void testCase_9() {
         System.out.println("Running: testCase_9()");
-        TimeWindow timeWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID200_TIME_END);
-        testWithTimeWindow(null, 2, timeWindow);
+        TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID200_TIME_END);
+        testWithTimeWindow(null, 2, contentDate);
     }
 
     private void test(UInteger apidValue, int expectedNumberOfResults) {
         testWithTimeWindow(apidValue, expectedNumberOfResults, null);
     }
 
-    private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow timeWindow) {
+    private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow contentDate) {
         ProductType productType = backend.typeTMPacketDailyExtract;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -237,7 +237,7 @@ public class UC1_Ex1_Test {
 
         try {
             TimeWindow creationDate = null;
-            list = consumerPR.listProducts(productFilter, creationDate, timeWindow);
+            list = consumerPR.listProducts(productFilter, creationDate, contentDate);
             int size = list.size();
             System.out.println("Number of listed products returned: " + size);
             assertEquals(expectedNumberOfResults, size);
@@ -350,25 +350,23 @@ public class UC1_Ex1_Test {
             }
 
             // Check the timeWindows for all the received products, if one was selected
-            if (timeWindow != null) {
+            if (contentDate != null) {
                 for (Product p : returnedProducts) {
-                    TimeWindow receivedTW = p.getTimeWindow();
+                    TimeWindow receivedTW = p.getContentDate();
 
-                    if (receivedTW.getStart().getValue() > timeWindow.getEnd().getValue()) {
+                    if (receivedTW.getStart().getValue() > contentDate.getEnd().getValue()) {
                         fail("The received TimeWindow start time is after the requested TimeWindow end time!");
                     }
-                    if (receivedTW.getEnd().getValue() < timeWindow.getStart().getValue()) {
+                    if (receivedTW.getEnd().getValue() < contentDate.getStart().getValue()) {
                         fail("The received TimeWindow end time is before the requested TimeWindow start time!");
                     }
                 }
             }
 
             // Check that the productType matches
-            if (productType != null) {
-                for (Product p : returnedProducts) {
-                    if (!p.getProductType().equals(productType)) {
-                        fail("The productTypes are not the same!");
-                    }
+            for (Product p : returnedProducts) {
+                if (!p.getProductType().equals(productType)) {
+                    fail("The productType isnot the same! For product: " + p.toString());
                 }
             }
 

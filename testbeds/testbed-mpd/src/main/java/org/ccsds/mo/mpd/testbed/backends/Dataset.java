@@ -61,7 +61,7 @@ public abstract class Dataset implements ProductRetrievalBackend {
                 metadata.getProductType(),
                 metadata.getCreationDate(),
                 metadata.getSource(),
-                metadata.getTimeWindow(),
+                metadata.getContentDate(),
                 metadata.getParameters(),
                 metadata.getDescription(),
                 productBody
