@@ -547,12 +547,12 @@ Note that as ParameterDef is only used in the context of ProductType, which is n
             </mal:enumeration>
 
             <mal:enumeration name="SecondaryErrorCodeEnum" shortFormPart="6" comment="For the Invalid error, the extraInfo field contains a secondary error code defined as a UInteger that allows for deployment specific extensibility. The following standard secondary error codes are defined:">
-                <mal:item nvalue="0" value="UNKNOWN" comment="Referenced MO object is not available to the service provider."/>
-                <mal:item nvalue="1" value="UNDEFINED" comment="Undefined value for enumeration field."/>
-                <mal:item nvalue="2" value="OUT_OF_RANGE" comment="A numeric value is outside the supported range."/>
-                <mal:item nvalue="3" value="UNRECOGNIZED" comment="Value of type MAL::Identifier or MAL::String (referencing a named item) does not correspond to a known item."/>
-                <mal:item nvalue="4" value="BAD_TIME" comment="A date-time value is outside the supported time period."/>
-                <mal:item nvalue="5" value="INCONSISTENT" comment="A value is inconsistent with that of another field within the message. This indicates violation of a constraint rule."/>
+                <mal:item nvalue="1" value="UNKNOWN" comment="Referenced MO object is not available to the service provider."/>
+                <mal:item nvalue="2" value="UNDEFINED" comment="Undefined value for enumeration field."/>
+                <mal:item nvalue="3" value="OUT_OF_RANGE" comment="A numeric value is outside the supported range."/>
+                <mal:item nvalue="4" value="UNRECOGNIZED" comment="Value of type MAL::Identifier or MAL::String (referencing a named item) does not correspond to a known item."/>
+                <mal:item nvalue="5" value="BAD_TIME" comment="A date-time value is outside the supported time period."/>
+                <mal:item nvalue="6" value="INCONSISTENT" comment="A value is inconsistent with that of another field within the message. This indicates violation of a constraint rule."/>
             </mal:enumeration>
 
         </mal:dataTypes>
