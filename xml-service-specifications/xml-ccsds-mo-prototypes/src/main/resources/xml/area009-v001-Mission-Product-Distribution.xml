@@ -23,10 +23,10 @@
                         Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all of the individual filter criteria specified (source, metadata parameters, creation date and content date).
+						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all the individual filter criteria specified (source, metadata parameters, creation date and content date).
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						The Response message shall contain the list of metadatas for the products that pass the specified filter.
+						The Response message shall contain the list of metadata entries for each product that pass the specified filter.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -63,7 +63,7 @@
 						In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						The final Response message shall be empty and it indicates to the consumer that all products have been returned.
+						The final Response message shall be empty, and it indicates to the consumer that all products have been returned.
                     </mal:documentation>
                     <mal:messages>
                         <mal:progress>
@@ -101,7 +101,7 @@
 						After each referenced product has been delivered by file transfer, a separate Update message is returned with a product delivery notification with the ProductMetadata and the respective filename.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="4">
-						The final Response message shall be empty and it indicates to the consumer that all products have been delivered.
+						The final Response message shall be empty, and it indicates to the consumer that all products have been delivered.
                     </mal:documentation>
                     <mal:messages>
                         <mal:progress>
@@ -224,7 +224,7 @@
 						The service consumer shall send the orderID of the standing order to be cancelled to the service provider.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
+						Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation, the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
                     </mal:documentation>
                     <mal:messages>
                         <mal:submit>
@@ -375,8 +375,8 @@ to receive the ordered products via message transfer rather than file delivery">
             </mal:composite>
 
             <mal:composite name="ProductType" shortFormPart="101" comment="A ProductType is an MO object that contains the static definition associated with multiple occurrences of a mission data product. Its identity includes a constant key and an evolving version that is updated each time the definition is revised. The ProductType defines the metadata parameters associated with the product and implies (but does not specify) the structure of the product body.
-Note that the domain of the ProductType and associated Products may not be the same. Typically the domain of generic ProductTypes (for example an orbit file) may be defined at agency level, while the generated Products may be associated with a mission specific domain.
-Note that the ProductTypes are not contained within the service messages of any operation defined in this specification, but are referenced by Products and other service data structures. A future service may support the distribution and access to mission product configuration data, including ProductTypes.">
+Note that the domain of the ProductType and associated Products may not be the same. Typically, the domain of generic ProductTypes (for example an orbit file) may be defined at agency level, while the generated Products may be associated with a mission specific domain.
+Note that the ProductTypes are not contained within the service messages of any operation defined in this specification but are referenced by Products and other service data structures. A future service may support the distribution and access to mission product configuration data, including ProductTypes.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
@@ -391,7 +391,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="StandingOrder" shortFormPart="201" comment="A StandingOrder is a data structure that holds the details of a standing order. This includes a reference to the user who owns the product order, the product filter, how the products are to be delivered to the user and the current status of the order.">
+            <mal:composite name="StandingOrder" shortFormPart="201" comment="A StandingOrder is a data structure that holds the details of a standing order. This includes the orderId, the user who owns the product order, the product filter, how the products are to be delivered, the target URI where to deliver the files, and some comments.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
@@ -463,7 +463,7 @@ Note that in the case of requesting a list of available products, filtering by a
                 <mal:field name="sources" canBeNull="true" comment="A set of sources associated products. If the product source matches one of the listed sources, then it passes the filter.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
-                <mal:field name="parameterFilter" canBeNull="true" comment="Set of parameterFilters defining the desired values of product metadata parameters. If multiple parameterFilters are defined then the product metadata must match all specified criteria to pass the filter.">
+                <mal:field name="parameterFilter" canBeNull="true" comment="Set of parameterFilters defining the desired values of product metadata parameters. If multiple parameterFilters are defined, then the product metadata must match all specified criteria to pass the filter.">
                     <mal:type area="MPD" list="true" name="ParameterFilter"/>
                 </mal:field>
             </mal:composite>
