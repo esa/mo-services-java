@@ -215,7 +215,9 @@ public class GeneratorDocx extends GeneratorDocument {
                     for (CapabilitySetType cSet : service.getCapabilitySet()) {
                         for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
                             docxServiceFile.addPageBreak();
-                            docxServiceFile.addTitle(3, "Operation: ", op.getName(), "OPERATION_" + service.getName(), true);
+                            // The name of the bookmark cannot be too long, otherwise it gets cut and the
+                            // link won't work! Therefore, the "service number" is used instead of the name
+                            docxServiceFile.addTitle(3, "Operation: ", op.getName(), "OPERATION_" + service.getNumber(), true);
                             docxServiceFile.addTitle(4, "Overview");
                             docxServiceFile.addComment(op.getComment());
                             drawOperationTable(docxServiceFile, area, service, op);
@@ -403,7 +405,8 @@ public class GeneratorDocx extends GeneratorDocument {
             for (OperationType op : cSet.getSendIPOrSubmitIPOrRequestIP()) {
                 docxFile.startRow();
                 docxFile.addCell(0, SERVICE_OVERVIEW_TABLE_WIDTHS, operationType(op), colour);
-                docxFile.addCellWithHyperlink(1, SERVICE_OVERVIEW_TABLE_WIDTHS, op.getName(), colour, "OPERATION_" + service.getName() + "_" + op.getName(), 2);
+                String linkTo = "OPERATION_" + service.getNumber() + "_" + op.getName();
+                docxFile.addCellWithHyperlink(1, SERVICE_OVERVIEW_TABLE_WIDTHS, op.getName(), colour, linkTo, 2);
                 docxFile.addCell(3, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(op.getNumber()), colour);
                 docxFile.addCell(4, SERVICE_OVERVIEW_TABLE_WIDTHS, String.valueOf(cSet.getNumber()), colour, true, firstRow);
                 docxFile.endRow();

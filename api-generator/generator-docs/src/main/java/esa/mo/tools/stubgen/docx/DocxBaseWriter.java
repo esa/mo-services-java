@@ -74,7 +74,7 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void startTable(int[] widths, String caption) throws IOException {
-        if (null != caption) {
+        if (caption != null) {
             buffer.append(makeLine(2, "<w:p>"));
             buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Table </w:t></w:r>"));
             buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"T_" + caption + "\"/>"));
@@ -85,8 +85,8 @@ public class DocxBaseWriter extends AbstractWriter {
             buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>"));
             buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>"));
             buffer.append(makeLine(2, "</w:p>"));
-
         }
+
         buffer.append(makeLine(2, "<w:tbl>"));
         buffer.append(makeLine(3, "<w:tblPr>"));
         buffer.append(makeLine(4, "<w:tblW w:w=\"00\" w:type=\"auto\"/>"));
@@ -273,7 +273,8 @@ public class DocxBaseWriter extends AbstractWriter {
     public void addTitle(int level, String section, String name, String bookmarkSection, boolean bookmark) throws IOException {
         buffer.append(makeLine(2, "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>"));
         if (bookmark) {
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + bookmarkSection + "_" + name + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
+            String linkTo = bookmarkSection + "_" + name;
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + linkTo + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
         }
         buffer.append(makeLine(3, "<w:r><w:t>" + section + name + "</w:t></w:r>"));
         buffer.append(makeLine(2, "</w:p>"));
