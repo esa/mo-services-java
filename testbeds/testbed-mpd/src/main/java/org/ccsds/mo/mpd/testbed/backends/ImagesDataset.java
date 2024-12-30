@@ -30,8 +30,8 @@ import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.Union;
-import org.ccsds.moims.mo.mpd.structures.ParameterDef;
-import org.ccsds.moims.mo.mpd.structures.ParameterDefList;
+import org.ccsds.moims.mo.mpd.structures.AttributeDef;
+import org.ccsds.moims.mo.mpd.structures.AttributeDefList;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
@@ -49,9 +49,9 @@ public class ImagesDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ParameterDefList parameterDefs = new ParameterDefList();
-        parameterDefs.add(new ParameterDef(new Identifier("ImageSubject"), AttributeType.STRING));
-        parameterDefs.add(new ParameterDef(new Identifier("imageType"), AttributeType.STRING));
+        AttributeDefList parameterDefs = new AttributeDefList();
+        parameterDefs.add(new AttributeDef(new Identifier("ImageSubject"), AttributeType.STRING));
+        parameterDefs.add(new AttributeDef(new Identifier("imageType"), AttributeType.STRING));
         ProductType typeImage = new ProductType(new Identifier("Image"), "An Image type", parameterDefs);
 
         // ---------------------------------------------------

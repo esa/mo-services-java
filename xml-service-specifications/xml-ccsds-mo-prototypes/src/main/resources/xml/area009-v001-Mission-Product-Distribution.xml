@@ -23,7 +23,7 @@
                         Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata parameter, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all the individual filter criteria specified (source, metadata parameters, creation date and content date).
+						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata attribute, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all the individual filter criteria specified (source, metadata attributes, creation date and content date).
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						The Response message shall contain the list of metadata entries for each product that pass the specified filter.
@@ -363,7 +363,7 @@ to receive the ordered products via message transfer rather than file delivery">
                 <mal:field name="contentDate" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
                     <mal:type area="MPD" list="false" name="TimeWindow"/>
                 </mal:field>
-                <mal:field name="parameters" canBeNull="true" comment="Named values for metadata parameters whose name and type correspond to those defined in the referenced ProductType.">
+                <mal:field name="attributes" canBeNull="true" comment="Named values for metadata attributes whose name and type correspond to those defined in the referenced ProductType.">
                     <mal:type area="MAL" list="true" name="NamedValue"/>
                 </mal:field>
                 <mal:field name="description" canBeNull="true" comment="Free text description of this specific occurrence of the product.">
@@ -374,7 +374,7 @@ to receive the ordered products via message transfer rather than file delivery">
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductType" shortFormPart="101" comment="A ProductType is an MO object that contains the static definition associated with multiple occurrences of a mission data product. Its identity includes a constant key and an evolving version that is updated each time the definition is revised. The ProductType defines the metadata parameters associated with the product and implies (but does not specify) the structure of the product body.
+            <mal:composite name="ProductType" shortFormPart="101" comment="A ProductType is an MO object that contains the static definition associated with multiple occurrences of a mission data product. Its identity includes a constant key and an evolving version that is updated each time the definition is revised. The ProductType defines the metadata attributes associated with the product and implies (but does not specify) the structure of the product body.
 Note that the domain of the ProductType and associated Products may not be the same. Typically, the domain of generic ProductTypes (for example an orbit file) may be defined at agency level, while the generated Products may be associated with a mission specific domain.
 Note that the ProductTypes are not contained within the service messages of any operation defined in this specification but are referenced by Products and other service data structures. A future service may support the distribution and access to mission product configuration data, including ProductTypes.">
                 <mal:extends>
@@ -386,8 +386,8 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="description" canBeNull="true" comment="Description of the Product Type.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
-                <mal:field name="parameterDefs" canBeNull="true" comment="List of metadata Parameter Definitions.">
-                    <mal:type area="MPD" list="true" name="ParameterDef"/>
+                <mal:field name="attributeDefs" canBeNull="true" comment="List of metadata Attribute Definitions.">
+                    <mal:type area="MPD" list="true" name="AttributeDef"/>
                 </mal:field>
             </mal:composite>
 
@@ -401,7 +401,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="user" canBeNull="false" comment="Reference to the user that is the owner of the product order.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
-                <mal:field name="productFilter" canBeNull="true" comment="Specifies the filter criteria for the standing order, including the product type and optional filters on product source and metadata parameters.">
+                <mal:field name="productFilter" canBeNull="true" comment="Specifies the filter criteria for the standing order, including the product type and optional filters on product source and metadata attributes.">
                     <mal:type area="MPD" list="false" name="ProductFilter"/>
                 </mal:field>
                 <mal:field name="validityPeriod" canBeNull="true" comment="Period of time over which the standing order is required to be active.">
@@ -440,7 +440,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 <mal:field name="contentDate" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
                     <mal:type area="MPD" list="false" name="TimeWindow"/>
                 </mal:field>
-                <mal:field name="parameters" canBeNull="true" comment="Named values for metadata parameters whose name and type correspond to those defined in the referenced ProductType.">
+                <mal:field name="attributes" canBeNull="true" comment="Named values for metadata attributes whose name and type correspond to those defined in the referenced ProductType.">
                     <mal:type area="MAL" list="true" name="NamedValue"/>
                 </mal:field>
                 <mal:field name="description" canBeNull="false" comment="Free text description of this specific occurrence of the product.">
@@ -448,7 +448,7 @@ Note that the ProductTypes are not contained within the service messages of any 
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductFilter" shortFormPart="104" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata parameter values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata parameter filters. If no filter is specified for source or parameterFilters then all products of the specified type pass the filter.
+            <mal:composite name="ProductFilter" shortFormPart="104" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attributeFilters then all products of the specified type pass the filter.
 A ProductFilter relates to a specific ProductType. Note that the domain filter relates to the domain of the product and not of the product type. The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.
 Note that in the case of requesting a list of available products, filtering by a range of product creation or time window dates may also be required. These are specified as additional fields of the corresponding service message structure.">
                 <mal:extends>
@@ -463,8 +463,8 @@ Note that in the case of requesting a list of available products, filtering by a
                 <mal:field name="sources" canBeNull="true" comment="A set of sources associated products. If the product source matches one of the listed sources, then it passes the filter.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
-                <mal:field name="parameterFilter" canBeNull="true" comment="Set of parameterFilters defining the desired values of product metadata parameters. If multiple parameterFilters are defined, then the product metadata must match all specified criteria to pass the filter.">
-                    <mal:type area="MPD" list="true" name="ParameterFilter"/>
+                <mal:field name="attributeFilter" canBeNull="true" comment="Set of attributeFilters defining the desired values of product metadata attributes. If multiple attributeFilters are defined, then the product metadata must match all specified criteria to pass the filter.">
+                    <mal:type area="MPD" list="true" name="AttributeFilter"/>
                 </mal:field>
             </mal:composite>
 
@@ -480,40 +480,40 @@ Note that in the case of requesting a list of available products, filtering by a
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ParameterDef" shortFormPart="2" comment="A ParameterDef specifies a metadata parameter in terms of its name, attribute type and optionally units and a free text description.
-Note that as ParameterDef is only used in the context of ProductType, which is not contained in the service messages of any operation defined in this specification, it also is not contained in any currently defined service message. A future service may support the distribution and access to mission product configuration data, including ProductTypes and their contained ParameterDefs.">
+            <mal:composite name="AttributeDef" shortFormPart="2" comment="A AttributeDef specifies a metadata attribute in terms of its name, attribute type and optionally units and a free text description.
+Note that as AttributeDef is only used in the context of ProductType, which is not contained in the service messages of any operation defined in this specification, it also is not contained in any currently defined service message. A future service may support the distribution and access to mission product configuration data, including ProductTypes and their contained AttributeDefs.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
-                <mal:field name="name" canBeNull="false" comment="Assigns a name to the metadata parameter.">
+                <mal:field name="name" canBeNull="false" comment="Assigns a name to the metadata attribute.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
-                <mal:field name="parameterType" canBeNull="false" comment="Specifies the MAL attribute type of the metadata parameter.">
+                <mal:field name="attributeType" canBeNull="false" comment="Specifies the MAL attribute type of the metadata attribute.">
                     <mal:type area="MAL" list="false" name="AttributeType"/>
                 </mal:field>
-                <mal:field name="units" canBeNull="true" comment="Units associated with the metadata parameter (optional).">
+                <mal:field name="units" canBeNull="true" comment="Units associated with the metadata attribute (optional).">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
-                <mal:field name="description" canBeNull="true" comment="Description of the metadata parameter (optional).">
+                <mal:field name="description" canBeNull="true" comment="Description of the metadata attribute (optional).">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ParameterFilter" comment="A ParameterFilter enables specification of a filter based on the value of a metadata parameter. It is used in the context of selecting a subset of mission data products. It is an abstract data type, with concrete subtypes for specific types of filter.">
+            <mal:composite name="AttributeFilter" comment="A AttributeFilter enables specification of a filter based on the value of a metadata attribute. It is used in the context of selecting a subset of mission data products. It is an abstract data type, with concrete subtypes for specific types of filter.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
-                <mal:field name="name" canBeNull="false" comment="References the name of a defined metadata parameter.">
+                <mal:field name="name" canBeNull="false" comment="References the name of a defined metadata attribute.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
-                <mal:field name="include" canBeNull="false" comment="Indicates whether the filter is to include [TRUE] or exclude [FALSE] parameter values that match the filter.">
+                <mal:field name="include" canBeNull="false" comment="Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute values that match the filter.">
                     <mal:type area="MAL" list="false" name="Boolean"/>
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ValueRange" shortFormPart="3" comment="A ValueRange is a concrete subtype of ParameterFilter that allows the specification of an allowed (or disallowed) value range for a metadata parameter.">
+            <mal:composite name="ValueRange" shortFormPart="3" comment="A ValueRange is a concrete subtype of AttributeFilter that allows the specification of an allowed (or disallowed) value range for a metadata attribute.">
                 <mal:extends>
-                    <mal:type area="MPD" list="false" name="ParameterFilter"/>
+                    <mal:type area="MPD" list="false" name="AttributeFilter"/>
                 </mal:extends>
                 <mal:field name="minimum" canBeNull="true" comment="Minimum value of the value range (greater than or equal to).">
                     <mal:type area="MAL" list="false" name="Attribute"/>
@@ -523,20 +523,20 @@ Note that as ParameterDef is only used in the context of ProductType, which is n
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ValueSet" shortFormPart="4" comment="A ValueSet is a concrete subtype of ParameterFilter that allows the specification of a set of allowed (or disallowed) values for a metadata parameter.">
+            <mal:composite name="ValueSet" shortFormPart="4" comment="A ValueSet is a concrete subtype of AttributeFilter that allows the specification of a set of allowed (or disallowed) values for a metadata attribute.">
                 <mal:extends>
-                    <mal:type area="MPD" list="false" name="ParameterFilter"/>
+                    <mal:type area="MPD" list="false" name="AttributeFilter"/>
                 </mal:extends>
-                <mal:field name="values" canBeNull="false" comment="Set of allowed (or disallowed) values for the metadata parameter.">
+                <mal:field name="values" canBeNull="false" comment="Set of allowed (or disallowed) values for the metadata attribute.">
                     <mal:type area="MAL" list="true" name="Attribute"/>
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="StringPattern" shortFormPart="5" comment="A StringPattern is a concrete subtype of ParameterFilter that allows the specification of a regular expression (or match pattern) to be searched for in the value of a text type metadata parameter.">
+            <mal:composite name="StringPattern" shortFormPart="5" comment="A StringPattern is a concrete subtype of AttributeFilter that allows the specification of a regular expression (or match pattern) to be searched for in the value of a text type metadata attribute.">
                 <mal:extends>
-                    <mal:type area="MPD" list="false" name="ParameterFilter"/>
+                    <mal:type area="MPD" list="false" name="AttributeFilter"/>
                 </mal:extends>
-                <mal:field name="regex" canBeNull="false" comment="Regular expression - a sequence of characters that specifies a match pattern to be searched for in a text type metadata parameter (Sting, Identifier or URI).">
+                <mal:field name="regex" canBeNull="false" comment="Regular expression - a sequence of characters that specifies a match pattern to be searched for in a text type metadata attribute (Sting, Identifier or URI).">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
             </mal:composite>

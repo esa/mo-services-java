@@ -45,7 +45,7 @@ import org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDelivery
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
-import org.ccsds.moims.mo.mpd.structures.ParameterFilterList;
+import org.ccsds.moims.mo.mpd.structures.AttributeFilterList;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
 import org.ccsds.moims.mo.mpd.structures.ProductList;
@@ -222,11 +222,11 @@ public class UC1_Ex1_Test {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
 
-        ParameterFilterList parameterFilter = null;
+        AttributeFilterList parameterFilter = null;
 
         // When the apidValue is NULL, then the filtering is off!
         if (apidValue != null) {
-            parameterFilter = new ParameterFilterList();
+            parameterFilter = new AttributeFilterList();
             AttributeList values = new AttributeList();
             values.add(apidValue);
             parameterFilter.add(new ValueSet(new Identifier("APID"), true, values));
@@ -373,7 +373,7 @@ public class UC1_Ex1_Test {
             // If there is only one entry, then check if the APID matches
             if (size == 1) {
                 Product product = returnedProducts.get(0);
-                NamedValueList attributes = product.getParameters();
+                NamedValueList attributes = product.getAttributes();
 
                 // Find the Attribute with the APID and check:
                 for (NamedValue att : attributes) {
