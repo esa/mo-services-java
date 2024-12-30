@@ -228,7 +228,7 @@
                     </mal:documentation>
                     <mal:messages>
                         <mal:submit>
-                            <mal:field name="orderID" canBeNull="false" comment="The unique identifier of the standing order to be cancelled.">
+                            <mal:field name="orderID" canBeNull="false" comment="The unique id of the standing order to be cancelled.">
                                 <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:submit>
