@@ -49,10 +49,10 @@ public class ImagesDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        AttributeDefList parameterDefs = new AttributeDefList();
-        parameterDefs.add(new AttributeDef(new Identifier("ImageSubject"), AttributeType.STRING));
-        parameterDefs.add(new AttributeDef(new Identifier("imageType"), AttributeType.STRING));
-        ProductType typeImage = new ProductType(new Identifier("Image"), "An Image type", parameterDefs);
+        AttributeDefList attributeDefs = new AttributeDefList();
+        attributeDefs.add(new AttributeDef(new Identifier("ImageSubject"), AttributeType.STRING));
+        attributeDefs.add(new AttributeDef(new Identifier("imageType"), AttributeType.STRING));
+        ProductType typeImage = new ProductType(new Identifier("Image"), "An Image type", attributeDefs);
 
         // ---------------------------------------------------
         // Products
@@ -60,24 +60,24 @@ public class ImagesDataset extends Dataset {
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
 
         // product1
-        NamedValueList parameters1 = new NamedValueList();
-        parameters1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
-        parameters1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
+        NamedValueList attributes1 = new NamedValueList();
+        attributes1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
+        attributes1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
         ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1, Time.now(),
-                null, null, timeWindow, parameters1, "description");
+                null, null, timeWindow, attributes1, "description");
         productBodies.put(ref1, productBody1);
         metadatas.put(ref1, metadata1);
 
         // product2
-        NamedValueList parameters2 = new NamedValueList();
-        parameters2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
-        parameters2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
+        NamedValueList attributes2 = new NamedValueList();
+        attributes2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
+        attributes2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2, Time.now(),
-                null, null, timeWindow, parameters2, "description");
+                null, null, timeWindow, attributes2, "description");
         productBodies.put(ref2, productBody2);
         metadatas.put(ref2, metadata2);
     }

@@ -148,7 +148,7 @@ public class UC1_Ex1_Test {
     }
 
     /**
-     * Test Case 4 - parameterFilter = NULL.
+     * Test Case 4 - attributeFilter = NULL.
      */
     @Test
     public void testCase_4() {
@@ -222,17 +222,17 @@ public class UC1_Ex1_Test {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
 
-        AttributeFilterList parameterFilter = null;
+        AttributeFilterList attributeFilter = null;
 
         // When the apidValue is NULL, then the filtering is off!
         if (apidValue != null) {
-            parameterFilter = new AttributeFilterList();
+            attributeFilter = new AttributeFilterList();
             AttributeList values = new AttributeList();
             values.add(apidValue);
-            parameterFilter.add(new ValueSet(new Identifier("APID"), true, values));
+            attributeFilter.add(new ValueSet(new Identifier("APID"), true, values));
         }
 
-        ProductFilter productFilter = new ProductFilter(productType.getName(), domain, null, parameterFilter);
+        ProductFilter productFilter = new ProductFilter(productType.getName(), domain, null, attributeFilter);
         ProductMetadataList list = null;
 
         try {
