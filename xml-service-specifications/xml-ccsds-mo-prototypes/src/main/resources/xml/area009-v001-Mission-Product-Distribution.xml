@@ -249,10 +249,7 @@
                 </mal:submitIP>
             </mal:capabilitySet>
         </mal:service>
-        <mal:service name="ProductOrderDelivery" number="3" comment="The Product Order Delivery Service is used in conjunction with existing standing orders (for the delivery of selected products). File delivery of products, if requested in the standing order, will be delivered without the need to use these service operations.
-The service provides two capabilities to the the consumer:
-to receive notifications each time their ordered products have been delivered as files
-to receive the ordered products via message transfer rather than file delivery">
+        <mal:service name="ProductOrderDelivery" number="3" comment="The Product Order Delivery Service is used in conjunction with existing standing orders (for the delivery of selected products). File delivery of products, if requested in the standing order, will be delivered without the need to use these service operations. The service provides two capabilities to the consumer: (1) to receive notifications each time their ordered products have been delivered as files; (2) to receive the ordered products via message transfer rather than file delivery.">
             <mal:documentation name="High-level Requirements" order="1">
                 TBD
             </mal:documentation>
@@ -470,7 +467,7 @@ A ProductFilter relates to a specific ProductType. Note that the domain filter r
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="TimeWindow" shortFormPart="1" comment="The TimeWindow represents a specific period of time, between the start and end of a time window.">
+            <mal:composite name="TimeWindow" shortFormPart="1" comment="The TimeWindow represents a specific period, between the start and end of a time window.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
@@ -543,7 +540,7 @@ Note that as AttributeDef is only used in the context of ProductType.">
                 </mal:field>
             </mal:composite>
 
-            <mal:enumeration name="DeliveryMethodEnum" shortFormPart="202" comment="The DeliveryMethodEnum enumeration defines the delivery methodto be used for delivery of mission data products.">
+            <mal:enumeration name="DeliveryMethodEnum" shortFormPart="202" comment="The DeliveryMethodEnum enumeration defines the delivery method to be used for delivery of mission data products.">
                 <mal:item nvalue="1" value="SERVICE" comment="The mission data product is to be delivered via service messages. This requires the service consumer to initiate a service operation to subscribe to the products via the existing standing order."/>
                 <mal:item nvalue="2" value="FILETRANSFER" comment="The mission data product is to be delivered by file transfer to the address contained in the deliverTo field."/>
             </mal:enumeration>
