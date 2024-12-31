@@ -57,7 +57,8 @@
                 </mal:requestIP>
                 <mal:progressIP name="getProducts" number="2" supportInReplay="true" comment="The getProduct operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
-						A consumer shall send the list of one or more product references (as ObjectRefs) to the service provider of the products intended to be retrieved. The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
+						A consumer shall send the list of one or more product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
+						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message.
@@ -82,17 +83,18 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
-                            <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
-                                <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
+                        <mal:errorRef comment="One or more of the productRefs was not found.">
+                            <mal:type name="Unknown" area="MPD"/>
+                            <mal:extraInformation comment="The indexes of referenced products in the list that were not found. The first item has an index value of 0.">
+                                <mal:type area="MPD" name="Integer" list="true"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
                 </mal:progressIP>
                 <mal:progressIP name="getProductFiles" number="3" supportInReplay="true" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer of mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
-						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transfered. The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation. The message also contains the file delivery address as a URI.
+						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transfered.
+						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation. The message also contains the file delivery address as a URI.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="2">
 						The provider shall transfer the referenced mission data products to the selected deliverTo URI.
@@ -126,10 +128,10 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
-                            <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
-                                <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
+                        <mal:errorRef comment="One or more of the productRefs was not found.">
+                            <mal:type name="Unknown" area="MPD"/>
+                            <mal:extraInformation comment="The indexes of referenced products in the list that were not found. The first item has an index value of 0.">
+                                <mal:type area="MPD" name="Integer" list="true"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef comment="An attempt to deliver a product file to the nominated address failed.">
