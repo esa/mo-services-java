@@ -86,7 +86,7 @@
                         <mal:errorRef comment="One or more of the productRefs was not found.">
                             <mal:type name="Unknown" area="MPD"/>
                             <mal:extraInformation comment="The indexes of referenced products in the list that were not found. The first item has an index value of 0.">
-                                <mal:type area="MPD" name="Integer" list="true"/>
+                                <mal:type area="MAL" name="Integer" list="true"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -131,7 +131,7 @@
                         <mal:errorRef comment="One or more of the productRefs was not found.">
                             <mal:type name="Unknown" area="MPD"/>
                             <mal:extraInformation comment="The indexes of referenced products in the list that were not found. The first item has an index value of 0.">
-                                <mal:type area="MPD" name="Integer" list="true"/>
+                                <mal:type area="MAL" name="Integer" list="true"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef comment="An attempt to deliver a product file to the nominated address failed.">
