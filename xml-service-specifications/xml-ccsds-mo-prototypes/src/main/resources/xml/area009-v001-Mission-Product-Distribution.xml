@@ -19,14 +19,17 @@
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
-                        In response to a listProducts operation, the service provider shall compile a list of Product Metadatas that satisfy the specified criteria and return this list to the service consumer.
+                        The service provider shall return a list of Product Metadatas that satisfy the specified input filter criteria defined by the product filter, the creation date, and the content creation date.  To pass the filter a product must match all the individual filter criteria.
                         Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The filter comprises a ProductFilter structure that specifies the product type and required filters by source and metadata attribute, together with two additional filter criteria relating to the creation and/or source data dates of the products. To pass the filter a product must match all the individual filter criteria specified (source, metadata attributes, creation date and content date).
+						The product filter shall optionally specify the product type and required filters by source and metadata attribute.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						The Response message shall contain the list of metadata entries for each product that pass the specified filter.
+						If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="4">
+						If the contentDate is NULL, then the service provider shall not filter the products based on the creationDate.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -61,7 +64,7 @@
 						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						In response to a getProduct operation, the service provider shall return each referenced product to the service consumer in a separate Update message.
+						The service provider shall return each referenced product to the service consumer in a separate Update message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						The final Response message shall be empty, and it indicates to the consumer that all products have been returned.
@@ -100,7 +103,7 @@
 						The provider shall transfer the referenced mission data products to the selected deliverTo URI.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						After each referenced product has been delivered by file transfer, a separate Update message is returned with a product delivery notification with the ProductMetadata and the respective filename.
+						After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata and the respective filename.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="4">
 						The final Response message shall be empty, and it indicates to the consumer that all products have been delivered.
@@ -151,16 +154,19 @@
             <mal:documentation name="Functional Requirements" order="2">
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
-                <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given domain and/or product user.">
+                <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
                     <mal:documentation name="Requirement" order="1">
-						In response to a listStandingOrders operation, the service provider shall compile a list of standing orders that satisfy the specified criteria and return this list to the service consumer.
+						The response shall contain a list of standing orders that match the specified user and domain.
 						Note: depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The response shall contain a list of standing orders that satisfy the specified criteria on the user field and domain field.
+						If the user is NULL, then the service provider shall not filter the standing orders based on the user.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						The domain field in the request refers to the domain of the products to which the standing order relates. The standing order itself is not associated with a domain.
+						If the domain is NULL, then the service provider shall not filter the standing orders based on the domain of the products.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="4">
+						The domain field shall refer to the domain of the products to which the standing order relates. The standing order itself is not associated with a domain.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -188,20 +194,19 @@
                 </mal:requestIP>
                 <mal:requestIP name="submitStandingOrder" number="2" supportInReplay="true" comment="The submitStandingOrder operation creates a new standing order in the provider for delivery of mission data products.">
                     <mal:documentation name="Requirement" order="1">
-						The provider shall ignore the defined values in the orderID fields of the standingOrders and allocate a unique id.
+						The service provider shall ignore the received value in the orderID field of the orderDetails, and always assign a unique id to the submitted order.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						On receipt of a Standing Order through a submitStandingOrder operation, the service provider shall create a new standing order, assign a unique orderID to this and return the orderID to the service consumer.
+						The service provider shall create a new standing order, then assign a unique ID for the standing order, and return it to the consumer in the Response message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						Following successful creation of a new standing order, the delivery of requested products shall be started by the service provider from the start of the specified validity window.
-						If the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
+						Following successful creation of a new standing order, the service provider shall initiate the delivery of requested products following the specified validity window of the standing order.
                    </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						If the specified delivery method is by file transfer, then the delivery occurs outside the service interface. If the specified delivery method is by service, then the delivery is performed through the operations of the ProductDelivery service.
-                    </mal:documentation>
+						When the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
+                   </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
-						The service provider shall assign a unique ID for the standing order and return it to the consumer in the Response message.
+						If the specified delivery method is by file transfer, then the delivery occurs outside the service interface. If the specified delivery method is by service, then the delivery is performed through the operations of the ProductDelivery service.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -239,10 +244,10 @@
                         </mal:submit>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="The referenced item (user or orderID) does not exist.">
+                        <mal:errorRef comment="The referenced orderID does not exist.">
                             <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo contains the specified order ID that does not exist.">
-                                <mal:type area="MAL" name="Identifier" list="false"/>
+                            <mal:extraInformation comment="The ExtraInfo contains the orderID that does not exist.">
+                                <mal:type area="MAL" name="Long" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
