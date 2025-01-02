@@ -31,7 +31,6 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -52,20 +51,6 @@ public class OrderManagementScenario1Test extends MPSTest {
         setUp.setUp(new OneProductDataset(), true, true, false);
         providerOM = setUp.getOrderManagementProvider();
         consumerOM = setUp.getOrderManagementConsumer();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        System.out.println("Entered: tearDownClass()");
-        System.out.println("The Provider and Consumer need to be closed here!");
-
-        try {
-            // Initialize the Order Management service
-            setUp.tearDown();
-        } catch (IOException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(
-                    Level.SEVERE, "The tearDown() operation failed!", ex);
-        }
     }
 
     /**

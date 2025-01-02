@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
 /**
- * A dummy backend in order to try out the provider.
+ * The TMPacketsDataset backend contains data similar to a set of TM Packets.
  */
 public class TMPacketsDataset extends Dataset {
 

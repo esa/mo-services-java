@@ -20,6 +20,9 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
@@ -27,16 +30,19 @@ import org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDelivery
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 
 /**
+ * The abstract class for all MPS Tests.
  *
  * @author Cesar.Coelho
  */
-public class MPSTest {
+public abstract class MPSTest {
 
     protected static final int TIMEOUT = 1000; // In milliseconds
     protected static final String TEST_START = "-------- Running New Test --------";
+    protected static final String TEST_END = "Test is completed!";
     protected static final SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
 
     protected static OrderManagementInheritanceSkeleton providerOM = null;
@@ -46,6 +52,19 @@ public class MPSTest {
     protected static ProductRetrievalInheritanceSkeleton providerPR = null;
     protected static ProductRetrievalStub consumerPR = null;
 
+    @AfterClass
+    public static void tearDownClass() {
+        System.out.println("Entered: tearDownClass()");
+        System.out.println("The Provider and Consumer are being closed!");
+
+        try {
+            setUp.tearDown(); // Close all the services
+        } catch (IOException ex) {
+            Logger.getLogger(MPSTest.class.getName()).log(Level.SEVERE,
+                    "The tearDown() operation failed!", ex);
+        }
+    }
+
     @Before
     public void setUp() {
         System.out.println(TEST_START); // Right before running a test
@@ -53,7 +72,7 @@ public class MPSTest {
 
     @After
     public void tearDown() {
-        System.out.println("Test is completed!");
+        System.out.println(TEST_END);
     }
 
 }

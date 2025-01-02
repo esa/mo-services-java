@@ -48,7 +48,6 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 import org.ccsds.moims.mo.mpd.structures.ValueSet;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -58,7 +57,7 @@ import static org.junit.Assert.*;
  */
 public class UC1_Ex1_Test extends MPSTest {
 
-    private static TMPacketsDataset backend = null;
+    private static TMPacketsDataset backend = new TMPacketsDataset();
 
     public UC1_Ex1_Test() {
     }
@@ -67,7 +66,6 @@ public class UC1_Ex1_Test extends MPSTest {
     public static void setUpClass() throws IOException {
         System.out.println("-----------------------------------------------------------------------------");
         System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
-        backend = new TMPacketsDataset();
         setUp.setUp(backend, true, true, true);
         providerOM = setUp.getOrderManagementProvider();
         consumerOM = setUp.getOrderManagementConsumer();
@@ -75,19 +73,6 @@ public class UC1_Ex1_Test extends MPSTest {
         consumerPOD = setUp.getProductOrderConsumer();
         providerPR = setUp.getProductRetrievalProvider();
         consumerPR = setUp.getProductRetrievalConsumer();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        System.out.println("Entered: tearDownClass()");
-        System.out.println("The Provider and Consumer are being closed!");
-
-        try {
-            setUp.tearDown(); // Close all the services
-        } catch (IOException ex) {
-            Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
-                    Level.SEVERE, "The tearDown() operation failed!", ex);
-        }
     }
 
     /**
@@ -295,7 +280,8 @@ public class UC1_Ex1_Test extends MPSTest {
             }
 
             if (!ackReceived.get()) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, "The ACK was not received!");
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                        Level.SEVERE, "The ACK was not received!");
                 fail("The ACK was not received!");
             }
 
