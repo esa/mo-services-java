@@ -38,13 +38,7 @@ import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
-import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
-import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
-import org.ccsds.moims.mo.mpd.productorderdelivery.provider.ProductOrderDeliveryInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
-import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
-import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.structures.AttributeFilterList;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
@@ -54,9 +48,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 import org.ccsds.moims.mo.mpd.structures.ValueSet;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -64,18 +56,9 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class UC1_Ex1_Test {
+public class UC1_Ex1_Test extends MPSTest {
 
-    private static final int TIMEOUT = 1000; // In milliseconds
-    private static final String TEST_START = "-------- Running New Test --------";
-    private static final SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
     private static TMPacketsDataset backend = null;
-    private static OrderManagementInheritanceSkeleton providerOM;
-    private static OrderManagementStub consumerOM;
-    private static ProductOrderDeliveryInheritanceSkeleton providerPOD = null;
-    private static ProductOrderDeliveryStub consumerPOD = null;
-    private static ProductRetrievalInheritanceSkeleton providerPR = null;
-    private static ProductRetrievalStub consumerPR = null;
 
     public UC1_Ex1_Test() {
     }
@@ -105,16 +88,6 @@ public class UC1_Ex1_Test {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
                     Level.SEVERE, "The tearDown() operation failed!", ex);
         }
-    }
-
-    @Before
-    public void setUp() {
-        System.out.println(TEST_START); // Right before running a test
-    }
-
-    @After
-    public void tearDown() {
-        System.out.println("Test is completed!");
     }
 
     /**

@@ -28,14 +28,10 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
-import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -43,11 +39,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class OrderManagementScenario1Test {
-
-    private static SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
-    private static OrderManagementInheritanceSkeleton providerService;
-    private static OrderManagementStub consumerStub;
+public class OrderManagementScenario1Test extends MPSTest {
 
     public OrderManagementScenario1Test() {
     }
@@ -58,8 +50,8 @@ public class OrderManagementScenario1Test {
         System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
 
         setUp.setUp(new OneProductDataset(), true, true, false);
-        providerService = setUp.getOrderManagementProvider();
-        consumerStub = setUp.getOrderManagementConsumer();
+        providerOM = setUp.getOrderManagementProvider();
+        consumerOM = setUp.getOrderManagementConsumer();
     }
 
     @AfterClass
@@ -76,16 +68,6 @@ public class OrderManagementScenario1Test {
         }
     }
 
-    @Before
-    public void setUp() {
-        System.out.println("Entered: setUp()");
-    }
-
-    @After
-    public void tearDown() {
-        System.out.println("Entered: tearDown()");
-    }
-
     /**
      * Test Case 1 - Lists the available orders. There should be zero standing
      * orders.
@@ -99,7 +81,7 @@ public class OrderManagementScenario1Test {
         domain.add(new Identifier("*"));
 
         try {
-            StandingOrderList standingOrders = consumerStub.listStandingOrders(user, domain);
+            StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
             int size = standingOrders.size();
             assertEquals(0, size);
         } catch (MALInteractionException ex) {
@@ -127,7 +109,7 @@ public class OrderManagementScenario1Test {
             StandingOrder orderDetails = new StandingOrder(user, dMethod);
 
             // Submit a Standing Order
-            Long id = consumerStub.submitStandingOrder(orderDetails);
+            Long id = consumerOM.submitStandingOrder(orderDetails);
             assertNotEquals(null, id);
 
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
@@ -136,7 +118,7 @@ public class OrderManagementScenario1Test {
             // Request the list of standing orders
             IdentifierList domain = new IdentifierList();
             domain.add(new Identifier("*"));
-            StandingOrderList standingOrders = consumerStub.listStandingOrders(new Identifier("*"), domain);
+            StandingOrderList standingOrders = consumerOM.listStandingOrders(new Identifier("*"), domain);
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
                     "The returned list of standing orders is: {0}", standingOrders.toString());
 
