@@ -363,6 +363,13 @@ public class DocxBaseWriter extends AbstractWriter {
             } else {
                 // Case when strings.size() == 1
                 String str = strings.get(0);
+
+                // Exceptional case when it has a "Note:"
+                if (text.toLowerCase().contains("note:")) {
+                    addNote(text);
+                    return;
+                }
+
                 if (str != null && str.length() > 0) {
                     buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
                             + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>"
@@ -380,6 +387,19 @@ public class DocxBaseWriter extends AbstractWriter {
                 + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr>"
                 + "<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>" + escape(fieldName) + "</w:t></w:r><w:r><w:t  xml:space=\"preserve\">"
                 + " - " + escape(fieldComment) + "</w:t></w:r></w:p>"));
+    }
+
+    public void addNote(String noteText) throws IOException {
+        // Fix the text by removing the "Note: " and "NOTE: " strings
+        noteText = noteText.replace("Note: ", "");
+        noteText = noteText.replace("NOTE: ", "");
+
+        buffer.append(makeLine(2, "<w:p w14:paraId=\"7F00DCB7\" w14:textId=\"77777777\" w:rsidR=\"00B06274\" w:rsidRPr=\"00B06274\" w:rsidRDefault=\"00B06274\" w:rsidP=\"00B06274\">"));
+        buffer.append(makeLine(3, "<w:pPr><w:keepLines/><w:tabs><w:tab w:val=\"left\" w:pos=\"806\"/></w:tabs><w:spacing w:before=\"240\" w:after=\"0\" w:line=\"280\" w:lineRule=\"atLeast\"/><w:ind w:left=\"1138\" w:hanging=\"1138\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:eastAsia=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\"/><w:kern w:val=\"0\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"20\"/><w14:ligatures w14:val=\"none\"/></w:rPr></w:pPr>"));
+        buffer.append(makeLine(3, "<w:r w:rsidRPr=\"00B06274\"><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:eastAsia=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\"/><w:kern w:val=\"0\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"20\"/><w14:ligatures w14:val=\"none\"/></w:rPr><w:t>NOTE</w:t></w:r>"));
+        buffer.append(makeLine(3, "<w:r w:rsidRPr=\"00B06274\"><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:eastAsia=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\"/><w:kern w:val=\"0\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"20\"/><w14:ligatures w14:val=\"none\"/></w:rPr><w:tab/><w:t>–</w:t></w:r>"));
+        buffer.append(makeLine(3, "<w:r w:rsidRPr=\"00B06274\"><w:rPr><w:rFonts w:ascii=\"Times New Roman\" w:eastAsia=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\"/><w:kern w:val=\"0\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"20\"/><w14:ligatures w14:val=\"none\"/></w:rPr><w:tab/><w:t>" + noteText + "</w:t></w:r>"));
+        buffer.append(makeLine(2, "</w:p>"));
     }
 
     private String createTypeHyperLink(boolean includeMessageFieldNames, boolean oldStyle,
