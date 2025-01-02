@@ -20,7 +20,7 @@
                 <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
                         The service provider shall return a list of Product Metadatas that satisfy the specified input filter criteria defined by the product filter, the creation date, and the content creation date.  To pass the filter a product must match all the individual filter criteria.
-                        Note: it is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
+                        Note: It is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						The product filter shall optionally specify the product type and required filters by source and metadata attribute.
@@ -157,7 +157,7 @@
                 <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
                     <mal:documentation name="Requirement" order="1">
 						The response shall contain a list of standing orders that match the specified user and domain.
-						Note: depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
+						Note: Depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						If the user is NULL, then the service provider shall not filter the standing orders based on the user.
