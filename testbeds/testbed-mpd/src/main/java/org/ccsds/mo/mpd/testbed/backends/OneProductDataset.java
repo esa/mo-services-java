@@ -55,7 +55,6 @@ public class OneProductDataset extends Dataset {
         ProductMetadata metadata = new ProductMetadata(type1, ref,
                 Time.now(), timeWindow, "description");
 
-        productBodies.put(ref, productBody);
-        metadatas.put(ref, metadata);
+        super.addNewProduct(ref, productBody, metadata);
     }
 }

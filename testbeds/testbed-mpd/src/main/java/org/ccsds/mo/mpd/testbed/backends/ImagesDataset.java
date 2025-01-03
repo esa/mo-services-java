@@ -68,8 +68,7 @@ public class ImagesDataset extends Dataset {
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
         ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1, Time.now(),
                 null, null, timeWindow, attributes1, "description");
-        productBodies.put(ref1, productBody1);
-        metadatas.put(ref1, metadata1);
+        super.addNewProduct(ref1, productBody1, metadata1);
 
         // product2
         NamedValueList attributes2 = new NamedValueList();
@@ -79,7 +78,6 @@ public class ImagesDataset extends Dataset {
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2, Time.now(),
                 null, null, timeWindow, attributes2, "description");
-        productBodies.put(ref2, productBody2);
-        metadatas.put(ref2, metadata2);
+        super.addNewProduct(ref2, productBody2, metadata2);
     }
 }

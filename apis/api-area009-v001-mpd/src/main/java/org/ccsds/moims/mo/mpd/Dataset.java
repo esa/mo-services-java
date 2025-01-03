@@ -25,7 +25,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
-import org.ccsds.moims.mo.mpd.NewProductAddedListener;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
@@ -35,8 +34,8 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
  */
 public abstract class Dataset implements ProductRetrievalBackend {
 
-    protected final HashMap<ObjectRef, Blob> productBodies = new HashMap();
-    protected final HashMap<ObjectRef, ProductMetadata> metadatas = new HashMap();
+    private final HashMap<ObjectRef, Blob> productBodies = new HashMap();
+    private final HashMap<ObjectRef, ProductMetadata> metadatas = new HashMap();
     private ProductMetadataList allMetadatas = null;
     private NewProductAddedListener listener = null;
 
@@ -83,6 +82,9 @@ public abstract class Dataset implements ProductRetrievalBackend {
     public void addNewProduct(ObjectRef<Product> ref, Blob productBody, ProductMetadata metadata) {
         productBodies.put(ref, productBody);
         metadatas.put(ref, metadata);
-        listener.onNewProductAdded();
+
+        if (listener != null) {
+            listener.onNewProductAdded();
+        }
     }
 }

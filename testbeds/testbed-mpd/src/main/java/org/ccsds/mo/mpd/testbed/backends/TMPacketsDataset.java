@@ -72,8 +72,7 @@ public class TMPacketsDataset extends Dataset {
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ProductMetadata metadata1 = new ProductMetadata(typeTMPacketDailyExtract, ref1, Time.now(),
                 null, null, timeWindowAPID100, attributes1, "description");
-        productBodies.put(ref1, productBody1);
-        metadatas.put(ref1, metadata1);
+        super.addNewProduct(ref1, productBody1, metadata1);
 
         // product2
         NamedValueList attributes2 = new NamedValueList();
@@ -82,8 +81,7 @@ public class TMPacketsDataset extends Dataset {
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeTMPacketDailyExtract, ref2, Time.now(),
                 null, null, timeWindowAPID200, attributes2, "description");
-        productBodies.put(ref2, productBody2);
-        metadatas.put(ref2, metadata2);
+        super.addNewProduct(ref2, productBody2, metadata2);
     }
 
     public ProductType getProductType() {
