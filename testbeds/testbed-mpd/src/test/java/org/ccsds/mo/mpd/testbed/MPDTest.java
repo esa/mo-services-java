@@ -34,7 +34,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 
 /**
- * The abstract class for all MPS Tests.
+ * The abstract class for all MPD Tests.
  *
  * @author Cesar.Coelho
  */
