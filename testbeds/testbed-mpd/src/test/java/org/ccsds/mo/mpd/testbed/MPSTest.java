@@ -43,6 +43,8 @@ public abstract class MPSTest {
     protected static final int TIMEOUT = 1000; // In milliseconds
     protected static final String TEST_START = "-------- Running New Test --------";
     protected static final String TEST_END = "Test is completed!";
+    protected static final String TEST_SET_UP_CLASS_1 = "-----------------------------------------------------------------------";
+    protected static final String TEST_SET_UP_CLASS_2 = "Entered: setUpClass() - The Provider and Consumer will be started here!";
     protected static final SetUpProvidersAndConsumers setUp = new SetUpProvidersAndConsumers();
 
     protected static OrderManagementInheritanceSkeleton providerOM = null;
@@ -68,6 +70,12 @@ public abstract class MPSTest {
     @Before
     public void setUp() {
         System.out.println(TEST_START); // Right before running a test
+        providerOM = setUp.getOrderManagementProvider();
+        consumerOM = setUp.getOrderManagementConsumer();
+        providerPOD = setUp.getProductOrderDeliveryProvider();
+        consumerPOD = setUp.getProductOrderConsumer();
+        providerPR = setUp.getProductRetrievalProvider();
+        consumerPR = setUp.getProductRetrievalConsumer();
     }
 
     @After

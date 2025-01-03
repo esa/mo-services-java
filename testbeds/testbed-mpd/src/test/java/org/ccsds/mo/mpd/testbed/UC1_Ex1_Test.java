@@ -57,22 +57,13 @@ import static org.junit.Assert.*;
  */
 public class UC1_Ex1_Test extends MPSTest {
 
-    private static TMPacketsDataset backend = new TMPacketsDataset();
-
-    public UC1_Ex1_Test() {
-    }
+    private static final TMPacketsDataset backend = new TMPacketsDataset();
 
     @BeforeClass
     public static void setUpClass() throws IOException {
-        System.out.println("-----------------------------------------------------------------------------");
-        System.out.println("Entered: setUpClass() - The Provider and Consumer will be started here!");
+        System.out.println(TEST_SET_UP_CLASS_1);
+        System.out.println(TEST_SET_UP_CLASS_2);
         setUp.setUp(backend, true, true, true);
-        providerOM = setUp.getOrderManagementProvider();
-        consumerOM = setUp.getOrderManagementConsumer();
-        providerPOD = setUp.getProductOrderDeliveryProvider();
-        consumerPOD = setUp.getProductOrderConsumer();
-        providerPR = setUp.getProductRetrievalProvider();
-        consumerPR = setUp.getProductRetrievalConsumer();
     }
 
     /**
