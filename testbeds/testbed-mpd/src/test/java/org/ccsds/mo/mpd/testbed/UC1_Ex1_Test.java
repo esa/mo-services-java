@@ -55,7 +55,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class UC1_Ex1_Test extends MPSTest {
+public class UC1_Ex1_Test extends MPDTest {
 
     private static final TMPacketsDataset backend = new TMPacketsDataset();
 

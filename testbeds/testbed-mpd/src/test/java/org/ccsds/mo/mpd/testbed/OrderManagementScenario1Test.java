@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class OrderManagementScenario1Test extends MPSTest {
+public class OrderManagementScenario1Test extends MPDTest {
 
     @BeforeClass
     public static void setUpClass() throws IOException {

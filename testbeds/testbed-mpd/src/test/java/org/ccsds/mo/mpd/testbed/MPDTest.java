@@ -38,7 +38,7 @@ import org.junit.Before;
  *
  * @author Cesar.Coelho
  */
-public abstract class MPSTest {
+public abstract class MPDTest {
 
     protected static final int TIMEOUT = 1000; // In milliseconds
     protected static final String TEST_START = "-------- Running New Test --------";
@@ -62,7 +62,7 @@ public abstract class MPSTest {
         try {
             setUp.tearDown(); // Close all the services
         } catch (IOException ex) {
-            Logger.getLogger(MPSTest.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(MPDTest.class.getName()).log(Level.SEVERE,
                     "The tearDown() operation failed!", ex);
         }
     }
