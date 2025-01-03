@@ -20,6 +20,7 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.moims.mo.mpd.Dataset;
 import org.ccsds.moims.mo.mal.structures.AttributeType;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -45,6 +46,8 @@ public class TMPacketsDataset extends Dataset {
     public final static Time APID100_TIME_END = Time.generateTime(2010, 12, 31);
     public final static Time APID200_TIME_START = Time.generateTime(2020, 1, 1);
     public final static Time APID200_TIME_END = Time.generateTime(2020, 12, 31);
+    public final static TimeWindow timeWindowAPID100 = new TimeWindow(APID100_TIME_START, APID100_TIME_END);
+    public final static TimeWindow timeWindowAPID200 = new TimeWindow(APID200_TIME_START, APID200_TIME_END);
     public final ProductType typeTMPacketDailyExtract;
 
     public TMPacketsDataset() {
@@ -62,9 +65,6 @@ public class TMPacketsDataset extends Dataset {
         // ---------------------------------------------------
         // Products
         // ---------------------------------------------------
-        TimeWindow timeWindowAPID100 = new TimeWindow(APID100_TIME_START, APID100_TIME_END);
-        TimeWindow timeWindowAPID200 = new TimeWindow(APID200_TIME_START, APID200_TIME_END);
-
         // product1
         NamedValueList attributes1 = new NamedValueList();
         attributes1.add(new NamedValue(new Identifier("APID"), new UInteger(100)));
@@ -86,4 +86,7 @@ public class TMPacketsDataset extends Dataset {
         metadatas.put(ref2, metadata2);
     }
 
+    public ProductType getProductType() {
+        return typeTMPacketDailyExtract;
+    }
 }

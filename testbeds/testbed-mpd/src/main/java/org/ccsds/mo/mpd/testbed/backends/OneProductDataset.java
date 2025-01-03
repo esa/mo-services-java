@@ -20,6 +20,7 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.moims.mo.mpd.Dataset;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;

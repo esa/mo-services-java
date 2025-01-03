@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mpd.backends;
 
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mpd.NewProductAddedListener;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
@@ -55,4 +56,10 @@ public interface ProductRetrievalBackend {
      */
     public ProductMetadata getMetadata(ObjectRef productRef);
 
+    /**
+     * Sets the listener for the notifications of when new products are added.
+     *
+     * @param listener The listener.
+     */
+    public void setNewProductAddedListener(NewProductAddedListener listener);
 }

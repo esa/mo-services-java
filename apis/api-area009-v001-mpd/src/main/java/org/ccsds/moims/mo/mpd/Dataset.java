@@ -18,29 +18,31 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.mo.mpd.testbed.backends;
+package org.ccsds.moims.mo.mpd;
 
 import java.util.HashMap;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
+import org.ccsds.moims.mo.mpd.NewProductAddedListener;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 
 /**
- * A abstract class for all Datasets.
+ * A abstract class for all backend Datasets.
  */
 public abstract class Dataset implements ProductRetrievalBackend {
 
     protected final HashMap<ObjectRef, Blob> productBodies = new HashMap();
     protected final HashMap<ObjectRef, ProductMetadata> metadatas = new HashMap();
     private ProductMetadataList allMetadatas = null;
+    private NewProductAddedListener listener = null;
 
     @Override
     public ProductMetadataList getMetadataFromAllProducts() {
-        if (allMetadatas == null) {
+        if (allMetadatas == null || metadatas.size() != allMetadatas.size()) {
             allMetadatas = new ProductMetadataList();
 
             for (ProductMetadata metadata : metadatas.values()) {
@@ -71,5 +73,16 @@ public abstract class Dataset implements ProductRetrievalBackend {
     @Override
     public ProductMetadata getMetadata(ObjectRef productRef) {
         return metadatas.get(productRef);
+    }
+
+    @Override
+    public void setNewProductAddedListener(NewProductAddedListener listener) {
+        this.listener = listener;
+    }
+
+    public void addNewProduct(ObjectRef<Product> ref, Blob productBody, ProductMetadata metadata) {
+        productBodies.put(ref, productBody);
+        metadatas.put(ref, metadata);
+        listener.onNewProductAdded();
     }
 }
