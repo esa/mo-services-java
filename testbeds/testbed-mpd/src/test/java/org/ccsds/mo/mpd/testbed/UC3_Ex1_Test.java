@@ -21,7 +21,22 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static org.ccsds.mo.mpd.testbed.MPDTest.consumerOM;
 import org.ccsds.mo.mpd.testbed.backends.TMPacketsDataset;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
+import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
+import org.ccsds.moims.mo.mpd.structures.StandingOrder;
+import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,5 +60,110 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
+        test();
+    }
+
+    private void test() {
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("*"));
+        DeliveryMethodEnum method = DeliveryMethodEnum.SERVICE;
+
+        try {
+            StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
+            int size = standingOrders.size();
+            System.out.println("The number of standing Orders is: " + size);
+            assertEquals(0, size);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        } catch (MALException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        }
+
+        try {
+            StandingOrder orderDetails = new StandingOrder(user, DeliveryMethodEnum.SERVICE);
+            Long orderID = consumerOM.submitStandingOrder(orderDetails);
+            System.out.println("The returned orderID is: " + orderID);
+            assertNotNull(orderID);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        } catch (MALException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        }
+
+        try {
+            StandingOrderList standingOrders = consumerOM.listStandingOrders(new Identifier("*"), domain);
+            int size = standingOrders.size();
+            System.out.println("The number of standing Orders is: " + size);
+            assertEquals(1, size);
+
+            // If there is at least one:
+            if (!standingOrders.isEmpty()) {
+                StandingOrder receivedOrder = standingOrders.get(0);
+                assertEquals(user.getValue(), receivedOrder.getUser().getValue());
+                assertEquals(method.getNumericValue(), receivedOrder.getDeliveryMethod().getNumericValue());
+            }
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        } catch (MALException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        }
+
+        Subscription subscription = new Subscription(new Identifier("myTestKey"));
+        try {
+            consumerPOD.deliverProductsRegister(subscription, new ProductOrderDeliveryAdapter() {
+                @Override
+                public void deliverProductsRegisterAckReceived(
+                        org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+                        java.util.Map qosProperties) {
+                    System.out.println("Reached: deliverProductsRegisterAckReceived()");
+                }
+
+                @Override
+                public void deliverProductsRegisterErrorReceived(
+                        org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+                        org.ccsds.moims.mo.mal.MOErrorException error,
+                        java.util.Map qosProperties) {
+                    System.out.println("Reached: deliverProductsRegisterErrorReceived()");
+                    fail(error.toString());
+                }
+
+                @Override
+                public void deliverProductsDeregisterAckReceived(
+                        org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+                        java.util.Map qosProperties) {
+                    System.out.println("Reached: deliverProductsDeregisterAckReceived()");
+                }
+
+                @Override
+                public void deliverProductsNotifyReceived(
+                        org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+                        org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
+                        org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+                        org.ccsds.moims.mo.mpd.structures.Product product,
+                        java.util.Map qosProperties) {
+                    System.out.println("Reached: deliverProductsNotifyReceived()");
+                }
+
+                @Override
+                public void deliverProductsNotifyErrorReceived(
+                        org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+                        org.ccsds.moims.mo.mal.MOErrorException error,
+                        java.util.Map qosProperties) {
+                    System.out.println("Reached: deliverProductsNotifyErrorReceived()");
+                    fail(error.toString());
+                }
+            });
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MALException ex) {
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
