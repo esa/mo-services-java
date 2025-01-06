@@ -288,8 +288,8 @@ jobs:
           name: testbed-mal-report-tcpip
           path: testbeds/testbed-mal/target/surefire-reports/
 
-  testbed-mal-jdk11-http:
-    needs: build-testbeds-jdk11
+  testbed-mal-jdk8-http:
+    needs: build-testbeds-jdk8
     runs-on: ubuntu-latest
     steps:
       - name: Get Date
@@ -300,7 +300,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          java-version: '11'
+          java-version: '8'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v3
