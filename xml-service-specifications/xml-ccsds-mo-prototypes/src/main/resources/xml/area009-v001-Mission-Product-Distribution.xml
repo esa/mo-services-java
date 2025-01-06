@@ -11,10 +11,8 @@
     <mal:area name="MPD" number="9" version="1" comment="Mission Operations services - Mission Product Distribution">
 
         <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service allows browsing and retrieval of existing products.">
-            <mal:documentation name="High-level Requirements" order="1">
+            <mal:documentation name="Service-level Requirements" order="1">
                 TBD
-            </mal:documentation>
-            <mal:documentation name="Functional Requirements" order="2">
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
@@ -148,10 +146,8 @@
             </mal:capabilitySet>
         </mal:service>
         <mal:service name="OrderManagement" number="2" comment="The Order Management Service is used to submit and manage standing orders. Standing orders specify a product filter to subscribe to a subset of automatically generated products and define the method and destination for product delivery.">
-            <mal:documentation name="High-level Requirements" order="1">
+            <mal:documentation name="Service-level Requirements" order="1">
                 TBD
-            </mal:documentation>
-            <mal:documentation name="Functional Requirements" order="2">
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
@@ -255,10 +251,8 @@
             </mal:capabilitySet>
         </mal:service>
         <mal:service name="ProductOrderDelivery" number="3" comment="The Product Order Delivery Service is used in conjunction with existing standing orders (for the delivery of selected products). File delivery of products, if requested in the standing order, will be delivered without the need to use these service operations. The service provides two capabilities to the consumer: (1) to receive notifications each time their ordered products have been delivered as files; (2) to receive the ordered products via message transfer rather than file delivery.">
-            <mal:documentation name="High-level Requirements" order="1">
+            <mal:documentation name="Service-level Requirements" order="1">
                 TBD
-            </mal:documentation>
-            <mal:documentation name="Functional Requirements" order="2">
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" supportInReplay="true" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
@@ -282,7 +276,7 @@
                             <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="orderID" canBeNull="false" comment="The orderID associated with the standing order of the product being notified.">
+                            <mal:field name="orderID" canBeNull="false" comment="The orderID of the standing order for the product being notified.">
                                 <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:subscriptionKeys>
@@ -331,7 +325,7 @@
                             <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
                                 <mal:type area="MAL" list="false" name="Identifier"/>
                             </mal:field>
-                            <mal:field name="orderID" canBeNull="false" comment="The orderID associated with the standing order of the product being notified.">
+                            <mal:field name="orderID" canBeNull="false" comment="The orderID of the standing order for the product being notified.">
                                 <mal:type area="MAL" list="false" name="Long"/>
                             </mal:field>
                         </mal:subscriptionKeys>
