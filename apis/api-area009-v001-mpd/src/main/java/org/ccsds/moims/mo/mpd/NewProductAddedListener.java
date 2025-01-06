@@ -20,10 +20,14 @@
  */
 package org.ccsds.moims.mo.mpd;
 
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mpd.structures.Product;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+
 /**
  * Interface to know when a new Product is added on the backend.
  */
 public interface NewProductAddedListener {
 
-    public void onNewProductAdded();
+    public void onNewProductAdded(ObjectRef<Product> ref, ProductMetadata metadata);
 }

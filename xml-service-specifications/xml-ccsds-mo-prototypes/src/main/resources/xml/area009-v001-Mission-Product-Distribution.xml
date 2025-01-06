@@ -96,7 +96,7 @@
                 </mal:progressIP>
                 <mal:progressIP name="getProductFiles" number="3" supportInReplay="true" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer of mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
-						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transfered.
+						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transferred.
 						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation. The message also contains the file delivery address as a URI.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="2">

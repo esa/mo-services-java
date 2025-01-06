@@ -85,7 +85,7 @@ public abstract class Dataset implements ProductRetrievalBackend {
         metadatas.put(ref, metadata);
 
         if (listener != null) {
-            listener.onNewProductAdded();
+            listener.onNewProductAdded(ref, metadata);
         }
     }
 }
