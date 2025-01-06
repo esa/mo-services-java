@@ -756,6 +756,7 @@ public class GeneratorDocx extends GeneratorDocument {
             msgs.add(lop.getMessages().getResponse());
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
+            msgs.add(lop.getMessages().getSubscriptionKeys());
             msgs.add(lop.getMessages().getPublishNotify());
         }
 
