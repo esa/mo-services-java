@@ -57,7 +57,7 @@ public class TMPacketsDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        Identifier name = new Identifier("tmPacketDailyExtract");
+        Identifier name = new Identifier("typeTMPacketDailyExtract");
         AttributeDefList attributeDefs = new AttributeDefList();
         attributeDefs.add(new AttributeDef(new Identifier("APID"), AttributeType.UINTEGER));
         typeTMPacketDailyExtract = new ProductType(name, "A TM Packet Daily Extract type", attributeDefs);

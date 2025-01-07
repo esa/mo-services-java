@@ -40,7 +40,7 @@ import org.junit.Before;
  */
 public abstract class MPDTest {
 
-    protected static final int TIMEOUT = 1000; // In milliseconds
+    protected static final int TIMEOUT = 500; // In milliseconds
     protected static final String TEST_START = "-------- Running New Test --------";
     protected static final String TEST_END = "Test is completed!";
     protected static final String TEST_SET_UP_CLASS_1 = "-----------------------------------------------------------------------";

@@ -53,7 +53,7 @@ public class ImagesDataset extends Dataset {
         AttributeDefList attributeDefs = new AttributeDefList();
         attributeDefs.add(new AttributeDef(new Identifier("ImageSubject"), AttributeType.STRING));
         attributeDefs.add(new AttributeDef(new Identifier("imageType"), AttributeType.STRING));
-        ProductType typeImage = new ProductType(new Identifier("Image"), "An Image type", attributeDefs);
+        ProductType typeImage = new ProductType(new Identifier("typeImageSource"), "An Image type", attributeDefs);
 
         // ---------------------------------------------------
         // Products

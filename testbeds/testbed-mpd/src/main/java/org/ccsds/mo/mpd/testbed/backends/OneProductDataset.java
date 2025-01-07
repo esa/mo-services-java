@@ -44,7 +44,7 @@ public class OneProductDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ProductType type1 = new ProductType(new Identifier("image.eo.rgb"));
+        ProductType type1 = new ProductType(new Identifier("type1"));
 
         // ---------------------------------------------------
         // Products

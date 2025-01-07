@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.Product;
+import org.ccsds.moims.mo.mpd.structures.ProductFilter;
 import org.ccsds.moims.mo.mpd.structures.ProductList;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
@@ -68,14 +69,54 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
-        test();
+        Identifier productType = null;
+        test(DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
-    private void test() {
+    /**
+     * Test Case 2.
+     */
+    @Test
+    public void testCase_2() {
+        System.out.println("Running: testCase_2()");
+        Identifier productType = null;
+        test(DeliveryMethodEnum.FILETRANSFER, productType, 0);
+    }
+
+    /**
+     * Test Case 3.
+     */
+    @Test
+    public void testCase_3() {
+        System.out.println("Running: testCase_3()");
+        Identifier productType = new Identifier("typeTMPacketDailyExtract");
+        test(DeliveryMethodEnum.SERVICE, productType, 1);
+    }
+
+    /**
+     * Test Case 4.
+     */
+    @Test
+    public void testCase_4() {
+        System.out.println("Running: testCase_4()");
+        Identifier productType = new Identifier("typeImage");
+        test(DeliveryMethodEnum.SERVICE, productType, 0);
+    }
+
+    /**
+     * Test Case 5.
+     */
+    @Test
+    public void testCase_5() {
+        System.out.println("Running: testCase_5()");
+        Identifier productType = new Identifier("*");
+        test(DeliveryMethodEnum.SERVICE, productType, 0);
+    }
+
+    private void test(DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
-        DeliveryMethodEnum method = DeliveryMethodEnum.SERVICE;
 
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
@@ -90,9 +131,11 @@ public class UC3_Ex1_Test extends MPDTest {
             fail(ex.toString());
         }
 
+        Long orderID = null;
         try {
-            StandingOrder orderDetails = new StandingOrder(user, DeliveryMethodEnum.SERVICE);
-            Long orderID = consumerOM.submitStandingOrder(orderDetails);
+            ProductFilter productFilter = new ProductFilter(productType, null, null, null);
+            StandingOrder orderDetails = new StandingOrder(null, user, productFilter, null, deliveryMethod, null, null);
+            orderID = consumerOM.submitStandingOrder(orderDetails);
             System.out.println("The returned orderID is: " + orderID);
             assertNotNull(orderID);
         } catch (MALInteractionException ex) {
@@ -113,7 +156,7 @@ public class UC3_Ex1_Test extends MPDTest {
             if (!standingOrders.isEmpty()) {
                 StandingOrder receivedOrder = standingOrders.get(0);
                 assertEquals(user.getValue(), receivedOrder.getUser().getValue());
-                assertEquals(method.getNumericValue(), receivedOrder.getDeliveryMethod().getNumericValue());
+                assertEquals(deliveryMethod.getNumericValue(), receivedOrder.getDeliveryMethod().getNumericValue());
             }
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
@@ -179,10 +222,10 @@ public class UC3_Ex1_Test extends MPDTest {
                 }
             });
 
-            // Provider pushes a new Product (on backend)
+            // Provider pushes a new Product (on the backend)
             ObjectRef<Product> ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.getProductType(), ref, Time.now(),
+            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
                     null, null, TMPacketsDataset.timeWindowAPID100, null, "description");
             backend.addNewProduct(ref, productBody, metadata);
 
@@ -201,34 +244,51 @@ public class UC3_Ex1_Test extends MPDTest {
             }
 
             // ------------------------------------------------------------------------
-            // Wait while RESPONSE has not been received and 1 second has not passed yet...
+            // Wait while NOTIFY has not been received and 1 second has not passed yet...
             timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
             while (!notifyReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
                 // Recalculate it
                 timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
             }
 
-            if (!notifyReceived.get()) {
+            // Were we expecting to receive at least one product?
+            if (!notifyReceived.get() && expectedNumberOfProducts != 0) {
                 Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
-                        Level.SEVERE, "The RESPONSE was not received!");
+                        Level.SEVERE, "The NOTIFY was not received!");
                 fail("The NOTIFY was not received!");
             }
 
+            try {
+                consumerOM.cancelStandingOrder(orderID);
+            } catch (MALInteractionException ex) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                fail(ex.toString());
+            } catch (MALException ex) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                fail(ex.toString());
+            }
+
+            // Did we receive the product(s)?
             assertNotNull(returnedProducts);
             int size = returnedProducts.size();
             System.out.println("Number of products returned: " + size);
-            assertEquals(1, size);
+            assertEquals(expectedNumberOfProducts, size);
 
             // Finish the test if nothing was returned.. (there's nothing else to check)
             if (size == 0) {
                 return;
             }
 
+            // Check that the ProductType matches!
+            Product returnedProduct = returnedProducts.get(0);
+            // Don't check if it is set to null
+            if (productType != null) {
+                assertEquals(productType, returnedProduct.getProductType().getName());
+            }
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }
