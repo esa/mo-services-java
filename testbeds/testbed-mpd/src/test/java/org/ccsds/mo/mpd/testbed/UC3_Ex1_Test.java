@@ -28,11 +28,14 @@ import static org.ccsds.mo.mpd.testbed.MPDTest.consumerOM;
 import org.ccsds.mo.mpd.testbed.backends.TMPacketsDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
+import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
@@ -69,8 +72,9 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
+        Identifier user = new Identifier("john.doe");
         Identifier productType = null;
-        test(DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
     /**
@@ -79,8 +83,9 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_2() {
         System.out.println("Running: testCase_2()");
+        Identifier user = new Identifier("john.doe");
         Identifier productType = null;
-        test(DeliveryMethodEnum.FILETRANSFER, productType, 0);
+        test(user, DeliveryMethodEnum.FILETRANSFER, productType, 0);
     }
 
     /**
@@ -89,8 +94,9 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_3() {
         System.out.println("Running: testCase_3()");
+        Identifier user = new Identifier("john.doe");
         Identifier productType = new Identifier("typeTMPacketDailyExtract");
-        test(DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
     /**
@@ -99,8 +105,9 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_4() {
         System.out.println("Running: testCase_4()");
+        Identifier user = new Identifier("john.doe");
         Identifier productType = new Identifier("typeImage");
-        test(DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, DeliveryMethodEnum.SERVICE, productType, 0);
     }
 
     /**
@@ -109,12 +116,34 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_5() {
         System.out.println("Running: testCase_5()");
+        Identifier user = new Identifier("john.doe");
         Identifier productType = new Identifier("*");
-        test(DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, DeliveryMethodEnum.SERVICE, productType, 0);
     }
 
-    private void test(DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
-        Identifier user = new Identifier("john.doe");
+    /**
+     * Test Case 6.
+     */
+    @Test
+    public void testCase_6() {
+        System.out.println("Running: testCase_6()");
+        Identifier user = null;
+        Identifier productType = null;
+        test(user, DeliveryMethodEnum.SERVICE, productType, 1);
+    }
+
+    /**
+     * Test Case 7.
+     */
+    @Test
+    public void testCase_7() {
+        System.out.println("Running: testCase_7()");
+        Identifier user = new Identifier("bill.gates");
+        Identifier productType = null;
+        test(user, DeliveryMethodEnum.SERVICE, productType, 0);
+    }
+
+    private void test(Identifier user, DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
 
@@ -131,10 +160,11 @@ public class UC3_Ex1_Test extends MPDTest {
             fail(ex.toString());
         }
 
+        Identifier orderUser = new Identifier("john.doe");
         Long orderID = null;
         try {
             ProductFilter productFilter = new ProductFilter(productType, null, null, null);
-            StandingOrder orderDetails = new StandingOrder(null, user, productFilter, null, deliveryMethod, null, null);
+            StandingOrder orderDetails = new StandingOrder(null, orderUser, productFilter, null, deliveryMethod, null, null);
             orderID = consumerOM.submitStandingOrder(orderDetails);
             System.out.println("The returned orderID is: " + orderID);
             assertNotNull(orderID);
@@ -155,7 +185,7 @@ public class UC3_Ex1_Test extends MPDTest {
             // If there is at least one:
             if (!standingOrders.isEmpty()) {
                 StandingOrder receivedOrder = standingOrders.get(0);
-                assertEquals(user.getValue(), receivedOrder.getUser().getValue());
+                assertEquals(orderUser.getValue(), receivedOrder.getUser().getValue());
                 assertEquals(deliveryMethod.getNumericValue(), receivedOrder.getDeliveryMethod().getNumericValue());
             }
         } catch (MALInteractionException ex) {
@@ -171,8 +201,15 @@ public class UC3_Ex1_Test extends MPDTest {
             long startTime = System.currentTimeMillis();
             final AtomicBoolean ackReceived = new AtomicBoolean(false);
             final AtomicBoolean notifyReceived = new AtomicBoolean(false);
+            SubscriptionFilterList filters = null;
+            if (user != null) {
+                filters = new SubscriptionFilterList();
+                AttributeList values = new AttributeList();
+                values.add(user);
+                filters.add(new SubscriptionFilter(new Identifier("user"), values));
+            }
 
-            Subscription subscription = new Subscription(new Identifier("myTestKey"));
+            Subscription subscription = new Subscription(new Identifier("myTestKey"), null, null, filters);
             consumerPOD.asyncDeliverProductsRegister(subscription, new ProductOrderDeliveryAdapter() {
                 @Override
                 public void deliverProductsRegisterAckReceived(
