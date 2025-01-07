@@ -73,8 +73,9 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_1() {
         System.out.println("Running: testCase_1()");
         Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
         Identifier productType = null;
-        test(user, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
     /**
@@ -84,8 +85,9 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_2() {
         System.out.println("Running: testCase_2()");
         Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
         Identifier productType = null;
-        test(user, DeliveryMethodEnum.FILETRANSFER, productType, 0);
+        test(user, domain, DeliveryMethodEnum.FILETRANSFER, productType, 0);
     }
 
     /**
@@ -95,8 +97,9 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_3() {
         System.out.println("Running: testCase_3()");
         Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
         Identifier productType = new Identifier("typeTMPacketDailyExtract");
-        test(user, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
     /**
@@ -106,8 +109,9 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_4() {
         System.out.println("Running: testCase_4()");
         Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
         Identifier productType = new Identifier("typeImage");
-        test(user, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
     }
 
     /**
@@ -117,8 +121,9 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_5() {
         System.out.println("Running: testCase_5()");
         Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
         Identifier productType = new Identifier("*");
-        test(user, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
     }
 
     /**
@@ -128,8 +133,9 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_6() {
         System.out.println("Running: testCase_6()");
         Identifier user = null;
+        IdentifierList domain = null;
         Identifier productType = null;
-        test(user, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
     /**
@@ -139,14 +145,68 @@ public class UC3_Ex1_Test extends MPDTest {
     public void testCase_7() {
         System.out.println("Running: testCase_7()");
         Identifier user = new Identifier("bill.gates");
+        IdentifierList domain = null;
         Identifier productType = null;
-        test(user, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
     }
 
-    private void test(Identifier user, DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
+    /**
+     * Test Case 8.
+     */
+    @Test
+    public void testCase_8() {
+        System.out.println("Running: testCase_8()");
+        Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
+        Identifier productType = null;
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+    }
 
+    /**
+     * Test Case 9.
+     */
+    @Test
+    public void testCase_9() {
+        System.out.println("Running: testCase_9()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("juice"));
+        Identifier productType = null;
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+    }
+
+    /**
+     * Test Case 10.
+     */
+    @Test
+    public void testCase_10() {
+        System.out.println("Running: testCase_10()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("nasa"));
+        domain.add(new Identifier("dart"));
+        Identifier productType = null;
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+    }
+
+    /**
+     * Test Case 11.
+     */
+    @Test
+    public void testCase_11() {
+        System.out.println("Running: testCase_11()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("nasa"));
+        domain.add(new Identifier("*"));
+        Identifier productType = null;
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+    }
+
+    private void test(Identifier user, IdentifierList domain,
+            DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
             int size = standingOrders.size();
@@ -163,7 +223,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier orderUser = new Identifier("john.doe");
         Long orderID = null;
         try {
-            ProductFilter productFilter = new ProductFilter(productType, null, null, null);
+            ProductFilter productFilter = new ProductFilter(productType, domain, null, null);
             StandingOrder orderDetails = new StandingOrder(null, orderUser, productFilter, null, deliveryMethod, null, null);
             orderID = consumerOM.submitStandingOrder(orderDetails);
             System.out.println("The returned orderID is: " + orderID);
@@ -260,7 +320,10 @@ public class UC3_Ex1_Test extends MPDTest {
             });
 
             // Provider pushes a new Product (on the backend)
-            ObjectRef<Product> ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
+            IdentifierList productDomain = new IdentifierList();
+            productDomain.add(new Identifier("nasa"));
+            productDomain.add(new Identifier("hubble"));
+            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
             ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
                     null, null, TMPacketsDataset.timeWindowAPID100, null, "description");
