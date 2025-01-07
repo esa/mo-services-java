@@ -205,6 +205,20 @@ public class UC3_Ex1_Test extends MPDTest {
         test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
     }
 
+    /**
+     * Test Case 12.
+     */
+    @Test
+    public void testCase_12() {
+        System.out.println("Running: testCase_12()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("nasa"));
+        domain.add(new Identifier("hubble"));
+        Identifier productType = null;
+        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+    }
+
     private void test(Identifier user, IdentifierList domain,
             DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         try {
