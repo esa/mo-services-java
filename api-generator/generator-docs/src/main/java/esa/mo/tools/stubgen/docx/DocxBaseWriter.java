@@ -100,7 +100,7 @@ public class DocxBaseWriter extends AbstractWriter {
         buffer.append(makeLine(4, "</w:tblBorders>"));
         buffer.append(makeLine(3, "</w:tblPr>"));
 
-        if (null != widths) {
+        if (widths != null) {
             buffer.append(makeLine(3, "<w:tblGrid>"));
             for (int i : widths) {
                 buffer.append(makeLine(4, "<w:gridCol w:w=\"" + i + "\"/>"));
@@ -385,7 +385,8 @@ public class DocxBaseWriter extends AbstractWriter {
 
         buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
                 + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr>"
-                + "<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>" + escape(fieldName) + "</w:t></w:r><w:r><w:t  xml:space=\"preserve\">"
+                + "<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>" + escape(fieldName)
+                + "</w:t></w:r><w:r><w:t  xml:space=\"preserve\">"
                 + " - " + escape(fieldComment) + "</w:t></w:r></w:p>"));
     }
 
@@ -463,7 +464,6 @@ public class DocxBaseWriter extends AbstractWriter {
 
         String temp = linkTo.replace("ObjectRef<", "").replace(">", "");
         String objectRefRemoved = temp.replace("ObjectRef(", "").replace(")", "");
-
         buf.append("</w:t></w:r>");
 
         if (withHyperlink) {
