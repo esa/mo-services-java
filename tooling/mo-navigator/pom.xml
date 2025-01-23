@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.2</version>
+        <version>11.3-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>mo-navigator</artifactId>
-    <version>11.2</version>
+    <version>11.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>ESA MO Navigator</name>
@@ -81,12 +81,12 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-docs</artifactId>
-            <version>11.2</version>
+            <version>11.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-java</artifactId>
-            <version>11.2</version>
+            <version>11.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
