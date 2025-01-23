@@ -49,10 +49,20 @@ public final class XsdSpecification {
         this.schema = schema;
     }
 
+    /**
+     * Returns the XSD file.
+     *
+     * @return the XSD file.
+     */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Returns the XSD Schema.
+     *
+     * @return the XSD Schema.
+     */
     public Schema getSchema() {
         return schema;
     }
