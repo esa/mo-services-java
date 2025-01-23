@@ -447,12 +447,12 @@
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductFilter" shortFormPart="104" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attributeFilters then all products of the specified type pass the filter.
+            <mal:composite name="ProductFilter" shortFormPart="104" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters then all products of the specified type pass the filter.
 A ProductFilter relates to a specific ProductType. Note that the domain filter relates to the domain of the product. The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
-                <mal:field name="productType" canBeNull="true" comment="The name of the ProductType definition.">
+                <mal:field name="productType" canBeNull="true" comment="The name of the product type definition.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
                 <mal:field name="domain" canBeNull="true" comment="The domain to filter on. A wildcard may be used in order to select all possibilities within a sub-domain.">
@@ -461,7 +461,7 @@ A ProductFilter relates to a specific ProductType. Note that the domain filter r
                 <mal:field name="sources" canBeNull="true" comment="A set of sources associated products. If the product source matches one of the listed sources, then it passes the filter.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
-                <mal:field name="attributeFilter" canBeNull="true" comment="Set of attributeFilters defining the desired values of product metadata attributes. If multiple attributeFilters are defined, then the product metadata must match all specified criteria to pass the filter.">
+                <mal:field name="attributeFilter" canBeNull="true" comment="Set of attribute filters defining the desired values of product metadata attributes. If multiple attribute filters are defined, then the product metadata must match all (ANDed) specified criteria to pass the filter.">
                     <mal:type area="MPD" list="true" name="AttributeFilter"/>
                 </mal:field>
             </mal:composite>
@@ -540,8 +540,9 @@ Note that as AttributeDef is only used in the context of ProductType.">
             </mal:composite>
 
             <mal:enumeration name="DeliveryMethodEnum" shortFormPart="202" comment="The DeliveryMethodEnum enumeration defines the delivery method to be used for delivery of mission data products.">
-                <mal:item nvalue="1" value="SERVICE" comment="The mission data product is to be delivered via service messages. This requires the service consumer to initiate a service operation to subscribe to the products via the existing standing order."/>
-                <mal:item nvalue="2" value="FILETRANSFER" comment="The mission data product is to be delivered by file transfer to the address contained in the deliverTo field."/>
+                <mal:item nvalue="1" value="SERVICE_COMPLETE" comment="The mission data product is to be delivered via service messages with both the metadata and the product body."/>
+                <mal:item nvalue="2" value="SERVICE_JUST_METADATA" comment="The mission data product is to be delivered via service messages with the metadata and without product body. Only the metadata of the product will be transferred. (Similar to the SERVICE_COMPLETE option but the productBody blob is set to NULL.)"/>
+                <mal:item nvalue="3" value="FILETRANSFER" comment="The mission data product is to be delivered by file transfer to the address contained in the deliverTo field."/>
             </mal:enumeration>
 
             <mal:enumeration name="SecondaryErrorCodeEnum" shortFormPart="6" comment="For the Invalid error, the extraInfo field contains a secondary error code defined as a UInteger that allows for deployment specific extensibility. The following standard secondary error codes are defined:">

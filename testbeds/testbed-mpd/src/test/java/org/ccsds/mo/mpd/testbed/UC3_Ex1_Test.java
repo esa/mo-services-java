@@ -75,7 +75,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
     /**
@@ -99,7 +99,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         Identifier productType = new Identifier("typeTMPacketDailyExtract");
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
     /**
@@ -111,7 +111,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         Identifier productType = new Identifier("typeImage");
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
     }
 
     /**
@@ -123,7 +123,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         Identifier productType = new Identifier("*");
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
     }
 
     /**
@@ -135,7 +135,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier user = null;
         IdentifierList domain = null;
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
     /**
@@ -147,7 +147,7 @@ public class UC3_Ex1_Test extends MPDTest {
         Identifier user = new Identifier("bill.gates");
         IdentifierList domain = null;
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
     }
 
     /**
@@ -160,7 +160,7 @@ public class UC3_Ex1_Test extends MPDTest {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
     /**
@@ -174,7 +174,7 @@ public class UC3_Ex1_Test extends MPDTest {
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("juice"));
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
     }
 
     /**
@@ -188,7 +188,7 @@ public class UC3_Ex1_Test extends MPDTest {
         domain.add(new Identifier("nasa"));
         domain.add(new Identifier("dart"));
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 0);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
     }
 
     /**
@@ -202,7 +202,7 @@ public class UC3_Ex1_Test extends MPDTest {
         domain.add(new Identifier("nasa"));
         domain.add(new Identifier("*"));
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
     /**
@@ -216,7 +216,7 @@ public class UC3_Ex1_Test extends MPDTest {
         domain.add(new Identifier("nasa"));
         domain.add(new Identifier("hubble"));
         Identifier productType = null;
-        test(user, domain, DeliveryMethodEnum.SERVICE, productType, 1);
+        test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
     private void test(Identifier user, IdentifierList domain,

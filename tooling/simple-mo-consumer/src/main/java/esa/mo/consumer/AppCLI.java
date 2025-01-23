@@ -53,7 +53,7 @@ public class AppCLI {
             consumer.init();
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
 
-            StandingOrder orderDetails = new StandingOrder(new Identifier("User"), DeliveryMethodEnum.SERVICE);
+            StandingOrder orderDetails = new StandingOrder(new Identifier("User"), DeliveryMethodEnum.SERVICE_COMPLETE);
             Long id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,

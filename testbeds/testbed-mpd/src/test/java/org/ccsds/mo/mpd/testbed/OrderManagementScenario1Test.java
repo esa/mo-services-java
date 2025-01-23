@@ -84,7 +84,7 @@ public class OrderManagementScenario1Test extends MPDTest {
 
             // Input Data
             Identifier user = new Identifier("User");
-            DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE;
+            DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
             StandingOrder orderDetails = new StandingOrder(user, dMethod);
 
             // Submit a Standing Order
