@@ -227,7 +227,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-mal-report
+          name: testbed-mal-jdk8-report
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk11:
@@ -256,7 +256,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-mal-report
+          name: testbed-mal-jdk11-report
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk11-tcpip:
@@ -285,7 +285,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-mal-report-tcpip
+          name: testbed-mal-jdk11-report-tcpip
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk8-http:
@@ -314,7 +314,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-mal-report-http
+          name: testbed-mal-jdk8-report-http
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk11-zmtp:
@@ -343,7 +343,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-mal-report-zmtp
+          name: testbed-mal-jdk11-report-zmtp
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk17:
@@ -372,7 +372,7 @@ jobs:
        if: always()
        uses: actions/upload-artifact@v4
        with:
-         name: testbed-mal-report
+         name: testbed-mal-jdk17-report
          path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk21:
@@ -402,7 +402,7 @@ jobs:
        if: always()
        uses: actions/upload-artifact@v4
        with:
-         name: testbed-mal-report
+         name: testbed-mal-jdk21-report
          path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-com-jdk8:
@@ -431,7 +431,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-com-report
+          name: testbed-com-jdk8-report
           path: testbeds/testbed-com/target/surefire-reports/
 
   testbed-com-jdk11:
@@ -460,7 +460,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-com-report
+          name: testbed-com-jdk11-report
           path: testbeds/testbed-com/target/surefire-reports/
 
   testbed-com-jdk17:
@@ -489,7 +489,7 @@ jobs:
        if: always()
        uses: actions/upload-artifact@v4
        with:
-         name: testbed-com-report
+         name: testbed-com-jdk17-report
          path: testbeds/testbed-com/target/surefire-reports/
 
   testbed-com-jdk21:
@@ -519,7 +519,7 @@ jobs:
        if: always()
        uses: actions/upload-artifact@v4
        with:
-         name: testbed-com-report
+         name: testbed-com-jdk21-report
          path: testbeds/testbed-com/target/surefire-reports/
 
   testbed-malspp-jdk8:
@@ -549,7 +549,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-malspp-report
+          name: testbed-malspp-jdk8-report
           path: testbeds/testbed-malspp/target/surefire-reports/
 
   testbed-malspp-jdk11:
@@ -579,7 +579,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-malspp-report
+          name: testbed-malspp-jdk11-report
           path: testbeds/testbed-malspp/target/surefire-reports/
 
   testbed-malspp-jdk17:
@@ -609,7 +609,7 @@ jobs:
        if: always()
        uses: actions/upload-artifact@v4
        with:
-         name: testbed-malspp-report
+         name: testbed-malspp-jdk17-report
          path: testbeds/testbed-malspp/target/surefire-reports/
 
   testbed-malspp-jdk21:
@@ -639,5 +639,5 @@ jobs:
        if: always()
        uses: actions/upload-artifact@v4
        with:
-         name: testbed-malspp-report
+         name: testbed-malspp-jdk21-report
          path: testbeds/testbed-malspp/target/surefire-reports/
