@@ -13,15 +13,15 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'adopt'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -34,15 +34,15 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -55,15 +55,15 @@ jobs:
         run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'adopt'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -76,15 +76,15 @@ jobs:
         run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'adopt'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests install
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -98,13 +98,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -112,7 +112,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -126,13 +126,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -140,7 +140,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -154,13 +154,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '17'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -168,7 +168,7 @@ jobs:
        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
        working-directory: testbeds
      - name: Cache Maven local repository
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -182,13 +182,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '21'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
@@ -196,7 +196,7 @@ jobs:
        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests install # disable malspp for now
        working-directory: testbeds
      - name: Cache Maven local repository
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -210,13 +210,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -225,7 +225,7 @@ jobs:
         working-directory: testbeds/testbed-mal
       - name: Upload report for MAL testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-mal-report
           path: testbeds/testbed-mal/target/surefire-reports/
@@ -239,13 +239,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -254,7 +254,7 @@ jobs:
         working-directory: testbeds/testbed-mal
       - name: Upload report for MAL testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-mal-report
           path: testbeds/testbed-mal/target/surefire-reports/
@@ -268,13 +268,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -283,7 +283,7 @@ jobs:
         working-directory: testbeds/testbed-mal
       - name: Upload report for MAL testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-mal-report-tcpip
           path: testbeds/testbed-mal/target/surefire-reports/
@@ -297,13 +297,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -312,7 +312,7 @@ jobs:
         working-directory: testbeds/testbed-mal
       - name: Upload report for MAL testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-mal-report-http
           path: testbeds/testbed-mal/target/surefire-reports/
@@ -326,13 +326,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -341,7 +341,7 @@ jobs:
         working-directory: testbeds/testbed-mal
       - name: Upload report for MAL testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-mal-report-zmtp
           path: testbeds/testbed-mal/target/surefire-reports/
@@ -355,13 +355,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '17'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -370,7 +370,7 @@ jobs:
        working-directory: testbeds/testbed-mal
      - name: Upload report for MAL testbed
        if: always()
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: testbed-mal-report
          path: testbeds/testbed-mal/target/surefire-reports/
@@ -385,13 +385,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '21'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -400,7 +400,7 @@ jobs:
        working-directory: testbeds/testbed-mal
      - name: Upload report for MAL testbed
        if: always()
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: testbed-mal-report
          path: testbeds/testbed-mal/target/surefire-reports/
@@ -414,13 +414,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -429,7 +429,7 @@ jobs:
         working-directory: testbeds/testbed-com
       - name: Upload report for COM testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-com-report
           path: testbeds/testbed-com/target/surefire-reports/
@@ -443,13 +443,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -458,7 +458,7 @@ jobs:
         working-directory: testbeds/testbed-com
       - name: Upload report for COM testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-com-report
           path: testbeds/testbed-com/target/surefire-reports/
@@ -472,13 +472,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '17'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -487,7 +487,7 @@ jobs:
        working-directory: testbeds/testbed-com
      - name: Upload report for COM testbed
        if: always()
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: testbed-com-report
          path: testbeds/testbed-com/target/surefire-reports/
@@ -502,13 +502,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '21'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -517,7 +517,7 @@ jobs:
        working-directory: testbeds/testbed-com
      - name: Upload report for COM testbed
        if: always()
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: testbed-com-report
          path: testbeds/testbed-com/target/surefire-reports/
@@ -532,13 +532,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -547,7 +547,7 @@ jobs:
         working-directory: testbeds/testbed-malspp
       - name: Upload report for MAL/SPP testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-malspp-report
           path: testbeds/testbed-malspp/target/surefire-reports/
@@ -562,13 +562,13 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
         shell: bash
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
       - name: Restore Maven local repository from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -577,7 +577,7 @@ jobs:
         working-directory: testbeds/testbed-malspp
       - name: Upload report for MAL/SPP testbed
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: testbed-malspp-report
           path: testbeds/testbed-malspp/target/surefire-reports/
@@ -592,13 +592,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '17'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -607,7 +607,7 @@ jobs:
        working-directory: testbeds/testbed-malspp
      - name: Upload report for MAL/SPP testbed
        if: always()
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: testbed-malspp-report
          path: testbeds/testbed-malspp/target/surefire-reports/
@@ -622,13 +622,13 @@ jobs:
        run: |
          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
        shell: bash
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
+     - uses: actions/checkout@v4
+     - uses: actions/setup-java@v4
        with:
          java-version: '21'
          distribution: 'adopt'
      - name: Restore Maven local repository from cache
-       uses: actions/cache@v3
+       uses: actions/cache@v4
        with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
@@ -637,7 +637,7 @@ jobs:
        working-directory: testbeds/testbed-malspp
      - name: Upload report for MAL/SPP testbed
        if: always()
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: testbed-malspp-report
          path: testbeds/testbed-malspp/target/surefire-reports/
