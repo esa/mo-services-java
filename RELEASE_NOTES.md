@@ -5,7 +5,12 @@ These Release Notes include a short summary of the updates done for each version
 The different versions and respective updates are the following:
 
 ### Version 11.2 (2025)
-* TBD
+* Fixes the MAL Broker bug that did not allow multiple PUB-SUB operations within the same service
+* MPD specification - Updates to include many of the RIDs found during implementation
+* Word API Generator: Supports the new "Requirements" section on operations. These are obtained from the XML file of the specs
+* Word API Generator: Supports the new "Type Signature" section on operations
+* Updated the Hybrid XSD to be closer to the latest version. Also, testbed XML specs had to be updated for compliance to the Hybrid XSD
+* Adds more tests to the MPD Testbed
 
 ### Version 11.1 (05 December 2024)
 * Adds dedicated yaml workflows for testing the MAL with tcpip, http, and zmtp
