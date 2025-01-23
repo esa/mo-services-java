@@ -4,66 +4,30 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Service XML loaders
+ * System                : ESA CCSDS MO Services
  * ----------------------------------------------------------------------------
- * Licensed under the European Space Agency Public License, Version 2.0
+ * Licensed under European Space Agency Public License (ESA-PL) Weak Copyleft – v2.4
  * You may not use this file except in compliance with the License.
  *
  * Except as expressly set forth in this License, the Software is provided to
  * You on an "as is" basis and without warranties of any kind, including without
  * limitation merchantability, fitness for a particular purpose, absence of
  * defects or errors, accuracy or non-infringement of intellectual property rights.
- *
+ * 
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package esa.mo.xsd.util;
+package org.ccsds.moims.mo.mpd;
 
-import java.io.File;
-import w3c.xsd.Schema;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mpd.structures.Product;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 
 /**
- * The XSD Specification
+ * Interface to know when a new Product is added on the backend.
  */
-public final class XsdSpecification {
+public interface NewProductAddedListener {
 
-    /**
-     * Holds the source file object.
-     */
-    private final File file;
-
-    /**
-     * Holds the SpecificationType.
-     */
-    private final Schema schema;
-
-    /**
-     * Constructor.
-     *
-     * @param file The file.
-     * @param schema The schema.
-     */
-    public XsdSpecification(File file, Schema schema) {
-        this.file = file;
-        this.schema = schema;
-    }
-
-    /**
-     * Returns the XSD file.
-     *
-     * @return the XSD file.
-     */
-    public File getFile() {
-        return file;
-    }
-
-    /**
-     * Returns the XSD Schema.
-     *
-     * @return the XSD Schema.
-     */
-    public Schema getSchema() {
-        return schema;
-    }
+    public void onNewProductAdded(ObjectRef<Product> ref, ProductMetadata metadata);
 }

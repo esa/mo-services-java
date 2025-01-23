@@ -108,7 +108,7 @@ public class JavaLists {
      * @throws IOException if there is a problem writing the file.
      */
     public void createHomogeneousListClass(File folder, AreaType area, ServiceType service,
-            String srcTypeName, Long shortFormPart) throws IOException {
+            String srcTypeName, Integer shortFormPart) throws IOException {
         String listName = srcTypeName + "List";
 
         TypeReference srcType = new TypeReference();

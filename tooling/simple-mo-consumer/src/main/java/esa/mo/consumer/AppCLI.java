@@ -53,12 +53,11 @@ public class AppCLI {
             consumer.init();
             OrderManagementConsumerServiceImpl orderManagement = consumer.getMPDServices().getOrderManagementService();
 
-            StandingOrder orderDetails = new StandingOrder(new Identifier("User"),
-                    DeliveryMethodEnum.SERVICE, "A comment");
-            Identifier id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
+            StandingOrder orderDetails = new StandingOrder(new Identifier("User"), DeliveryMethodEnum.SERVICE_COMPLETE);
+            Long id = orderManagement.getOrderManagementStub().submitStandingOrder(orderDetails);
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id.getValue());
+                    "The returned Identifier is: {0}", id);
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO,
                     "Registering in the Broker for service: Product Order Delivery...");
@@ -68,7 +67,6 @@ public class AppCLI {
             pod.getProductOrderDeliveryStub().deliverProductsRegister(subscription, new PODAdapter());
 
             Logger.getLogger(AppCLI.class.getName()).log(Level.INFO, "Registered!");
-
         } catch (MALException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {

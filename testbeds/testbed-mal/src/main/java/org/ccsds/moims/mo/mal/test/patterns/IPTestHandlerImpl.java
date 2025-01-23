@@ -777,7 +777,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
         @Override
         public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException {
-            return interaction.sendAcknowledgement(_String0, null);
+                return interaction.sendAcknowledgement(_String0, null);
         }
 
         @Override

@@ -20,21 +20,21 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.moims.mo.mpd.Dataset;
 import org.ccsds.moims.mo.mal.structures.AttributeType;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
-import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.Union;
-import org.ccsds.moims.mo.mpd.structures.ParameterDef;
-import org.ccsds.moims.mo.mpd.structures.ParameterDefList;
+import org.ccsds.moims.mo.mpd.structures.AttributeDef;
+import org.ccsds.moims.mo.mpd.structures.AttributeDefList;
 import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
@@ -50,13 +50,10 @@ public class ImagesDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("Image"), new UInteger(1));
-        ParameterDefList parameterDefs = new ParameterDefList();
-        parameterDefs.add(new ParameterDef(new Identifier("ImageSubject"), AttributeType.STRING));
-        parameterDefs.add(new ParameterDef(new Identifier("imageType"), AttributeType.STRING));
-        ProductType typeImage = new ProductType(typeId1, "An Image type", parameterDefs);
-        ObjectRef<ProductType> productTypeRef1 = typeImage.getObjectRef();
-        productTypes.put(productTypeRef1, typeImage);
+        AttributeDefList attributeDefs = new AttributeDefList();
+        attributeDefs.add(new AttributeDef(new Identifier("ImageSubject"), AttributeType.STRING));
+        attributeDefs.add(new AttributeDef(new Identifier("imageType"), AttributeType.STRING));
+        ProductType typeImage = new ProductType(new Identifier("typeImageSource"), "An Image type", attributeDefs);
 
         // ---------------------------------------------------
         // Products
@@ -64,29 +61,23 @@ public class ImagesDataset extends Dataset {
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
 
         // product1
-        NamedValueList parameters1 = new NamedValueList();
-        parameters1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
-        parameters1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
-        ObjectIdentity productId1 = new ObjectIdentity(domain, new Identifier("imageData1"), new UInteger(1));
-        Product product1 = new Product(productId1, productTypeRef1,
-                Time.now(), null, timeWindow, parameters1, "description",
-                new Blob(new byte[]{0x01, 0x02, 0x03}));
-        ObjectRef<Product> ref1 = product1.getObjectRef();
-        ProductSummary metadata1 = new ProductSummary(productTypeRef1, ref1, Time.now(), null, timeWindow, parameters1, "description");
-        products.put(ref1, product1);
-        metadatas.put(ref1, metadata1);
+        NamedValueList attributes1 = new NamedValueList();
+        attributes1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
+        attributes1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
+        Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
+        ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
+        ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1, Time.now(),
+                null, null, timeWindow, attributes1, "description");
+        super.addNewProduct(ref1, productBody1, metadata1);
 
         // product2
-        NamedValueList parameters2 = new NamedValueList();
-        parameters2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
-        parameters2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
-        ObjectIdentity productId2 = new ObjectIdentity(domain, new Identifier("imageData2"), new UInteger(1));
-        Product product2 = new Product(productId2, productTypeRef1,
-                Time.now(), null, timeWindow, parameters1, "description",
-                new Blob(new byte[]{0x09, 0x08, 0x07}));
-        ObjectRef<Product> ref2 = product2.getObjectRef();
-        ProductSummary metadata2 = new ProductSummary(productTypeRef1, ref2, Time.now(), null, timeWindow, parameters2, "description");
-        products.put(ref2, product2);
-        metadatas.put(ref2, metadata2);
+        NamedValueList attributes2 = new NamedValueList();
+        attributes2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
+        attributes2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
+        ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
+        Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
+        ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2, Time.now(),
+                null, null, timeWindow, attributes2, "description");
+        super.addNewProduct(ref2, productBody2, metadata2);
     }
 }

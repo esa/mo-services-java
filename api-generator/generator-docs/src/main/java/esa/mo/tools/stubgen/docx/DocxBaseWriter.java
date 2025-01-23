@@ -74,7 +74,7 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void startTable(int[] widths, String caption) throws IOException {
-        if (null != caption) {
+        if (caption != null) {
             buffer.append(makeLine(2, "<w:p>"));
             buffer.append(makeLine(3, "<w:pPr><w:pStyle w:val=\"TableTitle\"/></w:pPr><w:r><w:t xml:space=\"preserve\">Table </w:t></w:r>"));
             buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"0\" w:name=\"T_" + caption + "\"/>"));
@@ -85,8 +85,8 @@ public class DocxBaseWriter extends AbstractWriter {
             buffer.append(makeLine(3, "<w:bookmarkEnd w:id=\"1\"/><w:r><w:instrText>\"</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>"));
             buffer.append(makeLine(3, "<w:r><w:t>:  " + caption + "</w:t></w:r>"));
             buffer.append(makeLine(2, "</w:p>"));
-
         }
+
         buffer.append(makeLine(2, "<w:tbl>"));
         buffer.append(makeLine(3, "<w:tblPr>"));
         buffer.append(makeLine(4, "<w:tblW w:w=\"00\" w:type=\"auto\"/>"));
@@ -100,7 +100,7 @@ public class DocxBaseWriter extends AbstractWriter {
         buffer.append(makeLine(4, "</w:tblBorders>"));
         buffer.append(makeLine(3, "</w:tblPr>"));
 
-        if (null != widths) {
+        if (widths != null) {
             buffer.append(makeLine(3, "<w:tblGrid>"));
             for (int i : widths) {
                 buffer.append(makeLine(4, "<w:gridCol w:w=\"" + i + "\"/>"));
@@ -273,7 +273,8 @@ public class DocxBaseWriter extends AbstractWriter {
     public void addTitle(int level, String section, String name, String bookmarkSection, boolean bookmark) throws IOException {
         buffer.append(makeLine(2, "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>"));
         if (bookmark) {
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + bookmarkSection + "_" + name + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
+            String linkTo = bookmarkSection + "_" + name;
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + linkTo + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
         }
         buffer.append(makeLine(3, "<w:r><w:t>" + section + name + "</w:t></w:r>"));
         buffer.append(makeLine(2, "</w:p>"));
@@ -287,28 +288,19 @@ public class DocxBaseWriter extends AbstractWriter {
             }
 
             addNumberedComment(instance, 0, strings.iterator());
-            /*
-            if (strings.size() == 1) {
-                addComment(strings.get(0));
-            } else {
-                int instance = 0;
-                if (null != this.numberWriter) {
-                    instance = this.numberWriter.getNextNumberingInstance();
-                }
-
-                addNumberedComment(instance, 0, strings.iterator());
-            }
-             */
         }
     }
 
-    public void addNumberedComment(int instance, int level, Iterator<String> iterator) throws IOException {
-        while (iterator.hasNext()) {
-            String text = iterator.next();
+    public void addNumberedComment(int instance, int level, Iterator<String> lines) throws IOException {
+        while (lines.hasNext()) {
+            String text = lines.next();
 
             if (text != null) {
+                if (text.trim().isEmpty()) { // Jump over empty lines
+                    continue;
+                }
                 if ("<ol>".equalsIgnoreCase(text)) {
-                    addNumberedComment(instance, level + 1, iterator);
+                    addNumberedComment(instance, level + 1, lines);
                 } else if ("</ol>".equalsIgnoreCase(text)) {
                     return;
                 } else {
@@ -342,7 +334,7 @@ public class DocxBaseWriter extends AbstractWriter {
             }
 
             for (String str : strings) {
-                if (null != str) {
+                if (str != null) {
                     buffer.append(makeLine(2, str));
                 }
             }
@@ -369,7 +361,15 @@ public class DocxBaseWriter extends AbstractWriter {
                     addNumberedComment(instance, level, str);
                 }
             } else {
+                // Case when strings.size() == 1
                 String str = strings.get(0);
+
+                // Exceptional case when it has a "Note:"
+                if (text.toLowerCase().contains("note:")) {
+                    addNote(text);
+                    return;
+                }
+
                 if (str != null && str.length() > 0) {
                     buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
                             + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr><w:r><w:t>"
@@ -377,6 +377,30 @@ public class DocxBaseWriter extends AbstractWriter {
                 }
             }
         }
+    }
+
+    public void addSingleTypeSignature(String fieldName, String fieldComment) throws IOException {
+        int instance = 1;
+        int level = 0;
+
+        buffer.append(makeLine(2, "<w:p><w:pPr><w:numPr><w:ilvl w:val=\""
+                + level + "\"/><w:numId w:val=\"" + instance + "\"/></w:numPr></w:pPr>"
+                + "<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>" + escape(fieldName)
+                + "</w:t></w:r><w:r><w:t  xml:space=\"preserve\">"
+                + " - " + escape(fieldComment) + "</w:t></w:r></w:p>"));
+    }
+
+    public void addNote(String noteText) throws IOException {
+        // Fix the text by removing the "Note: " and "NOTE: " strings
+        noteText = noteText.replace("Note: ", "");
+        noteText = noteText.replace("NOTE: ", "");
+
+        buffer.append(makeLine(2, "<w:p w14:paraId=\"7F00DCB7\" w14:textId=\"77777777\" w:rsidR=\"00B06274\" w:rsidRPr=\"00B06274\" w:rsidRDefault=\"00B06274\" w:rsidP=\"00B06274\">"));
+        buffer.append(makeLine(3, "<w:pPr><w:keepLines/><w:tabs><w:tab w:val=\"left\" w:pos=\"806\"/></w:tabs><w:spacing w:before=\"240\" w:after=\"0\" w:line=\"280\" w:lineRule=\"atLeast\"/><w:ind w:left=\"1138\" w:hanging=\"1138\"/><w:jc w:val=\"both\"/><w:rPr><w:kern w:val=\"0\"/><w:sz w:val=\"24\"/><w:szCs w:val=\"20\"/><w14:ligatures w14:val=\"none\"/></w:rPr></w:pPr>"));
+        buffer.append(makeLine(3, "<w:r w:rsidRPr=\"00B06274\"><w:t>NOTE</w:t></w:r>"));
+        buffer.append(makeLine(3, "<w:r w:rsidRPr=\"00B06274\"><w:tab/><w:t>–</w:t></w:r>"));
+        buffer.append(makeLine(3, "<w:r w:rsidRPr=\"00B06274\"><w:tab/><w:t>" + noteText + "</w:t></w:r>"));
+        buffer.append(makeLine(2, "</w:p>"));
     }
 
     private String createTypeHyperLink(boolean includeMessageFieldNames, boolean oldStyle,
@@ -440,7 +464,6 @@ public class DocxBaseWriter extends AbstractWriter {
 
         String temp = linkTo.replace("ObjectRef<", "").replace(">", "");
         String objectRefRemoved = temp.replace("ObjectRef(", "").replace(")", "");
-
         buf.append("</w:t></w:r>");
 
         if (withHyperlink) {

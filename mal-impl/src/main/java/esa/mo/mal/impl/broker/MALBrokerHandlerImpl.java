@@ -325,12 +325,12 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
 
     private PublisherSource getPublisherSource(final String providerKey, final MALMessageHeader hdr, final boolean create) {
         final Map<String, PublisherSource> subs = this.getProviderRegistrations(providerKey);
-        String uriFrom = hdr.getFrom().getValue();
-        PublisherSource publisher = subs.get(uriFrom);
+        String key = hdr.getFrom().getValue() + "_" + hdr.getOperation().getValue();
+        PublisherSource publisher = subs.get(key);
 
         if ((publisher == null) && create) {
-            publisher = new PublisherSource(uriFrom);
-            subs.put(uriFrom, publisher);
+            publisher = new PublisherSource(key);
+            subs.put(key, publisher);
             MALBrokerImpl.LOGGER.log(Level.FINE, "New publisher registering: {0}", hdr);
         }
 

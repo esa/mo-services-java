@@ -32,7 +32,6 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 import org.ccsds.moims.mo.mal.structures.Time;
@@ -126,11 +125,11 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
                             connection.getConnectionDetails().getDomain(), keyValues);
 
                     ObjectIdentity id = new ObjectIdentity(new IdentifierList(), new Identifier("key"), new UInteger(1L));
-                    ObjectRef<ProductType> productType = new ObjectRef<>();
+                    ProductType productType = new ProductType(new Identifier("type"));
                     byte[] byteArray = new byte[]{(byte) counter};
                     counter++;
                     Product product = new Product(id, productType, Time.now(),
-                            new TimeWindow(Time.now(), Time.now()), "description", new Blob(byteArray));
+                            new TimeWindow(Time.now(), Time.now()), new Blob(byteArray));
                     publisher.publish(updateHeader, product);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ProductOrderDeliveryProviderServiceImpl.class.getName()).log(

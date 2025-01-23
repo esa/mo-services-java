@@ -69,6 +69,12 @@ mvn clean deploy -P release
 
 6. Create a GitHub release in: https://github.com/esa/mo-services-java/releases
 
+7. Create a new branch from master:
+```
+git checkout master
+git pull
+git checkout -b vAA.B
+```
 
 Extra
 -------------

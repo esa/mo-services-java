@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.1</version>
+        <version>11.2</version>
         <relativePath>../../testbed-pom/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-mc-test</artifactId>
-    <version>11.1</version>
+    <version>11.2</version>
     <packaging>jar</packaging>
 
     <name>CCSDS MOIMS MO Testbed API - MC</name>

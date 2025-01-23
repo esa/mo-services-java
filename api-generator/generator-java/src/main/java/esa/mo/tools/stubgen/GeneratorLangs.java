@@ -1639,7 +1639,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
     }
 
-    public abstract void createListClass(File folder, AreaType area, ServiceType service, String srcTypeName, boolean isAbstract, Long shortFormPart) throws IOException;
+    public abstract void createListClass(File folder, AreaType area, ServiceType service,
+            String srcTypeName, boolean isAbstract, Integer shortFormPart) throws IOException;
 
     protected final void createMultiReturnType(String destinationFolderName, String returnTypeFqName, MultiReturnType returnTypeInfo) throws IOException {
         logger.info(" > Creating multiple return class class " + returnTypeFqName);

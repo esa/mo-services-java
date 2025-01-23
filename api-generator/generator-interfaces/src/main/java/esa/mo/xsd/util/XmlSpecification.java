@@ -66,14 +66,29 @@ public final class XmlSpecification {
         this.specType = specType;
     }
 
+    /**
+     * Returns the XML file.
+     *
+     * @return the XML file.
+     */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Returns the Root Element.
+     *
+     * @return the Root Element.
+     */
     public JAXBElement getRootElement() {
         return rootElement;
     }
 
+    /**
+     * Returns the Specification Type.
+     *
+     * @return the Specification Type.
+     */
     public SpecificationType getSpecType() {
         return specType;
     }

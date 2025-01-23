@@ -121,7 +121,7 @@
 
   <xsd:complexType name="ServiceType">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Element represents a Service specification inside an Area. May also optionally include data type and error definitions.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Element represents a Service specification inside an Area.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="mal:DocumentationBaseType">
@@ -173,7 +173,7 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="send" type="mal:AnyTypeReference"/>
+                <xsd:element name="send" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -192,7 +192,7 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="submit" type="mal:AnyTypeReference"/>
+                <xsd:element name="submit" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -212,8 +212,8 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="request" type="mal:AnyTypeReference"/>
-                <xsd:element name="response" type="mal:AnyTypeReference"/>
+                <xsd:element name="request" type="mal:MessageBodyType"/>
+                <xsd:element name="response" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -225,7 +225,7 @@
 
   <xsd:complexType name="InvokeOperationType">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Element represents a INVOKE operation.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Element represents an INVOKE operation.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="mal:OperationType">
@@ -233,9 +233,9 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="invoke" type="mal:AnyTypeReference"/>
-                <xsd:element name="acknowledgement" type="mal:AnyTypeReference"/>
-                <xsd:element name="response" type="mal:AnyTypeReference"/>
+                <xsd:element name="invoke" type="mal:MessageBodyType"/>
+                <xsd:element name="acknowledgement" type="mal:MessageBodyType"/>
+                <xsd:element name="response" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -255,10 +255,10 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="progress" type="mal:AnyTypeReference"/>
-                <xsd:element name="acknowledgement" type="mal:AnyTypeReference"/>
-                <xsd:element name="update" type="mal:AnyTypeReference"/>
-                <xsd:element name="response" type="mal:AnyTypeReference"/>
+                <xsd:element name="progress" type="mal:MessageBodyType"/>
+                <xsd:element name="acknowledgement" type="mal:MessageBodyType"/>
+                <xsd:element name="update" type="mal:MessageBodyType"/>
+                <xsd:element name="response" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -278,8 +278,8 @@
           <xsd:element name="messages">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="subscriptionKeys" type="mal:AnyTypeReference"/>
-                <xsd:element name="publishNotify" type="mal:AnyTypeReference"/>
+                <xsd:element name="subscriptionKeys" type="mal:MessageBodyType"/>
+                <xsd:element name="publishNotify" type="mal:MessageBodyType"/>
               </xsd:sequence>
             </xsd:complexType>
           </xsd:element>
@@ -293,10 +293,14 @@
     <xsd:annotation>
       <xsd:documentation xml:lang="en">Base type that the operations extend, defines the common aspects of all operations.</xsd:documentation>
     </xsd:annotation>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
-    <xsd:attribute name="number" type="xsd:unsignedShort" use="required"/>
-    <xsd:attribute name="supportInReplay" type="xsd:boolean" use="required"/>
-    <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+    <xsd:complexContent>
+      <xsd:extension base="mal:DocumentationBaseType">
+        <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+        <xsd:attribute name="number" type="xsd:unsignedShort" use="required"/>
+        <xsd:attribute name="supportInReplay" type="xsd:boolean" use="required"/>
+        <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="AreaDataTypeList">
@@ -371,7 +375,7 @@
 
   <xsd:complexType name="OperationErrorList">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Represents that list of Errors that an operation may raise, these may reference existing error definitions or define new ones.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Represents the list of Errors that an operation may raise, these reference existing error definitions.</xsd:documentation>
     </xsd:annotation>
     <xsd:choice maxOccurs="unbounded">
       <xsd:element name="error" type="mal:ErrorDefinitionType"/>
@@ -399,7 +403,7 @@
         </xsd:annotation>
       </xsd:element>
     </xsd:sequence>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+    <xsd:attribute name="name" type="xsd:token" use="required"/>
     <xsd:attribute name="number" type="xsd:unsignedInt" use="required"/>
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
   </xsd:complexType>
@@ -484,6 +488,13 @@
     <xsd:attribute name="comment" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
+  <xsd:complexType name="MessageBodyType">
+    <xsd:sequence>
+      <xsd:element name="field" type="mal:NamedElementReferenceWithCommentType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="comment" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+
   <xsd:complexType name="NamedElementReferenceWithCommentType">
     <xsd:complexContent>
       <xsd:extension base="mal:ElementReferenceWithCommentType">
@@ -509,13 +520,13 @@
 
   <xsd:complexType name="TypeReference">
     <xsd:annotation>
-      <xsd:documentation xml:lang="en">Allows another element in the specification to be referenced, if the area or the service attributes are missing then the area and/or service of the refering element shall be assumed.</xsd:documentation>
+      <xsd:documentation xml:lang="en">Allows another element in the specification to be referenced.</xsd:documentation>
     </xsd:annotation>
     <xsd:attribute name="list" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="objectRef" type="xsd:boolean" use="optional" default="false"/>
     <xsd:attribute name="area" type="xsd:NCName" use="required"/>
     <xsd:attribute name="service" type="xsd:NCName" use="optional"/>
-    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+    <xsd:attribute name="name" type="xsd:token" use="required"/>
   </xsd:complexType>
 
   <xsd:complexType name="DocumentationBaseType">
@@ -558,9 +569,9 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="ShortFormPart">
-    <xsd:restriction base="xsd:unsignedInt">
+    <xsd:restriction base="xsd:unsignedShort">
       <xsd:minInclusive value="1"/>
-      <xsd:maxInclusive value="8388607"/>
+      <xsd:maxInclusive value="32767"/>
     </xsd:restriction>
   </xsd:simpleType>
 

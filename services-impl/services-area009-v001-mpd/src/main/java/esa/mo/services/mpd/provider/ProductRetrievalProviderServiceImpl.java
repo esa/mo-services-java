@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductFilesInteracti
 import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductsInteraction;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
-import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
 /**
@@ -86,7 +86,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
     }
 
     @Override
-    public ProductSummaryList listProducts(ProductFilter productFilter, TimeWindow creationDate, TimeWindow timeWindow, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ProductMetadataList listProducts(ProductFilter productFilter, TimeWindow creationDate, TimeWindow timeWindow, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

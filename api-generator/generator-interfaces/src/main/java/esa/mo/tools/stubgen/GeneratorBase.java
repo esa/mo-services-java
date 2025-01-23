@@ -613,7 +613,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             SendOperationType lop = (SendOperationType) op;
             return new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSend().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getSend().getField())),
                     lop.getMessages().getSend().getComment(),
                     null, "",
                     null, "",
@@ -622,7 +622,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             SubmitOperationType lop = (SubmitOperationType) op;
             return new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getSubmit().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getSubmit().getField())),
                     lop.getMessages().getSubmit().getComment(),
                     null, "",
                     null, "",
@@ -631,48 +631,48 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             RequestOperationType lop = (RequestOperationType) op;
             return new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getRequest().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getRequest().getField())),
                     lop.getMessages().getRequest().getComment(),
                     null, "",
                     null, "",
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof InvokeOperationType) {
             InvokeOperationType lop = (InvokeOperationType) op;
             return new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getInvoke().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getInvoke().getField())),
                     lop.getMessages().getInvoke().getComment(),
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getAcknowledgement().getField())),
                     lop.getMessages().getAcknowledgement().getComment(),
                     null, "",
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof ProgressOperationType) {
             ProgressOperationType lop = (ProgressOperationType) op;
             return new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getProgress().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getProgress().getField())),
                     lop.getMessages().getProgress().getComment(),
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getAcknowledgement().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getAcknowledgement().getField())),
                     lop.getMessages().getAcknowledgement().getComment(),
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getUpdate().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getUpdate().getField())),
                     lop.getMessages().getUpdate().getComment(),
                     TypeUtils.convertTypeReferences(this,
-                            TypeUtils.getTypeListViaXSDAny(lop.getMessages().getResponse().getAny())),
+                            TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
                     lop.getMessages().getResponse().getComment());
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
-            AnyTypeReference subs = lop.getMessages().getSubscriptionKeys();
+            MessageBodyType subs = lop.getMessages().getSubscriptionKeys();
             List<FieldInfo> subKeysList = (subs == null) ? null
-                    : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(subs.getAny()));
+                    : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaField(subs.getField()));
             List<FieldInfo> riList = TypeUtils.convertTypeReferences(this,
-                    TypeUtils.getTypeListViaXSDAny(lop.getMessages().getPublishNotify().getAny()));
+                    TypeUtils.getTypeListViaField(lop.getMessages().getPublishNotify().getField()));
 
             return new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
                     subKeysList, "",

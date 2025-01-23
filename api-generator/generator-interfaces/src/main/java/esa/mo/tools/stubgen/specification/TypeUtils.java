@@ -226,6 +226,23 @@ public class TypeUtils {
         return tiSource.convertToNamespace(targetType + ".SHORT_FORM");
     }
 
+    public static List<TypeRef> getTypeListViaField(List<NamedElementReferenceWithCommentType> any) {
+        if (any == null) {
+            return null;
+        }
+
+        if (any instanceof List) {
+            ArrayList<TypeRef> list = new ArrayList<>(any.size());
+            for (NamedElementReferenceWithCommentType e : any) {
+                list.add(getTypeFromValue(e));
+            }
+            return list;
+        } else {
+            throw new IllegalArgumentException(
+                    "Unexpected type in message body of : " + any.getClass().getSimpleName());
+        }
+    }
+
     /**
      * Converts an XML any field into a list of types.
      *
@@ -244,6 +261,25 @@ public class TypeUtils {
                 list.add(getTypeViaXSDAny(e));
             }
             return list;
+        } else {
+            throw new IllegalArgumentException(
+                    "Unexpected type in message body of : " + any.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Converts an NamedElementReferenceWithCommentType field into a type reference.
+     *
+     * @param any the XML any field.
+     * @return the converted type.
+     */
+    public static TypeRef getTypeFromValue(NamedElementReferenceWithCommentType any) {
+        if (any == null) {
+            return null;
+        }
+
+        if (any instanceof NamedElementReferenceWithCommentType) {
+            return new TypeRef((NamedElementReferenceWithCommentType) any);
         } else {
             throw new IllegalArgumentException(
                     "Unexpected type in message body of : " + any.getClass().getSimpleName());

@@ -20,15 +20,15 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.moims.mo.mpd.Dataset;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductType;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
@@ -44,22 +44,17 @@ public class OneProductDataset extends Dataset {
         // ---------------------------------------------------
         // Product Types
         // ---------------------------------------------------
-        ObjectIdentity typeId1 = new ObjectIdentity(domain, new Identifier("image.eo.rgb"), new UInteger(1));
-        ProductType type1 = new ProductType(typeId1, "An Earth Observation RGB image.");
-        ObjectRef<ProductType> productTypeRef1 = type1.getObjectRef();
-        productTypes.put(productTypeRef1, type1);
+        ProductType type1 = new ProductType(new Identifier("type1"));
 
         // ---------------------------------------------------
         // Products
         // ---------------------------------------------------
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
-        ObjectIdentity productId = new ObjectIdentity(domain, new Identifier("key1"), new UInteger(1));
-        Product product = new Product(productId, productTypeRef1,
-                Time.now(), timeWindow, "description", new Blob());
-        ObjectRef<Product> ref = product.getObjectRef();
-        ProductSummary metadata = new ProductSummary();
+        ObjectRef<Product> ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
+        Blob productBody = new Blob();
+        ProductMetadata metadata = new ProductMetadata(type1, ref,
+                Time.now(), timeWindow, "description");
 
-        products.put(ref, product);
-        metadatas.put(ref, metadata);
+        super.addNewProduct(ref, productBody, metadata);
     }
 }

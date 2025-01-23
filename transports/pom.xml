@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.1</version>
+        <version>11.2</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transports</artifactId>
-    <version>11.1</version>
+    <version>11.2</version>
     <packaging>pom</packaging>
     <name>ESA MO Transports</name>
 

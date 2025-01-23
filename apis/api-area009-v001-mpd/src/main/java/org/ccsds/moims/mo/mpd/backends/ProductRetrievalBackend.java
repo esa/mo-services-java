@@ -21,9 +21,10 @@
 package org.ccsds.moims.mo.mpd.backends;
 
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mpd.NewProductAddedListener;
 import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductSummary;
-import org.ccsds.moims.mo.mpd.structures.ProductSummaryList;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 
 /**
  * The Backend interface to the Product Retrieval service.
@@ -35,7 +36,7 @@ public interface ProductRetrievalBackend {
      *
      * @return The metadata from all available products.
      */
-    public ProductSummaryList getMetadataFromAllProducts();
+    public ProductMetadataList getMetadataFromAllProducts();
 
     /**
      * Returns the corresponding product for the given productRef or NULL if not
@@ -53,6 +54,12 @@ public interface ProductRetrievalBackend {
      * @param productRef The product reference.
      * @return The Metadata or NULL if not found.
      */
-    public ProductSummary getMetadata(ObjectRef productRef);
+    public ProductMetadata getMetadata(ObjectRef productRef);
 
+    /**
+     * Sets the listener for the notifications of when new products are added.
+     *
+     * @param listener The listener.
+     */
+    public void setNewProductAddedListener(NewProductAddedListener listener);
 }

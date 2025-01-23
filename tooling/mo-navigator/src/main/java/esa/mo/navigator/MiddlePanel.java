@@ -47,7 +47,9 @@ public class MiddlePanel extends javax.swing.JPanel {
 
     /**
      * Creates new form MiddlePanel
+     *
      * @param statusBar The status bar to report status information.
+     * @param xmlDirs The directory with the xml files to be loaded.
      */
     public MiddlePanel(JLabel statusBar, File xmlDirs) {
         this.statusBar = statusBar;
