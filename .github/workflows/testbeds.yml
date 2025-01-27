@@ -299,13 +299,13 @@ jobs:
         shell: bash
       - uses: actions/checkout@v4
       - run: |
-          download_url="https://download.oracle.com/otn-pub/java/jdk/11.0.10%2B8/020c4a6d33b74f6a9d2bc6fbf189da81/jdk-11.0.10_linux-x64_bin.tar.gz"
-          wget -O $RUNNER_TEMP/java_package.tar.gz -c --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" $download_url
+          download_url="https://download.oracle.com/otn-pub/java/jdk/11.0.13%2B10/bdde8881e2e3437baa70044f884d2d67/jdk-11.0.13_linux-x64_bin.tar.gz"
+          wget $download_url
       - uses: actions/setup-java@v4
         with:
           distribution: 'jdkfile'
           jdkFile: ${{ runner.temp }}/java_package.tar.gz
-          java-version: '11.0.10'
+          java-version: '11.0.13'
           architecture: x64
 #      - uses: actions/setup-java@v4
 #        with:
