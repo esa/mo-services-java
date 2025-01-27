@@ -299,10 +299,8 @@ jobs:
         shell: bash
       - uses: actions/checkout@v4
       - run: |
-#          download_url="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.10%2B9/OpenJDK11U-jdk_x64_linux_hotspot_11.0.10_9.tar.gz"
-#          wget -O $RUNNER_TEMP/java_package.tar.gz $download_url
           download_url="https://download.oracle.com/otn-pub/java/jdk/11.0.10%2B8/020c4a6d33b74f6a9d2bc6fbf189da81/jdk-11.0.10_linux-x64_bin.tar.gz"
-          wget -O $RUNNER_TEMP/java_package.tar.gz -c --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie"
+          wget -c --no-cookies --no-check-certificate -O $RUNNER_TEMP/java_package.tar.gz --header "Cookie: oraclelicense=accept-securebackup-cookie"
       - uses: actions/setup-java@v4
         with:
           distribution: 'jdkfile'
