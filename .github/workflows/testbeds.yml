@@ -301,7 +301,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
