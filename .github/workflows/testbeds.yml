@@ -300,7 +300,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           download_url="https://download.oracle.com/otn-pub/java/jdk/11.0.10%2B8/020c4a6d33b74f6a9d2bc6fbf189da81/jdk-11.0.10_linux-x64_bin.tar.gz"
-          wget -c --no-cookies --no-check-certificate -O $RUNNER_TEMP/java_package.tar.gz --header "Cookie: oraclelicense=accept-securebackup-cookie"
+          wget -O $RUNNER_TEMP/java_package.tar.gz -c --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" $download_url
       - uses: actions/setup-java@v4
         with:
           distribution: 'jdkfile'
