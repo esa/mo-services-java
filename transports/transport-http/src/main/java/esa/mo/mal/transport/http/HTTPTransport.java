@@ -44,6 +44,8 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsServer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
