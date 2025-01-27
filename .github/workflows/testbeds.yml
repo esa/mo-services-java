@@ -301,7 +301,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'graalvm'
+          distribution: 'jetbrains'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
