@@ -5,7 +5,7 @@
   Generated from MPDS Blue Book DraftE 20/03/2024
 -->
 <mal:specification
-    xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema"
+    xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema-v003"
     xmlns:svg = "http://www.w3.org/2000/svg"
     xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" comment="">
     <mal:area name="MPD" number="9" version="1" comment="Mission Operations services - Mission Product Distribution">
@@ -15,7 +15,7 @@
                 TBD
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
-                <mal:requestIP name="listProducts" number="1" supportInReplay="true" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
+                <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
                         The service provider shall return a list of Product Metadatas that satisfy the specified input filter criteria defined by the product filter, the creation date, and the content creation date.  To pass the filter a product must match all the individual filter criteria.
                         Note: It is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
@@ -56,7 +56,7 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
-                <mal:progressIP name="getProducts" number="2" supportInReplay="true" comment="The getProduct operation retrieves the selected mission data products from the provider.">
+                <mal:progressIP name="getProducts" number="2" comment="The getProduct operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
 						A consumer shall send the list of one or more product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
 						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
@@ -92,7 +92,7 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:progressIP>
-                <mal:progressIP name="getProductFiles" number="3" supportInReplay="true" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer of mission data products to a specified target.">
+                <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer of mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
 						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transferred.
 						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation. The message also contains the file delivery address as a URI.
@@ -150,7 +150,7 @@
                 TBD
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
-                <mal:requestIP name="listStandingOrders" number="1" supportInReplay="true" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
+                <mal:requestIP name="listStandingOrders" number="1" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
                     <mal:documentation name="Requirement" order="1">
 						The response shall contain a list of standing orders that match the specified user and domain.
 						Note: Depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
@@ -188,7 +188,7 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
-                <mal:requestIP name="submitStandingOrder" number="2" supportInReplay="true" comment="The submitStandingOrder operation creates a new standing order in the provider for delivery of mission data products.">
+                <mal:requestIP name="submitStandingOrder" number="2" comment="The submitStandingOrder operation creates a new standing order in the provider for delivery of mission data products.">
                     <mal:documentation name="Requirement" order="1">
 						The service provider shall ignore the received value in the orderID field of the orderDetails, and always assign a unique id to the submitted order.
                     </mal:documentation>
@@ -225,7 +225,7 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
-                <mal:submitIP name="cancelStandingOrder" number="3" supportInReplay="true" comment="The cancelStandingOrder operation cancels an existing standing order.">
+                <mal:submitIP name="cancelStandingOrder" number="3" comment="The cancelStandingOrder operation cancels an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
 						The service consumer shall send the orderID of the standing order to be cancelled to the service provider.
                     </mal:documentation>
@@ -255,7 +255,7 @@
                 TBD
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
-                <mal:pubsubIP name="notifyProductDelivery" number="1" supportInReplay="true" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
+                <mal:pubsubIP name="notifyProductDelivery" number="1" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
 						Upon successful file transfer of a mission data product that is associated with a standing order, the service provider shall publish a delivery notification.
 					</mal:documentation>
@@ -307,7 +307,7 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:pubsubIP>
-                <mal:pubsubIP name="deliverProducts" number="2" supportInReplay="true" comment="The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.">
+                <mal:pubsubIP name="deliverProducts" number="2" comment="The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
 						Upon the creation (or availability) of a new mission data product that matches a certain standing order, the service provider shall publish this mission data product via the service interface.
 					</mal:documentation>
