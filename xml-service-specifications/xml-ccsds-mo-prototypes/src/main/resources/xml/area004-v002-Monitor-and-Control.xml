@@ -2,7 +2,7 @@
 <mal:specification xmlns:mal="http://www.ccsds.org/schema/ServiceSchema-v003">
   <mal:area name="MC" number="4" version="2"
             comment="The M&amp;C services provide operations for generic monitoring and control of a remote service provider (e.g., a spacecraft or ground system component).">
-    <mal:service mal:type="mal:ServiceType" name="Action" number="1"
+    <mal:service name="Action" number="1"
                  comment="The action service allows consumers to submit an action for execution and to subsequently monitor the execution progress of these actions.">
       <mal:capabilitySet number="1">
         <mal:submitIP name="execute" number="1"
@@ -16,16 +16,16 @@
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="">
-              <mal:type name="Duplicate"/>
+              <mal:type name="Duplicate" area="MC"/>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Invalid"/>
+              <mal:type name="Invalid" area="MC"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Rejected"/>
+              <mal:type name="Rejected" area="MC"/>
               <mal:extraInformation comment="">
                 <mal:type name="String" area="MAL"/>
               </mal:extraInformation>
@@ -60,7 +60,7 @@
         </mal:pubsubIP>
       </mal:capabilitySet>
     </mal:service>
-    <mal:service mal:type="mal:ServiceType" name="Parameter" number="2"
+    <mal:service name="Parameter" number="2"
                  comment="The parameter service allows the user to subscribe to parameter value report and optionally be able to set new values.">
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="monitorValue" number="1"
@@ -114,7 +114,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -146,19 +146,19 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Invalid"/>
+              <mal:type area="MC" name="Invalid"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Read Only"/>
+              <mal:type area="MC" name="Read Only"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -192,7 +192,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -206,7 +206,7 @@
               <mal:field name="domain" canBeNull="true" comment="">
                 <mal:type list="true" name="Identifier" area="MAL"/>
               </mal:field>
-              <mal:field name="keys" canBeNull="yes" comment="">
+              <mal:field name="keys" canBeNull="true" comment="">
                 <mal:type list="true" name="Identifier" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -219,7 +219,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -233,7 +233,7 @@
               <mal:field name="domain" canBeNull="true" comment="">
                 <mal:type list="true" name="Identifier" area="MAL"/>
               </mal:field>
-              <mal:field name="keys" canBeNull="yes" comment="">
+              <mal:field name="keys" canBeNull="true" comment="">
                 <mal:type list="true" name="Identifier" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -246,7 +246,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -282,7 +282,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -291,7 +291,7 @@
         </mal:submitIP>
       </mal:capabilitySet>
     </mal:service>
-    <mal:service mal:type="mal:ServiceType" name="Alert" number="3"
+    <mal:service name="Alert" number="3"
                  comment="The alert service defines the structures and patterns for the publishing and monitoring of alerts.">
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="monitorAlert" number="1"
@@ -345,7 +345,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -372,7 +372,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -399,7 +399,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -408,7 +408,7 @@
         </mal:submitIP>
       </mal:capabilitySet>
     </mal:service>
-    <mal:service mal:type="mal:ServiceType" name="Aggregation" number="6"
+    <mal:service name="Aggregation" number="6"
                  comment="The aggregation service allows the user to acquire several parameter values in a single request.">
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="monitorValue" number="1"
@@ -459,7 +459,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -493,7 +493,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -520,7 +520,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -547,7 +547,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -577,13 +577,13 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Invalid"/>
+              <mal:type area="MC" name="Invalid"/>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
@@ -614,7 +614,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -634,13 +634,13 @@
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="">
-              <mal:type name="Duplicate"/>
+              <mal:type area="MC" name="Duplicate"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Invalid"/>
+              <mal:type area="MC" name="Invalid"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -667,7 +667,7 @@
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="">
-              <mal:type name="Ambiguous"/>
+              <mal:type area="MC" name="Ambiguous"/>
               <mal:extraInformation comment="">
                 <mal:type list="true" name="UInteger" area="MAL"/>
               </mal:extraInformation>
@@ -676,7 +676,7 @@
         </mal:submitIP>
       </mal:capabilitySet>
     </mal:service>
-    <mal:service mal:type="mal:ServiceType" name="Packet" number="9"
+    <mal:service name="Packet" number="9"
                  comment="The packet service allows a consumer to subscribe to a subset of the space packets, with filtering capabilities based on packets metadata.">
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="deliverPacket" number="1"
