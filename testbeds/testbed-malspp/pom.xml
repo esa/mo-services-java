@@ -355,7 +355,7 @@
                 <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/cnes</org.ccsds.moims.mo.testbed.local.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.remote.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.classpath.filter>cnes-mal</org.ccsds.moims.mo.testbed.remote.classpath.filter>
-                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:api-area001-v003-mal:${esa.api.version},int.esa.ccsds.mo:mal-impl:${esa.impl.version},int.esa.ccsds.mo:api-mal-test:${esa.mal.test_api.version},de.dlr.gsoc:MO_MALSPP_TRANSPORT:1.0.2,de.dlr.gsoc:MO_MALSPP_ENCODING:1.0.2</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:api-area001-v003-mal:${esa.mo.version},int.esa.ccsds.mo:mal-impl:${esa.impl.version},int.esa.ccsds.mo:api-mal-test:${esa.mal.test_api.version},de.dlr.gsoc:MO_MALSPP_TRANSPORT:1.0.2,de.dlr.gsoc:MO_MALSPP_ENCODING:1.0.2</org.ccsds.moims.mo.testbed.remote.classpath.maven>
             </properties>
         </profile>
         <profile>
