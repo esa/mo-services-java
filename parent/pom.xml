@@ -63,28 +63,11 @@
         </repository>
     </distributionManagement>
   
-    <developers>
-        <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
-        </developer>
-    </developers>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <esa.mo.version>11.3-SNAPSHOT</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
-        <esa.api.mal.version>${esa.mo.version}</esa.api.mal.version>
-        <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
-        <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
-        <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
-        <esa.api.mpd.version>${esa.mo.version}</esa.api.mpd.version>
-        <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
-        <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
-        <esa.xml.encoder.version>${esa.mo.version}</esa.xml.encoder.version>
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
@@ -107,32 +90,32 @@
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>generator-interfaces</artifactId>
-                <version>${esa.api.mal.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area001-v003-mal</artifactId>
-                <version>${esa.api.mal.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area002-v001-com</artifactId>
-                <version>${esa.api.com.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area003-v001-common</artifactId>
-                <version>${esa.api.common.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area004-v002-mc</artifactId>
-                <version>${esa.api.mc.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area009-v001-mpd</artifactId>
-                <version>${esa.api.mpd.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
@@ -142,17 +125,17 @@
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-string</artifactId>
-                <version>${esa.string.encoder.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-binary</artifactId>
-                <version>${esa.binary.encoder.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-xml</artifactId>
-                <version>${esa.xml.encoder.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
