@@ -97,8 +97,8 @@
     <properties>
         <fitnesse.toplevel.test>MalSppTests</fitnesse.toplevel.test>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ccsds.testbed.malspp.version>11.3-SNAPSHOT</ccsds.testbed.malspp.version>
-        <esa.mal.test_api.version>11.3-SNAPSHOT</esa.mal.test_api.version>
+        <ccsds.testbed.malspp.version>${esa.mo.version}</ccsds.testbed.malspp.version>
+        <esa.mal.test_api.version>${esa.mo.version}</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     </properties>
   

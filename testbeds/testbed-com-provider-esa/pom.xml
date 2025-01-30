@@ -69,8 +69,8 @@
     </developers>
 
     <properties>
-        <esa.com.test_api.version>11.3-SNAPSHOT</esa.com.test_api.version>
-        <ccsds.testbed.com.version>11.3-SNAPSHOT</ccsds.testbed.com.version>
+        <esa.com.test_api.version>${esa.mo.version}</esa.com.test_api.version>
+        <ccsds.testbed.com.version>${esa.mo.version}</ccsds.testbed.com.version>
     </properties>
   
     <dependencies>

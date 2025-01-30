@@ -95,9 +95,9 @@
     </developers>
   
     <properties>
-        <ccsds.testbed.mal.version>11.3-SNAPSHOT</ccsds.testbed.mal.version>
-        <ccsds.testbed.util.spp.version>11.3-SNAPSHOT</ccsds.testbed.util.spp.version>
-        <esa.mal.test_api.version>11.3-SNAPSHOT</esa.mal.test_api.version>
+        <ccsds.testbed.mal.version>${esa.mo.version}</ccsds.testbed.mal.version>
+        <ccsds.testbed.util.spp.version>${esa.mo.version}</ccsds.testbed.util.spp.version>
+        <esa.mal.test_api.version>${esa.mo.version}</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
         <orekit.version>6.1</orekit.version>
         <monolog.version>5.2.0</monolog.version>

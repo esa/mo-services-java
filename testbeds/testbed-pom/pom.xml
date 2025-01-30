@@ -78,7 +78,7 @@
         <jacoco.version>0.8.10</jacoco.version>
         <junit.version>4.13.2</junit.version>
         <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
-        <ccsds.testbed.util.version>11.3-SNAPSHOT</ccsds.testbed.util.version>
+        <ccsds.testbed.util.version>${esa.mo.version}</ccsds.testbed.util.version>
         <cnes.version>3.2.2-SNAPSHOT</cnes.version>
         <joram.version>5.9.0</joram.version>
     </properties>

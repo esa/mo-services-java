@@ -89,7 +89,7 @@
   
     <properties>
         <fitnesse.toplevel.test>MalTests</fitnesse.toplevel.test>
-        <esa.mal.test_api.version>11.3-SNAPSHOT</esa.mal.test_api.version>
+        <esa.mal.test_api.version>${esa.mo.version}</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     </properties>
   
