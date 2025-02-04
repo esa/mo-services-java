@@ -114,8 +114,12 @@ public class MALElementsRegistry {
             return (ElementList) obj;
         }
 
-        long l = obj.getTypeId().getSFP();
-        long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
+        //long l = obj.getTypeId().getSFP();
+        //long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
+        TypeId typeId = obj.getTypeId();
+        int sfp = typeId.getSFP();
+        int newSPF = (sfp > 0) ? -sfp : sfp;
+        long ll = (new TypeId(typeId.getAreaNumber(), typeId.getAreaVersion(), typeId.getServiceNumber(), newSPF)).getTypeId();
 
         try {
             Element createdElement = MALContextFactory.getElementsRegistry().createElement(ll);
@@ -141,7 +145,8 @@ public class MALElementsRegistry {
         }
 
         long l = obj.getTypeId().getSFP();
-        long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
+        //long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
+        long ll = obj.getTypeId().generateTypeIdPositive().getTypeId();
 
         try {
             return MALContextFactory.getElementsRegistry().createElement(ll);

@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.helpers;
 
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,7 +49,8 @@ public class HelperTime {
             throw new IllegalArgumentException("Timestamp must not be null.");
         }
         Date date = new Date(timestamp.getValue() / ONE_MILLION);
-        Format format = new SimpleDateFormat(DATE_PATTERN);
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(date);
     }
 
