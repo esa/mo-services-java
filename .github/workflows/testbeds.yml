@@ -523,36 +523,6 @@ jobs:
          name: testbed-com-jdk21-report
          path: testbeds/testbed-com/target/surefire-reports/
 
-  testbed-malspp-jdk8:
-    if: ${{ false }}  # disable for now
-    needs: build-testbeds-jdk8
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
-        shell: bash
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-      - name: Restore Maven local repository from cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
-      - name: Run the Testbed for MAL/SPP
-        run: mvn --batch-mode --update-snapshots -P DLR test
-        working-directory: testbeds/testbed-malspp
-      - name: Upload report for MAL/SPP testbed
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: testbed-malspp-jdk8-report
-          path: testbeds/testbed-malspp/target/surefire-reports/
-
   testbed-malspp-jdk11:
     if: ${{ false }}  # disable for now
     needs: build-testbeds-jdk11
