@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2024      European Space Agency
+ * Copyright (C) 2025      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -269,7 +269,7 @@ public class UC3_Ex2_Test extends MPDTest {
             if (!productLocation.exists()) {
                 fail("The product file does not exist in: " + productLocation.getAbsolutePath());
             }
-            
+
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {
