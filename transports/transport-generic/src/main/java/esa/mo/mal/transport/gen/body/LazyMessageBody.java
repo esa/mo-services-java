@@ -350,6 +350,17 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             MALElementStreamFactory encFactory, Object[] bodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
 
+        if (bodyElements != null) {
+            // Cast to Element if it is a Java native type
+            Object[] castedBodyElements = new Object[bodyElements.length];
+
+            for (int i = 0; i < bodyElements.length; i++) {
+                castedBodyElements[i] = Attribute.javaType2Attribute(bodyElements[i]);
+            }
+
+            bodyElements = castedBodyElements;
+        }
+
         if (header.getIsErrorMessage()) {
             return new ErrorBody(ctx, encFactory, bodyElements);
         }
