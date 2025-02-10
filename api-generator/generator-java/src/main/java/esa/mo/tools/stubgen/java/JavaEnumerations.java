@@ -201,6 +201,7 @@ public class JavaEnumerations {
         method.addLine("return null");
         method.addMethodCloseStatement();
 
+        /*
         String enumOrdinalType = StdStrings.UINTEGER;
         if (enumSize < 256) {
             enumOrdinalType = StdStrings.UOCTET;
@@ -211,6 +212,7 @@ public class JavaEnumerations {
         String enumEncoderValue = getEnumEncoderValue(enumSize);
         String enumDecoderValue = getEnumDecoderValue(enumSize);
 
+        // The "ordinal" needs to be removed... the numeric value is what really matters
         if (enumSize < 256) {
             CompositeField encodedType = generator.createCompositeElementsDetails(file, false, "return",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
@@ -222,6 +224,7 @@ public class JavaEnumerations {
             method.addLine("return " + enumEncoderValue);
             method.addMethodCloseStatement();
         }
+        */
 
         method = file.addMethodOpenStatementOverride(uintType, "getNumericValue", null, null);
         method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
@@ -237,21 +240,9 @@ public class JavaEnumerations {
         file.addStatement("        return " + enumSize + ";");
         file.addStatement("    }");
 
-        /*
-        // create encode method
-        method = generator.encodeMethodOpen(file);
-        method.addLine(generator.createMethodCall("encoder.encode") + enumOrdinalType + "(" + enumEncoderValue + ")");
-        method.addMethodCloseStatement();
-
-        // create decode method
-        method = generator.decodeMethodOpen(file, elementType);
-        method.addLine("return fromOrdinal(" + generator.createMethodCall("decoder.decode" + enumOrdinalType + "()" + enumDecoderValue + ")"));
-        method.addMethodCloseStatement();
-         */
         generator.addTypeIdGetterMethod(file, area, service);
 
         file.addClassCloseStatement();
-
         file.flush();
 
         generator.createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
@@ -260,7 +251,8 @@ public class JavaEnumerations {
                 true, true, "cmt");
     }
 
-    protected String getEnumEncoderValue(long maxValue) {
+    @Deprecated
+    private String getEnumEncoderValue(long maxValue) {
         String enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UInteger(ordinal.longValue())";
         if (maxValue < 256) {
             enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue())";
