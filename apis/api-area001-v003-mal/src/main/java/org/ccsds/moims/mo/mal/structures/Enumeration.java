@@ -103,7 +103,6 @@ public abstract class Enumeration implements Element {
      *
      * @return the numeric value of the enumerated item.
      */
-    @Deprecated
     public abstract UInteger getNumericValue();
 
     /**
@@ -112,6 +111,7 @@ public abstract class Enumeration implements Element {
      * @param ordinal The ordinal value of this Enumeration.
      * @return The respective Enumeration.
      */
+    @Deprecated
     public abstract Element fromOrdinal(int ordinal);
 
     @Override
