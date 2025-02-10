@@ -208,8 +208,8 @@ public class MALReceiver implements MALMessageListener {
                     }
                     break;
                 default:
-                    throw new MALException("Received unexpected interaction of "
-                            + msg.getHeader().getInteractionType().getOrdinal());
+                    throw new MALException("Received unexpected interaction of: "
+                            + msg.getHeader().getInteractionType().toString());
             }
         } catch (MALInteractionException ex) {
             // try to determine address info if null

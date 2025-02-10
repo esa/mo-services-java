@@ -323,24 +323,24 @@ public class MALMessageHeader {
 
         final short srcInteractionStage = iStage.getValue();
 
-        switch (this.getInteractionType().getOrdinal()) {
-            case InteractionType._SUBMIT_INDEX:
+        switch (this.getInteractionType().getValue()) {
+            case InteractionType.SUBMIT_VALUE:
                 if (MALSubmitOperation._SUBMIT_STAGE == srcInteractionStage) {
                     return MALSubmitOperation.SUBMIT_ACK_STAGE;
                 }
-            case InteractionType._REQUEST_INDEX:
+            case InteractionType.REQUEST_VALUE:
                 if (MALRequestOperation._REQUEST_STAGE == srcInteractionStage) {
                     return MALRequestOperation.REQUEST_RESPONSE_STAGE;
                 }
-            case InteractionType._INVOKE_INDEX:
+            case InteractionType.INVOKE_VALUE:
                 if (MALInvokeOperation._INVOKE_STAGE == srcInteractionStage) {
                     return MALInvokeOperation.INVOKE_ACK_STAGE;
                 }
-            case InteractionType._PROGRESS_INDEX:
+            case InteractionType.PROGRESS_VALUE:
                 if (MALProgressOperation._PROGRESS_STAGE == srcInteractionStage) {
                     return MALProgressOperation.PROGRESS_ACK_STAGE;
                 }
-            case InteractionType._PUBSUB_INDEX:
+            case InteractionType.PUBSUB_VALUE:
                 switch (srcInteractionStage) {
                     case MALPubSubOperation._REGISTER_STAGE:
                         return MALPubSubOperation.REGISTER_ACK_STAGE;

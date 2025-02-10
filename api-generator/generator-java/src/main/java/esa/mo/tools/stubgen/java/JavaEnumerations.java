@@ -83,11 +83,15 @@ public class JavaEnumerations {
             CompositeField eValueVar = generator.createCompositeElementsDetails(file, false, value + "_NUM_VALUE",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false,
                     "Enumeration numeric value for value " + value);
+            CompositeField _eNewValue = generator.createCompositeElementsDetails(file, false, value + "_VALUE",
+                    TypeUtils.createTypeReference(null, null, "int", false), false, false,
+                    "Enumeration value for " + value);
             CompositeField eInstVar = generator.createCompositeElementsDetails(file, false, value,
                     TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                     true, false, "Enumeration singleton for value " + value);
-            file.addClassVariable(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
+            file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
+            file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
+            file.addClassVariable(true, true, StdStrings.PUBLIC, _eNewValue, false, "" + String.valueOf(item.getNvalue()));
             file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(fqEnumName + "._" + value + "_INDEX)"));
         }
 
@@ -133,10 +137,10 @@ public class JavaEnumerations {
                     false, true, "s The string to search for.");
 
             method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
-            method.addLine("switch (getOrdinal()) {", false);
+            method.addLine("switch (getValue()) {", false);
 
             for (EnumerationType.Item item : enumeration.getItem()) {
-                method.addLine("    case _" + item.getValue() + "_INDEX:", false);
+                method.addLine("    case " + item.getValue() + "_VALUE:", false);
                 method.addLine("        return \"" + item.getValue() + "\"");
             }
             method.addLine("    default:", false);
@@ -224,8 +228,7 @@ public class JavaEnumerations {
             method.addLine("return " + enumEncoderValue);
             method.addMethodCloseStatement();
         }
-        */
-
+         */
         method = file.addMethodOpenStatementOverride(uintType, "getNumericValue", null, null);
         method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
         method.addMethodCloseStatement();
