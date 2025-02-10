@@ -112,7 +112,7 @@ public class UC3_Ex2_Test extends MPDTest {
     }
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
-            URI deliverTo, Identifier productType, int expectedNumberOfProducts) {
+            URI deliverTo, Identifier productType, int expectedNumberOfNotifications) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
             int size = standingOrders.size();
@@ -165,8 +165,8 @@ public class UC3_Ex2_Test extends MPDTest {
 
         try {
             ProductMetadataList returnedProductMetadata = new ProductMetadataList();
-            StringList returnedFilename = new StringList();
-            URIList returnedDeliveredTo = new URIList();
+            StringList returnedFilenames = new StringList();
+            URIList returnedDeliveredTos = new URIList();
             long startTime = System.currentTimeMillis();
             final AtomicBoolean ackReceived = new AtomicBoolean(false);
             final AtomicBoolean notifyReceived = new AtomicBoolean(false);
@@ -214,8 +214,8 @@ public class UC3_Ex2_Test extends MPDTest {
                     System.out.println("NOTIFY received in: " + duration + " ms");
                     notifyReceived.set(true);
                     returnedProductMetadata.add(metadata);
-                    returnedFilename.add(filename);
-                    returnedDeliveredTo.add(deliveredTo);
+                    returnedFilenames.add(filename);
+                    returnedDeliveredTos.add(deliveredTo);
                 }
 
                 @Override
@@ -232,13 +232,13 @@ public class UC3_Ex2_Test extends MPDTest {
             String specifiedLocation = deliverTo.getValue().replace("file://", "");
             File deliveryDirectory = new File(specifiedLocation);
             if (!deliveryDirectory.exists()) {
-                fail("The directory already exists in: " + specifiedLocation);
+                fail("The directory does not exist in: " + specifiedLocation);
             }
 
             // Check that the product does not exist in the specified location
             File productLocation = new File(specifiedLocation, productName);
             if (productLocation.exists()) {
-                fail("The file already exists in: " + productLocation.getAbsolutePath());
+                productLocation.delete();
             }
 
             // Provider pushes a new Product (on the backend)
@@ -265,11 +265,55 @@ public class UC3_Ex2_Test extends MPDTest {
                 fail("The ACK was not received!");
             }
 
+            // ------------------------------------------------------------------------
+            // Wait while NOTIFY has not been received and 1 second has not passed yet...
+            timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!notifyReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            // Were we expecting to receive at least one product?
+            if (!notifyReceived.get() && expectedNumberOfNotifications != 0) {
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                        Level.SEVERE, "The NOTIFY was not received!");
+                fail("The NOTIFY was not received!");
+            }
+
             // Check that the product was created in the specified location
             if (!productLocation.exists()) {
                 fail("The product file does not exist in: " + productLocation.getAbsolutePath());
             }
 
+            // Delete the file...
+            if (productLocation.exists()) {
+                productLocation.delete();
+            }
+
+            try {
+                consumerOM.cancelStandingOrder(orderID);
+            } catch (MALInteractionException ex) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                fail(ex.toString());
+            } catch (MALException ex) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                fail(ex.toString());
+            }
+
+            // Did we receive the product(s)?
+            assertNotNull(returnedProductMetadata);
+            int size = returnedProductMetadata.size();
+            System.out.println("Number of metadata entries returned: " + size);
+            assertEquals(expectedNumberOfNotifications, size);
+
+            // Finish the test if nothing was returned.. (there's nothing else to check)
+            if (size == 0) {
+                return;
+            }
+            
+            String returnedFilename = returnedFilenames.get(0);
+            URI returnedDeliveredTo = returnedDeliveredTos.get(0);
+            // Check if it matches...
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {
