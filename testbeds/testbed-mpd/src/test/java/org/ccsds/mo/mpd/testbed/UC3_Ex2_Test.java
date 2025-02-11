@@ -94,7 +94,7 @@ public class UC3_Ex2_Test extends MPDTest {
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
         Identifier productType = null;
-        Identifier source = null;
+        Identifier source = new Identifier("forest flyover");
         test(user, domain, delivery, deliverTo, productType, source, 1);
     }
 
@@ -104,24 +104,9 @@ public class UC3_Ex2_Test extends MPDTest {
     @Test
     public void testCase_2() {
         System.out.println("Running: testCase_2()");
-        Identifier user = new Identifier("john.doe");
+        Identifier user = new Identifier("bill.gates");
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
-        URI deliverTo = TMP_DIR;
-        Identifier productType = null;
-        Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 1);
-    }
-
-    /**
-     * Test Case 3.
-     */
-    @Test
-    public void testCase_3() {
-        System.out.println("Running: testCase_3()");
-        Identifier user = new Identifier("john.doe");
-        IdentifierList domain = null;
-        DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_COMPLETE;
         URI deliverTo = TMP_DIR;
         Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
@@ -141,6 +126,51 @@ public class UC3_Ex2_Test extends MPDTest {
         Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
         test(user, domain, delivery, deliverTo, productType, source, 0);
+    }
+
+    /**
+     * Test Case 5.
+     */
+    @Test
+    public void testCase_5() {
+        System.out.println("Running: testCase_3()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_COMPLETE;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 0);
+    }
+
+    /**
+     * Test Case 12.
+     */
+    @Test
+    public void testCase_12() {
+        System.out.println("Running: testCase_12()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        Identifier source = null;
+        test(user, domain, delivery, deliverTo, productType, source, 1);
+    }
+
+    /**
+     * Test Case 13.
+     */
+    @Test
+    public void testCase_13() {
+        System.out.println("Running: testCase_13()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        Identifier source = new Identifier("lake flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 1);
     }
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
@@ -217,7 +247,8 @@ public class UC3_Ex2_Test extends MPDTest {
                 filters.add(new SubscriptionFilter(new Identifier("user"), values));
             }
 
-            Subscription subscription = new Subscription(new Identifier("myTestKey"), null, null, filters);
+            Identifier subId = new Identifier("myTestKey" + System.currentTimeMillis());
+            Subscription subscription = new Subscription(subId, null, null, filters);
             consumerPOD.asyncNotifyProductDeliveryRegister(subscription, new ProductOrderDeliveryAdapter() {
                 @Override
                 public void notifyProductDeliveryRegisterAckReceived(MALMessageHeader msgHeader,
@@ -286,7 +317,7 @@ public class UC3_Ex2_Test extends MPDTest {
             productDomain.add(new Identifier("hubble"));
             ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier(productName), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.typeImagesDataset, ref, Time.now(),
+            ProductMetadata metadata = new ProductMetadata(backend.typeImage, ref, Time.now(),
                     new Identifier("forest flyover"), null, null, null, "description");
             backend.addNewProduct(ref, productBody, metadata);
 
