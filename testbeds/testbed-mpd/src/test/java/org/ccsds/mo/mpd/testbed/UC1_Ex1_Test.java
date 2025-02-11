@@ -166,7 +166,7 @@ public class UC1_Ex1_Test extends MPDTest {
         testWithTimeWindow(apidValue, expectedNumberOfResults, null);
     }
 
-    private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow contentDate) {
+    private synchronized void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow contentDate) {
         ProductType productType = backend.typeTMPacketDailyExtract;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));

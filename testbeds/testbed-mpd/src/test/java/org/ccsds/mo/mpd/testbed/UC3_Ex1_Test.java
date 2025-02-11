@@ -219,7 +219,7 @@ public class UC3_Ex1_Test extends MPDTest {
         test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
-    private void test(Identifier user, IdentifierList domain,
+    private synchronized void test(Identifier user, IdentifierList domain,
             DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);

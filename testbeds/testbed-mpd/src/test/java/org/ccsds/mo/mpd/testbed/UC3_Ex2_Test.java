@@ -444,7 +444,7 @@ public class UC3_Ex2_Test extends MPDTest {
                 source, productType, null, expectedNumberOfNotifications);
     }
 
-    private void testWithAttributeFilter(Identifier user, IdentifierList domain,
+    private synchronized void testWithAttributeFilter(Identifier user, IdentifierList domain,
             DeliveryMethodEnum deliveryMethod, URI deliverTo, Identifier source,
             Identifier productType, AttributeFilterList attributeFilter, int expectedNumberOfNotifications) {
         try {
