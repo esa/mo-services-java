@@ -34,6 +34,8 @@ import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NamedValue;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
@@ -43,8 +45,10 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.URIList;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
+import org.ccsds.moims.mo.mpd.structures.AttributeFilterList;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
@@ -52,6 +56,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import org.ccsds.moims.mo.mpd.structures.ValueSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -93,9 +98,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 1);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 1);
     }
 
     /**
@@ -108,9 +113,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 0);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 0);
     }
 
     /**
@@ -125,9 +130,9 @@ public class UC3_Ex2_Test extends MPDTest {
         domain.add(new Identifier("juice"));
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 0);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 0);
     }
 
     /**
@@ -140,9 +145,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_JUST_METADATA;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 0);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 0);
     }
 
     /**
@@ -155,9 +160,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_COMPLETE;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 0);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 0);
     }
 
     /**
@@ -172,9 +177,9 @@ public class UC3_Ex2_Test extends MPDTest {
         String path = TMP_DIR.getValue().replace("file://", "");
         File targetDir = new File(path, "123");
         URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
-        Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 1);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 1);
     }
 
     /**
@@ -187,9 +192,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = null;
-        test(user, domain, delivery, deliverTo, productType, source, 1);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 1);
     }
 
     /**
@@ -202,9 +207,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = null;
         Identifier source = new Identifier("lake flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 0);
+        Identifier productType = null;
+        test(user, domain, delivery, deliverTo, source, productType, 0);
     }
 
     /**
@@ -217,9 +222,9 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = backend.typeImage.getName();
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 1);
+        Identifier productType = backend.typeImage.getName();
+        test(user, domain, delivery, deliverTo, source, productType, 1);
     }
 
     /**
@@ -232,13 +237,101 @@ public class UC3_Ex2_Test extends MPDTest {
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
-        Identifier productType = new Identifier("typeTMPacketDailyExtract");
         Identifier source = new Identifier("forest flyover");
-        test(user, domain, delivery, deliverTo, productType, source, 0);
+        Identifier productType = new Identifier("typeTMPacketDailyExtract");
+        test(user, domain, delivery, deliverTo, source, productType, 0);
+    }
+
+    /**
+     * Test Case 11.
+     */
+    @Test
+    public void testCase_11() {
+        System.out.println("Running: testCase_11()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeList values = new AttributeList();
+        values.add(new Union("Earth"));
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueSet(new Identifier("No_Name_Attribute"), true, values));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
+    }
+
+    /**
+     * Test Case 12.
+     */
+    @Test
+    public void testCase_12() {
+        System.out.println("Running: testCase_12()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeList values = new AttributeList();
+        values.add(new Union("Earth"));
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueSet(new Identifier("imageSubject"), true, values));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
+    }
+
+    /**
+     * Test Case 13.
+     */
+    @Test
+    public void testCase_13() {
+        System.out.println("Running: testCase_13()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeList values = new AttributeList();
+        values.add(new Union("Mars"));
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueSet(new Identifier("imageSubject"), true, values));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
+    }
+
+    /**
+     * Test Case 14.
+     */
+    @Test
+    public void testCase_14() {
+        System.out.println("Running: testCase_14()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeList values = new AttributeList();
+        values.add(new Union("Mars"));
+        values.add(new Union("Earth"));
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueSet(new Identifier("imageSubject"), true, values));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
     }
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
-            URI deliverTo, Identifier productType, Identifier source, int expectedNumberOfNotifications) {
+            URI deliverTo, Identifier source, Identifier productType, int expectedNumberOfNotifications) {
+        this.testWithAttributeFilter(user, domain, deliveryMethod, deliverTo,
+                source, productType, null, expectedNumberOfNotifications);
+    }
+
+    private void testWithAttributeFilter(Identifier user, IdentifierList domain,
+            DeliveryMethodEnum deliveryMethod, URI deliverTo, Identifier source,
+            Identifier productType, AttributeFilterList attributeFilter, int expectedNumberOfNotifications) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
             int size = standingOrders.size();
@@ -262,7 +355,7 @@ public class UC3_Ex2_Test extends MPDTest {
         }
 
         try {
-            ProductFilter productFilter = new ProductFilter(productType, domain, sources, null);
+            ProductFilter productFilter = new ProductFilter(productType, domain, sources, attributeFilter);
             StandingOrder orderDetails = new StandingOrder(null, orderUser,
                     productFilter, null, deliveryMethod, deliverTo, null);
             orderID = consumerOM.submitStandingOrder(orderDetails);
@@ -311,7 +404,7 @@ public class UC3_Ex2_Test extends MPDTest {
                 filters.add(new SubscriptionFilter(new Identifier("user"), values));
             }
 
-            Identifier subId = new Identifier("myTestKey" + System.currentTimeMillis());
+            Identifier subId = new Identifier("myTestKey" + System.nanoTime());
             Subscription subscription = new Subscription(subId, null, null, filters);
             consumerPOD.asyncNotifyProductDeliveryRegister(subscription, new ProductOrderDeliveryAdapter() {
                 @Override
@@ -375,8 +468,12 @@ public class UC3_Ex2_Test extends MPDTest {
             productDomain.add(new Identifier("hubble"));
             ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier(productName), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
+            NamedValueList attributes = new NamedValueList();
+            attributes.add(new NamedValue(new Identifier("imageSubject"), new Union("Earth")));
+            attributes.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
+
             ProductMetadata metadata = new ProductMetadata(backend.typeImage, ref, Time.now(),
-                    new Identifier("forest flyover"), null, null, null, "description");
+                    new Identifier("forest flyover"), null, null, attributes, "description");
             backend.addNewProduct(ref, productBody, metadata);
 
             // ------------------------------------------------------------------------
