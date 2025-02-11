@@ -52,7 +52,7 @@ public class OrderManagementScenario1Test extends MPDTest {
      * orders.
      */
     @Test
-    public void testCase_1() {
+    public void testCase_01() {
         System.out.println("Running: testCase_1()");
 
         Identifier user = new Identifier("john.doe");
@@ -78,7 +78,7 @@ public class OrderManagementScenario1Test extends MPDTest {
      * matches what was submitted.
      */
     @Test
-    public void testCase_2() {
+    public void testCase_02() {
         try {
             System.out.println("Running: testCase_2");
 

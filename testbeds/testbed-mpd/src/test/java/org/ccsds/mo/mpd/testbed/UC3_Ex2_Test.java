@@ -87,7 +87,7 @@ public class UC3_Ex2_Test extends MPDTest {
      * Test Case 1.
      */
     @Test
-    public void testCase_1() {
+    public void testCase_01() {
         System.out.println("Running: testCase_1()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -102,7 +102,7 @@ public class UC3_Ex2_Test extends MPDTest {
      * Test Case 2.
      */
     @Test
-    public void testCase_2() {
+    public void testCase_02() {
         System.out.println("Running: testCase_2()");
         Identifier user = new Identifier("bill.gates");
         IdentifierList domain = null;
@@ -114,10 +114,27 @@ public class UC3_Ex2_Test extends MPDTest {
     }
 
     /**
+     * Test Case 3.
+     */
+    @Test
+    public void testCase_03() {
+        System.out.println("Running: testCase_3()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("juice"));
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 0);
+    }
+
+    /**
      * Test Case 4.
      */
     @Test
-    public void testCase_4() {
+    public void testCase_04() {
         System.out.println("Running: testCase_4()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -132,7 +149,7 @@ public class UC3_Ex2_Test extends MPDTest {
      * Test Case 5.
      */
     @Test
-    public void testCase_5() {
+    public void testCase_05() {
         System.out.println("Running: testCase_3()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -141,6 +158,23 @@ public class UC3_Ex2_Test extends MPDTest {
         Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
         test(user, domain, delivery, deliverTo, productType, source, 0);
+    }
+
+    /**
+     * Test Case 6.
+     */
+    @Test
+    public void testCase_06() {
+        System.out.println("Running: testCase_6()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        String path = TMP_DIR.getValue().replace("file://", "");
+        File targetDir = new File(path, "123");
+        URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
+        Identifier productType = null;
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 1);
     }
 
     /**
@@ -297,15 +331,9 @@ public class UC3_Ex2_Test extends MPDTest {
                 }
             });
 
+            // Delete the product if it already exist in the specified location
             String productName = "tmData1";
-            // Check that the directory to deliver products exists
             String specifiedLocation = deliverTo.getValue().replace("file://", "");
-            File deliveryDirectory = new File(specifiedLocation);
-            if (!deliveryDirectory.exists()) {
-                fail("The directory does not exist in: " + specifiedLocation);
-            }
-
-            // Check that the product does not exist in the specified location
             File productLocation = new File(specifiedLocation, productName);
             if (productLocation.exists()) {
                 productLocation.delete();
@@ -374,7 +402,7 @@ public class UC3_Ex2_Test extends MPDTest {
 
             // -----------------------------------------------------------------------------------------------
             // Check that the product was created in the specified location
-            if (deliveryMethod.equals(DeliveryMethodEnum.FILETRANSFER)) {
+            if (deliveryMethod.equals(DeliveryMethodEnum.FILETRANSFER) && expectedNumberOfNotifications != 0) {
                 if (!productLocation.exists()) {
                     fail("The product file does not exist in: " + productLocation.getAbsolutePath());
                 }

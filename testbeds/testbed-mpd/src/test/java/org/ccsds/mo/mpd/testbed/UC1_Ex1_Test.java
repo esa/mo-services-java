@@ -70,7 +70,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 1 - Match APID = 100.
      */
     @Test
-    public void testCase_1() {
+    public void testCase_01() {
         System.out.println("Running: testCase_1()");
         UInteger apidValue = new UInteger(100);
         test(apidValue, 1);
@@ -80,7 +80,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 2 - Match APID = 200.
      */
     @Test
-    public void testCase_2() {
+    public void testCase_02() {
         System.out.println("Running: testCase_2()");
         UInteger apidValue = new UInteger(200);
         test(apidValue, 1);
@@ -90,7 +90,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 3 - Match APID = 300.
      */
     @Test
-    public void testCase_3() {
+    public void testCase_03() {
         System.out.println("Running: testCase_3()");
         UInteger apidValue = new UInteger(300);
         test(apidValue, 0);
@@ -100,7 +100,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 4 - attributeFilter = NULL.
      */
     @Test
-    public void testCase_4() {
+    public void testCase_04() {
         System.out.println("Running: testCase_4()");
         UInteger apidValue = null;
         test(apidValue, 2);
@@ -111,7 +111,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * [APID100_TIME_START, APID100_TIME_END].
      */
     @Test
-    public void testCase_5() {
+    public void testCase_05() {
         System.out.println("Running: testCase_5()");
         UInteger apidValue = new UInteger(100);
         TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
@@ -123,7 +123,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * [1970-01-01, 1970-12-31].
      */
     @Test
-    public void testCase_6() {
+    public void testCase_06() {
         System.out.println("Running: testCase_6()");
         UInteger apidValue = new UInteger(100);
         TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
@@ -135,7 +135,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * [APID100_TIME_START, APID100_TIME_END].
      */
     @Test
-    public void testCase_7() {
+    public void testCase_07() {
         System.out.println("Running: testCase_7()");
         UInteger apidValue = new UInteger(200);
         TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
@@ -146,7 +146,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 8 - With timeWindow = [1970-01-01, 1970-12-31].
      */
     @Test
-    public void testCase_8() {
+    public void testCase_08() {
         System.out.println("Running: testCase_8()");
         TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
         testWithTimeWindow(null, 0, contentDate);
@@ -156,7 +156,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 9 - With timeWindow = [APID100_TIME_START, APID200_TIME_END].
      */
     @Test
-    public void testCase_9() {
+    public void testCase_09() {
         System.out.println("Running: testCase_9()");
         TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID200_TIME_END);
         testWithTimeWindow(null, 2, contentDate);

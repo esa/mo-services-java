@@ -70,7 +70,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 1.
      */
     @Test
-    public void testCase_1() {
+    public void testCase_01() {
         System.out.println("Running: testCase_1()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -82,7 +82,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 2.
      */
     @Test
-    public void testCase_2() {
+    public void testCase_02() {
         System.out.println("Running: testCase_2()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -94,7 +94,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 3.
      */
     @Test
-    public void testCase_3() {
+    public void testCase_03() {
         System.out.println("Running: testCase_3()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -106,7 +106,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 4.
      */
     @Test
-    public void testCase_4() {
+    public void testCase_04() {
         System.out.println("Running: testCase_4()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -118,7 +118,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 5.
      */
     @Test
-    public void testCase_5() {
+    public void testCase_05() {
         System.out.println("Running: testCase_5()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -130,7 +130,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 6.
      */
     @Test
-    public void testCase_6() {
+    public void testCase_06() {
         System.out.println("Running: testCase_6()");
         Identifier user = null;
         IdentifierList domain = null;
@@ -142,7 +142,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 7.
      */
     @Test
-    public void testCase_7() {
+    public void testCase_07() {
         System.out.println("Running: testCase_7()");
         Identifier user = new Identifier("bill.gates");
         IdentifierList domain = null;
@@ -154,7 +154,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 8.
      */
     @Test
-    public void testCase_8() {
+    public void testCase_08() {
         System.out.println("Running: testCase_8()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
@@ -167,7 +167,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 9.
      */
     @Test
-    public void testCase_9() {
+    public void testCase_09() {
         System.out.println("Running: testCase_9()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
