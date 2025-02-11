@@ -56,6 +56,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import org.ccsds.moims.mo.mpd.structures.ValueRange;
 import org.ccsds.moims.mo.mpd.structures.ValueSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -323,6 +324,84 @@ public class UC3_Ex2_Test extends MPDTest {
         testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
     }
 
+    /**
+     * Test Case 15.
+     */
+    @Test
+    public void testCase_15() {
+        System.out.println("Running: testCase_15()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeList values_0 = new AttributeList(new Union("Earth"));
+        AttributeList values_1 = new AttributeList(new Union("visible"));
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueSet(new Identifier("imageSubject"), true, values_0));
+        attributeFilter.add(new ValueSet(new Identifier("imageType"), true, values_1));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
+    }
+
+    /**
+     * Test Case 16.
+     */
+    @Test
+    public void testCase_16() {
+        System.out.println("Running: testCase_16()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeList values_0 = new AttributeList(new Union("Earth"));
+        AttributeList values_1 = new AttributeList(new Union("infrared"));
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueSet(new Identifier("imageSubject"), true, values_0));
+        attributeFilter.add(new ValueSet(new Identifier("imageType"), true, values_1));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
+    }
+
+    /**
+     * Test Case 17.
+     */
+    @Test
+    public void testCase_17() {
+        System.out.println("Running: testCase_17()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueRange(new Identifier("coordinates.lat"), true, new Union(0.0), new Union(10.0)));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
+    }
+
+    /**
+     * Test Case 18.
+     */
+    @Test
+    public void testCase_18() {
+        System.out.println("Running: testCase_18()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueRange(new Identifier("coordinates.lat"), false, new Union(0.0), new Union(10.0)));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
+    }
+
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
             URI deliverTo, Identifier source, Identifier productType, int expectedNumberOfNotifications) {
         this.testWithAttributeFilter(user, domain, deliveryMethod, deliverTo,
@@ -471,6 +550,8 @@ public class UC3_Ex2_Test extends MPDTest {
             NamedValueList attributes = new NamedValueList();
             attributes.add(new NamedValue(new Identifier("imageSubject"), new Union("Earth")));
             attributes.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
+            attributes.add(new NamedValue(new Identifier("coordinates.lat"), new Union(5.0)));
+            attributes.add(new NamedValue(new Identifier("coordinates.lon"), new Union(6.0)));
 
             ProductMetadata metadata = new ProductMetadata(backend.typeImage, ref, Time.now(),
                     new Identifier("forest flyover"), null, null, attributes, "description");
