@@ -178,11 +178,11 @@ public class UC3_Ex2_Test extends MPDTest {
     }
 
     /**
-     * Test Case 12.
+     * Test Case 7.
      */
     @Test
-    public void testCase_12() {
-        System.out.println("Running: testCase_12()");
+    public void testCase_07() {
+        System.out.println("Running: testCase_7()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
@@ -193,18 +193,48 @@ public class UC3_Ex2_Test extends MPDTest {
     }
 
     /**
-     * Test Case 13.
+     * Test Case 8.
      */
     @Test
-    public void testCase_13() {
-        System.out.println("Running: testCase_13()");
+    public void testCase_08() {
+        System.out.println("Running: testCase_8()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
         Identifier productType = null;
         Identifier source = new Identifier("lake flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 0);
+    }
+
+    /**
+     * Test Case 9.
+     */
+    @Test
+    public void testCase_09() {
+        System.out.println("Running: testCase_9()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = backend.typeImage.getName();
+        Identifier source = new Identifier("forest flyover");
         test(user, domain, delivery, deliverTo, productType, source, 1);
+    }
+
+    /**
+     * Test Case 10.
+     */
+    @Test
+    public void testCase_10() {
+        System.out.println("Running: testCase_10()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = new Identifier("typeTMPacketDailyExtract");
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 0);
     }
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
