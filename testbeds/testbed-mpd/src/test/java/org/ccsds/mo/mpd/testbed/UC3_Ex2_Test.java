@@ -402,6 +402,42 @@ public class UC3_Ex2_Test extends MPDTest {
         testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
     }
 
+    /**
+     * Test Case 19.
+     */
+    @Test
+    public void testCase_19() {
+        System.out.println("Running: testCase_19()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueRange(new Identifier("coordinates.lat"), true, new Union(10.0), new Union(20.0)));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
+    }
+
+    /**
+     * Test Case 20.
+     */
+    @Test
+    public void testCase_20() {
+        System.out.println("Running: testCase_20()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new ValueRange(new Identifier("coordinates.lat"), false, new Union(10.0), new Union(20.0)));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
+    }
+
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
             URI deliverTo, Identifier source, Identifier productType, int expectedNumberOfNotifications) {
         this.testWithAttributeFilter(user, domain, deliveryMethod, deliverTo,
