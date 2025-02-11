@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerOM;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerPOD;
-import org.ccsds.mo.mpd.testbed.backends.TMPacketsDataset;
+import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
@@ -63,7 +63,7 @@ import org.junit.Test;
  */
 public class UC3_Ex2_Test extends MPDTest {
 
-    private static final TMPacketsDataset backend = new TMPacketsDataset();
+    private static final ImagesDataset backend = new ImagesDataset();
     private static final URI TMP_DIR = getHomeTmpDir();
 
     @BeforeClass
@@ -94,7 +94,8 @@ public class UC3_Ex2_Test extends MPDTest {
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
         Identifier productType = null;
-        test(user, domain, delivery, deliverTo, productType, 1);
+        Identifier source = null;
+        test(user, domain, delivery, deliverTo, productType, source, 1);
     }
 
     /**
@@ -108,11 +109,27 @@ public class UC3_Ex2_Test extends MPDTest {
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;
         Identifier productType = null;
-        test(user, domain, delivery, deliverTo, productType, 1);
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 1);
+    }
+
+    /**
+     * Test Case 3.
+     */
+    @Test
+    public void testCase_3() {
+        System.out.println("Running: testCase_2()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_COMPLETE;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 0);
     }
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
-            URI deliverTo, Identifier productType, int expectedNumberOfNotifications) {
+            URI deliverTo, Identifier productType, Identifier source, int expectedNumberOfNotifications) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
             int size = standingOrders.size();
@@ -128,8 +145,15 @@ public class UC3_Ex2_Test extends MPDTest {
 
         Identifier orderUser = new Identifier("john.doe");
         Long orderID = null;
+        IdentifierList sources = null;
+
+        if (source != null) {
+            sources = new IdentifierList();
+            sources.add(source);
+        }
+
         try {
-            ProductFilter productFilter = new ProductFilter(productType, domain, null, null);
+            ProductFilter productFilter = new ProductFilter(productType, domain, sources, null);
             StandingOrder orderDetails = new StandingOrder(null, orderUser,
                     productFilter, null, deliveryMethod, deliverTo, null);
             orderID = consumerOM.submitStandingOrder(orderDetails);
@@ -164,7 +188,7 @@ public class UC3_Ex2_Test extends MPDTest {
         }
 
         try {
-            ProductMetadataList returnedProductMetadata = new ProductMetadataList();
+            ProductMetadataList returnedProductMetadatas = new ProductMetadataList();
             StringList returnedFilenames = new StringList();
             URIList returnedDeliveredTos = new URIList();
             long startTime = System.currentTimeMillis();
@@ -213,7 +237,7 @@ public class UC3_Ex2_Test extends MPDTest {
                     long duration = System.currentTimeMillis() - startTime;
                     System.out.println("NOTIFY received in: " + duration + " ms");
                     notifyReceived.set(true);
-                    returnedProductMetadata.add(metadata);
+                    returnedProductMetadatas.add(metadata);
                     returnedFilenames.add(filename);
                     returnedDeliveredTos.add(deliveredTo);
                 }
@@ -241,14 +265,14 @@ public class UC3_Ex2_Test extends MPDTest {
                 productLocation.delete();
             }
 
-            // Provider pushes a new Product (on the backend)
+            // Provider becomes aware of a new Product with:
             IdentifierList productDomain = new IdentifierList();
             productDomain.add(new Identifier("nasa"));
             productDomain.add(new Identifier("hubble"));
             ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier(productName), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
-                    null, null, TMPacketsDataset.timeWindowAPID100, null, "description");
+            ProductMetadata metadata = new ProductMetadata(backend.typeImagesDataset, ref, Time.now(),
+                    new Identifier("forest flyover"), null, null, null, "description");
             backend.addNewProduct(ref, productBody, metadata);
 
             // ------------------------------------------------------------------------
@@ -280,9 +304,34 @@ public class UC3_Ex2_Test extends MPDTest {
                 fail("The NOTIFY was not received!");
             }
 
+            // Did we receive the product(s)?
+            assertNotNull(returnedProductMetadatas);
+            int size = returnedProductMetadatas.size();
+            System.out.println("Number of metadata entries returned: " + size);
+            assertEquals(expectedNumberOfNotifications, size);
+
+            // Finish the test if nothing was returned.. (there's nothing else to check)
+            if (size != 0) {
+                // Check if it matches...
+                ProductMetadata returnedProductMetadata = returnedProductMetadatas.get(0);
+                String returnedFilename = returnedFilenames.get(0);
+                URI returnedDeliveredTo = returnedDeliveredTos.get(0);
+
+                assertNotNull(returnedProductMetadata);
+                assertEquals(productName, returnedFilename);
+                assertEquals(deliverTo.getValue(), returnedDeliveredTo.getValue());
+
+                if (productType != null) {
+                    assertEquals(productType.getValue(), returnedProductMetadata.getProductType().getName().getValue());
+                }
+            }
+
+            // -----------------------------------------------------------------------------------------------
             // Check that the product was created in the specified location
-            if (!productLocation.exists()) {
-                fail("The product file does not exist in: " + productLocation.getAbsolutePath());
+            if (deliveryMethod.equals(DeliveryMethodEnum.FILETRANSFER)) {
+                if (!productLocation.exists()) {
+                    fail("The product file does not exist in: " + productLocation.getAbsolutePath());
+                }
             }
 
             // Delete the file...
@@ -299,26 +348,10 @@ public class UC3_Ex2_Test extends MPDTest {
                 Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
                 fail(ex.toString());
             }
-
-            // Did we receive the product(s)?
-            assertNotNull(returnedProductMetadata);
-            int size = returnedProductMetadata.size();
-            System.out.println("Number of metadata entries returned: " + size);
-            assertEquals(expectedNumberOfNotifications, size);
-
-            // Finish the test if nothing was returned.. (there's nothing else to check)
-            if (size == 0) {
-                return;
-            }
-            
-            String returnedFilename = returnedFilenames.get(0);
-            URI returnedDeliveredTo = returnedDeliveredTos.get(0);
-            // Check if it matches...
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }

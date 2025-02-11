@@ -458,7 +458,7 @@ A ProductFilter relates to a specific ProductType. Note that the domain filter r
                 <mal:field name="domain" canBeNull="true" comment="The domain to filter on. A wildcard may be used in order to select all possibilities within a sub-domain.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
-                <mal:field name="sources" canBeNull="true" comment="A set of sources associated products. If the product source matches one of the listed sources, then it passes the filter.">
+                <mal:field name="sources" canBeNull="true" comment="The set of sources associated with the products to filter on. If the product source matches at least one of the listed sources, then it passes the filter.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
                 <mal:field name="attributeFilter" canBeNull="true" comment="Set of attribute filters defining the desired values of product metadata attributes. If multiple attribute filters are defined, then the product metadata must match all (ANDed) specified criteria to pass the filter.">

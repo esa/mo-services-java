@@ -43,6 +43,8 @@ import org.ccsds.moims.mo.mpd.structures.TimeWindow;
  */
 public class ImagesDataset extends Dataset {
 
+    public final ProductType typeImagesDataset;
+
     public ImagesDataset() {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -53,7 +55,7 @@ public class ImagesDataset extends Dataset {
         AttributeDefList attributeDefs = new AttributeDefList();
         attributeDefs.add(new AttributeDef(new Identifier("ImageSubject"), AttributeType.STRING));
         attributeDefs.add(new AttributeDef(new Identifier("imageType"), AttributeType.STRING));
-        ProductType typeImage = new ProductType(new Identifier("typeImageSource"), "An Image type", attributeDefs);
+        typeImagesDataset = new ProductType(new Identifier("typeImage"), "An Image type", attributeDefs);
 
         // ---------------------------------------------------
         // Products
@@ -66,7 +68,7 @@ public class ImagesDataset extends Dataset {
         attributes1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
-        ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1, Time.now(),
+        ProductMetadata metadata1 = new ProductMetadata(typeImagesDataset, ref1, Time.now(),
                 null, null, timeWindow, attributes1, "description");
         super.addNewProduct(ref1, productBody1, metadata1);
 
@@ -76,7 +78,7 @@ public class ImagesDataset extends Dataset {
         attributes2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
-        ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2, Time.now(),
+        ProductMetadata metadata2 = new ProductMetadata(typeImagesDataset, ref2, Time.now(),
                 null, null, timeWindow, attributes2, "description");
         super.addNewProduct(ref2, productBody2, metadata2);
     }
