@@ -118,10 +118,25 @@ public class UC3_Ex2_Test extends MPDTest {
      */
     @Test
     public void testCase_3() {
-        System.out.println("Running: testCase_2()");
+        System.out.println("Running: testCase_3()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_COMPLETE;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        Identifier source = new Identifier("forest flyover");
+        test(user, domain, delivery, deliverTo, productType, source, 0);
+    }
+
+    /**
+     * Test Case 4.
+     */
+    @Test
+    public void testCase_4() {
+        System.out.println("Running: testCase_4()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.SERVICE_JUST_METADATA;
         URI deliverTo = TMP_DIR;
         Identifier productType = null;
         Identifier source = new Identifier("forest flyover");
@@ -304,7 +319,7 @@ public class UC3_Ex2_Test extends MPDTest {
                 fail("The NOTIFY was not received!");
             }
 
-            // Did we receive the product(s)?
+            // Did we receive the product(s) notifications?
             assertNotNull(returnedProductMetadatas);
             int size = returnedProductMetadatas.size();
             System.out.println("Number of metadata entries returned: " + size);
