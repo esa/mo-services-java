@@ -534,7 +534,7 @@ Note that as AttributeDef is only used in the context of ProductType.">
                 <mal:extends>
                     <mal:type area="MPD" list="false" name="AttributeFilter"/>
                 </mal:extends>
-                <mal:field name="regex" canBeNull="false" comment="The regular expression - a sequence of characters that specifies a match pattern to be searched for in a text type metadata attribute (Sting, Identifier or URI).">
+                <mal:field name="regex" canBeNull="false" comment="The regular expression - a sequence of characters that specifies a match pattern to be searched for in a text type metadata attribute (String, Identifier or URI).">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
             </mal:composite>
