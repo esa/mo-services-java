@@ -56,6 +56,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
 import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import org.ccsds.moims.mo.mpd.structures.StringPattern;
 import org.ccsds.moims.mo.mpd.structures.ValueRange;
 import org.ccsds.moims.mo.mpd.structures.ValueSet;
 import static org.junit.Assert.assertEquals;
@@ -435,6 +436,24 @@ public class UC3_Ex2_Test extends MPDTest {
         // Attribute Filters:
         AttributeFilterList attributeFilter = new AttributeFilterList();
         attributeFilter.add(new ValueRange(new Identifier("coordinates.lat"), false, new Union(10.0), new Union(20.0)));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
+    }
+
+    /**
+     * Test Case 21.
+     */
+    @Test
+    public void testCase_21() {
+        System.out.println("Running: testCase_21()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new StringPattern(new Identifier("imageSubject"), true, "Ea.*"));
         testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
     }
 
