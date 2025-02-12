@@ -457,6 +457,24 @@ public class UC3_Ex2_Test extends MPDTest {
         testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 1);
     }
 
+    /**
+     * Test Case 22.
+     */
+    @Test
+    public void testCase_22() {
+        System.out.println("Running: testCase_22()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier source = new Identifier("forest flyover");
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new StringPattern(new Identifier("imageSubject"), true, "Ma.*"));
+        testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
+    }
+
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
             URI deliverTo, Identifier source, Identifier productType, int expectedNumberOfNotifications) {
         this.testWithAttributeFilter(user, domain, deliveryMethod, deliverTo,
