@@ -319,8 +319,8 @@ public class UC3_Ex1_Test extends MPDTest {
                     System.out.println("Reached: deliverProductsNotifyReceived()");
                     long duration = System.currentTimeMillis() - startTime;
                     System.out.println("NOTIFY received in: " + duration + " ms");
-                    notifyReceived.set(true);
                     returnedProducts.add(product);
+                    notifyReceived.set(true);
                 }
 
                 @Override
