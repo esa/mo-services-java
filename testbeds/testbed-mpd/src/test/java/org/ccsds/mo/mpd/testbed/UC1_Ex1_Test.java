@@ -332,6 +332,7 @@ public class UC1_Ex1_Test extends MPDTest {
                     }
                 }
             }
+            System.out.flush();
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
