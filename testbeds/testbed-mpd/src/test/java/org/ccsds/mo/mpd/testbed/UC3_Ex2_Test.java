@@ -577,6 +577,20 @@ public class UC3_Ex2_Test extends MPDTest {
                 productLocation.delete();
             }
 
+            // ------------------------------------------------------------------------
+            // Wait while ACK has not been received and 1 second has not passed yet...
+            long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!ackReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            if (!ackReceived.get()) {
+                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(
+                        Level.SEVERE, "The ACK was not received!");
+                fail("The ACK was not received!");
+            }
+
             // Provider becomes aware of a new Product with:
             IdentifierList productDomain = new IdentifierList();
             productDomain.add(new Identifier("nasa"));
@@ -592,20 +606,6 @@ public class UC3_Ex2_Test extends MPDTest {
             ProductMetadata metadata = new ProductMetadata(backend.typeImage, ref, Time.now(),
                     new Identifier("forest flyover"), null, null, attributes, "description");
             backend.addNewProduct(ref, productBody, metadata);
-
-            // ------------------------------------------------------------------------
-            // Wait while ACK has not been received and 1 second has not passed yet...
-            long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
-            while (!ackReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
-                // Recalculate it
-                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
-            }
-
-            if (!ackReceived.get()) {
-                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(
-                        Level.SEVERE, "The ACK was not received!");
-                fail("The ACK was not received!");
-            }
 
             // ------------------------------------------------------------------------
             // Wait while NOTIFY has not been received and 1 second has not passed yet...

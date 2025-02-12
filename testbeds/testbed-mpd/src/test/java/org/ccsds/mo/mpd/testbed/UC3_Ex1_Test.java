@@ -333,16 +333,6 @@ public class UC3_Ex1_Test extends MPDTest {
                 }
             });
 
-            // Provider pushes a new Product (on the backend)
-            IdentifierList productDomain = new IdentifierList();
-            productDomain.add(new Identifier("nasa"));
-            productDomain.add(new Identifier("hubble"));
-            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
-            Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
-                    null, null, TMPacketsDataset.timeWindowAPID100, null, "description");
-            backend.addNewProduct(ref, productBody, metadata);
-
             // ------------------------------------------------------------------------
             // Wait while ACK has not been received and 1 second has not passed yet...
             long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
@@ -356,6 +346,16 @@ public class UC3_Ex1_Test extends MPDTest {
                         Level.SEVERE, "The ACK was not received!");
                 fail("The ACK was not received!");
             }
+
+            // Provider pushes a new Product (on the backend)
+            IdentifierList productDomain = new IdentifierList();
+            productDomain.add(new Identifier("nasa"));
+            productDomain.add(new Identifier("hubble"));
+            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
+            Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
+            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
+                    null, null, TMPacketsDataset.timeWindowAPID100, null, "description");
+            backend.addNewProduct(ref, productBody, metadata);
 
             // ------------------------------------------------------------------------
             // Wait while NOTIFY has not been received and 1 second has not passed yet...
