@@ -399,6 +399,10 @@ public class UC3_Ex1_Test extends MPDTest {
             if (productType != null) {
                 assertEquals(productType, returnedProduct.getProductType().getName());
             }
+
+            IdentifierList subscriptions = new IdentifierList();
+            subscriptions.add(subscription.getSubscriptionId());
+            consumerPOD.deliverProductsDeregister(subscriptions);
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {

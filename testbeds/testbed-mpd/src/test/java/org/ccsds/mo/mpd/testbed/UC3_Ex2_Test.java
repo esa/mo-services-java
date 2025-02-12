@@ -666,6 +666,10 @@ public class UC3_Ex2_Test extends MPDTest {
                 Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
                 fail(ex.toString());
             }
+
+            IdentifierList subscriptions = new IdentifierList();
+            subscriptions.add(subscription.getSubscriptionId());
+            consumerPOD.notifyProductDeliveryDeregister(subscriptions);
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MALException ex) {
