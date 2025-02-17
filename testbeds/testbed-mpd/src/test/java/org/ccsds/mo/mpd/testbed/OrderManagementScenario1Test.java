@@ -74,25 +74,41 @@ public class OrderManagementScenario1Test extends MPDTest {
     }
 
     /**
-     * Test Case 2 - Submits a standing order, then requests the list of
-     * standing orders. Checks if there is one standing order, and if the data
-     * matches what was submitted.
+     * Test Case 2.
      */
     @Test
     public void testCase_02() {
         // Input Data
         Identifier user = new Identifier("User");
-        DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
 
-        test(user, domain, dMethod);
+        test(user, domain, dMethod, 1);
     }
 
-    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod) {
+    /**
+     * Test Case 3.
+     */
+    @Test
+    public void testCase_03() {
+        // Input Data
+        Identifier user = new Identifier("User");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("esa"));
+        domain.add(new Identifier("juice"));
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
+
+        test(user, domain, dMethod, 0);
+    }
+
+    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod, int expectedNumberOfResults) {
         try {
             System.out.println("Running: testCase_2");
-            ProductFilter productFilter = new ProductFilter(null, null, null, null);
+            IdentifierList domainFilter = new IdentifierList();
+            domainFilter.add(new Identifier("nasa"));
+            domainFilter.add(new Identifier("hubble"));
+            ProductFilter productFilter = new ProductFilter(null, domainFilter, null, null);
             StandingOrder orderDetails = new StandingOrder(null, user,
                     productFilter, null, dMethod, null, null);
 
@@ -109,11 +125,13 @@ public class OrderManagementScenario1Test extends MPDTest {
                     "The returned list of standing orders is: {0}", standingOrders.toString());
 
             int size = standingOrders.size();
-            assertEquals(1, size);
+            assertEquals(expectedNumberOfResults, size);
 
-            StandingOrder standingOrder = standingOrders.get(0);
-            assertEquals(user, standingOrder.getUser());
-            assertEquals(dMethod, standingOrder.getDeliveryMethod());
+            if (size != 0) {
+                StandingOrder standingOrder = standingOrders.get(0);
+                assertEquals(user, standingOrder.getUser());
+                assertEquals(dMethod, standingOrder.getDeliveryMethod());
+            }
 
             consumerOM.cancelStandingOrder(id);
         } catch (MALInteractionException ex) {
