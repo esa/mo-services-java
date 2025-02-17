@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
+import org.ccsds.moims.mo.mpd.structures.ProductFilter;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
 import org.junit.BeforeClass;
@@ -79,24 +80,30 @@ public class OrderManagementScenario1Test extends MPDTest {
      */
     @Test
     public void testCase_02() {
+        // Input Data
+        Identifier user = new Identifier("User");
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("*"));
+
+        test(user, domain, dMethod);
+    }
+
+    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod) {
         try {
             System.out.println("Running: testCase_2");
-
-            // Input Data
-            Identifier user = new Identifier("User");
-            DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
-            StandingOrder orderDetails = new StandingOrder(user, dMethod);
+            ProductFilter productFilter = new ProductFilter(null, null, null, null);
+            StandingOrder orderDetails = new StandingOrder(null, user,
+                    productFilter, null, dMethod, null, null);
 
             // Submit a Standing Order
             Long id = consumerOM.submitStandingOrder(orderDetails);
             assertNotEquals(null, id);
 
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
-                    "The returned Identifier is: {0}", id);
+            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(
+                    Level.INFO, "The returned Identifier is: {0}", id);
 
             // Request the list of standing orders
-            IdentifierList domain = new IdentifierList();
-            domain.add(new Identifier("*"));
             StandingOrderList standingOrders = consumerOM.listStandingOrders(new Identifier("*"), domain);
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
                     "The returned list of standing orders is: {0}", standingOrders.toString());
@@ -107,6 +114,8 @@ public class OrderManagementScenario1Test extends MPDTest {
             StandingOrder standingOrder = standingOrders.get(0);
             assertEquals(user, standingOrder.getUser());
             assertEquals(dMethod, standingOrder.getDeliveryMethod());
+
+            consumerOM.cancelStandingOrder(id);
         } catch (MALInteractionException ex) {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -114,5 +123,6 @@ public class OrderManagementScenario1Test extends MPDTest {
             Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
+
     }
 }
