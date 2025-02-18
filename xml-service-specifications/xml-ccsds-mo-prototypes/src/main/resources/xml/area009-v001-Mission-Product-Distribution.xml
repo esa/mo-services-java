@@ -17,7 +17,7 @@
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
-                        The service provider shall return a list of Product Metadatas that satisfy the specified input filter criteria defined by the product filter, the creation date, and the content creation date.  To pass the filter a product must match all the individual filter criteria.
+                        The service provider shall return a list of metadata entries for the products that satisfy the specified input filter criteria defined by the product filter, the creation date, and the content creation date.  To pass the filter a product must match all the individual filter criteria.
                         Note: It is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
