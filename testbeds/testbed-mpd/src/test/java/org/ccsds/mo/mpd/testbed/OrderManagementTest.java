@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class OrderManagementScenario1Test extends MPDTest {
+public class OrderManagementTest extends MPDTest {
 
     @BeforeClass
     public static void setUpClass() throws IOException {
@@ -65,10 +65,10 @@ public class OrderManagementScenario1Test extends MPDTest {
             int size = standingOrders.size();
             assertEquals(0, size);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
     }
@@ -118,12 +118,12 @@ public class OrderManagementScenario1Test extends MPDTest {
             Long id = consumerOM.submitStandingOrder(orderDetails);
             assertNotEquals(null, id);
 
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(
+            Logger.getLogger(OrderManagementTest.class.getName()).log(
                     Level.INFO, "The returned Identifier is: {0}", id);
 
             // Request the list of standing orders
             StandingOrderList standingOrders = consumerOM.listStandingOrders(new Identifier("*"), domain);
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.INFO,
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO,
                     "The returned list of standing orders is: {0}", standingOrders.toString());
 
             int size = standingOrders.size();
@@ -137,10 +137,10 @@ public class OrderManagementScenario1Test extends MPDTest {
 
             consumerOM.cancelStandingOrder(id);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(OrderManagementScenario1Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
 
