@@ -54,7 +54,7 @@ public class OrderManagementScenario1Test extends MPDTest {
      */
     @Test
     public void testCase_01() {
-        System.out.println("Running: testCase_1()");
+        System.out.println("Running: testCase_01()");
 
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
@@ -78,6 +78,7 @@ public class OrderManagementScenario1Test extends MPDTest {
      */
     @Test
     public void testCase_02() {
+        System.out.println("Running: testCase_02()");
         // Input Data
         Identifier user = new Identifier("User");
         IdentifierList domain = new IdentifierList();
@@ -92,6 +93,7 @@ public class OrderManagementScenario1Test extends MPDTest {
      */
     @Test
     public void testCase_03() {
+        System.out.println("Running: testCase_03()");
         // Input Data
         Identifier user = new Identifier("User");
         IdentifierList domain = new IdentifierList();
