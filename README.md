@@ -75,11 +75,11 @@ Logs of the test run can be found in the report directory in `zzz_CCSDS_[...].tx
 #### Selective Testing
 Running all test procedures usually takes several minutes. However, this is often not necessary during development. The testbed can be configured to only run selected tests as follows.
 
-Navigate to `testbeds/testbed-mal/src/main/fitness/FitNesseRoot/MalTests/TestDocument` and open `content.txt`. By adding `#` at the beginnig of a line, the corresponding test will not be executed.
+Navigate to `testbeds/testbed-mal/src/main/fitness/FitNesseRoot/MalTests/TestDocument` and open `content.txt`. By adding `#` at the beginning of a line, the corresponding test will not be executed.
 
 #### Troubleshooting
 
-`shared broker = true` tests fail: Eventhough the framework supports the use of shared brokers, this is rarely used in practice as it bringt unnecessary overhead in most of the cases. Errors of this kind are usually results of issues on the transport layer.
+`shared broker = true` tests fail: Even though the framework supports the use of shared brokers, this is rarely used in practice as it brings unnecessary overhead in most of the cases. Errors of this kind are usually results of issues on the transport layer.
 
 ## Release
 
