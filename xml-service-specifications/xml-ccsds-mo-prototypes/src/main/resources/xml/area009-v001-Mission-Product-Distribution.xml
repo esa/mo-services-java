@@ -48,10 +48,10 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
-                                <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
+                            <mal:extraInformation comment="A textual description with the reason for invalidity.">
+                                <mal:type area="MPD" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -217,10 +217,10 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
-                                <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
+                            <mal:extraInformation comment="A textual description with the reason for invalidity.">
+                                <mal:type area="MPD" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -293,10 +293,10 @@
                         </mal:publishNotify>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
-                                <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
+                            <mal:extraInformation comment="A textual description with the reason for invalidity.">
+                                <mal:type area="MPD" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef comment="An attempt to deliver a product file to the nominated address failed.">
@@ -336,10 +336,10 @@
                         </mal:publishNotify>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported.">
+                        <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A UInteger giving a secondary error code that details the reason for invalidity.">
-                                <mal:type area="MPD" name="SecondaryErrorCodeEnum" list="false"/>
+                            <mal:extraInformation comment="A textual description with the reason for invalidity.">
+                                <mal:type area="MPD" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -544,16 +544,6 @@ Note that as AttributeDef is only used in the context of ProductType.">
                 <mal:item nvalue="2" value="SERVICE_JUST_METADATA" comment="The mission data product is to be delivered via service messages with the metadata and without product body. Only the metadata of the product will be transferred. (Similar to the SERVICE_COMPLETE option but the productBody blob is set to NULL.)"/>
                 <mal:item nvalue="3" value="FILETRANSFER" comment="The mission data product is to be delivered by file transfer to the address contained in the deliverTo field."/>
             </mal:enumeration>
-
-            <mal:enumeration name="SecondaryErrorCodeEnum" shortFormPart="6" comment="For the Invalid error, the extraInfo field contains a secondary error code defined as a UInteger that allows for deployment specific extensibility. The following standard secondary error codes are defined:">
-                <mal:item nvalue="1" value="UNKNOWN" comment="Referenced MO object is not available to the service provider."/>
-                <mal:item nvalue="2" value="UNDEFINED" comment="Undefined value for enumeration field."/>
-                <mal:item nvalue="3" value="OUT_OF_RANGE" comment="A numeric value is outside the supported range."/>
-                <mal:item nvalue="4" value="UNRECOGNIZED" comment="Value of type MAL::Identifier or MAL::String (referencing a named item) does not correspond to a known item."/>
-                <mal:item nvalue="5" value="BAD_TIME" comment="A date-time value is outside the supported time period."/>
-                <mal:item nvalue="6" value="INCONSISTENT" comment="A value is inconsistent with that of another field within the message. This indicates violation of a constraint rule."/>
-            </mal:enumeration>
-
         </mal:dataTypes>
 
         <mal:errors>
@@ -561,6 +551,8 @@ Note that as AttributeDef is only used in the context of ProductType.">
             <mal:error number="2" name="Delivery Failed" comment="An attempt to deliver a product file to the nominated address failed."/>
             <mal:error number="3" name="Order Failed" comment="Creation of a new product order failed."/>
             <mal:error number="4" name="Unknown" comment="The referenced item (user or orderID) does not exist."/>
+            <mal:error number="5" name="Out of Range" comment="A numeric value is outside the supported range."/>
+            <mal:error number="6" name="Bad Time" comment="A date-time value is outside the supported time period."/>
         </mal:errors>
 
     </mal:area>
