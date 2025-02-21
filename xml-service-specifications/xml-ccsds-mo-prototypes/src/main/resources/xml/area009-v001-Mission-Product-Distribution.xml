@@ -51,7 +51,7 @@
                         <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
-                                <mal:type area="MPD" name="String" list="false"/>
+                                <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -220,7 +220,7 @@
                         <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
-                                <mal:type area="MPD" name="String" list="false"/>
+                                <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
@@ -296,7 +296,7 @@
                         <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
-                                <mal:type area="MPD" name="String" list="false"/>
+                                <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef comment="An attempt to deliver a product file to the nominated address failed.">
@@ -339,7 +339,7 @@
                         <mal:errorRef comment="A field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
-                                <mal:type area="MPD" name="String" list="false"/>
+                                <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
