@@ -35,6 +35,7 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NamedValue;
 import org.ccsds.moims.mo.mal.structures.NamedValueList;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
@@ -72,7 +73,8 @@ public class UC2_Test extends MPDTest {
     public void testCase_01() {
         System.out.println("Running: testCase_1()");
         UInteger apidValue = new UInteger(100);
-        test(apidValue, null, 1);
+        TimeWindow overallWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        test(apidValue, 10, overallWindow, 3); // 3 Because the borders will overlap!
     }
 
     /**
@@ -82,10 +84,29 @@ public class UC2_Test extends MPDTest {
     public void testCase_02() {
         System.out.println("Running: testCase_2()");
         UInteger apidValue = new UInteger(200);
-        test(apidValue, null, 1);
+        TimeWindow overallWindow = new TimeWindow(TMPacketsDataset.APID200_TIME_START, TMPacketsDataset.APID200_TIME_END);
+        test(apidValue, 10, overallWindow, 3); // 3 Because the borders will overlap!
     }
 
-    private synchronized void test(UInteger apidValue, TimeWindow contentDate, int expectedNumberOfResults) {
+    private synchronized void test(UInteger apidValue, int steps, TimeWindow overallWindow, int expectedNumberOfResults) {
+        int counter = 0;
+        long interval = overallWindow.getEnd().getValue() - overallWindow.getStart().getValue();
+        int halfOfSteps = steps / 2;
+        long overallStart = overallWindow.getStart().getValue();
+
+        for (int i = -halfOfSteps; i < steps - halfOfSteps; i++) {
+            Time start = new Time(overallStart + i * interval);
+            Time end = new Time(overallStart + (i + 1) * interval);
+            TimeWindow contentDate = new TimeWindow(start, end);
+            if (this.foundProduct(apidValue, contentDate)) {
+                counter++;
+            }
+        }
+
+        assertEquals(expectedNumberOfResults, counter);
+    }
+
+    private synchronized boolean foundProduct(UInteger apidValue, TimeWindow contentDate) {
         ProductType productType = backend.typeTMPacketDailyExtract;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -106,9 +127,9 @@ public class UC2_Test extends MPDTest {
         try {
             TimeWindow creationDate = null;
             list = consumerPR.listProducts(productFilter, creationDate, contentDate);
+            assertNotNull(list);
             int size = list.size();
             System.out.println("Number of listed products returned: " + size);
-            assertEquals(expectedNumberOfResults, size);
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -119,7 +140,11 @@ public class UC2_Test extends MPDTest {
 
         if (list == null) {
             fail("The list cannot be null");
-            return;
+            return false;
+        }
+
+        if (list.isEmpty()) {
+            return false;
         }
 
         // Prepare the ObjectRefList with the returned data from the previous step
@@ -211,11 +236,11 @@ public class UC2_Test extends MPDTest {
             assertNotNull(returnedProducts);
             int size = returnedProducts.size();
             System.out.println("Number of products returned: " + size);
-            assertEquals(expectedNumberOfResults, size);
 
             // Finish the test if nothing was returned.. (there's nothing else to check)
-            if (size == 0) {
-                return;
+            if (size != 1) {
+                fail("The returned list must be 1 at this stage!");
+                return false;
             }
 
             // Check the timeWindows for all the received products, if one was selected
@@ -252,6 +277,7 @@ public class UC2_Test extends MPDTest {
                 }
             }
             System.out.flush();
+            return true;
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -259,5 +285,6 @@ public class UC2_Test extends MPDTest {
             Logger.getLogger(UC2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
+        return false;
     }
 }
