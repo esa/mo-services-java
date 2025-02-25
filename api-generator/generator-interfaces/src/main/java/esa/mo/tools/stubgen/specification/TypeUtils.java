@@ -215,6 +215,11 @@ public class TypeUtils {
                     + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
         }
 
+        if (targetType.contains("ObjectRefList")) {
+            return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
+                    + "mal.structures.ObjectRefList.SHORT_FORM");
+        }
+
         if (targetType.contains("ObjectRef")) {
             return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
                     + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
