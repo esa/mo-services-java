@@ -32,6 +32,10 @@ import org.ccsds.moims.mo.mal.TypeId;
  */
 public class ObjectRef<T extends Element> implements Attribute {
 
+    /**
+     * The TypeId of this Element as a long.
+     */
+    public static final Long SHORT_FORM = Attribute.OBJECTREF_SHORT_FORM;
     private static final long serialVersionUID = Attribute.OBJECTREF_SHORT_FORM;
     private final IdentifierList domain;
     private final Long absoluteSFP;
