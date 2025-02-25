@@ -1605,9 +1605,18 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     // Strip the parenthesis around the cast: "(abc) " -> "abc"
                     // Note: Yes, the string has a space at the end... that's why we have: length() - 2
                     String classPath = castString.substring(1, castString.length() - 2);
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + createMethodCall("decoder.decode" + canBeNullStr
-                                    + "Element(new " + classPath + "())"));
+                    // Change the type to HeterogeneousList if it is ElementList
+                    if (classPath.contains(".ElementList")) {
+                        classPath = classPath.replaceAll("\\.ElementList", ".HeterogeneousList");
+                        castString = castString.replaceAll("\\.ElementList", ".HeterogeneousList");
+                        method.addLine(element.getFieldName() + " = " + castString
+                                + createMethodCall("decoder.decode" + canBeNullStr
+                                        + "HeterogeneousList(new " + classPath + "())"));
+                    } else {
+                        method.addLine(element.getFieldName() + " = " + castString
+                                + createMethodCall("decoder.decode" + canBeNullStr
+                                        + "Element(new " + classPath + "())"));
+                    }
                 } else {
                     method.addLine(element.getFieldName() + " = " + castString
                             + createMethodCall("decoder.decode" + canBeNullStr + "AbstractElement()"));
