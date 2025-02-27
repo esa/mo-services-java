@@ -111,7 +111,7 @@ public class UC3_Ex2_Test extends MPDTest {
     @Test
     public void testCase_02() {
         System.out.println("Running: testCase_2()");
-        Identifier user = new Identifier("bill.gates");
+        Identifier user = new Identifier("john.smith");
         IdentifierList domain = null;
         DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = TMP_DIR;

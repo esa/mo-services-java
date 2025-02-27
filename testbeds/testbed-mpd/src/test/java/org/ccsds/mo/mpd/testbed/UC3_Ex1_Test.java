@@ -144,7 +144,7 @@ public class UC3_Ex1_Test extends MPDTest {
     @Test
     public void testCase_07() {
         System.out.println("Running: testCase_7()");
-        Identifier user = new Identifier("bill.gates");
+        Identifier user = new Identifier("john.smith");
         IdentifierList domain = null;
         Identifier productType = null;
         test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
