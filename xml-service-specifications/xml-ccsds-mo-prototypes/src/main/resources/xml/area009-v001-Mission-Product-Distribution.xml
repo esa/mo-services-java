@@ -17,11 +17,11 @@
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
-                        The service provider shall return a list of metadata entries for the products that satisfy the specified input filter criteria defined by the product filter, the creation date, and the content creation date.  To pass the filter a product must match all the individual filter criteria.
+                        The service provider shall return a list of metadata entries for the products that satisfy all the specified individual criteria defined by the product filter, the creation date, and the content creation date.
                         Note: It is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The product filter shall optionally specify the product type and required filters by source and metadata attribute.
+						The service provider shall select the products based on the defined fields of the productFilter, composed by the product type, the domain, the source(s), and the metadata attributes filter.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
@@ -48,7 +48,7 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.">
+                        <mal:errorRef comment="When a field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
                                 <mal:type area="MAL" name="String" list="false"/>
@@ -56,6 +56,8 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="2" comment="">
                 <mal:progressIP name="getProducts" number="2" comment="The getProduct operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
 						A consumer shall send the list of one or more product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
@@ -84,7 +86,7 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="One or more of the productRefs was not found.">
+                        <mal:errorRef comment="When one or more of the productRefs was not found.">
                             <mal:type name="Unknown" area="MPD"/>
                             <mal:extraInformation comment="The indexes of referenced products in the list that were not found. The first item has an index value of 0.">
                                 <mal:type area="MAL" name="Integer" list="true"/>
@@ -101,7 +103,7 @@
 						The provider shall transfer the referenced mission data products to the selected deliverTo URI.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata and the respective filename.
+						After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata, the respective filename, and a success status reporting if the file was successfully transferred.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="4">
 						The final Response message shall be empty, and it indicates to the consumer that all products have been delivered.
@@ -124,20 +126,23 @@
                             <mal:field name="filename" canBeNull="false" comment="The filename of the selected mission data product(s).">
                                 <mal:type area="MAL" list="false" name="String"/>
                             </mal:field>
+                            <mal:field name="success" canBeNull="false" comment="The status indicating the successful delivery of the selected mission data product(s).">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
                         </mal:update>
                         <mal:response>
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="One or more of the productRefs was not found.">
+                        <mal:errorRef comment="When one or more of the productRefs was not found.">
                             <mal:type name="Unknown" area="MPD"/>
                             <mal:extraInformation comment="The indexes of referenced products in the list that were not found. The first item has an index value of 0.">
                                 <mal:type area="MAL" name="Integer" list="true"/>
                             </mal:extraInformation>
                         </mal:errorRef>
-                        <mal:errorRef comment="An attempt to deliver a product file to the nominated address failed.">
+                        <mal:errorRef comment="When the provider is unable to reach the selected URI (e.g. unreachable target machine, wrong credentials, revoked access, etc).">
                             <mal:type name="Delivery Failed" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo provides additional information on the reason for failure as a free format string.">
+                            <mal:extraInformation comment="Additional information on the reason for failure as a free format string.">
                                 <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -180,17 +185,19 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="The referenced user does not exist.">
+                        <mal:errorRef comment="When the referenced user does not exist.">
                             <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo contains the user that does not exist.">
-                                <mal:type area="MAL" name="Identifier" list="false"/>
+                            <mal:extraInformation comment="Any other additional information.">
+                                <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
+			</mal:capabilitySet>
+            <mal:capabilitySet number="2" comment="">
                 <mal:requestIP name="submitStandingOrder" number="2" comment="The submitStandingOrder operation creates a new standing order in the provider for delivery of mission data products.">
                     <mal:documentation name="Requirement" order="1">
-						The service provider shall ignore the received value in the orderID field of the orderDetails, and always assign a unique id to the submitted order.
+						The service provider shall ignore the received value in the orderID field of the orderDetails from the Request message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						The service provider shall create a new standing order, then assign a unique ID for the standing order, and return it to the consumer in the Response message.
@@ -217,9 +224,15 @@
                         </mal:response>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.">
+                        <mal:errorRef comment="When a field in the message contains an invalid value.  When the delivery method is selected as FILETRANFER and the delivery URI is set to NULL.  When the delivery method is not selected as FILETRANFER and the delivery URI is not set to NULL.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
+                                <mal:type area="MAL" name="String" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef comment="When the selected URI contains an unsupported scheme/protocol.">
+                            <mal:type name="Order Failed" area="MPD"/>
+                            <mal:extraInformation comment="Any other optional information, for example, supported scheme/protocols.">
                                 <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -228,9 +241,10 @@
                 <mal:submitIP name="cancelStandingOrder" number="3" comment="The cancelStandingOrder operation cancels an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
 						The service consumer shall send the orderID of the standing order to be cancelled to the service provider.
+						Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation, the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation, the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
+						The provider shall cancel the standing order associated with the submitted orderID.
                     </mal:documentation>
                     <mal:messages>
                         <mal:submit>
@@ -240,9 +254,9 @@
                         </mal:submit>
                     </mal:messages>
                     <mal:errors>
-                        <mal:errorRef comment="The referenced orderID does not exist.">
+                        <mal:errorRef comment="When the referenced orderID does not exist.">
                             <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="The ExtraInfo contains the orderID that does not exist.">
+                            <mal:extraInformation comment="Contains the orderID that does not exist.">
                                 <mal:type area="MAL" name="Long" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -290,23 +304,14 @@
                             <mal:field name="deliveredTo" canBeNull="false" comment="The location's URI where the mission data product was delivered.">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:field>
+                            <mal:field name="success" canBeNull="false" comment="The status indicating the successful delivery of the mission data product.">
+                                <mal:type area="MAL" list="false" name="Boolean"/>
+                            </mal:field>
                         </mal:publishNotify>
                     </mal:messages>
-                    <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.">
-                            <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A textual description with the reason for invalidity.">
-                                <mal:type area="MAL" name="String" list="false"/>
-                            </mal:extraInformation>
-                        </mal:errorRef>
-                        <mal:errorRef comment="An attempt to deliver a product file to the nominated address failed.">
-                            <mal:type name="Delivery Failed" area="MPD"/>
-                            <mal:extraInformation comment="ExtraInfo provides additional information on the reason for failure as a free format string.">
-                                <mal:type area="MAL" name="String" list="false"/>
-                            </mal:extraInformation>
-                        </mal:errorRef>
-                    </mal:errors>
                 </mal:pubsubIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="2" comment="">
                 <mal:pubsubIP name="deliverProducts" number="2" comment="The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
 						Upon the creation (or availability) of a new mission data product that matches a certain standing order, the service provider shall publish this mission data product via the service interface.
@@ -319,6 +324,9 @@
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="4">
 						A service consumer may subscribe to mission data products for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
+					</mal:documentation>
+                    <mal:documentation name="Requirement" order="5">
+						If the delivery of a mission data product is not successful, then the respective success field of the Publish message shall be set to FALSE.
 					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
@@ -335,14 +343,6 @@
                             </mal:field>
                         </mal:publishNotify>
                     </mal:messages>
-                    <mal:errors>
-                        <mal:errorRef comment="A field in the message contains an invalid value.">
-                            <mal:type name="Invalid" area="MPD"/>
-                            <mal:extraInformation comment="A textual description with the reason for invalidity.">
-                                <mal:type area="MAL" name="String" list="false"/>
-                            </mal:extraInformation>
-                        </mal:errorRef>
-                    </mal:errors>
                 </mal:pubsubIP>
             </mal:capabilitySet>
         </mal:service>

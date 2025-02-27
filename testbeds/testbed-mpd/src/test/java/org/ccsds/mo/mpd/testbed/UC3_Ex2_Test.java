@@ -587,6 +587,7 @@ public class UC3_Ex2_Test extends MPDTest {
                         org.ccsds.moims.mo.mpd.structures.ProductMetadata metadata,
                         String filename,
                         org.ccsds.moims.mo.mal.structures.URI deliveredTo,
+                        Boolean success,
                         java.util.Map qosProperties) {
                     System.out.println("Reached: notifyProductDeliveryNotifyReceived()");
                     long duration = System.currentTimeMillis() - startTime;
