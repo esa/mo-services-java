@@ -78,7 +78,7 @@
                         <mal:acknowledgement>
                         </mal:acknowledgement>
                         <mal:update>
-                            <mal:field name="product" canBeNull="false" comment="The mission data product.">
+                            <mal:field name="product" canBeNull="false" comment="The selected mission data product(s).">
                                 <mal:type area="MPD" list="false" name="Product"/>
                             </mal:field>
                         </mal:update>
@@ -283,7 +283,7 @@
 						A service consumer may subscribe to notifications for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="5">
-						The published message shall contain the metadata, filename, and delivered location of the mission data product that was delivered.
+						The published message shall contain the metadata, filename, the mission data product's delivered location, and the status indicating if the delivery was successful.
 					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
