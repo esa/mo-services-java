@@ -25,7 +25,7 @@
                         Note: It is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall select the products based on the defined fields of the productFilter, composed by the product type, the domain, the source(s), and the metadata attributes filter.
+						The service provider shall select the products based on the defined fields of the productFilter, composed by the product type, the domain, the source(s), and the metadata attributes filter. The ProductFilter structure specifies the conditions for each of the fields.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
@@ -55,6 +55,12 @@
                         <mal:errorRef comment="When a field in the message contains an invalid value.">
                             <mal:type name="Invalid" area="MPD"/>
                             <mal:extraInformation comment="A textual description with the reason for invalidity.">
+                                <mal:type area="MAL" name="String" list="false"/>
+                            </mal:extraInformation>
+                        </mal:errorRef>
+                        <mal:errorRef comment="When the list cannot be returned due to too many entries.">
+                            <mal:type name="Too Many" area="MPD"/>
+                            <mal:extraInformation comment="An optional description stating how many entries were found and how many are supported by the operation.">
                                 <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -466,7 +472,7 @@ A ProductFilter relates to a specific ProductType. Note that the domain filter r
                 <mal:field name="domain" canBeNull="true" comment="The domain to filter on. A wildcard may be used in order to select all possibilities within a sub-domain.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
-                <mal:field name="sources" canBeNull="true" comment="The set of sources associated with the products to filter on. If the product source matches at least one of the listed sources, then it passes the filter.">
+                <mal:field name="sources" canBeNull="true" comment="The set of sources associated with the products to filter on. If the product source matches at least one of the listed sources, then it passes the filter. If the sources field is set to NULL, then no filtering on the product source will be performed.">
                     <mal:type area="MAL" list="true" name="Identifier"/>
                 </mal:field>
                 <mal:field name="attributeFilter" canBeNull="true" comment="Set of attribute filters defining the desired values of product metadata attributes. If multiple attribute filters are defined, then the product metadata must match all (ANDed) specified criteria to pass the filter.">
@@ -561,6 +567,7 @@ Note that as AttributeDef is only used in the context of ProductType.">
             <mal:error number="4" name="Unknown" comment="The referenced item (user or orderID) does not exist."/>
             <mal:error number="5" name="Out of Range" comment="A numeric value is outside the supported range."/>
             <mal:error number="6" name="Bad Time" comment="A date-time value is outside the supported time period."/>
+            <mal:error number="7" name="Too Many" comment="Too many entries were found."/>
         </mal:errors>
 
     </mal:area>
