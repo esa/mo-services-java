@@ -12,7 +12,11 @@
 
         <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service allows browsing and retrieval of existing products.">
             <mal:documentation name="Service-level Requirements" order="1">
-                TBD
+				The Product Retrieval service provider may provide the capability to list mission data products, to get mission data products, and/or to remotely deliver mission data products.
+            </mal:documentation>
+            <mal:documentation name="Service-level Requirements" order="2">
+				The operations of the Product Retrieval service shall uniquely reference the mission data products using ObjectRefs.
+				Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
@@ -61,12 +65,14 @@
                 <mal:progressIP name="getProducts" number="2" comment="The getProduct operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
 						A consumer shall send the list of one or more product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
-						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
                     </mal:documentation>
-                    <mal:documentation name="Requirement" order="2">
-						The service provider shall return each referenced product to the service consumer in a separate Update message.
+					<mal:documentation name="Requirement" order="2">
+						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
+						The service provider shall return each referenced product to the service consumer in a separate Update message.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="4">
 						The final Response message shall be empty, and it indicates to the consumer that all products have been returned.
                     </mal:documentation>
                     <mal:messages>
@@ -96,16 +102,18 @@
                 </mal:progressIP>
                 <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer of mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
-						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transferred.
-						Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation. The message also contains the file delivery address as a URI.
+						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="2">
 						The provider shall transfer the referenced mission data products to the selected deliverTo URI.
                     </mal:documentation>
-                    <mal:documentation name="Requirement" order="3">
+					<mal:documentation name="Requirement" order="3">
+						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="4">
 						After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata, the respective filename, and a success status reporting if the file was successfully transferred.
 					</mal:documentation>
-					<mal:documentation name="Requirement" order="4">
+					<mal:documentation name="Requirement" order="5">
 						The final Response message shall be empty, and it indicates to the consumer that all products have been delivered.
                     </mal:documentation>
                     <mal:messages>

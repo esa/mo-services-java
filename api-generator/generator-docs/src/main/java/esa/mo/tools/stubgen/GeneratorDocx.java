@@ -188,10 +188,10 @@ public class GeneratorDocx extends GeneratorDocument {
                     docxServiceFile.addTitle(3, "Overview");
                     docxServiceFile.addComment(service.getComment());
                     drawServiceTable(docxServiceFile, area, service);
+                    docxServiceFile.addTitle(3, "Service-level Requirements");
 
-                    for (DocumentationType documentation : service.getDocumentation()) {
-                        docxServiceFile.addTitle(3, documentation.getName());
-                        docxServiceFile.addNumberedComment(GeneratorUtils.addSplitStrings(null, documentation.getContent()));
+                    if (service.getDocumentation() != null) {
+                        addRequirements(docxServiceFile, service.getDocumentation());
                     }
 
                     if (!StdStrings.COM.equalsIgnoreCase(service.getName())) {
@@ -204,7 +204,7 @@ public class GeneratorDocx extends GeneratorDocument {
                         for (CapabilitySetType cSet : service.getCapabilitySet()) {
                             String str = cSet.getComment();
 
-                            if (null != str) {
+                            if (str != null) {
                                 comments.addAll(GeneratorUtils.addSplitStrings(null, str));
                             }
                         }
@@ -769,7 +769,7 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addTitle(4, "Requirements");
 
         if (op.getDocumentation() != null) {
-            addRequirementsDetails(docxFile, op.getDocumentation());
+            addRequirements(docxFile, op.getDocumentation());
         }
     }
 
@@ -786,7 +786,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
     }
 
-    private void addRequirementsDetails(DocxBaseWriter docxFile, List<DocumentationType> docs) throws IOException {
+    private void addRequirements(DocxBaseWriter docxFile, List<DocumentationType> docs) throws IOException {
         List<String> requirements = null;
         for (DocumentationType doc : docs) {
             requirements = GeneratorUtils.addSplitStrings(requirements, doc.getContent());
