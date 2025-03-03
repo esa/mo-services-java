@@ -280,7 +280,10 @@
         </mal:service>
         <mal:service name="ProductOrderDelivery" number="3" comment="The Product Order Delivery Service is used in conjunction with existing standing orders (for the delivery of selected products). File delivery of products, if requested in the standing order, will be delivered without the need to use these service operations. The service provides two capabilities to the consumer: (1) to receive notifications each time their ordered products have been delivered as files; (2) to receive the ordered products via message transfer rather than file delivery.">
             <mal:documentation name="Service-level Requirements" order="1">
-                TBD
+                The Product Order Delivery service may use the MAL Access Control mechanism to define access control policies.
+            </mal:documentation>
+            <mal:documentation name="Service-level Requirements" order="2">
+                If access control polices are implemented, then their configuration shall be specified on a case-by-case basis for each deployment.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
