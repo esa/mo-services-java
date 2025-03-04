@@ -283,7 +283,7 @@
                 The Product Order Delivery service may use the MAL Access Control mechanism to define access control policies.
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="2">
-                If access control polices are implemented, then their configuration shall be specified on a case-by-case basis for each deployment.
+                If access control policies are implemented, then their configuration shall be specified on a case-by-case basis for each deployment.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
@@ -387,6 +387,9 @@
                 <mal:field name="description" canBeNull="true" comment="The textual description of this specific occurrence of the product.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
+                <mal:field name="checksum" canBeNull="true" comment="An optional checksum of the product body. If this functionality is enabled, then the checksum algorithm for the calculation shall be agreed as an out-of-band agreement.">
+                    <mal:type area="MAL" list="false" name="Blob"/>
+                </mal:field>
                 <mal:field name="productBody" canBeNull="false" comment="The product body of the mission data product.">
                     <mal:type area="MAL" list="false" name="Blob"/>
                 </mal:field>
@@ -461,6 +464,9 @@
                 </mal:field>
                 <mal:field name="description" canBeNull="false" comment="The textual description of this specific occurrence of the product.">
                     <mal:type area="MAL" list="false" name="String"/>
+                </mal:field>
+                <mal:field name="checksum" canBeNull="true" comment="An optional checksum of the product body. If this functionality is enabled, then the checksum algorithm for the calculation shall be agreed as an out-of-band agreement.">
+                    <mal:type area="MAL" list="false" name="Blob"/>
                 </mal:field>
             </mal:composite>
 

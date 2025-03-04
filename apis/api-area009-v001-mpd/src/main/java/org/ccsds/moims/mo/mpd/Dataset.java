@@ -66,6 +66,7 @@ public abstract class Dataset implements ProductRetrievalBackend {
                 metadata.getContentDate(),
                 metadata.getAttributes(),
                 metadata.getDescription(),
+                metadata.getChecksum(),
                 productBody
         );
     }

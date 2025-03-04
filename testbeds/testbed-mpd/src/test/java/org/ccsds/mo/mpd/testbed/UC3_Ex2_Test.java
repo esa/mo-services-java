@@ -642,7 +642,7 @@ public class UC3_Ex2_Test extends MPDTest {
             attributes.add(new NamedValue(new Identifier("coordinates.lon"), new Union(6.0)));
 
             ProductMetadata metadata = new ProductMetadata(backend.typeImage, ref, Time.now(),
-                    new Identifier("forest flyover"), null, null, attributes, "description");
+                    new Identifier("forest flyover"), null, null, attributes, "description", null);
             backend.addNewProduct(ref, productBody, metadata);
 
             // ------------------------------------------------------------------------
