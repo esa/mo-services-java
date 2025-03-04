@@ -67,32 +67,77 @@ public class UC2_Test extends MPDTest {
     }
 
     /**
-     * Test Case 1 - Match APID = 100.
+     * Test Case 1.
      */
     @Test
     public void testCase_01() {
         System.out.println("Running: testCase_1()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow overallWindow = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
-        test(apidValue, 10, overallWindow, 3); // 3 Because the borders will overlap!
+        int steps = 1;
+        test(apidValue, steps, 1);
     }
 
     /**
-     * Test Case 2 - Match APID = 200.
+     * Test Case 2.
      */
     @Test
     public void testCase_02() {
-        System.out.println("Running: testCase_2()");
-        UInteger apidValue = new UInteger(200);
-        TimeWindow overallWindow = new TimeWindow(TMPacketsDataset.APID200_TIME_START, TMPacketsDataset.APID200_TIME_END);
-        test(apidValue, 10, overallWindow, 3); // 3 Because the borders will overlap!
+        System.out.println("Running: testCase_02()");
+        UInteger apidValue = new UInteger(100);
+        int steps = 2;
+        test(apidValue, steps, 2);
     }
 
-    private synchronized void test(UInteger apidValue, int steps, TimeWindow overallWindow, int expectedNumberOfResults) {
+    /**
+     * Test Case 3.
+     */
+    @Test
+    public void testCase_03() {
+        System.out.println("Running: testCase_03()");
+        UInteger apidValue = new UInteger(100);
+        int steps = 3;
+        test(apidValue, steps, 3); // 3 Because the borders will overlap!
+    }
+
+    /**
+     * Test Case 4.
+     */
+    @Test
+    public void testCase_04() {
+        System.out.println("Running: testCase_04()");
+        UInteger apidValue = new UInteger(100);
+        int steps = 4;
+        test(apidValue, steps, 3); // 3 Because the borders will overlap!
+    }
+
+    /**
+     * Test Case 5.
+     */
+    @Test
+    public void testCase_05() {
+        System.out.println("Running: testCase_05()");
+        UInteger apidValue = new UInteger(100);
+        int steps = 5;
+        test(apidValue, steps, 3); // 3 Because the borders will overlap!
+    }
+
+    /**
+     * Test Case 6.
+     */
+    @Test
+    public void testCase_06() {
+        System.out.println("Running: testCase_06()");
+        UInteger apidValue = new UInteger(100);
+        int steps = 10;
+        test(apidValue, steps, 3); // 3 Because the borders will overlap!
+    }
+
+    private synchronized void test(UInteger apidValue, int steps, int expectedNumberOfResults) {
+        TimeWindow window = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
         int counter = 0;
-        long interval = overallWindow.getEnd().getValue() - overallWindow.getStart().getValue();
+        long interval = window.getEnd().getValue() - window.getStart().getValue();
         int halfOfSteps = steps / 2;
-        long overallStart = overallWindow.getStart().getValue();
+        long overallStart = window.getStart().getValue();
 
         for (int i = -halfOfSteps; i < steps - halfOfSteps; i++) {
             Time start = new Time(overallStart + i * interval);
@@ -130,6 +175,11 @@ public class UC2_Test extends MPDTest {
             assertNotNull(list);
             int size = list.size();
             System.out.println("Number of listed products returned: " + size);
+
+            if (size > 1) {
+                fail("There are more than just one product!");
+                return false;
+            }
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());

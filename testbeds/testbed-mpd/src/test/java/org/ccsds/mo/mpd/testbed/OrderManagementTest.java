@@ -106,7 +106,6 @@ public class OrderManagementTest extends MPDTest {
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod, int expectedNumberOfResults) {
         try {
-            System.out.println("Running: testCase_2");
             IdentifierList domainFilter = new IdentifierList();
             domainFilter.add(new Identifier("nasa"));
             domainFilter.add(new Identifier("hubble"));
