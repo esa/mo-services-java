@@ -106,15 +106,15 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:progressIP>
-                <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer of mission data products to a specified target.">
+                <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer delivery of the selected mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
 						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="2">
-						The provider shall transfer the referenced mission data products to the selected deliverTo URI.
+						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
                     </mal:documentation>
 					<mal:documentation name="Requirement" order="3">
-						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
+						The provider shall initiate the file transfer of the referenced mission data products to the selected deliverTo URI.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
 						After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata, the respective filename, and a success status reporting if the file was successfully transferred.
