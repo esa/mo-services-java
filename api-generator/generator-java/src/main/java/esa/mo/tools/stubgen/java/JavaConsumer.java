@@ -34,6 +34,7 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
+import esa.mo.xsd.ErrorReferenceType;
 import esa.mo.xsd.OperationErrorList;
 import java.io.File;
 import java.io.IOException;
@@ -486,9 +487,13 @@ public class JavaConsumer {
                 false, true, null);
 
         file.addClassOpenStatement(className, false, false, null,
+                null,
+                "Consumer stub for " + service + " service.");
+        /*
+        file.addClassOpenStatement(className, false, false, null,
                 generator.createElementType(area, service, CONSUMER_FOLDER, service),
                 "Consumer stub for " + service + " service.");
-
+        */
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);
 
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
@@ -515,12 +520,18 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             String operationInstanceVar = serviceInfoType + op.getName().toUpperCase() + "_OP";
+            /*
+            // This code enables dedicated exceptions on the consumer stubs
+            // TBD: The Stubs need to be updated to be able to extract the error and throw it correctly!
             OperationErrorList errors = op.getErrors();
             String throwsText = "";
-            /*
-            if(errors != null) {
-                for(Object error : errors.getErrorOrErrorRef()) {
-                    throwsText += error.toString() + " ,";
+
+            if (errors != null) {
+                for (Object e : errors.getErrorOrErrorRef()) {
+                    ErrorReferenceType error = (ErrorReferenceType) e;
+                    String camelCase = JavaExceptions.convertErrorToClassname(error.getType().getName());
+                    String errorArea = error.getType().getArea().toLowerCase();
+                    throwsText += "org.ccsds.moims.mo." + errorArea + "." + camelCase + ", ";
                 }
                 throwsInteractionAndMALException = throwsText + throwsInteractionAndMALException;
             }

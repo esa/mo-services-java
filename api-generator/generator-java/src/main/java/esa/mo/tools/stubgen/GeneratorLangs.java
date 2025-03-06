@@ -525,6 +525,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceConsumerInterface(File consumerFolder, String area,
             String service, ServiceSummary summary) throws IOException {
+        // This code is not needed anymore
+        // This interface was being generated and implemented by the consumer stubs
+        // The consumer stubs can now stand on their own
+        /*
         String serviceName = service;
 
         logger.info(" > Creating consumer interface: " + serviceName);
@@ -654,6 +658,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addInterfaceCloseStatement();
 
         file.flush();
+        */
     }
 
     protected void createServiceProviderHandler(File providerFolder, String area,
