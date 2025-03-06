@@ -336,7 +336,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             return null;
         }
 
-        String typeName = type.isObjectRef() ? "ObjectRef<" + type.getName() + ">": type.getName();
+        String typeName = type.isObjectRef() ? "ObjectRef<" + type.getName() + ">" : type.getName();
         return createElementType(type.getArea(), type.getService(),
                 isStructure ? config.getStructureFolder() : null, typeName);
     }
@@ -498,7 +498,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param composite the composite to inspect.
      * @return a list of the element details.
      */
-    protected List<CompositeField> createCompositeElementsList(TargetWriter file, CompositeType composite) {
+    public List<CompositeField> createCompositeElementsList(TargetWriter file, CompositeType composite) {
         List<CompositeField> lst = new LinkedList<>();
         for (NamedElementReferenceWithCommentType element : composite.getField()) {
             CompositeField ele = createCompositeElementsDetails(file,
@@ -521,7 +521,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param type the composite to inspect.
      * @return a list of the element details to populate.
      */
-    protected List<CompositeField> createCompositeSuperElementsList(TargetWriter file, TypeReference type) {
+    public List<CompositeField> createCompositeSuperElementsList(TargetWriter file, TypeReference type) {
         List<CompositeField> lst = new LinkedList<>();
 
         if (type != null && !StdStrings.COMPOSITE.equals(type.getName())) {

@@ -20,6 +20,7 @@
  */
 package esa.mo.tools.stubgen;
 
+import esa.mo.tools.stubgen.java.JavaCompositeClass;
 import esa.mo.tools.stubgen.java.JavaServiceInfo;
 import esa.mo.tools.stubgen.java.JavaExceptions;
 import esa.mo.tools.stubgen.java.JavaConsumer;
@@ -387,7 +388,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                                     TypeUtils.createTypeReference(area.getName(), null, aName, false),
                                     true, true, "cmt");
                         } else if (oType instanceof CompositeType) {
-                            createCompositeClass(structureFolder, area, null, (CompositeType) oType);
+                            CompositeType compType = (CompositeType) oType;
+                            logger.info(" > Creating Composite class: " + compType.getName());
+                            JavaCompositeClass compositeClass = new JavaCompositeClass(this);
+                            compositeClass.createCompositeClass(structureFolder, area, null, compType);
                         } else if (oType instanceof EnumerationType) {
                             JavaEnumerations enumerations = new JavaEnumerations(this);
                             EnumerationType enumType = (EnumerationType) oType;
@@ -458,7 +462,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     enumerations.createEnumerationClass(structureFolder, area, service, (EnumerationType) oType);
                     name = ((EnumerationType) oType).getName();
                 } else if (oType instanceof CompositeType) {
-                    createCompositeClass(structureFolder, area, service, (CompositeType) oType);
+                    CompositeType compType = (CompositeType) oType;
+                    logger.info(" > Creating Composite class: " + compType.getName());
+                    JavaCompositeClass compositeClass = new JavaCompositeClass(this);
+                    compositeClass.createCompositeClass(structureFolder, area, service, compType);
                     name = ((CompositeType) oType).getName();
                 } else {
                     throw new IllegalArgumentException("Unexpected service (" + area.getName()
@@ -1333,314 +1340,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // is not the case for a particular language
     }
 
-    protected void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
-        String className = composite.getName();
-        logger.info(" > Creating Composite class: " + className);
-
-        ClassWriter file = createClassFile(folder, className);
-        String parentClass = null;
-        TypeReference parentType = null;
-        String parentInterface = createElementType(StdStrings.MAL, null, StdStrings.COMPOSITE);
-
-        // Check if it is an extended Composite Type:
-        if (composite.getExtends() != null) {
-            parentType = composite.getExtends().getType();
-
-            if (!StdStrings.MAL.equals(composite.getExtends().getType().getArea())
-                    && !StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())) {
-                parentClass = createElementType(parentType, true);
-                parentInterface = null;
-            }
-
-            // Check if it is an MO Object:
-            if (StdStrings.MAL.equals(composite.getExtends().getType().getArea())
-                    && StdStrings.MOOBJECT.equals(composite.getExtends().getType().getName())) {
-                parentClass = createElementType(parentType, true);
-                parentInterface = null;
-            }
-        }
-
-        file.addPackageStatement(area.getName(), service == null ? null : service.getName(), getConfig().getStructureFolder());
-
-        CompositeField elementType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
-                true, true, null);
-
-        List<CompositeField> compElements = createCompositeElementsList(file, composite);
-        List<CompositeField> superCompElements = createCompositeSuperElementsList(file, parentType);
-
-        boolean abstractComposite = (composite.getShortFormPart() == null);
-        file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
-                parentClass, parentInterface, composite.getComment());
-        String fqName = createElementType(area.getName(), service == null ? null : service.getName(), className);
-
-        if (!abstractComposite) {
-            addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
-        }
-
-        // Create the composite fields
-        if (!compElements.isEmpty()) {
-            for (CompositeField element : compElements) {
-                file.addClassVariable(false, false, StdStrings.PRIVATE, element, false, (String) null);
-            }
-        }
-
-        // create blank constructor
-        file.addConstructorDefault(className);
-
-        // if we or our parents have attributes then we need a typed constructor
-        if (!compElements.isEmpty() || !superCompElements.isEmpty()) {
-            List<CompositeField> superArgs = new LinkedList<>();
-            List<CompositeField> args = new LinkedList<>();
-            List<CompositeField> superArgsNonNullable = new LinkedList<>();
-            List<CompositeField> argsNonNullable = new LinkedList<>();
-
-            for (CompositeField element : superCompElements) {
-                superArgs.add(element);
-                args.add(element);
-
-                if (!element.isCanBeNull()) {
-                    superArgsNonNullable.add(element);
-                    argsNonNullable.add(element);
-                }
-            }
-
-            args.addAll(compElements);
-
-            for (CompositeField element : compElements) {
-                if (!element.isCanBeNull()) {
-                    argsNonNullable.add(element);
-                }
-            }
-
-            // Creates constructor with all arguments
-            MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className, args,
-                    superArgs, null, "Constructor that initialises the values of the structure.", null);
-
-            for (CompositeField element : compElements) {
-                String call = createMethodCall("this." + element.getFieldName() + " = " + element.getFieldName());
-                method.addLine(call);
-            }
-
-            method.addMethodCloseStatement();
-
-            // Add a contructor that has only the non-nullable fields. Sets the nullable fields to null.
-            boolean hasNonNullable = !argsNonNullable.isEmpty() || !superArgsNonNullable.isEmpty();
-            boolean allArgsNonNullable = argsNonNullable.size() == args.size(); // All args are non-nullable?
-            // Note: If all method arguments are non-nullable, then the 
-            // contructor will look the same as the one with all arguments. So, 
-            // same type signature and therefore that needs to be avoided.
-            if (hasNonNullable && !allArgsNonNullable) {
-                MethodWriter method2 = file.addConstructor(StdStrings.PUBLIC, className,
-                        argsNonNullable, superArgsNonNullable, null,
-                        "Constructor that initialises the non-nullable values of the structure.", null);
-
-                for (CompositeField element : compElements) {
-                    String ending = (!element.isCanBeNull()) ? element.getFieldName() : "null";
-                    String call = createMethodCall("this." + element.getFieldName() + " = " + ending);
-                    method.addLine(call);
-                }
-
-                method2.addMethodCloseStatement();
-            }
-
-            // create copy constructor
-            if (supportsToValue && !abstractComposite) {
-                file.addConstructorCopy(fqName, compElements);
-            }
-        }
-
-        if (!abstractComposite) {
-            MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
-            method.addLine("return new " + fqName + "()");
-            method.addMethodCloseStatement();
-        }
-
-        // add getters and setters
-        for (CompositeField element : compElements) {
-            addGetter(file, element, null);
-            addSetter(file, element, null);
-        }
-
-        // create equals method
-        if (supportsEquals) {
-            CompositeField boolType = createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "boolean", false),
-                    false, true, "return value");
-            CompositeField intType = createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "int", false),
-                    false, true, "return value");
-            CompositeField objType = createCompositeElementsDetails(file, false, "obj",
-                    TypeUtils.createTypeReference(null, null, "Object", false),
-                    false, true, "The object to compare with.");
-
-            MethodWriter method = file.addMethodOpenStatementOverride(boolType, "equals", Arrays.asList(objType), null);
-            method.addLine("if (obj instanceof " + className + ") {", false);
-
-            if (null != parentClass) {
-                method.addLine("    if (! super.equals(obj)) {", false);
-                method.addLine("        return false");
-                method.addLine("    }", false);
-            }
-            if (!compElements.isEmpty()) {
-                method.addLine("    " + className + " other = (" + className + ") obj");
-                for (CompositeField element : compElements) {
-                    method.addLine("    if (" + element.getFieldName() + " == null) {", false);
-                    method.addLine("        if (other." + element.getFieldName() + " != null) {", false);
-                    method.addLine("            return false");
-                    method.addLine("        }", false);
-                    method.addLine("    } else {", false);
-                    method.addLine("        if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + ")) {", false);
-                    method.addLine("            return false");
-                    method.addLine("        }", false);
-                    method.addLine("    }", false);
-                }
-            }
-            method.addLine("    return true");
-            method.addLine("}", false);
-            method.addLine("return false");
-            method.addMethodCloseStatement();
-
-            method = file.addMethodOpenStatementOverride(intType, "hashCode", null, null);
-
-            if (null != parentClass) {
-                method.addLine("int hash = super.hashCode()");
-            } else {
-                method.addLine("int hash = 7");
-            }
-            for (CompositeField element : compElements) {
-                method.addLine("hash = 83 * hash + (" + element.getFieldName() + " != null ? " + element.getFieldName() + ".hashCode() : 0)");
-            }
-            method.addLine("return hash");
-            method.addMethodCloseStatement();
-        }
-
-        // create toString method
-        if (supportsToString) {
-            CompositeField strType = createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "_String", false),
-                    false, true, "return value");
-
-            MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
-            method.addLine("StringBuilder buf = new StringBuilder()");
-            method.addLine("buf.append(\"(" + className + ": \")");
-
-            String prefixSeparator = "";
-
-            if (parentClass != null) {
-                method.addLine("buf.append(super.toString())");
-                prefixSeparator = ", ";
-            }
-            for (CompositeField element : compElements) {
-                StringBuilder str = new StringBuilder();
-                str.append("buf.append(\"").append(prefixSeparator).append(element.getFieldName());
-                str.append("=\")").append(".append(").append(element.getFieldName()).append(")");
-                method.addLine(str.toString());
-                prefixSeparator = ", ";
-            }
-            method.addLine("buf.append(')')");
-            method.addLine("return buf.toString()");
-            method.addMethodCloseStatement();
-        }
-
-        // create getMALValue method
-        if (supportsToValue && !abstractComposite) {
-            addCompositeCloneMethod(file, fqName);
-        }
-
-        // create encode method
-        MethodWriter method = encodeMethodOpen(file);
-        if (parentClass != null) {
-            method.addSuperMethodStatement("encode", "encoder");
-        }
-
-        // Add the if condition to check if there are null fields for non-nullable fields!
-        for (int i = 0; i < compElements.size(); i++) {
-            CompositeField element = compElements.get(i);
-            String fieldName = element.getFieldName();
-
-            if (!element.isCanBeNull()) {
-                method.addLine("if (" + fieldName + " == null) {", false);
-                method.addLine("    throw new org.ccsds.moims.mo.mal.MALException(\"The field '" + fieldName + "' cannot be null!\")");
-                method.addLine("}", false);
-            }
-        }
-
-        for (CompositeField element : compElements) {
-            boolean isAbstract = isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
-            String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
-            String fieldName = element.getFieldName();
-
-            if (isAbstract) {
-                if (element.isList()) { // Abstract List?
-                    // The Abstract Lists do not not need an SPF because we know what we will get!
-                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + "Element(" + fieldName + ")"));
-                } else {
-                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + "AbstractElement(" + fieldName + ")"));
-                }
-            } else {
-                if (element.getEncodeCall() != null) {
-                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + element.getEncodeCall() + "(" + fieldName + ")"));
-                } else {
-                    // This is when the Element is set as the abstract Attribute type
-                    method.addLine(createMethodCall("encoder.encode" + canBeNullStr + "Element(" + fieldName + ")"));
-                }
-            }
-        }
-        method.addMethodCloseStatement();
-
-        // create decode method
-        method = decodeMethodOpen(file, elementType);
-        if (parentClass != null) {
-            method.addSuperMethodStatement("decode", "decoder");
-        }
-        for (CompositeField element : compElements) {
-            boolean isAbstract = isAbstract(element.getTypeReference())
-                    && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
-            String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
-            String castString = element.getDecodeCast();
-
-            if (isAbstract) {
-                if (element.isList()) { // Abstract List?
-                    castString = castString.replaceAll("\\.ElementList", ".HeterogeneousList");
-                    // Strip the parenthesis around the cast: "(abc) " -> "abc"
-                    // Note: Yes, the string has a space at the end... that's why we have: length() - 2
-                    String classPath = castString.substring(1, castString.length() - 2);
-                    // Change the type to HeterogeneousList if it is ElementList
-                        method.addLine(element.getFieldName() + " = " + castString
-                                + createMethodCall("decoder.decode" + canBeNullStr
-                                        + "Element(new " + classPath + "())"));
-                } else {
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + createMethodCall("decoder.decode" + canBeNullStr + "AbstractElement()"));
-                }
-            } else {
-                // Needs the "." before the AttributeList because of the NullableAttributeList
-                if (castString.contains(".AttributeList")) {
-                    // This is when the Element is set as the abstract AttributeList type
-                    String attNew = "new org.ccsds.moims.mo.mal.structures.AttributeList()";
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + createMethodCall("decoder.decode" + canBeNullStr + element.getDecodeCall() + "(" + attNew + ")"));
-                } else {
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + createMethodCall("decoder.decode" + canBeNullStr + element.getDecodeCall()
-                                    + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
-                }
-            }
-        }
-        method.addLine("return this");
-        method.addMethodCloseStatement();
-
-        if (!abstractComposite) {
-            addTypeIdGetterMethod(file, area, service);
-        }
-
-        file.addClassCloseStatement();
-        file.flush();
-
-        createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
-    }
-
     public abstract void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Integer shortFormPart) throws IOException;
 
@@ -1739,7 +1438,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
     }
 
-    protected static void addGetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
+    public static void addGetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
         String getOpPrefix = "get";
         String attributeName = element.getFieldName();
         boolean isDeprecated = (backwardCompatibility != null);
@@ -1754,7 +1453,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     @Deprecated
-    protected static void addSetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
+    public static void addSetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
         String setOpPrefix = "set";
         String attributeName = element.getFieldName();
         //boolean isDeprecated = (backwardCompatibility != null);
@@ -1772,9 +1471,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 null, null, isDeprecated);
         method.addLine(attributeName + " = __newValue");
         method.addMethodCloseStatement();
-    }
-
-    protected void addCompositeCloneMethod(ClassWriter file, String fqName) throws IOException {
     }
 
     protected CompositeField createServiceProviderSkeletonSendHandler(ClassWriter file, String argumentName, String argumentComment) {
