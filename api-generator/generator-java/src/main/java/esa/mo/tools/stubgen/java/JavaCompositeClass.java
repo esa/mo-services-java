@@ -170,8 +170,8 @@ public class JavaCompositeClass {
 
         // add getters and setters
         for (CompositeField element : compElements) {
-            generator.addGetter(file, element, null);
-            generator.addSetter(file, element, null);
+            GeneratorLangs.addGetter(file, element, null);
+            GeneratorLangs.addSetter(file, element, null);
         }
 
         // create equals method
@@ -214,12 +214,9 @@ public class JavaCompositeClass {
             method.addMethodCloseStatement();
 
             method = file.addMethodOpenStatementOverride(intType, "hashCode", null, null);
+            String line = (parentClass != null) ? "int hash = super.hashCode()" : "int hash = 7";
+            method.addLine(line);
 
-            if (null != parentClass) {
-                method.addLine("int hash = super.hashCode()");
-            } else {
-                method.addLine("int hash = 7");
-            }
             for (CompositeField element : compElements) {
                 method.addLine("hash = 83 * hash + (" + element.getFieldName() + " != null ? " + element.getFieldName() + ".hashCode() : 0)");
             }
@@ -353,5 +350,4 @@ public class JavaCompositeClass {
 
         generator.createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
     }
-
 }
