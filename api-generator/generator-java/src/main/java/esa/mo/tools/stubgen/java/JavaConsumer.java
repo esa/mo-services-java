@@ -517,10 +517,15 @@ public class JavaConsumer {
             String operationInstanceVar = serviceInfoType + op.getName().toUpperCase() + "_OP";
             OperationErrorList errors = op.getErrors();
             String throwsText = "";
-            for(Object error : errors.getErrorOrErrorRef()) {
-                throwsText += error.toString() + " ,";
+            /*
+            if(errors != null) {
+                for(Object error : errors.getErrorOrErrorRef()) {
+                    throwsText += error.toString() + " ,";
+                }
+                throwsInteractionAndMALException = throwsText + throwsInteractionAndMALException;
             }
-            
+            */
+
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
