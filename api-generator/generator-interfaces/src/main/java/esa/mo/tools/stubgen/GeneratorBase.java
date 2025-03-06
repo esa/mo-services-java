@@ -617,18 +617,22 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getSend().getComment(),
                     null, "",
                     null, "",
-                    null, "");
+                    null, "",
+                    null);
         } else if (op instanceof SubmitOperationType) {
             SubmitOperationType lop = (SubmitOperationType) op;
+            OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getSubmit().getField())),
                     lop.getMessages().getSubmit().getComment(),
                     null, "",
                     null, "",
-                    null, "");
+                    null, "",
+                    errors);
         } else if (op instanceof RequestOperationType) {
             RequestOperationType lop = (RequestOperationType) op;
+            OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getRequest().getField())),
@@ -637,9 +641,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     null, "",
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
-                    lop.getMessages().getResponse().getComment());
+                    lop.getMessages().getResponse().getComment(),
+                    errors);
         } else if (op instanceof InvokeOperationType) {
             InvokeOperationType lop = (InvokeOperationType) op;
+            OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getInvoke().getField())),
@@ -650,9 +656,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     null, "",
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
-                    lop.getMessages().getResponse().getComment());
+                    lop.getMessages().getResponse().getComment(),
+                    errors);
         } else if (op instanceof ProgressOperationType) {
             ProgressOperationType lop = (ProgressOperationType) op;
+            OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getProgress().getField())),
@@ -665,9 +673,11 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     lop.getMessages().getUpdate().getComment(),
                     TypeUtils.convertTypeReferences(this,
                             TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
-                    lop.getMessages().getResponse().getComment());
+                    lop.getMessages().getResponse().getComment(),
+                    errors);
         } else if (op instanceof PubSubOperationType) {
             PubSubOperationType lop = (PubSubOperationType) op;
+            OperationErrorList errors = lop.getErrors();
             MessageBodyType subs = lop.getMessages().getSubscriptionKeys();
             List<FieldInfo> subKeysList = (subs == null) ? null
                     : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaField(subs.getField()));
@@ -678,7 +688,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                     subKeysList, "",
                     null, "",
                     riList, "",
-                    riList, lop.getMessages().getPublishNotify().getComment());
+                    riList, lop.getMessages().getPublishNotify().getComment(),
+                    errors);
         }
 
         return null;

@@ -34,6 +34,7 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
+import esa.mo.xsd.OperationErrorList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -514,6 +515,12 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             String operationInstanceVar = serviceInfoType + op.getName().toUpperCase() + "_OP";
+            OperationErrorList errors = op.getErrors();
+            String throwsText = "";
+            for(Object error : errors.getErrorOrErrorRef()) {
+                throwsText += error.toString() + " ,";
+            }
+            
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
