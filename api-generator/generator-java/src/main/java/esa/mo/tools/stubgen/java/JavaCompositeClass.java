@@ -101,6 +101,43 @@ public class JavaCompositeClass {
         file.addConstructorDefault(className);
 
         // if we or our parents have attributes then we need a typed constructor
+        createTypedConstructorMethod(file, className, superCompElements, compElements);
+
+        if (!abstractComposite) {
+            MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
+            method.addLine("return new " + fqName + "()");
+            method.addMethodCloseStatement();
+        }
+
+        // add getters and setters
+        for (CompositeField element : compElements) {
+            GeneratorLangs.addGetter(file, element, null);
+            GeneratorLangs.addSetter(file, element, null);
+        }
+
+        // create equals method
+        createEqualsMethod(file, className, parentClass, compElements);
+
+        // create toString method
+        createToStringMethod(file, className, parentClass, compElements);
+
+        // create encode method
+        createEncodeMethod(file, parentClass, compElements);
+
+        // create decode method
+        createDecodeMethod(file, elementType, parentClass, compElements);
+
+        if (!abstractComposite) {
+            generator.addTypeIdGetterMethod(file, area, service);
+        }
+
+        file.addClassCloseStatement();
+        file.flush();
+        generator.createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
+    }
+
+    private void createTypedConstructorMethod(ClassWriter file, String className,
+            List<CompositeField> superCompElements, List<CompositeField> compElements) throws IOException {
         if (!compElements.isEmpty() || !superCompElements.isEmpty()) {
             List<CompositeField> superArgs = new LinkedList<>();
             List<CompositeField> args = new LinkedList<>();
@@ -157,24 +194,16 @@ public class JavaCompositeClass {
             }
 
             // create copy constructor
+            /*
             if (generator.supportsToValue && !abstractComposite) {
                 file.addConstructorCopy(fqName, compElements);
             }
+             */
         }
+    }
 
-        if (!abstractComposite) {
-            MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
-            method.addLine("return new " + fqName + "()");
-            method.addMethodCloseStatement();
-        }
-
-        // add getters and setters
-        for (CompositeField element : compElements) {
-            GeneratorLangs.addGetter(file, element, null);
-            GeneratorLangs.addSetter(file, element, null);
-        }
-
-        // create equals method
+    private void createEqualsMethod(ClassWriter file, String className,
+            String parentClass, List<CompositeField> compElements) throws IOException {
         if (generator.supportsEquals) {
             CompositeField boolType = generator.createCompositeElementsDetails(file, false, "return",
                     TypeUtils.createTypeReference(null, null, "boolean", false),
@@ -223,8 +252,10 @@ public class JavaCompositeClass {
             method.addLine("return hash");
             method.addMethodCloseStatement();
         }
+    }
 
-        // create toString method
+    private void createToStringMethod(ClassWriter file, String className,
+            String parentClass, List<CompositeField> compElements) throws IOException {
         if (generator.supportsToString) {
             CompositeField strType = generator.createCompositeElementsDetails(file, false, "return",
                     TypeUtils.createTypeReference(null, null, "_String", false),
@@ -251,14 +282,10 @@ public class JavaCompositeClass {
             method.addLine("return buf.toString()");
             method.addMethodCloseStatement();
         }
+    }
 
-        // create getMALValue method
-        /*
-        if (generator.supportsToValue && !abstractComposite) {
-            generator.addCompositeCloneMethod(file, fqName);
-        }
-         */
-        // create encode method
+    private void createEncodeMethod(ClassWriter file, String parentClass,
+            List<CompositeField> compElements) throws IOException {
         MethodWriter method = generator.encodeMethodOpen(file);
         if (parentClass != null) {
             method.addSuperMethodStatement("encode", "encoder");
@@ -277,7 +304,8 @@ public class JavaCompositeClass {
         }
 
         for (CompositeField element : compElements) {
-            boolean isAbstract = generator.isAbstract(element.getTypeReference()) && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
+            boolean isAbstract = generator.isAbstract(element.getTypeReference())
+                    && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String fieldName = element.getFieldName();
 
@@ -298,9 +326,11 @@ public class JavaCompositeClass {
             }
         }
         method.addMethodCloseStatement();
+    }
 
-        // create decode method
-        method = generator.decodeMethodOpen(file, elementType);
+    private void createDecodeMethod(ClassWriter file, CompositeField elementType,
+            String parentClass, List<CompositeField> compElements) throws IOException {
+        MethodWriter method = generator.decodeMethodOpen(file, elementType);
         if (parentClass != null) {
             method.addSuperMethodStatement("decode", "decoder");
         }
@@ -340,14 +370,5 @@ public class JavaCompositeClass {
         }
         method.addLine("return this");
         method.addMethodCloseStatement();
-
-        if (!abstractComposite) {
-            generator.addTypeIdGetterMethod(file, area, service);
-        }
-
-        file.addClassCloseStatement();
-        file.flush();
-
-        generator.createListClass(folder, area, service, className, abstractComposite, composite.getShortFormPart());
     }
 }
