@@ -26,12 +26,18 @@ import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.OneProductDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mpd.MPDHelper;
+import org.ccsds.moims.mo.mpd.structures.AttributeFilter;
+import org.ccsds.moims.mo.mpd.structures.AttributeFilterList;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -80,12 +86,17 @@ public class OrderManagementTest extends MPDTest {
     public void testCase_02() {
         System.out.println("Running: testCase_02()");
         // Input Data
-        Identifier user = new Identifier("User");
+        Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("*"));
         DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
 
-        test(user, domain, dMethod, 1);
+        try {
+            test(user, domain, dMethod, null, null, 1);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        }
     }
 
     /**
@@ -95,23 +106,62 @@ public class OrderManagementTest extends MPDTest {
     public void testCase_03() {
         System.out.println("Running: testCase_03()");
         // Input Data
-        Identifier user = new Identifier("User");
+        Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("esa"));
         domain.add(new Identifier("juice"));
         DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
 
-        test(user, domain, dMethod, 0);
+        try {
+            test(user, domain, dMethod, null, null, 0);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
+        }
     }
 
-    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod, int expectedNumberOfResults) {
+    /**
+     * Test Case 4.
+     */
+    @Test
+    public void testCase_04() {
+        System.out.println("Running: testCase_04()");
+        // Input Data
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("*"));
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
+        AttributeFilter attributeFilter = null;
+        Time now = Time.now();
+        TimeWindow validityPeriod = new TimeWindow(now, new Time(now.getValue() - 100));
+        try {
+            test(user, domain, dMethod, attributeFilter, validityPeriod, 0);
+            fail("The operation was expected to throw an Invalid exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+            } else {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an Invalid exception!");
+            }
+        }
+    }
+
+    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod,
+            AttributeFilter attributeFilter, TimeWindow validityPeriod, int expectedNumberOfResults) throws MALInteractionException {
         try {
             IdentifierList domainFilter = new IdentifierList();
             domainFilter.add(new Identifier("nasa"));
             domainFilter.add(new Identifier("hubble"));
-            ProductFilter productFilter = new ProductFilter(null, domainFilter, null, null);
+            AttributeFilterList attributeFilterList = new AttributeFilterList();
+            if (attributeFilter != null) {
+                attributeFilterList.add(attributeFilter);
+            }
+            ProductFilter productFilter = new ProductFilter(null, domainFilter, null, attributeFilterList);
             StandingOrder orderDetails = new StandingOrder(null, user,
-                    productFilter, null, dMethod, null, null);
+                    productFilter, validityPeriod, dMethod, null, null);
 
             // Submit a Standing Order
             Long id = consumerOM.submitStandingOrder(orderDetails);
@@ -135,13 +185,9 @@ public class OrderManagementTest extends MPDTest {
             }
 
             consumerOM.cancelStandingOrder(id);
-        } catch (MALInteractionException ex) {
-            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail(ex.toString());
         } catch (MALException ex) {
             Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
-
     }
 }
