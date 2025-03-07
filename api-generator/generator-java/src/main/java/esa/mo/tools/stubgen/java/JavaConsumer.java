@@ -519,33 +519,38 @@ public class JavaConsumer {
         }
 
         for (OperationSummary op : summary.getOperations()) {
-            List<String> throwsComment = Arrays.asList(
-                    throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                    throwsMALException + " if there is an implementation exception");
-
+            ArrayList<String> throwsComment = new ArrayList<>();
+            throwsComment.add(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.");
+            throwsComment.add(throwsMALException + " if there is an implementation exception");
             String operationInstanceVar = serviceInfoType + op.getName().toUpperCase() + "_OP";
-            /*
+
+            String throwsText = throwsInteractionAndMALException;
+            OperationErrorList errors = op.getErrors();
+
             // This code enables dedicated exceptions on the consumer stubs
             // TBD: The Stubs need to be updated to be able to extract the error and throw it correctly!
-            OperationErrorList errors = op.getErrors();
-            String throwsText = "";
-
+            /*
             if (errors != null) {
+                String additionalErr = "";
                 for (Object e : errors.getErrorOrErrorRef()) {
                     ErrorReferenceType error = (ErrorReferenceType) e;
                     String camelCase = JavaExceptions.convertErrorToClassname(error.getType().getName());
                     String errorArea = error.getType().getArea().toLowerCase();
-                    throwsText += "org.ccsds.moims.mo." + errorArea + "." + camelCase + ", ";
+                    String fullyQualifiedError = "org.ccsds.moims.mo." + errorArea + "." + camelCase;
+                    additionalErr += fullyQualifiedError + ", ";
+                    // Also add the comments:
+                    String comment = (error.getComment() == null) ? "when something goes wrong" : error.getComment();
+                    throwsComment.add(fullyQualifiedError + " " + comment);
                 }
-                throwsInteractionAndMALException = throwsText + throwsInteractionAndMALException;
+                throwsText = additionalErr + throwsText;
             }
-             */
+            */
 
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
-                            msgType, op.getName(), opArgs, throwsInteractionAndMALException,
+                            msgType, op.getName(), opArgs, throwsText,
                             op.getComment(), "the MAL message sent to initiate the interaction", throwsComment);
                     method.addMethodWithDependencyStatement("return " + consumerMethodCall
                             + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
@@ -566,7 +571,7 @@ public class JavaConsumer {
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op)
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
-                            op.getName(), opArgs, throwsInteractionAndMALException, op.getComment(), opRetComment, throwsComment);
+                            op.getName(), opArgs, throwsText, op.getComment(), opRetComment, throwsComment);
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
@@ -574,14 +579,14 @@ public class JavaConsumer {
                     if (supportsAsync) {
                         List<CompositeField> asyncOpArgs = StubUtils.concatenateArguments(opArgs, serviceAdapterArg);
                         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType,
-                                "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsInteractionAndMALException,
+                                "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsText,
                                 "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", throwsComment);
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op)) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")");
                         method.addMethodCloseStatement();
                     }
 
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null,
-                            "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException,
+                            "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsText,
                             "Continues a previously started interaction", null, throwsComment);
                     method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter)");
                     method.addMethodCloseStatement();
@@ -600,21 +605,21 @@ public class JavaConsumer {
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, false, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getComment(), opRetComment, throwsComment);
+                            throwsText, op.getComment(), opRetComment, throwsComment);
                     method.addMethodWithDependencyStatement(opGet, helperType, true);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
                         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType,
-                                "async" + StubUtils.preCap(op.getName()), opArgs, throwsInteractionAndMALException,
+                                "async" + StubUtils.preCap(op.getName()), opArgs, throwsText,
                                 "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", throwsComment);
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op)) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")");
                         method.addMethodCloseStatement();
                     }
 
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                            false, true, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null, throwsComment);
+                            false, true, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsText, "Continues a previously started interaction", null, throwsComment);
                     method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter)");
                     method.addMethodCloseStatement();
                     break;
