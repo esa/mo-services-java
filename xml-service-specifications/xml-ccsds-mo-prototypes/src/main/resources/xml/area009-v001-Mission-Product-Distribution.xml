@@ -31,7 +31,7 @@
 						If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						If the contentDate is NULL, then the service provider shall not filter the products based on the creationDate.
+						If the contentDate is NULL, then the service provider shall not filter the products based on the contentDate.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -223,7 +223,7 @@
 						When the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
                    </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
-						If the specified delivery method is by file transfer, then the delivery occurs outside the service interface. If the specified delivery method is by service, then the delivery is performed through the operations of the ProductDelivery service.
+						If the specified delivery method is by file transfer, then the delivery occurs outside the service interface. If the specified delivery method is by service, then the delivery is performed through the operations of the Product Delivery service.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
