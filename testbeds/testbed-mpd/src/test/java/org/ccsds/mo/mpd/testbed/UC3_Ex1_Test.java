@@ -243,8 +243,12 @@ public class UC3_Ex1_Test extends MPDTest {
             System.out.println("The returned orderID is: " + orderID);
             assertNotNull(orderID);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
-            fail(ex.toString());
+            if (DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod)) {
+                return;
+            } else {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                fail(ex.toString());
+            }
         } catch (MALException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());

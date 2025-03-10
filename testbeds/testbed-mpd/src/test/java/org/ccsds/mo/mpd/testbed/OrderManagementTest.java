@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.MPDHelper;
 import org.ccsds.moims.mo.mpd.structures.AttributeFilter;
 import org.ccsds.moims.mo.mpd.structures.AttributeFilterList;
@@ -146,6 +147,76 @@ public class OrderManagementTest extends MPDTest {
                 Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
                 fail("The operation was expected to throw an Invalid exception!");
             }
+        }
+    }
+
+    /**
+     * Test Case 5.
+     */
+    @Test
+    public void testCase_05() {
+        System.out.println("Running: testCase_05()");
+        // Input Data
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = null;
+
+        try {
+            testInvalidErrorSubmitStandingOrder(dMethod, deliverTo);
+            fail("The operation was expected to throw an Invalid exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+            } else {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an Invalid exception!");
+            }
+        }
+    }
+
+    /**
+     * Test Case 6.
+     */
+    @Test
+    public void testCase_06() {
+        System.out.println("Running: testCase_06()");
+        // Input Data
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
+        URI deliverTo = new URI("sftp://123.4.5.6:1234/folder/");
+
+        try {
+            testInvalidErrorSubmitStandingOrder(dMethod, deliverTo);
+            fail("The operation was expected to throw an Invalid exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+            } else {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an Invalid exception!");
+            }
+        }
+    }
+
+    private void testInvalidErrorSubmitStandingOrder(DeliveryMethodEnum dMethod, URI deliverTo) throws MALInteractionException {
+        try {
+            Identifier user = new Identifier("john.doe");
+            StandingOrder orderDetails = new StandingOrder(null, user,
+                    null, null, dMethod, deliverTo, null);
+
+            // Submit a Standing Order
+            Long id = consumerOM.submitStandingOrder(orderDetails);
+            assertNotEquals(null, id);
+
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE,
+                    "The submitStandingOrder must not return a value! id: {0}", id);
+
+            consumerOM.cancelStandingOrder(id);
+        } catch (MALException ex) {
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
         }
     }
 
