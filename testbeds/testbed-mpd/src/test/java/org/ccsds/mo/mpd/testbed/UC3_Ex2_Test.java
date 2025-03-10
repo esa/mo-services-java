@@ -515,9 +515,13 @@ public class UC3_Ex2_Test extends MPDTest {
             assertNotNull(orderID);
         } catch (MALInteractionException ex) {
             if (DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod) && deliverTo == null) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.INFO,
+                        "The provider returned an MO Error correctly!");
                 return;
             }
             if (!DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod) && deliverTo != null) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.INFO,
+                        "The provider returned an MO Error correctly!");
                 return;
             }
 
