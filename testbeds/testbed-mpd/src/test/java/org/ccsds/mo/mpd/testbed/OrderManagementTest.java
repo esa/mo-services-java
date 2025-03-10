@@ -21,6 +21,7 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.OneProductDataset;
@@ -222,6 +223,39 @@ public class OrderManagementTest extends MPDTest {
                 Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
                 fail("The operation was expected to throw an 'Order Failed' exception!");
             }
+        }
+    }
+
+    /**
+     * Test Case 8.
+     */
+    @Test
+    public void testCase_08() {
+        System.out.println("Running: testCase_08()");
+
+        try {
+            Random random = new Random();
+            Long orderId = random.nextLong();
+            testMOErrorCancelStandingOrder(orderId);
+            fail("The operation was expected to throw an 'Unknown' exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.UNKNOWN_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+            } else {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an 'Unknown' exception!");
+            }
+        }
+    }
+
+    private void testMOErrorCancelStandingOrder(Long orderId) throws MALInteractionException {
+        try {
+            consumerOM.cancelStandingOrder(orderId);
+        } catch (MALException ex) {
+            Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.toString());
         }
     }
 
