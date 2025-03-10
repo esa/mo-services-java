@@ -161,7 +161,7 @@ public class OrderManagementTest extends MPDTest {
         URI deliverTo = null;
 
         try {
-            testInvalidErrorSubmitStandingOrder(dMethod, deliverTo);
+            testMOErrorSubmitStandingOrder(dMethod, deliverTo);
             fail("The operation was expected to throw an Invalid exception!");
         } catch (MALInteractionException ex) {
             MOErrorException moError = ex.getStandardError();
@@ -183,10 +183,10 @@ public class OrderManagementTest extends MPDTest {
         System.out.println("Running: testCase_06()");
         // Input Data
         DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
-        URI deliverTo = new URI("sftp://123.4.5.6:1234/folder/");
+        URI deliverTo = new URI("file://tmp/testfolder/");
 
         try {
-            testInvalidErrorSubmitStandingOrder(dMethod, deliverTo);
+            testMOErrorSubmitStandingOrder(dMethod, deliverTo);
             fail("The operation was expected to throw an Invalid exception!");
         } catch (MALInteractionException ex) {
             MOErrorException moError = ex.getStandardError();
@@ -200,7 +200,32 @@ public class OrderManagementTest extends MPDTest {
         }
     }
 
-    private void testInvalidErrorSubmitStandingOrder(DeliveryMethodEnum dMethod, URI deliverTo) throws MALInteractionException {
+    /**
+     * Test Case 7.
+     */
+    @Test
+    public void testCase_07() {
+        System.out.println("Running: testCase_07()");
+        // Input Data
+        DeliveryMethodEnum dMethod = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = new URI("wrongscheme://123.4.5.6:1234/folder/");
+
+        try {
+            testMOErrorSubmitStandingOrder(dMethod, deliverTo);
+            fail("The operation was expected to throw an 'Order Failed' exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.ORDER_FAILED_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+            } else {
+                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an 'Order Failed' exception!");
+            }
+        }
+    }
+
+    private void testMOErrorSubmitStandingOrder(DeliveryMethodEnum dMethod, URI deliverTo) throws MALInteractionException {
         try {
             Identifier user = new Identifier("john.doe");
             StandingOrder orderDetails = new StandingOrder(null, user,
