@@ -54,6 +54,11 @@ public abstract class Dataset implements ProductRetrievalBackend {
     @Override
     public Product getProduct(ObjectRef productRef) {
         ProductMetadata metadata = getMetadata(productRef);
+
+        if (metadata == null) {
+            return null;
+        }
+
         Blob productBody = productBodies.get(productRef);
         ObjectIdentity objId = new ObjectIdentity(productRef.getDomain(),
                 productRef.getKey(), productRef.getObjectVersion());

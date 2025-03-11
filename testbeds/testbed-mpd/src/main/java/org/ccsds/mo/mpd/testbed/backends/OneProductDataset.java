@@ -37,6 +37,8 @@ import org.ccsds.moims.mo.mpd.structures.TimeWindow;
  */
 public class OneProductDataset extends Dataset {
 
+    public final ObjectRef<Product> ref;
+
     public OneProductDataset() {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -50,7 +52,7 @@ public class OneProductDataset extends Dataset {
         // Products
         // ---------------------------------------------------
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
-        ObjectRef<Product> ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
+        ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
         Blob productBody = new Blob();
         ProductMetadata metadata = new ProductMetadata(type1, ref,
                 Time.now(), timeWindow, "description");
