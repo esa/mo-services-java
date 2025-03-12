@@ -80,16 +80,6 @@ public class UC3_Ex2_Test extends MPDTest {
         setUp.setUp(backend, true, true, true);
     }
 
-    private static URI getHomeTmpDir() {
-        File homeDirectory = new File(System.getProperty("user.home"));
-        File targetDir = new File(homeDirectory, "tmp");
-        if (!targetDir.exists()) {
-            // Create the directory if it does not exist:
-            targetDir.mkdirs();
-        }
-        return new URI("file://" + targetDir.getAbsolutePath());
-    }
-
     /**
      * Test Case 1.
      */

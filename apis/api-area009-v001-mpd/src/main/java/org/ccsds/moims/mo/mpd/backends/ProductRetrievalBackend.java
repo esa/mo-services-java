@@ -43,9 +43,11 @@ public interface ProductRetrievalBackend {
      * found.
      *
      * @param productRef The product reference.
+     * @param includesProductBody Indicates if the returned Product includes the
+     * product body or a null in its field.
      * @return The Product or NULL if not found.
      */
-    public Product getProduct(ObjectRef productRef);
+    public Product getProduct(ObjectRef productRef, boolean includesProductBody);
 
     /**
      * Returns the corresponding metadata for the given productRef or NULL if

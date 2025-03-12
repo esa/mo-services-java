@@ -20,6 +20,7 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,12 +37,16 @@ import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.URI;
+import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mpd.MPDHelper;
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
 import org.ccsds.moims.mo.mpd.structures.ProductList;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,7 +57,8 @@ import static org.junit.Assert.*;
  */
 public class ProductRetrievalTest extends MPDTest {
 
-    private static OneProductDataset oneProductDataset = new OneProductDataset();
+    private static final OneProductDataset oneProductDataset = new OneProductDataset();
+    private static final URI TMP_DIR = getHomeTmpDir();
 
     @BeforeClass
     public static void setUpClass() throws IOException {
@@ -208,6 +214,138 @@ public class ProductRetrievalTest extends MPDTest {
         }
     }
 
+    /**
+     * Test Case 6.
+     */
+    @Test
+    public void testCase_06() {
+        System.out.println("Running: testCase_06()");
+
+        try {
+            ObjectRefList productRefs = new ObjectRefList();
+            productRefs.add(oneProductDataset.ref);
+            URI deliverTo = TMP_DIR;
+            this.testGetProductFiles(productRefs, deliverTo);
+        } catch (MALInteractionException ex) {
+            Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
+            fail("The operation was not expected to throw an exception!");
+        }
+    }
+
+    /**
+     * Test Case 7.
+     */
+    @Test
+    public void testCase_07() {
+        System.out.println("Running: testCase_07()");
+
+        try {
+            ObjectRefList productRefs = new ObjectRefList();
+            productRefs.add(oneProductDataset.ref);
+            String path = TMP_DIR.getValue().replace("file://", "");
+            File targetDir = new File(path, "wrong_directory");
+            URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
+            this.testGetProductFiles(productRefs, deliverTo);
+            fail("The operation was expected to throw an 'Delivery Failed' exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.DELIVERY_FAILED_ERROR_NUMBER.getValue()) {
+                String extraInformation = ((Union) moError.getExtraInformation()).getStringValue();
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO,
+                        "Error returned successfully! With extraInformation message: {0}", extraInformation);
+            } else {
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an 'Delivery Failed' exception!");
+            }
+        }
+    }
+
+    private void testGetProductFiles(ObjectRefList productRefs, URI deliverTo) throws MALInteractionException {
+        try {
+            ProductMetadataList returnedMetadatas = new ProductMetadataList();
+            long startTime = System.currentTimeMillis();
+            final AtomicBoolean ackReceived = new AtomicBoolean(false);
+            final AtomicBoolean updateReceived = new AtomicBoolean(false);
+            final AtomicBoolean rspReceived = new AtomicBoolean(false);
+
+            consumerPR.getProductFiles(productRefs, deliverTo, new ProductRetrievalAdapter() {
+
+                @Override
+                public void getProductFilesAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
+                    long duration = System.currentTimeMillis() - startTime;
+                    System.out.println("ACK received in: " + duration + " ms");
+                    ackReceived.set(true);
+                }
+
+                @Override
+                public void getProductFilesUpdateReceived(MALMessageHeader msgHeader,
+                        ProductMetadata metadata, String filename, Boolean success, Map qosProperties) {
+                    long duration = System.currentTimeMillis() - startTime;
+                    System.out.println("UPDATE received in: " + duration + " ms");
+                    returnedMetadatas.add(metadata);
+                    updateReceived.set(true);
+                }
+
+                @Override
+                public void getProductFilesResponseReceived(MALMessageHeader msgHeader, Map qosProperties) {
+                    long duration = System.currentTimeMillis() - startTime;
+                    System.out.println("RESPONSE received in: " + duration + " ms");
+                    rspReceived.set(true);
+                }
+
+                @Override
+                public void getProductFilesAckErrorReceived(MALMessageHeader msgHeader,
+                        MOErrorException error, Map qosProperties) {
+                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
+                            "Something went wrong...", error);
+                    fail(error.toString());
+                }
+
+                @Override
+                public void getProductFilesUpdateErrorReceived(MALMessageHeader msgHeader,
+                        MOErrorException error, Map qosProperties) {
+                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
+                            "Something went wrong...", error);
+                    fail(error.toString());
+                }
+
+                @Override
+                public void getProductFilesResponseErrorReceived(MALMessageHeader msgHeader,
+                        MOErrorException error, Map qosProperties) {
+                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
+                            "Something went wrong...", error);
+                    fail(error.toString());
+                }
+
+            });
+
+            // ------------------------------------------------------------------------
+            // Wait while UPDATE has not been received and 1 second has not passed yet...
+            long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!updateReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            // Were we expecting to receive at least one product?
+            if (!updateReceived.get()) {
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                        Level.SEVERE, "The UPDATE was not received!");
+                fail("The UPDATE was not received!");
+            }
+
+            // Did we receive the product(s) notifications?
+            assertNotNull(returnedMetadatas);
+            int size = returnedMetadatas.size();
+            System.out.println("Number of metadata entries returned: " + size);
+            assertEquals(1, size);
+
+        } catch (MALException ex) {
+            Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private void testGetProducts(ObjectRefList productRefs) throws MALInteractionException {
         try {
             ProductList returnedProducts = new ProductList();
@@ -264,7 +402,6 @@ public class ProductRetrievalTest extends MPDTest {
         } catch (MALException ex) {
             Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     private void testMOErrorListProducts(ProductFilter productFilter,

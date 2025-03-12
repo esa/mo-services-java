@@ -20,9 +20,11 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryStub;
@@ -81,6 +83,16 @@ public abstract class MPDTest {
     @After
     public void tearDown() {
         System.out.println(TEST_END);
+    }
+
+    protected static URI getHomeTmpDir() {
+        File homeDirectory = new File(System.getProperty("user.home"));
+        File targetDir = new File(homeDirectory, "tmp");
+        if (!targetDir.exists()) {
+            // Create the directory if it does not exist:
+            targetDir.mkdirs();
+        }
+        return new URI("file://" + targetDir.getAbsolutePath());
     }
 
 }
