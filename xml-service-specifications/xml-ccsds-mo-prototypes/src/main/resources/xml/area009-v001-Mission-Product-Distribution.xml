@@ -22,7 +22,6 @@
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
                     <mal:documentation name="Requirement" order="1">
                         The service provider shall return a list of metadata entries for the products that satisfy all the specified individual criteria defined by the product filter, the creation date, and the content creation date.
-                        Note: It is implementation dependent whether the Products listed are restricted to those already available or may also be generated on-the-fly in response to the listProducts operation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						The service provider shall select the products based on the defined fields of the productFilter, composed by the product type, the domain, the source(s), and the metadata attributes filter. The ProductFilter structure specifies the conditions for each of the fields.
@@ -70,7 +69,7 @@
             <mal:capabilitySet number="2" comment="">
                 <mal:progressIP name="getProducts" number="2" comment="The getProduct operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
-						A consumer shall send the list of one or more product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
+						A consumer shall send the list of product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
                     </mal:documentation>
 					<mal:documentation name="Requirement" order="2">
 						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
@@ -106,9 +105,9 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:progressIP>
-                <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote File Transfer delivery of the selected mission data products to a specified target.">
+                <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote file transfer delivery of the selected mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
-						A consumer shall send a list of one or more product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
+						A consumer shall send a list of product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="2">
 						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
@@ -134,13 +133,13 @@
                         <mal:acknowledgement>
                         </mal:acknowledgement>
                         <mal:update>
-                            <mal:field name="metadata" canBeNull="false" comment="The metadata of the selected mission data product(s).">
+                            <mal:field name="metadata" canBeNull="false" comment="The metadata of the transferred mission data product(s).">
                                 <mal:type area="MPD" list="false" name="ProductMetadata"/>
                             </mal:field>
-                            <mal:field name="filename" canBeNull="false" comment="The filename of the selected mission data product(s).">
+                            <mal:field name="filename" canBeNull="false" comment="The filename of the transferred mission data product(s).">
                                 <mal:type area="MAL" list="false" name="String"/>
                             </mal:field>
-                            <mal:field name="success" canBeNull="false" comment="The status indicating the successful delivery of the selected mission data product(s).">
+                            <mal:field name="success" canBeNull="false" comment="The completion status of the remote file transfer.">
                                 <mal:type area="MAL" list="false" name="Boolean"/>
                             </mal:field>
                         </mal:update>
