@@ -261,6 +261,46 @@ public class ProductRetrievalTest extends MPDTest {
         }
     }
 
+    /**
+     * Test Case 8.
+     */
+    @Test
+    public void testCase_08() {
+        System.out.println("Running: testCase_08()");
+
+        try {
+            IdentifierList domain = new IdentifierList();
+            Long typeId = Product.TYPE_ID.getTypeId();
+            Identifier key = new Identifier("Non_Existing_Key");
+            UInteger objectVersion = new UInteger(1);
+
+            ObjectRefList productRefs = new ObjectRefList();
+            productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
+            URI deliverTo = TMP_DIR;
+            this.testGetProductFiles(productRefs, deliverTo);
+            fail("The operation was expected to throw an 'Unknown' exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.UNKNOWN_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+                // Check if the error includes in the index list a zero!
+                IntegerList indexes = (IntegerList) moError.getExtraInformation();
+                int size = indexes.size();
+
+                if (size != 1) {
+                    fail("The 'Unknown' exception does not have 1 entry!");
+                } else {
+                    Integer indexError = indexes.get(0);
+                    assertEquals(0, indexError.intValue()); // The wrong index
+                }
+            } else {
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an 'Unknown' exception!");
+            }
+        }
+    }
+
     private void testGetProductFiles(ObjectRefList productRefs, URI deliverTo) throws MALInteractionException {
         try {
             ProductMetadataList returnedMetadatas = new ProductMetadataList();
@@ -341,6 +381,20 @@ public class ProductRetrievalTest extends MPDTest {
             System.out.println("Number of metadata entries returned: " + size);
             assertEquals(1, size);
 
+            // ------------------------------------------------------------------------
+            // Wait while RESPONSE has not been received and 1 second has not passed yet...
+            timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!rspReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            // Were we expecting to receive at least one product?
+            if (!rspReceived.get()) {
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                        Level.SEVERE, "The RESPONSE was not received!");
+                fail("The RESPONSE was not received!");
+            }
         } catch (MALException ex) {
             Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.SEVERE, null, ex);
         }
