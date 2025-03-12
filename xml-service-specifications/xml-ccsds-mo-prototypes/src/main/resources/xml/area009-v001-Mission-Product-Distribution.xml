@@ -197,14 +197,6 @@
                             </mal:field>
                         </mal:response>
                     </mal:messages>
-                    <mal:errors>
-                        <mal:errorRef comment="When the referenced user does not exist.">
-                            <mal:type name="Unknown" area="MPD"/>
-                            <mal:extraInformation comment="Any other additional information.">
-                                <mal:type area="MAL" name="String" list="false"/>
-                            </mal:extraInformation>
-                        </mal:errorRef>
-                    </mal:errors>
                 </mal:requestIP>
 			</mal:capabilitySet>
             <mal:capabilitySet number="2" comment="">
@@ -572,10 +564,8 @@ Note that as AttributeDef is only used in the context of ProductType.">
             <mal:error number="1" name="Invalid" comment="A field in the message contains an invalid value. If there are multiple errors, the first invalid field is reported."/>
             <mal:error number="2" name="Delivery Failed" comment="An attempt to deliver a product file to the nominated address failed."/>
             <mal:error number="3" name="Order Failed" comment="Creation of a new product order failed."/>
-            <mal:error number="4" name="Unknown" comment="The referenced item (user or orderID) does not exist."/>
-            <mal:error number="5" name="Out of Range" comment="A numeric value is outside the supported range."/>
-            <mal:error number="6" name="Bad Time" comment="A date-time value is outside the supported time period."/>
-            <mal:error number="7" name="Too Many" comment="Too many entries were found."/>
+            <mal:error number="4" name="Unknown" comment="The referenced item does not exist."/>
+            <mal:error number="5" name="Too Many" comment="Too many entries were found."/>
         </mal:errors>
 
     </mal:area>
