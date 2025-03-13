@@ -51,7 +51,7 @@ public abstract class Configuration {
     public static final String MOM_CLASSPATH_FILTER_STRING = "org.ccsds.moims.mo.testbed.mom.classpath.filter";
 
     public static final String WAIT_TIME_OUT_PROPERTY_NAME = "org.ccsds.moims.mo.testbed.wait.timeout";
-    public static final int WAIT_TIME_OUT = Integer.getInteger(WAIT_TIME_OUT_PROPERTY_NAME, 1500).intValue();
+    public static final int WAIT_TIME_OUT = Integer.getInteger(WAIT_TIME_OUT_PROPERTY_NAME, 500).intValue();
     public static final Blob DEFAULT_SHARED_BROKER_AUTHENTICATION_ID = new Blob(new byte[]{0x02, 0x01});
     public static final String TRANSPORT_LEVEL_SHARED_BROKER = "org.ccsds.moims.mo.testbed.transport.level.shared.broker";
     public static final String SHARED_BROKER_NAME = "SharedBroker";

@@ -500,7 +500,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         // (see test.patterns.pubsub.IPTestHandlerWithSharedBroker)
         try {
             // this will timeout unless there is an error
-            listener.cond.waitFor(2 * Configuration.WAIT_TIME_OUT);
+            listener.cond.waitFor(Configuration.WAIT_TIME_OUT);
         } catch (InterruptedException e) {
         }
 
