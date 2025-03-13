@@ -238,7 +238,8 @@ public class UC3_Ex1_Test extends MPDTest {
         Long orderID = null;
         try {
             ProductFilter productFilter = new ProductFilter(productType, domain, null, null);
-            StandingOrder orderDetails = new StandingOrder(null, orderUser, productFilter, null, deliveryMethod, null, null);
+            StandingOrder orderDetails = new StandingOrder(null, orderUser,
+                    productFilter, null, deliveryMethod, null, null);
             orderID = consumerOM.submitStandingOrder(orderDetails);
             System.out.println("The returned orderID is: " + orderID);
             assertNotNull(orderID);
@@ -248,7 +249,8 @@ public class UC3_Ex1_Test extends MPDTest {
                         "The provider returned an MO Error correctly!");
                 return;
             } else {
-                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+                        "The retuned MO Error is not a FILETRANSFER error.", ex);
                 fail(ex.toString());
             }
         } catch (MALException ex) {
@@ -357,10 +359,12 @@ public class UC3_Ex1_Test extends MPDTest {
             IdentifierList productDomain = new IdentifierList();
             productDomain.add(new Identifier("nasa"));
             productDomain.add(new Identifier("hubble"));
-            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
+            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(),
+                    new Identifier("tmData1"), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
-                    null, null, TMPacketsDataset.contentTimeWindowAPID100, null, "description", null);
+            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref,
+                    Time.now(), null, null, TMPacketsDataset.contentTimeWindowAPID100,
+                    null, "description", null);
             backend.addNewProduct(ref, productBody, metadata);
 
             // ------------------------------------------------------------------------

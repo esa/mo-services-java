@@ -126,7 +126,9 @@ public class UC1_Ex1_Test extends MPDTest {
     public void testCase_06() {
         System.out.println("Running: testCase_6()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        Time start = Time.generateTime(1970, 1, 1);
+        Time end = Time.generateTime(1970, 12, 31);
+        TimeWindow contentDate = new TimeWindow(start, end);
         testWithTimeWindow(apidValue, 0, contentDate);
     }
 
@@ -148,7 +150,9 @@ public class UC1_Ex1_Test extends MPDTest {
     @Test
     public void testCase_08() {
         System.out.println("Running: testCase_8()");
-        TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        Time start = Time.generateTime(1970, 1, 1);
+        Time end = Time.generateTime(1970, 12, 31);
+        TimeWindow contentDate = new TimeWindow(start, end);
         testWithTimeWindow(null, 0, contentDate);
     }
 
@@ -316,7 +320,7 @@ public class UC1_Ex1_Test extends MPDTest {
             // Check that the productType matches
             for (Product p : returnedProducts) {
                 if (!p.getProductType().equals(productType)) {
-                    fail("The productType isnot the same! For product: " + p.toString());
+                    fail("The productType is not the same! For product: " + p.toString());
                 }
             }
 

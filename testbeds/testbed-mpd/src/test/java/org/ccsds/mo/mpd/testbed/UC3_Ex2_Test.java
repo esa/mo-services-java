@@ -634,7 +634,8 @@ public class UC3_Ex2_Test extends MPDTest {
             IdentifierList productDomain = new IdentifierList();
             productDomain.add(new Identifier("nasa"));
             productDomain.add(new Identifier("hubble"));
-            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier(productName), new UInteger(1));
+            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(),
+                    new Identifier(productName), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
             NamedValueList attributes = new NamedValueList();
             attributes.add(new NamedValue(new Identifier("imageSubject"), new Union("Earth")));

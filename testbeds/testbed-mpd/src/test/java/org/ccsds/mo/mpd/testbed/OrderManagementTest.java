@@ -279,8 +279,8 @@ public class OrderManagementTest extends MPDTest {
         }
     }
 
-    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod,
-            AttributeFilter attributeFilter, TimeWindow validityPeriod, int expectedNumberOfResults) throws MALInteractionException {
+    private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod, AttributeFilter attributeFilter,
+            TimeWindow validityPeriod, int expectedNumberOfResults) throws MALInteractionException {
         try {
             IdentifierList domainFilter = new IdentifierList();
             domainFilter.add(new Identifier("nasa"));
