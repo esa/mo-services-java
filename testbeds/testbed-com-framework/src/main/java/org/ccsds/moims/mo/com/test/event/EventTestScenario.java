@@ -49,6 +49,7 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import static org.ccsds.moims.mo.testbed.util.LoggingBase.logMessage;
 
@@ -640,7 +641,7 @@ public class EventTestScenario extends LoggingBase {
     }
 
     public void waitForReasonableAmountOfTime() throws Exception {
-        Thread.sleep(500);
+        Thread.sleep((long) Configuration.COM_PERIOD);
     }
 
     /**

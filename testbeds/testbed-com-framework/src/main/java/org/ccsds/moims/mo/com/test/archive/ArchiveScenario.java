@@ -94,6 +94,7 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 public class ArchiveScenario {
@@ -1265,7 +1266,7 @@ public class ArchiveScenario {
 
     private void waitForShortTime() {
         try {
-            Thread.sleep((long) 500);
+            Thread.sleep((long) Configuration.COM_PERIOD);
         } catch (Exception ex) {
 
         }
