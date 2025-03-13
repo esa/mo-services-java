@@ -72,7 +72,7 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
         cond.set();
     }
 
-    public void setKey(String value) {
+    public synchronized void setKey(String value) {
         this.key = value;
     }
 
@@ -95,19 +95,19 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
         cond.set();
     }
 
-    public MALMessageHeader getHeader() {
+    public synchronized MALMessageHeader getHeader() {
         return header;
     }
 
-    public MOErrorException getError() {
+    public synchronized MOErrorException getError() {
         return error;
     }
 
-    public void setHeader(MALMessageHeader header) {
+    public synchronized void setHeader(MALMessageHeader header) {
         this.header = header;
     }
 
-    public void setError(MOErrorException error) {
+    public synchronized void setError(MOErrorException error) {
         this.error = error;
     }
 
