@@ -364,7 +364,7 @@ public class UC3_Ex1_Test extends MPDTest {
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
             ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref,
                     Time.now(), null, null, TMPacketsDataset.contentTimeWindowAPID100,
-                    null, "description", null);
+                    null, "description", null, null);
             backend.addNewProduct(ref, productBody, metadata);
 
             // ------------------------------------------------------------------------

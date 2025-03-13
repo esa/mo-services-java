@@ -378,6 +378,9 @@
                 <mal:field name="description" canBeNull="true" comment="The textual description of this specific occurrence of the product.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
+                <mal:field name="fileMetadata" canBeNull="true" comment="Additional optional metadata for files.">
+                    <mal:type area="MPD" list="false" name="FileMetadata"/>
+                </mal:field>
                 <mal:field name="checksum" canBeNull="true" comment="An optional checksum of the product body. If this functionality is enabled, then the checksum algorithm for the calculation shall be agreed as an out-of-band agreement.">
                     <mal:type area="MAL" list="false" name="Blob"/>
                 </mal:field>
@@ -456,12 +459,30 @@
                 <mal:field name="description" canBeNull="false" comment="The textual description of this specific occurrence of the product.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
+                <mal:field name="fileMetadata" canBeNull="true" comment="Additional optional metadata for files.">
+                    <mal:type area="MPD" list="false" name="FileMetadata"/>
+                </mal:field>
                 <mal:field name="checksum" canBeNull="true" comment="An optional checksum of the product body. If this functionality is enabled, then the checksum algorithm for the calculation shall be agreed as an out-of-band agreement.">
                     <mal:type area="MAL" list="false" name="Blob"/>
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductFilter" shortFormPart="104" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters then all products of the specified type pass the filter.
+            <mal:composite name="FileMetadata" shortFormPart="104" comment="The FileMetadata contains specific metadata for files.">
+                <mal:extends>
+                    <mal:type area="MAL" list="false" name="Composite"/>
+                </mal:extends>
+                <mal:field name="updateDate" canBeNull="false" comment="The latest update date.">
+                    <mal:type area="MAL" list="false" name="Time"/>
+                </mal:field>
+                <mal:field name="mime" canBeNull="false" comment="The MIME type.">
+                    <mal:type area="MAL" list="false" name="Identifier"/>
+                </mal:field>
+                <mal:field name="fileSize" canBeNull="false" comment="The size of the file in bytes.">
+                    <mal:type area="MAL" list="false" name="Long"/>
+                </mal:field>
+            </mal:composite>
+
+            <mal:composite name="ProductFilter" shortFormPart="105" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters then all products of the specified type pass the filter.
 A ProductFilter relates to a specific ProductType. Note that the domain filter relates to the domain of the product. The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>

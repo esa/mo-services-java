@@ -71,7 +71,7 @@ public class TMPacketsDataset extends Dataset {
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ProductMetadata metadata1 = new ProductMetadata(typeTMPacketDailyExtract, ref1, Time.now(),
-                null, null, contentTimeWindowAPID100, attributes1, "description", null);
+                null, null, contentTimeWindowAPID100, attributes1, "description", null, null);
         super.addNewProduct(ref1, productBody1, metadata1);
 
         // product2
@@ -80,7 +80,7 @@ public class TMPacketsDataset extends Dataset {
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeTMPacketDailyExtract, ref2, Time.now(),
-                null, null, contentTimeWindowAPID200, attributes2, "description", null);
+                null, null, contentTimeWindowAPID200, attributes2, "description", null, null);
         super.addNewProduct(ref2, productBody2, metadata2);
     }
 
