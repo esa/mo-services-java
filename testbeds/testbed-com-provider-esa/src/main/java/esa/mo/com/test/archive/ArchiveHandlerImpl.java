@@ -1256,7 +1256,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     private void waitForShortTime() {
         try {
-            Thread.sleep((long) Configuration.COM_PERIOD);
+            Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
         } catch (Exception ex) {
             LoggingBase.logMessage(CLS + ":query:Sleep failure " + ex);
         }

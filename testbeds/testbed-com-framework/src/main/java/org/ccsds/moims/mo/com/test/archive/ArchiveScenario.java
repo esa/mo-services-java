@@ -1266,7 +1266,7 @@ public class ArchiveScenario {
 
     private void waitForShortTime() {
         try {
-            Thread.sleep((long) Configuration.COM_PERIOD);
+            Thread.sleep((long) Configuration.COM_PERIOD_LONG);
         } catch (Exception ex) {
 
         }

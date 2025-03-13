@@ -175,7 +175,7 @@ public class SubscriptionIdTestProcedure extends LoggingBase {
             MonitorListener listener = (MonitorListener) listeners.elementAt(i);
 
             synchronized (listener.monitorCond) {
-                listener.monitorCond.waitFor(Configuration.WAIT_TIME_OUT);
+                listener.monitorCond.waitFor(Configuration.COM_PERIOD_LONG);
                 listener.monitorCond.reset();
             }
 

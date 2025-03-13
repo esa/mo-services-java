@@ -288,7 +288,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
 
         MonitorActivityTestAdapter monitor = ((MonitorActivityTestAdapter) monitorMap.get(monitorKey));
         try {
-            retVal = monitor.cond.waitFor(Configuration.WAIT_TIME_OUT);
+            retVal = monitor.cond.waitFor(Configuration.COM_PERIOD_LONG);
         } catch (InterruptedException ex) {
             // do nothing, we are expecting this
         }

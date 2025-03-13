@@ -70,7 +70,7 @@ public abstract class BaseActivityScenario extends LoggingBase {
     }
 
     public void waitForReasonableAmountOfTime() throws Exception {
-        Thread.sleep(Configuration.COM_PERIOD);
+        Thread.sleep(Configuration.COM_PERIOD_SHORT);
     }
 
     public void closeTestActivityServiceClient() throws Exception {

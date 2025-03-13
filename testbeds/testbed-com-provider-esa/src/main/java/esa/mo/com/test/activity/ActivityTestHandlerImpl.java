@@ -158,7 +158,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishExecution(true, interaction.getInteraction(), 1, 2);
             interaction.sendAcknowledgement(_String);
             try {
-                Thread.sleep((long) Configuration.COM_PERIOD);
+                Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
             } catch (Exception ex) {
             }
             if (!_String.contains(RESPONSE_ERROR)) {
@@ -194,7 +194,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishAcceptance(true, interaction.getInteraction());
             interaction.sendAcknowledgement(_String);
             try {
-                Thread.sleep((long) Configuration.COM_PERIOD);
+                Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
             } catch (Exception ex) {
             }
             // Send updates
@@ -209,7 +209,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                     publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
                     interaction.sendUpdate(_String);
                     try {
-                        Thread.sleep((long) Configuration.COM_PERIOD);
+                        Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
                     } catch (Exception ex) {
                     }
                 }

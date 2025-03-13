@@ -641,7 +641,7 @@ public class EventTestScenario extends LoggingBase {
     }
 
     public void waitForReasonableAmountOfTime() throws Exception {
-        Thread.sleep((long) Configuration.COM_PERIOD);
+        Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
     }
 
     /**
