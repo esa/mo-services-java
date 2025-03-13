@@ -52,8 +52,9 @@ public abstract class Configuration {
 
     //public static final String WAIT_TIME_OUT_PROPERTY_NAME = "org.ccsds.moims.mo.testbed.wait.timeout";
     //public static final int WAIT_TIME_OUT = Integer.getInteger(WAIT_TIME_OUT_PROPERTY_NAME, 500).intValue();
-    public static final int WAIT_TIME_OUT = 500;
+    public static final int WAIT_TIME_OUT = 200;
     public static final int PERIOD = 100; // in ms - The code will wait on this PERIOD: ~630 times !
+    public static final int COM_PERIOD = 100; // in ms - The code will wait on this PERIOD: ~630 times !
 
     public static final Blob DEFAULT_SHARED_BROKER_AUTHENTICATION_ID = new Blob(new byte[]{0x02, 0x01});
     public static final String TRANSPORT_LEVEL_SHARED_BROKER = "org.ccsds.moims.mo.testbed.transport.level.shared.broker";
