@@ -111,7 +111,7 @@ public class MonitorPublishInteractionListener implements MALPublishInteractionL
         this.error = error;
     }
 
-    public Long getPublishRegisterTransactionId(String key) {
+    public synchronized Long getPublishRegisterTransactionId(String key) {
         return publishRegisterTransactionIds.get(key);
     }
 
