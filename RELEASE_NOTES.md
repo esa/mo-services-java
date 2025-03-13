@@ -4,7 +4,16 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 11.2 (2025)
+### Version 11.3 (2025)
+* Updates the yml files to use 'temurin' instead of 'adopt'
+* Improvements to the API and Word generator
+* Simplification of the pom variables
+* Multiple updates to the MPD specs and respective testbed
+* Updates the MPS spec with the final round of RIDs
+* Updates the M&C spec with the latest changes
+* Adds jetty to the http transport implementation
+
+### Version 11.2 (23 January 2025)
 * Fixes the MAL Broker bug that did not allow multiple PUB-SUB operations within the same service
 * MPD specification - Updates to include many of the RIDs found during implementation
 * Word API Generator: Supports the new "Requirements" section on operations. These are obtained from the XML file of the specs
