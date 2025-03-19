@@ -21,6 +21,7 @@
 package org.ccsds.mo.mpd.testbed;
 
 import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
+import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -48,6 +49,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
 
     private static final ImagesDataset backend = new ImagesDataset();
+    private static final MixedProductDataset backendMixed = new MixedProductDataset();
 
     @BeforeClass
     public static void setUpClass() throws IOException {
@@ -106,7 +108,8 @@ public class UC1_Ex3_Test extends MPDTest {
     }
 
     @Test
-    public void testCase_07() {
+    public void testCase_07() throws IOException {
+        setUp.setUp(backendMixed, true, true, true);
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_07()");
         TimeWindow contentTimeWindow = new TimeWindow(
@@ -116,7 +119,8 @@ public class UC1_Ex3_Test extends MPDTest {
     }
 
     @Test
-    public void testCase_08() {
+    public void testCase_08() throws IOException {
+        setUp.setUp(backendMixed, true, true, true);
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_08()");
         TimeWindow contentTimeWindow = new TimeWindow(
@@ -126,7 +130,8 @@ public class UC1_Ex3_Test extends MPDTest {
     }
 
     @Test
-    public void testCase_09() {
+    public void testCase_09() throws IOException {
+        setUp.setUp(backendMixed, true, true, true);
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_09()");
         TimeWindow contentTimeWindow = new TimeWindow(
@@ -137,7 +142,8 @@ public class UC1_Ex3_Test extends MPDTest {
     }
 
     @Test
-    public void testCase_10() {
+    public void testCase_10() throws IOException {
+        setUp.setUp(backendMixed, true, true, true);
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_10()");
         TimeWindow contentTimeWindow = new TimeWindow(

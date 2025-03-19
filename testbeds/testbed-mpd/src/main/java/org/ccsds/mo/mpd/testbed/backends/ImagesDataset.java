@@ -32,7 +32,6 @@ import java.time.Instant;
 public class ImagesDataset extends Dataset {
 
     public final ProductType typeImage;
-    public final ProductType typeTMPacket;
 
     private void addImgProduct1(IdentifierList domain) {
                 /*
@@ -169,89 +168,6 @@ Product metadata: metadata3
         super.addNewProduct(ref3, productBody3, metadata3);
     }
 
-    private void addTmpProduct1(IdentifierList domain) {
-        /*
-APID100_CREATION_DATE	2010-01-01T09:13:51.352Z
-APID100_TIME_END	2010-01-01T09:07:51.352Z
-APID100_TIME_START	2009-12-31T11:41:53.437Z
-
-Product name: product4 (with metadata4)
-    - identity.domain: myDomain
-    - identity.key: "tmData3"
-    - identity.version: 1
-    - productType: typeTMPacketDailyExtract
-    - creationDate: <APID100_CREATION_DATE>
-    - timeWindow.start: <APID100_TIME_START>
-    - timeWindow.end: <APID100_TIME_END>
-    - description: "description"
-    - productBody: [0x01,0x02,0x03]
-    - attributes: APID
-Product metadata: metadata4
-    - productType: typeTMPacketDailyExtract
-    - product: product1
-    - creationDate: <APID100_CREATION_DATE>
-    - source: NULL
-    - timeWindow.start: <APID100_TIME_START>
-    - timeWindow.end: <APID100_TIME_END>
-    - parameters: APID=100
- */
-        TimeWindow contentTimeWindow4 = new TimeWindow(
-                new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
-                new Time(Instant.parse("2010-01-01T09:07:51.352Z").toEpochMilli()));
-
-        NamedValueList attributes4 = new NamedValueList();
-        attributes4.add(new NamedValue(new Identifier("APID"), new UInteger(100)));
-        ObjectRef<Product> ref4 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData3"), new UInteger(1));
-        Blob productBody4 = new Blob(new byte[]{0x01,0x02,0x03});
-        ProductMetadata metadata4 = new ProductMetadata(typeTMPacket, ref4,
-                new Time(Instant.parse("2010-01-01T09:13:51.352Z").toEpochMilli()),
-                null, null,
-                contentTimeWindow4, attributes4, "description", null, null);
-        super.addNewProduct(ref4, productBody4, metadata4);
-    }
-
-    private void addTmpProduct2(IdentifierList domain) {
-        /*
-APID200_CREATION_DATE	2020-01-01T08:24:26.846Z
-APID200_TIME_END	2020-01-01T08:14:53.113Z
-APID200_TIME_START	2019-12-31T10:09:17.854Z
-
-Product name: product5 (with metadata5)
-    - identity.domain: myDomain
-    - identity.key: "tmData42"
-    - identity.version: 1
-    - productType: typeTMPacketDailyExtract
-    - creationDate: <APID200_CREATION_DATE>
-    - timeWindow.start: <APID200_TIME_START>
-    - timeWindow.end: <APID200_TIME_END>
-    - description: "description"
-    - productBody: [0x09,0x08,0x07]
-    - attributes: APID
-Product metadata: metadata5
-    - productType: typeTMPacketDailyExtract
-    - product: product2
-    - creationDate: <APID200_CREATION_DATE>
-    - source: NULL
-    - timeWindow.start: <APID200_TIME_START>
-    - timeWindow.end: <APID200_TIME_END>
-    - parameters: APID=200
-
- */
-        TimeWindow contentTimeWindow4 = new TimeWindow(
-                new Time(Instant.parse("2019-12-31T10:09:17.854Z").toEpochMilli()),
-                new Time(Instant.parse("2020-01-01T08:14:53.113Z").toEpochMilli()));
-
-        NamedValueList attributes4 = new NamedValueList();
-        attributes4.add(new NamedValue(new Identifier("APID"), new UInteger(200)));
-        ObjectRef<Product> ref4 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData42"), new UInteger(1));
-        Blob productBody4 = new Blob(new byte[]{0x09,0x08,0x07});
-        ProductMetadata metadata4 = new ProductMetadata(typeTMPacket, ref4,
-                new Time(Instant.parse("2020-01-01T08:24:26.846Z").toEpochMilli()),
-                null, null,
-                contentTimeWindow4, attributes4, "description", null, null);
-        super.addNewProduct(ref4, productBody4, metadata4);
-    }
-
     public ImagesDataset() {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -266,14 +182,8 @@ Product metadata: metadata5
         attributeDefs.add(new AttributeDef(new Identifier("coordinates.lon"), AttributeType.DOUBLE));
         typeImage = new ProductType(new Identifier("typeImage"), "An Image type", attributeDefs);
 
-        AttributeDefList attributeDefsTmPacket = new AttributeDefList();
-        attributeDefs.add(new AttributeDef(new Identifier("APID"), AttributeType.UINTEGER));
-        typeTMPacket = new ProductType(new Identifier("typeTMPacketDailyExtract"), "A TM Packet Daily Extract typee", attributeDefsTmPacket);
-
         addImgProduct1(domain);
         addImgProduct2(domain);
         addImgProduct3(domain);
-        addTmpProduct1(domain);
-        addTmpProduct2(domain);
     }
 }
