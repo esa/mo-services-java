@@ -20,16 +20,6 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
-import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
-import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
@@ -37,8 +27,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
+import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
+import org.ccsds.moims.mo.mpd.structures.*;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -46,7 +46,6 @@ import static org.junit.Assert.*;
 public class UC1_Ex3_Test extends MPDTest {
 
     private ProductType productType;
-
 
     private static final ImagesDataset backend = new ImagesDataset();
     private static final MixedProductDataset backendMixed = new MixedProductDataset();
@@ -65,7 +64,7 @@ public class UC1_Ex3_Test extends MPDTest {
     public void testCase_01() {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_01()");
-        testWithTimeWindowValueSet("visible", true,"forest flyover", 1, null);
+        testWithTimeWindowValueSet("visible", true, "forest flyover", 1, null);
     }
 
     /**
@@ -75,7 +74,7 @@ public class UC1_Ex3_Test extends MPDTest {
     public void testCase_02() {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_02()");
-        testWithTimeWindowValueSet("visible", true,null, 1, null);
+        testWithTimeWindowValueSet("visible", true, null, 1, null);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class UC1_Ex3_Test extends MPDTest {
         TimeWindow contentTimeWindow = new TimeWindow(
                 new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
                 new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
-        testWithTimeWindowValueSet("visible", true,"forest flyover", 1, contentTimeWindow);
+        testWithTimeWindowValueSet("visible", true, "forest flyover", 1, contentTimeWindow);
     }
 
     @Test
@@ -115,7 +114,7 @@ public class UC1_Ex3_Test extends MPDTest {
         TimeWindow contentTimeWindow = new TimeWindow(
                 new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
                 new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
-        testWithTimeWindowValueRange(50L, 150L, true,null, 1, contentTimeWindow);
+        testWithTimeWindowValueRange(50L, 150L, true, null, 1, contentTimeWindow);
     }
 
     @Test
@@ -126,7 +125,7 @@ public class UC1_Ex3_Test extends MPDTest {
         TimeWindow contentTimeWindow = new TimeWindow(
                 new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
                 new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
-        testWithTimeWindowStringPattern("tree", null, true,null, 0, contentTimeWindow);
+        testWithTimeWindowStringPattern("tree", null, true, null, 0, contentTimeWindow);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class UC1_Ex3_Test extends MPDTest {
                 new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
                 new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
         List<String> actualValues = new ArrayList<>(Arrays.asList("Earth", "Earth"));
-        testWithTimeWindowStringPattern("Ear.*", actualValues, true,null, 2, contentTimeWindow);
+        testWithTimeWindowStringPattern("Ear.*", actualValues, true, null, 2, contentTimeWindow);
     }
 
     @Test
@@ -149,7 +148,7 @@ public class UC1_Ex3_Test extends MPDTest {
         TimeWindow contentTimeWindow = new TimeWindow(
                 new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
                 new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
-        testWithTimeWindowValueRange(50L, 150L, false,null, 1, contentTimeWindow);
+        testWithTimeWindowValueRange(50L, 150L, false, null, 1, contentTimeWindow);
     }
 
     private synchronized void testWithTimeWindowValueSet(String attributeFilterStr, boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
@@ -219,7 +218,6 @@ public class UC1_Ex3_Test extends MPDTest {
         }
         AttributeFilterList attributeFilter = null;
 
-
         // When the apidValue is NULL, then the filtering is off!
         if (attributeFilterSingle != null) {
             attributeFilter = new AttributeFilterList();
@@ -283,7 +281,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
-                                                        MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -291,7 +289,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
-                                                           MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -299,7 +297,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
-                                                             MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());

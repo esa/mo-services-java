@@ -20,16 +20,6 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
-import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Map;
@@ -38,13 +28,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
+import org.ccsds.moims.mo.mpd.structures.*;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
  */
 public class UC1_Ex2_Test extends MPDTest {
+
     private ProductType productType;
     private AttributeFilterList attributeFilter;
     private static final ImagesDataset backend = new ImagesDataset();
@@ -85,7 +86,7 @@ public class UC1_Ex2_Test extends MPDTest {
             }
         };
 
-        testWithTimeWindowGeneric( null, 2, null, isValidAttribute);
+        testWithTimeWindowGeneric(null, 2, null, isValidAttribute);
     }
 
     @Test
@@ -104,7 +105,7 @@ public class UC1_Ex2_Test extends MPDTest {
                 }
             }
         };
-        testWithTimeWindowGeneric( null, 2, null, isValidAttribute);
+        testWithTimeWindowGeneric(null, 2, null, isValidAttribute);
     }
 
     @Test
@@ -131,7 +132,7 @@ public class UC1_Ex2_Test extends MPDTest {
                 }
             }
         };
-        testWithTimeWindowGeneric( null, 1, null, isValidAttribute);
+        testWithTimeWindowGeneric(null, 1, null, isValidAttribute);
     }
 
     @Test
@@ -145,7 +146,7 @@ public class UC1_Ex2_Test extends MPDTest {
 
         Consumer<NamedValueList> isValidAttribute = attributes -> {
         };
-        testWithTimeWindowGeneric( null, 1, contentTimeWindow, isValidAttribute);
+        testWithTimeWindowGeneric(null, 1, contentTimeWindow, isValidAttribute);
     }
 
     @Test
@@ -172,7 +173,7 @@ public class UC1_Ex2_Test extends MPDTest {
                 new Time(Instant.parse("2020-01-22T10:10:06.728Z").toEpochMilli()),
                 new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
 
-        testWithTimeWindowGeneric( null, 1, contentTimeWindow, isValidAttribute);
+        testWithTimeWindowGeneric(null, 1, contentTimeWindow, isValidAttribute);
     }
 
     @Test
@@ -193,7 +194,7 @@ public class UC1_Ex2_Test extends MPDTest {
             }
         };
 
-        testWithTimeWindowGeneric( null, 0, null, isValidAttribute);
+        testWithTimeWindowGeneric(null, 0, null, isValidAttribute);
     }
 
     @Test
@@ -220,7 +221,7 @@ public class UC1_Ex2_Test extends MPDTest {
                 }
             }
         };
-        testWithTimeWindowGeneric( null, 0, null, isValidAttribute);
+        testWithTimeWindowGeneric(null, 0, null, isValidAttribute);
     }
 
     private synchronized void testWithTimeWindowGeneric(String source, int expectedNumberOfResults, TimeWindow contentDate, Consumer<NamedValueList> isValidAttribute) {
@@ -233,7 +234,6 @@ public class UC1_Ex2_Test extends MPDTest {
             sources = new IdentifierList();
             sources.add(new Identifier(source));
         }
-
 
         ProductFilter productFilter = new ProductFilter(productType.getName(), domain, sources, attributeFilter);
         ProductMetadataList list = null;
@@ -292,7 +292,7 @@ public class UC1_Ex2_Test extends MPDTest {
 
                 @Override
                 public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
-                                                        MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -300,7 +300,7 @@ public class UC1_Ex2_Test extends MPDTest {
 
                 @Override
                 public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
-                                                           MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -308,7 +308,7 @@ public class UC1_Ex2_Test extends MPDTest {
 
                 @Override
                 public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
-                                                             MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -384,6 +384,5 @@ public class UC1_Ex2_Test extends MPDTest {
             fail(ex.toString());
         }
     }
-
 
 }
