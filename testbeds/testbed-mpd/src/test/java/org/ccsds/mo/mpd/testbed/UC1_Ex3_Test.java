@@ -20,16 +20,6 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
-import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
-import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
@@ -37,8 +27,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
+import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
+import org.ccsds.moims.mo.mpd.structures.*;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
