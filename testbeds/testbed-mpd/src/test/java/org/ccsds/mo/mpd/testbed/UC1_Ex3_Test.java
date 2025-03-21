@@ -47,7 +47,6 @@ public class UC1_Ex3_Test extends MPDTest {
 
     private ProductType productType;
 
-
     private static final ImagesDataset backend = new ImagesDataset();
     private static final MixedProductDataset backendMixed = new MixedProductDataset();
 
@@ -65,7 +64,7 @@ public class UC1_Ex3_Test extends MPDTest {
     public void testCase_01() {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_01()");
-        testWithTimeWindowValueSet("visible", true,"forest flyover", 1, null);
+        testWithTimeWindowValueSet("visible", true, "forest flyover", 1, null);
     }
 
     /**
@@ -98,7 +97,7 @@ public class UC1_Ex3_Test extends MPDTest {
         TimeWindow contentTimeWindow = new TimeWindow(
                 new Time(Instant.parse("2020-01-22T10:10:06.728Z").toEpochMilli()),
                 new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
-        testWithTimeWindowValueSet("visible", true,"forest flyover", 1, contentTimeWindow);
+        testWithTimeWindowValueSet("visible", true, "forest flyover", 1, contentTimeWindow);
     }
 
     @Test
@@ -152,7 +151,8 @@ public class UC1_Ex3_Test extends MPDTest {
         testWithTimeWindowValueRange(null, null, false, null, 4, contentTimeWindow);
     }
 
-    private synchronized void testWithTimeWindowValueSet(String attributeFilterStr, boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
+    private synchronized void testWithTimeWindowValueSet(String attributeFilterStr,
+            boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
         ValueSet valueSet = null;
         Union attributeFilterStrMO = new Union(attributeFilterStr);
         if (attributeFilterStr != null) {
@@ -171,7 +171,8 @@ public class UC1_Ex3_Test extends MPDTest {
         testWithTimeWindowGeneric(valueSet, source, expectedNumberOfResults, contentDate, isValidAttribute);
     }
 
-    private synchronized void testWithTimeWindowValueRange(Long minVal, Long maxVal, boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
+    private synchronized void testWithTimeWindowValueRange(Long minVal, Long maxVal,
+            boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
         ValueRange valueRange = null;
         if (minVal != null) {
             valueRange = new ValueRange(new Identifier("APID"), isAttributeFilterIncluded, new UInteger(minVal), new UInteger(maxVal));
@@ -189,7 +190,8 @@ public class UC1_Ex3_Test extends MPDTest {
         testWithTimeWindowGeneric(valueRange, source, expectedNumberOfResults, contentDate, isValidAttribute);
     }
 
-    private synchronized void testWithTimeWindowStringPattern(String pattern, List<String> actualValues, boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
+    private synchronized void testWithTimeWindowStringPattern(String pattern, List<String> actualValues,
+            boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
         StringPattern stringPattern = null;
         if (pattern != null) {
             stringPattern = new StringPattern(new Identifier("ImageSubject"), isAttributeFilterIncluded, pattern);
@@ -207,7 +209,8 @@ public class UC1_Ex3_Test extends MPDTest {
         testWithTimeWindowGeneric(stringPattern, source, expectedNumberOfResults, contentDate, isValidAttribute);
     }
 
-    private synchronized void testWithTimeWindowGeneric(AttributeFilter attributeFilterSingle, String source, int expectedNumberOfResults, TimeWindow contentDate, Consumer<NamedValueList> isValidAttribute) {
+    private synchronized void testWithTimeWindowGeneric(AttributeFilter attributeFilterSingle,
+            String source, int expectedNumberOfResults, TimeWindow contentDate, Consumer<NamedValueList> isValidAttribute) {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
         IdentifierList sources;
@@ -218,7 +221,6 @@ public class UC1_Ex3_Test extends MPDTest {
             sources.add(new Identifier(source));
         }
         AttributeFilterList attributeFilter = null;
-
 
         // When the apidValue is NULL, then the filtering is off!
         if (attributeFilterSingle != null) {
@@ -283,7 +285,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
-                                                        MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -291,7 +293,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
-                                                           MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -299,7 +301,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
-                                                             MOErrorException error, Map qosProperties) {
+                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
