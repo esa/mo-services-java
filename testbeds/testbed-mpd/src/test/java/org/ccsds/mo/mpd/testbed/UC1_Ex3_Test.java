@@ -20,6 +20,16 @@
  */
 package org.ccsds.mo.mpd.testbed;
 
+import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
+import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
@@ -27,18 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
-import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
-import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
-import org.ccsds.moims.mo.mpd.structures.*;
+
 import static org.junit.Assert.*;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
@@ -46,6 +46,7 @@ import org.junit.Test;
 public class UC1_Ex3_Test extends MPDTest {
 
     private ProductType productType;
+
 
     private static final ImagesDataset backend = new ImagesDataset();
     private static final MixedProductDataset backendMixed = new MixedProductDataset();
@@ -64,7 +65,7 @@ public class UC1_Ex3_Test extends MPDTest {
     public void testCase_01() {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_01()");
-        testWithTimeWindowValueSet("visible", true, "forest flyover", 1, null);
+        testWithTimeWindowValueSet("visible", true,"forest flyover", 1, null);
     }
 
     /**
@@ -95,9 +96,9 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_05()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
-                new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
-        testWithTimeWindowValueSet("visible", true, "forest flyover", 1, contentTimeWindow);
+                new Time(Instant.parse("2020-01-22T10:10:06.728Z").toEpochMilli()),
+                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+        testWithTimeWindowValueSet("visible", true,"forest flyover", 1, contentTimeWindow);
     }
 
     @Test
@@ -134,8 +135,8 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_09()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
-                new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
+                new Time(Instant.parse("2013-01-22T10:10:06.728Z").toEpochMilli()),
+                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
         List<String> actualValues = new ArrayList<>(Arrays.asList("Earth", "Earth"));
         testWithTimeWindowStringPattern("Ear.*", actualValues, true, null, 2, contentTimeWindow);
     }
@@ -146,9 +147,9 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_10()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
-                new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
-        testWithTimeWindowValueRange(50L, 150L, false, null, 1, contentTimeWindow);
+                new Time(Instant.parse("2013-01-22T10:10:06.728Z").toEpochMilli()),
+                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+        testWithTimeWindowValueRange(null, null, false, null, 4, contentTimeWindow);
     }
 
     private synchronized void testWithTimeWindowValueSet(String attributeFilterStr, boolean isAttributeFilterIncluded, String source, int expectedNumberOfResults, TimeWindow contentDate) {
@@ -177,7 +178,7 @@ public class UC1_Ex3_Test extends MPDTest {
         }
         Consumer<NamedValueList> isValidAttribute = attributes -> {
             for (NamedValue att : attributes) {
-                if ("APID".equals(att.getName().toString())) {
+                if (!Objects.isNull(minVal) && "APID".equals(att.getName().toString())) {
 
                     long attributeValue = ((UInteger) att.getValue()).getValue();
                     System.out.println("APID: " + attributeValue + " " + minVal + " " + maxVal);
@@ -197,7 +198,7 @@ public class UC1_Ex3_Test extends MPDTest {
             int index = 0;
             for (NamedValue att : attributes) {
                 if ("ImageSubject".equals(att.getName().toString())) {
-                    assertEquals(actualValues.get(index++), att.getValue());
+                    assertEquals(actualValues.get(index++), Attribute.attribute2JavaType(att.getValue()));
 //                    Integer attributeValue = (int) Attribute.attribute2JavaType(att.getValue());
 //                    assertTrue();
                 }
@@ -217,6 +218,7 @@ public class UC1_Ex3_Test extends MPDTest {
             sources.add(new Identifier(source));
         }
         AttributeFilterList attributeFilter = null;
+
 
         // When the apidValue is NULL, then the filtering is off!
         if (attributeFilterSingle != null) {
@@ -281,7 +283,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
-                        MOErrorException error, Map qosProperties) {
+                                                        MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -289,7 +291,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
-                        MOErrorException error, Map qosProperties) {
+                                                           MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -297,7 +299,7 @@ public class UC1_Ex3_Test extends MPDTest {
 
                 @Override
                 public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
-                        MOErrorException error, Map qosProperties) {
+                                                             MOErrorException error, Map qosProperties) {
                     Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
                             "Something went wrong...", error);
                     fail(error.toString());
@@ -361,12 +363,7 @@ public class UC1_Ex3_Test extends MPDTest {
                 if (!Objects.isNull(productType.getName()) && !p.getProductType().equals(productType)) {
                     fail("The productType isnot the same! For product: " + p.toString());
                 }
-            }
-
-            // If there is only one entry, then check if the APID matches
-            if (size == 1) {
-                Product product = returnedProducts.get(0);
-                NamedValueList attributes = product.getAttributes();
+                NamedValueList attributes = p.getAttributes();
 
                 isValidAttribute.accept(attributes);
             }
