@@ -272,10 +272,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 5:
@@ -301,7 +301,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 8:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
@@ -342,10 +342,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 14:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 15:
