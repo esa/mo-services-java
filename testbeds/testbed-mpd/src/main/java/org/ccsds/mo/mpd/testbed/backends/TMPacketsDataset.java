@@ -24,16 +24,14 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mpd.Dataset;
 import org.ccsds.moims.mo.mpd.structures.*;
 
-import java.time.Instant;
-
 /**
  * The TMPacketsDataset backend contains data similar to a set of TM Packets.
  */
 public class TMPacketsDataset extends Dataset {
-    public final static Time APID100_TIME_START = new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli());
-    public final static Time APID100_TIME_END = new Time(Instant.parse("2010-01-01T09:07:51.352Z").toEpochMilli());
-    public final static Time APID200_TIME_START = new Time(Instant.parse("2019-12-31T10:09:17.854Z").toEpochMilli());
-    public final static Time APID200_TIME_END = new Time(Instant.parse("2020-01-01T08:14:53.113Z").toEpochMilli());
+    public final static Time APID100_TIME_START = new Time("2009-12-31T11:41:53.437Z");
+    public final static Time APID100_TIME_END = new Time("2010-01-01T09:07:51.352Z");
+    public final static Time APID200_TIME_START = new Time("2019-12-31T10:09:17.854Z");
+    public final static Time APID200_TIME_END = new Time("2020-01-01T08:14:53.113Z");
     public final static TimeWindow contentTimeWindowAPID100 = new TimeWindow(APID100_TIME_START, APID100_TIME_END);
     public final static TimeWindow contentTimeWindowAPID200 = new TimeWindow(APID200_TIME_START, APID200_TIME_END);
     public final ProductType typeTMPacketDailyExtract;

@@ -21,7 +21,6 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -141,8 +140,8 @@ public class UC1_Ex2_Test extends MPDTest {
         productType = backend.typeImage;  //  productType=typeTMPacket
 
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2020-01-22T10:10:06.728Z").toEpochMilli()),
-                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+                new Time("2020-01-22T10:10:06.728Z"),
+                new Time("2023-02-22T10:10:06.728Z"));
 
         Consumer<NamedValueList> isValidAttribute = attributes -> {
         };
@@ -170,8 +169,8 @@ public class UC1_Ex2_Test extends MPDTest {
             }
         };
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2020-01-22T10:10:06.728Z").toEpochMilli()),
-                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+                new Time("2020-01-22T10:10:06.728Z"),
+                new Time("2023-02-22T10:10:06.728Z"));
 
         testWithTimeWindowGeneric(null, 1, contentTimeWindow, isValidAttribute);
     }

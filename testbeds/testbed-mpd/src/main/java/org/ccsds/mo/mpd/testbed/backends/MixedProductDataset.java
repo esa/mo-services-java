@@ -23,8 +23,6 @@ package org.ccsds.mo.mpd.testbed.backends;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mpd.structures.*;
 
-import java.time.Instant;
-
 /**
  * A dummy backend in order to try out the provider.
  */
@@ -63,7 +61,7 @@ Product metadata: metadata4
         ObjectRef<Product> ref4 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData3"), new UInteger(1));
         Blob productBody4 = new Blob(new byte[]{0x01,0x02,0x03});
         ProductMetadata metadata4 = new ProductMetadata(typeTMPacket, ref4,
-                new Time(Instant.parse("2010-01-01T09:13:51.352Z").toEpochMilli()),
+                new Time("2010-01-01T09:13:51.352Z"),
                 null, null,
                 TMPacketsDataset.contentTimeWindowAPID100, attributes4, "description", null, null);
         super.addNewProduct(ref4, productBody4, metadata4);
@@ -101,7 +99,7 @@ Product metadata: metadata5
         ObjectRef<Product> ref4 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData42"), new UInteger(1));
         Blob productBody4 = new Blob(new byte[]{0x09,0x08,0x07});
         ProductMetadata metadata4 = new ProductMetadata(typeTMPacket, ref4,
-                new Time(Instant.parse("2020-01-01T08:24:26.846Z").toEpochMilli()),
+                new Time("2020-01-01T08:24:26.846Z"),
                 null, null,
                 TMPacketsDataset.contentTimeWindowAPID200, attributes4, "description", null, null);
         super.addNewProduct(ref4, productBody4, metadata4);

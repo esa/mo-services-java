@@ -21,7 +21,6 @@
 package org.ccsds.mo.mpd.testbed;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -95,8 +94,8 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_05()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2020-01-22T10:10:06.728Z").toEpochMilli()),
-                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+                new Time("2020-01-22T10:10:06.728Z"),
+                new Time("2023-02-22T10:10:06.728Z"));
         testWithTimeWindowValueSet("visible", true, "forest flyover", 1, contentTimeWindow);
     }
 
@@ -112,8 +111,8 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_07()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
-                new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
+                new Time("2009-12-31T11:41:53.437Z"),
+                new Time("2022-01-22T20:18:10.539Z"));
         testWithTimeWindowValueRange(50L, 150L, true, null, 1, contentTimeWindow);
     }
 
@@ -123,8 +122,8 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_08()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2009-12-31T11:41:53.437Z").toEpochMilli()),
-                new Time(Instant.parse("2022-01-22T20:18:10.539Z").toEpochMilli()));
+                new Time("2009-12-31T11:41:53.437Z"),
+                new Time("2022-01-22T20:18:10.539Z"));
         testWithTimeWindowStringPattern("tree", null, true, null, 0, contentTimeWindow);
     }
 
@@ -134,8 +133,8 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_09()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2013-01-22T10:10:06.728Z").toEpochMilli()),
-                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+                new Time("2013-01-22T10:10:06.728Z"),
+                new Time("2023-02-22T10:10:06.728Z"));
         List<String> actualValues = new ArrayList<>(Arrays.asList("Earth", "Earth"));
         testWithTimeWindowStringPattern("Ear.*", actualValues, true, null, 2, contentTimeWindow);
     }
@@ -146,8 +145,8 @@ public class UC1_Ex3_Test extends MPDTest {
         productType = new ProductType(null, "Invalid Type", null);
         System.out.println("Running: testCase_10()");
         TimeWindow contentTimeWindow = new TimeWindow(
-                new Time(Instant.parse("2013-01-22T10:10:06.728Z").toEpochMilli()),
-                new Time(Instant.parse("2023-02-22T10:10:06.728Z").toEpochMilli()));
+                new Time("2013-01-22T10:10:06.728Z"),
+                new Time("2023-02-22T10:10:06.728Z"));
         testWithTimeWindowValueRange(null, null, false, null, 4, contentTimeWindow);
     }
 
