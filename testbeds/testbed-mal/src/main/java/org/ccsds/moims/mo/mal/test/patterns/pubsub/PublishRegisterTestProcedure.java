@@ -131,9 +131,9 @@ public class PublishRegisterTestProcedure extends LoggingBase {
         Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
         ipTest.monitorRegister(subscription, listener);
 
-        //boolean expectError = Boolean.parseBoolean(error);
+        boolean expectError = Boolean.parseBoolean(error);
         //boolean expectError = "true".equals(error.toLowerCase());
-        boolean expectError = !("false".equals(error.toLowerCase()));
+        //boolean expectError = !("false".equals(error.toLowerCase()));
 
         UpdateHeaderList updateHeaders = new UpdateHeaderList();
         updateHeaders.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
