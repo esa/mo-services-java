@@ -271,11 +271,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 4:
+                        // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.PERIOD);
+                        //Thread.sleep(Configuration.PERIOD);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(Configuration.PERIOD);
+                        //Thread.sleep(Configuration.PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 5:
@@ -287,6 +288,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
+                        // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
                         //Thread.sleep(Configuration.PERIOD);
                         interaction.sendUpdate(new Integer(1));
@@ -300,8 +302,9 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendResponse("");
                         break;
                     case 8:
+                        // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.PERIOD);
+                        //Thread.sleep(Configuration.PERIOD);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
