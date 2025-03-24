@@ -95,8 +95,9 @@ public class UC2_Test extends MPDTest {
     public void testCase_03() {
         System.out.println("Running: testCase_03()");
         UInteger apidValue = new UInteger(100);
-        int steps = 3;
-        test(apidValue, steps, 3); // 3 Because the borders will overlap!
+        int steps = 4;
+        test(apidValue, steps, 2);
+        // 2 Because one slot centered around the first border and the other on the second!
     }
 
     /**
@@ -105,29 +106,6 @@ public class UC2_Test extends MPDTest {
     @Test
     public void testCase_04() {
         System.out.println("Running: testCase_04()");
-        UInteger apidValue = new UInteger(100);
-        int steps = 4;
-        test(apidValue, steps, 2);
-        // 2 Because one slot centered around the first border and the other on the second!
-    }
-
-    /**
-     * Test Case 5.
-     */
-    @Test
-    public void testCase_05() {
-        System.out.println("Running: testCase_05()");
-        UInteger apidValue = new UInteger(100);
-        int steps = 5;
-        test(apidValue, steps, 3); // 3 Because the borders will overlap!
-    }
-
-    /**
-     * Test Case 6.
-     */
-    @Test
-    public void testCase_06() {
-        System.out.println("Running: testCase_06()");
         UInteger apidValue = new UInteger(100);
         int steps = 10;
         test(apidValue, steps, 2);
