@@ -418,6 +418,8 @@ public class ProductRetrievalTest extends MPDTest {
 
                 @Override
                 public void getProductsUpdateReceived(MALMessageHeader msgHeader, Product product, Map qosProperties) {
+                    long duration = System.currentTimeMillis() - startTime;
+                    System.out.println("UPDATE received in: " + duration + " ms");
                     returnedProducts.add(product);
                 }
 

@@ -712,9 +712,11 @@ public class UC3_Ex2_Test extends MPDTest {
             consumerPOD.notifyProductDeliveryDeregister(subscriptions);
             System.out.flush();
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+                    "Something went wrong with the interaction!", ex);
         } catch (MALException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+                    "Something went wrong...", ex);
         }
     }
 }
