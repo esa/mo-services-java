@@ -273,10 +273,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 4:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendResponse("");
                         break;
                     case 5:
@@ -290,10 +290,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 6:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 7:
@@ -304,7 +304,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 8:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
