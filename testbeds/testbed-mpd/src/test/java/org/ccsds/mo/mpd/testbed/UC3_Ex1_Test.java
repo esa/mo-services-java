@@ -219,7 +219,7 @@ public class UC3_Ex1_Test extends MPDTest {
         test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
-    private synchronized void test(Identifier user, IdentifierList domain,
+    protected synchronized void test(Identifier user, IdentifierList domain,
             DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
@@ -356,16 +356,8 @@ public class UC3_Ex1_Test extends MPDTest {
             }
 
             // Provider pushes a new Product (on the backend)
-            IdentifierList productDomain = new IdentifierList();
-            productDomain.add(new Identifier("nasa"));
-            productDomain.add(new Identifier("hubble"));
-            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(),
-                    new Identifier("tmData1"), new UInteger(1));
             Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref,
-                    Time.now(), null, null, TMPacketsDataset.contentTimeWindowAPID100,
-                    null, "description", null, null);
-            backend.addNewProduct(ref, productBody, metadata);
+            addProductToBackend(productBody);
 
             // ------------------------------------------------------------------------
             // Wait while NOTIFY has not been received and 1 second has not passed yet...
@@ -410,6 +402,8 @@ public class UC3_Ex1_Test extends MPDTest {
                 assertEquals(productType, returnedProduct.getProductType().getName());
             }
 
+            checkProductBody(returnedProduct, productBody);
+
             IdentifierList subscriptions = new IdentifierList();
             subscriptions.add(subscription.getSubscriptionId());
             consumerPOD.deliverProductsDeregister(subscriptions);
@@ -419,5 +413,21 @@ public class UC3_Ex1_Test extends MPDTest {
         } catch (MALException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    protected void addProductToBackend(Blob productBody) {
+        IdentifierList productDomain = new IdentifierList();
+        productDomain.add(new Identifier("nasa"));
+        productDomain.add(new Identifier("hubble"));
+        ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(),
+                new Identifier("tmData1"), new UInteger(1));
+        ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref,
+                Time.now(), null, null, TMPacketsDataset.contentTimeWindowAPID100,
+                null, "description", null, null);
+        backend.addNewProduct(ref, productBody, metadata);
+    }
+
+    protected void checkProductBody(Product returnedProduct, Blob productBody) {
+        assertEquals(returnedProduct.getProductBody(), productBody);
     }
 }
