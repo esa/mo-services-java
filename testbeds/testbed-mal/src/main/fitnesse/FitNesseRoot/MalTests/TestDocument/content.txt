@@ -32,7 +32,6 @@
 !see TestScenarios.Section4Scenarios.AllExceptPubSubTestCase.AllExceptPubSubTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase
 !see TestScenarios.Section4Scenarios.PubSubTestCase.PublishRegisterTestProcedure
-# the following test is commented out as it must be redesigned
 !see TestScenarios.Section4Scenarios.PubSubTestCase.EntityRequestTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase.HeaderTestProcedure
 !see TestScenarios.Section4Scenarios.PubSubTestCase.SubscriptionDomainTestProcedure
