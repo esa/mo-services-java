@@ -173,7 +173,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                 switch (transId) {
                     case 1:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendResponse("");
                         break;
                     case 2:
