@@ -465,6 +465,50 @@ public class UC3_Ex2_Test extends MPDTest {
         testWithAttributeFilter(user, domain, delivery, deliverTo, source, productType, attributeFilter, 0);
     }
 
+    /**
+     * Test Case 23.
+     */
+    @Test
+    public void testCase_23() {
+        System.out.println("Running: testCase_23()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new StringPattern(new Identifier("imageSubject"), true, "Ea.*"));
+        IdentifierList sources = new IdentifierList();
+        sources.add(new Identifier("forest flyover"));
+        sources.add(new Identifier("wrong source"));
+
+        testWithAttributeFilterAndMultipleSources(user, domain, delivery, deliverTo,
+                sources, productType, attributeFilter, 1);
+    }
+
+    /**
+     * Test Case 24.
+     */
+    @Test
+    public void testCase_24() {
+        System.out.println("Running: testCase_24()");
+        Identifier user = new Identifier("john.doe");
+        IdentifierList domain = null;
+        DeliveryMethodEnum delivery = DeliveryMethodEnum.FILETRANSFER;
+        URI deliverTo = TMP_DIR;
+        Identifier productType = null;
+        // Attribute Filters:
+        AttributeFilterList attributeFilter = new AttributeFilterList();
+        attributeFilter.add(new StringPattern(new Identifier("imageSubject"), true, "Ea.*"));
+        IdentifierList sources = new IdentifierList();
+        sources.add(new Identifier("wrong source"));
+        sources.add(new Identifier("forest flyover"));
+
+        testWithAttributeFilterAndMultipleSources(user, domain, delivery, deliverTo,
+                sources, productType, attributeFilter, 1);
+    }
+
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum deliveryMethod,
             URI deliverTo, Identifier source, Identifier productType, int expectedNumberOfNotifications) {
         this.testWithAttributeFilter(user, domain, deliveryMethod, deliverTo,
@@ -473,6 +517,20 @@ public class UC3_Ex2_Test extends MPDTest {
 
     private synchronized void testWithAttributeFilter(Identifier user, IdentifierList domain,
             DeliveryMethodEnum deliveryMethod, URI deliverTo, Identifier source,
+            Identifier productType, AttributeFilterList attributeFilter, int expectedNumberOfNotifications) {
+        IdentifierList sources = null;
+
+        if (source != null) {
+            sources = new IdentifierList();
+            sources.add(source);
+        }
+
+        this.testWithAttributeFilterAndMultipleSources(user, domain, deliveryMethod,
+                deliverTo, sources, productType, attributeFilter, expectedNumberOfNotifications);
+    }
+
+    private synchronized void testWithAttributeFilterAndMultipleSources(Identifier user, IdentifierList domain,
+            DeliveryMethodEnum deliveryMethod, URI deliverTo, IdentifierList sources,
             Identifier productType, AttributeFilterList attributeFilter, int expectedNumberOfNotifications) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
@@ -489,12 +547,6 @@ public class UC3_Ex2_Test extends MPDTest {
 
         Identifier orderUser = new Identifier("john.doe");
         Long orderID = null;
-        IdentifierList sources = null;
-
-        if (source != null) {
-            sources = new IdentifierList();
-            sources.add(source);
-        }
 
         try {
             ProductFilter productFilter = new ProductFilter(productType, domain, sources, attributeFilter);
