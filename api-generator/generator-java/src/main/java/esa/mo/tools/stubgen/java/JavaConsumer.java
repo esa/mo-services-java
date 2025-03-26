@@ -395,11 +395,6 @@ public class JavaConsumer {
                         TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
 
                 for (FieldInfo ti : op.getRetTypes()) {
-                    /*
-                    TypeReference source = ti.getSourceType();
-                    opTypes.add(TypeUtils.convertTypeReference(generator,
-                            TypeUtils.createTypeReference(source.getArea(), source.getService(), source.getName(), source.isList())));
-                     */
                     opTypes.add(ti);
                 }
 
