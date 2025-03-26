@@ -249,9 +249,11 @@ public class JavaEnumerations {
         file.flush();
 
         generator.createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
+        /*
         CompositeField fld = generator.createCompositeElementsDetails(file, false, "fld",
                 TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                 true, true, "cmt");
+         */
     }
 
     @Deprecated
