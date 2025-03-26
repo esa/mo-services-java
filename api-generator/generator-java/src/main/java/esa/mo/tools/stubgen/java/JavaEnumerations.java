@@ -266,7 +266,8 @@ public class JavaEnumerations {
         return enumEncoderValue;
     }
 
-    protected String getEnumDecoderValue(long maxValue) {
+    @Deprecated
+    private String getEnumDecoderValue(long maxValue) {
         return ".getValue()";
     }
 

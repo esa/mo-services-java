@@ -345,7 +345,7 @@ public class JavaConsumer {
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 List<FieldInfo> opTypes = null;
                 switch (opTypeIndex) {
                     case 1:
@@ -387,7 +387,7 @@ public class JavaConsumer {
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("    case " + ns, ns, false);
+                method.addLine("    case " + ns, false);
                 List<FieldInfo> opTypes = new LinkedList<>();
                 opTypes.add(0, TypeUtils.convertTypeReference(generator,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
@@ -424,7 +424,7 @@ public class JavaConsumer {
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 method.addLine("    " + op.getName() + subopPostname + "ErrorReceived(msgHeader, body.getError(), qosProperties)");
                 method.addLine("    break");
             }
@@ -547,9 +547,9 @@ public class JavaConsumer {
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
                             msgType, op.getName(), opArgs, throwsText,
                             op.getComment(), "the MAL message sent to initiate the interaction", throwsComment);
-                    method.addMethodWithDependencyStatement("return " + consumerMethodCall
+                    method.addLine("return " + consumerMethodCall
                             + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
-                            + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")", helperType, true);
+                            + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")", true);
                     method.addMethodCloseStatement();
                     break;
                 }
@@ -567,7 +567,7 @@ public class JavaConsumer {
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
                             op.getName(), opArgs, throwsText, op.getComment(), opRetComment, throwsComment);
-                    method.addMethodWithDependencyStatement(opGet, helperType, true);
+                    method.addLine(opGet, true);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
 
@@ -601,7 +601,7 @@ public class JavaConsumer {
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, false, opRetType, op.getName(), opArgs,
                             throwsText, op.getComment(), opRetComment, throwsComment);
-                    method.addMethodWithDependencyStatement(opGet, helperType, true);
+                    method.addLine(opGet, true);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
 
@@ -630,7 +630,7 @@ public class JavaConsumer {
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, true, null, op.getName() + "Register",
                             StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null, throwsComment);
-                    method.addMethodWithDependencyStatement(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter)", helperType, true);
+                    method.addLine(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter)", true);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {

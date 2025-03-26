@@ -1078,8 +1078,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(),
                             "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
                     String ns = convertToNamespace(serviceInfoName + "." + op.getName().toUpperCase() + "_OP");
-                    method.addMethodWithDependencyStatement("return new " + updateType.getTypeName()
-                            + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, sessionType, sessionName, qos, qosProps, null))", ns, true);
+                    method.addLine("return new " + updateType.getTypeName()
+                            + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, sessionType, sessionName, qos, qosProps, null))", true);
                     method.addMethodCloseStatement();
                     break;
                 }
@@ -1111,7 +1111,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 String ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
                 method.addLine("    break");
             }
@@ -1119,9 +1119,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("  default:", false);
         String ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Send\")";
-        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+        method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", ns + stdErrorNs, true);
+                + msg + "))", true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1140,21 +1140,20 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
                 method.addLine(createMethodCall("    interaction.sendAcknowledgement()"));
                 method.addLine("    break");
             }
         }
         method.addLine("  default:", false);
-        ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Submit\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+        method.addLine(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), ns + stdErrorNs, true);
-        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + msg + "))"), true);
+        method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", ns + stdErrorNs, true);
+                + msg + "))", true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1174,7 +1173,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 createRequestResponseDecompose(
                         method, op,
                         opResp,
@@ -1184,14 +1183,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
             }
         }
         method.addLine("  default:", false);
-        ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Request\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+        method.addLine(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), ns + stdErrorNs, true);
-        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + msg + "))"), true);
+        method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", ns + stdErrorNs, true);
+                + msg + "))", true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1210,21 +1208,20 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
                         + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction))");
                 method.addLine("    break");
             }
         }
         method.addLine("  default:", false);
-        ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Invoke\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+        method.addLine(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), ns + stdErrorNs, true);
-        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + msg + "))"), true);
+        method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", ns + stdErrorNs, true);
+                + msg + "))", true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 
@@ -1243,20 +1240,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addMethodWithDependencyStatement("  case " + ns, ns, false);
+                method.addLine("  case " + ns, false);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction))");
                 method.addLine("    break");
             }
         }
         method.addLine("  default:", false);
-        ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
         unkErrorMsg = "(\"" + msg + "Progress\")";
-        method.addMethodWithDependencyStatement(createMethodCall("    interaction.sendError"
+        method.addLine(createMethodCall("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), ns + stdErrorNs, true);
-        method.addMethodWithDependencyStatement("    throw new " + throwsInteractionException
+                + msg + "))"), true);
+        method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", ns + stdErrorNs, true);
+                + msg + "))", true);
         method.addLine("}", false);
         method.addMethodCloseStatement();
 

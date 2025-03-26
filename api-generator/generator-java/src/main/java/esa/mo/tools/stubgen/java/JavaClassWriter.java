@@ -452,12 +452,6 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addMethodWithDependencyStatement(String statement,
-            String dependency, boolean addSemi) throws IOException {
-        addLine(statement, addSemi);
-    }
-
-    @Override
     public void addLine(String statement, boolean addSemi) throws IOException {
         if (statement.trim().length() > 0) {
             file.append(makeLine(2, statement, addSemi));
