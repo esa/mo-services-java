@@ -167,8 +167,7 @@ public class JavaCompositeClass {
                     superArgs, null, "Constructor that initialises the values of the structure.", null);
 
             for (CompositeField element : compElements) {
-                String call = generator.createMethodCall("this." + element.getFieldName() + " = " + element.getFieldName());
-                method.addLine(call);
+                method.addLine("this." + element.getFieldName() + " = " + element.getFieldName());
             }
 
             method.addMethodCloseStatement();
@@ -186,7 +185,7 @@ public class JavaCompositeClass {
 
                 for (CompositeField element : compElements) {
                     String ending = (!element.isCanBeNull()) ? element.getFieldName() : "null";
-                    String call = generator.createMethodCall("this." + element.getFieldName() + " = " + ending);
+                    String call = "this." + element.getFieldName() + " = " + ending;
                     method.addLine(call);
                 }
 
@@ -326,7 +325,7 @@ public class JavaCompositeClass {
                 }
             }
 
-            method.addLine(generator.createMethodCall(methodCall));
+            method.addLine(methodCall);
         }
         method.addMethodCloseStatement();
     }
@@ -367,7 +366,7 @@ public class JavaCompositeClass {
                 }
             }
 
-            method.addLine(element.getFieldName() + " = " + castString + generator.createMethodCall(methodCall));
+            method.addLine(element.getFieldName() + " = " + castString + methodCall);
         }
         method.addLine("return this");
         method.addMethodCloseStatement();

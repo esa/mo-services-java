@@ -340,7 +340,7 @@ public class JavaConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
+        method.addLine("switch (" + "msgHeader.getOperation().getValue()" + ") {", false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
@@ -382,7 +382,7 @@ public class JavaConsumer {
         method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea()))"
                 + " && "
                 + "(" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
-        method.addLine("  switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
+        method.addLine("  switch (" + "msgHeader.getOperation().getValue()) {", false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
@@ -424,7 +424,7 @@ public class JavaConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "ErrorReceived", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (" + generator.createMethodCall("msgHeader.getOperation().getValue()") + ") {", false);
+        method.addLine("switch (msgHeader.getOperation().getValue()) {", false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
@@ -481,7 +481,7 @@ public class JavaConsumer {
         CompositeField consumerType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
-        String consumerMethodCall = generator.createMethodCall("consumer.");
+        String consumerMethodCall = "consumer.";
         CompositeField consumerTypeVar = generator.createCompositeElementsDetails(file, false, "consumer",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
@@ -502,19 +502,19 @@ public class JavaConsumer {
                         false, true, "consumer The MALConsumer to use in this stub."),
                 false, null,
                 "Wraps a MALconsumer connection with service specific methods that map from the high level service API to the generic MAL API.", null);
-        method.addLine(generator.createMethodCall("this.consumer = consumer"));
+        method.addLine("this.consumer = consumer");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false,
                 generator.createReturnReference(consumerType), "getConsumer", null, null,
                 "Returns the internal MAL consumer object used for sending of messages from this interface",
                 "The MAL consumer object.", null);
-        method.addLine(generator.createMethodCall("return consumer"));
+        method.addLine("return consumer");
         method.addMethodCloseStatement();
 
         if (supportsToValue) {
             method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, uriType, "getURI", null, null);
-            method.addLine(generator.createMethodCall("return consumer.getUri()"));
+            method.addLine("return consumer.getUri()");
             method.addMethodCloseStatement();
         }
 
