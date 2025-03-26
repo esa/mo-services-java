@@ -308,22 +308,25 @@ public class JavaCompositeClass {
                     && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String fieldName = element.getFieldName();
+            String methodCall;
 
             if (isAbstract) {
                 if (element.isList()) { // Abstract List?
                     // The Abstract Lists do not not need an SPF because we know what we will get!
-                    method.addLine(generator.createMethodCall("encoder.encode" + canBeNullStr + "Element(" + fieldName + ")"));
+                    methodCall = "encoder.encode" + canBeNullStr + "Element(" + fieldName + ")";
                 } else {
-                    method.addLine(generator.createMethodCall("encoder.encode" + canBeNullStr + "AbstractElement(" + fieldName + ")"));
+                    methodCall = "encoder.encode" + canBeNullStr + "AbstractElement(" + fieldName + ")";
                 }
             } else {
                 if (element.getEncodeCall() != null) {
-                    method.addLine(generator.createMethodCall("encoder.encode" + canBeNullStr + element.getEncodeCall() + "(" + fieldName + ")"));
+                    methodCall = "encoder.encode" + canBeNullStr + element.getEncodeCall() + "(" + fieldName + ")";
                 } else {
                     // This is when the Element is set as the abstract Attribute type
-                    method.addLine(generator.createMethodCall("encoder.encode" + canBeNullStr + "Element(" + fieldName + ")"));
+                    methodCall = "encoder.encode" + canBeNullStr + "Element(" + fieldName + ")";
                 }
             }
+
+            method.addLine(generator.createMethodCall(methodCall));
         }
         method.addMethodCloseStatement();
     }
@@ -339,6 +342,7 @@ public class JavaCompositeClass {
                     && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String castString = element.getDecodeCast();
+            String methodCall;
 
             if (isAbstract) {
                 if (element.isList()) { // Abstract List?
@@ -347,26 +351,23 @@ public class JavaCompositeClass {
                     // Note: Yes, the string has a space at the end... that's why we have: length() - 2
                     String classPath = castString.substring(1, castString.length() - 2);
                     // Change the type to HeterogeneousList if it is ElementList
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + generator.createMethodCall("decoder.decode" + canBeNullStr
-                                    + "Element(new " + classPath + "())"));
+                    methodCall = "decoder.decode" + canBeNullStr + "Element(new " + classPath + "())";
                 } else {
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + generator.createMethodCall("decoder.decode" + canBeNullStr + "AbstractElement()"));
+                    methodCall = "decoder.decode" + canBeNullStr + "AbstractElement()";
                 }
             } else {
                 // Needs the "." before the AttributeList because of the NullableAttributeList
                 if (castString.contains(".AttributeList")) {
                     // This is when the Element is set as the abstract AttributeList type
                     String attNew = "new org.ccsds.moims.mo.mal.structures.AttributeList()";
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + generator.createMethodCall("decoder.decode" + canBeNullStr + element.getDecodeCall() + "(" + attNew + ")"));
+                    methodCall = "decoder.decode" + canBeNullStr + element.getDecodeCall() + "(" + attNew + ")";
                 } else {
-                    method.addLine(element.getFieldName() + " = " + castString
-                            + generator.createMethodCall("decoder.decode" + canBeNullStr + element.getDecodeCall()
-                                    + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")"));
+                    methodCall = "decoder.decode" + canBeNullStr + element.getDecodeCall()
+                            + "(" + (element.isDecodeNeedsNewCall() ? element.getNewCall() : "") + ")";
                 }
             }
+
+            method.addLine(element.getFieldName() + " = " + castString + generator.createMethodCall(methodCall));
         }
         method.addLine("return this");
         method.addMethodCloseStatement();
