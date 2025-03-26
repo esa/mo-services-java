@@ -340,7 +340,7 @@ public class JavaConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (" + "msgHeader.getOperation().getValue()" + ") {", false);
+        method.addLine("switch (msgHeader.getOperation().getValue()) {", false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
@@ -382,7 +382,7 @@ public class JavaConsumer {
         method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea()))"
                 + " && "
                 + "(" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
-        method.addLine("  switch (" + "msgHeader.getOperation().getValue()) {", false);
+        method.addLine("  switch (msgHeader.getOperation().getValue()) {", false);
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
