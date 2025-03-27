@@ -12,11 +12,14 @@
 
         <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service allows browsing and retrieval of existing products.">
             <mal:documentation name="Service-level Requirements" order="1">
-				The Product Retrieval service provider may provide the capability to list mission data products, to get mission data products, and/or to remotely deliver mission data products.
+				The Product Retrieval service provider may provide the capability to list mission data products, to get mission data products, and/or to remotely deliver mission data products as files.
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="2">
 				The operations of the Product Retrieval service shall uniquely reference the mission data products using ObjectRefs.
 				Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
+            </mal:documentation>
+            <mal:documentation name="Service-level Requirements" order="3">
+				If a mission data product is remotely delivered as a file, then the filename of the file may be taken from the key field of the ObjectIdentity of the Product data structure.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
@@ -105,6 +108,8 @@
                         </mal:errorRef>
                     </mal:errors>
                 </mal:progressIP>
+            </mal:capabilitySet>
+            <mal:capabilitySet number="3" comment="">
                 <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote file transfer delivery of the selected mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
 						A consumer shall send a list of product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
@@ -275,6 +280,9 @@
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="2">
                 If access control policies are implemented, then their configuration shall be specified on a case-by-case basis for each deployment.
+            </mal:documentation>
+            <mal:documentation name="Service-level Requirements" order="3">
+				If a mission data product is remotely delivered as a file, then the filename of the file may be taken from the key field of the ObjectIdentity of the Product data structure.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
@@ -456,7 +464,7 @@
                 <mal:field name="attributes" canBeNull="true" comment="Named values for metadata attributes whose name and type correspond to those defined in the referenced ProductType.">
                     <mal:type area="MAL" list="true" name="NamedValue"/>
                 </mal:field>
-                <mal:field name="description" canBeNull="false" comment="The textual description of this specific occurrence of the product.">
+                <mal:field name="description" canBeNull="true" comment="The textual description of this specific occurrence of the product.">
                     <mal:type area="MAL" list="false" name="String"/>
                 </mal:field>
                 <mal:field name="fileMetadata" canBeNull="true" comment="Additional optional metadata for files.">
@@ -536,7 +544,7 @@ Note that as AttributeDef is only used in the context of ProductType.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
-                <mal:field name="name" canBeNull="false" comment="The name of the metadata attribute to filter.">
+                <mal:field name="name" canBeNull="false" comment="The name of the metadata attribute to filter. If the product metadata being evaluated does not contain an attribute with this name, then the evaluation of the filter shall be false.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
                 <mal:field name="include" canBeNull="false" comment="Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute values that match the filter.">
