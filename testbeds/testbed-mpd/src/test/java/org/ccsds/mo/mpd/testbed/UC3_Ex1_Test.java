@@ -350,7 +350,7 @@ public class UC3_Ex1_Test extends MPDTest {
             }
 
             if (!ackReceived.get()) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(
                         Level.SEVERE, "The ACK was not received!");
                 fail("The ACK was not received!");
             }
@@ -369,7 +369,7 @@ public class UC3_Ex1_Test extends MPDTest {
 
             // Were we expecting to receive at least one product?
             if (!notifyReceived.get() && expectedNumberOfProducts != 0) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(
                         Level.SEVERE, "The NOTIFY was not received!");
                 fail("The NOTIFY was not received!");
             }

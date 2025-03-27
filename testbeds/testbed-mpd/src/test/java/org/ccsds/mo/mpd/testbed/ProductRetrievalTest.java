@@ -337,24 +337,24 @@ public class ProductRetrievalTest extends MPDTest {
                 @Override
                 public void getProductFilesAckErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
-                            "Something went wrong...", error);
+                    Logger.getLogger(ProductRetrievalTest.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", error);
                     fail(error.toString());
                 }
 
                 @Override
                 public void getProductFilesUpdateErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
-                            "Something went wrong...", error);
+                    Logger.getLogger(ProductRetrievalTest.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", error);
                     fail(error.toString());
                 }
 
                 @Override
                 public void getProductFilesResponseErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
-                            "Something went wrong...", error);
+                    Logger.getLogger(ProductRetrievalTest.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", error);
                     fail(error.toString());
                 }
 
@@ -370,7 +370,7 @@ public class ProductRetrievalTest extends MPDTest {
 
             // Were we expecting to receive at least one product?
             if (!updateReceived.get()) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(
                         Level.SEVERE, "The UPDATE was not received!");
                 fail("The UPDATE was not received!");
             }
@@ -391,7 +391,7 @@ public class ProductRetrievalTest extends MPDTest {
 
             // Were we expecting to receive at least one product?
             if (!rspReceived.get()) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(
                         Level.SEVERE, "The RESPONSE was not received!");
                 fail("The RESPONSE was not received!");
             }
@@ -433,24 +433,24 @@ public class ProductRetrievalTest extends MPDTest {
                 @Override
                 public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
-                            "Something went wrong...", error);
+                    Logger.getLogger(ProductRetrievalTest.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", error);
                     fail(error.toString());
                 }
 
                 @Override
                 public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
-                            "Something went wrong...", error);
+                    Logger.getLogger(ProductRetrievalTest.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", error);
                     fail(error.toString());
                 }
 
                 @Override
                 public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
-                    Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE,
-                            "Something went wrong...", error);
+                    Logger.getLogger(ProductRetrievalTest.class.getName()).log(
+                            Level.SEVERE, "Something went wrong...", error);
                     fail(error.toString());
                 }
 

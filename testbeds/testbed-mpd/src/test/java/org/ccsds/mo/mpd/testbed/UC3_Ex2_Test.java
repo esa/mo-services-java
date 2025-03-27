@@ -709,7 +709,7 @@ public class UC3_Ex2_Test extends MPDTest {
 
             // Were we expecting to receive at least one product?
             if (!notifyReceived.get() && expectedNumberOfNotifications != 0) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(
                         Level.SEVERE, "The NOTIFY was not received!");
                 fail("The NOTIFY was not received!");
             }
