@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2025
 
-  Generated from 529x1r1_RID_closeout_v2_clean 25/02/2025
+  Generated from 529x1r1_RID_closeout_v3_draft_clean 28/03/2025
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema-v003"
@@ -12,6 +12,7 @@
 
     <mal:service name="PlanningRequest" number="1" comment="The Planning Request Service, introduced in 2.5.2, is provided by a planning function and enables its consumers to manage the submission of planning requests and to receive feedback on their status.  It comprises the operations defined below, of which only those in capability set 1 are mandatory.
 In the context of a hierarchical or federated planning system, the Planning Request Service submitRequest operation can be used to submit a Plan (4.5.6) to a planning function, either embedding the Plan in the request itself or passing it by reference.  If passed by reference, the Plan can be retrieved using the Plan Distribution Service (3.6).  Patch plans are not permitted in the context of a planning request.">
+
       <mal:documentation name="High-level Requirements" order="1">
         3.5.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the planning request service:
         a) Planning Request Definitions (as RequestDefinition objects [4.5.5.1]);
@@ -35,7 +36,9 @@ In the context of a hierarchical or federated planning system, the Planning Requ
         3.5.5.8 Following successful inclusion of a planning request in a generated Plan, the service provider shall update the outputPlanRefs field of the RequestInstance with the identity of the Plan (key and version).
         NOTE	–	The consumer may then use the reference to the output Plan to retrieve the Plan or its status using the PlanDistributionService.  Where the planning request has been incorporated into multiple alternate plans, these will be listed in the outputPlanRefs field.
       </mal:documentation>
+
       <mal:capabilitySet number="1" comment="">
+
         <mal:requestIP name="submitRequest" number="1" comment="The submitRequest operation sends a planning request to the provider, which then creates a corresponding RequestInstance object and returns its identity to the consumer.">
           <mal:messages>
             <mal:request>
@@ -131,6 +134,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="2" comment="">
+
         <mal:submitIP name="cancelRequest" number="4" comment="The cancelRequest operation is used by a consumer to cancel a previously submitted planning request.  The service provider acknowledges the cancellation of the RequestInstance or returns an error.">
           <mal:messages>
             <mal:submit>
@@ -160,6 +164,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="3" comment="">
+
         <mal:requestIP name="updateRequest" number="5" comment="The updateRequest operation may be used to modify the PlanningRequestDetails associated with a previously submitted planning request.  This results in the creation of a new version of the RequestInstance (with the same key) by the service provider, which returns the identity (key and version) of the new version to the consumer.">
           <mal:messages>
             <mal:request>
@@ -203,6 +208,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="4" comment="">
+
         <mal:pubsubIP name="monitorRequestStatus" number="6" comment="The monitorRequestStatus operation is used to subscribe to status updates for a filtered set of planning RequestInstances.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a RequestStatusUpdate for a subscribed RequestInstance.">
           <mal:messages>
             <mal:subscriptionKeys>
@@ -236,6 +242,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="5" comment="">
+
         <mal:progressIP name="getRequest" number="7" comment="The getRequest operation is used to obtain the full content of one or more known RequestInstances.  The operation uses the Progress interaction pattern, to allow the response to be spread across multiple messages.">
           <mal:messages>
             <mal:progress>
@@ -270,6 +277,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
     </mal:service>
 
     <mal:service name="PlanDistribution" number="2" comment="The Plan Distribution Service, introduced in 2.5.3, is provided by a planning function and enables its consumers to access generated plans and to receive updates on their status.  It comprises the operations defined below, of which only those in capability set 1 are mandatory.">
+
       <mal:documentation name="High-level Requirements" order="1">
         3.6.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan distribution service:
         a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
@@ -281,7 +289,9 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         3.6.5.2 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of Plan objects in accordance with the plan state model (see 4.5.6.2).
         NOTE	–	A planning function that is a service provider is not required to support real-time provision of Plan status changes.  Feedback from plan execution functions may only be processed periodically by the planning function as part of a planning cycle.
       </mal:documentation>
+
       <mal:capabilitySet number="1" comment="">
+
         <mal:requestIP name="getPlanSummaries" number="1" comment="The getPlanSummaries operation allows consumers to obtain a filtered list of currently available Plans.  The request uses the PlanFilter structure to select the set of plans of interest, using the following keys:
 Domain of the Plan;
 planID (key and version) of the Plan;
@@ -371,6 +381,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="2" comment="">
+
         <mal:pubsubIP name="monitorPlanStatus" number="4" comment="The monitorPlanStatus operation is used to subscribe to status updates for a filtered set of Plans.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a PlanUpdate for a subscribed Plan.">
           <mal:messages>
             <mal:subscriptionKeys>
@@ -398,6 +409,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="3" comment="">
+
         <mal:pubsubIP name="monitorPlan" number="5" comment="The monitorPlan operation is used by a consumer to subscribe to receive new Plans, or new versions of Plans, as they published.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a Plan.">
           <mal:messages>
             <mal:subscriptionKeys>
@@ -425,6 +437,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="4" comment="">
+
         <mal:progressIP name="queryPlan" number="6" comment="The queryPlan operation enables a consumer to retrieve a filtered set of plans, based on an extended set of filter criteria, including relevant fields of the plan information sections of the plan, as well as the type of planning activities and planning events contained within the plan.">
           <mal:messages>
             <mal:progress>
@@ -457,6 +470,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="5" comment="">
+
         <mal:requestIP name="getPartialPlan" number="7" comment="The getPartialPlan operation enables a consumer to extract a subset of a Plan that meets the supplied partialPlanFilter.  The filter can select the partial plan content based on:
 a shorter period than that covered by the plan, specified by time, position, or events;
 a subset of contained ActivityInstances, based on their domain, associated SubPlan or tags.
@@ -490,6 +504,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
     </mal:service>
 
     <mal:service name="PlanExecutionControl" number="3" comment="The Plan Execution Control Service, introduced in 2.5.4, is provided by a plan execution function and enables its consumers to submit (and revoke) Plans for execution; to control their execution at plan, sub-plan, and activity levels; and to receive feedback on their execution status.  It comprises the operations defined below, of which only those in capability set 1 are mandatory.">
+
       <mal:documentation name="High-level Requirements" order="1">
         3.7.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan execution control service:
         a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
@@ -525,7 +540,9 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         NOTE	–	Supported suspensionModes are specific to the implementation of the service provider.
         3.7.5.17 In response to a resumeActivity operation, if supported, the service provider shall resume the execution of the referenced ActivityInstances where it is safe to do so.
       </mal:documentation>
+
       <mal:capabilitySet number="1" comment="">
+
         <mal:submitIP name="submitPlan" number="1" comment="The submitPlan operation is used to send a plan to a plan execution function (the service provider), making it available for execution.  The service provider acknowledges the reception of the plan or returns an error.
 NOTE	–	The submitted plan may be a full plan or a patch plan.">
           <mal:messages>
@@ -613,6 +630,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="2" comment="">
+
         <mal:requestIP name="activatePlan" number="4" comment="The activatePlan operation is used to request the execution of specified Plans that have previously been submitted to a plan execution function.  The service provider enables the execution of the referenced Plans and the ActivityInstances contained within them, subject to the triggering constraints specified within the Plans.  It is not possible to activate a Plan outside its validity period, or after the start of the Plan period.  In this case, the operation will return an ACTIVATE_FAILED error.
 NOTES
 Multiple plans with a common precursor may have been submitted to a plan execution function.  Usually only one of these is considered the nominal plan, the other alternative or contingency plans having the isAlternate flag set.  It is implementation dependent whether the service provider will allow activation of Plans that have the isAlternate flag set, but this may be blocked for operational safety.  Where this is the case, the plan edit service can be used to change the state of the isAlternate flag prior to activation (see 3.9.5).
@@ -692,6 +710,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="3" comment="">
+
         <mal:pubsubIP name="monitorPlanExecution" number="6" comment="The monitorPlanExecution operation is used to subscribe to status updates for a filtered set of Plans that have been submitted to a plan execution function.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a PlanUpdate for a subscribed Plan.
 The operation is equivalent to the monitorPlanStatus operation of the Plan Distribution Service, but only reports the status of plans currently being managed by a plan execution function.">
           <mal:messages>
@@ -720,6 +739,7 @@ The operation is equivalent to the monitorPlanStatus operation of the Plan Distr
       </mal:capabilitySet>
 
       <mal:capabilitySet number="4" comment="">
+
         <mal:pubsubIP name="monitorPlanExecutionDetail" number="7" comment="The monitorPlanExecutionDetail operation is used to subscribe to updates that report changes in the detailed execution status for a filtered set of Plan contents at the level of planning activities, events and resources.  A planning function requires feedback at the level of planning activities and events to be able to reconstitute the status of planning requests, as well to support re-planning.  The operation uses the Publish-Subscribe interaction pattern.
 It is implementation dependent which details are reported on, but this may be any combination of planning activities, events, and resources.  The notification message body comprises a single structure of the abstract class PlanDetailUpdate, which corresponds to one of the concrete classes ActivityUpdate, EventUpdate, or ResourceUpdate.">
           <mal:messages>
@@ -748,6 +768,7 @@ It is implementation dependent which details are reported on, but this may be an
       </mal:capabilitySet>
 
       <mal:capabilitySet number="5" comment="">
+
         <mal:requestIP name="activateSubPlan" number="8" comment="The activateSubPlan operation is used to request that the service provider activates the referenced SubPlans and enables the execution of ActivityInstances that are contained in activated Plans and allocated to activated SubPlans.
 NOTE
 It is implementation dependent whether SubPlans are initially ACTIVATED and therefore do not require activation unless previously deactivated.
@@ -851,6 +872,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="6" comment="">
+
         <mal:pubsubIP name="monitorSubPlanExecution" number="11" comment="The monitorSubPlanExecution operation is used to subscribe to status updates for a filtered set of SubPlans.  The operation uses the Publish-Subscribe interaction pattern, with the body of the notification message comprising a SubPlanUpdate for a subscribed sub-plan.">
           <mal:messages>
             <mal:subscriptionKeys>
@@ -869,6 +891,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="7" comment="">
+
         <mal:requestIP name="suspendActivity" number="12" comment="The suspendActivity operation is used to request suspension of the execution of selected activities in one or more plans, without changing the state of the plan(s).
 The suspensionMode argument allows selection of the suspension behaviour.  For example:
 Orderly (suspends execution of any new activities, but allows those already initiated to complete);
@@ -946,6 +969,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="8" comment="">
+
         <mal:requestIP name="getActivityStatus" number="14" comment="The getActivityStatus operation is used to request a detailed report from the service provider on the current status of ActivityInstances, selected at activity, sub-plan, or tag levels.">
           <mal:messages>
             <mal:request>
@@ -985,6 +1009,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
     </mal:service>
 
     <mal:service name="PlanInformationManagement" number="4" comment="The Plan Information Management Service, introduced in 2.5.5, is provided by a planning function and enables its consumers to list and retrieve available MPS configuration data.  This includes definitions for planning requests, planning activities, planning events and planning resources, and also MPS system configuration data.  The service may also be provided by a plan execution function (excluding planning request definitions).  It comprises the operations defined below, none of which are mandatory.">
+
       <mal:documentation name="High-level Requirements" order="1">
         3.8.4.1 The following set of mission planning configuration data shall be available to the provider in any deployment of the plan information management service:
         a) Planning Request Definitions (as RequestDefinition objects [4.5.5.1]);
@@ -996,7 +1021,9 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         3.8.5.1 If version 0 is specified for the definition to be retrieved in a list[Item]Defs operation then the service provider shall list all available versions of the definition.
         3.8.5.2 If version 0 is specified for the definition to be retrieved in a get[Item]Defs operation then the service provider shall return the latest available version of the definition.
       </mal:documentation>
+
       <mal:capabilitySet number="1" comment="">
+
         <mal:progressIP name="listRequestDefs" number="1" comment="The listRequestDefs operation is used to obtain a list of available RequestDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
@@ -1058,6 +1085,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="2" comment="">
+
         <mal:progressIP name="listEventDefs" number="3" comment="The listEventDefs operation is used to obtain a list of available EventDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
@@ -1119,6 +1147,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="3" comment="">
+
         <mal:progressIP name="listActivityDefs" number="5" comment="The listActivityDefs operation is used to obtain a list of available ActivityDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
@@ -1183,6 +1212,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="4" comment="">
+
         <mal:progressIP name="listResourceDefs" number="7" comment="The listResourceDefs operation is used to obtain a list of available Resources (key and version) together with their descriptions.  The list can be filtered by domain or restricted to data types.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
@@ -1248,6 +1278,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
     <mal:service name="PlanEdit" number="5" comment="The Plan Edit Service, introduced in 2.5.6, is provided by a plan execution function and enables its consumers to modify Plans that have already been submitted for execution.  It allows an external user or function to update the status of the Plan; insert, modify, or delete its constituent ActivityInstances and EventInstances; update the value of Resources; and apply a time shift to a Plan.  It comprises the operations defined below, of which only those in capability set 1 are mandatory.
 In some deployments, the Plan Edit Service could also be provided by a planning function to enable users to make adjustments to their planned activities prior to submission of the plan for execution.">
+
       <mal:documentation name="High-level Requirements" order="1">
         3.9.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan edit service:
         a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
@@ -1269,7 +1300,9 @@ In some deployments, the Plan Edit Service could also be provided by a planning 
         3.9.4.11 In response to an applyTimeShift operation, the service provider shall apply the specified time shift to the unexpired (future) content, or the specified time period of the referenced Plan or its SubPlan(s), including temporal start and end triggers on ActivityInstances.
         NOTE	–	It is implementation dependent whether any other elements of the Plan are time shifted, particularly with regard to the eventTime of EventInstances and, where supported, the start and end times on resource ProfileSegments and the times on Profile Entries.
       </mal:documentation>
+
       <mal:capabilitySet number="1" comment="">
+
         <mal:submitIP name="updatePlanStatus" number="1" comment="The updatePlanStatus operation may be used to modify the status of a previously submitted Plan.  Directly modifying the status field of a Plan may be used by a third party function to autonomously terminate (or activate) a Plan, but the operation also allows the isAlternate flag to be set or cleared.
 It is implementation dependent what action the service provider takes in response to a change of Plan status.  The service provider may not permit certain state changes (for example to modify the status of a TERMINATED plan, which is inconsistent with the plan status model), in which case an UPDATE_FAILED error shall be returned.
 A set of Plans with a common precursor may be submitted to a plan execution function to cater for alternative or contingency scenarios.  All but one of these Plans should have the isAlternate flag set, to inform the plan execution function (and the mission operations team) which is the nominal Plan.  It is implementation dependent whether a plan execution control service provider will allow a Plan to be activated with the isAlternate flag set, but for operational safety reasons this may be blocked.  In a contingency scenario, the updatePlanStatus operation can be used to set the flag on the nominal Plan, and reset the flag on the required contingency Plan, making it operational.">
@@ -1307,6 +1340,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="2" comment="">
+
         <mal:requestIP name="insertActivity" number="2" comment="The insertActivity operation sends an InsertedActivityDetails structure (an ActivityDetails structure with Plan reference and start/end triggers) to the provider, which then creates a corresponding ActivityInstance object in the referenced Plan and returns its identity to the consumer.  It is up to the planning system, how to manage concurrent access to the plan.
 Insertion may fail if the Plan is already in the TERMINATED state, in which case an INSERT_FAILED error shall be returned.">
           <mal:messages>
@@ -1440,6 +1474,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="3" comment="">
+
         <mal:submitIP name="updateActivity" number="6" comment="The updateActivity operation may be used to modify an ActivityInstance in a Plan that has already been submitted to the service provider.  The consumer submits an ActivityUpdate structure which is applied by the service provider to the referenced ActivityInstance.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan or ActivityInstance is already in the TERMINATED state, in which case the UPDATE_FAILED error shall be returned.">
           <mal:messages>
@@ -1503,6 +1538,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="4" comment="">
+
         <mal:submitIP name="updateResourceValue" number="8" comment="The updateResourceValue operation may be used to modify the value of a Resource at the specified point in time, in a Plan that has already been submitted to the service provider.  The consumer submits a ResourceUpdate structure which is applied by the service provider to the referenced Resource.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan is already in the TERMINATED state, in which case the UPDATE_FAILED error shall be returned.">
           <mal:messages>
@@ -1542,6 +1578,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="5" comment="">
+
         <mal:submitIP name="updateResourceProfile" number="9" comment="The updateResourceProfile operation may be used to modify the value of a Resource over a period of time, in a Plan that has already been submitted to the service provider.  The consumer submits an ResourceProfile structure which is applied by the service provider to the referenced Resource.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan is already in the TERMINATED state, in which case the UPDATE_FAILED error shall be returned.">
           <mal:messages>
@@ -1581,6 +1618,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       </mal:capabilitySet>
 
       <mal:capabilitySet number="6" comment="">
+
         <mal:submitIP name="applyTimeShift" number="10" comment="The applyTimeShift operation may be used to request a shift in the timing by a fixed offset of the ActivityInstances, EventInstances, and ResourceProfiles contained within a Plan that has previously been submitted to a plan execution function.  The operation may also be restricted to one or more SubPlans within the referenced Plan and/or to a specified time period within the Plan.  The service provider applies the time shift to the timing of ActivityInstances, EventInstances, and ResourceProfiles contained within the Plan or SubPlan(s).
 The time shift may fail if the referenced Plan is already in the TERMINATED state, in which case the UPDATE_FAILED error shall be returned.
 The operation is designed to support backward compatibility with simple time-based on-board schedules, and may not be appropriate for use with plans that include event or position-based triggers and resource profiles.  What is shifted within the Plan is implementation dependent, but shall include time-based start and end triggers on ActivityInstances.  EventInstances may also be shifted, but it is noted that some EventInstances correspond to predicted orbital events that cannot meaningfully be shifted.  Similarly, where supported, resource profiles may reflect the ActivityInstances contained within the Plan and if those are shifted, the corresponding changes in Resource value should also be shifted.
@@ -2609,7 +2647,7 @@ If the Plan is a Patch Plan, then a precursor plan must be specified.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="SubPlanUpdate" shortFormPart="511" comment="E1: SubPlanUpdate is a data structure that is used to report changes in status of a sub-plan during plan execution.  It is returned in the context of the MPS Plan Execution Control service MonitorSubPlanExecution and GetSubPlanStatus operations.
+      <mal:composite name="SubPlanUpdate" shortFormPart="511" comment="E1: SubPlanUpdate is a data structure that is used to report changes in status of a sub-plan during plan execution.  It is returned in the context of the MPS Plan Execution Control service monitorSubPlanExecution and getSubPlanStatus operations.
 Sub-plans are not defined as objects within the MPS model.  Individual activities within a Plan may be associated with a single sub-plan via its Identifier.  The plan execution function is responsible for managing and reporting sub-plan status associated with relevant Plan Execution Control service operations, if supported.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
@@ -3281,7 +3319,7 @@ Specifies the definition (class) of the planning activity or planning event whos
         <mal:field name="comparator" canBeNull="false" comment="Comparison operator, which may be one of:
 =, !=, &gt;, &gt;=, &lt;, &lt;=, contains, icontains
 The contains operator only applies to strings and may be case sensitive or insensitive.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="ExpressionOperatorEnum"/>
         </mal:field>
         <mal:field name="value" canBeNull="false" comment="Value (of same type as the referenced Argument) to be compared against.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
@@ -3298,7 +3336,7 @@ The contains operator only applies to strings and may be case sensitive or insen
         <mal:field name="comparator" canBeNull="false" comment="Comparison operator, which may be one of:
 =, !=, &gt;, &gt;=, &lt;, &lt;=, contains, icontains.
 The contains operator only applies to strings and may be case sensitive or insensitive.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="ExpressionOperatorEnum"/>
         </mal:field>
       </mal:composite>
 
@@ -3311,7 +3349,7 @@ The contains operator only applies to strings and may be case sensitive or insen
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ComplexResourceConstraint" shortFormPart="38" comment="E4: In the [simple] resource constraint, the value of the referenced planning resource is constrained against a single value for the entire duration of the referenced planning activity.
+      <mal:composite name="ComplexResourceConstraint" shortFormPart="38" comment="E5: In the [simple] resource constraint, the value of the referenced planning resource is constrained against a single value for the entire duration of the referenced planning activity.
 With the complex resource constraint, the period over which the constraint applies can be customized relative to the referenced planning activity; and the value against which the referenced planning resource is constrained can be specified as a relative resource profile which evolves over time.
 The fields of the complex resource constraint extend or modify those of the [simple] resource constraint as given below.">
         <mal:extends>
@@ -3493,7 +3531,7 @@ Default = ‘km’.">
         </mal:field>
         <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the minAngle and maxAngle are expressed in.
 Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String "/>
+          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3876,7 +3914,7 @@ If this is zero, this implies that repetition is between multiple occurrences of
         <mal:field name="tolerance" canBeNull="false" comment="The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the separation and tolerance are expressed in.
+        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the initialAngle, separation and tolerance are expressed in.
 Default = ‘deg’.">
           <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
@@ -3981,7 +4019,10 @@ Default = ‘deg’.">
         <mal:item nvalue="19" value="OBJECTREF" comment="Object Reference."/>
         <mal:item nvalue="129" value="POSITION" comment="MPS Position."/>
         <mal:item nvalue="130" value="DIRECTION" comment="MPS Direction."/>
-        <mal:item nvalue="131" value="ANY" comment="Argument may be of any type.  It will map to a MAL::Element.  It can be used to specify an argument list of heterogeneous types."/>
+        <mal:item nvalue="131" value="ANGLE" comment="MPS Angle."/>
+        <mal:item nvalue="132" value="ANGULAR_RATE" comment="MPS AngularRate."/>
+        <mal:item nvalue="133" value="DISTANCE" comment="MPS Distance."/>
+        <mal:item nvalue="134" value="ANY" comment="Argument may be of any type.  It will map to a MAL::Element.  It can be used to specify an argument list of heterogeneous types."/>
       </mal:enumeration>
 
       <mal:enumeration name="LogicOpEnum" shortFormPart="30" comment="E1: A LogicOpEnum represents the type of logic used to combine two Boolean conditions.">
@@ -4012,14 +4053,14 @@ Default = ‘deg’.">
       </mal:enumeration>
 
       <mal:enumeration name="SecondaryErrorCodeEnum" shortFormPart="64" comment="E1: For the INVALID error, the secondary error code is a MAL::UShort that allows for deployment specific extensibility.">
-        <mal:item nvalue="0" value="UNKNOWN" comment="Referenced MO object is not available to the service provider."/>
-        <mal:item nvalue="1" value="UNDEFINED" comment="Undefined value for enumeration field."/>
-        <mal:item nvalue="2" value="OUT_OF_RANGE" comment="A numeric value is outside the supported range."/>
-        <mal:item nvalue="3" value="UNRECOGNIZED" comment="Value of type MAL::Identifier or MAL::String (referencing a named item) does not correspond to a known item."/>
-        <mal:item nvalue="4" value="BAD_TIME" comment="A date-time value is outside the supported time period."/>
-        <mal:item nvalue="5" value="BAD_POSITION" comment="A position value is outside the supported position range."/>
-        <mal:item nvalue="6" value="BAD_DIRECTION" comment="A direction value is outside the supported direction range."/>
-        <mal:item nvalue="7" value="INCONSISTENT" comment="A value is inconsistent with that of another field within the message.  This indicates violation of a constraint rule."/>
+        <mal:item nvalue="1" value="UNKNOWN" comment="Referenced MO object is not available to the service provider."/>
+        <mal:item nvalue="2" value="UNDEFINED" comment="Undefined value for enumeration field."/>
+        <mal:item nvalue="3" value="OUT_OF_RANGE" comment="A numeric value is outside the supported range."/>
+        <mal:item nvalue="4" value="UNRECOGNIZED" comment="Value of type MAL::Identifier or MAL::String (referencing a named item) does not correspond to a known item."/>
+        <mal:item nvalue="5" value="BAD_TIME" comment="A date-time value is outside the supported time period."/>
+        <mal:item nvalue="6" value="BAD_POSITION" comment="A position value is outside the supported position range."/>
+        <mal:item nvalue="7" value="BAD_DIRECTION" comment="A direction value is outside the supported direction range."/>
+        <mal:item nvalue="8" value="INCONSISTENT" comment="A value is inconsistent with that of another field within the message.  This indicates violation of a constraint rule."/>
       </mal:enumeration>
 
     </mal:dataTypes>
