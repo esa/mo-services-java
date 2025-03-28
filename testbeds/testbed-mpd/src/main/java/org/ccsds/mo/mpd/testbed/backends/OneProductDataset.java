@@ -54,8 +54,7 @@ public class OneProductDataset extends Dataset {
         TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
         ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
         Blob productBody = new Blob();
-        ProductMetadata metadata = new ProductMetadata(type1, ref,
-                Time.now(), timeWindow, "description");
+        ProductMetadata metadata = new ProductMetadata(type1, ref, Time.now(), timeWindow);
 
         super.addNewProduct(ref, productBody, metadata);
     }
