@@ -206,7 +206,8 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addCell(int index, int[] widths, String text, String shade,
             boolean centered, int span, boolean vMerge, boolean vRestart) throws IOException {
-        String txt = "<w:pPr><w:pStyle w:val=\"MOTable\"/></w:pPr><w:r><w:t>" + escape(text) + "</w:t></w:r>";
+        String txt = "<w:pPr><w:pStyle w:val=\"MOTable\"/>"
+                + "</w:pPr><w:r><w:t>" + escape(text) + "</w:t></w:r>";
         actualAddCell(index, widths, txt, shade, centered, span, vMerge, vRestart);
     }
 
@@ -271,7 +272,9 @@ public class DocxBaseWriter extends AbstractWriter {
     }
 
     public void addTitle(int level, String section, String name, String bookmarkSection, boolean bookmark) throws IOException {
-        buffer.append(makeLine(2, "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>"));
+        String text = "<w:p><w:pPr><w:pStyle w:val=\"Heading" + level + "\"/></w:pPr>";
+        buffer.append(makeLine(2, text));
+
         if (bookmark) {
             String linkTo = bookmarkSection + "_" + name;
             buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + linkTo + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
@@ -325,7 +328,7 @@ public class DocxBaseWriter extends AbstractWriter {
                             string = string.substring(string.indexOf("<li>") + 4, string.indexOf("</li>"));
                             string = "<w:p><w:pPr><w:pStyle w:val=\"ListParagraph\"/><w:numPr><w:ilvl w:val=\"0\"/><w:numId w:val=\"1\"/></w:numPr></w:pPr><w:r><w:t>" + escape(string) + "</w:t></w:r></w:p>";
                         } else {
-                            string = "<w:p><w:r><w:t>" + escape(string) + "</w:t></w:r></w:p>";
+                            string = "<w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>" + escape(string) + "</w:t></w:r></w:p>";
                         }
                     }
 
@@ -513,5 +516,9 @@ public class DocxBaseWriter extends AbstractWriter {
 
     public void addPageBreak() {
         buffer.append("<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>");
+    }
+
+    public void addContinuousSectionBreak() {
+        buffer.append("<w:p><w:pPr><w:sectPr><w:type w:val=\"continuous\"/></w:sectPr></w:pPr></w:p>");
     }
 }

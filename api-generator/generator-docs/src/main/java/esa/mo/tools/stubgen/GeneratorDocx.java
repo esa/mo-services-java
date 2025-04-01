@@ -1018,6 +1018,7 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.endRow();
 
         docxFile.endTable();
+        docxFile.addContinuousSectionBreak();
     }
 
     private void createEnumerationClass(DocxBaseWriter docxFile, EnumerationType enumeration) throws IOException {
@@ -1058,6 +1059,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         docxFile.endTable();
+        docxFile.addContinuousSectionBreak();
     }
 
     private void createCompositeClass(DocxBaseWriter docxFile, AreaType area, ServiceType service, CompositeType composite) throws IOException {
@@ -1140,6 +1142,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         docxFile.endTable();
+        docxFile.addContinuousSectionBreak();
     }
 
     private static String operationType(OperationType op) throws IOException {
