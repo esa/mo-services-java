@@ -33,29 +33,29 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public final class PublishInteractionListener implements MALPublishInteractionListener {
 
     @Override
-    public void publishDeregisterAckReceived(final MALMessageHeader header, final Map qosProperties)
-            throws MALException {
+    public void publishDeregisterAckReceived(final MALMessageHeader header,
+            final Map qosProperties) throws MALException {
         Logger.getLogger(PublishInteractionListener.class.getName()).fine(
                 "PublishInteractionListener::publishDeregisterAckReceived");
     }
 
     @Override
-    public void publishErrorReceived(final MALMessageHeader header, final MALErrorBody body,
-            final Map qosProperties) throws MALException {
+    public void publishErrorReceived(final MALMessageHeader header,
+            final MALErrorBody body, final Map qosProperties) throws MALException {
         Logger.getLogger(PublishInteractionListener.class.getName()).fine(
                 "PublishInteractionListener::publishErrorReceived");
     }
 
     @Override
-    public void publishRegisterAckReceived(final MALMessageHeader header, final Map qosProperties)
-            throws MALException {
+    public void publishRegisterAckReceived(final MALMessageHeader header,
+            final Map qosProperties) throws MALException {
         Logger.getLogger(PublishInteractionListener.class.getName()).fine(
                 "PublishInteractionListener::publishRegisterAckReceived");
     }
 
     @Override
-    public void publishRegisterErrorReceived(final MALMessageHeader header, final MALErrorBody body,
-            final Map qosProperties) throws MALException {
+    public void publishRegisterErrorReceived(final MALMessageHeader header,
+            final MALErrorBody body, final Map qosProperties) throws MALException {
         Logger.getLogger(PublishInteractionListener.class.getName()).fine(
                 "PublishInteractionListener::publishRegisterErrorReceived");
     }
