@@ -259,8 +259,9 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
             try {
                 switch (transId) {
                     case 1:
+                        // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendResponse("");
                         break;
                     case 2:
