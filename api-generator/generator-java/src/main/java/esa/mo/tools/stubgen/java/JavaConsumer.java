@@ -547,9 +547,11 @@ public class JavaConsumer {
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
                             msgType, op.getName(), opArgs, throwsText,
                             op.getComment(), "the MAL message sent to initiate the interaction", throwsComment);
+                    //method.addLine("try {", false);
                     method.addLine("return " + consumerMethodCall
                             + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
                             + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")", true);
+                    //this.appendCatchClauses(method);
                     method.addMethodCloseStatement();
                     break;
                 }
@@ -567,8 +569,10 @@ public class JavaConsumer {
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
                             op.getName(), opArgs, throwsText, op.getComment(), opRetComment, throwsComment);
+                    //method.addLine("try {", false);
                     method.addLine(opGet, true);
                     createOperationReturn(file, method, op, opRetType);
+                    //this.appendCatchClauses(method);
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -666,6 +670,12 @@ public class JavaConsumer {
 
         file.addClassCloseStatement();
         file.flush();
+    }
+
+    private void appendCatchClauses(MethodWriter method) throws IOException {
+        method.addLine("} catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {", false);
+        method.addLine("    throw ex;", false);
+        method.addLine("}", false);
     }
 
     private void createOperationReturn(LanguageWriter file, MethodWriter method,
