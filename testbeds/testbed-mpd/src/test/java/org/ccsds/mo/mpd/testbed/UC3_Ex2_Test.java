@@ -663,9 +663,12 @@ public class UC3_Ex2_Test extends MPDTest {
             // Delete the product if it already exist in the specified location
             String productName = "tmData1";
             String specifiedLocation = deliverTo.getValue().replace("file://", "");
-            File productLocation = new File(specifiedLocation, productName);
-            if (productLocation.exists()) {
-                productLocation.delete();
+            File productDirectory = new File(specifiedLocation);
+            productDirectory.mkdirs();
+
+            File productFilepath = new File(specifiedLocation, productName);
+            if (productFilepath.exists()) {
+                productFilepath.delete();
             }
 
             // ------------------------------------------------------------------------
@@ -739,14 +742,14 @@ public class UC3_Ex2_Test extends MPDTest {
             // -----------------------------------------------------------------------------------------------
             // Check that the product was created in the specified location
             if (deliveryMethod.equals(DeliveryMethodEnum.FILETRANSFER) && expectedNumberOfNotifications != 0) {
-                if (!productLocation.exists()) {
-                    fail("The product file does not exist in: " + productLocation.getAbsolutePath());
+                if (!productFilepath.exists()) {
+                    fail("The product file does not exist in: " + productFilepath.getAbsolutePath());
                 }
             }
 
             // Delete the file...
-            if (productLocation.exists()) {
-                productLocation.delete();
+            if (productFilepath.exists()) {
+                productFilepath.delete();
             }
 
             try {
