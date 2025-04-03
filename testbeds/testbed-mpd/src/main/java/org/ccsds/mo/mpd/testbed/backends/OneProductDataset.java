@@ -58,4 +58,9 @@ public class OneProductDataset extends Dataset {
 
         super.addNewProduct(ref, productBody, metadata);
     }
+
+    @Override
+    public int getMaximumNumberOfResults() {
+        return 10;
+    }
 }

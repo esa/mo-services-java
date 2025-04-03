@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mal.structures.ObjectRefList;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.DeliveryFailedException;
 import org.ccsds.moims.mo.mpd.InvalidException;
+import org.ccsds.moims.mo.mpd.TooManyException;
 import org.ccsds.moims.mo.mpd.UnknownException;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalHelper;
@@ -161,6 +162,13 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
             }
 
             out.add(productMetadata);
+        }
+
+        if (out.size() > backend.getMaximumNumberOfResults()) {
+            String text = "There are too many entries (" + out.size() + "). ";
+            text += "The mamimux number allows is " + backend.getMaximumNumberOfResults() + ". ";
+            text += "Please refine your search criteria, in order to decrease the amount of entries.";
+            throw new MALInteractionException(new TooManyException(text));
         }
 
         return out;

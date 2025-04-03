@@ -64,4 +64,6 @@ public interface ProductRetrievalBackend {
      * @param listener The listener.
      */
     public void setNewProductAddedListener(NewProductAddedListener listener);
+
+    public int getMaximumNumberOfResults();
 }

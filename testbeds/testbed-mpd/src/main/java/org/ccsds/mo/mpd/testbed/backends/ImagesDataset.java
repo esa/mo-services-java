@@ -184,4 +184,9 @@ Product metadata: metadata3
         addImgProduct2(domain);
         addImgProduct3(domain);
     }
+
+    @Override
+    public int getMaximumNumberOfResults() {
+        return 10;
+    }
 }
