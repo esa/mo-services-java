@@ -75,7 +75,7 @@
 						A consumer shall send the list of product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
                     </mal:documentation>
 					<mal:documentation name="Requirement" order="2">
-						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
+						The provider shall send an Acknowledge message indicating that there are no unknown product references.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						The service provider shall return each referenced product to the service consumer in a separate Update message.
@@ -115,7 +115,7 @@
 						A consumer shall send a list of product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
 					</mal:documentation>
 					<mal:documentation name="Requirement" order="2">
-						The provider shall send an Acknowledge message indicating that the selected deliverTo URI is reachable.
+						The provider shall send an Acknowledge message indicating that there are no unknown product references and that the selected deliverTo URI is reachable.
                     </mal:documentation>
 					<mal:documentation name="Requirement" order="3">
 						The provider shall initiate the file transfer of the referenced mission data products to the selected deliverTo URI.
