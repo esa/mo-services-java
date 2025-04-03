@@ -166,8 +166,8 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
         if (out.size() > backend.getMaximumNumberOfResults()) {
             String text = "There are too many entries (" + out.size() + "). ";
-            text += "The mamimux number allows is " + backend.getMaximumNumberOfResults() + ". ";
-            text += "Please refine your search criteria, in order to decrease the amount of entries.";
+            text += "The maximum number allowed is " + backend.getMaximumNumberOfResults() + ". ";
+            text += "Please refine your search criteria, in order to reduce the number of entries.";
             throw new MALInteractionException(new TooManyException(text));
         }
 
