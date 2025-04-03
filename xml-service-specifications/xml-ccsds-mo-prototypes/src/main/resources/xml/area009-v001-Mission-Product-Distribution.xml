@@ -187,7 +187,7 @@
 						If the domain is NULL, then the service provider shall not filter the standing orders based on the domain of the product filter in the standing order.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						If the domain is not NULL, then the domain shall compared against the domain of the product filter in the standing order.
+						If the domain is not NULL, then the domain shall be compared against the domain of the product filter in the standing order.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
 						The response shall contain a list of standing orders that match the specified user and domain.
