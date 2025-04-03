@@ -309,17 +309,17 @@ public class ProductRetrievalTest extends MPDTest {
             final AtomicBoolean updateReceived = new AtomicBoolean(false);
             final AtomicBoolean rspReceived = new AtomicBoolean(false);
 
-            consumerPR.getProductFiles(productRefs, deliverTo, new ProductRetrievalAdapter() {
+            consumerPR.deliverProductFiles(productRefs, deliverTo, new ProductRetrievalAdapter() {
 
                 @Override
-                public void getProductFilesAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
+                public void deliverProductFilesAckReceived(MALMessageHeader msgHeader, Map qosProperties) {
                     long duration = System.currentTimeMillis() - startTime;
                     System.out.println("ACK received in: " + duration + " ms");
                     ackReceived.set(true);
                 }
 
                 @Override
-                public void getProductFilesUpdateReceived(MALMessageHeader msgHeader,
+                public void deliverProductFilesUpdateReceived(MALMessageHeader msgHeader,
                         ProductMetadata metadata, String filename, Boolean success, Map qosProperties) {
                     long duration = System.currentTimeMillis() - startTime;
                     System.out.println("UPDATE received in: " + duration + " ms");
@@ -328,14 +328,14 @@ public class ProductRetrievalTest extends MPDTest {
                 }
 
                 @Override
-                public void getProductFilesResponseReceived(MALMessageHeader msgHeader, Map qosProperties) {
+                public void deliverProductFilesResponseReceived(MALMessageHeader msgHeader, Map qosProperties) {
                     long duration = System.currentTimeMillis() - startTime;
                     System.out.println("RESPONSE received in: " + duration + " ms");
                     rspReceived.set(true);
                 }
 
                 @Override
-                public void getProductFilesAckErrorReceived(MALMessageHeader msgHeader,
+                public void deliverProductFilesAckErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
                     Logger.getLogger(ProductRetrievalTest.class.getName()).log(
                             Level.SEVERE, "Something went wrong...", error);
@@ -343,7 +343,7 @@ public class ProductRetrievalTest extends MPDTest {
                 }
 
                 @Override
-                public void getProductFilesUpdateErrorReceived(MALMessageHeader msgHeader,
+                public void deliverProductFilesUpdateErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
                     Logger.getLogger(ProductRetrievalTest.class.getName()).log(
                             Level.SEVERE, "Something went wrong...", error);
@@ -351,7 +351,7 @@ public class ProductRetrievalTest extends MPDTest {
                 }
 
                 @Override
-                public void getProductFilesResponseErrorReceived(MALMessageHeader msgHeader,
+                public void deliverProductFilesResponseErrorReceived(MALMessageHeader msgHeader,
                         MOErrorException error, Map qosProperties) {
                     Logger.getLogger(ProductRetrievalTest.class.getName()).log(
                             Level.SEVERE, "Something went wrong...", error);

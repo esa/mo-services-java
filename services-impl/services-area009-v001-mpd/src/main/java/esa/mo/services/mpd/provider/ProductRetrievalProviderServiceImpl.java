@@ -41,7 +41,7 @@ import org.ccsds.moims.mo.mpd.TooManyException;
 import org.ccsds.moims.mo.mpd.UnknownException;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalHelper;
-import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductFilesInteraction;
+import org.ccsds.moims.mo.mpd.productretrieval.provider.DeliverProductFilesInteraction;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.GetProductsInteraction;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 import org.ccsds.moims.mo.mpd.structures.Product;
@@ -220,8 +220,8 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
     }
 
     @Override
-    public void getProductFiles(ObjectRefList productRefs, URI deliverTo,
-            GetProductFilesInteraction interaction) throws MALInteractionException, MALException {
+    public void deliverProductFiles(ObjectRefList productRefs, URI deliverTo,
+            DeliverProductFilesInteraction interaction) throws MALInteractionException, MALException {
         if (productRefs == null) {
             throw new MALException("The productRefs cannot be null!");
         }

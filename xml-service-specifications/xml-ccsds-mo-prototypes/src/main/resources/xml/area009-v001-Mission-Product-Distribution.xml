@@ -110,7 +110,7 @@
                 </mal:progressIP>
             </mal:capabilitySet>
             <mal:capabilitySet number="3" comment="">
-                <mal:progressIP name="getProductFiles" number="3" comment="The getProductFiles operation allows consumers to instruct the provider to initiate a remote file transfer delivery of the selected mission data products to a specified target.">
+                <mal:progressIP name="deliverProductFiles" number="3" comment="The deliverProductFiles operation allows consumers to instruct the provider to initiate a remote file transfer delivery of the selected mission data products to a specified target.">
 					<mal:documentation name="Requirement" order="1">
 						A consumer shall send a list of product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
 					</mal:documentation>
