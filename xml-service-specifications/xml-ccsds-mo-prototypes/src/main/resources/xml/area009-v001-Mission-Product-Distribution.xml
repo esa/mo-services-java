@@ -23,17 +23,20 @@
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
-                    <mal:documentation name="Requirement" order="1">
-                        The service provider shall return a list of metadata entries for the products that satisfy all the specified individual criteria defined by the product filter, the creation date, and the content creation date.
-                    </mal:documentation>
+					<mal:documentation name="Requirement" order="1">
+						A consumer shall specify the productFilter, and optionally, the time windows for the creationDate and the contentDate of the products intended to be listed.
+					</mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall select the products based on the defined fields of the productFilter, composed by the product type, the domain, the source(s), and the metadata attributes filter. The ProductFilter structure specifies the conditions for each of the fields.
+						The service provider shall select the products based on the values defined inside the productFilter. The ProductFilter structure specifies the conditions for each of the fields.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
 						If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
 						If the contentDate is NULL, then the service provider shall not filter the products based on the contentDate.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="5">
+                        The service provider shall return a list of metadata entries for the products that satisfy all the specified individual criteria defined by the product filter, the creation date, and the content creation date.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -62,7 +65,7 @@
                         </mal:errorRef>
                         <mal:errorRef comment="When the list cannot be returned due to too many entries.">
                             <mal:type name="Too Many" area="MPD"/>
-                            <mal:extraInformation comment="An optional description stating how many entries were found and how many are supported by the operation.">
+                            <mal:extraInformation comment="An optional description stating the number of entries that were found and the maximum number of entries supported by the operation.">
                                 <mal:type area="MAL" name="String" list="false"/>
                             </mal:extraInformation>
                         </mal:errorRef>
@@ -175,17 +178,20 @@
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listStandingOrders" number="1" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
                     <mal:documentation name="Requirement" order="1">
-						The response shall contain a list of standing orders that match the specified user and domain.
-						Note: Depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
+						A consumer shall specify the user, and the domain, of the standing order intended to returned.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						If the user is NULL, then the service provider shall not filter the standing orders based on the user.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						If the domain is NULL, then the service provider shall not filter the standing orders based on the domain of the products.
+						If the domain is NULL, then the service provider shall not filter the standing orders based on the domain of the product filter in the standing order.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						The domain field shall refer to the domain of the products to which the standing order relates. The standing order itself is not associated with a domain.
+						If the domain is not NULL, then the domain shall compared against the domain of the product filter in the standing order.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="5">
+						The response shall contain a list of standing orders that match the specified user and domain.
+						Note: Depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -210,10 +216,10 @@
 						The service provider shall ignore the received value in the orderID field of the orderDetails from the Request message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall create a new standing order, then assign a unique ID for the standing order, and return it to the consumer in the Response message.
+						The service provider shall generate a new unique ID and assign it to the received standing order, then return it to the consumer in the Response message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						Following successful creation of a new standing order, the service provider shall initiate the delivery of requested products following the specified validity window of the standing order.
+						Following successful creation of a new standing order, the service provider shall initiate the delivery of products following the specified criteria in the standing order.
                    </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
 						When the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
@@ -250,7 +256,7 @@
                 </mal:requestIP>
                 <mal:submitIP name="cancelStandingOrder" number="3" comment="The cancelStandingOrder operation cancels an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
-						The service consumer shall send the orderID of the standing order to be cancelled to the service provider.
+						The service consumer shall send to the service provider, the orderID of the standing order intended to be cancelled.
 						Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation, the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
@@ -299,6 +305,9 @@
 						A service consumer may subscribe to notifications for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="5">
+						If the delivery of a mission data product is not successful, then the respective success field of the Publish message shall be set to FALSE.
+					</mal:documentation>
+                    <mal:documentation name="Requirement" order="6">
 						The published message shall contain the metadata, filename, the mission data product's delivered location, and the status indicating if the delivery was successful.
 					</mal:documentation>
                     <mal:messages>
@@ -340,9 +349,6 @@
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="4">
 						A service consumer may subscribe to mission data products for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
-					</mal:documentation>
-                    <mal:documentation name="Requirement" order="5">
-						If the delivery of a mission data product is not successful, then the respective success field of the Publish message shall be set to FALSE.
 					</mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
@@ -490,7 +496,7 @@
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductFilter" shortFormPart="105" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters then all products of the specified type pass the filter.
+            <mal:composite name="ProductFilter" shortFormPart="105" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters, then all products of the specified type pass the filter.
 A ProductFilter relates to a specific ProductType. Note that the domain filter relates to the domain of the product. The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
