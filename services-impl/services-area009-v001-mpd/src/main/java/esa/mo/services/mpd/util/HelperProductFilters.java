@@ -70,7 +70,7 @@ public class HelperProductFilters {
         }
 
         if (domain != null) {
-            ObjectRef<Product> productRef = productMetadata.getProduct();
+            ObjectRef<Product> productRef = productMetadata.getProductRef();
             IdentifierList productDomain = productRef.getDomain();
             boolean matchesDomain = HelperDomain.domainMatchesWildcardDomain(productDomain, domain);
 

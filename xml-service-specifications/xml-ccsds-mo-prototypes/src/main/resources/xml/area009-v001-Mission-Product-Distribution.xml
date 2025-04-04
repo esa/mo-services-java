@@ -378,7 +378,7 @@
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Object"/>
                 </mal:extends>
-                <mal:field name="productMetadata" canBeNull="false" comment="The product metadata of the mission data product. The product field inside the productMetadata may be null.">
+                <mal:field name="productMetadata" canBeNull="false" comment="The product metadata of the mission data product. The productRef field inside the productMetadata may be null when used in this context.">
                     <mal:type area="MPD" list="false" name="ProductMetadata"/>
                 </mal:field>
                 <mal:field name="productBody" canBeNull="false" comment="The product body of the mission data product.">
@@ -435,7 +435,7 @@
                 <mal:field name="productType" canBeNull="false" comment="The product type definition.">
                     <mal:type area="MPD" list="false" name="ProductType"/>
                 </mal:field>
-                <mal:field name="product" canBeNull="false" comment="The reference to the Product.">
+                <mal:field name="productRef" canBeNull="false" comment="The reference to the Product.">
                     <mal:type area="MPD" list="false" name="ObjectRef(Product)"/>
                 </mal:field>
                 <mal:field name="creationDate" canBeNull="false" comment="The time at which the product was generated.">

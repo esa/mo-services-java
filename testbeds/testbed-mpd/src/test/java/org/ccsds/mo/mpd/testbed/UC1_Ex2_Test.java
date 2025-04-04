@@ -260,7 +260,7 @@ public class UC1_Ex2_Test extends MPDTest {
         ObjectRefList productRefs = new ObjectRefList();
 
         for (ProductMetadata metadata : list) {
-            productRefs.add(metadata.getProduct());
+            productRefs.add(metadata.getProductRef());
         }
 
         try {
