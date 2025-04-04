@@ -538,10 +538,10 @@ public class UC3_Ex2_Test extends MPDTest {
             System.out.println("Standing Orders returned size: " + size);
             assertEquals(0, size);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
 
@@ -557,20 +557,20 @@ public class UC3_Ex2_Test extends MPDTest {
             assertNotNull(orderID);
         } catch (MALInteractionException ex) {
             if (DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod) && deliverTo == null) {
-                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.INFO,
+                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.INFO,
                         "The provider returned an MO Error correctly!");
                 return;
             }
             if (!DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod) && deliverTo != null) {
-                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.INFO,
+                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.INFO,
                         "The provider returned an MO Error correctly!");
                 return;
             }
 
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
 
@@ -587,10 +587,10 @@ public class UC3_Ex2_Test extends MPDTest {
                 assertEquals(deliveryMethod.getNumericValue(), receivedOrder.getDeliveryMethod().getNumericValue());
             }
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
 
@@ -755,10 +755,10 @@ public class UC3_Ex2_Test extends MPDTest {
             try {
                 consumerOM.cancelStandingOrder(orderID);
             } catch (MALInteractionException ex) {
-                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
                 fail(ex.toString());
             } catch (MALException ex) {
-                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
                 fail(ex.toString());
             }
 
@@ -767,10 +767,10 @@ public class UC3_Ex2_Test extends MPDTest {
             consumerPOD.notifyProductDeliveryDeregister(subscriptions);
             System.out.flush();
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE,
                     "Something went wrong with the interaction!", ex);
         } catch (MALException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE,
                     "Something went wrong...", ex);
         }
     }
