@@ -173,7 +173,10 @@
         </mal:service>
         <mal:service name="OrderManagement" number="2" comment="The Order Management Service is used to submit and manage standing orders. Standing orders specify a product filter to subscribe to a subset of automatically generated products and define the method and destination for product delivery.">
             <mal:documentation name="Service-level Requirements" order="1">
-                TBD
+                Each standing order shall specify how newly added mission data products are handled by the provider.
+            </mal:documentation>
+            <mal:documentation name="Service-level Requirements" order="2">
+				Note: This standard deliberately does not specify how to handle network outages. This is expected to be handled either in an implementation-specific manner or by the use of a transport layer that ensures delivery (e.g. ZMQueue). Additionally, in case there are missing products, these can be retrieved using the getProducts operation.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listStandingOrders" number="1" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
@@ -340,6 +343,7 @@
                 <mal:pubsubIP name="deliverProducts" number="2" comment="The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
 						Upon the creation (or availability) of a new mission data product that matches a certain standing order, the service provider shall publish this mission data product via the service interface.
+						Note: The operation will only send newly added products (equivalent behaviour to listenning to a radio channel). For previous products, the consumer can use the getProducts operation.
 					</mal:documentation>
                     <mal:documentation name="Requirement" order="2">
 						The service provider shall publish the mission data product together with subscription keys corresponding to the associated user and orderID.
@@ -374,29 +378,8 @@
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Object"/>
                 </mal:extends>
-                <mal:field name="productType" canBeNull="false" comment="The product type definition.">
-                    <mal:type area="MPD" list="false" name="ProductType"/>
-                </mal:field>
-                <mal:field name="creationDate" canBeNull="false" comment="The time at which the product was generated.">
-                    <mal:type area="MAL" list="false" name="Time"/>
-                </mal:field>
-                <mal:field name="source" canBeNull="true" comment="The source that triggered the generation of the product.">
-                    <mal:type area="MAL" list="false" name="Identifier"/>
-                </mal:field>
-                <mal:field name="contentDate" canBeNull="false" comment="The period of time to which the source data used to generate the product relates.">
-                    <mal:type area="MPD" list="false" name="TimeWindow"/>
-                </mal:field>
-                <mal:field name="attributes" canBeNull="true" comment="A set of metadata attributes whose name and type correspond to those defined in the productType.">
-                    <mal:type area="MAL" list="true" name="NamedValue"/>
-                </mal:field>
-                <mal:field name="description" canBeNull="true" comment="The textual description of this specific occurrence of the product.">
-                    <mal:type area="MAL" list="false" name="String"/>
-                </mal:field>
-                <mal:field name="fileMetadata" canBeNull="true" comment="Additional optional metadata for files.">
-                    <mal:type area="MPD" list="false" name="FileMetadata"/>
-                </mal:field>
-                <mal:field name="checksum" canBeNull="true" comment="An optional checksum of the product body. If this functionality is enabled, then the checksum algorithm for the calculation shall be agreed as an out-of-band agreement.">
-                    <mal:type area="MAL" list="false" name="Blob"/>
+                <mal:field name="productMetadata" canBeNull="false" comment="The product metadata of the mission data product. The product field inside the productMetadata may be null.">
+                    <mal:type area="MPD" list="false" name="ProductMetadata"/>
                 </mal:field>
                 <mal:field name="productBody" canBeNull="false" comment="The product body of the mission data product.">
                     <mal:type area="MAL" list="false" name="Blob"/>

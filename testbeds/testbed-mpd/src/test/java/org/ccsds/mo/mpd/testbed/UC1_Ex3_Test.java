@@ -348,7 +348,7 @@ public class UC1_Ex3_Test extends MPDTest {
             // Check the timeWindows for all the received products, if one was selected
             if (contentDate != null) {
                 for (Product p : returnedProducts) {
-                    TimeWindow receivedTW = p.getContentDate();
+                    TimeWindow receivedTW = p.getProductMetadata().getContentDate();
 
                     if (receivedTW.getStart().getValue() > contentDate.getEnd().getValue()) {
                         fail("The received TimeWindow start time is after the requested TimeWindow end time!");
@@ -361,10 +361,10 @@ public class UC1_Ex3_Test extends MPDTest {
 
             // Check that the productType matches
             for (Product p : returnedProducts) {
-                if (!Objects.isNull(productType.getName()) && !p.getProductType().equals(productType)) {
+                if (!Objects.isNull(productType.getName()) && !p.getProductMetadata().getProductType().equals(productType)) {
                     fail("The productType isnot the same! For product: " + p.toString());
                 }
-                NamedValueList attributes = p.getAttributes();
+                NamedValueList attributes = p.getProductMetadata().getAttributes();
 
                 isValidAttribute.accept(attributes);
             }

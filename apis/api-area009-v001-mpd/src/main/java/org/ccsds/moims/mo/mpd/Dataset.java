@@ -63,18 +63,7 @@ public abstract class Dataset implements ProductRetrievalBackend {
         ObjectIdentity objId = new ObjectIdentity(productRef.getDomain(),
                 productRef.getKey(), productRef.getObjectVersion());
 
-        return new Product(
-                objId,
-                metadata.getProductType(),
-                metadata.getCreationDate(),
-                metadata.getSource(),
-                metadata.getContentDate(),
-                metadata.getAttributes(),
-                metadata.getDescription(),
-                metadata.getFileMetadata(),
-                metadata.getChecksum(),
-                productBody
-        );
+        return new Product(objId, metadata, productBody);
     }
 
     @Override

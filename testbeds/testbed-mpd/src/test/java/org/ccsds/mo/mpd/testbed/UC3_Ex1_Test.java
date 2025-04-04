@@ -399,7 +399,7 @@ public class UC3_Ex1_Test extends MPDTest {
             Product returnedProduct = returnedProducts.get(0);
             // Don't check if it is set to null
             if (productType != null) {
-                assertEquals(productType, returnedProduct.getProductType().getName());
+                assertEquals(productType, returnedProduct.getProductMetadata().getProductType().getName());
             }
 
             checkProductBody(returnedProduct, productBody);

@@ -51,12 +51,12 @@ public class DummyProductsBackend extends Dataset {
         // ---------------------------------------------------
         // Products
         // ---------------------------------------------------
-        TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
+        TimeWindow contentDate = new TimeWindow(Time.now(), Time.now());
         ObjectIdentity productId = new ObjectIdentity(domain, new Identifier("key1"), new UInteger(1));
         Blob productBody = new Blob();
-        Product product = new Product(productId, type1, Time.now(), timeWindow, productBody);
+        ProductMetadata metadata = new ProductMetadata(type1, null, Time.now(), contentDate);
+        Product product = new Product(productId, metadata, productBody);
         ObjectRef<Product> ref = product.getObjectRef();
-        ProductMetadata metadata = new ProductMetadata();
         super.addNewProduct(ref, productBody, metadata);
     }
 

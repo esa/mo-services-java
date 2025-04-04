@@ -306,7 +306,7 @@ public class UC1_Ex1_Test extends MPDTest {
             // Check the timeWindows for all the received products, if one was selected
             if (contentDate != null) {
                 for (Product p : returnedProducts) {
-                    TimeWindow receivedTW = p.getContentDate();
+                    TimeWindow receivedTW = p.getProductMetadata().getContentDate();
 
                     if (receivedTW.getStart().getValue() > contentDate.getEnd().getValue()) {
                         fail("The received TimeWindow start time is after the requested TimeWindow end time!");
@@ -319,7 +319,7 @@ public class UC1_Ex1_Test extends MPDTest {
 
             // Check that the productType matches
             for (Product p : returnedProducts) {
-                if (!p.getProductType().equals(productType)) {
+                if (!p.getProductMetadata().getProductType().equals(productType)) {
                     fail("The productType is not the same! For product: " + p.toString());
                 }
             }
@@ -327,7 +327,7 @@ public class UC1_Ex1_Test extends MPDTest {
             // If there is only one entry, then check if the APID matches
             if (size == 1) {
                 Product product = returnedProducts.get(0);
-                NamedValueList attributes = product.getAttributes();
+                NamedValueList attributes = product.getProductMetadata().getAttributes();
 
                 // Find the Attribute with the APID and check:
                 for (NamedValue att : attributes) {
