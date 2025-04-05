@@ -775,6 +775,10 @@ public class GeneratorDocx extends GeneratorDocument {
 
     private void addTypeSignatureDetails(DocxBaseWriter docxFile, List<MessageBodyType> msgs) throws IOException {
         for (MessageBodyType msg : msgs) {
+            if (msg == null) {
+                logger.warn("Weird! The msg field is null!");
+                continue;
+            }
             List<TypeRef> refs = TypeUtils.getTypeListViaField(msg.getField());
             for (TypeRef typeRef : refs) {
                 if (typeRef.isField()) {
@@ -1067,8 +1071,15 @@ public class GeneratorDocx extends GeneratorDocument {
         logger.info("Creating composite class " + compName);
 
         // Check if it is an "MO Object"
-        String extendsName = composite.getExtends().getType().getName();
-        boolean isMOObject = extendsName.equals("Object");
+        ElementReferenceType ext = composite.getExtends();
+        boolean isMOObject = false;
+
+        if (ext == null) {
+            logger.warn("Weird! The ext field is null! For Composite: " + compName);
+        } else {
+            String extendsName = ext.getType().getName();
+            isMOObject = extendsName.equals("Object");
+        }
 
         String prefixSection = isMOObject ? "MO Object: " : "Composite: ";
         docxFile.addTitle(3, prefixSection, compName, "DATATYPE", true);
