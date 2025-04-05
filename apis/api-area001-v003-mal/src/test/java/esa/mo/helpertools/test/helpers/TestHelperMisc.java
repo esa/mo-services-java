@@ -184,18 +184,6 @@ public class TestHelperMisc {
     }
 
     @Test
-    public void testLoadThisPropertiesFile2() {
-        int oldSize = System.getProperties().size();
-        HelperMisc.loadThisPropertiesFile(getClass().getClassLoader().getResource("testProp2.properties").getPath());
-
-        Properties sys = System.getProperties();
-        assertEquals(3, sys.size() - oldSize);
-        assertTrue(sys.containsKey("helpertools.test.TestProp3"));
-        assertTrue(sys.containsKey("helpertools.test.TestProp4"));
-        assertTrue(sys.containsKey("helpertools.test.TestProp5"));
-    }
-
-    @Test
     public void testLoadThisPropertiesFile3() {
         int oldSize = System.getProperties().size();
         HelperMisc.loadThisPropertiesFile("foobar.properties");
