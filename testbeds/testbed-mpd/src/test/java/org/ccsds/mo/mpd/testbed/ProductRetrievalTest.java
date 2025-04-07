@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.mo.mpd.testbed.backends.OneProductDataset;
+import org.ccsds.mo.mpd.testbed.backends.FifteenProductsDataset;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -57,14 +57,14 @@ import static org.junit.Assert.*;
  */
 public class ProductRetrievalTest extends MPDTest {
 
-    private static final OneProductDataset oneProductDataset = new OneProductDataset();
+    private static final FifteenProductsDataset dataset = new FifteenProductsDataset();
     private static final URI TMP_DIR = getHomeTmpDir();
 
     @BeforeClass
     public static void setUpClass() throws IOException {
         System.out.println(TEST_SET_UP_CLASS_1);
         System.out.println(TEST_SET_UP_CLASS_2);
-        setUp.setUp(oneProductDataset, false, false, true);
+        setUp.setUp(dataset, false, false, true);
     }
 
     /**
@@ -188,7 +188,7 @@ public class ProductRetrievalTest extends MPDTest {
             UInteger objectVersion = new UInteger(1);
 
             ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(oneProductDataset.ref);
+            productRefs.add(dataset.ref);
             productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
             this.testGetProducts(productRefs);
             fail("The operation was expected to throw an 'Unknown' exception!");
@@ -223,7 +223,7 @@ public class ProductRetrievalTest extends MPDTest {
 
         try {
             ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(oneProductDataset.ref);
+            productRefs.add(dataset.ref);
             URI deliverTo = TMP_DIR;
             this.testGetProductFiles(productRefs, deliverTo);
         } catch (MALInteractionException ex) {
@@ -241,7 +241,7 @@ public class ProductRetrievalTest extends MPDTest {
 
         try {
             ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(oneProductDataset.ref);
+            productRefs.add(dataset.ref);
             String path = TMP_DIR.getValue().replace("file://", "");
             File targetDir = new File(path, "wrong_directory");
             URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
@@ -297,6 +297,31 @@ public class ProductRetrievalTest extends MPDTest {
             } else {
                 Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
                 fail("The operation was expected to throw an 'Unknown' exception!");
+            }
+        }
+    }
+
+    /**
+     * Test Case 9.
+     */
+    @Test
+    public void testCase_09() {
+        System.out.println("Running: testCase_09()");
+
+        try {
+            ProductFilter productFilter = new ProductFilter();
+            TimeWindow creationDate = null;
+            TimeWindow contentDate = null;
+            testMOErrorListProducts(productFilter, creationDate, contentDate);
+            fail("The operation was expected to throw a 'Too Many' exception!");
+        } catch (MALInteractionException ex) {
+            MOErrorException moError = ex.getStandardError();
+            long errorNumber = moError.getErrorNumber().getValue();
+            if (errorNumber == MPDHelper.TOO_MANY_ERROR_NUMBER.getValue()) {
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+            } else {
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
+                fail("The operation was expected to throw an 'Too Many' exception!");
             }
         }
     }
