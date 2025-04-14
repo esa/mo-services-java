@@ -174,12 +174,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 1:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendResponse("");
                         break;
                     case 2:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 3:
@@ -187,12 +187,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 5:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
@@ -200,7 +200,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.PERIOD);
                         interaction.sendResponse("");
                         break;
                     case 8:
@@ -261,12 +261,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 1:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendResponse("");
                         break;
                     case 2:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 3:
@@ -275,38 +275,38 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 4:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendResponse("");
                         break;
                     case 5:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 6:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendResponse("");
                         break;
                     case 8:
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 9:
@@ -315,42 +315,42 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         break;
                     case 10:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendResponse("");
                         break;
                     case 11:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendResponse("");
                         break;
                     case 12:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 13:
                         interaction.sendAcknowledgement("");
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        //Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_SHORT);
                         interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 14:
                         interaction.sendAcknowledgement("");
-                        Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
-                        Thread.sleep(Configuration.PERIOD);
+                        Thread.sleep(Configuration.MAL_PERIOD_LONG);
                         interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
                         break;
                     case 15:

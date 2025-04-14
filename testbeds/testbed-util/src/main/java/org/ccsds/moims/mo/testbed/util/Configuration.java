@@ -54,7 +54,8 @@ public abstract class Configuration {
     //public static final int WAIT_TIME_OUT = Integer.getInteger(WAIT_TIME_OUT_PROPERTY_NAME, 500).intValue();
     public static final int WAIT_TIME_OUT = 200;
     public static final int PERIOD = 100; // in ms - The code will wait on this PERIOD: ~630 times !
-    public static final int MAL_PERIOD_SHORT = 50;
+    public static final int MAL_PERIOD_SHORT = 40;
+    public static final int MAL_PERIOD_LONG = 100;
     public static final int COM_PERIOD_SHORT = 100; // in ms
     public static final int COM_PERIOD_LONG = 500; // in ms
 
