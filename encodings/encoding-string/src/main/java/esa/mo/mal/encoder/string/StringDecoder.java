@@ -97,10 +97,8 @@ public class StringDecoder extends Decoder {
     public Element decodeEnumeration(Enumeration enumeration) throws MALException {
         int enumSize = enumeration.getEnumSize();
 
-        if (enumSize < 256) {
-            return enumeration.fromOrdinal(this.decodeUOctet().getValue());
-        } else if (enumSize < 65536) {
-            return enumeration.fromOrdinal(this.decodeUShort().getValue());
+        if (enumSize < 65536) {
+            return enumeration.fromValue(this.decodeUShort().getValue());
         }
 
         throw new MALException("The Enumeration could not be decoded!");
