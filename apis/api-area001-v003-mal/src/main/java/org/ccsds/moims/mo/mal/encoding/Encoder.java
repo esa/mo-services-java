@@ -26,21 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Duration;
-import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
-import org.ccsds.moims.mo.mal.structures.HomogeneousList;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
-import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.ULong;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.*;
 
 /**
  * Extends the MALEncoder and MALListEncoder interfaces for use in the generic
@@ -67,8 +53,8 @@ public abstract class Encoder implements MALEncoder {
         try {
             outputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger("org.ccsds.moims.mo.mal.encoding.gen").log(
-                    Level.WARNING, "Exception thrown on Encoder.close", ex);
+            Logger.getLogger(Encoder.class.getName()).log(Level.WARNING,
+                    "Exception thrown on Encoder.close", ex);
         }
     }
 
@@ -566,11 +552,22 @@ public abstract class Encoder implements MALEncoder {
     @Override
     public void encodeNullableAttribute(final Attribute value) throws MALException {
         try {
-            if (value != null) {
+            if (value == null) {
+                outputStream.writeIsNull();
+                return;
+            }
+
+            // Union is a special case because it may wrap a null inside it!
+            if (value instanceof Union) {
+                if (((Union) value).isNull()) {
+                    outputStream.writeIsNull();
+                } else {
+                    outputStream.writeIsNotNull();
+                    encodeAttribute(value);
+                }
+            } else {
                 outputStream.writeIsNotNull();
                 encodeAttribute(value);
-            } else {
-                outputStream.writeIsNull();
             }
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
