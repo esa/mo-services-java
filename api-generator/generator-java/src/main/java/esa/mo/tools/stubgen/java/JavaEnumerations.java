@@ -46,7 +46,8 @@ public class JavaEnumerations {
         this.generator = generator;
     }
 
-    public void createEnumerationClass(File folder, AreaType area, ServiceType service, EnumerationType enumeration) throws IOException {
+    public void createEnumerationClass(File folder, AreaType area,
+            ServiceType service, EnumerationType enumeration) throws IOException {
         String enumName = enumeration.getName();
         long enumSize = enumeration.getItem().size();
         ClassWriter file = generator.createClassFile(folder, enumName);
@@ -58,19 +59,13 @@ public class JavaEnumerations {
                 null, "Enumeration class for " + enumName + ".");
 
         String fqEnumName = generator.createElementType(area, service, enumName);
-        CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
-                true, true, null);
-        CompositeField uintType = generator.createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
-                true, true, null);
         CompositeField enumType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                 true, true, null);
 
         generator.addTypeShortFormDetails(file, area, service, enumeration.getShortFormPart());
 
-        // create attributes
+        // Create variables
         String highestIndex = "";
         for (int i = 0; i < enumSize; i++) {
             EnumerationType.Item item = enumeration.getItem().get(i);
@@ -130,37 +125,53 @@ public class JavaEnumerations {
                         false, false, null), true, null, null, null);
         method.addMethodCloseStatement();
 
-        // add getters and setters
-        if (generator.supportsToString) {
-            CompositeField strType = generator.createCompositeElementsDetails(file, false, "s",
-                    TypeUtils.createTypeReference(null, null, "_String", false),
-                    false, true, "s The string to search for.");
+        // Generate methods
+        generateToString(file, enumeration, enumType);
+        generateCreateMap(file, enumeration);
+        generateFromOrdinal(file, enumType, highestIndex);
+        generateFromNumericValue(file, enumType);
+        generateGetNumericValue(file, highestIndex);
+        generateCreateElement(file);
+        generateGetEnum(file, enumSize);
+        generator.addTypeIdGetterMethod(file, area, service);
 
-            method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
-            method.addLine("switch (getValue()) {", false);
+        file.addClassCloseStatement();
+        file.flush();
 
-            for (EnumerationType.Item item : enumeration.getItem()) {
-                method.addLine("    case " + item.getValue() + "_VALUE:", false);
-                method.addLine("        return \"" + item.getValue() + "\"");
-            }
-            method.addLine("    default:", false);
-            method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
-            method.addLine("}", false);
-            method.addMethodCloseStatement();
+        generator.createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
+    }
 
-            method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
-                    false, true, enumType, "fromString", Arrays.asList(strType), null,
-                    "Returns the enumeration element represented by the supplied string, or null if not matched.",
-                    "The matched enumeration element, or null if not matched.", null);
-            method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++) {", false);
-            method.addLine("    if (_ENUMERATION_NAMES[i].equals(s)) {", false);
-            method.addLine("        return _ENUMERATIONS[i]");
-            method.addLine("    }", false);
-            method.addLine("}", false);
-            method.addLine("return null");
-            method.addMethodCloseStatement();
+    private void generateToString(ClassWriter file, EnumerationType enumeration, CompositeField enumType) throws IOException {
+        CompositeField strType = generator.createCompositeElementsDetails(file, false, "s",
+                TypeUtils.createTypeReference(null, null, "_String", false),
+                false, true, "s The string to search for.");
+
+        MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
+        method.addLine("switch (getValue()) {", false);
+
+        for (EnumerationType.Item item : enumeration.getItem()) {
+            method.addLine("    case " + item.getValue() + "_VALUE:", false);
+            method.addLine("        return \"" + item.getValue() + "\"");
         }
+        method.addLine("    default:", false);
+        method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
+        method.addLine("}", false);
+        method.addMethodCloseStatement();
 
+        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
+                false, true, enumType, "fromString", Arrays.asList(strType), null,
+                "Returns the enumeration element represented by the supplied string, or null if not matched.",
+                "The matched enumeration element, or null if not matched.", null);
+        method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++) {", false);
+        method.addLine("    if (_ENUMERATION_NAMES[i].equals(s)) {", false);
+        method.addLine("        return _ENUMERATIONS[i]");
+        method.addLine("    }", false);
+        method.addLine("}", false);
+        method.addLine("return null");
+        method.addMethodCloseStatement();
+    }
+
+    private void generateCreateMap(ClassWriter file, EnumerationType enumeration) throws IOException {
         CompositeField encodedType1 = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(null, null, "java.util.Map<Integer, String>", false),
                 true, true, null);
@@ -174,26 +185,22 @@ public class JavaEnumerations {
         }
         method2.addLine("return enumMap");
         method2.addMethodCloseStatement();
+    }
 
-        // create getMALValue method
-        if (generator.supportsToValue) {
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, false, elementType, "clone", null, null);
-            method.addLine("return this");
-            method.addMethodCloseStatement();
-        }
-
+    private void generateFromOrdinal(ClassWriter file, CompositeField enumType, String highestIndex) throws IOException {
         CompositeField ordType = generator.createCompositeElementsDetails(file, false, "ordinal",
                 TypeUtils.createTypeReference(null, null, "int", false),
                 false, false, "ordinal The index of the enumeration element to return.");
-        method = file.addMethodOpenStatementOverride(enumType, "fromOrdinal", Arrays.asList(ordType), null);
+        MethodWriter method = file.addMethodOpenStatementOverride(enumType, "fromOrdinal", Arrays.asList(ordType), null);
         method.addArrayMethodStatement("_ENUMERATIONS", "ordinal", highestIndex);
         method.addMethodCloseStatement();
+    }
 
+    private void generateFromNumericValue(ClassWriter file, CompositeField enumType) throws IOException {
         CompositeField nvType = generator.createCompositeElementsDetails(file, false, "value",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                 true, false, "value The numeric value to search for.");
-        method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
+        MethodWriter method = file.addMethodOpenStatement(false, false, false, true, StdStrings.PUBLIC,
                 false, false, enumType, "fromNumericValue", Arrays.asList(nvType), null,
                 "Returns the enumeration element represented by the supplied numeric value, or null if not matched.",
                 "The matched enumeration value, or null if not matched.", null);
@@ -204,73 +211,31 @@ public class JavaEnumerations {
         method.addLine("}", false);
         method.addLine("return null");
         method.addMethodCloseStatement();
+    }
 
-        /*
-        String enumOrdinalType = StdStrings.UINTEGER;
-        if (enumSize < 256) {
-            enumOrdinalType = StdStrings.UOCTET;
-        } else if (enumSize < 65536) {
-            enumOrdinalType = StdStrings.USHORT;
-        }
-
-        String enumEncoderValue = getEnumEncoderValue(enumSize);
-        String enumDecoderValue = getEnumDecoderValue(enumSize);
-
-        // The "ordinal" needs to be removed... the numeric value is what really matters
-        if (enumSize < 256) {
-            CompositeField encodedType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
-                    true, true, null);
-            method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                    false, false, encodedType, "getOrdinalUOctet", null, null,
-                    "Returns the index of the enumerated item as a {@code UOctet}.",
-                    "the index of the enumerated item as a {@code UOctet}.", null);
-            method.addLine("return " + enumEncoderValue);
-            method.addMethodCloseStatement();
-        }
-         */
-        method = file.addMethodOpenStatementOverride(uintType, "getNumericValue", null, null);
+    private void generateGetNumericValue(ClassWriter file, String highestIndex) throws IOException {
+        CompositeField uintType = generator.createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
+                true, true, null);
+        MethodWriter method = file.addMethodOpenStatementOverride(uintType, "getNumericValue", null, null);
         method.addArrayMethodStatement("_ENUMERATION_NUMERIC_VALUES", "ordinal", highestIndex);
         method.addMethodCloseStatement();
+    }
 
-        method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
+    private void generateCreateElement(ClassWriter file) throws IOException {
+        CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
+                true, true, null);
+        MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
         method.addLine("return _ENUMERATIONS[0]");
         method.addMethodCloseStatement();
+    }
 
-        // Generate the getEnumSize() operation
+    private void generateGetEnum(ClassWriter file, long enumSize) throws IOException {
         file.addStatement("    @Override");
         file.addStatement("    public int getEnumSize() {");
         file.addStatement("        return " + enumSize + ";");
         file.addStatement("    }");
-
-        generator.addTypeIdGetterMethod(file, area, service);
-
-        file.addClassCloseStatement();
-        file.flush();
-
-        generator.createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
-        /*
-        CompositeField fld = generator.createCompositeElementsDetails(file, false, "fld",
-                TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
-                true, true, "cmt");
-         */
-    }
-
-    @Deprecated
-    private String getEnumEncoderValue(long maxValue) {
-        String enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UInteger(ordinal.longValue())";
-        if (maxValue < 256) {
-            enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue())";
-        } else if (maxValue < 65536) {
-            enumEncoderValue = "new org.ccsds.moims.mo.mal.structures.UShort(ordinal.intValue())";
-        }
-
-        return enumEncoderValue;
-    }
-
-    @Deprecated
-    private String getEnumDecoderValue(long maxValue) {
-        return ".getValue()";
     }
 
     protected String getEnumValueCompare(String lhs, String rhs) {
