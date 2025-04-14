@@ -114,6 +114,8 @@ public abstract class Enumeration implements Element {
     @Deprecated
     public abstract Element fromOrdinal(int ordinal);
 
+    public abstract Enumeration fromValue(Integer value);
+
     @Override
     public int hashCode() {
         return ordinal;

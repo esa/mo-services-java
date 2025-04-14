@@ -130,6 +130,7 @@ public class JavaEnumerations {
         generateCreateMap(file, enumeration);
         generateFromOrdinal(file, enumType, highestIndex);
         generateFromNumericValue(file, enumType);
+        generateFromValue(file, enumeration);
         generateGetNumericValue(file, highestIndex);
         generateCreateElement(file);
         generateGetEnum(file, enumSize);
@@ -210,6 +211,27 @@ public class JavaEnumerations {
         method.addLine("    }", false);
         method.addLine("}", false);
         method.addLine("return null");
+        method.addMethodCloseStatement();
+    }
+
+    private void generateFromValue(ClassWriter file, EnumerationType enumeration) throws IOException {
+        CompositeField enumType = generator.createCompositeElementsDetails(file, false, "value",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ENUMERATION, false),
+                true, false, null);
+        CompositeField intType = generator.createCompositeElementsDetails(file, false, "value",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false),
+                true, false, "value The value of the Enumeration.");
+
+        MethodWriter method = file.addMethodOpenStatementOverride(enumType, "fromValue", Arrays.asList(intType), null);
+        method.addLine("switch (value) {", false);
+
+        for (EnumerationType.Item item : enumeration.getItem()) {
+            method.addLine("    case " + item.getValue() + "_VALUE:", false);
+            method.addLine("        return " + enumeration.getName() + "." + item.getValue());
+        }
+        method.addLine("    default:", false);
+        method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
+        method.addLine("}", false);
         method.addMethodCloseStatement();
     }
 
