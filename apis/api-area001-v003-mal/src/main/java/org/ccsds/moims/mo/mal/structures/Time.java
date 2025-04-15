@@ -61,9 +61,9 @@ public class Time implements Attribute {
 
     /**
      * Initialises the object with a certain time. The value must represent a
-     * valid instant in UTC and is parsed using
-     * {@link DateTimeFormatter#ISO_INSTANT}. The time must be in a text string
-     * such as {@code 2007-12-03T10:15:30.00Z}.
+     * valid instant in UTC and is parsed using DateTimeFormatter#ISO_INSTANT.
+     * The time must be in a text string such as
+     * {@code 2007-12-03T10:15:30.00Z}.
      *
      * <p>
      * See the description of the class <code>Date</code> for a discussion of
@@ -71,7 +71,7 @@ public class Time implements Attribute {
      * coordinated universal time (UTC).
      *
      * @param value The time in UTC and is parsed using
-     * {@link DateTimeFormatter#ISO_INSTANT}.
+     * DateTimeFormatter#ISO_INSTANT.
      */
     public Time(final String value) {
         this(Instant.parse(value).toEpochMilli());
