@@ -31,22 +31,22 @@ import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
  */
 public class MPDServicesProvider {
 
-    private final OrderManagementProviderServiceImpl orderManagementService = new OrderManagementProviderServiceImpl();
     private final ProductOrderDeliveryProviderServiceImpl productOrderDeliveryService = new ProductOrderDeliveryProviderServiceImpl();
+    private final OrderManagementProviderServiceImpl orderManagementService = new OrderManagementProviderServiceImpl();
     private final ProductRetrievalProviderServiceImpl productRetrievalService = new ProductRetrievalProviderServiceImpl();
 
     public void init(ProductRetrievalBackend backendProductRetrievalProvider) throws MALException {
-        orderManagementService.init();
-        productOrderDeliveryService.init();
-        productRetrievalService.init();
-    }
-
-    public OrderManagementProviderServiceImpl getOrderManagementService() {
-        return this.orderManagementService;
+        productOrderDeliveryService.init(backendProductRetrievalProvider);
+        orderManagementService.init(productOrderDeliveryService);
+        productRetrievalService.init(backendProductRetrievalProvider);
     }
 
     public ProductOrderDeliveryProviderServiceImpl getProductOrderDeliveryService() {
         return this.productOrderDeliveryService;
+    }
+
+    public OrderManagementProviderServiceImpl getOrderManagementService() {
+        return this.orderManagementService;
     }
 
     public ProductRetrievalProviderServiceImpl getProductRetrievalService() {

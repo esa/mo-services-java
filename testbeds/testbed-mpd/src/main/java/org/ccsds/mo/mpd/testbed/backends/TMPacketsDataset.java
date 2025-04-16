@@ -20,34 +20,21 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mpd.Dataset;
-import org.ccsds.moims.mo.mal.structures.AttributeType;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.NamedValue;
-import org.ccsds.moims.mo.mal.structures.NamedValueList;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
-import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mpd.structures.AttributeDef;
-import org.ccsds.moims.mo.mpd.structures.AttributeDefList;
-import org.ccsds.moims.mo.mpd.structures.Product;
-import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
-import org.ccsds.moims.mo.mpd.structures.ProductType;
-import org.ccsds.moims.mo.mpd.structures.TimeWindow;
+import org.ccsds.moims.mo.mpd.structures.*;
 
 /**
  * The TMPacketsDataset backend contains data similar to a set of TM Packets.
  */
 public class TMPacketsDataset extends Dataset {
 
-    public final static Time APID100_TIME_START = Time.generateTime(2010, 1, 1);
-    public final static Time APID100_TIME_END = Time.generateTime(2010, 12, 31);
-    public final static Time APID200_TIME_START = Time.generateTime(2020, 1, 1);
-    public final static Time APID200_TIME_END = Time.generateTime(2020, 12, 31);
-    public final static TimeWindow timeWindowAPID100 = new TimeWindow(APID100_TIME_START, APID100_TIME_END);
-    public final static TimeWindow timeWindowAPID200 = new TimeWindow(APID200_TIME_START, APID200_TIME_END);
+    public final static Time APID100_TIME_START = new Time("2009-12-31T11:41:53.437Z");
+    public final static Time APID100_TIME_END = new Time("2010-01-01T09:07:51.352Z");
+    public final static Time APID200_TIME_START = new Time("2019-12-31T10:09:17.854Z");
+    public final static Time APID200_TIME_END = new Time("2020-01-01T08:14:53.113Z");
+    public final static TimeWindow contentTimeWindowAPID100 = new TimeWindow(APID100_TIME_START, APID100_TIME_END);
+    public final static TimeWindow contentTimeWindowAPID200 = new TimeWindow(APID200_TIME_START, APID200_TIME_END);
     public final ProductType typeTMPacketDailyExtract;
 
     public TMPacketsDataset() {
@@ -71,7 +58,7 @@ public class TMPacketsDataset extends Dataset {
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ProductMetadata metadata1 = new ProductMetadata(typeTMPacketDailyExtract, ref1, Time.now(),
-                null, null, timeWindowAPID100, attributes1, "description");
+                null, null, contentTimeWindowAPID100, attributes1, "description", null, null);
         super.addNewProduct(ref1, productBody1, metadata1);
 
         // product2
@@ -80,11 +67,16 @@ public class TMPacketsDataset extends Dataset {
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeTMPacketDailyExtract, ref2, Time.now(),
-                null, null, timeWindowAPID200, attributes2, "description");
+                null, null, contentTimeWindowAPID200, attributes2, "description", null, null);
         super.addNewProduct(ref2, productBody2, metadata2);
     }
 
     public ProductType getProductType() {
         return typeTMPacketDailyExtract;
+    }
+
+    @Override
+    public int getMaximumNumberOfResults() {
+        return 10;
     }
 }

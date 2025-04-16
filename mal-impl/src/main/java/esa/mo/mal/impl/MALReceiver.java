@@ -112,12 +112,12 @@ public class MALReceiver implements MALMessageListener {
 
             MALContextFactoryImpl.LOGGER.fine("MAL Receiving message");
 
-            switch (msg.getHeader().getInteractionType().getOrdinal()) {
-                case InteractionType._SEND_INDEX:
+            switch (msg.getHeader().getInteractionType().getValue()) {
+                case InteractionType.SEND_VALUE:
                     address = lookupAddress(callingEndpoint, msg);
                     handleSend(msg, address);
                     break;
-                case InteractionType._SUBMIT_INDEX:
+                case InteractionType.SUBMIT_VALUE:
                     switch (stage) {
                         case MALSubmitOperation._SUBMIT_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
@@ -130,7 +130,7 @@ public class MALReceiver implements MALMessageListener {
                             throw new MALException("Received unexpected stage of " + stage);
                     }
                     break;
-                case InteractionType._REQUEST_INDEX:
+                case InteractionType.REQUEST_VALUE:
                     switch (stage) {
                         case MALRequestOperation._REQUEST_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
@@ -143,7 +143,7 @@ public class MALReceiver implements MALMessageListener {
                             throw new MALException("Received unexpected stage of " + stage);
                     }
                     break;
-                case InteractionType._INVOKE_INDEX:
+                case InteractionType.INVOKE_VALUE:
                     switch (stage) {
                         case MALInvokeOperation._INVOKE_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
@@ -157,7 +157,7 @@ public class MALReceiver implements MALMessageListener {
                             throw new MALException("Received unexpected stage of " + stage);
                     }
                     break;
-                case InteractionType._PROGRESS_INDEX:
+                case InteractionType.PROGRESS_VALUE:
                     switch (stage) {
                         case MALProgressOperation._PROGRESS_STAGE:
                             address = lookupAddress(callingEndpoint, msg);
@@ -172,7 +172,7 @@ public class MALReceiver implements MALMessageListener {
                             throw new MALException("Received unexpected stage of " + stage);
                     }
                     break;
-                case InteractionType._PUBSUB_INDEX:
+                case InteractionType.PUBSUB_VALUE:
                     switch (stage) {
                         case MALPubSubOperation._REGISTER_ACK_STAGE:
                         case MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE:
@@ -208,8 +208,8 @@ public class MALReceiver implements MALMessageListener {
                     }
                     break;
                 default:
-                    throw new MALException("Received unexpected interaction of "
-                            + msg.getHeader().getInteractionType().getOrdinal());
+                    throw new MALException("Received unexpected interaction of: "
+                            + msg.getHeader().getInteractionType().toString());
             }
         } catch (MALInteractionException ex) {
             // try to determine address info if null

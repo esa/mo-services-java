@@ -44,6 +44,7 @@ import org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestInherit
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.testbed.util.Configuration;
 
 public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
     // Define constants used in incoming string list - ther correspnd to execution stages
@@ -157,7 +158,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishExecution(true, interaction.getInteraction(), 1, 2);
             interaction.sendAcknowledgement(_String);
             try {
-                Thread.sleep(100);
+                Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
             } catch (Exception ex) {
             }
             if (!_String.contains(RESPONSE_ERROR)) {
@@ -193,7 +194,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishAcceptance(true, interaction.getInteraction());
             interaction.sendAcknowledgement(_String);
             try {
-                Thread.sleep(100);
+                Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
             } catch (Exception ex) {
             }
             // Send updates
@@ -208,7 +209,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                     publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
                     interaction.sendUpdate(_String);
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
                     } catch (Exception ex) {
                     }
                 }

@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>api-area001-v003-mal</artifactId>
-    <version>11.2</version>
+    <version>11.3</version>
     <packaging>jar</packaging>
 
     <name>ESA MO API - MAL v003</name>
@@ -99,6 +99,12 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+          <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

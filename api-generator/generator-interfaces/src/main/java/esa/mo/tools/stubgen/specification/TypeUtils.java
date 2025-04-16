@@ -72,6 +72,7 @@ public class TypeUtils {
                     argVersionStr, fieldNullability);
         }
 
+        // TBD: Remove this and remove support for other XML types
         if (StdStrings.XML.equals(tr.getArea())) {
             // ToDo proper support for lists of XML types
             return new FieldInfo(tr, fieldName, fieldComment, tr.getName(),
@@ -210,6 +211,16 @@ public class TypeUtils {
         }
 
         if (!type.isList() && type.getName().contains("ObjectRef")) {
+            return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
+                    + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
+        }
+
+        if (targetType.contains("ObjectRefList")) {
+            return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
+                    + "mal.structures.ObjectRefList.SHORT_FORM");
+        }
+
+        if (targetType.contains("ObjectRef")) {
             return tiSource.convertToNamespace(tiSource.getAreaPackage(StdStrings.MAL)
                     + "mal.structures.ObjectRef.OBJECTREF_SHORT_FORM");
         }

@@ -60,7 +60,7 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
     public SubmitIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
-        this.interactionType = InteractionType._SUBMIT_INDEX;
+        this.interactionType = InteractionType.SUBMIT_VALUE;
         this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
@@ -71,7 +71,7 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
      */
     public SubmitIPConsumerHandler(final OperationResponseHolder responseHolder) {
         super(false, responseHolder);
-        this.interactionType = InteractionType._SUBMIT_INDEX;
+        this.interactionType = InteractionType.SUBMIT_VALUE;
         this.interactionStage = MALSubmitOperation._SUBMIT_ACK_STAGE;
     }
 
@@ -83,21 +83,21 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
      * @param syncOperation Synchronous or not.
      * @param responseHolder Response holder.
      */
-    protected SubmitIPConsumerHandler(final int interactionType, final int interactionStage,
+    protected SubmitIPConsumerHandler(final InteractionType interactionType, final int interactionStage,
             final boolean syncOperation, final OperationResponseHolder responseHolder) {
         super(syncOperation, responseHolder);
-        this.interactionType = interactionType;
+        this.interactionType = interactionType.getValue();
         this.interactionStage = interactionStage;
     }
 
     @Override
     public synchronized void handleStage(final MALMessage msg) throws MALInteractionException {
         if (!receivedAck) {
-            if ((interactionType == msg.getHeader().getInteractionType().getOrdinal())
+            if ((interactionType == msg.getHeader().getInteractionType().getValue())
                     && checkStage(msg.getHeader().getInteractionStage().getValue())) {
                 receivedAck = true;
             } else {
-                logUnexpectedTransitionError(msg.getHeader().getInteractionType().getOrdinal(),
+                logUnexpectedTransitionError(msg.getHeader().getInteractionType().getValue(),
                         msg.getHeader().getInteractionStage().getValue());
             }
         } else {

@@ -193,7 +193,7 @@ public class GeneratorJava extends GeneratorLangs {
         List<CompositeField> listenerAuto = new LinkedList<>();
         listenerAuto.add(psListener);
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "registerWithDefaultKeys", listenerAuto, throwsExceptions,
+                false, true, null, "registerWithDefaultKeys", listenerAuto, throwsInteractionAndMALException,
                 "Registers this provider implementation to the set of broker connections with the default subscription keys", null,
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",

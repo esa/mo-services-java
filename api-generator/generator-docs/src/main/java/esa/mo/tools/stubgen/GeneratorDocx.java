@@ -188,10 +188,10 @@ public class GeneratorDocx extends GeneratorDocument {
                     docxServiceFile.addTitle(3, "Overview");
                     docxServiceFile.addComment(service.getComment());
                     drawServiceTable(docxServiceFile, area, service);
+                    docxServiceFile.addTitle(3, "Service-level Requirements");
 
-                    for (DocumentationType documentation : service.getDocumentation()) {
-                        docxServiceFile.addTitle(3, documentation.getName());
-                        docxServiceFile.addNumberedComment(GeneratorUtils.addSplitStrings(null, documentation.getContent()));
+                    if (service.getDocumentation() != null) {
+                        addRequirements(docxServiceFile, service.getDocumentation());
                     }
 
                     if (!StdStrings.COM.equalsIgnoreCase(service.getName())) {
@@ -204,7 +204,7 @@ public class GeneratorDocx extends GeneratorDocument {
                         for (CapabilitySetType cSet : service.getCapabilitySet()) {
                             String str = cSet.getComment();
 
-                            if (null != str) {
+                            if (str != null) {
                                 comments.addAll(GeneratorUtils.addSplitStrings(null, str));
                             }
                         }
@@ -769,12 +769,16 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.addTitle(4, "Requirements");
 
         if (op.getDocumentation() != null) {
-            addRequirementsDetails(docxFile, op.getDocumentation());
+            addRequirements(docxFile, op.getDocumentation());
         }
     }
 
     private void addTypeSignatureDetails(DocxBaseWriter docxFile, List<MessageBodyType> msgs) throws IOException {
         for (MessageBodyType msg : msgs) {
+            if (msg == null) {
+                logger.warn("Weird! The msg field is null!");
+                continue;
+            }
             List<TypeRef> refs = TypeUtils.getTypeListViaField(msg.getField());
             for (TypeRef typeRef : refs) {
                 if (typeRef.isField()) {
@@ -786,7 +790,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
     }
 
-    private void addRequirementsDetails(DocxBaseWriter docxFile, List<DocumentationType> docs) throws IOException {
+    private void addRequirements(DocxBaseWriter docxFile, List<DocumentationType> docs) throws IOException {
         List<String> requirements = null;
         for (DocumentationType doc : docs) {
             requirements = GeneratorUtils.addSplitStrings(requirements, doc.getContent());
@@ -1018,6 +1022,7 @@ public class GeneratorDocx extends GeneratorDocument {
         docxFile.endRow();
 
         docxFile.endTable();
+        docxFile.addContinuousSectionBreak();
     }
 
     private void createEnumerationClass(DocxBaseWriter docxFile, EnumerationType enumeration) throws IOException {
@@ -1058,6 +1063,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         docxFile.endTable();
+        docxFile.addContinuousSectionBreak();
     }
 
     private void createCompositeClass(DocxBaseWriter docxFile, AreaType area, ServiceType service, CompositeType composite) throws IOException {
@@ -1065,8 +1071,15 @@ public class GeneratorDocx extends GeneratorDocument {
         logger.info("Creating composite class " + compName);
 
         // Check if it is an "MO Object"
-        String extendsName = composite.getExtends().getType().getName();
-        boolean isMOObject = extendsName.equals("Object");
+        ElementReferenceType ext = composite.getExtends();
+        boolean isMOObject = false;
+
+        if (ext == null) {
+            logger.warn("Weird! The ext field is null! For Composite: " + compName);
+        } else {
+            String extendsName = ext.getType().getName();
+            isMOObject = extendsName.equals("Object");
+        }
 
         String prefixSection = isMOObject ? "MO Object: " : "Composite: ";
         docxFile.addTitle(3, prefixSection, compName, "DATATYPE", true);
@@ -1140,6 +1153,7 @@ public class GeneratorDocx extends GeneratorDocument {
         }
 
         docxFile.endTable();
+        docxFile.addContinuousSectionBreak();
     }
 
     private static String operationType(OperationType op) throws IOException {

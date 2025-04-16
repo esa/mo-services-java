@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2024      European Space Agency
+ * Copyright (C) 2025      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -70,7 +70,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 1.
      */
     @Test
-    public void testCase_1() {
+    public void testCase_01() {
         System.out.println("Running: testCase_1()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -82,7 +82,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 2.
      */
     @Test
-    public void testCase_2() {
+    public void testCase_02() {
         System.out.println("Running: testCase_2()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -94,7 +94,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 3.
      */
     @Test
-    public void testCase_3() {
+    public void testCase_03() {
         System.out.println("Running: testCase_3()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -106,7 +106,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 4.
      */
     @Test
-    public void testCase_4() {
+    public void testCase_04() {
         System.out.println("Running: testCase_4()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -118,7 +118,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 5.
      */
     @Test
-    public void testCase_5() {
+    public void testCase_05() {
         System.out.println("Running: testCase_5()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = null;
@@ -130,7 +130,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 6.
      */
     @Test
-    public void testCase_6() {
+    public void testCase_06() {
         System.out.println("Running: testCase_6()");
         Identifier user = null;
         IdentifierList domain = null;
@@ -142,9 +142,9 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 7.
      */
     @Test
-    public void testCase_7() {
+    public void testCase_07() {
         System.out.println("Running: testCase_7()");
-        Identifier user = new Identifier("bill.gates");
+        Identifier user = new Identifier("john.smith");
         IdentifierList domain = null;
         Identifier productType = null;
         test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 0);
@@ -154,7 +154,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 8.
      */
     @Test
-    public void testCase_8() {
+    public void testCase_08() {
         System.out.println("Running: testCase_8()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
@@ -167,7 +167,7 @@ public class UC3_Ex1_Test extends MPDTest {
      * Test Case 9.
      */
     @Test
-    public void testCase_9() {
+    public void testCase_09() {
         System.out.println("Running: testCase_9()");
         Identifier user = new Identifier("john.doe");
         IdentifierList domain = new IdentifierList();
@@ -219,7 +219,7 @@ public class UC3_Ex1_Test extends MPDTest {
         test(user, domain, DeliveryMethodEnum.SERVICE_COMPLETE, productType, 1);
     }
 
-    private void test(Identifier user, IdentifierList domain,
+    protected synchronized void test(Identifier user, IdentifierList domain,
             DeliveryMethodEnum deliveryMethod, Identifier productType, int expectedNumberOfProducts) {
         try {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
@@ -238,13 +238,21 @@ public class UC3_Ex1_Test extends MPDTest {
         Long orderID = null;
         try {
             ProductFilter productFilter = new ProductFilter(productType, domain, null, null);
-            StandingOrder orderDetails = new StandingOrder(null, orderUser, productFilter, null, deliveryMethod, null, null);
+            StandingOrder orderDetails = new StandingOrder(null, orderUser,
+                    productFilter, null, deliveryMethod, null, null);
             orderID = consumerOM.submitStandingOrder(orderDetails);
             System.out.println("The returned orderID is: " + orderID);
             assertNotNull(orderID);
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
-            fail(ex.toString());
+            if (DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod)) {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.INFO,
+                        "The provider returned an MO Error correctly!");
+                return;
+            } else {
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+                        "The retuned MO Error is not a FILETRANSFER error.", ex);
+                fail(ex.toString());
+            }
         } catch (MALException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
@@ -319,8 +327,8 @@ public class UC3_Ex1_Test extends MPDTest {
                     System.out.println("Reached: deliverProductsNotifyReceived()");
                     long duration = System.currentTimeMillis() - startTime;
                     System.out.println("NOTIFY received in: " + duration + " ms");
-                    notifyReceived.set(true);
                     returnedProducts.add(product);
+                    notifyReceived.set(true);
                 }
 
                 @Override
@@ -333,16 +341,6 @@ public class UC3_Ex1_Test extends MPDTest {
                 }
             });
 
-            // Provider pushes a new Product (on the backend)
-            IdentifierList productDomain = new IdentifierList();
-            productDomain.add(new Identifier("nasa"));
-            productDomain.add(new Identifier("hubble"));
-            ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(), new Identifier("tmData1"), new UInteger(1));
-            Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
-            ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref, Time.now(),
-                    null, null, TMPacketsDataset.timeWindowAPID100, null, "description");
-            backend.addNewProduct(ref, productBody, metadata);
-
             // ------------------------------------------------------------------------
             // Wait while ACK has not been received and 1 second has not passed yet...
             long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
@@ -352,10 +350,14 @@ public class UC3_Ex1_Test extends MPDTest {
             }
 
             if (!ackReceived.get()) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(
                         Level.SEVERE, "The ACK was not received!");
                 fail("The ACK was not received!");
             }
+
+            // Provider pushes a new Product (on the backend)
+            Blob productBody = new Blob(new byte[]{0x01, 0x02, 0x03});
+            addProductToBackend(productBody);
 
             // ------------------------------------------------------------------------
             // Wait while NOTIFY has not been received and 1 second has not passed yet...
@@ -367,7 +369,7 @@ public class UC3_Ex1_Test extends MPDTest {
 
             // Were we expecting to receive at least one product?
             if (!notifyReceived.get() && expectedNumberOfProducts != 0) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(UC3_Ex1_Test.class.getName()).log(
                         Level.SEVERE, "The NOTIFY was not received!");
                 fail("The NOTIFY was not received!");
             }
@@ -397,12 +399,37 @@ public class UC3_Ex1_Test extends MPDTest {
             Product returnedProduct = returnedProducts.get(0);
             // Don't check if it is set to null
             if (productType != null) {
-                assertEquals(productType, returnedProduct.getProductType().getName());
+                assertEquals(productType, returnedProduct.getProductMetadata().getProductType().getName());
             }
+
+            checkProductBody(returnedProduct, productBody);
+
+            IdentifierList subscriptions = new IdentifierList();
+            subscriptions.add(subscription.getSubscriptionId());
+            consumerPOD.deliverProductsDeregister(subscriptions);
+            System.out.flush();
         } catch (MALInteractionException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+                    "Something went wrong with the interaction!", ex);
         } catch (MALException ex) {
-            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE,
+                    "Something went wrong...", ex);
         }
+    }
+
+    protected void addProductToBackend(Blob productBody) {
+        IdentifierList productDomain = new IdentifierList();
+        productDomain.add(new Identifier("nasa"));
+        productDomain.add(new Identifier("hubble"));
+        ObjectRef<Product> ref = new ObjectRef(productDomain, Product.TYPE_ID.getTypeId(),
+                new Identifier("tmData1"), new UInteger(1));
+        ProductMetadata metadata = new ProductMetadata(backend.typeTMPacketDailyExtract, ref,
+                Time.now(), null, null, TMPacketsDataset.contentTimeWindowAPID100,
+                null, "description", null, null);
+        backend.addNewProduct(ref, productBody, metadata);
+    }
+
+    protected void checkProductBody(Product returnedProduct, Blob productBody) {
+        assertEquals(returnedProduct.getProductBody(), productBody);
     }
 }

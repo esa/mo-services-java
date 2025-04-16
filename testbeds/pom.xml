@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
+<!--
     Licensed under the European Space Agency Public License, Version 2.0
     You may not use this file except in compliance with the License.
 
@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbeds</artifactId>
-    <version>11.2</version>
+    <version>11.3</version>
     <packaging>pom</packaging>
     <name>ESA CCSDS Testbed reactor build</name>
 
@@ -67,7 +67,7 @@
         <module>xml-tests</module>
         <module>test-apis</module>
         <module>testbed-mal</module>
-<!--        <module>testbed-mpd</module> -->
+        <module>testbed-mpd</module>
         <module>testbed-com-framework</module>
         <module>testbed-com-provider-esa</module>
         <module>testbed-com</module>

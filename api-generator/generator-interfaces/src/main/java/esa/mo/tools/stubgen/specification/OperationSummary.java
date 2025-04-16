@@ -21,8 +21,10 @@
 package esa.mo.tools.stubgen.specification;
 
 import esa.mo.xsd.MessageBodyType;
+import esa.mo.xsd.OperationErrorList;
 import esa.mo.xsd.OperationType;
 import esa.mo.xsd.PubSubOperationType;
+import esa.mo.xsd.SubmitOperationType;
 import java.util.List;
 
 /**
@@ -32,7 +34,7 @@ public final class OperationSummary {
 
     private final InteractionPatternEnum pattern;
     private final OperationType originalOp;
-    private final Integer set;
+    private final Integer capabilitySetNumber;
     private final List<FieldInfo> argTypes;
     private final String argComment;
     private final List<FieldInfo> ackTypes;
@@ -41,6 +43,7 @@ public final class OperationSummary {
     private final String updateComment;
     private final List<FieldInfo> retTypes;
     private final String retComment;
+    private final OperationErrorList errors;
 
     /**
      * Constructor.
@@ -62,6 +65,7 @@ public final class OperationSummary {
      * the pattern.
      * @param retComment The return argument comments of the operation if
      * support by the pattern.
+     * @param errors The errors of the operation.
      */
     public OperationSummary(InteractionPatternEnum pattern,
             OperationType originalOp,
@@ -73,11 +77,12 @@ public final class OperationSummary {
             List<FieldInfo> updateTypes,
             String updateComment,
             List<FieldInfo> retTypes,
-            String retComment) {
+            String retComment,
+            OperationErrorList errors) {
         super();
         this.pattern = pattern;
         this.originalOp = originalOp;
-        this.set = set;
+        this.capabilitySetNumber = set;
         this.argTypes = argTypes;
         this.argComment = argComment;
         this.ackTypes = ackTypes;
@@ -86,6 +91,7 @@ public final class OperationSummary {
         this.updateComment = updateComment;
         this.retTypes = retTypes;
         this.retComment = retComment;
+        this.errors = errors;
     }
 
     /**
@@ -130,7 +136,7 @@ public final class OperationSummary {
      * @return the set
      */
     public Integer getSet() {
-        return set;
+        return capabilitySetNumber;
     }
 
     /**
@@ -223,5 +229,9 @@ public final class OperationSummary {
     public MessageBodyType getSubscriptionKeys() {
         PubSubOperationType lop = (PubSubOperationType) originalOp;
         return lop.getMessages().getSubscriptionKeys();
+    }
+
+    public OperationErrorList getErrors() {
+        return errors;
     }
 }

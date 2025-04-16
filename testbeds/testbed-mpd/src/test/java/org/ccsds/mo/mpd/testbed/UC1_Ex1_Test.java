@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2024      European Space Agency
+ * Copyright (C) 2025      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -70,7 +70,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 1 - Match APID = 100.
      */
     @Test
-    public void testCase_1() {
+    public void testCase_01() {
         System.out.println("Running: testCase_1()");
         UInteger apidValue = new UInteger(100);
         test(apidValue, 1);
@@ -80,7 +80,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 2 - Match APID = 200.
      */
     @Test
-    public void testCase_2() {
+    public void testCase_02() {
         System.out.println("Running: testCase_2()");
         UInteger apidValue = new UInteger(200);
         test(apidValue, 1);
@@ -90,7 +90,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 3 - Match APID = 300.
      */
     @Test
-    public void testCase_3() {
+    public void testCase_03() {
         System.out.println("Running: testCase_3()");
         UInteger apidValue = new UInteger(300);
         test(apidValue, 0);
@@ -100,7 +100,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 4 - attributeFilter = NULL.
      */
     @Test
-    public void testCase_4() {
+    public void testCase_04() {
         System.out.println("Running: testCase_4()");
         UInteger apidValue = null;
         test(apidValue, 2);
@@ -111,7 +111,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * [APID100_TIME_START, APID100_TIME_END].
      */
     @Test
-    public void testCase_5() {
+    public void testCase_05() {
         System.out.println("Running: testCase_5()");
         UInteger apidValue = new UInteger(100);
         TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
@@ -123,10 +123,12 @@ public class UC1_Ex1_Test extends MPDTest {
      * [1970-01-01, 1970-12-31].
      */
     @Test
-    public void testCase_6() {
+    public void testCase_06() {
         System.out.println("Running: testCase_6()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        Time start = Time.generateTime(1970, 1, 1);
+        Time end = Time.generateTime(1970, 12, 31);
+        TimeWindow contentDate = new TimeWindow(start, end);
         testWithTimeWindow(apidValue, 0, contentDate);
     }
 
@@ -135,7 +137,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * [APID100_TIME_START, APID100_TIME_END].
      */
     @Test
-    public void testCase_7() {
+    public void testCase_07() {
         System.out.println("Running: testCase_7()");
         UInteger apidValue = new UInteger(200);
         TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
@@ -146,9 +148,11 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 8 - With timeWindow = [1970-01-01, 1970-12-31].
      */
     @Test
-    public void testCase_8() {
+    public void testCase_08() {
         System.out.println("Running: testCase_8()");
-        TimeWindow contentDate = new TimeWindow(Time.generateTime(1970, 1, 1), Time.generateTime(1970, 12, 31));
+        Time start = Time.generateTime(1970, 1, 1);
+        Time end = Time.generateTime(1970, 12, 31);
+        TimeWindow contentDate = new TimeWindow(start, end);
         testWithTimeWindow(null, 0, contentDate);
     }
 
@@ -156,7 +160,7 @@ public class UC1_Ex1_Test extends MPDTest {
      * Test Case 9 - With timeWindow = [APID100_TIME_START, APID200_TIME_END].
      */
     @Test
-    public void testCase_9() {
+    public void testCase_09() {
         System.out.println("Running: testCase_9()");
         TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID200_TIME_END);
         testWithTimeWindow(null, 2, contentDate);
@@ -166,7 +170,7 @@ public class UC1_Ex1_Test extends MPDTest {
         testWithTimeWindow(apidValue, expectedNumberOfResults, null);
     }
 
-    private void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow contentDate) {
+    private synchronized void testWithTimeWindow(UInteger apidValue, int expectedNumberOfResults, TimeWindow contentDate) {
         ProductType productType = backend.typeTMPacketDailyExtract;  //  productType=typeTMPacket
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
@@ -207,7 +211,7 @@ public class UC1_Ex1_Test extends MPDTest {
         ObjectRefList productRefs = new ObjectRefList();
 
         for (ProductMetadata metadata : list) {
-            productRefs.add(metadata.getProduct());
+            productRefs.add(metadata.getProductRef());
         }
 
         try {
@@ -302,7 +306,7 @@ public class UC1_Ex1_Test extends MPDTest {
             // Check the timeWindows for all the received products, if one was selected
             if (contentDate != null) {
                 for (Product p : returnedProducts) {
-                    TimeWindow receivedTW = p.getContentDate();
+                    TimeWindow receivedTW = p.getProductMetadata().getContentDate();
 
                     if (receivedTW.getStart().getValue() > contentDate.getEnd().getValue()) {
                         fail("The received TimeWindow start time is after the requested TimeWindow end time!");
@@ -315,15 +319,15 @@ public class UC1_Ex1_Test extends MPDTest {
 
             // Check that the productType matches
             for (Product p : returnedProducts) {
-                if (!p.getProductType().equals(productType)) {
-                    fail("The productType isnot the same! For product: " + p.toString());
+                if (!p.getProductMetadata().getProductType().equals(productType)) {
+                    fail("The productType is not the same! For product: " + p.toString());
                 }
             }
 
             // If there is only one entry, then check if the APID matches
             if (size == 1) {
                 Product product = returnedProducts.get(0);
-                NamedValueList attributes = product.getAttributes();
+                NamedValueList attributes = product.getProductMetadata().getAttributes();
 
                 // Find the Attribute with the APID and check:
                 for (NamedValue att : attributes) {
@@ -332,6 +336,7 @@ public class UC1_Ex1_Test extends MPDTest {
                     }
                 }
             }
+            System.out.flush();
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());

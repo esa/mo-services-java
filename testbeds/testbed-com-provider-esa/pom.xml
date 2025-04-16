@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-com-provider-esa</artifactId>
-    <version>11.2</version>
+    <version>11.3</version>
     <packaging>jar</packaging>
   
     <name>CCSDS MOIMS MO Testbed COM - Provider Impl</name>
@@ -69,8 +69,8 @@
     </developers>
 
     <properties>
-        <esa.com.test_api.version>11.2</esa.com.test_api.version>
-        <ccsds.testbed.com.version>11.2</ccsds.testbed.com.version>
+        <esa.com.test_api.version>${esa.mo.version}</esa.com.test_api.version>
+        <ccsds.testbed.com.version>${esa.mo.version}</ccsds.testbed.com.version>
     </properties>
   
     <dependencies>

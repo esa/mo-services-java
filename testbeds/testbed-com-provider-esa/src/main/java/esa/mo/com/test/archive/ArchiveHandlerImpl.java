@@ -86,6 +86,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.URIList;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 /**
@@ -1255,7 +1256,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
      */
     private void waitForShortTime() {
         try {
-            Thread.sleep((long) 100);
+            Thread.sleep((long) Configuration.COM_PERIOD_SHORT);
         } catch (Exception ex) {
             LoggingBase.logMessage(CLS + ":query:Sleep failure " + ex);
         }

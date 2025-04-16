@@ -272,7 +272,7 @@ public class MALSender {
             Long transId, final MALOperation op, final UOctet stage,
             final Object... msgBody) throws MALInteractionException, MALException {
         if (transId == null) {
-            transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, null);
+            transId = icmap.createTransaction(op.getInteractionType(), true, null);
         }
 
         MALMessage msg = details.createMessage(op, transId, stage, msgBody);
@@ -296,7 +296,7 @@ public class MALSender {
             Long transId, final MALOperation op, final UOctet stage,
             final MALEncodedBody msgBody) throws MALInteractionException, MALException {
         if (transId == null) {
-            transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, null);
+            transId = icmap.createTransaction(op.getInteractionType(), true, null);
         }
 
         MALMessage msg = details.createMessage(op, transId, stage, msgBody);
@@ -336,7 +336,7 @@ public class MALSender {
             final MALOperation op, final UOctet syncStage,
             final MALInteractionListener listener, final Object... msgBody)
             throws MALInteractionException, MALException {
-        final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
+        final Long transId = icmap.createTransaction(op.getInteractionType(), true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
         return initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
     }
@@ -360,7 +360,7 @@ public class MALSender {
             final MALOperation op, final UOctet syncStage,
             final MALInteractionListener listener, final MALEncodedBody msgBody)
             throws MALInteractionException, MALException {
-        final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), true, listener);
+        final Long transId = icmap.createTransaction(op.getInteractionType(), true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
         return initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
     }
@@ -383,7 +383,7 @@ public class MALSender {
             final MALOperation op, final UOctet initialStage,
             final MALInteractionListener listener, final Object... msgBody)
             throws MALInteractionException, MALException {
-        final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
+        final Long transId = icmap.createTransaction(op.getInteractionType(), false, listener);
         MALMessage msg = details.createMessage(op, transId, initialStage, msgBody);
         return initiateAsynchronousInteraction(details.getEndpoint(), msg);
     }
@@ -406,7 +406,7 @@ public class MALSender {
             final MALOperation op, final UOctet initialStage,
             final MALInteractionListener listener, final MALEncodedBody msgBody)
             throws MALInteractionException, MALException {
-        final Long transId = icmap.createTransaction(op.getInteractionType().getOrdinal(), false, listener);
+        final Long transId = icmap.createTransaction(op.getInteractionType(), false, listener);
         MALMessage msg = details.createMessage(op, transId, initialStage, msgBody);
         return initiateAsynchronousInteraction(details.getEndpoint(), msg);
     }
@@ -452,7 +452,7 @@ public class MALSender {
             throw new IllegalArgumentException("listener argument of continueInteraction must not be null");
         }
 
-        icmap.continueTransaction(op.getInteractionType().getOrdinal(), lastInteractionStage, transactionId, listener);
+        icmap.continueTransaction(op.getInteractionType(), lastInteractionStage, transactionId, listener);
     }
 
     /**
@@ -608,8 +608,8 @@ public class MALSender {
                 if (rtn.getBody() instanceof MALErrorBody) {
                     MALErrorBody errorBody = (MALErrorBody) rtn.getBody();
                     MOErrorException error = errorBody.getError();
-                    MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
-                            "Something went wrong!", error);
+                    MALContextFactoryImpl.LOGGER.log(Level.WARNING,
+                            "The provider returned an MO Error: {0}", error.toString());
                     throw new MALInteractionException(error);
                 }
 

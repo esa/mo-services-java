@@ -96,7 +96,7 @@ public class TCPIPMessage extends GENMessage {
     @Override
     public String toString() {
         return "TCPIPMessage {URIFrom:" + this.getHeader().getFrom()
-                + "URITo:" + this.getHeader().getTo() + "}";
+                + " - URITo:" + this.getHeader().getTo() + "}";
     }
 
     /**

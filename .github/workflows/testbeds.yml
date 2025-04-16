@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '8'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
@@ -59,7 +59,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests clean install
       - name: Cache Maven local repository
@@ -80,7 +80,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run Maven install
         run: mvn --batch-mode --update-snapshots -P ESA -DskipTests install
       - name: Cache Maven local repository
@@ -102,7 +102,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '8'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -130,7 +130,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -158,7 +158,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '17'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -186,7 +186,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '21'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -214,7 +214,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '8'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -243,7 +243,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -272,7 +272,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -301,7 +301,8 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '8'
-          distribution: 'adopt'
+          distribution: 'temurin'
+          java-package: jdk
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -330,7 +331,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -359,7 +360,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '17'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -389,7 +390,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '21'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -418,7 +419,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '8'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -447,7 +448,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -463,6 +464,35 @@ jobs:
           name: testbed-com-jdk11-report
           path: testbeds/testbed-com/target/surefire-reports/
 
+  testbed-mpd-jdk11:
+    needs: build-testbeds-jdk11
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+        shell: bash
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Restore Maven local repository from cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+      - name: Run the Testbed for MPD
+        run: mvn --batch-mode --update-snapshots -P ESA test
+        working-directory: testbeds/testbed-mpd
+      - name: Upload report for MPD testbed
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testbed-mpd-jdk11-report
+          path: testbeds/testbed-mpd/target/surefire-reports/
+
   testbed-com-jdk17:
    needs: build-testbeds-jdk17
    runs-on: ubuntu-latest
@@ -476,7 +506,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '17'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -506,7 +536,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '21'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -522,36 +552,6 @@ jobs:
          name: testbed-com-jdk21-report
          path: testbeds/testbed-com/target/surefire-reports/
 
-  testbed-malspp-jdk8:
-    if: ${{ false }}  # disable for now
-    needs: build-testbeds-jdk8
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
-        shell: bash
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '8'
-          distribution: 'adopt'
-      - name: Restore Maven local repository from cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
-      - name: Run the Testbed for MAL/SPP
-        run: mvn --batch-mode --update-snapshots -P DLR test
-        working-directory: testbeds/testbed-malspp
-      - name: Upload report for MAL/SPP testbed
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: testbed-malspp-jdk8-report
-          path: testbeds/testbed-malspp/target/surefire-reports/
-
   testbed-malspp-jdk11:
     if: ${{ false }}  # disable for now
     needs: build-testbeds-jdk11
@@ -566,7 +566,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Restore Maven local repository from cache
         uses: actions/cache@v4
         with:
@@ -596,7 +596,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '17'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:
@@ -626,7 +626,7 @@ jobs:
      - uses: actions/setup-java@v4
        with:
          java-version: '21'
-         distribution: 'adopt'
+         distribution: 'temurin'
      - name: Restore Maven local repository from cache
        uses: actions/cache@v4
        with:

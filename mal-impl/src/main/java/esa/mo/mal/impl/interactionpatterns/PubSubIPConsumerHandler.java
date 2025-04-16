@@ -40,7 +40,7 @@ public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
      */
     public PubSubIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
-        super(InteractionType._PUBSUB_INDEX, 0, syncOperation, responseHolder);
+        super(InteractionType.PUBSUB, 0, syncOperation, responseHolder);
     }
 
     /**
@@ -49,7 +49,7 @@ public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
      * @param responseHolder The response holder.
      */
     public PubSubIPConsumerHandler(final OperationResponseHolder responseHolder) {
-        super(InteractionType._PUBSUB_INDEX, 0, false, responseHolder);
+        super(InteractionType.PUBSUB, 0, false, responseHolder);
     }
 
     @Override

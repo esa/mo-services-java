@@ -510,8 +510,9 @@ public abstract class Transport<I, O> implements MALTransport {
                         new Object[]{endpoint.getLocalName(), smsg});
                 endpoint.receiveMessage(msg);
             } else {
-                LOGGER.log(Level.WARNING, "Endpoint not found: {0}! "
-                        + "Double check the uri, in particular, the ending part!",
+                LOGGER.log(Level.WARNING, "Endpoint not found: {0}! Double check the "
+                        + "uri, in particular, the ending part! Usually happens when there "
+                        + "are previous PUBSUB connections from a previously closed application.",
                         new Object[]{endpointUriPart});
                 returnErrorMessage(msg.getHeader(), MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER,
                         "Endpoint not found: " + endpointUriPart);
@@ -558,19 +559,19 @@ public abstract class Transport<I, O> implements MALTransport {
     protected void returnErrorMessage(final MALMessageHeader srcHdr,
             final UInteger errorNumber, final String errorMsg) throws MALException {
         try {
-            final int type = srcHdr.getInteractionType().getOrdinal();
+            InteractionType interactionType = srcHdr.getInteractionType();
             final short stage = (null != srcHdr.getInteractionStage())
                     ? srcHdr.getInteractionStage().getValue() : 0;
 
             // first check that message should be responded to
-            if (((type == InteractionType._SUBMIT_INDEX) && (stage == MALSubmitOperation._SUBMIT_STAGE))
-                    || ((type == InteractionType._REQUEST_INDEX) && (stage == MALRequestOperation._REQUEST_STAGE))
-                    || ((type == InteractionType._INVOKE_INDEX) && (stage == MALInvokeOperation._INVOKE_STAGE))
-                    || ((type == InteractionType._PROGRESS_INDEX) && (stage == MALProgressOperation._PROGRESS_STAGE))
-                    || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._REGISTER_STAGE))
-                    || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._DEREGISTER_STAGE))
-                    || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
-                    || ((type == InteractionType._PUBSUB_INDEX) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
+            if (((interactionType.equals(InteractionType.SUBMIT)) && (stage == MALSubmitOperation._SUBMIT_STAGE))
+                    || ((interactionType.equals(InteractionType.REQUEST)) && (stage == MALRequestOperation._REQUEST_STAGE))
+                    || ((interactionType.equals(InteractionType.INVOKE)) && (stage == MALInvokeOperation._INVOKE_STAGE))
+                    || ((interactionType.equals(InteractionType.PROGRESS)) && (stage == MALProgressOperation._PROGRESS_STAGE))
+                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._REGISTER_STAGE))
+                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._DEREGISTER_STAGE))
+                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
+                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
 
                 if (!endpointMalMap.isEmpty()) {
                     Endpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
@@ -597,7 +598,10 @@ public abstract class Transport<I, O> implements MALTransport {
                             new Object[]{errorNumber, srcHdr});
                 }
             } else {
-                throw new MALException("Unknown type/stage! Type: " + type + " - Stage: " + stage);
+                LOGGER.log(Level.WARNING, "An MO Error will not be returned because this "
+                        + "combination of type/stage does not have an MO Error to "
+                        + "be returned! For interaction type: {0} - and stage: {1}",
+                        new Object[]{interactionType.toString(), stage});
             }
         } catch (MALTransmitErrorException ex) {
             LOGGER.log(Level.WARNING,

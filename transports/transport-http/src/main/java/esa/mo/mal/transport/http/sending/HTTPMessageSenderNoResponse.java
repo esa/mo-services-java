@@ -34,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.TimeZone;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
@@ -54,7 +53,7 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
     }
 
     @Override
-    public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
+    public synchronized void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         MALMessageHeader malMessageHeader = packetData.getOriginalMessage().getHeader();
 
         String remoteUrl = malMessageHeader.getTo().getValue();
@@ -78,16 +77,12 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
 
             // set content type according to 3.4.3 in recommended standard.
             setContentTypeHeader(client);
-
             setRequestHeaders(malMessageHeader, client);
-
             client.writeFullRequestBody(packetData.getEncodedMessage());
             client.sendRequest();
 
             transport.runAsynchronousTask(new HTTPClientShutDown(client));
-
             threadSleep(10);
-
         } catch (HttpApiImplException ex) {
             throw new IOException("HTTPMessageSender: HttpApiImplException at sendEncodedMessageViaHttpClient()", ex);
         }

@@ -67,7 +67,7 @@ public class InteractionConsumerMap {
      * @throws MALInteractionException When the interaction type is not
      * supported.
      */
-    public Long createTransaction(final int interactionType, final boolean syncOperation,
+    public Long createTransaction(final InteractionType interactionType, final boolean syncOperation,
             final MALInteractionListener listener) throws MALInteractionException {
         synchronized (transactions) {
             final Long oTransId = TransactionIdCounter.nextTransactionId();
@@ -75,23 +75,23 @@ public class InteractionConsumerMap {
             IPConsumerHandler handler = null;
             OperationResponseHolder responseHandler = new OperationResponseHolder(listener);
 
-            switch (interactionType) {
-                case InteractionType._SEND_INDEX:
+            switch (interactionType.getValue()) {
+                case InteractionType.SEND_VALUE:
                     // do nothing as no handler is required for SEND interaction
                     break;
-                case InteractionType._SUBMIT_INDEX:
+                case InteractionType.SUBMIT_VALUE:
                     handler = new SubmitIPConsumerHandler(syncOperation, responseHandler);
                     break;
-                case InteractionType._REQUEST_INDEX:
+                case InteractionType.REQUEST_VALUE:
                     handler = new RequestIPConsumerHandler(syncOperation, responseHandler);
                     break;
-                case InteractionType._INVOKE_INDEX:
+                case InteractionType.INVOKE_VALUE:
                     handler = new InvokeIPConsumerHandler(syncOperation, responseHandler);
                     break;
-                case InteractionType._PROGRESS_INDEX:
+                case InteractionType.PROGRESS_VALUE:
                     handler = new ProgressIPConsumerHandler(syncOperation, responseHandler);
                     break;
-                case InteractionType._PUBSUB_INDEX:
+                case InteractionType.PUBSUB_VALUE:
                     handler = new PubSubIPConsumerHandler(syncOperation, responseHandler);
                     break;
                 default:
@@ -148,7 +148,7 @@ public class InteractionConsumerMap {
      * @throws MALInteractionException When the interaction type is not
      * supported.
      */
-    public void continueTransaction(final int interactionType,
+    public void continueTransaction(final InteractionType interactionType,
             final UOctet lastInteractionStage, final Long oTransId,
             final MALInteractionListener listener) throws MALException, MALInteractionException {
         synchronized (transactions) {
@@ -159,20 +159,20 @@ public class InteractionConsumerMap {
             IPConsumerHandler handler = null;
             OperationResponseHolder responseHolder = new OperationResponseHolder(listener);
 
-            switch (interactionType) {
-                case InteractionType._SUBMIT_INDEX:
+            switch (interactionType.getValue()) {
+                case InteractionType.SUBMIT_VALUE:
                     handler = new SubmitIPConsumerHandler(responseHolder);
                     break;
-                case InteractionType._REQUEST_INDEX:
+                case InteractionType.REQUEST_VALUE:
                     handler = new RequestIPConsumerHandler(responseHolder);
                     break;
-                case InteractionType._INVOKE_INDEX:
+                case InteractionType.INVOKE_VALUE:
                     handler = new InvokeIPConsumerHandler(false, responseHolder);
                     break;
-                case InteractionType._PROGRESS_INDEX:
+                case InteractionType.PROGRESS_VALUE:
                     handler = new ProgressIPConsumerHandler(false, responseHolder);
                     break;
-                case InteractionType._PUBSUB_INDEX:
+                case InteractionType.PUBSUB_VALUE:
                     handler = new PubSubIPConsumerHandler(responseHolder);
                     break;
                 default:

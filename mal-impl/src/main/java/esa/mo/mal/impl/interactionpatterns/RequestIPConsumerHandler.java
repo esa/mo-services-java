@@ -39,7 +39,7 @@ public final class RequestIPConsumerHandler extends SubmitIPConsumerHandler {
      */
     public RequestIPConsumerHandler(final boolean syncOperation,
             final OperationResponseHolder responseHolder) {
-        super(InteractionType._REQUEST_INDEX,
+        super(InteractionType.REQUEST,
                 MALRequestOperation._REQUEST_RESPONSE_STAGE,
                 syncOperation,
                 responseHolder);
@@ -51,7 +51,7 @@ public final class RequestIPConsumerHandler extends SubmitIPConsumerHandler {
      * @param responseHolder The response holder.
      */
     public RequestIPConsumerHandler(final OperationResponseHolder responseHolder) {
-        super(InteractionType._REQUEST_INDEX,
+        super(InteractionType.REQUEST,
                 MALRequestOperation._REQUEST_RESPONSE_STAGE,
                 false,
                 responseHolder);

@@ -54,17 +54,6 @@ public interface MethodWriter {
     void addLine(String statement, boolean addSemi) throws IOException;
 
     /**
-     * Adds a statement to the method with type dependency.
-     *
-     * @param statement The statement to add.
-     * @param dependency the types to depend on.
-     * @param addSemi True if adding a semicolon to the statement.
-     * @throws IOException If there is an IO error.
-     */
-    void addMethodWithDependencyStatement(String statement,
-            String dependency, boolean addSemi) throws IOException;
-
-    /**
      * Adds a set of statements to the method that index an array.
      *
      * @param arrayVariable The variable that contains the array.

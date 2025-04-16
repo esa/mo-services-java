@@ -38,7 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.TimeZone;
-import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
@@ -61,7 +60,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
     }
 
     @Override
-    public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
+    public synchronized void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         if (HTTPTransport.messageIsEncodedHttpResponse(packetData.getOriginalMessage().getHeader())) {
             sendEncodedMessageViaHttpResponse(packetData);
         } else {
@@ -75,7 +74,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      * @param packetData the MALMessage
      * @throws IOException in case the message cannot be sent to the client
      */
-    public void sendEncodedMessageViaHttpResponse(OutgoingMessageHolder<byte[]> packetData) throws IOException {
+    private void sendEncodedMessageViaHttpResponse(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         MALMessageHeader header = packetData.getOriginalMessage().getHeader();
         IHttpResponse httpResponse = transport.retrieveOpenHttpResponse(header.getFrom().getValue(),
                 header.getTransactionId());
@@ -117,7 +116,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      * @param packetData the MALMessage
      * @throws IOException in case the message cannot be sent to the client
      */
-    protected void sendEncodedMessageViaHttpClient(OutgoingMessageHolder<byte[]> packetData) throws IOException {
+    private void sendEncodedMessageViaHttpClient(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         MALMessageHeader malMessageHeader = packetData.getOriginalMessage().getHeader();
         String remoteUrl = malMessageHeader.getTo().getValue();
 
@@ -158,7 +157,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      * @param httpResponse the AbstractHttpResponse
      * @throws IOException in case an internal error occurs
      */
-    protected void setResponseHeaders(MALMessageHeader malMessageHeader,
+    private void setResponseHeaders(MALMessageHeader malMessageHeader,
             IHttpResponse httpResponse) throws IOException {
         httpResponse.setResponseHeader("X-MAL-Authentication-Id",
                 HTTPTransport.byteArrayToHexString(malMessageHeader.getAuthenticationId().getValue()));
@@ -209,7 +208,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
      *
      * @param client The client object to be set.
      */
-    protected void setContentTypeHeader(IHttpResponse client) {
+    private void setContentTypeHeader(IHttpResponse client) {
         String contentType = "application/mal-xml";
         String encoderInUse = transport.getStreamFactory().getClass().getCanonicalName();
         RLOGGER.log(Level.FINEST, "Using encoder {0}", encoderInUse);

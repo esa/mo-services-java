@@ -52,8 +52,18 @@ public abstract class Enumeration implements Element {
      *
      * @return the index of the enumerated item.
      */
+    @Deprecated
     public final int getOrdinal() {
         return ordinal;
+    }
+
+    /**
+     * Returns the numeric value of the enumeration.
+     *
+     * @return the numeric value of the enumeration.
+     */
+    public final int getValue() {
+        return (int) getNumericValue().getValue();
     }
 
     /**
@@ -101,7 +111,10 @@ public abstract class Enumeration implements Element {
      * @param ordinal The ordinal value of this Enumeration.
      * @return The respective Enumeration.
      */
+    @Deprecated
     public abstract Element fromOrdinal(int ordinal);
+
+    public abstract Enumeration fromValue(Integer value);
 
     @Override
     public int hashCode() {

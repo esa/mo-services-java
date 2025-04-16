@@ -43,9 +43,11 @@ public interface ProductRetrievalBackend {
      * found.
      *
      * @param productRef The product reference.
+     * @param includesProductBody Indicates if the returned Product includes the
+     * product body or a null in its field.
      * @return The Product or NULL if not found.
      */
-    public Product getProduct(ObjectRef productRef);
+    public Product getProduct(ObjectRef productRef, boolean includesProductBody);
 
     /**
      * Returns the corresponding metadata for the given productRef or NULL if
@@ -62,4 +64,13 @@ public interface ProductRetrievalBackend {
      * @param listener The listener.
      */
     public void setNewProductAddedListener(NewProductAddedListener listener);
+
+    /**
+     * Returns the maximum number of results that the implementation supports.
+     * This method was created in order to enable the testing of the Too Many MO
+     * Error with a know maximum number of results.
+     *
+     * @return The maximum number of results.
+     */
+    public int getMaximumNumberOfResults();
 }

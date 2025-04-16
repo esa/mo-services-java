@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-pom</artifactId>
     <packaging>pom</packaging>
-    <version>11.2</version>
+    <version>11.3</version>
     <name>CCSDS MOIMS MO Testbed POM</name>
 
     <organization>
@@ -74,11 +74,14 @@
   
     <properties>
         <ant.plugin.version>1.7</ant.plugin.version>
-        <fitnesse.version>20201213</fitnesse.version>
+        <!-- <fitnesse.version>20250223</fitnesse.version> -->
+        <!-- <fitnesse.version>20201213</fitnesse.version> -->
+        <!-- Last Fitnesse version that works with GitHub Actions: 20220319 -->
+        <fitnesse.version>20220319</fitnesse.version>
         <jacoco.version>0.8.10</jacoco.version>
         <junit.version>4.13.2</junit.version>
         <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
-        <ccsds.testbed.util.version>11.2</ccsds.testbed.util.version>
+        <ccsds.testbed.util.version>${esa.mo.version}</ccsds.testbed.util.version>
         <cnes.version>3.2.2-SNAPSHOT</cnes.version>
         <joram.version>5.9.0</joram.version>
     </properties>

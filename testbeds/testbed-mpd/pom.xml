@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-mpd</artifactId>
     <packaging>jar</packaging>
-    <version>11.2</version>
+    <version>11.3</version>
     <name>CCSDS MOIMS MO Testbed MPD</name>
 
     <organization>
@@ -127,21 +127,20 @@
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
                     <artifactId>services-area009-v001-mpd</artifactId>
-                    <version>11.2</version>
                 </dependency>
             </dependencies>
         </profile>
         <profile>
             <id>NASA</id>
             <properties>
-                <testbed.consumer>TBD</testbed.consumer>
-                <testbed.provider>TBD</testbed.provider>
+                <testbed.consumer>gov.nasa.jpl.ccsds.mdp.util.NASAMPDServicesFactory</testbed.consumer>
+                <testbed.provider>gov.nasa.jpl.ccsds.mdp.util.NASAMPDServicesFactory</testbed.provider>
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>gov.nasa.mo</groupId>
-                    <artifactId>services-area009-v001-mpd-nasa</artifactId>
-                    <version>1.0-SNAPSHOT</version>
+                    <groupId>gov.nasa.jpl.ccsds.mdp</groupId>
+                    <artifactId>CCSDS_MDP_DS_PROVIDER</artifactId>
+                    <version>1.0</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -149,37 +148,35 @@
             <id>ESA-NASA</id>
             <properties>
                 <testbed.consumer>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.consumer>
-                <testbed.provider>TBD</testbed.provider>
+                <testbed.provider>gov.nasa.jpl.ccsds.mdp.util.NASAMPDServicesFactory</testbed.provider>
             </properties>
             <dependencies>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
                     <artifactId>services-area009-v001-mpd</artifactId>
-                    <version>11.2</version>
                 </dependency>
                 <dependency>
-                    <groupId>gov.nasa.mo</groupId>
-                    <artifactId>services-area009-v001-mpd-nasa</artifactId>
-                    <version>1.0-SNAPSHOT</version>
+                    <groupId>gov.nasa.jpl.ccsds.mdp</groupId>
+                    <artifactId>CCSDS_MDP_DS_PROVIDER</artifactId>
+                    <version>1.0</version>
                 </dependency>
             </dependencies>
         </profile>
         <profile>
             <id>NASA-ESA</id>
             <properties>
-                <testbed.consumer>TBD</testbed.consumer>
+                <testbed.consumer>gov.nasa.jpl.ccsds.mdp.util.NASAMPDServicesFactory</testbed.consumer>
                 <testbed.provider>esa.mo.services.mpd.util.ESAMPDServicesFactory</testbed.provider>
             </properties>
             <dependencies>
                 <dependency>
                     <groupId>int.esa.ccsds.mo</groupId>
                     <artifactId>services-area009-v001-mpd</artifactId>
-                    <version>11.2</version>
                 </dependency>
                 <dependency>
-                    <groupId>gov.nasa.mo</groupId>
-                    <artifactId>services-area009-v001-mpd-nasa</artifactId>
-                    <version>1.0-SNAPSHOT</version>
+                    <groupId>gov.nasa.jpl.ccsds.mdp</groupId>
+                    <artifactId>CCSDS_MDP_DS_PROVIDER</artifactId>
+                    <version>1.0</version>
                 </dependency>
             </dependencies>
         </profile>

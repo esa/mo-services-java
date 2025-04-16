@@ -71,12 +71,12 @@ public class StringEncoder extends Encoder {
     @Override
     public void encodeEnumeration(Enumeration enumeration) throws MALException {
         int enumSize = enumeration.getEnumSize();
-        Integer ordinal = (Integer) enumeration.getOrdinal();
 
-        if (enumSize < 256) {
-            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
-        } else if (enumSize < 65536) {
-            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+        if (enumSize < 65536) {
+            Integer value = (Integer) enumeration.getValue();
+            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(value));
+        } else {
+            throw new MALException(ENCODING_EXCEPTION_STR);
         }
     }
 

@@ -57,41 +57,41 @@ Errors with encoding/transport may result from the shared broker configuration.
 |ensure |publish with subscription key values | A.2 | and expect error | true |
 |ensure |publish register with key names  | K1.K2 |
 |ensure |publish register with key names | K1.K2 |
-|ensure |publish with subscriptionKey values | A | and expect error | true |
-|ensure |publish with subscriptionKey values | A.2 | and expect error | false |
-|ensure |publish with subscriptionKey values | A.2.3 | and expect error | true |
+|ensure |publish with subscription key values | A | and expect error | true |
+|ensure |publish with subscription key values | A.2 | and expect error | false |
+|ensure |publish with subscription key values | A.2.3 | and expect error | true |
 |ensure |publish register with key names | K1.K2.K3 |
-|ensure |publish with subscriptionKey values | A | and expect error | true |
-|ensure |publish with subscriptionKey values | A.2.3 | and expect error | false |
-|ensure |publish with subscriptionKey values | A.2.[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | A.2.3.4 | and expect error | true |
-|ensure |publish with subscriptionKey values | Q.2.3.[null] | and expect error | true |
+|ensure |publish with subscription key values | A | and expect error | true |
+|ensure |publish with subscription key values | A.2.3 | and expect error | false |
+|ensure |publish with subscription key values | A.2.[null] | and expect error | false |
+|ensure |publish with subscription key values | A.2.3.4 | and expect error | true |
+|ensure |publish with subscription key values | Q.2.3.[null] | and expect error | true |
 |ensure |publish register with key names  | K1.K2 |
-|ensure |publish with subscriptionKey values | 1.[null].[null] | and expect error | true |
-|ensure |publish with subscriptionKey values | 1.[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | 1.2.3.[null] | and expect error | true |
-|ensure |publish with subscriptionKey values | 1.2.3.4 | and expect error | true |
-|ensure |publish with subscriptionKey values | Q.2.3.[null] | and expect error | true |
+|ensure |publish with subscription key values | 1.[null].[null] | and expect error | true |
+|ensure |publish with subscription key values | 1.[null] | and expect error | false |
+|ensure |publish with subscription key values | 1.2.3.[null] | and expect error | true |
+|ensure |publish with subscription key values | 1.2.3.4 | and expect error | true |
+|ensure |publish with subscription key values | Q.2.3.[null] | and expect error | true |
 |ensure |publish register with key names  | K1.K2.K3 |
-|ensure |publish with subscriptionKey values | A.[null].[null].[null] | and expect error | true |
-|ensure |publish with subscriptionKey values | A.2.[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | A.B.3 | and expect error | false |
-|ensure |publish with subscriptionKey values | A.2.3.4 | and expect error | true |
-|ensure |publish with subscriptionKey values | 0.0.W.0 | and expect error | true |
-|ensure |publish with subscriptionKey values | Q.2.3.[null] | and expect error | true |
+|ensure |publish with subscription key values | A.[null].[null].[null] | and expect error | true |
+|ensure |publish with subscription key values | A.2.[null] | and expect error | false |
+|ensure |publish with subscription key values | A.B.3 | and expect error | false |
+|ensure |publish with subscription key values | A.2.3.4 | and expect error | true |
+|ensure |publish with subscription key values | 0.0.W.0 | and expect error | true |
+|ensure |publish with subscription key values | Q.2.3.[null] | and expect error | true |
 |ensure |publish register with key names  | K1.K2.K3 |
-|ensure |publish with subscriptionKey values | [null].*.[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | [null].A.2 | and expect error | false |
-|ensure |publish with subscriptionKey values | *.2.3 | and expect error | false |
-|ensure |publish with subscriptionKey values | *.*.* | and expect error | false |
-|ensure |publish with subscriptionKey values | 0.0.0 | and expect error | false |
+|ensure |publish with subscription key values | [null].*.[null] | and expect error | false |
+|ensure |publish with subscription key values | [null].A.2 | and expect error | false |
+|ensure |publish with subscription key values | *.2.3 | and expect error | false |
+|ensure |publish with subscription key values | *.*.* | and expect error | false |
+|ensure |publish with subscription key values | 0.0.0 | and expect error | false |
 |ensure |publish register with key names  | K1.K2.K3.K4 |
-|ensure |publish with subscriptionKey values | A.[null].[null].[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | A.2.[null].[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | A | and expect error | true |
-|ensure |publish with subscriptionKey values | A.2.3 | and expect error | true |
-|ensure |publish with subscriptionKey values | *.2.3.[null] | and expect error | false |
-|ensure |publish with subscriptionKey values | B.[null].[null].[null] | and expect error | false |
+|ensure |publish with subscription key values | A.[null].[null].[null] | and expect error | false |
+|ensure |publish with subscription key values | A.2.[null].[null] | and expect error | false |
+|ensure |publish with subscription key values | A | and expect error | true |
+|ensure |publish with subscription key values | A.2.3 | and expect error | true |
+|ensure |publish with subscription key values | *.2.3.[null] | and expect error | false |
+|ensure |publish with subscription key values | B.[null].[null].[null] | and expect error | false |
 |ensure |publish deregister |
 ***********!
 

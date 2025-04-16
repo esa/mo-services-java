@@ -238,7 +238,7 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
         try {
             OperationField[] fields = ctx.getOperationFields();
             bodyPartCount = fields.length;
-            messageParts = new Object[bodyPartCount];
+            messageParts = new Element[bodyPartCount];
 
             MALElementInputStream benc = encBodyElements;
 
@@ -317,7 +317,7 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
      * @return The decoded chunk.
      * @throws MALException if any error detected.
      */
-    protected Object decodeBodyPart(final MALElementInputStream decoder,
+    protected Element decodeBodyPart(final MALElementInputStream decoder,
             OperationField field, Object sf) throws MALException {
         MALElementInputStream lenc = decoder;
 
@@ -349,6 +349,17 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
     public static LazyMessageBody createMessageBody(MALMessageHeader header,
             MALElementStreamFactory encFactory, Object[] bodyElements) {
         MALEncodingContext ctx = new MALEncodingContext(header);
+
+        if (bodyElements != null) {
+            // Cast to Element if it is a Java native type
+            Object[] castedBodyElements = new Object[bodyElements.length];
+
+            for (int i = 0; i < bodyElements.length; i++) {
+                castedBodyElements[i] = Attribute.javaType2Attribute(bodyElements[i]);
+            }
+
+            bodyElements = castedBodyElements;
+        }
 
         if (header.getIsErrorMessage()) {
             return new ErrorBody(ctx, encFactory, bodyElements);

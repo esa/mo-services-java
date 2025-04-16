@@ -67,12 +67,14 @@ public class JavaExceptions {
         }
     }
 
+    public static String convertErrorToClassname(String name) {
+        String inCamelCase = convertToCamelCase(name);
+        return inCamelCase + EXCEPTION;
+    }
+
     public void generateException(File folder, String area,
             String service, ErrorDefinitionType error) throws IOException {
-        // Needs to be converted to Camel case in the future!
-        String inCamelCase = convertToCamelCase(error.getName());
-        String className = inCamelCase + EXCEPTION;
-
+        String className = convertErrorToClassname(error.getName());
         ClassWriter file = generator.createClassFile(folder, className);
         file.addPackageStatement(area, service, null);
 

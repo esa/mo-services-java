@@ -21,6 +21,8 @@
 package esa.mo.services.mpd.util;
 
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
 /**
  * A utilities helper class.
@@ -29,4 +31,17 @@ public class HelperMPD {
 
     private static final Logger LOGGER = Logger.getLogger(HelperMPD.class.getName());
 
+    public static boolean isTimeWindowValid(TimeWindow window) {
+        if (window != null) {
+            Time start = window.getStart();
+            Time end = window.getEnd();
+
+            if (start != null && end != null) {
+                if (end.getValue() < start.getValue()) { // Throw exception!
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -20,6 +20,7 @@
  */
 package esa.mo.services.mpd.util;
 
+import org.ccsds.moims.mo.mpd.MPDServicesFactory;
 import esa.mo.services.mpd.consumer.OrderManagementConsumerServiceImpl;
 import esa.mo.services.mpd.consumer.ProductOrderDeliveryConsumerServiceImpl;
 import esa.mo.services.mpd.consumer.ProductRetrievalConsumerServiceImpl;
@@ -29,7 +30,6 @@ import esa.mo.services.mpd.provider.ProductRetrievalProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
-import org.ccsds.moims.mo.mpd.MPDServicesFactory;
 import org.ccsds.moims.mo.mpd.backends.ProductRetrievalBackend;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
 import org.ccsds.moims.mo.mpd.ordermanagement.provider.OrderManagementInheritanceSkeleton;
@@ -57,21 +57,21 @@ public class ESAMPDServicesFactory extends MPDServicesFactory {
         }
 
         orderManagementService = new OrderManagementProviderServiceImpl();
-        orderManagementService.init();
+        orderManagementService.init(productOrderDeliveryService);
         return orderManagementService;
     }
 
     @Override
     public ProductOrderDeliveryInheritanceSkeleton createProviderProductOrderDelivery(ProductRetrievalBackend backend) throws MALException {
         productOrderDeliveryService = new ProductOrderDeliveryProviderServiceImpl();
-        productOrderDeliveryService.init();
+        productOrderDeliveryService.init(backend);
         return productOrderDeliveryService;
     }
 
     @Override
     public ProductRetrievalInheritanceSkeleton createProviderProductRetrieval(ProductRetrievalBackend backend) throws MALException {
         productRetrievalService = new ProductRetrievalProviderServiceImpl();
-        productRetrievalService.init();
+        productRetrievalService.init(backend);
         return productRetrievalService;
     }
 

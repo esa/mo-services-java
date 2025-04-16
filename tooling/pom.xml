@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>tooling</artifactId>
-    <version>11.2</version>
+    <version>11.3</version>
     <packaging>pom</packaging>
     <name>ESA MO Tooling</name>
 

@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>11.2</version>
+    <version>11.3</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -62,29 +62,20 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-  
+
     <developers>
         <developer>
-            <id>SamCooper</id>
-            <name>Sam Cooper</name>
-            <email>sam@brightascension.com</email>
-            <url>https://github.com/SamCooper</url>
+            <id>CesarCoelho</id>
+            <name>Cesar Coelho</name>
+            <url>https://github.com/CesarCoelho</url>
         </developer>
     </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <esa.mo.version>11.2</esa.mo.version>
+        <esa.mo.version>11.3</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
-        <esa.api.mal.version>${esa.mo.version}</esa.api.mal.version>
-        <esa.api.com.version>${esa.mo.version}</esa.api.com.version>
-        <esa.api.mc.version>${esa.mo.version}</esa.api.mc.version>
-        <esa.api.common.version>${esa.mo.version}</esa.api.common.version>
-        <esa.api.mpd.version>${esa.mo.version}</esa.api.mpd.version>
-        <esa.string.encoder.version>${esa.mo.version}</esa.string.encoder.version>
-        <esa.binary.encoder.version>${esa.mo.version}</esa.binary.encoder.version>
-        <esa.xml.encoder.version>${esa.mo.version}</esa.xml.encoder.version>
     
         <ccsds.specification.download.skip>true</ccsds.specification.download.skip>
         <ccsds.specification.download.group>int.esa.ccsds.mo</ccsds.specification.download.group>
@@ -106,54 +97,79 @@
         <dependencies>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>generator-interfaces</artifactId>
-                <version>${esa.api.mal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-area001-v003-mal</artifactId>
-                <version>${esa.api.mal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-area002-v001-com</artifactId>
-                <version>${esa.api.com.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-area003-v001-common</artifactId>
-                <version>${esa.api.common.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-area004-v002-mc</artifactId>
-                <version>${esa.api.mc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>api-area009-v001-mpd</artifactId>
-                <version>${esa.api.mpd.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>mal-impl</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <!-- MO API Generator -->
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>generator-interfaces</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>generator-docs</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>generator-java</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <!-- APIs -->
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area001-v003-mal</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area002-v001-com</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area003-v001-common</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area004-v002-mc</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-area009-v001-mpd</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <!-- MO services implementations -->
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>services-area003-v001-common</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>services-area009-v001-mpd</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <!-- Encoders/Decoders -->
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-string</artifactId>
-                <version>${esa.string.encoder.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-binary</artifactId>
-                <version>${esa.binary.encoder.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-xml</artifactId>
-                <version>${esa.xml.encoder.version}</version>
+                <version>${esa.mo.version}</version>
             </dependency>
+            <!-- Transports -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-generic</artifactId>
@@ -194,6 +210,7 @@
                 <artifactId>transport-spp</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <!-- External dependencies -->
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>

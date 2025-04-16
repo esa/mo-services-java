@@ -384,20 +384,20 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
             InetAddress serverHostAddr = InetAddress.getByName(host);
             InetSocketAddress serverSocket = new InetSocketAddress(serverHostAddr, port);
 
-            server = createServer();
-            server.initServer(serverSocket, useHttps, keystoreFilename, keystorePassword);
-            if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_ENCODING) {
-                server.addContextHandler(new HTTPContextHandlerNoEncoding(this));
-            } else if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_RESPONSE) {
-                server.addContextHandler(new HTTPContextHandlerNoResponse(this));
-            } else // selectedHttpBindingMode ==
-            // HTTP_BINDING_MODE_REQUEST_RESPONSE
-            {
-                server.addContextHandler(new HTTPContextHandlerRequestResponse(this));
-            }
-
-            // create thread that will listen for incoming connections
             synchronized (this) {
+                server = createServer();
+                server.initServer(serverSocket, useHttps, keystoreFilename, keystorePassword);
+                if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_ENCODING) {
+                    server.addContextHandler(new HTTPContextHandlerNoEncoding(this));
+                } else if (selectedHttpBindingMode == HTTP_BINDING_MODE_NO_RESPONSE) {
+                    server.addContextHandler(new HTTPContextHandlerNoResponse(this));
+                } else // selectedHttpBindingMode ==
+                // HTTP_BINDING_MODE_REQUEST_RESPONSE
+                {
+                    server.addContextHandler(new HTTPContextHandlerRequestResponse(this));
+                }
+
+                // create thread that will listen for incoming connections
                 server.startServer();
             }
 
@@ -462,7 +462,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
     }
 
     @Override
-    public void close() throws MALException {
+    public synchronized void close() throws MALException {
         super.close();
 
         openHttpResponses.clear();

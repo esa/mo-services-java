@@ -40,14 +40,14 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.2</version>
+        <version>11.3</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>testbed-malspp</artifactId>
     <packaging>jar</packaging>
-    <version>11.2</version>
+    <version>11.3</version>
     <name>CCSDS MOIMS MO Testbed for MAL/SPP Binding</name>
 
     <organization>
@@ -97,8 +97,8 @@
     <properties>
         <fitnesse.toplevel.test>MalSppTests</fitnesse.toplevel.test>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ccsds.testbed.malspp.version>11.2</ccsds.testbed.malspp.version>
-        <esa.mal.test_api.version>11.2</esa.mal.test_api.version>
+        <ccsds.testbed.malspp.version>${esa.mo.version}</ccsds.testbed.malspp.version>
+        <esa.mal.test_api.version>${esa.mo.version}</esa.mal.test_api.version>
         <cnes.mal.test_api.version>${cnes.version}</cnes.mal.test_api.version>
     </properties>
   
@@ -355,7 +355,7 @@
                 <org.ccsds.moims.mo.testbed.local.configuration.dir>target/deployment/cnes</org.ccsds.moims.mo.testbed.local.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.configuration.dir>target/deployment/dlr</org.ccsds.moims.mo.testbed.remote.configuration.dir>
                 <org.ccsds.moims.mo.testbed.remote.classpath.filter>cnes-mal</org.ccsds.moims.mo.testbed.remote.classpath.filter>
-                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:api-area001-v003-mal:${esa.api.version},int.esa.ccsds.mo:mal-impl:${esa.impl.version},int.esa.ccsds.mo:api-mal-test:${esa.mal.test_api.version},de.dlr.gsoc:MO_MALSPP_TRANSPORT:1.0.2,de.dlr.gsoc:MO_MALSPP_ENCODING:1.0.2</org.ccsds.moims.mo.testbed.remote.classpath.maven>
+                <org.ccsds.moims.mo.testbed.remote.classpath.maven>int.esa.ccsds.mo:api-area001-v003-mal:${esa.mo.version},int.esa.ccsds.mo:mal-impl:${esa.impl.version},int.esa.ccsds.mo:api-mal-test:${esa.mal.test_api.version},de.dlr.gsoc:MO_MALSPP_TRANSPORT:1.0.2,de.dlr.gsoc:MO_MALSPP_ENCODING:1.0.2</org.ccsds.moims.mo.testbed.remote.classpath.maven>
             </properties>
         </profile>
         <profile>
