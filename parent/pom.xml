@@ -89,9 +89,26 @@
         <dependencies>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>mal-impl</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <!-- MO API Generator -->
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>generator-interfaces</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>generator-docs</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>generator-java</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <!-- APIs -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-area001-v003-mal</artifactId>
@@ -117,11 +134,13 @@
                 <artifactId>api-area009-v001-mpd</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <!-- MO services implementations -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>mal-impl</artifactId>
+                <artifactId>services-area009-v001-mpd</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <!-- Encoders/Decoders -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>encoding-string</artifactId>
@@ -137,6 +156,7 @@
                 <artifactId>encoding-xml</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <!-- Transports -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-generic</artifactId>
@@ -177,6 +197,7 @@
                 <artifactId>transport-spp</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <!-- External dependencies -->
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>

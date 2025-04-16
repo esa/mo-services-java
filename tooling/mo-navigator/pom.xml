@@ -81,17 +81,14 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-docs</artifactId>
-            <version>11.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-java</artifactId>
-            <version>11.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <!-- <version>2.2.11</version>  -->
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
