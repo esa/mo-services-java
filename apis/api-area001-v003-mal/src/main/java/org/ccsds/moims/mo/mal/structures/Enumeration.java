@@ -114,6 +114,12 @@ public abstract class Enumeration implements Element {
     @Deprecated
     public abstract Element fromOrdinal(int ordinal);
 
+    /**
+     * Returns the respective Enumeration for a given value.
+     *
+     * @param value The value of this Enumeration.
+     * @return The respective Enumeration.
+     */
     public abstract Enumeration fromValue(Integer value);
 
     @Override
