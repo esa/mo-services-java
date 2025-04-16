@@ -114,9 +114,11 @@ public class JavaEnumerations {
                 true, false, "Set of enumeration values.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eValueArrVar, true, true, vaStr);
 
+        // Adds Constructor without a start value
         file.addStatement("    public " + enumName + "() {");
         file.addStatement("        super(0);");
         file.addStatement("    }");
+        file.addStatement("");
 
         // create private constructor
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
@@ -258,6 +260,7 @@ public class JavaEnumerations {
         file.addStatement("    public int getEnumSize() {");
         file.addStatement("        return " + enumSize + ";");
         file.addStatement("    }");
+        file.addStatement("");
     }
 
     protected String getEnumValueCompare(String lhs, String rhs) {

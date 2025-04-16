@@ -106,7 +106,8 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
 
                     for (String part : parts) {
                         if (counter > LENGTH_THRESHOLD) {
-                            output.add(str);
+                            // .trim() removes the last ' ' (space) character
+                            output.add(str.trim());
                             // Reset both the string and the counter
                             str = "";
                             counter = 0;
@@ -115,7 +116,8 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
                         counter += 1 + part.length();
                     }
 
-                    output.add(str);
+                    // .trim() removes the last ' ' (space) character
+                    output.add(str.trim());
                 }
             }
         }
