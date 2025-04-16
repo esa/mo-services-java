@@ -137,6 +137,11 @@
             <!-- MO services implementations -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>services-area003-v001-common</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>services-area009-v001-mpd</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
