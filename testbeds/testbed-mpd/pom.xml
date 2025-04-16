@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>11.3</version>
+        <version>12.0-SNAPSHOT</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-mpd</artifactId>
     <packaging>jar</packaging>
-    <version>11.3</version>
+    <version>12.0-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed MPD</name>
 
     <organization>
