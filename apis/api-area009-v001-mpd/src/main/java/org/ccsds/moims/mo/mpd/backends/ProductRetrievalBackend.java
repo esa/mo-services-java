@@ -65,5 +65,12 @@ public interface ProductRetrievalBackend {
      */
     public void setNewProductAddedListener(NewProductAddedListener listener);
 
+    /**
+     * Returns the maximum number of results that the implementation supports.
+     * This method was created in order to enable the testing of the Too Many MO
+     * Error with a know maximum number of results.
+     *
+     * @return The maximum number of results.
+     */
     public int getMaximumNumberOfResults();
 }
