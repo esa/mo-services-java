@@ -95,7 +95,7 @@ public class JavaExceptions {
         // Constructor without parameters
         MethodWriter method_1 = file.addConstructor(StdStrings.PUBLIC, className,
                 null, null, null, "Constructs a new " + className + " exception.", null);
-        method_1.addLine("super(" + errorPath + ", " + errorDescription + ")");
+        method_1.addLine("super(" + errorPath + ", " + errorDescription + ");");
         method_1.addMethodCloseStatement();
 
         // Constructor with an Object for the extraInformation
@@ -107,7 +107,7 @@ public class JavaExceptions {
 
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
-        method_2.addLine("super(" + errorPath + ", " + "extraInformation)");
+        method_2.addLine("super(" + errorPath + ", " + "extraInformation);");
         method_2.addMethodCloseStatement();
 
         file.addClassCloseStatement();

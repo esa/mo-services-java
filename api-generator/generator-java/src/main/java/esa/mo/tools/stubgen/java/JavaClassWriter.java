@@ -438,17 +438,17 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     @Override
     public void addArrayMethodStatement(String arrayVariable,
             String indexVariable, String arrayMaxSize) throws IOException {
-        addLine("return " + arrayVariable + "[" + indexVariable + "]", true);
+        addLine("return " + arrayVariable + "[" + indexVariable + "];");
     }
 
     @Override
     public void addSuperMethodStatement(String method, String args) throws IOException {
-        addLine("super." + method + "(" + args + ")", true);
+        addLine("super." + method + "(" + args + ");");
     }
 
     @Override
     public void addLine(String statement) throws IOException {
-        addLine(statement, true);
+        addLine(statement, false);
     }
 
     @Override

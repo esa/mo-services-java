@@ -125,15 +125,15 @@ public class JavaEnumerations {
                 false, true, "s The string to search for.");
 
         MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
-        method.addLine("switch (getValue()) {", false);
+        method.addLine("switch (getValue()) {");
 
         for (EnumerationType.Item item : enumeration.getItem()) {
-            method.addLine("    case " + item.getValue() + "_VALUE:", false);
-            method.addLine("        return \"" + item.getValue() + "\"");
+            method.addLine("    case " + item.getValue() + "_VALUE:");
+            method.addLine("        return \"" + item.getValue() + "\";");
         }
-        method.addLine("    default:", false);
-        method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
-        method.addLine("}", false);
+        method.addLine("    default:");
+        method.addLine("        throw new RuntimeException(\"Unknown ordinal!\");");
+        method.addLine("}");
         method.addMethodCloseStatement();
     }
 
@@ -146,15 +146,15 @@ public class JavaEnumerations {
                 false, true, enumType, "fromString", Arrays.asList(strType), null,
                 "Returns the enumeration element represented by the supplied string, or null if not matched.",
                 "The matched enumeration element, or null if not matched.", null);
-        method.addLine("switch (s) {", false);
+        method.addLine("switch (s) {");
 
         for (EnumerationType.Item item : enumeration.getItem()) {
-            method.addLine("    case \"" + item.getValue() + "\":", false);
-            method.addLine("        return " + enumeration.getName() + "." + item.getValue());
+            method.addLine("    case \"" + item.getValue() + "\":");
+            method.addLine("        return " + enumeration.getName() + "." + item.getValue() + ";");
         }
-        method.addLine("    default:", false);
-        method.addLine("        throw new RuntimeException(\"Unknown Enumeration for the provided string: \" + s)");
-        method.addLine("}", false);
+        method.addLine("    default:");
+        method.addLine("        throw new RuntimeException(\"Unknown Enumeration for the provided string: \" + s);");
+        method.addLine("}");
         method.addMethodCloseStatement();
     }
 
@@ -167,15 +167,15 @@ public class JavaEnumerations {
                 true, false, "value The value of the Enumeration.");
 
         MethodWriter method = file.addMethodOpenStatementOverride(enumType, "fromValue", Arrays.asList(intType), null);
-        method.addLine("switch (value) {", false);
+        method.addLine("switch (value) {");
 
         for (EnumerationType.Item item : enumeration.getItem()) {
-            method.addLine("    case " + item.getValue() + "_VALUE:", false);
-            method.addLine("        return " + enumeration.getName() + "." + item.getValue());
+            method.addLine("    case " + item.getValue() + "_VALUE:");
+            method.addLine("        return " + enumeration.getName() + "." + item.getValue() + ";");
         }
-        method.addLine("    default:", false);
-        method.addLine("        throw new RuntimeException(\"Unknown Enumeration for the provided value: \" + value)");
-        method.addLine("}", false);
+        method.addLine("    default:");
+        method.addLine("        throw new RuntimeException(\"Unknown Enumeration for the provided value: \" + value);");
+        method.addLine("}");
         method.addMethodCloseStatement();
     }
 
@@ -184,7 +184,7 @@ public class JavaEnumerations {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
                 true, true, null);
         MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
-        method.addLine("return _ENUMERATIONS[0]");
+        method.addLine("return _ENUMERATIONS[0];");
         method.addMethodCloseStatement();
     }
 

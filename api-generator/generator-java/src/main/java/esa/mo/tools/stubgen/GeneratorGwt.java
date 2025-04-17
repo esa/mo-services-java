@@ -289,7 +289,7 @@ public class GeneratorGwt extends GeneratorJava {
                     createCompositeElementsDetails(file, false, "delegate",
                             TypeUtils.createTypeReference(area, service.toLowerCase() + "." + PROVIDER_FOLDER, service + "Handler", false),
                             false, false, null), false, null, null, null);
-            method.addLine("this.delegate = delegate");
+            method.addLine("this.delegate = delegate;");
             method.addMethodCloseStatement();
         }
 
@@ -305,7 +305,7 @@ public class GeneratorGwt extends GeneratorJava {
                                     op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null)");
+                    method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null);");
 
                     method.addMethodCloseStatement();
                     break;
@@ -316,7 +316,7 @@ public class GeneratorGwt extends GeneratorJava {
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null)");
+                    method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null);");
 
                     method.addMethodCloseStatement();
                     break;
@@ -328,7 +328,7 @@ public class GeneratorGwt extends GeneratorJava {
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addLine("return " + delegateCall + op.getName() + "(" + opArgs + ", null)");
+                    method.addLine("return " + delegateCall + op.getName() + "(" + opArgs + ", null);");
 
                     method.addMethodCloseStatement();
                     break;

@@ -105,7 +105,7 @@ public class JavaCompositeClass {
 
         if (!abstractComposite) {
             MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
-            method.addLine("return new " + fqName + "()");
+            method.addLine("return new " + fqName + "();");
             method.addMethodCloseStatement();
         }
 
@@ -167,7 +167,7 @@ public class JavaCompositeClass {
                     superArgs, null, "Constructor that initialises the values of the structure.", null);
 
             for (CompositeField element : compElements) {
-                method.addLine("this." + element.getFieldName() + " = " + element.getFieldName());
+                method.addLine("this." + element.getFieldName() + " = " + element.getFieldName() + ";");
             }
 
             method.addMethodCloseStatement();
@@ -185,7 +185,7 @@ public class JavaCompositeClass {
 
                 for (CompositeField element : compElements) {
                     String ending = (!element.isCanBeNull()) ? element.getFieldName() : "null";
-                    String call = "this." + element.getFieldName() + " = " + ending;
+                    String call = "this." + element.getFieldName() + " = " + ending + ";";
                     method.addLine(call);
                 }
 
@@ -208,40 +208,40 @@ public class JavaCompositeClass {
                     false, true, "The object to compare with.");
 
             MethodWriter method = file.addMethodOpenStatementOverride(boolType, "equals", Arrays.asList(objType), null);
-            method.addLine("if (obj instanceof " + className + ") {", false);
+            method.addLine("if (obj instanceof " + className + ") {");
 
             if (null != parentClass) {
-                method.addLine("    if (! super.equals(obj)) {", false);
-                method.addLine("        return false");
-                method.addLine("    }", false);
+                method.addLine("    if (! super.equals(obj)) {");
+                method.addLine("        return false;");
+                method.addLine("    }");
             }
             if (!compElements.isEmpty()) {
-                method.addLine("    " + className + " other = (" + className + ") obj");
+                method.addLine("    " + className + " other = (" + className + ") obj;");
                 for (CompositeField element : compElements) {
-                    method.addLine("    if (" + element.getFieldName() + " == null) {", false);
-                    method.addLine("        if (other." + element.getFieldName() + " != null) {", false);
-                    method.addLine("            return false");
-                    method.addLine("        }", false);
-                    method.addLine("    } else {", false);
-                    method.addLine("        if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + ")) {", false);
-                    method.addLine("            return false");
-                    method.addLine("        }", false);
-                    method.addLine("    }", false);
+                    method.addLine("    if (" + element.getFieldName() + " == null) {");
+                    method.addLine("        if (other." + element.getFieldName() + " != null) {");
+                    method.addLine("            return false;");
+                    method.addLine("        }");
+                    method.addLine("    } else {");
+                    method.addLine("        if (! " + element.getFieldName() + ".equals(other." + element.getFieldName() + ")) {");
+                    method.addLine("            return false;");
+                    method.addLine("        }");
+                    method.addLine("    }");
                 }
             }
-            method.addLine("    return true");
-            method.addLine("}", false);
-            method.addLine("return false");
+            method.addLine("    return true;");
+            method.addLine("}");
+            method.addLine("return false;");
             method.addMethodCloseStatement();
 
             method = file.addMethodOpenStatementOverride(intType, "hashCode", null, null);
-            String line = (parentClass != null) ? "int hash = super.hashCode()" : "int hash = 7";
+            String line = (parentClass != null) ? "int hash = super.hashCode();" : "int hash = 7;";
             method.addLine(line);
 
             for (CompositeField element : compElements) {
-                method.addLine("hash = 83 * hash + (" + element.getFieldName() + " != null ? " + element.getFieldName() + ".hashCode() : 0)");
+                method.addLine("hash = 83 * hash + (" + element.getFieldName() + " != null ? " + element.getFieldName() + ".hashCode() : 0);");
             }
-            method.addLine("return hash");
+            method.addLine("return hash;");
             method.addMethodCloseStatement();
         }
     }
@@ -254,24 +254,24 @@ public class JavaCompositeClass {
                     false, true, "return value");
 
             MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
-            method.addLine("StringBuilder buf = new StringBuilder()");
-            method.addLine("buf.append(\"(" + className + ": \")");
+            method.addLine("StringBuilder buf = new StringBuilder();");
+            method.addLine("buf.append(\"(" + className + ": \");");
 
             String prefixSeparator = "";
 
             if (parentClass != null) {
-                method.addLine("buf.append(super.toString())");
+                method.addLine("buf.append(super.toString());");
                 prefixSeparator = ", ";
             }
             for (CompositeField element : compElements) {
                 StringBuilder str = new StringBuilder();
                 str.append("buf.append(\"").append(prefixSeparator).append(element.getFieldName());
-                str.append("=\")").append(".append(").append(element.getFieldName()).append(")");
+                str.append("=\")").append(".append(").append(element.getFieldName()).append(");");
                 method.addLine(str.toString());
                 prefixSeparator = ", ";
             }
-            method.addLine("buf.append(')')");
-            method.addLine("return buf.toString()");
+            method.addLine("buf.append(')');");
+            method.addLine("return buf.toString();");
             method.addMethodCloseStatement();
         }
     }
@@ -289,9 +289,9 @@ public class JavaCompositeClass {
             String fieldName = element.getFieldName();
 
             if (!element.isCanBeNull()) {
-                method.addLine("if (" + fieldName + " == null) {", false);
-                method.addLine("    throw new org.ccsds.moims.mo.mal.MALException(\"The field '" + fieldName + "' cannot be null!\")");
-                method.addLine("}", false);
+                method.addLine("if (" + fieldName + " == null) {");
+                method.addLine("    throw new org.ccsds.moims.mo.mal.MALException(\"The field '" + fieldName + "' cannot be null!\");");
+                method.addLine("}");
             }
         }
 
@@ -318,7 +318,7 @@ public class JavaCompositeClass {
                 }
             }
 
-            method.addLine(methodCall);
+            method.addLine(methodCall + ";");
         }
         method.addMethodCloseStatement();
     }
@@ -359,9 +359,9 @@ public class JavaCompositeClass {
                 }
             }
 
-            method.addLine(element.getFieldName() + " = " + castString + methodCall);
+            method.addLine(element.getFieldName() + " = " + castString + methodCall + ";");
         }
-        method.addLine("return this");
+        method.addLine("return this;");
         method.addMethodCloseStatement();
     }
 }
