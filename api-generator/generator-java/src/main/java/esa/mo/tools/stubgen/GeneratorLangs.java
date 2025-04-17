@@ -1393,7 +1393,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
                     returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "The new value.");
             addGetter(file, argType, "BodyElement" + i);
-            addSetter(file, argType, "BodyElement" + i);
+            //addSetter(file, argType, "BodyElement" + i);
         }
 
         file.addClassCloseStatement();
