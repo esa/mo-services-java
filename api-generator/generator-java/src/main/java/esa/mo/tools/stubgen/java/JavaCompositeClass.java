@@ -191,13 +191,6 @@ public class JavaCompositeClass {
 
                 method2.addMethodCloseStatement();
             }
-
-            // create copy constructor
-            /*
-            if (generator.supportsToValue && !abstractComposite) {
-                file.addConstructorCopy(fqName, compElements);
-            }
-             */
         }
     }
 

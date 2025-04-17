@@ -289,20 +289,12 @@ public class GeneratorGwt extends GeneratorJava {
                     createCompositeElementsDetails(file, false, "delegate",
                             TypeUtils.createTypeReference(area, service.toLowerCase() + "." + PROVIDER_FOLDER, service + "Handler", false),
                             false, false, null), false, null, null, null);
-            method.addLine(createMethodCall("this.delegate = delegate"));
+            method.addLine("this.delegate = delegate");
             method.addMethodCloseStatement();
-        } else {
-//      CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton", TypeUtils.createTypeReference(area.getName(), service.getName() + "." + PROVIDER_FOLDER, service.getName() + "Skeleton", false), false, true, "Not used in the inheritance pattern (the skeleton is 'this'");
-//      MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null, "setSkeleton", Arrays.asList(skeletonName), null);
-//      method.addMethodStatement("// Not used in the inheritance pattern (the skeleton is 'this')");
-//      method.addMethodCloseStatement();
         }
 
         // for each IP type add handler code
-        String delegateCall = "";
-        if (isDelegate) {
-            delegateCall = createMethodCall("delegate.");
-        }
+        String delegateCall = (isDelegate) ? "" : "delegate.";
 
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
@@ -313,8 +305,7 @@ public class GeneratorGwt extends GeneratorJava {
                                     op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addLine(
-                            createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
+                    method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null)");
 
                     method.addMethodCloseStatement();
                     break;
@@ -325,8 +316,7 @@ public class GeneratorGwt extends GeneratorJava {
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addLine(
-                            createMethodCall(delegateCall + op.getName() + "(" + opArgs + ", null)"));
+                    method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null)");
 
                     method.addMethodCloseStatement();
                     break;
@@ -338,7 +328,7 @@ public class GeneratorGwt extends GeneratorJava {
                             createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
-                    method.addLine(createMethodCall("return " + delegateCall + op.getName() + "(" + opArgs + ", null)"));
+                    method.addLine("return " + delegateCall + op.getName() + "(" + opArgs + ", null)");
 
                     method.addMethodCloseStatement();
                     break;
@@ -356,7 +346,6 @@ public class GeneratorGwt extends GeneratorJava {
         }
 
         file.addClassCloseStatement();
-
         file.flush();
     }
 }
