@@ -16,6 +16,7 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
+import static org.ccsds.moims.mo.mal.structures.InteractionType.SEND;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
@@ -121,7 +122,7 @@ public class HTTPXMLElementOutputTest {
   @Test
   public void testEncodeEnumeration() throws Exception {
 
-    InteractionType it = new InteractionType(0);
+    InteractionType it = InteractionType.SEND;
 
     httpElementOutputStream.writeElement(it, null);
     httpElementOutputStream.close();

@@ -43,12 +43,12 @@ public class PubSubTestCaseHelper {
 
     public static Identifier getSessionName(SessionType sessionType)
             throws Exception {
-        switch (sessionType.getOrdinal()) {
-            case SessionType._LIVE_INDEX:
+        switch (sessionType.getValue()) {
+            case SessionType.LIVE_VALUE:
                 return LIVE_SESSION_NAME;
-            case SessionType._REPLAY_INDEX:
+            case SessionType.REPLAY_VALUE:
                 return REPLAY_SESSION_NAME;
-            case SessionType._SIMULATION_INDEX:
+            case SessionType.SIMULATION_VALUE:
                 return SIMULATION_SESSION_NAME;
             default:
                 throw new Exception("Unknown session type: " + sessionType);

@@ -70,7 +70,6 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
-import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTest;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
@@ -391,7 +390,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
 
         IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
-        IPTest ipTest = ipTestConsumer.getStub();
+        IPTestStub ipTest = ipTestConsumer.getStub();
 
         Subscription subscription = new Subscription(
                 new Identifier(ErrorBrokerHandler.SUBSCRIPTION_RAISING_ERROR),
@@ -421,7 +420,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         // First, need to subscribe in order to synchronize with the Notify  
         IPTestConsumer ipTestConsumer = getPubsubErrorIPTestStub(domain, session, sessionName, qos);
-        IPTest ipTest = ipTestConsumer.getStub();
+        IPTestStub ipTest = ipTestConsumer.getStub();
 
         Subscription subscription = new Subscription(new Identifier("subscription"),
                 null, null, new SubscriptionFilterList());
@@ -505,7 +504,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         boolean shared = Boolean.parseBoolean(sharedBroker);
 
         initConsumer(domain, session, sessionName, qos, shared);
-        IPTest ipTest = ipTestConsumer.getStub();
+        IPTestStub ipTest = ipTestConsumer.getStub();
 
         // Publish Register
         //EntityKeyList entityKeys = new EntityKeyList();
@@ -545,7 +544,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         SessionType session = ParseHelper.parseSessionType(sessionType);
         Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
 
-        IPTest ipTest = ipTestConsumer.getStub();
+        IPTestStub ipTest = ipTestConsumer.getStub();
 
         /*
         EntityKey entityKey = null;
@@ -614,7 +613,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         SessionType session = ParseHelper.parseSessionType(sessionType);
         Identifier sessionName = PubSubTestCaseHelper.getSessionName(session);
 
-        IPTest ipTest = ipTestConsumer.getStub();
+        IPTestStub ipTest = ipTestConsumer.getStub();
 
         // Deregister
         IdentifierList subIds = new IdentifierList();

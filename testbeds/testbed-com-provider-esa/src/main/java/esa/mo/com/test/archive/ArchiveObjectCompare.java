@@ -111,8 +111,8 @@ public class ArchiveObjectCompare implements Comparator<Archive.ArchiveObject> {
                         = (((String) o1.getElement()).compareTo(
                                 ((String) o2.getElement())));
             } else if (o1.getElement() instanceof Enumeration) {
-                retVal = (int) (((Enumeration) o1.getElement()).getOrdinal()
-                        - ((Enumeration) o2.getElement()).getOrdinal());
+                retVal = (int) (((Enumeration) o1.getElement()).getValue()
+                        - ((Enumeration) o2.getElement()).getValue());
             } else if (o1.getElement() instanceof Identifier) {
                 retVal = o1.getElement().toString().compareTo(o2.getElement().toString());
 //                (((Identifier) o1.getElement()).toString().compareTo(
@@ -133,8 +133,8 @@ public class ArchiveObjectCompare implements Comparator<Archive.ArchiveObject> {
         } else if (o1.getElement() instanceof TestObjectPayload) {
             LoggingBase.logMessage(CLS + ":comparet:test object o1:" + o1.getElement());
             if (sortFieldName.equals("enumeratedField")) {
-                retVal = (int) (((TestObjectPayload) o1.getElement()).getEnumeratedField().getOrdinal()
-                        - ((TestObjectPayload) o2.getElement()).getEnumeratedField().getOrdinal());
+                retVal = (int) (((TestObjectPayload) o1.getElement()).getEnumeratedField().getValue()
+                        - ((TestObjectPayload) o2.getElement()).getEnumeratedField().getValue());
             } else if (sortFieldName.equals("integerField")) {
                 retVal = (int) (((TestObjectPayload) o1.getElement()).getIntegerField().compareTo(
                         ((TestObjectPayload) o2.getElement()).getIntegerField()));

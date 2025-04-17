@@ -88,7 +88,7 @@ public class AssertionHelper {
                     expectedHeader.getTimestamp());
 
             boolean checkTransactionId;
-            if (expectedHeader.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX) {
+            if (expectedHeader.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE) {
                 switch (expectedHeader.getInteractionStage().getValue()) {
                     case MALPubSubOperation._REGISTER_STAGE:
                     case MALPubSubOperation._DEREGISTER_STAGE:

@@ -62,7 +62,7 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
                     stage = -1;
                 }
                 try {
-                    x = new MsgDetails((int) msg.getHeader().getInteractionType().getNumericValue().getValue(), stage,
+                    x = new MsgDetails(msg.getHeader().getInteractionType().getValue(), stage,
                             msg.getHeader().getAuthenticationId().getValue(), msg.getHeader().getIsErrorMessage().booleanValue());
                 } catch (Exception exc) {
                     throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,

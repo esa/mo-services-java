@@ -311,30 +311,30 @@ public class TCPIPMessageHeader extends MALMessageHeader {
     }
 
     public short getSDUType() {
-        int type = interactionType.getOrdinal();
-        final short stage = (InteractionType._SEND_INDEX == type) ? 0 : interactionStage.getValue();
+        int type = interactionType.getValue();
+        final short stage = (InteractionType.SEND_VALUE == type) ? 0 : interactionStage.getValue();
 
         switch (type) {
-            case InteractionType._SEND_INDEX:
+            case InteractionType.SEND_VALUE:
                 return 0;
-            case InteractionType._SUBMIT_INDEX:
+            case InteractionType.SUBMIT_VALUE:
                 if (MALSubmitOperation._SUBMIT_STAGE == stage) {
                     return 1;
                 }
                 return 2;
-            case InteractionType._REQUEST_INDEX:
+            case InteractionType.REQUEST_VALUE:
                 if (MALRequestOperation._REQUEST_STAGE == stage) {
                     return 3;
                 }
                 return 4;
-            case InteractionType._INVOKE_INDEX:
+            case InteractionType.INVOKE_VALUE:
                 if (MALInvokeOperation._INVOKE_STAGE == stage) {
                     return 5;
                 } else if (MALInvokeOperation._INVOKE_ACK_STAGE == stage) {
                     return 6;
                 }
                 return 7;
-            case InteractionType._PROGRESS_INDEX: {
+            case InteractionType.PROGRESS_VALUE: {
                 if (MALProgressOperation._PROGRESS_STAGE == stage) {
                     return 8;
                 }
@@ -345,7 +345,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
                 }
                 return 11;
             }
-            case InteractionType._PUBSUB_INDEX: {
+            case InteractionType.PUBSUB_VALUE: {
                 switch (stage) {
                     case MALPubSubOperation._REGISTER_STAGE:
                         return 12;

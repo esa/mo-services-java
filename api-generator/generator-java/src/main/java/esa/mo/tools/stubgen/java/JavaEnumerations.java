@@ -72,22 +72,24 @@ public class JavaEnumerations {
             String value = item.getValue();
 
             highestIndex = "_" + value + "_INDEX";
+            /*
             CompositeField _eNumberVar = generator.createCompositeElementsDetails(file, false, highestIndex,
                     TypeUtils.createTypeReference(null, null, "int", false), false, false,
                     "Enumeration ordinal index for value " + value);
             CompositeField eValueVar = generator.createCompositeElementsDetails(file, false, value + "_NUM_VALUE",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false), true, false,
                     "Enumeration numeric value for value " + value);
+             */
             CompositeField _eNewValue = generator.createCompositeElementsDetails(file, false, value + "_VALUE",
                     TypeUtils.createTypeReference(null, null, "int", false), false, false,
                     "Enumeration value for " + value);
             CompositeField eInstVar = generator.createCompositeElementsDetails(file, false, value,
                     TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                     true, false, "Enumeration singleton for value " + value);
-            file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
-            file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
+            //file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, _eNumberVar, false, String.valueOf(i));
+            //file.addClassVariableDeprecated(true, true, StdStrings.PUBLIC, eValueVar, false, "(" + item.getNvalue() + ")");
             file.addClassVariable(true, true, StdStrings.PUBLIC, _eNewValue, false, "" + String.valueOf(item.getNvalue()));
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(fqEnumName + "._" + value + "_INDEX)"));
+            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(fqEnumName + "." + value + "_VALUE)"));
         }
 
         // create arrays
@@ -103,37 +105,40 @@ public class JavaEnumerations {
                 TypeUtils.createTypeReference(area.getName(), service == null ? null : service.getName(), enumName, false),
                 true, true, "Set of enumeration instances.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
+        /*
         if (generator.supportsToString) {
             CompositeField eStrArrVar = generator.createCompositeElementsDetails(file, false, "_ENUMERATION_NAMES",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false),
                     true, true, "Set of enumeration string values.");
             file.addClassVariable(true, true, StdStrings.PRIVATE, eStrArrVar, true, true, stStr);
         }
+
         CompositeField eValueArrVar = generator.createCompositeElementsDetails(file, false, "_ENUMERATION_NUMERIC_VALUES",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UINTEGER, false),
                 true, false, "Set of enumeration values.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eValueArrVar, true, true, vaStr);
-
+         */
         // Adds Constructor without a start value
         file.addStatement("    public " + enumName + "() {");
         file.addStatement("        super(0);");
         file.addStatement("    }");
         file.addStatement("");
 
-        // create private constructor
+        // Adds Constructor with a start value
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
-                generator.createCompositeElementsDetails(file, false, "ordinal",
+                generator.createCompositeElementsDetails(file, false, "value",
                         TypeUtils.createTypeReference(null, null, "int", false),
                         false, false, null), true, null, null, null);
         method.addMethodCloseStatement();
 
         // Generate methods
         generateToString(file, enumeration, enumType);
-        generateCreateMap(file, enumeration);
-        generateFromOrdinal(file, enumType, highestIndex);
-        generateFromNumericValue(file, enumType);
+        generateFromString(file, enumeration, enumType);
+        //generateCreateMap(file, enumeration);
+        //generateFromOrdinal(file, enumType, highestIndex);
+        //generateFromNumericValue(file, enumType);
         generateFromValue(file, enumeration);
-        generateGetNumericValue(file, highestIndex);
+        //generateGetNumericValue(file, highestIndex);
         generateCreateElement(file);
         generateGetEnum(file, enumSize);
         generator.addTypeIdGetterMethod(file, area, service);
@@ -160,17 +165,26 @@ public class JavaEnumerations {
         method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
         method.addLine("}", false);
         method.addMethodCloseStatement();
+    }
 
-        method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
+    private void generateFromString(ClassWriter file, EnumerationType enumeration, CompositeField enumType) throws IOException {
+        CompositeField strType = generator.createCompositeElementsDetails(file, false, "s",
+                TypeUtils.createTypeReference(null, null, "_String", false),
+                false, true, "s The string to search for.");
+
+        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
                 false, true, enumType, "fromString", Arrays.asList(strType), null,
                 "Returns the enumeration element represented by the supplied string, or null if not matched.",
                 "The matched enumeration element, or null if not matched.", null);
-        method.addLine("for (int i = 0; i < _ENUMERATION_NAMES.length; i++) {", false);
-        method.addLine("    if (_ENUMERATION_NAMES[i].equals(s)) {", false);
-        method.addLine("        return _ENUMERATIONS[i]");
-        method.addLine("    }", false);
+        method.addLine("switch (s) {", false);
+
+        for (EnumerationType.Item item : enumeration.getItem()) {
+            method.addLine("    case \"" + item.getValue() + "\":", false);
+            method.addLine("        return " + enumeration.getName() + "." + item.getValue());
+        }
+        method.addLine("    default:", false);
+        method.addLine("        throw new RuntimeException(\"Unknown Enumeration for the provided string: \" + s)");
         method.addLine("}", false);
-        method.addLine("return null");
         method.addMethodCloseStatement();
     }
 
@@ -232,7 +246,7 @@ public class JavaEnumerations {
             method.addLine("        return " + enumeration.getName() + "." + item.getValue());
         }
         method.addLine("    default:", false);
-        method.addLine("        throw new RuntimeException(\"Unknown ordinal!\")");
+        method.addLine("        throw new RuntimeException(\"Unknown Enumeration for the provided value: \" + value)");
         method.addLine("}", false);
         method.addMethodCloseStatement();
     }

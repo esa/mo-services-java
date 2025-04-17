@@ -130,7 +130,7 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
         }
         InteractionType interactionType = InteractionType.fromString(client.getResponseHeader("X-MAL-Interaction-Type"));
         UOctet interactionStage = null;
-        if (interactionType.getOrdinal() != InteractionType._SEND_INDEX) {
+        if (interactionType.getValue() != InteractionType.SEND_VALUE) {
             interactionStage = new UOctet(
                     Short.parseShort(client.getResponseHeader("X-MAL-Interaction-Stage")));
         }

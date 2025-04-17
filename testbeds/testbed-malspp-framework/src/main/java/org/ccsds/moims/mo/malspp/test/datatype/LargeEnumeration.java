@@ -33,7 +33,7 @@
 package org.ccsds.moims.mo.malspp.test.datatype;
 
 import org.ccsds.moims.mo.mal.TypeId;
-import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malspp.test.util.TestHelper;
@@ -62,24 +62,19 @@ public final class LargeEnumeration extends org.ccsds.moims.mo.mal.structures.En
         return null;
     }
 
-    public String toString() {
-        return "";
-    }
-
     public org.ccsds.moims.mo.mal.structures.UInteger getNumericValue() {
         return null;
     }
 
     @Override
     public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
-        encoder.encodeUInteger(new UInteger(getOrdinal()));
+        encoder.encodeUInteger(new UInteger(value));
     }
 
     @Override
     public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        int ordinal;
-        ordinal = (int) decoder.decodeUInteger().getValue();
-        return fromOrdinal(ordinal);
+        int value = (int) decoder.decodeUInteger().getValue();
+        return fromValue(value);
     }
 
     @Override
@@ -98,8 +93,7 @@ public final class LargeEnumeration extends org.ccsds.moims.mo.mal.structures.En
     }
 
     @Override
-    public Element fromOrdinal(int ordinal) {
-        return new LargeEnumeration(ordinal);
+    public Enumeration fromValue(Integer value) {
+        return new LargeEnumeration(value);
     }
-
 }

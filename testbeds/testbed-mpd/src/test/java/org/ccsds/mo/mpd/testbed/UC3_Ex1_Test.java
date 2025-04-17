@@ -268,7 +268,7 @@ public class UC3_Ex1_Test extends MPDTest {
             if (!standingOrders.isEmpty()) {
                 StandingOrder receivedOrder = standingOrders.get(0);
                 assertEquals(orderUser.getValue(), receivedOrder.getUser().getValue());
-                assertEquals(deliveryMethod.getNumericValue(), receivedOrder.getDeliveryMethod().getNumericValue());
+                assertEquals(deliveryMethod.getValue(), receivedOrder.getDeliveryMethod().getValue());
             }
         } catch (MALInteractionException ex) {
             Logger.getLogger(UC3_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);

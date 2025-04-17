@@ -34,24 +34,7 @@ import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Duration;
-import org.ccsds.moims.mo.mal.structures.Element;
-import org.ccsds.moims.mo.mal.structures.Enumeration;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
-import org.ccsds.moims.mo.mal.structures.HomogeneousList;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
-import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.ULong;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.*;
 
 public class XMLStreamReader implements MALDecoder {
 
@@ -514,20 +497,6 @@ public class XMLStreamReader implements MALDecoder {
     @Override
     public Element decodeEnumeration(Enumeration enumeration) throws MALException {
         return enumeration.fromValue(Integer.valueOf(decodeXMLElement()));
-
-        /*
-        //int enumSize = enumeration.getEnumSize();
-
-        if (enumSize < 256) {
-            //return enumeration.fromOrdinal(this.decodeUOctet().getValue());
-            return enumeration.fromValue((int) this.decodeUOctet().getValue());
-        } else if (enumSize < 65536) {
-            //return enumeration.fromOrdinal(this.decodeUShort().getValue());
-            return enumeration.fromValue(this.decodeUShort().getValue());
-        }
-
-        throw new MALException("The Enumeration could not be decoded!");
-        */
     }
 
 }

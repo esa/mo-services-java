@@ -106,7 +106,7 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
         }
         InteractionType interactionType = InteractionType.fromString(request.getRequestHeader("X-MAL-Interaction-Type"));
         UOctet interactionStage = null;
-        if (interactionType.getOrdinal() != InteractionType._SEND_INDEX) {
+        if (interactionType.getValue() != InteractionType.SEND_VALUE) {
             interactionStage = new UOctet(
                     Short.parseShort(decodeAscii(request.getRequestHeader("X-MAL-Interaction-Stage"))));
         }

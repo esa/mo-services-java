@@ -365,7 +365,7 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             return new ErrorBody(ctx, encFactory, bodyElements);
         }
 
-        if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
+        if (InteractionType.PUBSUB_VALUE == header.getInteractionType().getValue()) {
             final short stage = header.getInteractionStage().getValue();
             switch (stage) {
                 case MALPubSubOperation._REGISTER_STAGE:
@@ -394,7 +394,7 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             return new ErrorBody(ctx, encFactory, encBodyElements);
         }
 
-        if (InteractionType._PUBSUB_INDEX == header.getInteractionType().getOrdinal()) {
+        if (InteractionType.PUBSUB_VALUE == header.getInteractionType().getValue()) {
             final short stage = header.getInteractionStage().getValue();
             switch (stage) {
                 case MALPubSubOperation._REGISTER_STAGE:

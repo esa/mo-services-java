@@ -25,10 +25,7 @@ import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
 import org.ccsds.moims.mo.mal.encoding.StreamHolder;
-import org.ccsds.moims.mo.mal.structures.Duration;
-import org.ccsds.moims.mo.mal.structures.Enumeration;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.*;
 
 /**
  * Implements the MALEncoder and MALListEncoder interfaces for a binary
@@ -72,12 +69,12 @@ public abstract class BaseBinaryEncoder extends Encoder {
     @Override
     public void encodeEnumeration(Enumeration enumeration) throws MALException {
         int enumSize = enumeration.getEnumSize();
-        Integer ordinal = (Integer) enumeration.getOrdinal();
+        Integer value = enumeration.getValue();
 
         if (enumSize < 256) {
-            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+            this.encodeUOctet(new UOctet(value.shortValue()));
         } else if (enumSize < 65536) {
-            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+            this.encodeUShort(new UShort(value));
         }
     }
 

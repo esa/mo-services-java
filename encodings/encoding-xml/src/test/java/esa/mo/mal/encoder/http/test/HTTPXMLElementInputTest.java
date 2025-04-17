@@ -284,7 +284,7 @@ public class HTTPXMLElementInputTest {
     InteractionType it = (InteractionType) eis.readElement(null, null);
 
     assertNotNull(it);
-    assertEquals(0, it.getOrdinal());
+    assertEquals(InteractionType.SEND_VALUE, it.getValue());
   }
 
   @Test

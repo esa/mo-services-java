@@ -346,25 +346,25 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             ExpressionOperator operator) throws MALInteractionException {
         boolean bMatch;
         LoggingBase.logMessage(CLS + ":matchesFilter:numeric:" + numericVal + ":"
-                + ":" + operator.getOrdinal());
+                + ":" + operator.getValue());
         if (numericFilterVal != null) {
-            switch (operator.getOrdinal()) {
-                case ExpressionOperator._EQUAL_INDEX:
+            switch (operator.getValue()) {
+                case ExpressionOperator.EQUAL_VALUE:
                     bMatch = (numericVal.longValue() == numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._DIFFER_INDEX:
+                case ExpressionOperator.DIFFER_VALUE:
                     bMatch = (numericVal.longValue() != numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._GREATER_INDEX:
+                case ExpressionOperator.GREATER_VALUE:
                     bMatch = (numericVal.longValue() > numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._GREATER_OR_EQUAL_INDEX:
+                case ExpressionOperator.GREATER_OR_EQUAL_VALUE:
                     bMatch = (numericVal.longValue() >= numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._LESS_INDEX:
+                case ExpressionOperator.LESS_VALUE:
                     bMatch = (numericVal.longValue() < numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._LESS_OR_EQUAL_INDEX:
+                case ExpressionOperator.LESS_OR_EQUAL_VALUE:
                     bMatch = (numericVal.longValue() <= numericFilterVal.longValue());
                     break;
                 default:
@@ -396,25 +396,25 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             ExpressionOperator operator) throws MALInteractionException {
         boolean bMatch;
         LoggingBase.logMessage(CLS + ":matchesFilter:numeric:" + numericVal.longValue() + ":"
-                + ":" + operator.getOrdinal());
+                + ":" + operator.getValue());
         if (numericFilterVal != null) {
-            switch (operator.getOrdinal()) {
-                case ExpressionOperator._EQUAL_INDEX:
+            switch (operator.getValue()) {
+                case ExpressionOperator.EQUAL_VALUE:
                     bMatch = (numericVal.longValue() == numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._DIFFER_INDEX:
+                case ExpressionOperator.DIFFER_VALUE:
                     bMatch = (numericVal.longValue() != numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._GREATER_INDEX:
+                case ExpressionOperator.GREATER_VALUE:
                     bMatch = (numericVal.longValue() > numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._GREATER_OR_EQUAL_INDEX:
+                case ExpressionOperator.GREATER_OR_EQUAL_VALUE:
                     bMatch = (numericVal.longValue() >= numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._LESS_INDEX:
+                case ExpressionOperator.LESS_VALUE:
                     bMatch = (numericVal.longValue() < numericFilterVal.longValue());
                     break;
-                case ExpressionOperator._LESS_OR_EQUAL_INDEX:
+                case ExpressionOperator.LESS_OR_EQUAL_VALUE:
                     bMatch = (numericVal.longValue() <= numericFilterVal.longValue());
                     break;
                 default:
@@ -446,8 +446,8 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             ExpressionOperator operator) throws MALInteractionException {
         boolean bMatch;
 
-        switch (operator.getOrdinal()) {
-            case ExpressionOperator._EQUAL_INDEX:
+        switch (operator.getValue()) {
+            case ExpressionOperator.EQUAL_VALUE:
                 if (!(stringVal == null || stringFilterVal == null)) {
                     bMatch = stringVal.equals(stringFilterVal);
                 } else if (stringVal == null && stringFilterVal == null) {
@@ -456,7 +456,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     bMatch = false;
                 }
                 break;
-            case ExpressionOperator._DIFFER_INDEX:
+            case ExpressionOperator.DIFFER_VALUE:
                 if (!(stringVal == null || stringFilterVal == null)) {
                     bMatch = !stringVal.equals(stringFilterVal);
                 } else if (stringVal == null && stringFilterVal == null) {
@@ -465,7 +465,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     bMatch = true;
                 }
                 break;
-            case ExpressionOperator._CONTAINS_INDEX:
+            case ExpressionOperator.CONTAINS_VALUE:
                 if (!(stringVal == null || stringFilterVal == null)) {
                     bMatch = stringVal.contains(stringFilterVal);
                 } else if (stringFilterVal == null) {
@@ -475,7 +475,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     bMatch = false;
                 }
                 break;
-            case ExpressionOperator._ICONTAINS_INDEX:
+            case ExpressionOperator.ICONTAINS_VALUE:
                 if (!(stringVal == null || stringFilterVal == null)) {
                     bMatch = stringVal.toUpperCase().contains(stringFilterVal.toUpperCase());
                 } else if (stringFilterVal == null) {
@@ -485,10 +485,10 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                     bMatch = false;
                 }
                 break;
-            case ExpressionOperator._GREATER_INDEX:
-            case ExpressionOperator._GREATER_OR_EQUAL_INDEX:
-            case ExpressionOperator._LESS_INDEX:
-            case ExpressionOperator._LESS_OR_EQUAL_INDEX:
+            case ExpressionOperator.GREATER_VALUE:
+            case ExpressionOperator.GREATER_OR_EQUAL_VALUE:
+            case ExpressionOperator.LESS_VALUE:
+            case ExpressionOperator.LESS_OR_EQUAL_VALUE:
                 if (stringFilterVal == null) {
                     throw new MALInteractionException(new MOErrorException(INVALID_ERROR_NUMBER,
                             null));
@@ -519,11 +519,11 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
             ExpressionOperator operator) throws MALInteractionException {
         boolean bMatch;
 
-        switch (operator.getOrdinal()) {
-            case ExpressionOperator._EQUAL_INDEX:
+        switch (operator.getValue()) {
+            case ExpressionOperator.EQUAL_VALUE:
                 bMatch = blobVal.equals(blobFilterVal);
                 break;
-            case ExpressionOperator._DIFFER_INDEX:
+            case ExpressionOperator.DIFFER_VALUE:
                 bMatch = !blobVal.equals(blobFilterVal);
                 break;
             default:
@@ -605,7 +605,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                         // Standard states filter value must be UIntger but does not indicate error returned
                         if (compositeFilter.getFieldValue() instanceof UInteger) {
                             numericFilterVal = ((UInteger) compositeFilter.getFieldValue()).getValue();
-                            numericVal = new Long(((Enumeration) obj.getElement()).getOrdinal());
+                            numericVal = (long) ((Enumeration) obj.getElement()).getValue();
                             filterType = FilterType.NUMERIC;
                         } else {
                             bMatch = false;
@@ -639,7 +639,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
                 } else if (obj.getElement() instanceof TestObjectPayload) {
                     LoggingBase.logMessage(CLS + ":matchesFilter:testObjectpayload");
                     if (compositeFilter.getFieldName().equals("enumeratedField")) {
-                        numericVal = new Long(((TestObjectPayload) obj.getElement()).getEnumeratedField().getOrdinal());
+                        numericVal = (long) ((TestObjectPayload) obj.getElement()).getEnumeratedField().getValue();
                         numericFilterVal = ((UInteger) compositeFilter.getFieldValue()).getValue();
                         filterType = FilterType.NUMERIC;
                     } else if (compositeFilter.getFieldName().equals("integerField")) {

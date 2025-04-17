@@ -79,23 +79,23 @@ public class TransmitTestProcedure {
         TransportInterceptor.instance().resetTransmitCount(ip);
 
         IPTestTransitionList transitions = new IPTestTransitionList();
-        switch (ip.getOrdinal()) {
-            case InteractionType._SEND_INDEX:
+        switch (ip.getValue()) {
+            case InteractionType.SEND_VALUE:
                 ipTest.send(null);
                 break;
-            case InteractionType._SUBMIT_INDEX:
+            case InteractionType.SUBMIT_VALUE:
                 ipTest.asyncTestSubmit(null, new IPListener());
                 break;
-            case InteractionType._REQUEST_INDEX:
+            case InteractionType.REQUEST_VALUE:
                 ipTest.asyncRequest(null, new IPListener());
                 break;
-            case InteractionType._INVOKE_INDEX:
+            case InteractionType.INVOKE_VALUE:
                 ipTest.asyncInvoke(null, new IPListener());
                 break;
-            case InteractionType._PROGRESS_INDEX:
+            case InteractionType.PROGRESS_VALUE:
                 ipTest.asyncProgress(null, new IPListener());
                 break;
-            case InteractionType._PUBSUB_INDEX:
+            case InteractionType.PUBSUB_VALUE:
                 IdentifierList ids = new IdentifierList();
                 ipTest.asyncMonitorDeregister(ids, new IPListener());
                 break;

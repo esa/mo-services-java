@@ -31,39 +31,26 @@ import org.ccsds.moims.mo.mal.MALEncoder;
 public abstract class Enumeration implements Element {
 
     /**
-     * The index of the enumerated item, i.e. its position in the enumeration
-     * declaration starting from zero.
+     * The value of the Enumeration.
      */
-    protected Integer ordinal;
+    protected Integer value;
 
     /**
-     * The ordinal constructor, takes as a parameter the index of the enumerated
-     * item, i.e. its position in the enumeration declaration starting from
-     * zero.
+     * The constructor of the Enumeration class.
      *
-     * @param ordinal The index of the enumerated item.
+     * @param value The value of the enumeration.
      */
-    protected Enumeration(final int ordinal) {
-        this.ordinal = ordinal;
+    protected Enumeration(final int value) {
+        this.value = value;
     }
 
     /**
-     * Returns the index of the enumerated item.
+     * Returns the value of the enumeration.
      *
-     * @return the index of the enumerated item.
-     */
-    @Deprecated
-    public final int getOrdinal() {
-        return ordinal;
-    }
-
-    /**
-     * Returns the numeric value of the enumeration.
-     *
-     * @return the numeric value of the enumeration.
+     * @return the value of the enumeration.
      */
     public final int getValue() {
-        return (int) getNumericValue().getValue();
+        return value;
     }
 
     /**
@@ -99,22 +86,6 @@ public abstract class Enumeration implements Element {
     public abstract int getEnumSize();
 
     /**
-     * Returns the numeric value of the enumerated item.
-     *
-     * @return the numeric value of the enumerated item.
-     */
-    public abstract UInteger getNumericValue();
-
-    /**
-     * Returns the respective Enumeration for a given ordinal value.
-     *
-     * @param ordinal The ordinal value of this Enumeration.
-     * @return The respective Enumeration.
-     */
-    @Deprecated
-    public abstract Element fromOrdinal(int ordinal);
-
-    /**
      * Returns the respective Enumeration for a given value.
      *
      * @param value The value of this Enumeration.
@@ -124,7 +95,7 @@ public abstract class Enumeration implements Element {
 
     @Override
     public int hashCode() {
-        return ordinal;
+        return value;
     }
 
     @Override
@@ -136,7 +107,7 @@ public abstract class Enumeration implements Element {
             return true;
         }
         if (other instanceof Enumeration) {
-            return (ordinal.compareTo(((Enumeration) other).ordinal) == 0);
+            return (value.compareTo(((Enumeration) other).value) == 0);
         }
         return false;
     }

@@ -562,12 +562,12 @@ public class XMLStreamWriter implements MALEncoder {
     @Override
     public void encodeEnumeration(Enumeration enumeration) throws MALException {
         int enumSize = enumeration.getEnumSize();
-        Integer ordinal = (Integer) enumeration.getOrdinal();
+        Integer value = enumeration.getValue();
 
         if (enumSize < 256) {
-            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(ordinal.shortValue()));
+            this.encodeUOctet(new org.ccsds.moims.mo.mal.structures.UOctet(value.shortValue()));
         } else if (enumSize < 65536) {
-            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(ordinal));
+            this.encodeUShort(new org.ccsds.moims.mo.mal.structures.UShort(value));
         }
     }
 }
