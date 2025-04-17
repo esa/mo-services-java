@@ -448,13 +448,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public void addLine(String statement) throws IOException {
-        addLine(statement, false);
-    }
-
-    @Override
-    public void addLine(String statement, boolean addSemi) throws IOException {
         if (statement.trim().length() > 0) {
-            file.append(makeLine(2, statement, addSemi));
+            file.append(makeLine(2, statement));
         }
     }
 
