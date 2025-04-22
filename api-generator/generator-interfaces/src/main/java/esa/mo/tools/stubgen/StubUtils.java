@@ -53,7 +53,6 @@ public abstract class StubUtils {
             String fileName, String ext, String contents) throws IOException {
         final Writer file = createLowLevelWriter(destinationFolderName, fileName, ext);
         file.append(contents);
-
         file.flush();
         file.close();
     }

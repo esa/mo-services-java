@@ -70,7 +70,6 @@ public class GeneratorGwt extends GeneratorJava {
         return "Experimental: Generates a GWT compatible Java language mapping.";
     }
 
-    @Override
     protected void createServiceConsumerInterface(File consumerFolder, String area,
             String service, ServiceSummary summary) throws IOException {
         logger.info(" > Creating consumer interface: " + service);
