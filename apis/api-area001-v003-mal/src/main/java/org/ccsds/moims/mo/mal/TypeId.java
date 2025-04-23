@@ -20,8 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.Objects;
-
 /**
  * Class representing a Type Id of a MAL Element.
  */
@@ -193,12 +191,14 @@ public class TypeId {
 
     @Override
     public String toString() {
-        return "(TypeId:"
-                + " areaNumber=" + areaNumber
-                + " areaVersion=" + areaVersion
-                + " serviceNumber=" + serviceNumber
-                + " sfp=" + sfp
-                + ")";
+        StringBuilder buf = new StringBuilder();
+        buf.append("(TypeId: ");
+        buf.append(" areaNumber=").append(areaNumber);
+        buf.append(", areaVersion=").append(areaVersion);
+        buf.append(", serviceNumber=").append(serviceNumber);
+        buf.append(", sfp=").append(sfp);
+        buf.append(')');
+        return buf.toString();
     }
 
     @Override

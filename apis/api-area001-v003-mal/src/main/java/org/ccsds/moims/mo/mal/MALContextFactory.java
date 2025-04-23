@@ -91,7 +91,7 @@ public abstract class MALContextFactory {
      * @throws MALException If already registered the number.
      */
     @Deprecated
-    public static void registerError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber,
+    private static void registerError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber,
             Identifier errorName) throws java.lang.IllegalArgumentException, MALException {
         if (areaNumber == null || areaVersion == null || errorNumber == null || errorName == null) {
             throw new IllegalArgumentException("NULL argument");
@@ -276,11 +276,11 @@ public abstract class MALContextFactory {
     protected static class VersionizedAreaNumber {
 
         public final int areaNumber;
-        public final short version;
+        public final int version;
 
         public VersionizedAreaNumber(int areaNumber, short version) {
             this.areaNumber = areaNumber;
-            this.version = version;
+            this.version = (int) version;
         }
 
         @Override

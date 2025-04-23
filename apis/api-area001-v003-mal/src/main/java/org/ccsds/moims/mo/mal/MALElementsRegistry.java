@@ -119,7 +119,8 @@ public class MALElementsRegistry {
         TypeId typeId = obj.getTypeId();
         int sfp = typeId.getSFP();
         int newSPF = (sfp > 0) ? -sfp : sfp;
-        long ll = (new TypeId(typeId.getAreaNumber(), typeId.getAreaVersion(), typeId.getServiceNumber(), newSPF)).getTypeId();
+        long ll = (new TypeId(typeId.getAreaNumber(), typeId.getAreaVersion(),
+                typeId.getServiceNumber(), newSPF)).getTypeId();
 
         try {
             Element createdElement = MALContextFactory.getElementsRegistry().createElement(ll);
