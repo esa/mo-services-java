@@ -29,26 +29,53 @@ public final class OperationField {
     private final boolean nullable;
 
     // Should be Long for normal MAL types or String for XML types:
-    private final Object typeId;
+    private final Long typeId;
 
-    public OperationField(String fieldName, boolean nullable, Object typeId) {
+    /**
+     * Constructor.
+     *
+     * @param fieldName The field name.
+     * @param nullable The nullability of the field.
+     * @param typeId The typeId of the field.
+     */
+    public OperationField(String fieldName, boolean nullable, Long typeId) {
         this.fieldName = fieldName;
         this.nullable = nullable;
         this.typeId = typeId;
     }
 
+    /**
+     * Returns the field name.
+     *
+     * @return The field name.
+     */
     public String getFieldName() {
         return fieldName;
     }
 
+    /**
+     * Returns the nullability of the field.
+     *
+     * @return The nullability of the field.
+     */
     public boolean isNullable() {
         return nullable;
     }
 
-    public Object getTypeId() {
+    /**
+     * Returns the typeId of the field.
+     *
+     * @return The typeId of the field.
+     */
+    public Long getTypeId() {
         return typeId;
     }
 
+    /**
+     * Returns true if the field has an abstract type.
+     *
+     * @return True if the field has an abstract type.
+     */
     public boolean isAbstractType() {
         return (typeId == null);
     }
