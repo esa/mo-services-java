@@ -20,8 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.connections;
 
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import java.io.IOException;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 
