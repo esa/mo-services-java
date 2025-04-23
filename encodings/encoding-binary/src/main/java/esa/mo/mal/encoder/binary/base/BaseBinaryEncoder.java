@@ -28,8 +28,7 @@ import org.ccsds.moims.mo.mal.encoding.StreamHolder;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
- * Implements the MALEncoder and MALListEncoder interfaces for a binary
- * encoding.
+ * Implements the MALEncoder interfaces for a binary encoding.
  *
  */
 public abstract class BaseBinaryEncoder extends Encoder {

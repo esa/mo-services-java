@@ -144,7 +144,7 @@ public class MALElementsRegistry {
             return null;
         }
 
-        long l = obj.getTypeId().getSFP();
+        //long l = obj.getTypeId().getSFP();
         //long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
         long ll = obj.getTypeId().generateTypeIdPositive().getTypeId();
 
@@ -163,7 +163,7 @@ public class MALElementsRegistry {
      *
      * @param malArea The Area with the Elements to be registered.
      */
-    public synchronized void registerElementsForArea(MALArea malArea) {
+    private synchronized void registerElementsForArea(MALArea malArea) {
         Element[] elements = malArea.getElements();
 
         for (Element element : elements) {
@@ -178,7 +178,7 @@ public class MALElementsRegistry {
      *
      * @param malService The Service with the Elements to be registered.
      */
-    public synchronized void registerElementsForService(ServiceInfo malService) {
+    private synchronized void registerElementsForService(ServiceInfo malService) {
         Element[] elements = malService.getElements();
 
         for (Element element : elements) {
@@ -214,6 +214,10 @@ public class MALElementsRegistry {
      * @param area The Area to be loaded.
      */
     public void loadFullArea(MALArea area) {
+        this.registerElementsForArea(MALHelper.MAL_AREA);
+        // The Top-level Area loading also needs to be loaded
+        this.registerElementsForArea(area);
+
         for (ServiceInfo service : area.getServices()) {
             loadServiceAndAreaElements(service);
         }

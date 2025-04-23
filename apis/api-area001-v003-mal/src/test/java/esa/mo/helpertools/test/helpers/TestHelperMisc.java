@@ -66,7 +66,7 @@ public class TestHelperMisc {
     @Before
     public void setup() {
         try {
-            MALContextFactory.getElementsRegistry().registerElementsForArea(MALHelper.MAL_AREA);
+            MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
             MALContextFactory.registerArea(MALHelper.MAL_AREA);
         } catch (MALException ex) {
             Logger.getLogger(TestHelperMisc.class.getName()).log(Level.SEVERE, null, ex);
