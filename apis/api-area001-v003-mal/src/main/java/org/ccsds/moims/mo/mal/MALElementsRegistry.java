@@ -91,7 +91,7 @@ public class MALElementsRegistry {
             }
 
             throw new NotFoundException("The element was not found: "
-                    + typeIdLong + "(" + typeId.toString() + ")");
+                    + typeIdLong + " - " + typeId.toString());
         }
 
         return callable.call();
