@@ -301,17 +301,6 @@ public class ConnectionConsumer {
 
     /**
      * Returns a subscription object with wildcards in all four fields of the
-     * entity keys field.
-     *
-     * @return The subscription object
-     */
-    public static Subscription subscriptionWildcard() {
-        final Identifier subscriptionId = new Identifier("SUB");
-        return ConnectionConsumer.subscriptionWildcard(subscriptionId);
-    }
-
-    /**
-     * Returns a subscription object with wildcards in all four fields of the
      * entity keys field
      *
      * @return The subscription object
@@ -319,44 +308,7 @@ public class ConnectionConsumer {
     public static Subscription subscriptionWildcardRandom() {
         final Random random = new Random();
         final Identifier subscriptionId = new Identifier("SUB" + Integer.toString(random.nextInt()));
-        return ConnectionConsumer.subscriptionWildcard(subscriptionId);
-    }
-
-    /**
-     * Returns a subscription object with the entity keys field set as the
-     * provided keys
-     *
-     * @param filters The filters
-     * @return The subscription object
-     */
-    @Deprecated
-    public static Subscription subscriptionKeys(final SubscriptionFilterList filters) {
-        final Identifier subscriptionId = new Identifier("SUB");
-        return ConnectionConsumer.subscriptionKeys(subscriptionId, filters);
-    }
-
-    /**
-     * Returns a subscription object with wildcards in the field and value.
-     *
-     * @param subscriptionId The subscription Identifier
-     * @return The subscription object
-     */
-    public static Subscription subscriptionWildcard(final Identifier subscriptionId) {
         return new Subscription(subscriptionId, null, null, null);
-    }
-
-    /**
-     * Returns a subscription object with the entity keys field set as the
-     * provided keys
-     *
-     * @param subscriptionId The subscription Identifier
-     * @param filters The filters
-     * @return The subscription object
-     */
-    @Deprecated
-    public static Subscription subscriptionKeys(final Identifier subscriptionId,
-            final SubscriptionFilterList filters) {
-        return new Subscription(subscriptionId, null, null, filters);
     }
 
     /**
@@ -377,7 +329,7 @@ public class ConnectionConsumer {
         subkeys.add(new SubscriptionFilter(new Identifier("key2"), new AttributeList(new Union(key2))));
         subkeys.add(new SubscriptionFilter(new Identifier("key3"), new AttributeList(new Union(key3))));
         subkeys.add(new SubscriptionFilter(new Identifier("key4"), new AttributeList(new Union(key4))));
-        return ConnectionConsumer.subscriptionKeys(subscriptionId, subkeys);
+        return new Subscription(subscriptionId, null, null, subkeys);
     }
 
     /**
