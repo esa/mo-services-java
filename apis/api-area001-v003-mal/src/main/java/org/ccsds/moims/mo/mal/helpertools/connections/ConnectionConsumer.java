@@ -338,10 +338,10 @@ public class ConnectionConsumer {
         list3.addAsJavaType(key3);
         AttributeList list4 = new AttributeList();
         list4.addAsJavaType(key4);
-        filters.add(new SubscriptionFilter(new Identifier("key1"), list1));
-        filters.add(new SubscriptionFilter(new Identifier("key2"), list2));
-        filters.add(new SubscriptionFilter(new Identifier("key3"), list3));
-        filters.add(new SubscriptionFilter(new Identifier("key4"), list4));
+        filters.add(new SubscriptionFilter(new Identifier("K1"), list1));
+        filters.add(new SubscriptionFilter(new Identifier("K2"), list2));
+        filters.add(new SubscriptionFilter(new Identifier("K3"), list3));
+        filters.add(new SubscriptionFilter(new Identifier("K4"), list4));
 
         return new Subscription(subId, null, null, filters);
     }
