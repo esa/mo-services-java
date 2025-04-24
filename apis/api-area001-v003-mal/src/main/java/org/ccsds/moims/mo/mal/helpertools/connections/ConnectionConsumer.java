@@ -44,7 +44,6 @@ import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.Union;
 
 /**
  * The class responsible for starting the MAL layer and takes care of
@@ -307,29 +306,8 @@ public class ConnectionConsumer {
      */
     public static Subscription subscriptionWildcardRandom() {
         final Random random = new Random();
-        final Identifier subscriptionId = new Identifier("SUB" + Integer.toString(random.nextInt()));
+        final Identifier subscriptionId = new Identifier("SUB-" + Integer.toString(random.nextInt()));
         return new Subscription(subscriptionId, null, null, null);
-    }
-
-    /**
-     * Returns a subscription object with the entity keys field set as the
-     * provided keys
-     *
-     * @param key1 First key
-     * @param key2 Second key
-     * @param key3 Third key
-     * @param key4 Fourth key
-     * @return The subscription object
-     */
-    public static Subscription subscriptionKeys(final Identifier key1,
-            final Long key2, final Long key3, final Long key4) {
-        final Identifier subscriptionId = new Identifier("SUB");
-        SubscriptionFilterList subkeys = new SubscriptionFilterList();
-        subkeys.add(new SubscriptionFilter(new Identifier("key1"), new AttributeList(key1)));
-        subkeys.add(new SubscriptionFilter(new Identifier("key2"), new AttributeList(new Union(key2))));
-        subkeys.add(new SubscriptionFilter(new Identifier("key3"), new AttributeList(new Union(key3))));
-        subkeys.add(new SubscriptionFilter(new Identifier("key4"), new AttributeList(new Union(key4))));
-        return new Subscription(subscriptionId, null, null, subkeys);
     }
 
     /**
@@ -345,7 +323,6 @@ public class ConnectionConsumer {
      * @param key4 Fourth key
      * @return The subscription object
      */
-    @Deprecated
     public static Subscription subscriptionKeys(Identifier subId, Identifier key1, Long key2, Long key3, Long key4) {
         if (key1 == null || key2 == null || key3 == null || key4 == null) {
             Logger.getLogger(ConnectionConsumer.class.getName()).log(
