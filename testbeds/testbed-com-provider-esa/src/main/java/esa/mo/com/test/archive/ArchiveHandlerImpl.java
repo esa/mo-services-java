@@ -67,6 +67,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
@@ -245,7 +246,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
         }
         if (!errorList.isEmpty()) {
             LoggingBase.logMessage(CLS + "checkAllInstancesExist:throw Ex " + errorList);
-            throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, errorList));
+            throw new MALInteractionException(new UnknownException(errorList));
         }
         LoggingBase.logMessage(CLS + " checkAllInstancesExist RET:" + instIds);
     }
