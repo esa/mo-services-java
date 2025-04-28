@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal.test.accesscontrol;
 
 import java.util.Vector;
+import org.ccsds.moims.mo.mal.AuthenticationFailedException;
 
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -65,7 +66,7 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
                     x = new MsgDetails(msg.getHeader().getInteractionType().getValue(), stage,
                             msg.getHeader().getAuthenticationId().getValue(), msg.getHeader().getIsErrorMessage().booleanValue());
                 } catch (Exception exc) {
-                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,
+                    throw new MALCheckErrorException(new AuthenticationFailedException(
                             new Union("Could not get the authentication id: " + exc)),
                             msg.getQoSProperties());
                 }

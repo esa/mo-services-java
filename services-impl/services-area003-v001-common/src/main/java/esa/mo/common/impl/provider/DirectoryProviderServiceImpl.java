@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.COMHelper;
+import org.ccsds.moims.mo.com.InvalidException;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
 import org.ccsds.moims.mo.common.directory.DirectoryServiceInfo;
@@ -46,6 +47,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingleton;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.helpertools.connections.ServicesConnectionDetails;
@@ -170,7 +172,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
             Identifier domainPart = inputDomain.get(i);
 
             if (domainPart.toString().equals("*") && i != (inputDomain.size() - 1)) {
-                throw new MALInteractionException(new MOErrorException(COMHelper.INVALID_ERROR_NUMBER, null));
+                throw new MALInteractionException(new InvalidException(null));
             }
         }
 
@@ -344,7 +346,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
             MALException {
         synchronized (MUTEX) {
             if (!this.providersAvailable.containsKey(providerObjectKey)) { // The requested provider does not exist
-                throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+                throw new MALInteractionException(new UnknownException(null));
             }
 
             this.providersAvailable.remove(providerObjectKey); // Remove the provider...
