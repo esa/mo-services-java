@@ -197,17 +197,17 @@ public abstract class MALContextFactory {
      * MALContextFactory or is null.
      */
     public static void registerFactoryClass(final Class factoryClass) throws IllegalArgumentException {
-        if (null != factoryClass) {
-            if (!MALContextFactory.class.isAssignableFrom(factoryClass)) {
-                throw new IllegalArgumentException(
-                        "Supplied factory class does not extend MALContextFactory: "
-                        + factoryClass.getName());
-            }
-
-            MAL_MAP.put(factoryClass.getName(), factoryClass);
-        } else {
+        if (factoryClass == null) {
             throw new IllegalArgumentException("NULL argument");
         }
+
+        if (!MALContextFactory.class.isAssignableFrom(factoryClass)) {
+            throw new IllegalArgumentException(
+                    "Supplied factory class does not extend MALContextFactory: "
+                    + factoryClass.getName());
+        }
+
+        MAL_MAP.put(factoryClass.getName(), factoryClass);
     }
 
     /**
