@@ -65,7 +65,7 @@ mvn clean deploy -P release
     * Tag: `git tag release-XX.Y`
     * Then push it to the repo: `git push origin --tags`
 
-5. Create a Pull Request from the new version branch to master. Please squash it.
+5. Create a Pull Request from the new version branch to master. Please "Squash and Merge" it.
 
 6. Create a GitHub release in: https://github.com/esa/mo-services-java/releases
 
