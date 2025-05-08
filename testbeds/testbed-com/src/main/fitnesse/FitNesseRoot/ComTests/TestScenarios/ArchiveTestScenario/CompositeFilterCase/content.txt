@@ -221,7 +221,7 @@ This tests each prescriptive statement defined for the structure 'CompositeFilte
 |ensure| add archive query with sorting order | TRUE | and field |  |
 |ensure| reset composite filter set list |
 |ensure| reset composite filter set |
-|ensure| add composite filter with field name |  | and operator | GREATER | and uinteger | 0 |
+|ensure| add composite filter with field name |  | and operator | GREATER | and uinteger | 1 |
 |ensure| add composite filter set |
 |ensure| query | true |
 |ensure| queried object list size is | 3 |

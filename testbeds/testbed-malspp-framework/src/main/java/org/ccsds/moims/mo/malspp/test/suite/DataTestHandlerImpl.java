@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.ObjectRefList;
@@ -240,11 +241,6 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public ElementList testPolymorphicMalElementList(ElementList _ElementList0, MALInteraction interaction) throws MALInteractionException, MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(Garage garage, ObjectRefList porsches, ObjectRefList autos, ObjectRefList elements, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -266,6 +262,16 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     @Override
     public Auto getObject(ObjectRef<Auto> _Auto_0, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public HeterogeneousList testMalElementList(HeterogeneousList input1, MALInteraction interaction) throws MALInteractionException, MALException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public HeterogeneousList testPolymorphicMalElementList(HeterogeneousList input1, MALInteraction interaction) throws MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

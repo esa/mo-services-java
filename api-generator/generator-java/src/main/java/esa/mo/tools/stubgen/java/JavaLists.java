@@ -87,10 +87,10 @@ public class JavaLists {
                 type, false, true, "List element.");
 
         MethodWriter method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
-        method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {", false);
-        method.addLine("    throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\")");
-        method.addLine("}", false);
-        method.addLine("return super.add(element)");
+        method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {");
+        method.addLine("    throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\");");
+        method.addLine("}");
+        method.addLine("return super.add(element);");
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();
@@ -152,9 +152,9 @@ public class JavaLists {
                         TypeUtils.createTypeReference(null, null, "java.util.ArrayList<" + fqSrcTypeName + ">", false),
                         false, false, "The ArrayList that is used for initialization."),
                 false, null, "Constructor that uses an ArrayList for initialization.", null);
-        method.addLine("for(" + fqSrcTypeName + " element : elementList) {", false);
-        method.addLine("    this.add(element)");
-        method.addLine("}", false);
+        method.addLine("for(" + fqSrcTypeName + " element : elementList) {");
+        method.addLine("    this.add(element);");
+        method.addLine("}");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
@@ -166,38 +166,38 @@ public class JavaLists {
                 type, false, true, "List element.");
 
         method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
-        method.addLine("if (element == null) {", false);
-        method.addLine("    throw new IllegalArgumentException(\"The added argument cannot be null!\")");
-        method.addLine("}", false);
+        method.addLine("if (element == null) {");
+        method.addLine("    throw new IllegalArgumentException(\"The added argument cannot be null!\");");
+        method.addLine("}");
 
-        method.addLine("return super.add(element)");
+        method.addLine("return super.add(element);");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
-        method.addLine("return new " + listName + "()");
+        method.addLine("return new " + listName + "();");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatementOverride(elementType, "createTypedElement", null, null);
 
         // Wrap in Union if needed:
         if (listElement.getNewCall().contains("structures")) {
-            method.addLine("return " + listElement.getNewCall());
+            method.addLine("return " + listElement.getNewCall() + ";");
         } else {
-            method.addLine("org.ccsds.moims.mo.mal.TypeId typeId = this.getTypeId()");
-            String dummyUnion = "new Union(typeId.generateTypeIdPositive())";
+            method.addLine("org.ccsds.moims.mo.mal.TypeId typeId = this.getTypeId();");
+            String dummyUnion = "new Union(typeId.generateTypeIdPositive());";
             method.addLine("return " + dummyUnion);
         }
         method.addMethodCloseStatement();
 
         // create encode method
         method = generator.encodeMethodOpen(file);
-        method.addLine("encoder.encodeHomogeneousList(this)");
+        method.addLine("encoder.encodeHomogeneousList(this);");
         method.addMethodCloseStatement();
 
         // create decode method
         method = generator.decodeMethodOpen(file, elementType);
-        method.addLine("decoder.decodeHomogeneousList(this)");
-        method.addLine("return this");
+        method.addLine("decoder.decodeHomogeneousList(this);");
+        method.addLine("return this;");
         method.addMethodCloseStatement();
 
         generator.addTypeIdGetterMethod(file, area, service);

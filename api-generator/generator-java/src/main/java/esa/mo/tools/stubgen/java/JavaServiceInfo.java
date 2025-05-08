@@ -251,7 +251,7 @@ public class JavaServiceInfo {
                 null, null, null, null, null);
         String ending = hasCOMObjects ? ", COM_OBJECTS)" : ")";
         constructor.addLine("super(SERVICE_KEY, " + serviceCAPS + "_SERVICE_NAME, "
-                + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending);
+                + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending + ";");
         constructor.addMethodCloseStatement();
 
         // Add the MALArea getArea() method
@@ -260,7 +260,7 @@ public class JavaServiceInfo {
                 false, true, null);
         MethodWriter method = file.addMethodOpenStatementOverride(opType, "getArea", null, null);
 
-        method.addLine("return " + namespace, true);
+        method.addLine("return " + namespace + ";");
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();

@@ -561,6 +561,7 @@ public class ArchiveScenario {
 
     public boolean addEnumeratedPayload(String enumerated) {
         EnumeratedObject enumeratedObject = EnumeratedObject.fromString(enumerated);
+        LoggingBase.logMessage("Enumeraaaations - Adding " + enumerated + " vs. " + enumeratedObject);
         objectList.add(enumeratedObject);
         return true;
     }
@@ -1034,6 +1035,7 @@ public class ArchiveScenario {
     public boolean queriedObjectAtIndexIsEnumerated(int index, String expectedValue) {
         EnumeratedObject expectedEnumerated = EnumeratedObject.fromString(expectedValue);
         EnumeratedObject objectPayload = (EnumeratedObject) queriedObjectList.get(index);
+        LoggingBase.logMessage("Enumeraaaations - Checking " + expectedEnumerated + " vs. " + objectPayload);
         return expectedEnumerated.equals(objectPayload);
     }
 

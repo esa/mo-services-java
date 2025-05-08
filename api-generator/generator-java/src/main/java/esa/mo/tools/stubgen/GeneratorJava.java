@@ -161,7 +161,7 @@ public class GeneratorJava extends GeneratorLangs {
                         TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),
                         false, true, "The set of broker connections to use when registering and publishing."),
                 false, null, "Creates an instance of this class using the supplied publisher set.", null);
-        method.addLine("this.publisherSet = publisherSet");
+        method.addLine("this.publisherSet = publisherSet;");
         method.addMethodCloseStatement();
 
         CompositeField keyNamesList = createCompositeElementsDetails(file, false, "keyNames",
@@ -186,7 +186,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.register(keyNames, keyTypes, listener)");
+        method.addLine("publisherSet.register(keyNames, keyTypes, listener);");
         method.addMethodCloseStatement();
 
         // registerWithDefaultKeys method
@@ -198,20 +198,20 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("org.ccsds.moims.mo.mal.structures.IdentifierList keyNames = new org.ccsds.moims.mo.mal.structures.IdentifierList()");
-        method.addLine("org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList()");
+        method.addLine("org.ccsds.moims.mo.mal.structures.IdentifierList keyNames = new org.ccsds.moims.mo.mal.structures.IdentifierList();");
+        method.addLine("org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList();");
 
         if (publisher.getOperation() != null) {
             MessageBodyType keys = publisher.getOperation().getSubscriptionKeys();
 
             if (keys != null) {
                 for (NamedElementReferenceWithCommentType key : keys.getField()) {
-                    method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + key.getName() + "\"))");
-                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + key.getType().getName().toUpperCase() + ")");
+                    method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + key.getName() + "\"));");
+                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + key.getType().getName().toUpperCase() + ");");
                 }
             }
         }
-        method.addLine("publisherSet.register(keyNames, keyTypes, listener)");
+        method.addLine("publisherSet.register(keyNames, keyTypes, listener);");
         method.addMethodCloseStatement();
 
         // asyncRegister method
@@ -221,7 +221,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.asyncRegister(keyNames, keyTypes, listener)");
+        method.addLine("publisherSet.asyncRegister(keyNames, keyTypes, listener);");
         method.addMethodCloseStatement();
 
         List<CompositeField> argList = new LinkedList<>();
@@ -248,7 +248,7 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.publish(updateHeader" + argNameList + ")");
+        method.addLine("publisherSet.publish(updateHeader" + argNameList + ");");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -256,7 +256,7 @@ public class GeneratorJava extends GeneratorLangs {
                 "Deregisters this provider implementation from the set of broker connections", null,
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.deregister()");
+        method.addLine("publisherSet.deregister();");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -265,13 +265,13 @@ public class GeneratorJava extends GeneratorLangs {
                 Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
                         throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.asyncDeregister(listener)");
+        method.addLine("publisherSet.asyncDeregister(listener);");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "close", null, throwsMALException,
                 "Closes this publisher", null, Arrays.asList(throwsMALException + " if there is an implementation exception"));
-        method.addLine("publisherSet.close()");
+        method.addLine("publisherSet.close();");
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();

@@ -44,7 +44,7 @@ public class HTTPXMLElementInputTest {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    MALContextFactory.getElementsRegistry().registerElementsForArea(MALHelper.MAL_AREA);
+    MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
   }
 
   @Test
@@ -284,7 +284,7 @@ public class HTTPXMLElementInputTest {
     InteractionType it = (InteractionType) eis.readElement(null, null);
 
     assertNotNull(it);
-    assertEquals(0, it.getOrdinal());
+    assertEquals(InteractionType.SEND_VALUE, it.getValue());
   }
 
   @Test

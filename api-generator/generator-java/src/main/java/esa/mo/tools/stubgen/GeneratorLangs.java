@@ -93,7 +93,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
     public boolean supportsEquals;
     public boolean requiresDefaultConstructors;
     public boolean supportsToValue;
-    private boolean supportsAsync;
     private boolean generateStructures;
     protected final Log logger;
 
@@ -119,7 +118,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         this.supportsToString = supportsToString;
         this.supportsEquals = supportsEquals;
         this.supportsToValue = supportsToValue;
-        this.supportsAsync = supportsAsync;
         this.requiresDefaultConstructors = requiresDefaultConstructors;
         this.logger = logger;
     }
@@ -182,15 +180,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     ExtendedServiceType eService = (ExtendedServiceType) service;
                     SupportedFeatures features = eService.getFeatures();
 
-                    if (null != features) {
-                        if (null != features.getObjects()) {
+                    if (features != null) {
+                        if (features.getObjects() != null) {
                             for (ModelObjectType obj : features.getObjects().getObject()) {
                                 TypeKey key = new TypeKey(area.getName(), service.getName(), String.valueOf(obj.getNumber()));
                                 comObjectMap.put(key, obj);
                             }
                         }
 
-                        if (null != features.getEvents()) {
+                        if (features.getEvents() != null) {
                             for (ModelObjectType obj : features.getEvents().getEvent()) {
                                 TypeKey key = new TypeKey(area.getName(), service.getName(), String.valueOf(obj.getNumber()));
                                 comObjectMap.put(key, obj);
@@ -275,15 +273,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
      */
     public boolean isSupportsToValue() {
         return supportsToValue;
-    }
-
-    /**
-     * Does the generator need to generate async operation methods.
-     *
-     * @return the supportsAsync
-     */
-    public boolean isSupportsAsync() {
-        return supportsAsync;
     }
 
     /**
@@ -486,8 +475,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
         createServiceConsumerFolderComment(consumerFolder, area, service);
-        createServiceConsumerInterface(consumerFolder, area, service, summary);
-        JavaConsumer consumer = new JavaConsumer(this, supportsToValue, supportsAsync);
+        JavaConsumer consumer = new JavaConsumer(this, supportsToValue, true);
         logger.info(" > Creating consumer adapter: " + service);
         consumer.createServiceConsumerAdapter(consumerFolder, area, service, summary);
         logger.info(" > Creating consumer stub: " + service);
@@ -521,144 +509,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createServiceProviderProgressInteractionClass(providerFolder, area, service, op);
             }
         }
-    }
-
-    protected void createServiceConsumerInterface(File consumerFolder, String area,
-            String service, ServiceSummary summary) throws IOException {
-        // This code is not needed anymore
-        // This interface was being generated and implemented by the consumer stubs
-        // The consumer stubs can now stand on their own
-        /*
-        String serviceName = service;
-
-        logger.info(" > Creating consumer interface: " + serviceName);
-
-        InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName);
-
-        file.addPackageStatement(area, service, CONSUMER_FOLDER);
-
-        file.addInterfaceOpenStatement(serviceName, null, "Consumer interface for " + serviceName + " service.");
-
-        CompositeField serviceAdapterArg = createCompositeElementsDetails(file, false, "adapter",
-                TypeUtils.createTypeReference(area, service + "." + CONSUMER_FOLDER, serviceName + "Adapter", false),
-                false, true, "Listener in charge of receiving the messages from the service provider");
-        CompositeField lastInteractionStage = createCompositeElementsDetails(file, false, "lastInteractionStage",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.UOCTET, false),
-                true, true, "The last stage of the interaction to continue");
-        CompositeField initiationTimestamp = createCompositeElementsDetails(file, false, "initiationTimestamp",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.TIME, false),
-                true, true, "Timestamp of the interaction initiation message");
-        CompositeField transactionId = createCompositeElementsDetails(file, false, "transactionId",
-                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.LONG, false),
-                true, true, "Transaction identifier of the interaction to continue");
-        List<CompositeField> continueOpArgs = StubUtils.concatenateArguments(lastInteractionStage, initiationTimestamp, transactionId, serviceAdapterArg);
-
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
-        String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
-        CompositeField msgType = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
-                false, true, null);
-        CompositeField malConsumer = createCompositeElementsDetails(file, false, "return",
-                TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
-                false, true, null);
-
-        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, malConsumer, "getConsumer", null, null,
-                "Returns the internal MAL consumer object used for sending of messages from this interface",
-                "The MAL consumer object.", null);
-
-        for (OperationSummary op : summary.getOperations()) {
-            switch (op.getPattern()) {
-                case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, op.getName(),
-                            createOperationArguments(getConfig(), file, op.getArgTypes()),
-                            throwsInteractionAndMALException, op.getComment(),
-                            "the MAL message sent to initiate the interaction",
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    break;
-                }
-                case SUBMIT_OP:
-                case REQUEST_OP: {
-                    List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    String opRetComment = (opRetType == null) ? null : "The return value of the interaction";
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getComment(), opRetComment,
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    if (supportsAsync) {
-                        List<CompositeField> asyncOpArgs = StubUtils.concatenateArguments(opArgs, serviceAdapterArg);
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType,
-                                "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsInteractionAndMALException,
-                                "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction",
-                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                        throwsMALException + " if there is an implementation exception"));
-                    }
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "continue" + StubUtils.preCap(op.getName()),
-                            continueOpArgs, throwsInteractionAndMALException, "Continues a previously started interaction", null,
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    break;
-                }
-                case INVOKE_OP:
-                case PROGRESS_OP: {
-                    List<CompositeField> opArgs = StubUtils.concatenateArguments(createOperationArguments(getConfig(), file, op.getArgTypes()), serviceAdapterArg);
-                    CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    String opRetComment = (opRetType == null) ? null : "The acknowledge value of the interaction";
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(), opArgs,
-                            throwsInteractionAndMALException, op.getComment(), opRetComment,
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    if (supportsAsync) {
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()), opArgs,
-                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction",
-                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                        throwsMALException + " if there is an implementation exception"));
-                    }
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs,
-                            throwsInteractionAndMALException, "Continues a previously started interaction", null,
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    break;
-                }
-                case PUBSUB_OP: {
-                    CompositeField subStr = createCompositeElementsDetails(file, false, "subscription",
-                            TypeUtils.createTypeReference(StdStrings.MAL, null, "Subscription", false),
-                            true, true, "The subscription to register for");
-                    CompositeField idStr = createCompositeElementsDetails(file, false, "identifierList",
-                            TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
-                            true, true, "The subscription identifiers to deregister");
-
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Register", StubUtils.concatenateArguments(subStr, serviceAdapterArg),
-                            throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null,
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, op.getName() + "Deregister", Arrays.asList(idStr),
-                            throwsInteractionAndMALException, "Deregister method for the " + op.getName() + " PubSub interaction", null,
-                            Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                    throwsMALException + " if there is an implementation exception"));
-                    if (supportsAsync) {
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Register",
-                                StubUtils.concatenateArguments(subStr, serviceAdapterArg),
-                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction",
-                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                        throwsMALException + " if there is an implementation exception"));
-                        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister",
-                                StubUtils.concatenateArguments(idStr, serviceAdapterArg),
-                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister", "the MAL message sent to initiate the interaction",
-                                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                        throwsMALException + " if there is an implementation exception"));
-                    }
-                    break;
-                }
-            }
-        }
-
-        file.addInterfaceCloseStatement();
-
-        file.flush();
-        */
     }
 
     protected void createServiceProviderHandler(File providerFolder, String area,
@@ -712,7 +562,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Sets the skeleton to be used for creation of publishers.", null, null);
 
         file.addInterfaceCloseStatement();
-
         file.flush();
     }
 
@@ -751,14 +600,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
                         false, true, "The MAL interaction action object to use."), false, null,
                 "Wraps the provided MAL interaction object with methods for sending responses to an INVOKE interaction from a provider.", null);
-        method.addLine(createMethodCall("this.interaction = interaction"));
+        method.addLine("this.interaction = interaction;");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, opType, "getInteraction", null, null,
                 "Returns the MAL interaction object used for returning messages from the provider.",
                 "The MAL interaction object provided in the constructor", null);
-        method.addLine("return interaction");
+        method.addLine("return interaction;");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -767,7 +616,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Sends a INVOKE acknowledge to the consumer", "Returns the MAL message created by the acknowledge",
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine(createMethodCall("return interaction.sendAcknowledgement(") + createArgNameOrNull(op.getAckTypes()) + ")");
+        method.addLine("return interaction.sendAcknowledgement(" + createArgNameOrNull(op.getAckTypes()) + ");");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -776,7 +625,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Sends a INVOKE response to the consumer", "Returns the MAL message created by the response",
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
                         throwsMALException + " if there is an implementation exception"));
-        method.addLine(createMethodCall("return interaction.sendResponse(") + createArgNameOrNull(op.getRetTypes()) + ")");
+        method.addLine("return interaction.sendResponse(" + createArgNameOrNull(op.getRetTypes()) + ");");
         method.addMethodCloseStatement();
 
         createServiceProviderInteractionErrorHandlers(file, false, msgType, errType, throwsInteractionException, throwsMALException);
@@ -822,14 +671,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
                         false, true, "The MAL interaction action object to use."), false, null,
                 "Wraps the provided MAL interaction object with methods for sending responses to an PROGRESS interaction from a provider.", null);
-        method.addLine(createMethodCall("this.interaction = interaction"));
+        method.addLine("this.interaction = interaction;");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, opType, "getInteraction", null, null,
                 "Returns the MAL interaction object used for returning messages from the provider.",
                 "The MAL interaction object provided in the constructor", null);
-        method.addLine("return interaction");
+        method.addLine("return interaction;");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -837,7 +686,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createOperationArguments(getConfig(), file, op.getAckTypes()), throwsInteractionAndMALException,
                 "Sends a PROGRESS acknowledge to the consumer", "Returns the MAL message created by the acknowledge",
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addLine(createMethodCall("return interaction.sendAcknowledgement(") + createArgNameOrNull(op.getAckTypes()) + ")");
+        method.addLine("return interaction.sendAcknowledgement(" + createArgNameOrNull(op.getAckTypes()) + ");");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -845,7 +694,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createOperationArguments(getConfig(), file, op.getUpdateTypes()), throwsInteractionAndMALException,
                 "Sends a PROGRESS update to the consumer", "Returns the MAL message created by the update",
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addLine(createMethodCall("return interaction.sendUpdate(") + createArgNameOrNull(op.getUpdateTypes()) + ")");
+        method.addLine("return interaction.sendUpdate(" + createArgNameOrNull(op.getUpdateTypes()) + ");");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
@@ -853,7 +702,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 createOperationArguments(getConfig(), file, op.getRetTypes()), throwsInteractionAndMALException,
                 "Sends a PROGRESS response to the consumer", "Returns the MAL message created by the response",
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addLine(createMethodCall("return interaction.sendResponse(") + createArgNameOrNull(op.getRetTypes()) + ")");
+        method.addLine("return interaction.sendResponse(" + createArgNameOrNull(op.getRetTypes()) + ");");
         method.addMethodCloseStatement();
 
         createServiceProviderInteractionErrorHandlers(file, true, msgType, errType, throwsInteractionException, throwsMALException);
@@ -869,7 +718,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 msgType, "sendError", Arrays.asList(errType), throwsInteractionException + ", " + throwsMALException,
                 "Sends an error to the consumer", "Returns the MAL message created by the error",
                 Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-        method.addLine(createMethodCall("return interaction.sendError(error)"));
+        method.addLine("return interaction.sendError(error);");
         method.addMethodCloseStatement();
 
         if (withUpdate) {
@@ -877,7 +726,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     msgType, "sendUpdateError", Arrays.asList(errType), throwsInteractionException + ", " + throwsMALException,
                     "Sends an update error to the consumer", "Returns the MAL message created by the error",
                     Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.", throwsMALException + " if there is an implementation exception"));
-            method.addLine(createMethodCall("return interaction.sendUpdateError(error)"));
+            method.addLine("return interaction.sendUpdateError(error);");
             method.addMethodCloseStatement();
         }
     }
@@ -936,7 +785,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         file.addInterfaceCloseStatement();
-
         file.flush();
     }
 
@@ -1019,8 +867,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             TypeUtils.createTypeReference(area, service.toLowerCase() + "." + PROVIDER_FOLDER, service + "Handler", false),
                             false, true, "The interaction handler used for delegation"), false, null,
                     "Creates a delegation skeleton using the supplied delegate.", null);
-            method.addLine(createMethodCall("this.delegate = delegate"));
-            method.addLine(createMethodCall("delegate.setSkeleton(this)"));
+            method.addLine("this.delegate = delegate;");
+            method.addLine("delegate.setSkeleton(this);");
             method.addMethodCloseStatement();
         } else {
             // Connection object method
@@ -1034,7 +882,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, connectionName, "getConnection", null, "java.io.IOException",
                     "Returns the connection object for this provider.",
                     "the connection object for this provider", throwsList);
-            method1.addLine("throw new java.io.IOException(\"This method needs to be overridden!\")");
+            method1.addLine("throw new java.io.IOException(\"This method needs to be overridden!\");");
             method1.addMethodCloseStatement();
 
             // SetSkeleton method
@@ -1045,7 +893,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     false, true, null, "setSkeleton", Arrays.asList(skeletonName), null,
                     "Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.",
                     null, null);
-            method.addLine("// Not used in the inheritance pattern (the skeleton is 'this')");
+            method.addLine("// Not used in the inheritance pattern (the skeleton is 'this');");
             method.addMethodCloseStatement();
         }
 
@@ -1056,14 +904,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, null, "malInitialize", Arrays.asList(providerType), throwsMALException,
                 "Adds the supplied MAL provider to the internal list of providers used for PubSub",
                 null, Arrays.asList(throwsMALException + " If an error is detected."));
-        method.addLine(createMethodCall("providerSet.addProvider(provider)"));
+        method.addLine("providerSet.addProvider(provider);");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                 false, true, null, "malFinalize", Arrays.asList(providerType), throwsMALException,
                 "Removes the supplied MAL provider from the internal list of providers used for PubSub", null,
                 Arrays.asList(throwsMALException + " If an error is detected."));
-        method.addLine(createMethodCall("providerSet.removeProvider(provider)"));
+        method.addLine("providerSet.removeProvider(provider);");
         method.addMethodCloseStatement();
 
         // add publisher handler code
@@ -1079,7 +927,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
                     String ns = convertToNamespace(serviceInfoName + "." + op.getName().toUpperCase() + "_OP");
                     method.addLine("return new " + updateType.getTypeName()
-                            + createMethodCall("(providerSet.createPublisherSet(") + ns + ", domain, sessionType, sessionName, qos, qosProps, null))", true);
+                            + "(providerSet.createPublisherSet(" + ns + ", domain, sessionType, sessionName, qos, qosProps, null));");
                     method.addMethodCloseStatement();
                     break;
                 }
@@ -1089,7 +937,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // for each IP type add handler code
         String delegateCall = "";
         if (isDelegate) {
-            delegateCall = createMethodCall("delegate.");
+            delegateCall = "delegate.";
         }
 
         // SEND handler
@@ -1100,8 +948,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
 
         String operationNumberGetter = createProviderSkeletonHandlerSwitch();
-        method.addLine("int opNumber = " + operationNumberGetter);
-        method.addLine(createMethodCall("switch (opNumber) {"), false);
+        method.addLine("int opNumber = " + operationNumberGetter + ";");
+        method.addLine("switch (opNumber) {");
 
         //String msg = "Unknown operation number: \" + opNumber + \" - className: " + className + " - method: ";
         String msg = "org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber";
@@ -1111,18 +959,18 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 String ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
-                method.addLine("    break");
+                method.addLine("  case " + ns);
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction);");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
-        String ns = convertToNamespace(malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER");
+        method.addLine("  default:");
+        String ns = malHelper + ".UNSUPPORTED_OPERATION_ERROR_NUMBER";
         unkErrorMsg = "(\"" + msg + "Send\")";
         method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", true);
-        method.addLine("}", false);
+                + msg + "));");
+        method.addLine("}");
         method.addMethodCloseStatement();
 
         // SUBMIT handler
@@ -1134,27 +982,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine("int opNumber = " + operationNumberGetter);
-        method.addLine(createMethodCall("switch (opNumber) {"), false);
+        method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction)");
-                method.addLine(createMethodCall("    interaction.sendAcknowledgement()"));
-                method.addLine("    break");
+                method.addLine("  case " + ns);
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction);");
+                method.addLine("    interaction.sendAcknowledgement();");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
+        method.addLine("  default:");
         unkErrorMsg = "(\"" + msg + "Submit\")";
-        method.addLine(createMethodCall("    interaction.sendError"
+        method.addLine("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), true);
+                + msg + "));");
         method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", true);
-        method.addLine("}", false);
+                + msg + "));");
+        method.addLine("}");
         method.addMethodCloseStatement();
 
         // REQUEST handler
@@ -1166,31 +1014,31 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine("int opNumber = " + operationNumberGetter);
-        method.addLine(createMethodCall("switch (opNumber) {"), false);
+        method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
+                method.addLine("  case " + ns);
                 createRequestResponseDecompose(
                         method, op,
                         opResp,
                         createReturnType(file, area, service, op.getName(), "Response", op.getRetTypes())
                 );
-                method.addLine("    break");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
+        method.addLine("  default:");
         unkErrorMsg = "(\"" + msg + "Request\")";
-        method.addLine(createMethodCall("    interaction.sendError"
+        method.addLine("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), true);
+                + msg + "));");
         method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", true);
-        method.addLine("}", false);
+                + msg + "));");
+        method.addLine("}");
         method.addMethodCloseStatement();
 
         // INVOKE handler
@@ -1202,27 +1050,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine("int opNumber = " + operationNumberGetter);
-        method.addLine(createMethodCall("switch (opNumber) {"), false);
+        method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
+                method.addLine("  case " + ns);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
-                        + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction))");
-                method.addLine("    break");
+                        + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
+        method.addLine("  default:");
         unkErrorMsg = "(\"" + msg + "Invoke\")";
-        method.addLine(createMethodCall("    interaction.sendError"
+        method.addLine("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), true);
+                + msg + "));");
         method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", true);
-        method.addLine("}", false);
+                + msg + "));");
+        method.addLine("}");
         method.addMethodCloseStatement();
 
         // PROGRESS handler
@@ -1234,30 +1082,29 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 "Called by the provider MAL layer on reception of a message to handle the interaction", null,
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
         method.addLine("int opNumber = " + operationNumberGetter);
-        method.addLine(createMethodCall("switch (opNumber) {"), false);
+        method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction))");
-                method.addLine("    break");
+                method.addLine("  case " + ns);
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
+        method.addLine("  default:");
         unkErrorMsg = "(\"" + msg + "Progress\")";
-        method.addLine(createMethodCall("    interaction.sendError"
+        method.addLine("    interaction.sendError"
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))"), true);
+                + msg + "));");
         method.addLine("    throw new " + throwsInteractionException
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
-                + msg + "))", true);
-        method.addLine("}", false);
+                + msg + "));");
+        method.addLine("}");
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();
-
         file.flush();
     }
 
@@ -1269,14 +1116,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (targetTypes.size() == 1) {
                 if ((op.getRetTypes().get(0).isNativeType())) {
                     String arg = op.getName() + "Rt";
-                    method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall);
+                    method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall + ";");
                     StringBuilder buf = new StringBuilder();
                     buf.append("(").append(arg).append(" == null) ? null : new ").append(getConfig().getAreaPackage(StdStrings.MAL));
                     buf.append("mal.").append(getConfig().getStructureFolder()).append(".").append(StdStrings.UNION);
                     buf.append("(").append(arg).append(")");
-                    method.addLine(createMethodCall("    interaction.sendResponse(" + buf.toString() + ")"));
+                    method.addLine("    interaction.sendResponse(" + buf.toString() + ");");
                 } else {
-                    method.addLine(createMethodCall("    interaction.sendResponse(" + opCall + ")"));
+                    method.addLine("    interaction.sendResponse(" + opCall + ");");
                 }
             } else {
                 String arg = op.getName() + "Rt";
@@ -1296,13 +1143,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     }
                 }
 
-                method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall);
-                method.addLine(createMethodCall("    interaction.sendResponse(" + buf.toString() + ")"));
+                method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall + ";");
+                method.addLine("    interaction.sendResponse(" + buf.toString() + ");");
             }
         } else {
             // operation has an empty response
-            method.addLine(createMethodCall("    " + opCall));
-            method.addLine(createMethodCall("    interaction.sendResponse()"));
+            method.addLine("    " + opCall + ";");
+            method.addLine("    interaction.sendResponse();");
         }
     }
 
@@ -1376,7 +1223,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = argsList.get(i);
-            method.addLine(createMethodCall("this." + argType.getFieldName() + " = " + argType.getFieldName()));
+            method.addLine("this." + argType.getFieldName() + " = " + argType.getFieldName() + ";");
         }
 
         method.addMethodCloseStatement();
@@ -1393,7 +1240,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
                     returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "The new value.");
             addGetter(file, argType, "BodyElement" + i);
-            addSetter(file, argType, "BodyElement" + i);
+            //addSetter(file, argType, "BodyElement" + i);
         }
 
         file.addClassCloseStatement();
@@ -1435,7 +1282,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 true, true, null);
 
         MethodWriter method = file.addMethodOpenStatementOverride(typeIdType, "getTypeId", null, null);
-        method.addLine("return TYPE_ID");
+        method.addLine("return TYPE_ID;");
         method.addMethodCloseStatement();
     }
 
@@ -1449,7 +1296,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 !element.isCanBeNull(), !element.isCanBeNull() && element.isActual(), element,
                 getOpPrefix + getOpName, null, null, "Returns the field " + attributeName,
                 "The field " + attributeName, null, isDeprecated);
-        method.addLine("return " + attributeName);
+        method.addLine("return " + attributeName + ";");
         method.addMethodCloseStatement();
     }
 
@@ -1470,7 +1317,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 StdStrings.PUBLIC, false, true, null,
                 setOpPrefix + getOpName, Arrays.asList(fld), null, "Sets the field " + attributeName,
                 null, null, isDeprecated);
-        method.addLine(attributeName + " = __newValue");
+        method.addLine(attributeName + " = __newValue;");
         method.addMethodCloseStatement();
     }
 
@@ -1512,7 +1359,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION;
 
                 AttributeTypeDetails details = getAttributeDetails(typeInfo.getSourceType());
-                String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", "
+                String av = argName + ".getBodyElement(" + argIndex + ", "
                         + "new " + unionType + "(" + details.getDefaultValue() + "))";
                 retStr += "(" + av + " == null) ? null : ((" + unionType + ") " + av + ").get" + details.getMalType() + "Value()";
             } else {
@@ -1520,7 +1367,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String expectedType = generateExpectedType(typeInfo);
                 String cast = typeInfo.getTargetType();
                 cast = cast.replace(".ElementList", ".HeterogeneousList");
-                String av = argName + createMethodCall(".getBodyElement(") + argIndex + ", " + expectedType + ")";
+                String av = argName + ".getBodyElement(" + argIndex + ", " + expectedType + ")";
                 retStr += "(" + cast + ") " + av;
             }
 
@@ -1561,7 +1408,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return (replacementWord != null) ? replacementWord : arg;
     }
 
-    public String createConsumerPatternCall(OperationSummary op) {
+    public static String createConsumerPatternCall(OperationSummary op) {
         switch (op.getPattern()) {
             case SEND_OP:
                 return "send";
@@ -1678,7 +1525,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 returnParameter = "(" + cast + ") " + tv;
             }
 
-            method.addLine(eleType + " " + tv + " = (" + eleType + ") " + av);
+            method.addLine(eleType + " " + tv + " = (" + eleType + ") " + av + ";");
             return returnParameter;
         }
 
@@ -1775,15 +1622,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     protected String createProviderSkeletonHandlerSwitch() {
-        return "interaction.getOperation().getNumber().getValue()";
+        return "interaction.getOperation().getNumber().getValue();";
     }
 
     public CompositeField createReturnReference(CompositeField targetType) {
         return targetType;
-    }
-
-    public String createMethodCall(String call) {
-        return call;
     }
 
     protected void createAreaFolderComment(File structureFolder, AreaType area) throws IOException {

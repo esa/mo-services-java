@@ -135,7 +135,7 @@ public class JMSTransport extends Transport<byte[], byte[]> implements MALTransp
 
     @Override
     public boolean isSupportedQoSLevel(QoSLevel qos) {
-        return qos.getOrdinal() == QoSLevel._BESTEFFORT_INDEX;
+        return qos.getValue() == QoSLevel.BESTEFFORT_VALUE;
     }
 
     public String getJndiPort() {

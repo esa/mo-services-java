@@ -96,7 +96,7 @@ public class NotifyMessageBody {
         buf.append(area).append("/").append(service).append("/");
         buf.append(version).append("/").append(operation);
         buf.append("\n >> subscriptionId: ").append(subscriptionId);
-        buf.append("\n >> updateHeaderList: ").append(updateHeader);
+        buf.append("\n >> updateHeader: ").append(updateHeader);
         return buf.toString();
     }
 

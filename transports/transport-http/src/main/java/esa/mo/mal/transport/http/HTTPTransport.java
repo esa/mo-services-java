@@ -448,7 +448,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
     @Override
     public boolean isSupportedInteractionType(InteractionType type) {
         // Supports all IPs except PubSub
-        return InteractionType.PUBSUB.getOrdinal() != type.getOrdinal();
+        return InteractionType.PUBSUB.getValue() != type.getValue();
     }
 
     @Override
@@ -751,16 +751,16 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      * process the response
      */
     public static boolean messageHasEmtpyHttpResponse(MALMessageHeader header) {
-        return (header.getInteractionType().getOrdinal() == InteractionType._SEND_INDEX)
-                || (header.getInteractionType().getOrdinal() == InteractionType._INVOKE_INDEX
+        return (header.getInteractionType().getValue() == InteractionType.SEND_VALUE)
+                || (header.getInteractionType().getValue() == InteractionType.INVOKE_VALUE
                 && header.getInteractionStage().getValue() == MALInvokeOperation._INVOKE_RESPONSE_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PROGRESS_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PROGRESS_VALUE
                 && header.getInteractionStage().getValue() == MALProgressOperation._PROGRESS_UPDATE_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PROGRESS_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PROGRESS_VALUE
                 && header.getInteractionStage().getValue() == MALProgressOperation._PROGRESS_RESPONSE_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._NOTIFY_STAGE);
     }
 
@@ -775,21 +775,21 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      * within the HTTP response
      */
     public static boolean messageExpectsHttpResponse(MALMessageHeader header) {
-        return (header.getInteractionType().getOrdinal() == InteractionType._SUBMIT_INDEX
+        return (header.getInteractionType().getValue() == InteractionType.SUBMIT_VALUE
                 && header.getInteractionStage().getValue() == MALSubmitOperation._SUBMIT_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._REQUEST_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.REQUEST_VALUE
                 && header.getInteractionStage().getValue() == MALRequestOperation._REQUEST_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._INVOKE_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.INVOKE_VALUE
                 && header.getInteractionStage().getValue() == MALInvokeOperation._INVOKE_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PROGRESS_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PROGRESS_VALUE
                 && header.getInteractionStage().getValue() == MALProgressOperation._PROGRESS_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._REGISTER_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._DEREGISTER_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE);
     }
 
@@ -802,21 +802,21 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
      * @return true if the message shall be passed within a HTTP response
      */
     public static boolean messageIsEncodedHttpResponse(MALMessageHeader header) {
-        return (header.getInteractionType().getOrdinal() == InteractionType._SUBMIT_INDEX
+        return (header.getInteractionType().getValue() == InteractionType.SUBMIT_VALUE
                 && header.getInteractionStage().getValue() == MALSubmitOperation._SUBMIT_ACK_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._REQUEST_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.REQUEST_VALUE
                 && header.getInteractionStage().getValue() == MALRequestOperation._REQUEST_RESPONSE_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._INVOKE_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.INVOKE_VALUE
                 && header.getInteractionStage().getValue() == MALInvokeOperation._INVOKE_ACK_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PROGRESS_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PROGRESS_VALUE
                 && header.getInteractionStage().getValue() == MALProgressOperation._PROGRESS_ACK_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._REGISTER_ACK_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._DEREGISTER_ACK_STAGE)
-                || (header.getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX
+                || (header.getInteractionType().getValue() == InteractionType.PUBSUB_VALUE
                 && header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_DEREGISTER_ACK_STAGE);
     }
 

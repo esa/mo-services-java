@@ -65,7 +65,7 @@ public class MALTestEndPointSendInterceptor implements TestEndPointSendIntercept
     public void sendMessage(TestEndPoint ep, MALMessage msg) throws MALTransmitErrorException, MALException {
         if (IPTestHelper.IPTEST_SERVICE.getAreaNumber().equals(msg.getHeader().getServiceArea())
                 && IPTestServiceInfo.IPTEST_SERVICE_NUMBER.equals(msg.getHeader().getService())) {
-            if (msg.getHeader().getInteractionType().getOrdinal() == InteractionType._PUBSUB_INDEX) {
+            if (msg.getHeader().getInteractionType().getValue() == InteractionType.PUBSUB_VALUE) {
                 if (msg.getHeader().getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_STAGE) {
                     MALPublishRegisterBody publishRegisterBody = (MALPublishRegisterBody) msg.getBody();
 

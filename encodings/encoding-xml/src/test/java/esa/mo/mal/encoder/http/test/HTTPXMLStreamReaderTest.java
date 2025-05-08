@@ -44,7 +44,7 @@ public class HTTPXMLStreamReaderTest {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    MALContextFactory.getElementsRegistry().registerElementsForArea(MALHelper.MAL_AREA);
+    MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
   }
 
   @Before

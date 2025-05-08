@@ -20,10 +20,8 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.connections;
 
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.SessionType;
 
@@ -74,7 +72,8 @@ public class ConfigurationConsumer {
                 // The property does not exist?
                 HelperMisc.loadConsumerProperties(); // try to load the properties from the file...
             } catch (IOException ex) {
-                Logger.getLogger(ConfigurationConsumer.class.getName()).log(Level.SEVERE, null, ex);
+                // Ignore the exception if it does not exist
+                // This file is becoming deprecated and eventually will be removed...
             }
         }
 

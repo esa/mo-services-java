@@ -45,15 +45,6 @@ public interface MethodWriter {
     void addLine(String line) throws IOException;
 
     /**
-     * Adds a statement to the method.
-     *
-     * @param statement The statement to add.
-     * @param addSemi True if adding a semicolon to the statement.
-     * @throws IOException If there is an IO error.
-     */
-    void addLine(String statement, boolean addSemi) throws IOException;
-
-    /**
      * Adds a set of statements to the method that index an array.
      *
      * @param arrayVariable The variable that contains the array.

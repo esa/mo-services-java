@@ -257,13 +257,13 @@ public class SpacePacketCheck {
     public boolean checkQos(String qosLevelAsString) throws Exception {
         QoSLevel qosLevel = ParseHelper.parseQoSLevel(qosLevelAsString);
         int qos = secondaryHeaderReader.readQos();
-        return (qos == qosLevel.getOrdinal());
+        return (qos == qosLevel.getValue());
     }
 
     public boolean checkSession(String sessionTypeAsString) throws Exception {
         SessionType sessionType = ParseHelper.parseSessionType(sessionTypeAsString);
         int session = secondaryHeaderReader.readSession();
-        return (session == sessionType.getOrdinal());
+        return (session == sessionType.getValue());
     }
 
     private int getExpectedSecondaryApid() {

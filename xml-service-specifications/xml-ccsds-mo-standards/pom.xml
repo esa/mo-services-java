@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>11.3</version>
+        <version>12.0</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>xml-ccsds-mo-standards</artifactId>
-    <version>11.3</version>
+    <version>12.0</version>
     <packaging>jar</packaging>
 
     <name>ESA MO XML services - MO Standards</name>

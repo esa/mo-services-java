@@ -62,7 +62,7 @@ public class AppWithDirectory {
                     "Registering in the Broker for service: Product Order Delivery...");
 
             ProductOrderDeliveryConsumerServiceImpl pod = consumer.getMPDServices().getProductOrderDeliveryService();
-            Subscription subscription = ConnectionConsumer.subscriptionWildcard();
+            Subscription subscription = ConnectionConsumer.subscriptionWildcardRandom();
             pod.getProductOrderDeliveryStub().deliverProductsRegister(subscription, new PODAdapter());
             Logger.getLogger(AppWithDirectory.class.getName()).log(Level.INFO, "Registered!");
 

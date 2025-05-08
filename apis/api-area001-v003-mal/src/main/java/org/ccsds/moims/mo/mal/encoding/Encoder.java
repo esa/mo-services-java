@@ -29,8 +29,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.structures.*;
 
 /**
- * Extends the MALEncoder and MALListEncoder interfaces for use in the generic
- * encoding framework.
+ * Extends the MALEncoder interfaces for use in the generic encoding framework.
  */
 public abstract class Encoder implements MALEncoder {
 

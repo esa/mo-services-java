@@ -340,12 +340,12 @@ public class JavaConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "Received", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (msgHeader.getOperation().getValue()) {", false);
+        method.addLine("switch (msgHeader.getOperation().getValue()) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
+                method.addLine("  case " + ns);
                 List<FieldInfo> opTypes = null;
                 switch (opTypeIndex) {
                     case 1:
@@ -361,13 +361,13 @@ public class JavaConsumer {
                         break;
                 }
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
-                method.addLine("    " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties)");
-                method.addLine("    break");
+                method.addLine("    " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties);");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
-        method.addLine("    throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue())");
-        method.addLine("}", false);
+        method.addLine("  default:");
+        method.addLine("    throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue());");
+        method.addLine("}");
         method.addMethodCloseStatement();
     }
 
@@ -381,13 +381,13 @@ public class JavaConsumer {
 
         method.addLine("if ((" + areaHelper + "." + areaName.toUpperCase() + "_AREA_NUMBER.equals(msgHeader.getServiceArea()))"
                 + " && "
-                + "(" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {", false);
-        method.addLine("  switch (msgHeader.getOperation().getValue()) {", false);
+                + "(" + serviceInfoName + "." + serviceName.toUpperCase() + "_SERVICE_NUMBER.equals(msgHeader.getService()))) {");
+        method.addLine("  switch (msgHeader.getOperation().getValue()) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("    case " + ns, false);
+                method.addLine("    case " + ns);
                 List<FieldInfo> opTypes = new LinkedList<>();
                 opTypes.add(0, TypeUtils.convertTypeReference(generator,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
@@ -399,17 +399,17 @@ public class JavaConsumer {
                 }
 
                 String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
-                method.addLine("      " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties)");
-                method.addLine("      break");
+                method.addLine("      " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties);");
+                method.addLine("      break;");
             }
         }
-        method.addLine("    default:", false);
-        method.addLine("      throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue())");
-        method.addLine("  }", false);
-        method.addLine("}", false);
-        method.addLine("else {", false);
-        method.addLine("  notifyReceivedFromOtherService(msgHeader, body, qosProperties)");
-        method.addLine("}", false);
+        method.addLine("    default:");
+        method.addLine("      throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue());");
+        method.addLine("  }");
+        method.addLine("}");
+        method.addLine("else {");
+        method.addLine("  notifyReceivedFromOtherService(msgHeader, body, qosProperties);");
+        method.addLine("}");
         method.addMethodCloseStatement();
     }
 
@@ -419,19 +419,19 @@ public class JavaConsumer {
         MethodWriter method = file.addMethodOpenStatement(true, true, false, false, StdStrings.PUBLIC,
                 false, true, null, opname + "ErrorReceived", args, throwsMALException, comment, null,
                 Arrays.asList(throwsMALException + " if an error is detected processing the message."));
-        method.addLine("switch (msgHeader.getOperation().getValue()) {", false);
+        method.addLine("switch (msgHeader.getOperation().getValue()) {");
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
-                method.addLine("  case " + ns, false);
-                method.addLine("    " + op.getName() + subopPostname + "ErrorReceived(msgHeader, body.getError(), qosProperties)");
-                method.addLine("    break");
+                method.addLine("  case " + ns);
+                method.addLine("    " + op.getName() + subopPostname + "ErrorReceived(msgHeader, body.getError(), qosProperties);");
+                method.addLine("    break;");
             }
         }
-        method.addLine("  default:", false);
-        method.addLine("    throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue())");
-        method.addLine("}", false);
+        method.addLine("  default:");
+        method.addLine("    throw new " + throwsMALException + "(\"Consumer adapter was not expecting operation number \" + msgHeader.getOperation().getValue());");
+        method.addLine("}");
         method.addMethodCloseStatement();
     }
 
@@ -497,19 +497,19 @@ public class JavaConsumer {
                         false, true, "consumer The MALConsumer to use in this stub."),
                 false, null,
                 "Wraps a MALconsumer connection with service specific methods that map from the high level service API to the generic MAL API.", null);
-        method.addLine("this.consumer = consumer");
+        method.addLine("this.consumer = consumer;");
         method.addMethodCloseStatement();
 
         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false,
                 generator.createReturnReference(consumerType), "getConsumer", null, null,
                 "Returns the internal MAL consumer object used for sending of messages from this interface",
                 "The MAL consumer object.", null);
-        method.addLine("return consumer");
+        method.addLine("return consumer;");
         method.addMethodCloseStatement();
 
         if (supportsToValue) {
             method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, uriType, "getURI", null, null);
-            method.addLine("return consumer.getUri()");
+            method.addLine("return consumer.getUri();");
             method.addMethodCloseStatement();
         }
 
@@ -539,18 +539,17 @@ public class JavaConsumer {
                 }
                 throwsText = additionalErr + throwsText;
             }
-            */
-
+             */
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true,
                             msgType, op.getName(), opArgs, throwsText,
                             op.getComment(), "the MAL message sent to initiate the interaction", throwsComment);
-                    //method.addLine("try {", false);
+                    //method.addLine("try {");
                     method.addLine("return " + consumerMethodCall
                             + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
-                            + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")", true);
+                            + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ");");
                     //this.appendCatchClauses(method);
                     method.addMethodCloseStatement();
                     break;
@@ -566,11 +565,11 @@ public class JavaConsumer {
                         opRetComment = "The return value of the interaction";
                     }
                     String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op)
-                            + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
+                            + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ");";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, false, opRetType,
                             op.getName(), opArgs, throwsText, op.getComment(), opRetComment, throwsComment);
-                    //method.addLine("try {", false);
-                    method.addLine(opGet, true);
+                    //method.addLine("try {");
+                    method.addLine(opGet);
                     createOperationReturn(file, method, op, opRetType);
                     //this.appendCatchClauses(method);
                     method.addMethodCloseStatement();
@@ -580,14 +579,16 @@ public class JavaConsumer {
                         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType,
                                 "async" + StubUtils.preCap(op.getName()), asyncOpArgs, throwsText,
                                 "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", throwsComment);
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op)) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")");
+                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op))
+                                + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ");");
                         method.addMethodCloseStatement();
                     }
 
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, null,
                             "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsText,
                             "Continues a previously started interaction", null, throwsComment);
-                    method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter)");
+                    method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar
+                            + ", lastInteractionStage, initiationTimestamp, transactionId, adapter);");
                     method.addMethodCloseStatement();
                     break;
                 }
@@ -601,11 +602,12 @@ public class JavaConsumer {
                         rv = msgBodyType.getTypeName() + " body = ";
                         opRetComment = "The acknowledge value of the interaction";
                     }
-                    String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")";
+                    String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) + "("
+                            + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ");";
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, false, opRetType, op.getName(), opArgs,
                             throwsText, op.getComment(), opRetComment, throwsComment);
-                    method.addLine(opGet, true);
+                    method.addLine(opGet);
                     createOperationReturn(file, method, op, opRetType);
                     method.addMethodCloseStatement();
 
@@ -613,13 +615,14 @@ public class JavaConsumer {
                         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC, false, true, msgType,
                                 "async" + StubUtils.preCap(op.getName()), opArgs, throwsText,
                                 "Asynchronous version of method " + op.getName(), "the MAL message sent to initiate the interaction", throwsComment);
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op)) + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ")");
+                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op))
+                                + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ");");
                         method.addMethodCloseStatement();
                     }
 
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, true, null, "continue" + StubUtils.preCap(op.getName()), continueOpArgs, throwsText, "Continues a previously started interaction", null, throwsComment);
-                    method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter)");
+                    method.addLine(consumerMethodCall + "continueInteraction(" + operationInstanceVar + ", lastInteractionStage, initiationTimestamp, transactionId, adapter);");
                     method.addMethodCloseStatement();
                     break;
                 }
@@ -634,7 +637,7 @@ public class JavaConsumer {
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, true, null, op.getName() + "Register",
                             StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null, throwsComment);
-                    method.addLine(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter)", true);
+                    method.addLine(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter);");
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -643,7 +646,7 @@ public class JavaConsumer {
                                 "async" + StubUtils.preCap(op.getName()) + "Register",
                                 StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException,
                                 "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction", throwsComment);
-                        method.addLine("return " + consumerMethodCall + "asyncRegister(" + operationInstanceVar + ", subscription, adapter)");
+                        method.addLine("return " + consumerMethodCall + "asyncRegister(" + operationInstanceVar + ", subscription, adapter);");
                         method.addMethodCloseStatement();
                     }
 
@@ -651,7 +654,7 @@ public class JavaConsumer {
                             false, true, null, op.getName() + "Deregister",
                             Arrays.asList(idStr), throwsInteractionAndMALException,
                             "Deregister method for the " + op.getName() + " PubSub interaction", null, throwsComment);
-                    method.addLine(consumerMethodCall + "deregister(" + operationInstanceVar + ", identifierList)");
+                    method.addLine(consumerMethodCall + "deregister(" + operationInstanceVar + ", identifierList);");
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
@@ -660,7 +663,7 @@ public class JavaConsumer {
                                 StubUtils.concatenateArguments(idStr, serviceAdapterArg),
                                 throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister",
                                 "the MAL message sent to initiate the interaction", throwsComment);
-                        method.addLine("return " + consumerMethodCall + "asyncDeregister(" + operationInstanceVar + ", identifierList, adapter)");
+                        method.addLine("return " + consumerMethodCall + "asyncDeregister(" + operationInstanceVar + ", identifierList, adapter);");
                         method.addMethodCloseStatement();
                     }
                     break;
@@ -673,9 +676,9 @@ public class JavaConsumer {
     }
 
     private void appendCatchClauses(MethodWriter method) throws IOException {
-        method.addLine("} catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {", false);
-        method.addLine("    throw ex;", false);
-        method.addLine("}", false);
+        method.addLine("} catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {");
+        method.addLine("    throw ex;");
+        method.addLine("}");
     }
 
     private void createOperationReturn(LanguageWriter file, MethodWriter method,
@@ -688,7 +691,7 @@ public class JavaConsumer {
 
         if ((null != targetTypes) && (!targetTypes.isEmpty())) {
             if (targetTypes.size() == 1) {
-                method.addLine("return " + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0));
+                method.addLine("return " + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0) + ";");
             } else {
                 StringBuilder buf = new StringBuilder();
 
@@ -700,7 +703,7 @@ public class JavaConsumer {
                     buf.append(generator.createOperationArgReturn(file, method, ti, "body", i));
                 }
 
-                method.addLine("return new " + opRetType.getTypeName() + "(" + buf.toString() + ")");
+                method.addLine("return new " + opRetType.getTypeName() + "(" + buf.toString() + ");");
             }
         }
     }

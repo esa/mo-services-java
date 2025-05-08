@@ -409,7 +409,7 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
      */
     @Override
     public boolean isSupportedInteractionType(final InteractionType type) {
-        return InteractionType.PUBSUB.getOrdinal() != type.getOrdinal();
+        return InteractionType.PUBSUB.getValue() != type.getValue();
     }
 
     /**

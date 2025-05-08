@@ -659,33 +659,33 @@ public class PatternTest {
     }
 
     private UOctet transitionTypeToInteractionStage(IPTestTransitionType transType, InteractionType interactionType) {
-        switch (transType.getOrdinal()) {
-            case IPTestTransitionType._ACK_INDEX:
-            case IPTestTransitionType._ACK_ERROR_INDEX:
-                switch (interactionType.getOrdinal()) {
-                    case InteractionType._SUBMIT_INDEX:
+        switch (transType.getValue()) {
+            case IPTestTransitionType.ACK_VALUE:
+            case IPTestTransitionType.ACK_ERROR_VALUE:
+                switch (interactionType.getValue()) {
+                    case InteractionType.SUBMIT_VALUE:
                         return MALSubmitOperation.SUBMIT_ACK_STAGE;
-                    case InteractionType._INVOKE_INDEX:
+                    case InteractionType.INVOKE_VALUE:
                         return MALInvokeOperation.INVOKE_ACK_STAGE;
-                    case InteractionType._PROGRESS_INDEX:
+                    case InteractionType.PROGRESS_VALUE:
                         return MALProgressOperation.PROGRESS_ACK_STAGE;
                 }
                 break;
-            case IPTestTransitionType._UPDATE_INDEX:
-            case IPTestTransitionType._UPDATE_ERROR_INDEX:
-                switch (interactionType.getOrdinal()) {
-                    case InteractionType._PROGRESS_INDEX:
+            case IPTestTransitionType.UPDATE_VALUE:
+            case IPTestTransitionType.UPDATE_ERROR_VALUE:
+                switch (interactionType.getValue()) {
+                    case InteractionType.PROGRESS_VALUE:
                         return MALProgressOperation.PROGRESS_UPDATE_STAGE;
                 }
                 break;
-            case IPTestTransitionType._RESPONSE_INDEX:
-            case IPTestTransitionType._RESPONSE_ERROR_INDEX:
-                switch (interactionType.getOrdinal()) {
-                    case InteractionType._REQUEST_INDEX:
+            case IPTestTransitionType.RESPONSE_VALUE:
+            case IPTestTransitionType.RESPONSE_ERROR_VALUE:
+                switch (interactionType.getValue()) {
+                    case InteractionType.REQUEST_VALUE:
                         return MALRequestOperation.REQUEST_RESPONSE_STAGE;
-                    case InteractionType._INVOKE_INDEX:
+                    case InteractionType.INVOKE_VALUE:
                         return MALInvokeOperation.INVOKE_RESPONSE_STAGE;
-                    case InteractionType._PROGRESS_INDEX:
+                    case InteractionType.PROGRESS_VALUE:
                         return MALProgressOperation.PROGRESS_RESPONSE_STAGE;
                 }
                 break;
@@ -1015,7 +1015,7 @@ public class PatternTest {
 
         protected void checkTransactionId(MALMessageHeader msgHeader) {
             LoggingBase.logMessage(loggingName + " received T[" + msgHeader.getTransactionId()
-                    + " : " + msgHeader.getInteractionType().getOrdinal()
+                    + " : " + msgHeader.getInteractionType().getValue()
                     + " : " + msgHeader.getInteractionStage().getValue()
                     + " : " + msgHeader.getIsErrorMessage()
                     + "]");

@@ -254,30 +254,30 @@ public class ZMTPMessageHeader extends MALMessageHeader {
     }
 
     protected static short getSDUType(InteractionType interactionType, UOctet interactionStage) {
-        final short stage = (InteractionType._SEND_INDEX == interactionType.getOrdinal()) ? 0
+        final short stage = (InteractionType.SEND_VALUE == interactionType.getValue()) ? 0
                 : interactionStage.getValue();
 
-        switch (interactionType.getOrdinal()) {
-            case InteractionType._SEND_INDEX:
+        switch (interactionType.getValue()) {
+            case InteractionType.SEND_VALUE:
                 return 0;
-            case InteractionType._SUBMIT_INDEX:
+            case InteractionType.SUBMIT_VALUE:
                 if (MALSubmitOperation._SUBMIT_STAGE == stage) {
                     return 1;
                 }
                 return 2;
-            case InteractionType._REQUEST_INDEX:
+            case InteractionType.REQUEST_VALUE:
                 if (MALRequestOperation._REQUEST_STAGE == stage) {
                     return 3;
                 }
                 return 4;
-            case InteractionType._INVOKE_INDEX:
+            case InteractionType.INVOKE_VALUE:
                 if (MALInvokeOperation._INVOKE_STAGE == stage) {
                     return 5;
                 } else if (MALInvokeOperation._INVOKE_ACK_STAGE == stage) {
                     return 6;
                 }
                 return 7;
-            case InteractionType._PROGRESS_INDEX: {
+            case InteractionType.PROGRESS_VALUE: {
                 if (MALProgressOperation._PROGRESS_STAGE == stage) {
                     return 8;
                 }
@@ -288,7 +288,7 @@ public class ZMTPMessageHeader extends MALMessageHeader {
                 }
                 return 11;
             }
-            case InteractionType._PUBSUB_INDEX: {
+            case InteractionType.PUBSUB_VALUE: {
                 switch (stage) {
                     case MALPubSubOperation._REGISTER_STAGE:
                         return 12;

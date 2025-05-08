@@ -156,7 +156,7 @@ public class RMITransport extends Transport<byte[], byte[]> {
     @Override
     public boolean isSupportedInteractionType(final InteractionType type) {
         // Supports all IPs except Pub Sub
-        return InteractionType.PUBSUB.getOrdinal() != type.getOrdinal();
+        return InteractionType.PUBSUB.getValue() != type.getValue();
     }
 
     @Override
