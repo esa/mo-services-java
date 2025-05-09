@@ -4,6 +4,10 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 12.1 (2025)
+* Removes JMS and ActiveMQ transports
+* 
+
 ### Version 12.0 (08 May 2025)
 * Fixes the Enumerations: Removal of the "ordinal" number
 * Simplifies the api-generator

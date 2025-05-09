@@ -61,8 +61,6 @@
         <module>transport-rmi</module>
         <module>transport-tcpip</module>
         <module>transport-http</module>
-        <module>transport-jms</module>
-        <module>transport-activemq</module>
         <module>transport-spp</module>
         <module>transport-zmtp</module>
     </modules>
