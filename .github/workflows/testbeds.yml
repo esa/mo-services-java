@@ -1,7 +1,6 @@
 name: Testbeds
 on: [push]
-permissions:
-  contents: read
+
 jobs:
 
   build-jdk8:
