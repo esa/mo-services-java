@@ -233,7 +233,7 @@ jobs:
 
   testbed-mal-jdk11:
     needs: build-testbeds-jdk11
-    runs-on: ubuntu-2.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Get Date
         id: get-date
