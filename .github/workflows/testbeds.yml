@@ -1,6 +1,7 @@
 name: Testbeds
 on: [push]
-
+permissions:
+  contents: read
 jobs:
 
   build-jdk8:
@@ -11,7 +12,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -32,7 +33,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -53,7 +54,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -74,7 +75,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -96,7 +97,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -124,7 +125,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -152,7 +153,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -180,7 +181,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -208,7 +209,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -237,7 +238,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -266,7 +267,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -295,7 +296,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -325,7 +326,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -354,7 +355,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -384,7 +385,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -413,7 +414,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -442,7 +443,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -471,7 +472,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -500,7 +501,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -529,7 +530,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -558,7 +559,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -588,7 +589,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -618,7 +619,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+          echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -648,7 +649,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
@@ -678,7 +679,7 @@ jobs:
      - name: Get Date
        id: get-date
        run: |
-         echo "::set-output name=date::$(/bin/date -u "+%Y-week-%U")"
+         echo "date=$(/bin/date -u "+%Y-week-%U")" >> $GITHUB_OUTPUT
        shell: bash
      - uses: actions/checkout@v4
      - uses: actions/setup-java@v4
