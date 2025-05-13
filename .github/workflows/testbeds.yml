@@ -204,7 +204,7 @@ jobs:
 
   testbed-mal-jdk8:
     needs: build-testbeds-jdk8
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Get Date
         id: get-date
@@ -233,7 +233,7 @@ jobs:
 
   testbed-mal-jdk11:
     needs: build-testbeds-jdk11
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Get Date
         id: get-date
