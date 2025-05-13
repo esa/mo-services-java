@@ -118,9 +118,10 @@ public class RemoteProcessRunner extends LoggingBase {
             logMessage("ERROR: Throwable thrown starting remote process: " + ex.getMessage());
         }
 
-        logMessage("Wait for remote process to start...");
+        long waitTime = 10000;
+        logMessage("The remote process is starting. Waiting for: " + waitTime + " ms");
         // wait a little here to give it time to start up properly
-        Thread.sleep(3000);
+        Thread.sleep(waitTime);
 
         return processIsRunning();
     }
