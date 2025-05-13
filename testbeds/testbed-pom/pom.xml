@@ -75,9 +75,9 @@
     <properties>
         <ant.plugin.version>1.7</ant.plugin.version>
         <!-- <fitnesse.version>20250223</fitnesse.version> -->
-        <!-- <fitnesse.version>20201213</fitnesse.version> -->
         <!-- Last Fitnesse version that works with GitHub Actions: 20220319 -->
-        <fitnesse.version>20220319</fitnesse.version>
+        <!-- <fitnesse.version>20220319</fitnesse.version> -->
+        <fitnesse.version>20201213</fitnesse.version>
         <jacoco.version>0.8.10</jacoco.version>
         <junit.version>4.13.2</junit.version>
         <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
