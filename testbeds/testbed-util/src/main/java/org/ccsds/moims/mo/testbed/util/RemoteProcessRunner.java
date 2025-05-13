@@ -74,7 +74,8 @@ public class RemoteProcessRunner extends LoggingBase {
 
         int x = 1;
         String prop = null;
-        while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX + "java." + Configuration.getOSname() + "." + String.valueOf(x++)))) {
+        while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX
+                + "java." + Configuration.getOSname() + "." + String.valueOf(x++)))) {
             v.add(prop);
         }
 
@@ -172,7 +173,8 @@ public class RemoteProcessRunner extends LoggingBase {
         Thread.sleep(seconds * 1000);
     }
 
-    public static String createClasspath(String[] extraJarList, String[] mavenJarList, String[] filterJarList) throws Exception {
+    public static String createClasspath(String[] extraJarList,
+            String[] mavenJarList, String[] filterJarList) throws Exception {
         StringBuffer cp = new StringBuffer();
         String sep = System.getProperty("path.separator");
 
@@ -224,7 +226,8 @@ public class RemoteProcessRunner extends LoggingBase {
         return cp.toString();
     }
 
-    private static void appendMavenDependencies(StringBuffer cp, String pathSep, String cpSep, String[] mavenJarList) {
+    private static void appendMavenDependencies(StringBuffer cp,
+            String pathSep, String cpSep, String[] mavenJarList) {
         String localRep = System.getProperty("localRepository");
         StringBuilder extraMaven = new StringBuilder();
 
@@ -240,7 +243,10 @@ public class RemoteProcessRunner extends LoggingBase {
                 if (0 < artifact.length()) {
                     String[] part = artifact.split(":");
                     if (part.length == 3) {
-                        String fileName = localRep + pathSep + part[0].replace(".", pathSep) + pathSep + part[1] + pathSep + part[2] + pathSep + part[1] + "-" + part[2] + ".jar";
+                        String fileName = localRep + pathSep
+                                + part[0].replace(".", pathSep)
+                                + pathSep + part[1] + pathSep + part[2]
+                                + pathSep + part[1] + "-" + part[2] + ".jar";
                         logMessage("Maven extra dependency : " + fileName);
                         addClasspathEntry(cp, fileName, cpSep, null);
                     } else {
@@ -251,8 +257,10 @@ public class RemoteProcessRunner extends LoggingBase {
         }
     }
 
-    private static void addClasspathEntry(final StringBuffer cp, final String entry, final String sep, final String[] filterStr) {
-        if ((!entry.toLowerCase().endsWith(".jar")) || (!filterString(entry.toLowerCase(), filterStr))) {
+    private static void addClasspathEntry(final StringBuffer cp,
+            final String entry, final String sep, final String[] filterStr) {
+        if ((!entry.toLowerCase().endsWith(".jar"))
+                || (!filterString(entry.toLowerCase(), filterStr))) {
             if (cp.length() > 0) {
                 cp.append(sep);
             }
@@ -288,7 +296,8 @@ public class RemoteProcessRunner extends LoggingBase {
 
         int x = 1;
         String prop = null;
-        while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX + Configuration.getOSname() + "." + String.valueOf(x++)))) {
+        while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX
+                + Configuration.getOSname() + "." + String.valueOf(x++)))) {
             v.add(prop);
         }
 
