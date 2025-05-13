@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-jdk8-${{ steps.get-date.outputs.date }}
 
   build-jdk11:
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-jdk11-${{ steps.get-date.outputs.date }}
 
   build-jdk17:
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-jdk17-${{ steps.get-date.outputs.date }}
 
   build-jdk21:
     runs-on: ubuntu-latest
@@ -88,7 +88,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-jdk21-${{ steps.get-date.outputs.date }}
 
   build-testbeds-jdk8:
     needs: build-jdk8
@@ -108,7 +108,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-dk8-${{ steps.get-date.outputs.date }}
       - name: Run the testbeds install
         run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
@@ -116,7 +116,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk8-${{ steps.get-date.outputs.date }}
 
   build-testbeds-jdk11:
     needs: build-jdk11
@@ -136,7 +136,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-services-java-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the testbeds install
         run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
         working-directory: testbeds
@@ -144,7 +144,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
 
   build-testbeds-jdk17:
    needs: build-jdk17
@@ -164,7 +164,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-services-java-jdk17-${{ steps.get-date.outputs.date }}
      - name: Run the testbeds install
        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests clean install # disable malspp for now
        working-directory: testbeds
@@ -172,7 +172,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ steps.get-date.outputs.date }}
 
   build-testbeds-jdk21:
    needs: build-jdk21
@@ -192,7 +192,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-services-java-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-services-java-jdk21-${{ steps.get-date.outputs.date }}
      - name: Run the testbeds install
        run: mvn --batch-mode --update-snapshots -pl '!testbed-malspp-framework,!testbed-malspp' -P ESA -DskipTests install # disable malspp for now
        working-directory: testbeds
@@ -200,7 +200,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ steps.get-date.outputs.date }}
 
   testbed-mal-jdk8:
     needs: build-testbeds-jdk8
@@ -220,7 +220,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk8-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-mal
@@ -249,7 +249,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-mal
@@ -278,7 +278,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL
         run: mvn --batch-mode --update-snapshots -P ESA_TCPIP test
         working-directory: testbeds/testbed-mal
@@ -308,7 +308,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk8-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL
         run: mvn --batch-mode --update-snapshots -P ESA_HTTP test
         working-directory: testbeds/testbed-mal
@@ -337,7 +337,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL
         run: mvn --batch-mode --update-snapshots -P ESA_ZMTP test
         working-directory: testbeds/testbed-mal
@@ -366,7 +366,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ steps.get-date.outputs.date }}
      - name: Run the Testbed for MAL
        run: mvn --batch-mode --update-snapshots -P ESA test
        working-directory: testbeds/testbed-mal
@@ -396,7 +396,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ steps.get-date.outputs.date }}
      - name: Run the Testbed for MAL
        run: mvn --batch-mode --update-snapshots -P ESA test
        working-directory: testbeds/testbed-mal
@@ -425,7 +425,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk8-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for COM
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-com
@@ -454,7 +454,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for COM
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-com
@@ -483,7 +483,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MPD
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-mpd
@@ -512,7 +512,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MPD
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-mpd
@@ -541,7 +541,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MPD
         run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-mpd
@@ -570,7 +570,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ steps.get-date.outputs.date }}
      - name: Run the Testbed for COM
        run: mvn --batch-mode --update-snapshots -P ESA test
        working-directory: testbeds/testbed-com
@@ -600,7 +600,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ steps.get-date.outputs.date }}
      - name: Run the Testbed for COM
        run: mvn --batch-mode --update-snapshots -P ESA test
        working-directory: testbeds/testbed-com
@@ -630,7 +630,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for MAL/SPP
         run: mvn --batch-mode --update-snapshots -P DLR test
         working-directory: testbeds/testbed-malspp
@@ -660,7 +660,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ steps.get-date.outputs.date }}
      - name: Run the Testbed for MAL/SPP
        run: mvn --batch-mode --update-snapshots -P DLR test
        working-directory: testbeds/testbed-malspp
@@ -690,7 +690,7 @@ jobs:
        uses: actions/cache@v4
        with:
          path: ~/.m2/repository
-         key: ${{ runner.os }}-maven-mo-testbeds-${{ steps.get-date.outputs.date }}
+         key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ steps.get-date.outputs.date }}
      - name: Run the Testbed for MAL/SPP
        run: mvn --batch-mode --update-snapshots -P DLR test
        working-directory: testbeds/testbed-malspp
