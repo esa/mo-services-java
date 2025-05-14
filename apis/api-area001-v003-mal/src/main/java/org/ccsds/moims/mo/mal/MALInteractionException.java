@@ -26,7 +26,7 @@ package org.ccsds.moims.mo.mal;
  */
 public class MALInteractionException extends Exception {
 
-    private final MOErrorException standardError;
+    private final MOErrorException moError;
 
     /**
      * The constructor calls the java.lang.Exception constructor with the String
@@ -41,7 +41,7 @@ public class MALInteractionException extends Exception {
                 ? error.getExtraInformation().toString() : null
         );
 
-        standardError = error;
+        moError = error;
     }
 
     /**
@@ -50,11 +50,11 @@ public class MALInteractionException extends Exception {
      * @return The MAL standard error.
      */
     public MOErrorException getStandardError() {
-        return standardError;
+        return moError;
     }
 
     @Override
     public String toString() {
-        return "MALInteractionException{" + "standardError=" + standardError + '}';
+        return "MALInteractionException{" + "moError=" + moError + '}';
     }
 }
