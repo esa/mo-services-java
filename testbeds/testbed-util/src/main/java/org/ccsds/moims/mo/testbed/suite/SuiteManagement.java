@@ -23,7 +23,6 @@ package org.ccsds.moims.mo.testbed.suite;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.LogManager;
-
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
