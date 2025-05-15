@@ -289,7 +289,7 @@ public class ConnectionProvider {
             }
         } catch (MALException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider {0}", ex);
+                    "Exception during close down of the provider!", ex);
         }
     }
 
@@ -308,7 +308,7 @@ public class ConnectionProvider {
             }
         } catch (MALException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider {0}", ex);
+                    "Exception during close down of the provider!", ex);
         }
 
         try {
@@ -321,7 +321,7 @@ public class ConnectionProvider {
             }
         } catch (MALException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider {0}", ex);
+                    "Exception during close down of the provider!", ex);
         }
     }
 
@@ -331,19 +331,21 @@ public class ConnectionProvider {
      * @return true if URI Files should be initialised
      */
     public static boolean shouldInitUriFiles() {
-        return Boolean.valueOf(System.getProperty(HelperMisc.PROP_INIT_URI_FILES, "false"));
+        String key = HelperMisc.PROP_INIT_URI_FILES;
+        return Boolean.parseBoolean(System.getProperty(key, "false"));
     }
 
     /**
      * Clears the URI links file of the provider
      */
     public static void resetURILinksFile() {
+        String filename = HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME;
         BufferedWriter wrt = null;
         try {
-            wrt = new BufferedWriter(new FileWriter(HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME, false));
+            wrt = new BufferedWriter(new FileWriter(filename, false));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Unable to reset URI information from properties file {0}", ex);
+                    "Unable to reset URI information from properties file: " + filename, ex);
         } finally {
             if (wrt != null) {
                 try {
@@ -354,12 +356,13 @@ public class ConnectionProvider {
         }
 
         if (System.getProperty(HelperMisc.SECONDARY_PROTOCOL) != null) {
+            String filenameSec = HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME;
             BufferedWriter wrt2 = null;
             try {
-                wrt2 = new BufferedWriter(new FileWriter(HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME, false));
+                wrt2 = new BufferedWriter(new FileWriter(filenameSec, false));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                        "Unable to reset URI information from properties file {0}", ex);
+                        "Unable to reset URI information from properties file: " + filenameSec, ex);
             } finally {
                 if (wrt2 != null) {
                     try {
@@ -379,17 +382,21 @@ public class ConnectionProvider {
         BufferedWriter wrt = null;
         try {
             wrt = new BufferedWriter(new FileWriter(filename, true));
-            wrt.append(serviceName + HelperConnections.SUFFIX_URI + "=" + connectionDetails.getProviderURI());
+            wrt.append(serviceName + HelperConnections.SUFFIX_URI);
+            wrt.append("=" + connectionDetails.getProviderURI());
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_BROKER + "=" + connectionDetails.getBrokerURI());
+            wrt.append(serviceName + HelperConnections.SUFFIX_BROKER);
+            wrt.append("=" + connectionDetails.getBrokerURI());
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_DOMAIN + "=" + HelperDomain.domain2domainId(connectionDetails.getDomain()));
+            wrt.append(serviceName + HelperConnections.SUFFIX_DOMAIN);
+            wrt.append("=" + HelperDomain.domain2domainId(connectionDetails.getDomain()));
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_SERVICE_KEY + "=" + connectionDetails.getServiceKey());
+            wrt.append(serviceName + HelperConnections.SUFFIX_SERVICE_KEY);
+            wrt.append("=" + connectionDetails.getServiceKey());
             wrt.newLine();
         } catch (IOException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Unable to write URI information to properties file {0}", ex);
+                    "Unable to write URI information to properties file: " + filename, ex);
         } finally {
             if (wrt != null) {
                 try {
