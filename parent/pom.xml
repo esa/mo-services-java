@@ -192,17 +192,7 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>transport-jms</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-zmtp</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>transport-activemq</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
