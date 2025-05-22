@@ -65,7 +65,6 @@
     </developers>
 
     <properties>
-<!--        <ccsds.specification.download.version>${extra.specification.version}</ccsds.specification.download.version>    -->
         <ccsds.specification.download.skip>false</ccsds.specification.download.skip>
         <ccsds.specification.download.artifact>xml-tests</ccsds.specification.download.artifact>
         <ccsds.specification.download.filter>**/MALPrototype.xml</ccsds.specification.download.filter>
