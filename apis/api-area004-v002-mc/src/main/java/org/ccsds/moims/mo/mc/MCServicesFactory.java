@@ -28,30 +28,30 @@ import org.ccsds.moims.mo.mc.aggregation.consumer.AggregationStub;
 import org.ccsds.moims.mo.mc.aggregation.provider.AggregationInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.alert.consumer.AlertStub;
 import org.ccsds.moims.mo.mc.alert.provider.AlertInheritanceSkeleton;
-import org.ccsds.moims.mo.mc.backends.ActionsBackend;
-import org.ccsds.moims.mo.mc.backends.AggregationsBackend;
-import org.ccsds.moims.mo.mc.backends.AlertsBackend;
-import org.ccsds.moims.mo.mc.backends.PacketsBackend;
-import org.ccsds.moims.mo.mc.backends.ParametersBackend;
 import org.ccsds.moims.mo.mc.packet.consumer.PacketStub;
 import org.ccsds.moims.mo.mc.packet.provider.PacketInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.parameter.consumer.ParameterStub;
 import org.ccsds.moims.mo.mc.parameter.provider.ParameterInheritanceSkeleton;
+import org.ccsds.moims.mo.mc.backends.ActionBackend;
+import org.ccsds.moims.mo.mc.backends.AggregationBackend;
+import org.ccsds.moims.mo.mc.backends.AlertBackend;
+import org.ccsds.moims.mo.mc.backends.PacketBackend;
+import org.ccsds.moims.mo.mc.backends.ParameterBackend;
 
 /**
  * The interface for the MC services Factory.
  */
 public abstract class MCServicesFactory {
 
-    public abstract ActionInheritanceSkeleton createProviderAction(ActionsBackend backend) throws MALException;
+    public abstract ActionInheritanceSkeleton createProviderAction(ActionBackend backend) throws MALException;
 
-    public abstract AggregationInheritanceSkeleton createProviderAggregation(AggregationsBackend backend) throws MALException;
+    public abstract AggregationInheritanceSkeleton createProviderAggregation(AggregationBackend backend) throws MALException;
 
-    public abstract AlertInheritanceSkeleton createProviderAlert(AlertsBackend backend) throws MALException;
+    public abstract AlertInheritanceSkeleton createProviderAlert(AlertBackend backend) throws MALException;
 
-    public abstract PacketInheritanceSkeleton createProviderPacket(PacketsBackend backend) throws MALException;
+    public abstract PacketInheritanceSkeleton createProviderPacket(PacketBackend backend) throws MALException;
 
-    public abstract ParameterInheritanceSkeleton createProviderParameter(ParametersBackend backend) throws MALException;
+    public abstract ParameterInheritanceSkeleton createProviderParameter(ParameterBackend backend) throws MALException;
 
     public abstract ActionStub createConsumerStubAction(SingleConnectionDetails details) throws MALException;
 

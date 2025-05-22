@@ -21,8 +21,8 @@
 package org.ccsds.moims.mo.mc.backends;
 
 /**
- * The Backend interface to the Alert service.
+ * The Backend interface to the Packet service.
  */
-public interface AlertsBackend {
+public interface PacketBackend {
 
 }

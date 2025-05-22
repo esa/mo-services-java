@@ -21,8 +21,8 @@
 package org.ccsds.moims.mo.mc.backends;
 
 /**
- * The Backend interface to the Action service.
+ * The Backend interface to the Aggregation service.
  */
-public interface ActionsBackend {
+public interface AggregationBackend {
 
 }

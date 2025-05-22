@@ -23,6 +23,6 @@ package org.ccsds.moims.mo.mc.backends;
 /**
  * The Backend interface to the Parameter service.
  */
-public interface ParametersBackend {
+public interface ParameterBackend {
 
 }

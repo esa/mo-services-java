@@ -20,16 +20,11 @@
  */
 package org.ccsds.moims.mo.mc;
 
-import java.util.HashMap;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
-import org.ccsds.moims.mo.mc.backends.ParametersBackend;
-import org.ccsds.moims.mo.mc.structures.ParameterDefinition;
+import org.ccsds.moims.mo.mc.backends.ParameterBackend;
 
 /**
  * A abstract class for all backend ParameterDataset.
  */
-public abstract class ParameterDataset implements ParametersBackend {
-
-    private final HashMap<ObjectRef, ParameterDefinition> metadatas = new HashMap();
+public abstract class ParameterDataset implements ParameterBackend {
 
 }
