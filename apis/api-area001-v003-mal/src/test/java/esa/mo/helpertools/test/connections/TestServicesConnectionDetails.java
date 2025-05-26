@@ -8,11 +8,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.ccsds.moims.mo.mal.helpertools.connections.ServicesConnectionDetails;
+import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
-
-import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 
 public class TestServicesConnectionDetails {
 
@@ -21,7 +20,8 @@ public class TestServicesConnectionDetails {
         ServicesConnectionDetails scd = new ServicesConnectionDetails();
 
         try {
-            ServicesConnectionDetails res = scd.loadURIFromFiles(getClass().getClassLoader().getResource("providerURIs.properties").getFile());
+            String filename = getClass().getClassLoader().getResource("providerURIs.properties").getFile();
+            ServicesConnectionDetails res = scd.loadURIFromFiles(filename);
             HashMap<String, SingleConnectionDetails> resmap = res.getServices();
             Set<Entry<String, SingleConnectionDetails>> entryset = resmap.entrySet();
             List<SingleConnectionDetails> scdlist = entryset.stream().map(Entry::getValue).collect(Collectors.toList());

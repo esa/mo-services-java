@@ -86,7 +86,6 @@ public class ServicesConnectionDetails {
      * @throws java.io.FileNotFoundException if the URI file has not been found
      */
     public ServicesConnectionDetails loadURIFromFiles(String filename) throws MalformedURLException, FileNotFoundException {
-
         if (filename == null) {
             filename = System.getProperty("providerURI.properties", HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME);
         }
@@ -109,7 +108,6 @@ public class ServicesConnectionDetails {
      * initialized correctly
      */
     public ServicesConnectionDetails loadURIFromProperties(Properties uriProps) throws MalformedURLException {
-
         // Reading the values out of the properties file
         Set propKeys = uriProps.keySet();
         Object[] array = propKeys.toArray();
@@ -117,8 +115,10 @@ public class ServicesConnectionDetails {
         for (int i = 0; i < array.length; i++) {
             String propString = array[i].toString();
 
-            if (propString.endsWith(HelperConnections.SUFFIX_URI)) {  // Is it a URI property of some service?
-                String serviceName = propString.substring(0, propString.length() - HelperConnections.SUFFIX_URI.length());  // Remove the URI part of it
+            // Is it a URI property of some service?
+            if (propString.endsWith(HelperConnections.SUFFIX_URI)) {
+                // Remove the URI part of it
+                String serviceName = propString.substring(0, propString.length() - HelperConnections.SUFFIX_URI.length());
                 SingleConnectionDetails details = new SingleConnectionDetails();
 
                 // Get the URI + Broker + Domain from the Properties

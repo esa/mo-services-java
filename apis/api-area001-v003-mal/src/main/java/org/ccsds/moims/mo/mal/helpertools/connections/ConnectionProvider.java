@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.helpertools.connections;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperConnections;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
@@ -340,9 +341,10 @@ public class ConnectionProvider {
      */
     public static void resetURILinksFile() {
         String filename = HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME;
+        File fileMain = getProviderURIsDirectory(filename);
         BufferedWriter wrt = null;
         try {
-            wrt = new BufferedWriter(new FileWriter(filename, false));
+            wrt = new BufferedWriter(new FileWriter(fileMain, false));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
                     "Unable to reset URI information from properties file: " + filename, ex);
@@ -357,9 +359,10 @@ public class ConnectionProvider {
 
         if (System.getProperty(HelperMisc.SECONDARY_PROTOCOL) != null) {
             String filenameSec = HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME;
+            File fileSec = getProviderURIsDirectory(filenameSec);
             BufferedWriter wrt2 = null;
             try {
-                wrt2 = new BufferedWriter(new FileWriter(filenameSec, false));
+                wrt2 = new BufferedWriter(new FileWriter(fileSec, false));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
                         "Unable to reset URI information from properties file: " + filenameSec, ex);
@@ -372,16 +375,29 @@ public class ConnectionProvider {
                 }
             }
         }
+    }
 
+    public static File getProviderURIsDirectory(String filename) {
+        File file = new File(filename);
+        if (file.canWrite()) {
+            return new File(filename);
+        }
+
+        StringBuilder path = new StringBuilder();
+        path.append(System.getProperty("user.home"));
+        path.append(File.separator);
+        path.append(".mo-services");
+        return new File(path.toString(), filename);
     }
 
     /**
      * Writes the URIs on a text file
      */
     private void writeURIsOnFile(SingleConnectionDetails connectionDetails, String serviceName, String filename) {
+        File file = getProviderURIsDirectory(filename);
         BufferedWriter wrt = null;
         try {
-            wrt = new BufferedWriter(new FileWriter(filename, true));
+            wrt = new BufferedWriter(new FileWriter(file, true));
             wrt.append(serviceName + HelperConnections.SUFFIX_URI);
             wrt.append("=" + connectionDetails.getProviderURI());
             wrt.newLine();
@@ -396,7 +412,7 @@ public class ConnectionProvider {
             wrt.newLine();
         } catch (IOException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Unable to write URI information to properties file: " + filename, ex);
+                    "Unable to write URI information to properties file: " + file.getAbsolutePath(), ex);
         } finally {
             if (wrt != null) {
                 try {
