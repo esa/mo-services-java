@@ -26,7 +26,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
@@ -387,7 +392,37 @@ public class ConnectionProvider {
         path.append(System.getProperty("user.home"));
         path.append(File.separator);
         path.append(".mo-services");
-        return new File(path.toString(), filename);
+        File fileInUserDir = new File(path.toString(), filename);
+        mkDirAndSetPermissions(fileInUserDir.getParentFile());
+        return fileInUserDir;
+    }
+
+    private static void mkDirAndSetPermissions(File directory) {
+        if (!directory.exists()) {
+            // If it does not exist, please check if the parent dir exists
+            // because if not, then we also want to create that directory
+            // and set the correct permissions
+            mkDirAndSetPermissions(directory.getParentFile());
+
+            // We want to give access to both the App itself and the nmf-admin group
+            Set<PosixFilePermission> posix = PosixFilePermissions.fromString("rwxrwx---");
+            FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(posix);
+            try {
+                Files.createDirectory(directory.toPath(), permissions);
+            } catch (UnsupportedOperationException ex1) {
+                // Probably we are on Windows... Let's create it with:
+                directory.mkdirs();
+                directory.setExecutable(false, false);
+                directory.setExecutable(true, true);
+                directory.setReadable(false, false);
+                directory.setReadable(true, true);
+                directory.setWritable(false, false);
+                directory.setWritable(true, true);
+            } catch (IOException ex2) {
+                Logger.getLogger(ConnectionProvider.class.getName()).log(
+                        Level.SEVERE, "Something went wrong...", ex2);
+            }
+        }
     }
 
     /**
