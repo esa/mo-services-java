@@ -507,9 +507,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private List<String> normaliseComments(String comment, String returnComment,
             List<String> argsComments, List<String> throwsComment) {
-        List<String> output = new LinkedList<>();
-
-        normaliseComment(output, comment);
+        List<String> output = normaliseComment(comment);
         output.add(""); // Separation between the comment and params
         normaliseComments(output, StubUtils.conditionalAdd("@param ", argsComments));
         normaliseComment(output, StubUtils.conditionalAdd("@return ", returnComment));

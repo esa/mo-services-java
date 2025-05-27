@@ -40,7 +40,6 @@ import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -390,11 +389,11 @@ public class GeneratorJava extends GeneratorLangs {
      */
     protected void createFolderComment(ClassWriter file, String area,
             String service, String extraPackage, String comment) throws IOException {
-        List<String> list = AbstractLanguageWriter.normaliseComment(new ArrayList(), comment);
+        List<String> lines = AbstractLanguageWriter.normaliseComment(comment);
 
         file.addStatement("/**");
 
-        for (String line : list) {
+        for (String line : lines) {
             file.addStatement(" * " + line);
         }
 

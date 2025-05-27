@@ -52,8 +52,9 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
     }
 
     @Override
-    public void addMultilineComment(int tabCount, boolean preBlankLine, String comment, boolean postBlankLine) throws IOException {
-        addMultilineComment(tabCount, preBlankLine, normaliseComment(new LinkedList<>(), comment), postBlankLine);
+    public void addMultilineComment(int tabCount, boolean preBlankLine,
+            String comment, boolean postBlankLine) throws IOException {
+        addMultilineComment(tabCount, preBlankLine, normaliseComment(comment), postBlankLine);
     }
 
     /**
@@ -61,9 +62,10 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
      * end.
      *
      * @param output The list to return.
-     * @param comments List of comments to check.
-     * @return the processed list.
+     * @param comments The comments to be added.
+     * @return The list of lines for the normalised comment.
      */
+    @Deprecated
     public static List<String> normaliseComments(List<String> output, List<String> comments) {
         if (comments != null) {
             for (String comment : comments) {
@@ -76,13 +78,27 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
 
     /**
      * Processes a comment making sure it contain a full stop at the end. It
-     * will also break it into multiple lines if it is longer than 100
-     * characters.
+     * will also break it into multiple lines if it is longer than a certain
+     * number of characters.
+     *
+     * @param comment The comment to be added.
+     * @return The list of lines for the normalised comment.
+     */
+    public static List<String> normaliseComment(String comment) {
+        List<String> output = new LinkedList<>();
+        return normaliseComment(output, comment);
+    }
+
+    /**
+     * Processes a comment making sure it contain a full stop at the end. It
+     * will also break it into multiple lines if it is longer than a certain
+     * number of characters.
      *
      * @param output The list to return.
-     * @param comment The comment to check.
-     * @return the supplied list.
+     * @param comment The comment to be added.
+     * @return The list of lines for the normalised comment.
      */
+    @Deprecated
     public static List<String> normaliseComment(List<String> output, String comment) {
         if ((output != null) && (comment != null) && (comment.length() > 0)) {
             if (!comment.endsWith(".")) {
@@ -98,6 +114,14 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
         return output;
     }
 
+    /**
+     * Processes a comment making sure it contain a full stop at the end. It
+     * will also break it into multiple lines if it is longer than a certain
+     * number of characters.
+     *
+     * @param comment The comment to be added.
+     * @return the supplied list.
+     */
     public static List<String> normaliseText(String comment) {
         List<String> output = new LinkedList<>();
         // If the size is less than 70 chars, then put
