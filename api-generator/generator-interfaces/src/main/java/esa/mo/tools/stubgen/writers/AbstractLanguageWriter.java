@@ -91,37 +91,44 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
 
             comment = comment.replace("&", "&amp;");
             comment = comment.replace("'", "&quot;");
-
-            // If the size is less than 70 chars, then put
-            // it directly, otherwise break it up
-            int LENGTH_THRESHOLD = 70;
-
-            if (comment.length() < LENGTH_THRESHOLD) {
-                output.add(comment);
-            } else {
-                for (String paragraph : comment.split("\n")) {
-                    String[] parts = paragraph.split(" ");
-                    String str = "";
-                    int counter = 0;
-
-                    for (String part : parts) {
-                        if (counter > LENGTH_THRESHOLD) {
-                            // .trim() removes the last ' ' (space) character
-                            output.add(str.trim());
-                            // Reset both the string and the counter
-                            str = "";
-                            counter = 0;
-                        }
-                        str += part + " ";
-                        counter += 1 + part.length();
-                    }
-
-                    // .trim() removes the last ' ' (space) character
-                    output.add(str.trim());
-                }
-            }
+            List<String> text = normaliseText(comment);
+            output.addAll(text);
         }
 
         return output;
     }
+
+    public static List<String> normaliseText(String comment) {
+        List<String> output = new LinkedList<>();
+        // If the size is less than 70 chars, then put
+        // it directly, otherwise break it up
+        int LENGTH_THRESHOLD = 70;
+
+        if (comment.length() < LENGTH_THRESHOLD) {
+            output.add(comment);
+        } else {
+            for (String paragraph : comment.split("\n")) {
+                String[] parts = paragraph.split(" ");
+                String str = "";
+                int counter = 0;
+
+                for (String part : parts) {
+                    if (counter > LENGTH_THRESHOLD) {
+                        // .trim() removes the last ' ' (space) character
+                        output.add(str.trim());
+                        // Reset both the string and the counter
+                        str = "";
+                        counter = 0;
+                    }
+                    str += part + " ";
+                    counter += 1 + part.length();
+                }
+
+                // .trim() removes the last ' ' (space) character
+                output.add(str.trim());
+            }
+        }
+        return output;
+    }
+
 }
