@@ -84,10 +84,22 @@ public class AttributeList extends org.ccsds.moims.mo.mal.structures.Heterogeneo
         return new AttributeList();
     }
 
+    /**
+     * Returns the entry with the selected index and converts it to a Java
+     * object type in case it is wrapped as a Union type.
+     *
+     * @param index The index of the object to be returned.
+     * @return The selected entry of the list as a java type if possible.
+     */
     public Object getAsJavaType(int index) {
         return Attribute.attribute2JavaType(super.get(index));
     }
 
+    /**
+     * Returns the list of Attributes as a NullableAttributeList.
+     *
+     * @return The list of Attributes as a NullableAttributeList.
+     */
     public NullableAttributeList getAsNullableAttributeList() {
         NullableAttributeList attributes = new NullableAttributeList();
         for (Object obj : this) {

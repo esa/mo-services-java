@@ -42,21 +42,41 @@ public final class ConfigurationProviderSingleton {
         // Exists only to defeat instantiation.
     }
 
+    /**
+     * Returns the domain.
+     *
+     * @return The domain.
+     */
     public static IdentifierList getDomain() {
         initializeIfNeeded();
         return DOMAIN;
     }
 
+    /**
+     * Returns the network zone.
+     *
+     * @return The network zone.
+     */
     public static Identifier getNetwork() {
         initializeIfNeeded();
         return NETWORK;
     }
 
+    /**
+     * Returns the session type.
+     *
+     * @return The session type.
+     */
     public static SessionType getSession() {
         initializeIfNeeded();
         return SESSION;
     }
 
+    /**
+     * Returns the session name.
+     *
+     * @return The session name.
+     */
     public static Identifier getSourceSessionName() {
         return SESSION_NAME;
     }
@@ -68,6 +88,11 @@ public final class ConfigurationProviderSingleton {
         }
     }
 
+    /**
+     * Returns the instance of this singleton.
+     *
+     * @return The instance of this singleton.
+     */
     public static ConfigurationProviderSingleton getInstance() {
         return INSTANCE;
     }

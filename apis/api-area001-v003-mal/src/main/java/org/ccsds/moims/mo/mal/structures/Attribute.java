@@ -28,6 +28,9 @@ import org.ccsds.moims.mo.mal.TypeId;
  */
 public interface Attribute extends Element {
 
+    /**
+     * The TypeId of the MAL Area.
+     */
     public final static TypeId TYPE_ID_MAL_AREA = new TypeId(
             MALHelper._MAL_AREA_NUMBER,
             MALHelper._MAL_AREA_VERSION,

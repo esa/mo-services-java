@@ -35,21 +35,27 @@ public class ConfigurationConsumer {
     private final Identifier sessionName;
 
     /**
-     * @return Network zone
+     * Returns the network zone.
+     *
+     * @return The network zone.
      */
     public Identifier getNetwork() {
         return this.network;
     }
 
     /**
-     * @return Session Type
+     * Returns the session type.
+     *
+     * @return The session type.
      */
     public SessionType getSession() {
         return this.session;
     }
 
     /**
-     * @return Session name
+     * Returns the session name.
+     *
+     * @return The session name.
      */
     public Identifier getSessionName() {
         return this.sessionName;
