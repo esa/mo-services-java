@@ -92,18 +92,8 @@ public class JavaEnumerations {
                 true, true, "Set of enumeration instances.");
         file.addClassVariable(true, true, StdStrings.PRIVATE, eInstArrVar, true, true, opStr);
 
-        // Adds Constructor without a start value
-        file.addStatement("    public " + enumName + "() {");
-        file.addStatement("        super(0);");
-        file.addStatement("    }");
-        file.addStatement("");
-
-        // Adds Constructor with a start value
-        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
-                generator.createCompositeElementsDetails(file, false, "value",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, null), true, null, null, null);
-        method.addMethodCloseStatement();
+        // Generate constructors
+        generateConstructors(file, enumeration);
 
         // Generate methods
         generateToString(file, enumeration);
@@ -117,6 +107,26 @@ public class JavaEnumerations {
         file.flush();
 
         generator.createListClass(folder, area, service, enumName, false, enumeration.getShortFormPart());
+    }
+
+    private void generateConstructors(ClassWriter file, EnumerationType enumeration) throws IOException {
+        String enumName = enumeration.getName();
+        // Adds Constructor without a start value
+        file.addStatement("    /**");
+        file.addStatement("     * " + enumeration.getComment());
+        file.addStatement("     */");
+        file.addStatement("    public " + enumName + "() {");
+        file.addStatement("        super(0);");
+        file.addStatement("    }");
+        file.addStatement("");
+
+        // Adds Constructor with a start value
+        MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
+                generator.createCompositeElementsDetails(file, false, "value",
+                        TypeUtils.createTypeReference(null, null, "int", false),
+                        false, false, "The value of the Enumeration."),
+                true, null, enumeration.getComment(), null);
+        method.addMethodCloseStatement();
     }
 
     private void generateToString(ClassWriter file, EnumerationType enumeration) throws IOException {
