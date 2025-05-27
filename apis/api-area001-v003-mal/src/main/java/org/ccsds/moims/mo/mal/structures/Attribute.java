@@ -271,8 +271,9 @@ public interface Attribute extends Element {
      * Absolute type short form for URI.
      */
     public final static Long OBJECTREF_SHORT_FORM = ABSOLUTE_AREA_SERVICE_NUMBER + _OBJECTREF_TYPE_SHORT_FORM;
-
-    // ONE_MILLION is used by the Time and FineTime classes
+    /**
+     * ONE_MILLION is used by the Time and FineTime classes.
+     */
     public final static long ONE_MILLION = 1000000;
 
     /**

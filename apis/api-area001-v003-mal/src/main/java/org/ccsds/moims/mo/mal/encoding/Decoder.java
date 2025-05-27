@@ -46,6 +46,9 @@ import org.ccsds.moims.mo.mal.structures.Union;
  */
 public abstract class Decoder implements MALDecoder {
 
+    /**
+     * The source buffer for the decoder.
+     */
     protected final BufferHolder sourceBuffer;
 
     protected Decoder(BufferHolder sourceBuffer) {
