@@ -27,7 +27,7 @@
     <artifactId>xml-service-specifications</artifactId>
     <version>12.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ESA MO XML Service Specifications</name>
+    <name>ESA MO XML specifications</name>
 
     <organization>
         <name>CCSDS</name>

@@ -28,7 +28,7 @@
     <version>12.1-SNAPSHOT</version>
     <packaging>jar</packaging>
   
-    <name>ESA MO XML services - MO Prototypes</name>
+    <name>ESA MO XML specifications - MO Prototypes</name>
     <description>CCSDS Mission Operations XML files</description>
     <url>http://www.ccsds.org</url>
   
