@@ -49,7 +49,8 @@ public class TransactionIdCounter {
     private static final AtomicLong transactionCounter = new AtomicLong(0);
 
     /**
-     * Increases part C of the transaction id. Resets the counter and recalculates part A and B if the maximum offset is reached.
+     * Increases part C of the transaction id. Resets the counter and
+     * recalculates part A and B if the maximum offset is reached.
      *
      * @return the new transaction id
      */

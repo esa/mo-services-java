@@ -43,10 +43,20 @@ public final class PublisherSource {
         this.uri = uri;
     }
 
+    /**
+     * Returns the subscription key names.
+     *
+     * @return The subscription key names.
+     */
     public IdentifierList getSubscriptionKeyNames() {
         return subscriptionKeyNames;
     }
 
+    /**
+     * Sets the subscription key names.
+     *
+     * @param subscriptionKeyNames The subscription key names.
+     */
     public void setSubscriptionKeyNames(IdentifierList subscriptionKeyNames) {
         this.subscriptionKeyNames = subscriptionKeyNames;
     }

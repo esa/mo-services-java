@@ -46,10 +46,20 @@ public class Subscriptions {
         this.subscriptionId = new Identifier(subscriptionId);
     }
 
+    /**
+     * Returns the subscriptions.
+     *
+     * @return The subscriptions.
+     */
     public final ArrayList<SingleSubscription> getSubscriptions() {
         return subscriptions;
     }
 
+    /**
+     * Returns the subscription id.
+     *
+     * @return The subscription id.
+     */
     public final Identifier getSubscriptionId() {
         return subscriptionId;
     }
@@ -67,6 +77,14 @@ public class Subscriptions {
         MALBrokerImpl.LOGGER.log(Level.FINE, str.toString());
     }
 
+    /**
+     * Sets the subscriptions ids.
+     *
+     * @param domain The domain.
+     * @param srcHdr The source header.
+     * @param filters The filters.
+     * @param selectedKeys The selected keys.
+     */
     public void setIds(final IdentifierList domain, final MALMessageHeader srcHdr,
             final SubscriptionFilterList filters, final IdentifierList selectedKeys) {
         subscriptions.clear();
@@ -74,10 +92,11 @@ public class Subscriptions {
     }
 
     /**
-     * Returns true if the provider's update key values match the consumer's subscription filters.
+     * Returns true if the provider's update key values match the consumer's
+     * subscription filters.
      *
      * @param providerUpdates Update Key Values
-     * @return  boolean match found or not.
+     * @return boolean match found or not.
      */
     public boolean matchesAnySubscription(UpdateKeyValues providerUpdates) {
         return BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptions);

@@ -65,7 +65,12 @@ public class OperationResponseHolder {
         this.listener = new InteractionListenerPublishAdapter(listener);
     }
 
-    public MALInteractionListener getListener() {
+    /**
+     * Returns the listener.
+     *
+     * @return The listener.
+     */
+    protected MALInteractionListener getListener() {
         return listener;
     }
 

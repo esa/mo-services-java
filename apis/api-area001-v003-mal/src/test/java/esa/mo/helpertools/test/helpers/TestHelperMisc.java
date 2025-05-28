@@ -14,6 +14,7 @@ import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.NotFoundException;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.BlobList;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
 import org.ccsds.moims.mo.mal.structures.DoubleList;
@@ -195,27 +196,27 @@ public class TestHelperMisc {
     /* Tests for isStringAttribute */
     @Test(expected = IllegalArgumentException.class)
     public void testIsStringAttribute1() {
-        HelperMisc.isStringAttribute(null);
+        Attribute.isStringAttribute(null);
     }
 
     @Test
     public void testIsStringAttribute2() {
-        assertEquals(true, HelperMisc.isStringAttribute(new Identifier("Foo")));
+        assertEquals(true, (new Identifier("Foo")).isStringAttribute());
     }
 
     @Test
     public void testIsStringAttribute3() {
-        assertEquals(true, HelperMisc.isStringAttribute(new Union("Bar")));
+        assertEquals(true, (new Union("Bar")).isStringAttribute());
     }
 
     @Test
     public void testIsStringAttribute4() {
-        assertEquals(true, HelperMisc.isStringAttribute(new URI("www.esa.int")));
+        assertEquals(true, (new URI("www.esa.int")).isStringAttribute());
     }
 
     @Test
     public void testIsStringAttribute5() {
-        assertEquals(false, HelperMisc.isStringAttribute(new Duration(123.42)));
+        assertEquals(false, (new Duration(123.42)).isStringAttribute());
     }
 
     /* Tests for element2elementList */

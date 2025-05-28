@@ -25,7 +25,6 @@ import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Union;
@@ -104,14 +103,14 @@ public class BrokerMatcher {
         }
 
         // Are we handling strings?
-        if (HelperMisc.isStringAttribute(consumer) && HelperMisc.isStringAttribute(provider)) {
+        if (Attribute.isStringAttribute(consumer) && Attribute.isStringAttribute(provider)) {
             String first = HelperAttributes.attribute2string(consumer);
             String second = HelperAttributes.attribute2string(provider);
             return first.equals(second);
         }
 
         // Are we not handling strings?
-        if (!HelperMisc.isStringAttribute(consumer) && !HelperMisc.isStringAttribute(provider)) {
+        if (!Attribute.isStringAttribute(consumer) && !Attribute.isStringAttribute(provider)) {
             if ((consumer instanceof Union) || (provider instanceof Union)) {
                 // Sometimes the nulls are wrapped in a Union type!
                 // We need to check that...

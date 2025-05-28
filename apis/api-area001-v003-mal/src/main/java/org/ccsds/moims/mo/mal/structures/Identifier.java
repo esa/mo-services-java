@@ -32,9 +32,9 @@ import org.ccsds.moims.mo.mal.TypeId;
  */
 public class Identifier implements Attribute {
 
-    private static final long serialVersionUID = Attribute.IDENTIFIER_SHORT_FORM;
-    public final static String WILDCARD = "*";
+    private final static long serialVersionUID = Attribute.IDENTIFIER_SHORT_FORM;
     private final String value;
+    private final static String WILDCARD = "*";
 
     /**
      * Default constructor.
@@ -75,6 +75,11 @@ public class Identifier implements Attribute {
         return value;
     }
 
+    /**
+     * Check if this object equals the wildcard.
+     *
+     * @return
+     */
     public boolean isWildcard() {
         return WILDCARD.equals(value);
     }

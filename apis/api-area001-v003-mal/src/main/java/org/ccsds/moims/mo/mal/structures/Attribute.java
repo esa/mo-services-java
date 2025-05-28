@@ -365,6 +365,16 @@ public interface Attribute extends Element {
     }
 
     /**
+     * Checks if the attribute is an Identifier, String or URI MAL data type.
+     *
+     * @return True if the object can be read as a string
+     * @throws java.lang.IllegalArgumentException If obj == null
+     */
+    default boolean isStringAttribute() throws IllegalArgumentException {
+        return isStringAttribute(this);
+    }
+
+    /**
      * Checks if an attribute is an Identifier, String or URI MAL data type
      *
      * @param obj The attribute

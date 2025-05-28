@@ -116,6 +116,7 @@ public class HelperTime {
      *
      * @return The current time
      */
+    @Deprecated
     public static FineTime getTimestamp() {
         // Convert from milliseconds (10^-3) to nanoseconds (10^-9)
         return new FineTime(System.currentTimeMillis() * ONE_MILLION);
@@ -126,24 +127,23 @@ public class HelperTime {
      *
      * @return The current time
      */
+    @Deprecated
     public static Time getTimestampMillis() {
         return new Time(System.currentTimeMillis());
     }
 
-    public static long fromMilliToNano(long milli) {
+    private static long fromMilliToNano(long milli) {
         return (milli * ONE_MILLION);
     }
 
-    public static long fromNanoToMilli(long nano) {
-        return (nano / ONE_MILLION);
-    }
-
+    @Deprecated
     public static FineTime timeToFineTime(final Time time) {
-        return (time == null) ? null : new FineTime(HelperTime.fromMilliToNano(time.getValue()));
+        return (time == null) ? null : time.toFineTime();
     }
 
+    @Deprecated
     public static Time fineTimeToTime(final FineTime fineTime) {
-        return (fineTime == null) ? null : new Time(HelperTime.fromNanoToMilli(fineTime.getValue()));
+        return (fineTime == null) ? null : fineTime.toTime();
     }
 
     /**
@@ -166,12 +166,12 @@ public class HelperTime {
      * @return The time in nanoseconds
      * @throws java.lang.IllegalArgumentException If timestamp == null
      */
-    public static long getNanosecondsFromSQLTimestamp(java.sql.Timestamp timestamp)
-            throws IllegalArgumentException {
+    public static long getNanosecondsFromSQLTimestamp(java.sql.Timestamp timestamp) throws IllegalArgumentException {
         if (timestamp == null) {
             throw new IllegalArgumentException("The timestamp must not be null.");
         }
-        return (HelperTime.fromMilliToNano(timestamp.getTime() - (timestamp.getTime() % 1000))
+        return (HelperTime.fromMilliToNano(timestamp.getTime()
+                - (timestamp.getTime() % 1000))
                 + timestamp.getNanos());
     }
 }
