@@ -145,7 +145,7 @@
             </dependencies>
         </profile>
         <profile>
-            <id>ESA-NASA</id>
+            <id>ESA-CNES</id>
             <properties>
                 <testbed.consumer>esa.mo.services.mc.util.ESAMCServicesFactory</testbed.consumer>
                 <testbed.provider>CNES-TBD</testbed.provider>
@@ -156,14 +156,14 @@
                     <artifactId>services-area004-v002-mc</artifactId>
                 </dependency>
                 <dependency>
-                    <groupId>gov.nasa.jpl.ccsds.mdp</groupId>
+                    <groupId>CNES-TBD</groupId>
                     <artifactId>services-area004-v002-mc</artifactId>
                     <version>1.0</version>
                 </dependency>
             </dependencies>
         </profile>
         <profile>
-            <id>NASA-ESA</id>
+            <id>CNES-ESA</id>
             <properties>
                 <testbed.consumer>CNES-TBD</testbed.consumer>
                 <testbed.provider>esa.mo.services.mc.util.ESAMCServicesFactory</testbed.provider>
@@ -174,7 +174,7 @@
                     <artifactId>services-area004-v002-mc</artifactId>
                 </dependency>
                 <dependency>
-                    <groupId>gov.nasa.jpl.ccsds.mdp</groupId>
+                    <groupId>CNES-TBD</groupId>
                     <artifactId>services-area004-v002-mc</artifactId>
                     <version>1.0</version>
                 </dependency>

@@ -243,8 +243,8 @@ public class RemoteProcessRunner extends LoggingBase {
                 if (0 < artifact.length()) {
                     String[] part = artifact.split(":");
                     if (part.length == 3) {
-                        String fileName = localRep + pathSep
-                                + part[0].replace(".", pathSep)
+                        String fileName = localRep
+                                + pathSep + part[0].replace(".", pathSep)
                                 + pathSep + part[1] + pathSep + part[2]
                                 + pathSep + part[1] + "-" + part[2] + ".jar";
                         logMessage("Maven extra dependency : " + fileName);

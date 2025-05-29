@@ -69,7 +69,7 @@ public class SetUpProvidersAndConsumers {
         ConnectionProvider.resetURILinksFile(); // Resets the providerURIs.properties file
 
         try {
-            // Dynamic load here: It can be either for ESA's or NASA's implementation
+            // Dynamic load here: It can be either for ESA's or CNES's implementation
             // And also the consumer and provider need to be selectable!
             // This can be achieved with the Factory pattern
 
