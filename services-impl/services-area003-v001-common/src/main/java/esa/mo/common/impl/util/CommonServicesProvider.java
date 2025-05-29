@@ -30,10 +30,20 @@ public class CommonServicesProvider {
 
     private final DirectoryProviderServiceImpl directoryService = new DirectoryProviderServiceImpl();
 
+    /**
+     * Initializes the Common services.
+     *
+     * @throws MALException If one of the Common services could not be started.
+     */
     public void init() throws MALException {
         directoryService.init();
     }
 
+    /**
+     * Returns the Directory service provider.
+     *
+     * @return The Directory service provider.
+     */
     public DirectoryProviderServiceImpl getDirectoryService() {
         return this.directoryService;
     }

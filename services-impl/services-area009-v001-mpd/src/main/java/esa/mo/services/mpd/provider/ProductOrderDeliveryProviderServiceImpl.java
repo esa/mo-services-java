@@ -211,17 +211,29 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
         return this.connection;
     }
 
+    /**
+     * Adds a standing order to this provider.
+     *
+     * @param orderID The orderId.
+     * @param orderDetails The details of the order.
+     * @return True if there was already a standing order with the same orderId,
+     * false otherwise.
+     */
     public synchronized boolean addStandingOrder(Long orderID, StandingOrder orderDetails) {
         StandingOrder previous = standingOrders.put(orderID, orderDetails);
-
         return (previous != null);
     }
 
+    /**
+     * Removes a standing order.
+     *
+     * @param orderID The orderId of the standing order to be removed.
+     */
     public synchronized void removeStandingOrder(Long orderID) {
         standingOrders.remove(orderID);
     }
 
-    public void pushProduct(Product product, Identifier userID, Long orderID) {
+    private void pushProduct(Product product, Identifier userID, Long orderID) {
         try {
             NullableAttributeList keyValues = new NullableAttributeList();
             keyValues.add(new NullableAttribute(userID)); // keyNames userID
@@ -242,7 +254,7 @@ public class ProductOrderDeliveryProviderServiceImpl extends ProductOrderDeliver
         }
     }
 
-    public void pushNotifications(ProductMetadata metadata, String filename,
+    private void pushNotifications(ProductMetadata metadata, String filename,
             URI deliveredTo, Boolean success, Identifier userID, Long orderID) {
         try {
             NullableAttributeList keyValues = new NullableAttributeList();

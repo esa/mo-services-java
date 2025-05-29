@@ -39,7 +39,7 @@ import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalStub;
 import org.ccsds.moims.mo.mpd.productretrieval.provider.ProductRetrievalInheritanceSkeleton;
 
 /**
- *
+ * The factory class to instantiate the MPD services.
  */
 public class ESAMPDServicesFactory extends MPDServicesFactory {
 
@@ -47,6 +47,9 @@ public class ESAMPDServicesFactory extends MPDServicesFactory {
     private ProductOrderDeliveryProviderServiceImpl productOrderDeliveryService = null;
     private ProductRetrievalProviderServiceImpl productRetrievalService = null;
 
+    /**
+     * Constructor.
+     */
     public ESAMPDServicesFactory() {
     }
 

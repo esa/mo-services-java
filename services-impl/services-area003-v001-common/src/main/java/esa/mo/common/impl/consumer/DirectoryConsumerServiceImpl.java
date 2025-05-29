@@ -41,10 +41,24 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
 
     private DirectoryStub directoryService = null;
 
+    /**
+     * Constructor for the Directory service consumer.
+     *
+     * @param providerURI The URI of the provider.
+     * @throws MALException If the Directory service could not be started.
+     */
     public DirectoryConsumerServiceImpl(final URI providerURI) throws MALException {
         this(providerURI, null, null);
     }
 
+    /**
+     * Constructor for the Directory service consumer.
+     *
+     * @param providerURI The URI of the provider.
+     * @param authenticationId The authenticationId token.
+     * @param localNamePrefix The local name prefix.
+     * @throws MALException If the Directory service could not be started.
+     */
     public DirectoryConsumerServiceImpl(final URI providerURI, final Blob authenticationId,
             final String localNamePrefix) throws MALException {
         this.connectionDetails = null;
@@ -69,6 +83,11 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
         this.directoryService = new DirectoryStub(tmConsumer);
     }
 
+    /**
+     * Returns the provider URI.
+     *
+     * @return The provider URI.
+     */
     public URI getProviderURI() {
         return this.providerURI;
     }
@@ -83,6 +102,11 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
         return this.getDirectoryStub();
     }
 
+    /**
+     * Returns the Directory service stub.
+     *
+     * @return The Directory service stub.
+     */
     public DirectoryStub getDirectoryStub() {
         return this.directoryService;
     }

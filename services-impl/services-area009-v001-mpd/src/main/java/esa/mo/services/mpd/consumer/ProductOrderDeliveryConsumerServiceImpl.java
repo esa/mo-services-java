@@ -37,10 +37,24 @@ public class ProductOrderDeliveryConsumerServiceImpl extends ConsumerServiceImpl
 
     private ProductOrderDeliveryStub productOrderDeliveryService = null;
 
+    /**
+     * Constructor.
+     *
+     * @param connectionDetails The connection URIs to the provider.
+     * @throws MALException If the service could not be started.
+     */
     public ProductOrderDeliveryConsumerServiceImpl(final SingleConnectionDetails connectionDetails) throws MALException {
         this(connectionDetails, null, null);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param connectionDetails The connection URIs to the provider.
+     * @param authenticationId The authenticationId token.
+     * @param localNamePrefix The local name prefix.
+     * @throws MALException If the service could not be started.
+     */
     public ProductOrderDeliveryConsumerServiceImpl(final SingleConnectionDetails connectionDetails,
             final Blob authenticationId, final String localNamePrefix) throws MALException {
         this.connectionDetails = connectionDetails;
@@ -71,6 +85,11 @@ public class ProductOrderDeliveryConsumerServiceImpl extends ConsumerServiceImpl
         return this.getProductOrderDeliveryStub();
     }
 
+    /**
+     * Returns the service stub.
+     *
+     * @return The service stub.
+     */
     public ProductOrderDeliveryStub getProductOrderDeliveryStub() {
         return this.productOrderDeliveryService;
     }

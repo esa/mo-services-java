@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.InvalidException;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
@@ -44,9 +43,7 @@ import org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList;
 import org.ccsds.moims.mo.common.directory.structures.ServiceFilter;
 import org.ccsds.moims.mo.common.structures.ServiceKey;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingleton;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
@@ -76,47 +73,13 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
     public static final String CHAR_S2G = "s2g";
     private static final Logger LOGGER = Logger.getLogger(DirectoryProviderServiceImpl.class.getName());
 
-    protected final Map<Long, PublishDetails> providersAvailable = new ConcurrentHashMap<>();
+    private final Map<Long, PublishDetails> providersAvailable = new ConcurrentHashMap<>();
     private final ConnectionProvider connection = new ConnectionProvider();
     private final AtomicLong counter = new AtomicLong(0);
-    protected final Object MUTEX = new Object();
+    private final Object MUTEX = new Object();
 
     private boolean running = false;
     private MALProvider directoryServiceProvider;
-
-    private static AddressDetails getServiceAddressDetails(final SingleConnectionDetails conn) {
-        QoSLevelList qos = new QoSLevelList();
-        qos.add(QoSLevel.ASSURED);
-        NamedValueList qosProperties = new NamedValueList();  // Nothing here for now...
-
-        AddressDetails serviceAddress = new AddressDetails(qos, qosProperties,
-                new UInteger(1), conn.getProviderURI(), conn.getBrokerURI(), null);
-
-        return serviceAddress;
-    }
-
-    private static AddressDetailsList findAddressDetailsListOfService(final ServiceKey key,
-            final ServiceCapabilityList capabilities) {
-        if (key == null) {
-            return null;
-        }
-
-        // Iterate all capabilities until you find the serviceName
-        for (ServiceCapability capability : capabilities) {
-            if (capability != null) {
-                if (key.equals(capability.getServiceKey())) {
-                    return capability.getServiceAddresses();
-                }
-            }
-        }
-
-        return null; // Not found!
-    }
-
-    public static ServiceKey generateServiceKey(final IntegerList keys) {
-        return new ServiceKey(new UShort(keys.get(0)), new UShort(keys.get(1)),
-                new UOctet(keys.get(2).shortValue()));
-    }
 
     /**
      * creates the MAL objects, the publisher used to create updates and starts
@@ -138,6 +101,44 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         LOGGER.info("Directory service READY");
     }
 
+    private static AddressDetails getServiceAddressDetails(final SingleConnectionDetails conn) {
+        QoSLevelList qos = new QoSLevelList();
+        qos.add(QoSLevel.ASSURED);
+        NamedValueList qosProperties = new NamedValueList();  // Nothing here for now...
+
+        return new AddressDetails(qos, qosProperties, new UInteger(1),
+                conn.getProviderURI(), conn.getBrokerURI(), null);
+    }
+
+    private static AddressDetailsList findAddressDetailsListOfService(
+            final ServiceKey key, final ServiceCapabilityList capabilities) {
+        if (key == null) {
+            return null;
+        }
+
+        // Iterate all capabilities until you find the serviceName
+        for (ServiceCapability capability : capabilities) {
+            if (capability != null) {
+                if (key.equals(capability.getServiceKey())) {
+                    return capability.getServiceAddresses();
+                }
+            }
+        }
+
+        return null; // Not found!
+    }
+
+    /**
+     * Generates a ServiceKey object from the supplied keys.
+     *
+     * @param keys The keys to use to generate the ServiceKey.
+     * @return The ServiceKey object.
+     */
+    public static ServiceKey generateServiceKey(final IntegerList keys) {
+        return new ServiceKey(new UShort(keys.get(0)), new UShort(keys.get(1)),
+                new UOctet(keys.get(2).shortValue()));
+    }
+
     /**
      * Closes all running threads and releases the MAL resources.
      */
@@ -154,13 +155,14 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         }
     }
 
+    @Override
     public ConnectionProvider getConnection() {
         return this.connection;
     }
 
     @Override
-    public ProviderSummaryList lookupProvider(final ServiceFilter filter, final MALInteraction interaction)
-            throws MALInteractionException, MALException {
+    public ProviderSummaryList lookupProvider(final ServiceFilter filter,
+            final MALInteraction interaction) throws MALInteractionException, MALException {
         if (filter == null) { // Is the input null?
             throw new IllegalArgumentException("filter argument must not be null");
         }
@@ -220,8 +222,8 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
             // Check session name
             if (!filter.getSessionName().toString().equals("*")) {
                 if (!CHAR_S2G.equals(filter.getSessionName().toString())) {
-                    if (provider.getSourceSessionName() != null && !provider.getSourceSessionName().toString().equals(
-                            filter.getSessionName().toString())) {
+                    if (provider.getSourceSessionName() != null
+                            && !provider.getSourceSessionName().toString().equals(filter.getSessionName().toString())) {
                         continue;
                     }
                 }
@@ -233,26 +235,26 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
             // Check each service
             for (int j = 0; j < provider.getProviderDetails().getServiceCapabilities().size(); j++) { // Go through all the services
                 ServiceCapability serviceCapability = provider.getProviderDetails().getServiceCapabilities().get(j);
+                ServiceKey fKey = filter.getServiceKey();
+                ServiceKey sKey = serviceCapability.getServiceKey();
 
                 // Check service key - area field
-                if (filter.getServiceKey().getKeyArea().getValue() != 0) {
-                    if (!serviceCapability.getServiceKey().getKeyArea().equals(filter.getServiceKey().getKeyArea())) {
+                if (fKey.getKeyArea().getValue() != 0) {
+                    if (!sKey.getKeyArea().equals(fKey.getKeyArea())) {
                         continue;
                     }
                 }
 
                 // Check service key - service field
-                if (filter.getServiceKey().getKeyService().getValue() != 0) {
-                    if (!serviceCapability.getServiceKey().getKeyService().equals(filter.getServiceKey()
-                            .getKeyService())) {
+                if (fKey.getKeyService().getValue() != 0) {
+                    if (!sKey.getKeyService().equals(fKey.getKeyService())) {
                         continue;
                     }
                 }
 
                 // Check service key - version field
-                if (filter.getServiceKey().getKeyAreaVersion().getValue() != 0) {
-                    if (!serviceCapability.getServiceKey().getKeyAreaVersion().equals(filter.getServiceKey()
-                            .getKeyAreaVersion())) {
+                if (fKey.getKeyAreaVersion().getValue() != 0) {
+                    if (!sKey.getKeyAreaVersion().equals(fKey.getKeyAreaVersion())) {
                         continue;
                     }
                 }
@@ -276,8 +278,10 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
                     }
                 }
 
-                ServiceCapability newServiceCapability = new ServiceCapability(serviceCapability.getServiceKey(),
-                        serviceCapability.getSupportedCapabilitySets(), serviceCapability.getServiceProperties(),
+                ServiceCapability newServiceCapability = new ServiceCapability(
+                        serviceCapability.getServiceKey(),
+                        serviceCapability.getSupportedCapabilitySets(),
+                        serviceCapability.getServiceProperties(),
                         new AddressDetailsList());
 
                 // This is a workaround to save bandwidth on the downlink! It is not part of the standard
@@ -316,8 +320,6 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         HeterogeneousList objBodies = new HeterogeneousList();
         objBodies.add(serviceProviderName);
 
-        PublishProviderResponse response = new PublishProviderResponse();
-
         synchronized (MUTEX) {
             final HashMap<Long, PublishDetails> list = new HashMap<>(providersAvailable);
 
@@ -335,15 +337,12 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
 
             Long servProvObjId = counter.incrementAndGet();
             this.providersAvailable.put(servProvObjId, newProviderDetails);
-            response = new PublishProviderResponse(servProvObjId, null);
+            return new PublishProviderResponse(servProvObjId, null);
         }
-
-        return response;
     }
 
     @Override
-    public void withdrawProvider(Long providerObjectKey, MALInteraction interaction) throws MALInteractionException,
-            MALException {
+    public void withdrawProvider(Long providerObjectKey, MALInteraction interaction) throws MALInteractionException {
         synchronized (MUTEX) {
             if (!this.providersAvailable.containsKey(providerObjectKey)) { // The requested provider does not exist
                 throw new MALInteractionException(new UnknownException(null));
@@ -353,7 +352,12 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         }
     }
 
-    public void withdrawAllProviders() throws MALInteractionException, MALException {
+    /**
+     * Withdraws all providers from the Directory service.
+     *
+     * @throws MALInteractionException if the providers could not be removed.
+     */
+    public void withdrawAllProviders() throws MALInteractionException {
         synchronized (MUTEX) {
             for (Long key : providersAvailable.keySet()) {
                 withdrawProvider(key, null);
@@ -361,6 +365,12 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         }
     }
 
+    /**
+     * Loads the URIs from the provider and populates the Directory service.
+     *
+     * @param providerName The name of this provider.
+     * @return The details of the URIs for this provider.
+     */
     public PublishDetails loadURIs(final String providerName) {
         ServicesConnectionDetails primaryConnectionDetails = ConnectionProvider.getGlobalProvidersDetailsPrimary();
         ServicesConnectionDetails secondaryAddresses = ConnectionProvider.getGlobalProvidersDetailsSecondary();

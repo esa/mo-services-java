@@ -20,7 +20,6 @@
  */
 package esa.mo.services.mpd.util;
 
-import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 
@@ -29,8 +28,12 @@ import org.ccsds.moims.mo.mpd.structures.TimeWindow;
  */
 public class HelperMPD {
 
-    private static final Logger LOGGER = Logger.getLogger(HelperMPD.class.getName());
-
+    /**
+     * Checks if the provided time window is valid.
+     *
+     * @param window The time window to be checked.
+     * @return True if the time window is valid, false otherwise.
+     */
     public static boolean isTimeWindowValid(TimeWindow window) {
         if (window != null) {
             Time start = window.getStart();
