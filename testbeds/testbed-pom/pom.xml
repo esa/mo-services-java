@@ -79,7 +79,6 @@
         <!-- Last Fitnesse version that works with GitHub Actions: 20220319 -->
         <fitnesse.version>20220319</fitnesse.version>
         <jacoco.version>0.8.10</jacoco.version>
-        <junit.version>4.13.2</junit.version>
         <fitnesse.output.dir>${project.build.directory}/surefire-reports</fitnesse.output.dir>
         <ccsds.testbed.util.version>${esa.mo.version}</ccsds.testbed.util.version>
         <cnes.version>3.2.2-SNAPSHOT</cnes.version>
@@ -92,11 +91,6 @@
                 <groupId>org.fitnesse</groupId>
                 <artifactId>fitnesse</artifactId>
                 <version>${fitnesse.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>

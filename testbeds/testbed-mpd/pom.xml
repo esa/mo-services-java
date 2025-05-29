@@ -18,11 +18,12 @@
 
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
-        <artifactId>testbed-pom</artifactId>
+        <artifactId>parent</artifactId>
         <version>12.2-SNAPSHOT</version>
-        <relativePath>../testbed-pom/pom.xml</relativePath>
+        <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
+    <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>testbed-mpd</artifactId>
     <packaging>jar</packaging>
     <version>12.2-SNAPSHOT</version>
