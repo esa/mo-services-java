@@ -171,11 +171,13 @@ public class HelperAttributes {
     }
 
     /**
-     * Converts any MAL Attribute data type to a String java type
+     * Converts any MAL Attribute data type to a String java type. Deprecated
+     * because it was moved to the Attribute interface.
      *
      * @param in The MAL Attribute data type
      * @return The convert String value
      */
+    @Deprecated
     public static String attribute2string(Object in) {
         if (in == null) {
             return "null";

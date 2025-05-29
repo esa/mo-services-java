@@ -462,7 +462,7 @@ public class MALReceiver implements MALMessageListener {
             if (msg.getBody() instanceof MALErrorBody) {
                 try {
                     MALPublishInteractionListener listener
-                            = pubSubMap.getPublishListener(msg.getHeader().getTo(), msg.getHeader());
+                            = pubSubMap.getPublishListener(msg.getHeader().getTo());
 
                     if (listener != null) {
                         listener.publishErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());

@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.Arrays;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.TypeId;
 
@@ -362,6 +363,135 @@ public interface Attribute extends Element {
         }
 
         return obj;
+    }
+
+    /**
+     * Converts any MAL Attribute data type to a String java type
+     *
+     * @param in The MAL Attribute data type
+     * @return The convert String value
+     */
+    public static String attribute2string(Object in) {
+        if (in == null) {
+            return "null";
+        }
+
+        if (in instanceof Union) {
+            Integer sfp = ((Union) in).getTypeId().getSFP();
+
+            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
+                if (((Union) in).getDoubleValue() == null) {
+                    return "";
+                }
+                return ((Union) in).getDoubleValue().toString();
+            }
+
+            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
+                if (((Union) in).getBooleanValue() == null) {
+                    return "";
+                }
+                String dou = ((Union) in).getBooleanValue() ? "true" : "false";
+                return dou;
+            }
+
+            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) {
+                if (((Union) in).getFloatValue() == null) {
+                    return "";
+                }
+                return (((Union) in).getFloatValue()).toString();
+            }
+
+            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) {
+                if (((Union) in).getIntegerValue() == null) {
+                    return "";
+                }
+                return (((Union) in).getIntegerValue()).toString();
+            }
+
+            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) {
+                if (((Union) in).getLongValue() == null) {
+                    return "";
+                }
+                return (((Union) in).getLongValue()).toString();
+            }
+
+            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) {
+                if (((Union) in).getOctetValue() == null) {
+                    return "";
+                }
+                return (((Union) in).getOctetValue()).toString();
+            }
+
+            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) {
+                if (((Union) in).getShortValue() == null) {
+                    return "";
+                }
+                return (((Union) in).getShortValue()).toString();
+            }
+
+            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) {
+                if (((Union) in).getStringValue() == null) {
+                    return "";
+                }
+                return ((Union) in).getStringValue();
+            }
+
+        }
+
+        if (in instanceof Duration) {
+            return String.valueOf(((Duration) in).toString());
+        }
+
+        if (in instanceof UOctet) {
+            return String.valueOf(((UOctet) in).getValue());
+        }
+
+        if (in instanceof UShort) {
+            return String.valueOf(((UShort) in).getValue());
+        }
+
+        if (in instanceof UInteger) {
+            return String.valueOf(((UInteger) in).getValue());
+        }
+
+        if (in instanceof Blob) {
+            return Arrays.toString(((Blob) in).getValue());
+        }
+
+        if (in instanceof ULong) {
+            return String.valueOf(((ULong) in).getValue());
+        }
+
+        if (in instanceof Time) {
+            return String.valueOf(((Time) in).getValue());
+        }
+
+        if (in instanceof Identifier) {
+            return ((Identifier) in).getValue();
+        }
+
+        if (in instanceof FineTime) {
+            return String.valueOf(((FineTime) in).getValue());
+        }
+
+        if (in instanceof URI) {
+            return ((URI) in).toString();
+        }
+
+        if (in instanceof Long) {
+            return ((Long) in).toString();
+        }
+
+        return "";
+    }
+
+    /**
+     * Converts this MAL Attribute data type to a String java type.
+     *
+     * @return The convert String value.
+     */
+    default String attribute2string() throws IllegalArgumentException {
+        return attribute2string(this);
     }
 
     /**

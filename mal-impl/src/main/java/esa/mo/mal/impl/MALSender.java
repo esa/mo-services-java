@@ -42,11 +42,11 @@ public class MALSender {
     private final InteractionPubSubMap ipsmap;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param securityManager Security Manager
-     * @param imap Interaction Consumers
-     * @param psmap Interaction PubSub Map
+     * @param securityManager Security Manager.
+     * @param imap Interaction Consumers.
+     * @param psmap Interaction PubSub Map.
      */
     MALSender(final MALAccessControl securityManager,
             final InteractionConsumerMap imap, final InteractionPubSubMap psmap) {
@@ -55,6 +55,11 @@ public class MALSender {
         this.ipsmap = psmap;
     }
 
+    /**
+     * Returns the Security Manager.
+     *
+     * @return The Security Manager.
+     */
     public MALAccessControl getSecurityManager() {
         return securityManager;
     }

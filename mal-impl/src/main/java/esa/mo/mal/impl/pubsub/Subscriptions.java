@@ -95,13 +95,18 @@ public class Subscriptions {
      * Returns true if the provider's update key values match the consumer's
      * subscription filters.
      *
-     * @param providerUpdates Update Key Values
-     * @return boolean match found or not.
+     * @param providerUpdates Update Key Values.
+     * @return A boolean that represents if match was found or not.
      */
     public boolean matchesAnySubscription(UpdateKeyValues providerUpdates) {
         return BrokerMatcher.keyValuesMatchSubs(providerUpdates, subscriptions);
     }
 
+    /**
+     * Returns the selected keys for the subscription.
+     *
+     * @return The selected keys for the subscription.
+     */
     public IdentifierList getSelectedKeys() {
         if (subscriptions.isEmpty()) {
             return null;

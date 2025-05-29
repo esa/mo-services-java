@@ -85,7 +85,7 @@ public class OperationResponseHolder {
                     signalReceived.wait();
                 } catch (InterruptedException ex) {
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                            "Interrupted waiting for handler lock ", ex);
+                            "Interrupted waiting for handler lock!", ex);
                 }
             }
         }
@@ -94,8 +94,8 @@ public class OperationResponseHolder {
     /**
      * Responds to a consumer.
      *
-     * @param isError boolean value for error status.
-     * @param msg   MAL message
+     * @param isError The boolean value for error status.
+     * @param msg The MAL message.
      */
     public void signalResponse(final boolean isError, final MALMessage msg) {
         if (isError) {
@@ -131,7 +131,15 @@ public class OperationResponseHolder {
         }
     }
 
-    public MALMessage getResult() throws MALInteractionException, MALException {
+    /**
+     * Returns the result from the operation response or an exception if the
+     * operation response was an MO Error.
+     *
+     * @return The result from the operation response.
+     * @throws MALInteractionException if the operation response was an MO
+     * Error.
+     */
+    public MALMessage getResult() throws MALInteractionException {
         if (isError) {
             throw new MALInteractionException(errorBody);
         }
