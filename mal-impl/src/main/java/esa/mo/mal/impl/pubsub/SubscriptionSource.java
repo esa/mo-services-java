@@ -102,6 +102,11 @@ public class SubscriptionSource {
         MALBrokerImpl.LOGGER.log(Level.FINE, "  END Consumer ( {0} )", signatureURI);
     }
 
+    /**
+     * Returns the signature URI.
+     *
+     * @return The signature URI.
+     */
     public String getSignature() {
         return signatureURI;
     }
@@ -109,8 +114,8 @@ public class SubscriptionSource {
     /**
      * Adds a subscription to the consumer.
      *
-     * @param srcHdr    Source MAL message header.
-     * @param subscription  Subscription.
+     * @param srcHdr Source MAL message header.
+     * @param subscription Subscription.
      */
     public void addSubscription(final MALMessageHeader srcHdr, final Subscription subscription) {
         final String subId = subscription.getSubscriptionId().getValue();

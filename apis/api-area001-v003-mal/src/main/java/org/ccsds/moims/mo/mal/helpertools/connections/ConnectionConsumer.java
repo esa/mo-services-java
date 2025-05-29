@@ -64,14 +64,30 @@ public class ConnectionConsumer {
     private ServicesConnectionDetails servicesDetails = new ServicesConnectionDetails();
     private MALConsumer tmConsumer;
 
+    /**
+     * Returns the service details.
+     *
+     * @return The service details.
+     */
     public ServicesConnectionDetails getServicesDetails() {
         return servicesDetails;
     }
 
+    /**
+     * Sets the service details.
+     *
+     * @param servicesDetails The service details.
+     */
     public void setServicesDetails(ServicesConnectionDetails servicesDetails) {
         this.servicesDetails = servicesDetails;
     }
 
+    /**
+     * Sets a property.
+     *
+     * @param property The property to be set.
+     * @param value The value of the property to be set.
+     */
     public void setProperty(String property, String value) {
         System.setProperty(property, value);
     }
@@ -346,6 +362,11 @@ public class ConnectionConsumer {
         return new Subscription(subId, null, null, filters);
     }
 
+    /**
+     * Returns the authenticationId.
+     *
+     * @return The authenticationId.
+     */
     public Blob getAuthenticationId() {
         if (null != tmConsumer) {
             return tmConsumer.getAuthenticationId();
@@ -353,6 +374,11 @@ public class ConnectionConsumer {
         return null;
     }
 
+    /**
+     * Sets the authenticationId.
+     *
+     * @param authenticationId The authenticationId to be set.
+     */
     public void setAuthenticationId(Blob authenticationId) {
         if (null != tmConsumer) {
             tmConsumer.setAuthenticationId(getAuthenticationId(authenticationId));

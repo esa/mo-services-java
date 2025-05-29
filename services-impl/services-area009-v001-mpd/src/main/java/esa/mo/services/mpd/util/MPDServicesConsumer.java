@@ -42,10 +42,22 @@ public class MPDServicesConsumer {
     private ProductOrderDeliveryConsumerServiceImpl productOrderDeliveryService;
     private ProductRetrievalConsumerServiceImpl productRetrievalService;
 
+    /**
+     * Initializes the MPD consumers.
+     *
+     * @param connectionConsumer The connection details to connect to.
+     */
     public void init(ConnectionConsumer connectionConsumer) {
         init(connectionConsumer, null, null);
     }
 
+    /**
+     * Initializes the MPD consumers.
+     *
+     * @param connectionConsumer The connection details to connect to.
+     * @param authenticationId The authenticationId token.
+     * @param localNamePrefix The local name prefix.
+     */
     public void init(ConnectionConsumer connectionConsumer, Blob authenticationId, String localNamePrefix) {
         SingleConnectionDetails details;
 
@@ -73,21 +85,35 @@ public class MPDServicesConsumer {
 
     }
 
+    /**
+     * Returns the Order Management service consumer.
+     *
+     * @return The Order Management service consumer.
+     */
     public OrderManagementConsumerServiceImpl getOrderManagementService() {
         return this.orderManagementService;
     }
 
+    /**
+     * Returns the Product Order Delivery service consumer.
+     *
+     * @return The Product Order Delivery service consumer.
+     */
     public ProductOrderDeliveryConsumerServiceImpl getProductOrderDeliveryService() {
         return this.productOrderDeliveryService;
     }
 
+    /**
+     * Returns the Product Retrieval service consumer.
+     *
+     * @return The Product Retrieval service consumer.
+     */
     public ProductRetrievalConsumerServiceImpl getProductRetrievalService() {
         return this.productRetrievalService;
     }
 
     /**
      * Closes the service consumer connections
-     *
      */
     public void closeConnections() {
         if (this.orderManagementService != null) {
@@ -101,6 +127,11 @@ public class MPDServicesConsumer {
         }
     }
 
+    /**
+     * Sets the authenticationId.
+     *
+     * @param authenticationId The authenticationId.
+     */
     public void setAuthenticationId(Blob authenticationId) {
         if (this.orderManagementService != null) {
             this.orderManagementService.setAuthenticationId(authenticationId);

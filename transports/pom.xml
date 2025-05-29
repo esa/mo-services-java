@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>12.0</version>
+        <version>12.1</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>transports</artifactId>
-    <version>12.0</version>
+    <version>12.1</version>
     <packaging>pom</packaging>
     <name>ESA MO Transports</name>
 
@@ -61,8 +61,6 @@
         <module>transport-rmi</module>
         <module>transport-tcpip</module>
         <module>transport-http</module>
-        <module>transport-jms</module>
-        <module>transport-activemq</module>
         <module>transport-spp</module>
         <module>transport-zmtp</module>
     </modules>

@@ -61,7 +61,8 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
 
     @Override
     public synchronized void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
-        if (HTTPTransport.messageIsEncodedHttpResponse(packetData.getOriginalMessage().getHeader())) {
+        MALMessageHeader header = packetData.getOriginalMessage().getHeader();
+        if (HTTPTransport.messageIsEncodedHttpResponse(header)) {
             sendEncodedMessageViaHttpResponse(packetData);
         } else {
             sendEncodedMessageViaHttpClient(packetData);

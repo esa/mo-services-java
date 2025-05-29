@@ -23,9 +23,15 @@ package org.ccsds.moims.mo.mal.helpertools.connections;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperConnections;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALContext;
@@ -289,7 +295,7 @@ public class ConnectionProvider {
             }
         } catch (MALException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider {0}", ex);
+                    "Exception during close down of the provider!", ex);
         }
     }
 
@@ -308,7 +314,7 @@ public class ConnectionProvider {
             }
         } catch (MALException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider {0}", ex);
+                    "Exception during close down of the provider!", ex);
         }
 
         try {
@@ -321,7 +327,7 @@ public class ConnectionProvider {
             }
         } catch (MALException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider {0}", ex);
+                    "Exception during close down of the provider!", ex);
         }
     }
 
@@ -331,19 +337,22 @@ public class ConnectionProvider {
      * @return true if URI Files should be initialised
      */
     public static boolean shouldInitUriFiles() {
-        return Boolean.valueOf(System.getProperty(HelperMisc.PROP_INIT_URI_FILES, "false"));
+        String key = HelperMisc.PROP_INIT_URI_FILES;
+        return Boolean.parseBoolean(System.getProperty(key, "false"));
     }
 
     /**
      * Clears the URI links file of the provider
      */
     public static void resetURILinksFile() {
+        String filename = HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME;
+        File fileMain = getProviderURIsDirectory(filename);
         BufferedWriter wrt = null;
         try {
-            wrt = new BufferedWriter(new FileWriter(HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME, false));
+            wrt = new BufferedWriter(new FileWriter(fileMain, false));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Unable to reset URI information from properties file {0}", ex);
+                    "Unable to reset URI information from properties file: " + filename, ex);
         } finally {
             if (wrt != null) {
                 try {
@@ -354,12 +363,14 @@ public class ConnectionProvider {
         }
 
         if (System.getProperty(HelperMisc.SECONDARY_PROTOCOL) != null) {
+            String filenameSec = HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME;
+            File fileSec = getProviderURIsDirectory(filenameSec);
             BufferedWriter wrt2 = null;
             try {
-                wrt2 = new BufferedWriter(new FileWriter(HelperMisc.PROVIDER_URIS_SECONDARY_PROPERTIES_FILENAME, false));
+                wrt2 = new BufferedWriter(new FileWriter(fileSec, false));
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                        "Unable to reset URI information from properties file {0}", ex);
+                        "Unable to reset URI information from properties file: " + filenameSec, ex);
             } finally {
                 if (wrt2 != null) {
                     try {
@@ -369,27 +380,74 @@ public class ConnectionProvider {
                 }
             }
         }
+    }
 
+    private static File getProviderURIsDirectory(String filename) {
+        File file = new File(filename);
+        if (file.canWrite()) {
+            return new File(filename);
+        }
+
+        StringBuilder path = new StringBuilder();
+        path.append(System.getProperty("user.home"));
+        path.append(File.separator);
+        path.append(".mo-services");
+        File fileInUserDir = new File(path.toString(), filename);
+        mkDirAndSetPermissions(fileInUserDir.getParentFile());
+        return fileInUserDir;
+    }
+
+    private static void mkDirAndSetPermissions(File directory) {
+        if (!directory.exists()) {
+            // If it does not exist, please check if the parent dir exists
+            // because if not, then we also want to create that directory
+            // and set the correct permissions
+            mkDirAndSetPermissions(directory.getParentFile());
+
+            // We want to give access to both the App itself and the nmf-admin group
+            Set<PosixFilePermission> posix = PosixFilePermissions.fromString("rwxrwx---");
+            FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(posix);
+            try {
+                Files.createDirectory(directory.toPath(), permissions);
+            } catch (UnsupportedOperationException ex1) {
+                // Probably we are on Windows... Let's create it with:
+                directory.mkdirs();
+                directory.setExecutable(false, false);
+                directory.setExecutable(true, true);
+                directory.setReadable(false, false);
+                directory.setReadable(true, true);
+                directory.setWritable(false, false);
+                directory.setWritable(true, true);
+            } catch (IOException ex2) {
+                Logger.getLogger(ConnectionProvider.class.getName()).log(
+                        Level.SEVERE, "Something went wrong...", ex2);
+            }
+        }
     }
 
     /**
      * Writes the URIs on a text file
      */
     private void writeURIsOnFile(SingleConnectionDetails connectionDetails, String serviceName, String filename) {
+        File file = getProviderURIsDirectory(filename);
         BufferedWriter wrt = null;
         try {
-            wrt = new BufferedWriter(new FileWriter(filename, true));
-            wrt.append(serviceName + HelperConnections.SUFFIX_URI + "=" + connectionDetails.getProviderURI());
+            wrt = new BufferedWriter(new FileWriter(file, true));
+            wrt.append(serviceName + HelperConnections.SUFFIX_URI);
+            wrt.append("=" + connectionDetails.getProviderURI());
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_BROKER + "=" + connectionDetails.getBrokerURI());
+            wrt.append(serviceName + HelperConnections.SUFFIX_BROKER);
+            wrt.append("=" + connectionDetails.getBrokerURI());
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_DOMAIN + "=" + HelperDomain.domain2domainId(connectionDetails.getDomain()));
+            wrt.append(serviceName + HelperConnections.SUFFIX_DOMAIN);
+            wrt.append("=" + HelperDomain.domain2domainId(connectionDetails.getDomain()));
             wrt.newLine();
-            wrt.append(serviceName + HelperConnections.SUFFIX_SERVICE_KEY + "=" + connectionDetails.getServiceKey());
+            wrt.append(serviceName + HelperConnections.SUFFIX_SERVICE_KEY);
+            wrt.append("=" + connectionDetails.getServiceKey());
             wrt.newLine();
         } catch (IOException ex) {
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Unable to write URI information to properties file {0}", ex);
+                    "Unable to write URI information to properties file: " + file.getAbsolutePath(), ex);
         } finally {
             if (wrt != null) {
                 try {

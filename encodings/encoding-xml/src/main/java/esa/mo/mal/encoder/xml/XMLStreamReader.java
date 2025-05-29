@@ -53,6 +53,8 @@ public class XMLStreamReader implements MALDecoder {
         try {
             if (is.available() > 0) {
                 XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+                inputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
                 XMLEventReader eventReader = inputFactory.createXMLEventReader(is);
                 xmlReader = new XMLReader(eventReader, this);
             }

@@ -70,11 +70,11 @@ public class NotifyMessageBody {
     /**
      * Constructor.
      *
-     * @param subscriptionId    PubSub subscription id.
-     * @param updateHeader      PubSub update headers.
-     * @param notifyList        Update objects.
-     * @param srcHdr            Source MAL message header.
-     * @param domain            PubSub domain.
+     * @param subscriptionId PubSub subscription id.
+     * @param updateHeader PubSub update headers.
+     * @param notifyList Update objects.
+     * @param srcHdr Source MAL message header.
+     * @param domain PubSub domain.
      */
     public NotifyMessageBody(Identifier subscriptionId, UpdateHeader updateHeader,
             Object[] notifyList, MALMessageHeader srcHdr, IdentifierList domain) {
@@ -100,34 +100,74 @@ public class NotifyMessageBody {
         return buf.toString();
     }
 
+    /**
+     * Returns the domain.
+     *
+     * @return The domain.
+     */
     public IdentifierList getDomain() {
         return domain;
     }
 
+    /**
+     * Returns the area.
+     *
+     * @return The area.
+     */
     public UShort getArea() {
         return area;
     }
 
+    /**
+     * Returns the service.
+     *
+     * @return The service.
+     */
     public UShort getService() {
         return service;
     }
 
+    /**
+     * Returns the operation.
+     *
+     * @return The operation.
+     */
     public UShort getOperation() {
         return operation;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return The version.
+     */
     public UOctet getVersion() {
         return version;
     }
 
+    /**
+     * Returns the subscriptionId.
+     *
+     * @return The subscriptionId.
+     */
     public Identifier getSubscriptionId() {
         return subscriptionId;
     }
 
+    /**
+     * Returns the updateHeader.
+     *
+     * @return The updateHeader.
+     */
     public UpdateHeader getUpdateHeader() {
         return updateHeader;
     }
 
+    /**
+     * Returns the update objects.
+     *
+     * @return The update objects.
+     */
     public Object[] getUpdateObjects() {
         return updateObjects;
     }

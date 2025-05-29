@@ -29,7 +29,6 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The interaction map is responsible for maintaining the information pertaining
@@ -54,7 +53,13 @@ public class InteractionPubSubMap {
         }
     }
 
-    public MALPublishInteractionListener getPublishListener(final Identifier uri, final MALMessageHeader mshHdr) {
+    /**
+     * Returns the PUBSUB listener for the given uri.
+     *
+     * @param uri The uri.
+     * @return The PUBSUB listener.
+     */
+    public MALPublishInteractionListener getPublishListener(final Identifier uri) {
         MALPublishInteractionListener list;
 
         synchronized (publisherMap) {
@@ -100,7 +105,8 @@ public class InteractionPubSubMap {
     }
 
     /**
-     * Returns the MAL publish interaction listener and removes it from the publisher list.
+     * Returns the MAL publish interaction listener and removes it from the
+     * publisher list.
      *
      * @param uri The MAL publish interaction listener URI.
      * @return The MAL publish interaction listener.
@@ -123,8 +129,8 @@ public class InteractionPubSubMap {
     /**
      * Registers a notify listener.
      *
-     * @param uri   The URI.
-     * @param subscription  The subscription.
+     * @param uri The URI.
+     * @param subscription The subscription.
      * @param list The MAL interaction listeners.
      */
     public void registerNotifyListener(final String uri,
@@ -149,6 +155,13 @@ public class InteractionPubSubMap {
         }
     }
 
+    /**
+     * Returns the PUBSUB notify listener for the given uri and subscription.
+     *
+     * @param uri The URI.
+     * @param subscription The subscription.
+     * @return The PUBSUB notify listener.
+     */
     public MALInteractionListener getNotifyListener(final Identifier uri, final Identifier subscription) {
         final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
 
@@ -200,8 +213,8 @@ public class InteractionPubSubMap {
     /**
      * Removes the notified listeners.
      *
-     * @param uri    The URI.
-     * @param unsubscriptions  Notified listeners to unsubscribe.
+     * @param uri The URI.
+     * @param unsubscriptions Notified listeners to unsubscribe.
      */
     public void deregisterNotifyListener(final String uri, final IdentifierList unsubscriptions) {
         synchronized (notifyMap) {

@@ -65,14 +65,29 @@ public final class MessageTarget {
         this.qosProps = (qosProps == null) ? new HashMap() : qosProps;
     }
 
+    /**
+     * Sets the authentication id.
+     *
+     * @param authenticationId The authentication id.
+     */
     public void setAuthenticationId(Blob authenticationId) {
         this.authenticationId = authenticationId;
     }
 
+    /**
+     * Returns the authentication id.
+     *
+     * @return The authentication id.
+     */
     public Blob getAuthenticationId() {
         return authenticationId;
     }
 
+    /**
+     * Returns the endpoint of this address.
+     *
+     * @return The endpoint of this address.
+     */
     public MALEndpoint getEndpoint() {
         return endpoint;
     }
@@ -80,12 +95,12 @@ public final class MessageTarget {
     /**
      * Creates a MAL Message
      *
-     * @param operation         The MAL Operation
-     * @param transactionId     Transaction ID
-     * @param interactionStage  Interaction Stage
-     * @param body              The MAL Message Body
-     * @return                  The MAL Message
-     * @throws MALException     When something goes wrong
+     * @param operation The MAL Operation
+     * @param transactionId Transaction ID
+     * @param interactionStage Interaction Stage
+     * @param body The MAL Message Body
+     * @return The MAL Message
+     * @throws MALException When something goes wrong
      */
     public MALMessage createMessage(final MALOperation operation,
             final Long transactionId,

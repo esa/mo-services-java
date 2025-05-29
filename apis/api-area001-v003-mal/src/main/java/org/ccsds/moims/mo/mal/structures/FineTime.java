@@ -79,6 +79,11 @@ public class FineTime implements Attribute {
         return new FineTime(System.currentTimeMillis() * ONE_MILLION);
     }
 
+    /**
+     * Converts this FineTime object into a Time object.
+     *
+     * @return The Time object for the same time.
+     */
     public Time toTime() {
         return new Time(value / ONE_MILLION);
     }

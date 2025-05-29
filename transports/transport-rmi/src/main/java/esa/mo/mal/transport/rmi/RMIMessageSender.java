@@ -29,7 +29,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 /**
- * implementation of the GENMessageSender information for RMI transport.
+ * The RMIMessageSender class is responsible for sending the messages into the
+ * RMI transport.
  */
 public class RMIMessageSender implements MessageSender<byte[]> {
 
@@ -52,7 +53,7 @@ public class RMIMessageSender implements MessageSender<byte[]> {
     }
 
     @Override
-    public void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
+    public synchronized void sendEncodedMessage(OutgoingMessageHolder<byte[]> packetData) throws IOException {
         try {
             internalSendMessage(packetData);
         } catch (RemoteException ex) {
@@ -65,26 +66,26 @@ public class RMIMessageSender implements MessageSender<byte[]> {
 
     private void internalSendMessage(OutgoingMessageHolder<byte[]> packetData)
             throws MalformedURLException, RemoteException, IOException {
-        if (!closed) {
-            if (destinationRMI == null) {
-                try {
-                    destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
-                } catch (NotBoundException ex) {
-                    throw new IOException("Remote URI no known " + remoteURI, ex);
-                }
-            }
+        if (closed) {
+            return;
+        }
 
-            RMIReceiveInterface remote = destinationRMI;
-
-            if (remote != null) {
-                // Push the message into the "receive" method of the remote location
-                remote.receive(packetData.getEncodedMessage());
+        if (destinationRMI == null) {
+            try {
+                destinationRMI = (RMIReceiveInterface) Naming.lookup(remoteURI);
+            } catch (NotBoundException ex) {
+                throw new IOException("Remote URI no known " + remoteURI, ex);
             }
+        }
+
+        if (destinationRMI != null) {
+            // Push the message into the "receive" method of the remote location
+            destinationRMI.receive(packetData.getEncodedMessage());
         }
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         closed = true;
         destinationRMI = null;
     }

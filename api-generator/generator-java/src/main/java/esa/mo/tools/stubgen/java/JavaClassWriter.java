@@ -162,7 +162,16 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         if (initialValue != null) {
             if (isArray) {
-                buf.append(" = {").append(initialValue).append("}");
+                buf.append(" = {");
+                List<String> lines = AbstractLanguageWriter.normaliseText(initialValue);
+                if (lines.size() > 1) {
+                    for (String line : lines) {
+                        buf.append("\n        ").append(line);
+                    }
+                } else {
+                    buf.append("\n        ").append(initialValue);
+                }
+                buf.append("}");
             } else if (generator.isNativeType(field.getTypeName())) {
                 NativeTypeDetails dets = generator.getNativeType(field.getTypeName());
                 if (dets.isObject()) {
@@ -498,9 +507,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private List<String> normaliseComments(String comment, String returnComment,
             List<String> argsComments, List<String> throwsComment) {
-        List<String> output = new LinkedList<>();
-
-        normaliseComment(output, comment);
+        List<String> output = normaliseComment(comment);
         output.add(""); // Separation between the comment and params
         normaliseComments(output, StubUtils.conditionalAdd("@param ", argsComments));
         normaliseComment(output, StubUtils.conditionalAdd("@return ", returnComment));

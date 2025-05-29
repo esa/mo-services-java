@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2025
 
-  Generated from 529x1r1_RID_closeout_v3_draft_clean 28/03/2025
+  Generated from 529x1r1_RID_closeout_v3_clean 06/05/2025
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema-v003"
@@ -15,16 +15,16 @@ In the context of a hierarchical or federated planning system, the Planning Requ
 
       <mal:documentation name="High-level Requirements" order="1">
         3.5.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the planning request service:
-        a) Planning Request Definitions (as RequestDefinition objects [4.5.5.1]);
-        b) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
-        c) Planning Event Definitions (as EventDefinition objects [4.5.3.1]);
-        d) Planning Resource Definitions (as Resource objects [4.5.4.2]) [Optional];
+        a) Planning Request Definitions (as RequestDefinition objects [4.5.5.1.1]);
+        b) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1.1]);
+        c) Planning Event Definitions (as EventDefinition objects [4.5.3.1.1]);
+        d) Planning Resource Definitions (as Resource objects [4.5.4.2.1]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
         3.5.5.1 In response to a submitRequest operation, the service provider shall create a corresponding RequestInstance object, set its creationTime and return its identity (key and version) to the consumer.
         3.5.5.2 In response to an updateRequest operation, if supported, the service provider shall create a new version of the referenced RequestInstance object, set its creationTime and return its identity (key and version) to the consumer.
         3.5.5.3 The service provider shall only consider the latest version of a RequestInstance in the generation of future Plans, following a successful updateRequest operation.
-        3.5.5.4 In response to a cancelRequest operation, if supported, the service provider shall set the requestStatus of the referenced RequestInstance object to ‘CANCELLED’ and stops it being considered in the generation of future Plans.
+        3.5.5.4 In response to a cancelRequest operation, if supported, the service provider shall set the requestStatus of the referenced RequestInstance object to ‘CANCELLED’ and stop it being considered in the generation of future Plans.
         3.5.5.5 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of RequestInstance objects in accordance with the planning request state model (4.5.5.2).
         NOTE	–	Following a successful updateRequest operation, it is implementation dependent what the status of the previous version of the RequestInstance is set to.  Previous versions may already have been incorporated into Plans.
         3.5.5.6 If a service consumer generates a planning request based on an existing planning request definition, then the PlanningRequestDetails submitted shall:
@@ -56,14 +56,14 @@ In the context of a hierarchical or federated planning system, the Planning Requ
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="An optional data structure used in the message is not supported by the service provider.">
               <mal:type name="UNSUPPORTED" area="MPS"/>
-              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
+              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
                 <mal:type area="MAL" name="String" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -94,7 +94,7 @@ The response returns a list of RequestSummaryStatus structures containing the id
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -123,7 +123,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -147,7 +147,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -185,14 +185,14 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="An optional data structure used in the message is not supported by the service provider.">
               <mal:type name="UNSUPPORTED" area="MPS"/>
-              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
+              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
                 <mal:type area="MAL" name="String" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -264,7 +264,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -279,10 +279,10 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
     <mal:service name="PlanDistribution" number="2" comment="The Plan Distribution Service, introduced in 2.5.3, is provided by a planning function and enables its consumers to access generated plans and to receive updates on their status.  It comprises the operations defined below, of which only those in capability set 1 are mandatory.">
 
       <mal:documentation name="High-level Requirements" order="1">
-        3.6.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan distribution service:
-        a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
-        b) Planning Event Definitions (as EventDefinition objects [4.5.3.1]);
-        c) Planning Resource Definitions (as Resource objects [4.5.4.2]) [Optional];
+        3.6.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the plan distribution service:
+        a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1.1]);
+        b) Planning Event Definitions (as EventDefinition objects [4.5.3.1.1]);
+        c) Planning Resource Definitions (as Resource objects [4.5.4.2.1]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
         3.6.5.1 If Plan version 0 is specified in the getPlan and getPlanStatus operations, then the service provider shall assume the latest version of the Plan is required.
@@ -316,7 +316,7 @@ The response returns a list of PlanSummaryStatus structures containing the ident
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -345,7 +345,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -370,7 +370,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -459,7 +459,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -491,7 +491,7 @@ The PartialPlan returned includes the filter criteria and a version of the plan 
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -506,10 +506,10 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
     <mal:service name="PlanExecutionControl" number="3" comment="The Plan Execution Control Service, introduced in 2.5.4, is provided by a plan execution function and enables its consumers to submit (and revoke) Plans for execution; to control their execution at plan, sub-plan, and activity levels; and to receive feedback on their execution status.  It comprises the operations defined below, of which only those in capability set 1 are mandatory.">
 
       <mal:documentation name="High-level Requirements" order="1">
-        3.7.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan execution control service:
-        a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
-        b) Planning Event Definitions (as EventDefinition objects [4.5.3.1]);
-        c) Planning Resource Definitions (as Resource objects [4.5.4.2]) [Optional];
+        3.7.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the plan execution control service:
+        a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1.1]);
+        b) Planning Event Definitions (as EventDefinition objects [4.5.3.1.1]);
+        c) Planning Resource Definitions (as Resource objects [4.5.4.2.1]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
         3.7.5.1 In response to a submitPlan operation, the service provider shall make the submitted Plan available for execution.
@@ -529,7 +529,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         NOTE	–	Supported deactivationModes are specific to the implementation of the service provider.
         3.7.5.10 If Plan version 0 is specified in the getPlanStatus, monitorPlanExecution, and monitorPlanExecutionDetail operations, then the service provider shall assume the latest version of the Plan is required.
         3.7.5.11 If the monitorPlanExecutionDetail operation (or activity level operations) are supported, then in response to internal plan execution processes, the service provider shall model the status of ActivityInstances and EventInstances in accordance with their respective state models (4.5.2.2 and 4.5.3.2).
-        3.7.5.12 If the monitorPlanExecutionDetail operation is supported, the service provider may model the evolving value of planning Resources in accordance with the ResourceProfiles (4.5.4.4) defined within Plans and any Effects (4.6.6.4.7.3) associated with ActivityInstances.
+        3.7.5.12 If the monitorPlanExecutionDetail operation is supported, the service provider may model the evolving value of planning Resources in accordance with the ResourceProfiles (4.5.4.4) defined within Plans and any Effects (4.6.7) associated with ActivityInstances.
         3.7.5.13 If SubPlans are supported, the service provider shall maintain the current status of SubPlans as ACTIVATED or DEACTIVATED.
         NOTE	–	The status of SubPlans is independent to that of Plans and a change in their activation status has no impact on the status of the Plan.  It may impact the status of individual ActivityInstances, which can be observed using the monitorPlanExecutionDetail operation.
         3.7.5.14 In response to an activateSubPlan operation, if supported, the service provider shall activate the referenced SubPlans and enable the execution of ActivityInstances that are contained in activated Plans and allocated to activated SubPlans.
@@ -556,7 +556,7 @@ NOTE	–	The submitted plan may be a full plan or a patch plan.">
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -569,7 +569,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             </mal:errorRef>
             <mal:errorRef comment="An optional data structure used in the message is not supported by the service provider.">
               <mal:type name="UNSUPPORTED" area="MPS"/>
-              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
+              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
                 <mal:type area="MAL" name="String" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -588,7 +588,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -619,7 +619,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -651,7 +651,7 @@ In order to activate a patch Plan, the precursor Plan on which it is based must 
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -666,7 +666,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         </mal:requestIP>
 
         <mal:requestIP name="deactivatePlan" number="5" comment="The deactivatePlan operation is used to request deactivation of specified Plans that have previously been activated.  The service provider disables the execution of the referenced Plans and the ActivityInstances contained within them, where it is possible to do so.
-The deactivationMode argument allows selection of the deactivation behaviour.  For example:
+The deactivationMode argument allows selection of the deactivation behavior.  For example:
 Orderly (ceases execution of any new activities, but allows those already initiated to complete);
 Rapid (ceases execution of the Plan, but allows activities already initiated to continue until their next defined breakpoint);
 Immediate (ceases execution of the Plan and all activities currently in progress).
@@ -693,7 +693,7 @@ If a Plan is deactivated after any of its constituent ActivityInstances have bee
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -770,7 +770,7 @@ It is implementation dependent which details are reported on, but this may be an
       <mal:capabilitySet number="5" comment="">
 
         <mal:requestIP name="activateSubPlan" number="8" comment="The activateSubPlan operation is used to request that the service provider activates the referenced SubPlans and enables the execution of ActivityInstances that are contained in activated Plans and allocated to activated SubPlans.
-NOTE
+NOTES
 It is implementation dependent whether SubPlans are initially ACTIVATED and therefore do not require activation unless previously deactivated.
 Where the operation is directly supported by the service provider there is little reason for the activation to fail, but if the operation is delegated, for example to an on-board planning function, there is the potential for the operation to fail.">
           <mal:messages>
@@ -789,7 +789,7 @@ Where the operation is directly supported by the service provider there is littl
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -804,7 +804,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         </mal:requestIP>
 
         <mal:requestIP name="deactivateSubPlan" number="9" comment="The deactivateSubPlan operation is used to request that the service provider deactivates the referenced SubPlans and disables the execution of ActivityInstances that are contained in activated Plans and allocated to the deactivated SubPlans, where it is possible to do so.
-The deactivationMode argument allows selection of the deactivation behaviour.  For example:
+The deactivationMode argument allows selection of the deactivation behavior.  For example:
 Orderly (ceases execution of any new activities, but allows those already initiated to complete);
 Rapid (ceases execution of the Sub-plan, but allows activities already initiated to continue until their next defined breakpoint);
 Immediate (ceases execution of the Sub-plan and all activities currently in progress).
@@ -830,7 +830,7 @@ NOTE	–	Where the operation is directly supported by the service provider there
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -861,7 +861,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -893,7 +893,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
       <mal:capabilitySet number="7" comment="">
 
         <mal:requestIP name="suspendActivity" number="12" comment="The suspendActivity operation is used to request suspension of the execution of selected activities in one or more plans, without changing the state of the plan(s).
-The suspensionMode argument allows selection of the suspension behaviour.  For example:
+The suspensionMode argument allows selection of the suspension behavior.  For example:
 Orderly (suspends execution of any new activities, but allows those already initiated to complete);
 Rapid (suspends execution of any new activities, but allows any activities and their sub-activities already initiated to continue until their next defined breakpoint);
 Immediate (suspends execution of all activities, including those currently in progress).
@@ -925,7 +925,7 @@ The suspensionInfo allows the return of deployment specific details on the suspe
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -958,7 +958,7 @@ The suspensionInfo allows the return of deployment specific details on the resum
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -996,7 +996,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1012,10 +1012,10 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:documentation name="High-level Requirements" order="1">
         3.8.4.1 The following set of mission planning configuration data shall be available to the provider in any deployment of the plan information management service:
-        a) Planning Request Definitions (as RequestDefinition objects [4.5.5.1]);
-        b) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
-        c) Planning Event Definitions (as EventDefinition objects [4.5.3.1]);
-        d) Planning Resource Definitions (as Resource objects [4.5.4.2]) [Optional];
+        a) Planning Request Definitions (as RequestDefinition objects [4.5.5.1.1]);
+        b) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1.1]);
+        c) Planning Event Definitions (as EventDefinition objects [4.5.3.1.1]);
+        d) Planning Resource Definitions (as Resource objects [4.5.4.2.1]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
         3.8.5.1 If version 0 is specified for the definition to be retrieved in a list[Item]Defs operation then the service provider shall list all available versions of the definition.
@@ -1049,7 +1049,7 @@ The domain field is an ordered list of identifiers representing a domain hierarc
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1074,7 +1074,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1111,7 +1111,7 @@ The domain field is an ordered list of identifiers representing a domain hierarc
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1136,7 +1136,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1176,7 +1176,7 @@ The domain field is an ordered list of identifiers representing a domain hierarc
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1201,7 +1201,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1238,7 +1238,7 @@ The domain field is an ordered list of identifiers representing a domain hierarc
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1264,7 +1264,7 @@ It should be noted that this operation is designed to retrieve the resource defi
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1280,10 +1280,10 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 In some deployments, the Plan Edit Service could also be provided by a planning function to enable users to make adjustments to their planned activities prior to submission of the plan for execution.">
 
       <mal:documentation name="High-level Requirements" order="1">
-        3.9.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in a any deployment of the plan edit service:
-        a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1]);
-        b) Planning Event Definitions (as EventDefinition objects [4.5.3.1]);
-        c) Planning Resource Definitions (as Resource objects [4.5.4.2]) [Optional];
+        3.9.4.1 The following set of mission planning configuration data shall be available to both provider and consumers in any deployment of the plan edit service:
+        a) Planning Activity Definitions (as ActivityDefinition objects [4.5.2.1.1]);
+        b) Planning Event Definitions (as EventDefinition objects [4.5.3.1.1]);
+        c) Planning Resource Definitions (as Resource objects [4.5.4.2.1]) [Optional];
         d) Functional Requirements.
         3.9.4.2 In response to an updatePlanStatus operation, the service provider shall update the isAlternate flag of the Plan accordingly and apply any change to Plan status consistently with the plan state model (see 4.5.6.2).
         NOTE	–	It is implementation dependent what the service provider does in the event of a Plan status change when the Plan has executing ActivityInstances.  It is recommended that the plan execution control service is used to manage Plan deactivation in an orderly manner.
@@ -1323,7 +1323,7 @@ A set of Plans with a common precursor may be submitted to a plan execution func
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1359,14 +1359,14 @@ Insertion may fail if the Plan is already in the TERMINATED state, in which case
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="An optional data structure used in the message is not supported by the service provider.">
               <mal:type name="UNSUPPORTED" area="MPS"/>
-              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
+              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
                 <mal:type area="MAL" name="String" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -1397,7 +1397,7 @@ Insertion may fail if the Plan is already in the TERMINATED state, in which case
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1427,7 +1427,7 @@ Deletion may fail if the referenced Plan or ActivityInstance is already in the T
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1457,7 +1457,7 @@ Deletion may fail if the referenced Plan or EventInstance is already in the TERM
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1491,7 +1491,7 @@ Update may fail if the referenced Plan or ActivityInstance is already in the TER
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1521,7 +1521,7 @@ Update may fail if the referenced Plan or EventInstance is already in the TERMIN
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1555,14 +1555,14 @@ Update may fail if the referenced Plan is already in the TERMINATED state, in wh
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="An optional data structure used in the message is not supported by the service provider.">
               <mal:type name="UNSUPPORTED" area="MPS"/>
-              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
+              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
                 <mal:type area="MAL" name="String" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -1579,7 +1579,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:capabilitySet number="5" comment="">
 
-        <mal:submitIP name="updateResourceProfile" number="9" comment="The updateResourceProfile operation may be used to modify the value of a Resource over a period of time, in a Plan that has already been submitted to the service provider.  The consumer submits an ResourceProfile structure which is applied by the service provider to the referenced Resource.  It is up to the planning system, how to manage concurrent access to the plan.
+        <mal:submitIP name="updateResourceProfile" number="9" comment="The updateResourceProfile operation may be used to modify the value of a Resource over a period of time, in a Plan that has already been submitted to the service provider.  The consumer submits a ResourceProfile structure which is applied by the service provider to the referenced Resource.  It is up to the planning system, how to manage concurrent access to the plan.
 Update may fail if the referenced Plan is already in the TERMINATED state, in which case the UPDATE_FAILED error shall be returned.">
           <mal:messages>
             <mal:submit>
@@ -1595,14 +1595,14 @@ Update may fail if the referenced Plan is already in the TERMINATED state, in wh
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="An optional data structure used in the message is not supported by the service provider.">
               <mal:type name="UNSUPPORTED" area="MPS"/>
-              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
+              <mal:extraInformation comment="ExtraInfo comprises a list of MAL::Strings giving a dot-separated nested index for the unsupported field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.">
                 <mal:type area="MAL" name="String" list="true"/>
               </mal:extraInformation>
             </mal:errorRef>
@@ -1643,7 +1643,7 @@ NOTE	–	ActivityInstances have duration which means they may overlap the start 
             <mal:errorRef comment="One or more fields in the message contain invalid values.">
               <mal:type name="INVALID" area="MPS"/>
               <mal:extraInformation comment="ExtraInfo comprises a list of structures, each identifying an invalid field, comprising:
-A MAL::String giving a dot-separated nested index for the invalid field(s). This allows for fields that are themselves a structure or list element to be denoted. For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
+A MAL::String giving a dot-separated nested index for the invalid field(s).  This allows for fields that are themselves a structure or list element to be denoted.  For example, the form ‘3.2.4’ could mean the 4th element of the 2nd field of the composite structure that is the 3rd field of the message.
 A MAL::UShort giving a secondary error code that details the reason for invalidity.">
                 <mal:type area="MAL" name="Pair" list="true"/>
               </mal:extraInformation>
@@ -1679,7 +1679,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         <mal:field name="effects" canBeNull="true" comment="Set of Effects applicable to all instances of the Activity.">
           <mal:type area="MPS" list="true" objectRef="false" name="Effect"/>
         </mal:field>
-        <mal:field name="executionDefinition" canBeNull="true" comment="Reference to the definition of an executable body for the Activity (procedure, action sequence, etc.).  The manner in which this reference is interpreted is implementation-specific.">
+        <mal:field name="executionDefinition" canBeNull="true" comment="Reference to the definition of an executable body for the Activity (procedure, action sequence, etc.).  The manner in which this reference is interpreted is implementation specific.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
         <mal:field name="durationSpec" canBeNull="true" comment="Supports calculation of an estimated duration of an Activity Instance.">
@@ -1688,7 +1688,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
         <mal:field name="children" canBeNull="true" comment="Set of activity details specifying child activities.">
           <mal:type area="MPS" list="true" objectRef="false" name="ActivityDetails"/>
         </mal:field>
-        <mal:field name="activityType" canBeNull="true" comment="Free-text field that can be used to categorize an activity into one of several arbitrary categories. Enables a planning system to customize behavior for activities, such as their presentation in displays, based on the specified value.">
+        <mal:field name="activityType" canBeNull="true" comment="Free-text field that can be used to categorize an activity into one of several arbitrary categories.  Enables a planning system to customize behavior for activities, such as their presentation in displays, based on the specified value.">
           <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
         <mal:field name="defaultTags" canBeNull="true" comment="Default set of Tags that may be used to associate the Activity with others, grouping activities by operational responsibility (controller/group/system) or other criteria.">
@@ -1709,7 +1709,7 @@ NOTE	–	The start and end fields specify the trigger conditions (including time
 Reference to the source of the ActivityInstance, which is either its parent ActivityInstance, a RequestInstance if it is a root Activity, or a PlanningUser if directly inserted.">
           <mal:type area="MAL" list="false" objectRef="true" name="Element"/>
         </mal:field>
-        <mal:field name="relatedEvent" canBeNull="true" comment="Optional reference to an EventInstance that is specifically associated with this instance of the Activity.  Typically the Activity is placed in response to the Event.">
+        <mal:field name="relatedEvent" canBeNull="true" comment="Optional reference to an EventInstance that is specifically associated with this instance of the Activity.  Typically, the Activity is placed in response to the Event.">
           <mal:type area="MPS" list="false" objectRef="true" name="EventInstance"/>
         </mal:field>
         <mal:field name="children" canBeNull="true" comment="References to any child ActivityInstances.">
@@ -1727,7 +1727,7 @@ Reference to the source of the ActivityInstance, which is either its parent Acti
         <mal:field name="arguments" canBeNull="true" comment="Argument values for each Argument defined in the Activity Definition.">
           <mal:type area="MPS" list="true" objectRef="false" name="Argument"/>
         </mal:field>
-        <mal:field name="start" canBeNull="true" comment="Optionally specifies the trigger that initiates the Activity: may be Time, Position or Event based.">
+        <mal:field name="start" canBeNull="true" comment="Optionally specifies the trigger that initiates the Activity: may be time, position or event based.">
           <mal:type area="MPS" list="false" objectRef="false" name="Trigger"/>
         </mal:field>
         <mal:field name="end" canBeNull="true" comment="Optionally specifies the trigger that ends the Activity.">
@@ -1777,7 +1777,7 @@ Events may be either Predicted or Potential.  Events that are predictable either
         <mal:field name="predictability" canBeNull="false" comment="Enumeration: one of {Predicted, Potential} indicating whether the event occurrence is known in advance or can occur at any time.  ">
           <mal:type area="MPS" list="false" objectRef="false" name="PredictabilityEnum"/>
         </mal:field>
-        <mal:field name="eventType" canBeNull="true" comment="Free-text field that can be used to categorize an event into one of several arbitrary categories. Enables a planning system to customize behaviour for events, such as their presentation in displays, based on the specified value.">
+        <mal:field name="eventType" canBeNull="true" comment="Free-text field that can be used to categorize an event into one of several arbitrary categories.  Enables a planning system to customize behavior for events, such as their presentation in displays, based on the specified value.">
           <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
         <mal:field name="argDefs" canBeNull="true" comment="List of argument definitions.">
@@ -1822,7 +1822,7 @@ EventInstances may be referenced as a related event by an ActivityInstance, so t
       </mal:composite>
 
       <mal:composite name="Resource" shortFormPart="301" comment="E4: A resource is an MO object that contains both the static fields that define a planning resource and a dynamic field that holds its current value.  Its identity is defined by a constant key and evolving version, which is updated each time the definition is revised.  Resource definitions form part of the planning configuration data and in practice the value field may be omitted in this context, although it may also be used to provide an initial or default value.
-Depending on the resource data type, the resource definition may require additional type-specific fields to support data validation.  Sub-types are defined for Numeric, String, and enumerated Status type resources.  The base Resource MO object type can be used where no data validation is applicable.  The following fields are applicable to the base type and all sub-types.">
+Depending on the resource data type, the resource definition may require additional type-specific fields to support data validation.  Subtypes are defined for Numeric, String, and enumerated Status type resources.  The base Resource MO object type can be used where no data validation is applicable.  The following fields are applicable to the base type and all subtypes.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Object"/>
         </mal:extends>
@@ -1924,7 +1924,7 @@ If the Plan is a Patch Plan, then a precursor plan must be specified.">
 Multiple revisions may be included, documenting the differences with any other version of a Plan.  This can be used to provide a change history for successive versions of the same Plan, or to document the differences between alternate Plans.">
           <mal:type area="MPS" list="true" objectRef="false" name="PlanRevision"/>
         </mal:field>
-        <mal:field name="resources" canBeNull="true" comment="Optional.  If present, must contain one ResourceProfile per planning resource. These profiles shall provide the projected evolution of the value of a planning resource, or its initial value at the start of the Plan. Which approach is used is a deployment choice.">
+        <mal:field name="resources" canBeNull="true" comment="If present, must contain one ResourceProfile per planning resource.  These profiles shall provide the projected evolution of the value of a planning resource, or its initial value at the start of the Plan.  Which approach is used is a deployment choice.">
           <mal:type area="MPS" list="true" objectRef="false" name="ResourceProfile"/>
         </mal:field>
         <mal:field name="isAlternate" canBeNull="false" comment="Flag indicating if the Plan has currently been released as an Operational or Alternate plan.">
@@ -1949,7 +1949,7 @@ Multiple revisions may be included, documenting the differences with any other v
         </mal:extends>
       </mal:composite>
 
-      <mal:composite name="PlanDetailUpdate" comment="E1: Specifically in the case of reporting the detailed execution status of a plan, updates may be reported for multiple object types: planning activities, planning events, and planning resources. To support this an abstract type of PlanDetailUpdate is defined as follows.">
+      <mal:composite name="PlanDetailUpdate" comment="E1: Specifically in the case of reporting the detailed execution status of a plan, updates may be reported for multiple object types: planning activities, planning events, and planning resources.  To support this an abstract type of PlanDetailUpdate is defined as follows.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -1968,8 +1968,7 @@ Default is Start.">
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="relatedEvent" canBeNull="true" comment="Object Type: EventInstance.
-Specifies a related Event (or Event Group) for the ActivityInstance.  Argument specifications and constraints may reference arguments and fields of the RelatedEvent.">
+        <mal:field name="relatedEvent" canBeNull="true" comment="Specifies a related Event (or Event Group) for the ActivityInstance.  Argument specifications and constraints may reference arguments and fields of the RelatedEvent.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="comments" canBeNull="true" comment="Any notes associated with the ActivityDetails.">
@@ -2008,7 +2007,7 @@ Specifies a related Event (or Event Group) for the ActivityInstance.  Argument s
         <mal:field name="subPlan" canBeNull="true" comment="Optional association of the ActivityInstance with a defined sub-plan.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="tags" canBeNull="true" comment="Set of tags that may be used to associate the Activity with an identified subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
+        <mal:field name="tags" canBeNull="true" comment="A set of tags that may be used to associate the Activity with an identified subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.">
           <mal:type area="MAL" list="true" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
@@ -2049,7 +2048,7 @@ Only nullable in the context of an updateActivity operation: the timestamp must 
         <mal:field name="status" canBeNull="false" comment="Current status of the ActivityInstance.">
           <mal:type area="MPS" list="false" objectRef="false" name="ActivityStatusEnum"/>
         </mal:field>
-        <mal:field name="executionInstance" canBeNull="true" comment="Reference to the instance of an executable body for the ActivityInstance (procedure, action sequence, etc.).  The manner in which this reference is interpreted is implementation-specific.">
+        <mal:field name="executionInstance" canBeNull="true" comment="Reference to the instance of an executable body for the ActivityInstance (procedure, action sequence, etc.).  The manner in which this reference is interpreted is implementation specific.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
         <mal:field name="returnData" canBeNull="true" comment="Optional return data from the planning process, provided as a list of ID-Value pairs.  This can be used to provide additional information required by the User to interpret the planned activity.">
@@ -2070,7 +2069,7 @@ Only nullable in the context of an updateActivity operation: the timestamp must 
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="InsertedActivityDetails" shortFormPart="107" comment="E1: A concrete sub-type of ActivityDetails (see 4.5.2.3) that is a variation of SimpleActivityDetails providing additional details for a single ActivityInstance to be inserted into a Plan using the MPS Plan Edit service.">
+      <mal:composite name="InsertedActivityDetails" shortFormPart="107" comment="E1: A concrete sub-type of ActivityDetails (4.5.2.3.1) that is a variation of SimpleActivityDetails providing additional details for a single ActivityInstance to be inserted into a Plan using the MPS Plan Edit service.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="ActivityDetails"/>
         </mal:extends>
@@ -2187,7 +2186,7 @@ EventUpdates may be distributed to subscribing applications, including status di
         <mal:field name="resource" canBeNull="false" comment="Reference to a Resource.">
           <mal:type area="MPS" list="false" objectRef="true" name="Resource"/>
         </mal:field>
-        <mal:field name="profileSegments" canBeNull="false" comment="Set of Profile Segments; if these segments are not contiguous, the value of the profile in those places is undefined. The resulting behaviour may be defined by the planning system.">
+        <mal:field name="profileSegments" canBeNull="false" comment="Set of Profile Segments; if these segments are not contiguous, the value of the profile in those places is undefined.  The resulting behavior may be defined by the planning system.">
           <mal:type area="MPS" list="true" objectRef="false" name="ProfileSegment"/>
         </mal:field>
       </mal:composite>
@@ -2226,7 +2225,7 @@ Default = False.">
         <mal:field name="time" canBeNull="false" comment="Time of resource data point.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="value" canBeNull="false" comment="Value of resource data point.">
+        <mal:field name="value" canBeNull="false" comment="Value of resource data point.  MAL Attribute type must match the dataType of the Resource definition.">
           <mal:type area="MAL" list="false" objectRef="false" name="Attribute"/>
         </mal:field>
       </mal:composite>
@@ -2271,14 +2270,14 @@ Default = False.">
       </mal:composite>
 
       <mal:composite name="RelativeProfileEntry" shortFormPart="309" comment="E4: Defines the value (or minimum/maximum value) of a resource at a relative point in time.
-Specific sub-types exist for each allowed data type for a Resource.  These replace the variant type value field with one of concrete data type.">
+Specific subtypes exist for each allowed data type for a Resource.  These replace the variant type value field with one of concrete data type.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="time" canBeNull="false" comment="Relative time of resource data point.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="value" canBeNull="false" comment="Value of resource data point.">
+        <mal:field name="value" canBeNull="false" comment="Value of resource data point.  MAL Attribute type must match the dataType of the Resource definition.">
           <mal:type area="MAL" list="false" objectRef="false" name="Attribute"/>
         </mal:field>
       </mal:composite>
@@ -2376,7 +2375,7 @@ If null, the default time system is used.">
         <mal:field name="standingOrder" canBeNull="false" comment="A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the supplied activity details must be an ActivityNode with specification of the repetition criteria.  It should be noted that a one-off request can still include repetition.">
           <mal:type area="MAL" list="false" objectRef="false" name="Boolean"/>
         </mal:field>
-        <mal:field name="activities" canBeNull="false" comment="Set of activity details specifying requested activities.">
+        <mal:field name="activities" canBeNull="true" comment="Set of activity details specifying requested activities.">
           <mal:type area="MPS" list="true" objectRef="false" name="ActivityDetails"/>
         </mal:field>
         <mal:field name="inputPlanRef" canBeNull="true" comment="Reference to an existing Plan (output of one planning function) submitted as a planning request to another planning function in the context of a distributed or hierarchical planning system.
@@ -2443,7 +2442,7 @@ Only one of validityTime or validityEvent should be present in a planning reques
         <mal:field name="comments" canBeNull="true" comment="Free text for any additional user comments about the request.">
           <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
-        <mal:field name="status" canBeNull="false" comment="Current status of the ActivityInstance (see planning request state model in 4.5.5.2).">
+        <mal:field name="status" canBeNull="false" comment="Current status of the RequestInstance (see planning request state model in 4.5.5.2).">
           <mal:type area="MPS" list="false" objectRef="false" name="RequestStatusEnum"/>
         </mal:field>
         <mal:field name="outputPlanRefs" canBeNull="true" comment="References to output Plan(s) that contains the activities resulting from the planning request.">
@@ -2495,7 +2494,7 @@ NOTE	–	All fields are nullable and it is valid to specify a RequestFilter with
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="originator" canBeNull="false" comment="Identity of the entity or system responsible for the production of the plan. The implementing planning system is responsible for defining the value to be provided for this field.">
+        <mal:field name="originator" canBeNull="false" comment="Identity of the entity or system responsible for the production of the plan.  The implementing planning system is responsible for defining the value to be provided for this field.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
         <mal:field name="productionTime" canBeNull="false" comment="Date and time of production of the plan.">
@@ -2546,7 +2545,7 @@ If Null, the default time system is used.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="revisedPlan" canBeNull="false" comment="Reference to the Plan (key and version) with respect to which the plan revisions are detailed.  Typically this is the precursor Plan, but any other Plan can be used.">
+        <mal:field name="revisedPlan" canBeNull="false" comment="Reference to the Plan (key and version) with respect to which the plan revisions are detailed.  Typically, this is the precursor Plan, but any other Plan can be used.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
         <mal:field name="revisionStart" canBeNull="false" comment="Start time of the earliest revision.">
@@ -2568,8 +2567,7 @@ If Null, the default time system is used.">
 Reference to a planned ActivityInstance or EventInstance that is new or modified in the current Plan, or has been deleted with respect to the referenced revisedPlan.">
           <mal:type area="MAL" list="false" objectRef="true" name="Element"/>
         </mal:field>
-        <mal:field name="revisionStatus" canBeNull="false" comment="Revision status of the referenced item.  May be one of New, Modified, or Deleted.
-Default = Undefined.">
+        <mal:field name="revisionStatus" canBeNull="false" comment="Revision status of the referenced item.  May be one of New, Modified, Deleted, or Undefined.">
           <mal:type area="MPS" list="false" objectRef="false" name="RevisionStatusEnum"/>
         </mal:field>
       </mal:composite>
@@ -2709,19 +2707,21 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         <mal:field name="isAlternate" canBeNull="true" comment="Query for Plans that are or are not Alternate plans.">
           <mal:type area="MAL" list="false" objectRef="false" name="Boolean"/>
         </mal:field>
-        <mal:field name="status" canBeNull="true" comment="Query for Plans that have a current status matching one of the specified list of Plan statuses.">
+        <mal:field name="status" canBeNull="true" comment="Query for Plans that have a current status matching one of the specified Plan statuses.">
           <mal:type area="MPS" list="true" objectRef="false" name="PlanStatusEnum"/>
         </mal:field>
-        <mal:field name="plannedEvents" canBeNull="true" comment="Query for Plans that contain EventInstances inside plannedItems whose definition matches one of the specified list of EventDefinitions.">
+        <mal:field name="plannedEvents" canBeNull="true" comment="Query for Plans that contain EventInstances inside plannedItems whose definition matches one of the specified EventDefinitions.">
           <mal:type area="MPS" list="true" objectRef="true" name="EventDefinition"/>
         </mal:field>
-        <mal:field name="plannedActivities" canBeNull="true" comment="Query for Plans that contain ActivityInstances inside plannedItems whose definition matches one of the specified list of ActivityDefinitions.">
+        <mal:field name="plannedActivities" canBeNull="true" comment="Query for Plans that contain ActivityInstances inside plannedItems whose definition matches one of the specified ActivityDefinitions.">
           <mal:type area="MPS" list="true" objectRef="true" name="ActivityDefinition"/>
         </mal:field>
-        <mal:field name="revisedEvents" canBeNull="true" comment="Query for patch plans that contain EventInstances inside their revisions whose definition matches one of the specified list of EventDefinitions.">
+        <mal:field name="revisedEvents" canBeNull="true" comment="Query for patch plans that contain EventInstances inside their revisions whose definition matches one of the specified EventDefinitions.
+If the revisionStatus is either New or Modified, then the EventInstances in the current plan shall be checked.  If the revisionStatus is either Deleted or Undefined, then the EventInstances in the revised plan shall be checked.  If the revised plan is not available anymore, then the result will depend on the implementation.">
           <mal:type area="MPS" list="true" objectRef="true" name="EventDefinition"/>
         </mal:field>
-        <mal:field name="revisedActivities" canBeNull="true" comment="Query for patch plans that contain ActivityInstances inside their revisions whose definition matches one of the specified list of ActivityDefinitions.">
+        <mal:field name="revisedActivities" canBeNull="true" comment="Query for patch plans that contain ActivityInstances inside their revisions whose definition matches one of the specified ActivityDefinitions.
+If the revisionStatus is either New or Modified, then the ActivityInstances in the current plan shall be checked.  If the revisionStatus is either Deleted or Undefined, then the ActivityInstances in the revised plan shall be checked.  If the revised plan is not available anymore, then the result will depend on the implementation.">
           <mal:type area="MPS" list="true" objectRef="true" name="ActivityDefinition"/>
         </mal:field>
       </mal:composite>
@@ -2826,7 +2826,7 @@ An ordered list representing a domain hierarchy, ‘*’ can be used to represen
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="function" canBeNull="false" comment="ID of a specific FunctionDefinition.">
+        <mal:field name="functionID" canBeNull="false" comment="ID of a specific FunctionDefinition.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
         <mal:field name="argSpecs" canBeNull="true" comment="Set of argument specifications for each argument definition contained in the referenced function definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
@@ -2841,7 +2841,8 @@ An ordered list representing a domain hierarchy, ‘*’ can be used to represen
         <mal:field name="name" canBeNull="false" comment="Name identifying the element.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="value" canBeNull="true" comment="Corresponding MAL::Element value.">
+        <mal:field name="value" canBeNull="true" comment="Expression evaluating to the corresponding MAL::Element value.
+When used in a pointing constraint, then the MAL Element subtype must match the argument type of the corresponding pointing template argument (see 4.6.6.4.4 and table 4-6).">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
       </mal:composite>
@@ -2886,14 +2887,14 @@ An ordered list representing a domain hierarchy, ‘*’ can be used to represen
         <mal:field name="startEvent" canBeNull="false" comment="The start of the event window is relative to the referenced startEvent.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="startOffset" canBeNull="true" comment="The start of the event window is offset by the defined time period from the startEvent.
+        <mal:field name="startOffset" canBeNull="true" comment="The start of the event window is offset by the defined time period from the startEvent.  A positive offset implies a shift later in time.
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="endEvent" canBeNull="false" comment="The end of the event window is relative to the referenced endEvent.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="endOffset" canBeNull="true" comment="The end of the event window is offset by the defined time period from the endEvent.
+        <mal:field name="endOffset" canBeNull="true" comment="The end of the event window is offset by the defined time period from the endEvent.  A positive offset implies a shift later in time.
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
@@ -2922,13 +2923,13 @@ Item Definition (key and version).">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Position"/>
         </mal:extends>
-        <mal:field name="x" canBeNull="false" comment="Cartesian x coordinate defined in the given frame and with values of the given unit.">
+        <mal:field name="x" canBeNull="false" comment="Cartesian x coordinate defined in the given frame and with value of the given unit.">
           <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
         </mal:field>
-        <mal:field name="y" canBeNull="false" comment="Cartesian y coordinate defined in the given frame and with values of the given unit.">
+        <mal:field name="y" canBeNull="false" comment="Cartesian y coordinate defined in the given frame and with value of the given unit.">
           <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
         </mal:field>
-        <mal:field name="z" canBeNull="false" comment="Cartesian z coordinate defined in the given frame and with values of the given unit.">
+        <mal:field name="z" canBeNull="false" comment="Cartesian z coordinate defined in the given frame and with value of the given unit.">
           <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
         </mal:field>
         <mal:field name="frame" canBeNull="false" comment="Reference frame within which the position is expressed (see 4.4.2).">
@@ -2940,7 +2941,7 @@ Default = ‘km’.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="SurfacePosition" shortFormPart="9" comment="E6: A SurfacePosition is typically used to specify a coordinate on the surface of a celestial body.  Optionally, an altitude above the surface may also be specified.  The reference ellipsoid used to define the surface may be mission-specific.">
+      <mal:composite name="SurfacePosition" shortFormPart="9" comment="E6: A SurfacePosition is typically used to specify a coordinate on the surface of a celestial body.  Optionally, an altitude above the surface may also be specified.  The reference ellipsoid used to define the surface may be mission specific.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Position"/>
         </mal:extends>
@@ -2976,7 +2977,7 @@ Default = ‘m’.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="OrbitalPosition" shortFormPart="11" comment="E6: An OrbitalPosition represents a Position that is defined with respect to some mission-specific orbit.  The conventions used to derive the orbitNumber and orbitAngle follow from a mission-specific definition.">
+      <mal:composite name="OrbitalPosition" shortFormPart="11" comment="E6: An OrbitalPosition represents a Position that is defined with respect to some mission specific orbit.  The conventions used to derive the orbitNumber and orbitAngle follow from a mission specific definition.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Position"/>
         </mal:extends>
@@ -2987,11 +2988,7 @@ Default = ‘m’.">
           <mal:type area="MAL" list="false" objectRef="false" name="Boolean"/>
         </mal:field>
         <mal:field name="orbitAngle" canBeNull="false" comment="Angle within orbit.  Whether this angle is the mean or true anomaly and from which datum it is measured are mission specific.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="The units for the quantity of angle, in which the orbitAngle is expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
       </mal:composite>
 
@@ -3042,17 +3039,13 @@ Default = ‘deg’.">
           <mal:type area="MPS" list="false" name="Direction"/>
         </mal:extends>
         <mal:field name="azimuth" canBeNull="false" comment="Angular coordinate.  May also represent longitude.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
         <mal:field name="elevation" canBeNull="false" comment="Angular coordinate.  May also represent latitude.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
-        <mal:field name="frame" canBeNull="false" comment="Reference frame within which the direction is expressed. Must be a celestial body or spacecraft reference frame (see 4.4.2).">
+        <mal:field name="frame" canBeNull="false" comment="Reference frame within which the direction is expressed.  Must be a celestial body or spacecraft reference frame (see 4.4.2).">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="The units for the quantity of angle, in which the azimuth and elevation are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3061,17 +3054,13 @@ Default = ‘deg’.">
           <mal:type area="MPS" list="false" name="Direction"/>
         </mal:extends>
         <mal:field name="ra" canBeNull="false" comment="Right Ascension: Celestial angular coordinate, measured eastward along the celestial equator.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
         <mal:field name="dec" canBeNull="false" comment="Declination: Celestial angular coordinate, north or south of the celestial equator.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Double"/>
+          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
         <mal:field name="frame" canBeNull="false" comment="Reference frame within which the direction is expressed.  Must be a quasi-inertial celestial body or orbit-related frame (see 4.4.2).">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="The units for the quantity of angle, in which the ra and dec are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3139,7 +3128,7 @@ The manner in which this expression is evaluated is implementation specific.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ArgDef" shortFormPart="23" comment="E1: The definition of an argument is an ArgDef, a set of which may be contained within the definition MO object of a planning event, planning activity, or planning request.  This defines the name and data type of the argument.  Depending on the data type, the ArgDef may require additional type specific fields to support data validation.  SubTypes are identified for Numeric, String, and Status arguments.">
+      <mal:composite name="ArgDef" shortFormPart="23" comment="E1: The definition of an argument is an ArgDef, a set of which may be contained within the definition MO object of a planning event, planning activity, or planning request.  This defines the name and data type of the argument.  Depending on the data type, the ArgDef may require additional type specific fields to support data validation.  Subtypes are identified for Numeric, String, and Status arguments.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -3182,7 +3171,7 @@ The manner in which this expression is evaluated is implementation specific.">
         <mal:field name="argName" canBeNull="false" comment="Name of the argument.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="argSpecs" canBeNull="false" comment="Expression that can be evaluated at run-time to provide argument value(s) of appropriate data type.">
+        <mal:field name="argSpecValues" canBeNull="false" comment="Expression that can be evaluated at run-time to provide argument value(s) of appropriate.  The MAL Element subtype(s) must match the argument type supplied in the corresponding ArgDef.">
           <mal:type area="MAL" list="true" objectRef="false" name="Element"/>
         </mal:field>
       </mal:composite>
@@ -3222,7 +3211,7 @@ The choice of ‘regular expression’ specification to follow is implementation
         <mal:extends>
           <mal:type area="MPS" list="false" name="ValidationDetails"/>
         </mal:extends>
-        <mal:field name="allowedValues" canBeNull="false" comment="Set of allowed State definitions (see 0), comprising the enumerated value and an associated text label.">
+        <mal:field name="allowedValues" canBeNull="false" comment="Set of allowed State definitions (see 4.6.2.4.2), comprising the enumerated value and an associated text label.">
           <mal:type area="MPS" list="true" objectRef="false" name="StateDef"/>
         </mal:field>
       </mal:composite>
@@ -3250,12 +3239,12 @@ Default = AND.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ConstraintExpression" shortFormPart="31" comment="E1: All types of constraint can be considered conditions that are either met or not met when a planning activity is placed in a Plan.  They can therefore be specified as a potentially complex Boolean expression that combines references to the arguments and fields of objects in the MPS information model using operators of various types (arithmetic, comparative, logical, string, temporal, and geometric).  The expression must evaluate to TRUE for the constraint to be met.
+      <mal:composite name="ConstraintExpression" shortFormPart="31" comment="E1: All types of constraint can be considered conditions that are either met or not met when a planning activity is placed in a Plan.  They can therefore be specified as a potentially complex Boolean expression that combines references to the arguments and fields of objects in the MPS information model using operators of various types (arithmetic, comparative, logical, string, temporal, and geometric).  The expression must evaluate to True for the constraint to be met.
 As introduced in 1.2, this Recommended Standard does not define a full expression language capable of supporting such complex Boolean expressions.  It does, however, support the use of externally defined expression languages.  The ConstraintExpression type allows for the use of such an expression language to define any type of constraint, providing communicating entities all have the capability to evaluate that expression language.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Constraint"/>
         </mal:extends>
-        <mal:field name="constraint" canBeNull="false" comment="Potentially complex conditional expression that must evaluate to TRUE for the constraint to be met.">
+        <mal:field name="constraint" canBeNull="false" comment="Potentially complex conditional expression that must evaluate to True for the constraint to be met.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
       </mal:composite>
@@ -3321,7 +3310,7 @@ Specifies the definition (class) of the planning activity or planning event whos
 The contains operator only applies to strings and may be case sensitive or insensitive.">
           <mal:type area="MPS" list="false" objectRef="false" name="ExpressionOperatorEnum"/>
         </mal:field>
-        <mal:field name="value" canBeNull="false" comment="Value (of same type as the referenced Argument) to be compared against.">
+        <mal:field name="value" canBeNull="false" comment="Value to be compared against.  The MAL Element subtype must match the argument type supplied in the corresponding ArgDef of the given Argument.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
       </mal:composite>
@@ -3340,26 +3329,26 @@ The contains operator only applies to strings and may be case sensitive or insen
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="SimpleResourceConstraint" shortFormPart="37" comment="E5: The simple resource constraint must be satisfied for the duration of the referenced planning activity.">
+      <mal:composite name="SimpleResourceConstraint" shortFormPart="37" comment="E5: The simple resource constraint must be satisfied for the duration of the planning activity to which the constraint applies.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="ResourceConstraint"/>
         </mal:extends>
-        <mal:field name="value" canBeNull="false" comment="Value (of same type as the referenced Resource) to be compared against.">
+        <mal:field name="value" canBeNull="false" comment="Value (of same type as the referenced Resource) to be compared against.  MAL Attribute type must match the dataType of the Resource definition.">
           <mal:type area="MAL" list="false" objectRef="false" name="Attribute"/>
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="ComplexResourceConstraint" shortFormPart="38" comment="E5: In the [simple] resource constraint, the value of the referenced planning resource is constrained against a single value for the entire duration of the referenced planning activity.
-With the complex resource constraint, the period over which the constraint applies can be customized relative to the referenced planning activity; and the value against which the referenced planning resource is constrained can be specified as a relative resource profile which evolves over time.
+      <mal:composite name="ComplexResourceConstraint" shortFormPart="38" comment="E5: In the [simple] resource constraint, the value of the referenced planning resource is constrained against a single value for the entire duration of the planning activity to which the constraint applies.
+With the complex resource constraint, the period over which the constraint applies can be customized relative to the planning activity to which the constraint applies; and the value against which the referenced planning resource is constrained can be specified as a relative resource profile which evolves over time.
 The fields of the complex resource constraint extend or modify those of the [simple] resource constraint as given below.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="ResourceConstraint"/>
         </mal:extends>
-        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the start of the constraint period relates.
+        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the start of the constraint period relates.
 Default is the start of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the end of the constraint period relates.
+        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the end of the constraint period relates.
 Default is the end of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
@@ -3380,11 +3369,11 @@ Default is no offset.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Constraint"/>
         </mal:extends>
-        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the start of the constraint period relates.
+        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the start of the constraint period relates.
 Default is the start of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the end of the constraint period relates.
+        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the end of the constraint period relates.
 Default is the end of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
@@ -3398,19 +3387,15 @@ Default is no offset.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PositionConstraint" shortFormPart="39" comment="E7: Sub-type of geometric constraint expressed in terms of a specified Position and a tolerance.  The tolerance is defined as a sphere around the specified position, expressed as a distance or angle.  It should be noted that the position itself can be expressed using any of the concrete position sub-types, including orbital and surface positions.  The use of a constraint expressed by OrbitalPosition is particularly relevant for Earth observation satellites with a repetitive ground track and on-board position-based planning function.  The position can also specified as an expression.">
+      <mal:composite name="PositionConstraint" shortFormPart="39" comment="E7: Sub-type of geometric constraint expressed in terms of a specified Position and a tolerance.  The tolerance is defined as a sphere around the specified position, expressed as a distance or angle.  It should be noted that the position itself can be expressed using any of the concrete position subtypes, including orbital and surface positions.  The use of a constraint expressed by OrbitalPosition is particularly relevant for Earth observation satellites with a repetitive ground track and on-board position-based planning function.  The position can also be specified as an expression.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="GeometricConstraint"/>
         </mal:extends>
         <mal:field name="position" canBeNull="false" comment="Specifies the required position expressed using any concrete position type.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="tolerance" canBeNull="false" comment="Specifies the maximum distance or angle from the required position that satisfies the constraint, effectively defining a sphere around the required position.">
+        <mal:field name="tolerance" canBeNull="false" comment="Specifies the maximum distance or angle from the required position that satisfies the constraint, effectively defining a sphere around the required position.  The PhysicalValue shall be of type Distance or Angle (in case of an OrbitalPosition).">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The tolerance units name, either for the quantity of distance or the quantity of angle.
-Default = ‘km’, but ‘deg’ is more relevant for an OrbitalPosition.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3449,25 +3434,25 @@ NOTE	–	Pointing templates are common, generic templates that describe pointing
 Default frame is the spacecraft frame or any other mission specific default frame.">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="boresight" canBeNull="false" comment="Direction in any spacecraft frame.">
-          <mal:type area="MPS" list="false" objectRef="false" name="Direction"/>
+        <mal:field name="boresight" canBeNull="false" comment="The primary axis to which the pointing constraints applies.  Direction in any spacecraft frame.">
+          <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="boresightMargin" canBeNull="true" comment="Defines an optional cone region around the boresight, allowing a margin for application of the pointing constraint.
 Default = 0.0.">
-          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
+          <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="phaseAngleMargin" canBeNull="true" comment="Defines an optional rotation around the boresight, w.r.t. the default phase angle, allowing a margin for application of the pointing constraint.
+        <mal:field name="phaseAngleMargin" canBeNull="true" comment="Defines an optional rotation around the boresight with respect to the default phase angle, allowing a margin for application of the pointing constraint.
 Default = 0.0.">
-          <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
+          <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="unconstrainedPhaseAngle" canBeNull="true" comment="If TRUE no constraint will apply to the phaseAngle.  The phaseAngleMargin field will be ignored in this case.
-Default = FALSE.">
+        <mal:field name="unconstrainedPhaseAngle" canBeNull="true" comment="If True, no constraint will apply to the phaseAngle.  The phaseAngleMargin field will be ignored in this case.
+Default = False.">
           <mal:type area="MAL" list="false" objectRef="false" name="Boolean"/>
         </mal:field>
         <mal:field name="pointingTemplate" canBeNull="false" comment="One of the pointing templates defined in the PRM or a mission specific pointing template (see 4.4.4).">
           <mal:type area="MAL" list="false" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="pointingArguments" canBeNull="true" comment="The argument list is consistent with the referenced template by name.">
+        <mal:field name="pointingArguments" canBeNull="true" comment="The argument list shall be consistent with the referenced template by name.  Each value type shall match the argument type according to table 4-6.">
           <mal:type area="MPS" list="true" objectRef="false" name="NamedElement"/>
         </mal:field>
       </mal:composite>
@@ -3481,10 +3466,6 @@ Default = FALSE.">
         </mal:field>
         <mal:field name="tolerance" canBeNull="false" comment="Tolerance in the angle of revolution.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the revolutionAngle and tolerance are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3504,17 +3485,13 @@ Default = ‘deg’.">
         <mal:field name="maxDistance" canBeNull="false" comment="Maximum distance between observer and target.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of distance.
-Default = ‘km’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
-        </mal:field>
       </mal:composite>
 
       <mal:composite name="AngleConstraint" shortFormPart="44" comment="E7: Specifies a range of values for the angle subtended between three physical objects.  ">
         <mal:extends>
           <mal:type area="MPS" list="false" name="GeometricConstraint"/>
         </mal:extends>
-        <mal:field name="centreObject" canBeNull="false" comment="Position of the centre object.">
+        <mal:field name="centerObject" canBeNull="false" comment="Position of the center object.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="targetObject1" canBeNull="false" comment="Position of target object 1.">
@@ -3523,15 +3500,11 @@ Default = ‘km’.">
         <mal:field name="targetObject2" canBeNull="false" comment="Position of target object 2.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="minAngle" canBeNull="false" comment="Minimum angle subtended at the centre object by target objects 1 and 2.">
+        <mal:field name="minAngle" canBeNull="false" comment="Minimum angle subtended at the center object by target objects 1 and 2.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="maxAngle" canBeNull="false" comment="Maximum angle subtended at the centre object by target objects 1 and 2.">
+        <mal:field name="maxAngle" canBeNull="false" comment="Maximum angle subtended at the center object by target objects 1 and 2.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the minAngle and maxAngle are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3548,7 +3521,7 @@ Specifies the definition (class) of the opponent planning activity or planning e
 Default = 1.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="opponentRef" canBeNull="true" comment="Point on the opponent that must follow the parent activity.
+        <mal:field name="opponentRef" canBeNull="true" comment="Point on the opponent that must follow the parent activity.  This field will be ignored in case the opponent is a planning event.
 Default = 0.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
@@ -3574,7 +3547,7 @@ Specifies the definition (class) of the opponent planning activity or planning e
 Default = 0.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="startOffset" canBeNull="true" comment="Offset with respect to startRef of the start of the parent activity constraint window.
+        <mal:field name="startOffset" canBeNull="true" comment="Offset with respect to startRef of the start of the parent activity constraint window.  A positive offset implies a shift later in time.
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
@@ -3582,38 +3555,38 @@ Default is no offset.">
 Default = 1.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="endOffset" canBeNull="true" comment="Offset with respect to endRef of the end of the parent activity constraint window.
+        <mal:field name="endOffset" canBeNull="true" comment="Offset with respect to endRef of the end of the parent activity constraint window.  A positive offset implies a shift later in time.
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="opponentStartRef" canBeNull="true" comment="Identifies the point in the duration of the opponent with respect to which to place the start of its constraint window.
+        <mal:field name="opponentStartRef" canBeNull="true" comment="Identifies the point in the duration of the opponent with respect to which to place the start of its constraint window.  This field will be ignored in case the opponent is a planning event.
 Default = 0.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="opponentStartOffset" canBeNull="true" comment="Offset with respect to opponentStartRef of the start of the opponent constraint window.
+        <mal:field name="opponentStartOffset" canBeNull="true" comment="Offset with respect to opponentStartRef of the start of the opponent constraint window.  A positive offset implies a shift later in time.
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="opponentEndRef" canBeNull="true" comment="Identifies the point in the duration of the opponent with respect to which to place the end of its constraint window.
+        <mal:field name="opponentEndRef" canBeNull="true" comment="Identifies the point in the duration of the opponent with respect to which to place the end of its constraint window.  This field will be ignored in case the opponent is a planning event.
 Default = 1.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="opponentEndOffset" canBeNull="true" comment="Offset with respect to opponentEndRef of the end of the opponent constraint window.
+        <mal:field name="opponentEndOffset" canBeNull="true" comment="Offset with respect to opponentEndRef of the end of the opponent constraint window.  A positive offset implies a shift later in time.
 Default is no offset.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="FunctionConstraint" shortFormPart="47" comment="E8: Function constraints make use of an external custom function to determine whether or not a constraint is satisfied.  
-As for complex resource constraints, the period over which the function constraint applies is specified relative to the referenced planning activity.">
+      <mal:composite name="FunctionConstraint" shortFormPart="47" comment="E8: Function constraints make use of an external custom function to determine whether or not a constraint is satisfied.  The function must return True for the constraint to be met.
+As for complex resource constraints, the period over which the function constraint applies is specified relative to the planning activity to which the constraint applies.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Constraint"/>
         </mal:extends>
-        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the start of the constraint period relates.
+        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the start of the constraint period relates.
 Default is the start of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the end of the constraint period relates.
+        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the end of the constraint period relates.
 Default is the end of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
@@ -3639,7 +3612,7 @@ Default is no offset.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="SimpleEffect" shortFormPart="48" comment="E5: A simple effect applies the defined operation on the specified planning resource at the time relative to the planning activity defined by timeRef+timeOffset.">
+      <mal:composite name="SimpleEffect" shortFormPart="48" comment="E5: A simple effect applies the defined operation on the specified planning resource at the time relative to the planning activity defined by (timeRef + timeOffset).">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Effect"/>
         </mal:extends>
@@ -3656,7 +3629,8 @@ Default is no offset.">
 Increase and decrease are only applicable to numeric data types.">
           <mal:type area="MPS" list="false" objectRef="false" name="EffectOperationEnum"/>
         </mal:field>
-        <mal:field name="value" canBeNull="false" comment="The value that the planning resource is to be set to if the Effect operator is SET; or to be increased/decreased by if it is INCREASE or DECREASE.">
+        <mal:field name="value" canBeNull="false" comment="The value that the planning resource is to be set to if the Effect operator is SET; or to be increased or decreased by if it is INCREASE or DECREASE.
+MAL Attribute type must match the dataType of the Resource definition.">
           <mal:type area="MAL" list="false" objectRef="false" name="Attribute"/>
         </mal:field>
       </mal:composite>
@@ -3666,11 +3640,11 @@ With the complex effect, the value of the impacted planning resource can be evol
         <mal:extends>
           <mal:type area="MPS" list="false" name="Effect"/>
         </mal:extends>
-        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the start of the effect period relates.
+        <mal:field name="startRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the start of the effect period relates.
 Default is the start of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
-        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the referenced planning activity to which the end of the effect period relates.
+        <mal:field name="endRef" canBeNull="true" comment="Identifies the point in the duration of the applicable planning activity to which the end of the effect period relates.
 Default is the end of the planning activity.">
           <mal:type area="MPS" list="false" objectRef="false" name="Slider"/>
         </mal:field>
@@ -3686,7 +3660,7 @@ Default is no offset.">
 Increase and decrease are only applicable to numeric data types.">
           <mal:type area="MPS" list="false" objectRef="false" name="EffectOperationEnum"/>
         </mal:field>
-        <mal:field name="value" canBeNull="false" comment="Resource profile specifying an evolving value to which the value of the planning resource is to be set if the Effect operator is SET; or to be increased/decreased by if it is INCREASE or DECREASE (see 4.5.4.4).">
+        <mal:field name="valueProfile" canBeNull="false" comment="Resource profile specifying an evolving value to which the value of the planning resource is to be set if the Effect operator is SET; or to be increased/decreased by if it is INCREASE or DECREASE (see 4.5.4.4).">
           <mal:type area="MPS" list="false" objectRef="false" name="RelativeResourceProfile"/>
         </mal:field>
       </mal:composite>
@@ -3728,7 +3702,7 @@ Increase and decrease are only applicable to numeric data types.">
         <mal:field name="triggerDirection" canBeNull="false" comment="Planned direction of Trigger.">
           <mal:type area="MPS" list="false" objectRef="false" name="Direction"/>
         </mal:field>
-        <mal:field name="angleMargin" canBeNull="true" comment="Defines a circle around the trigger direction within which a direction is considered to meet the trigger condition.">
+        <mal:field name="angleMargin" canBeNull="true" comment="Defines a cone around the trigger direction within which a direction is considered to meet the trigger condition.">
           <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
       </mal:composite>
@@ -3737,7 +3711,7 @@ Increase and decrease are only applicable to numeric data types.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Trigger"/>
         </mal:extends>
-        <mal:field name="centreObject" canBeNull="false" comment="Position of the centre object.  The trigger angle is that subtended at the centre object by target objects 1 and 2.">
+        <mal:field name="centerObject" canBeNull="false" comment="Position of the center object.  The trigger angle is that subtended at the center object by target objects 1 and 2.">
           <mal:type area="MPS" list="false" objectRef="false" name="Position"/>
         </mal:field>
         <mal:field name="targetObject1" canBeNull="false" comment="Position of target object 1.">
@@ -3746,10 +3720,10 @@ Increase and decrease are only applicable to numeric data types.">
         <mal:field name="targetObject2" canBeNull="false" comment="Position of target object 2.">
           <mal:type area="MPS" list="false" objectRef="false" name="Position"/>
         </mal:field>
-        <mal:field name="minAngle" canBeNull="false" comment="Minimum angle subtended at the centre object by target objects 1 and 2.">
+        <mal:field name="minAngle" canBeNull="false" comment="Minimum angle subtended at the center object by target objects 1 and 2.">
           <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
-        <mal:field name="maxAngle" canBeNull="false" comment="Maximum angle subtended at the centre object by target objects 1 and 2.">
+        <mal:field name="maxAngle" canBeNull="false" comment="Maximum angle subtended at the center object by target objects 1 and 2.">
           <mal:type area="MPS" list="false" objectRef="false" name="Angle"/>
         </mal:field>
       </mal:composite>
@@ -3766,16 +3740,16 @@ Increase and decrease are only applicable to numeric data types.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="Repetition" comment="E1: A repetition is used to specify the repeated instantiation of a [set of] planning activities.  Multiple sub-types of Repetition are defined to support the specification of repeat cycles by different criteria.  It can be used in the context of a planning request to specify a standing order for repeated execution of the [set of] planning activities.
-In the context of an ActivityNode embedded within a planning request (see 4.5.2.3), it is possible to nest one Repetition inside another, enabling the specification of complex repetitive sequences of activities.">
+      <mal:composite name="Repetition" comment="E1: A repetition is used to specify the repeated instantiation of a [set of] planning activities.  Multiple subtypes of Repetition are defined to support the specification of repeat cycles by different criteria.  It can be used in the context of a planning request to specify a standing order for repeated execution of the [set of] planning activities.
+In the context of an ActivityNode embedded within a planning request (see 4.5.2.3.2), it is possible to nest one Repetition inside another, enabling the specification of complex repetitive sequences of activities.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="count" canBeNull="true" comment="Maximum number of repeat cycles/instances [optional].
+        <mal:field name="count" canBeNull="true" comment="Maximum number of repeat cycles/instances.
 If not specified there is no limit to the number of repetitions.">
           <mal:type area="MAL" list="false" objectRef="false" name="Integer"/>
         </mal:field>
-        <mal:field name="timeWindow" canBeNull="true" comment="Time period over which the repetition is applicable [optional].
+        <mal:field name="timeWindow" canBeNull="true" comment="Time period over which the repetition is applicable.
 If not specified repetition continues indefinitely.">
           <mal:type area="MPS" list="false" objectRef="false" name="TimeWindow"/>
         </mal:field>
@@ -3800,10 +3774,6 @@ If not specified repetition continues indefinitely.">
         <mal:field name="tolerance" canBeNull="false" comment="The allowed tolerance (+/-) in the required distance between occurrences, the interpretation of which is dependent on the separationType.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of distance, in which the separation and tolerance are expressed in.
-Default = ‘km’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
-        </mal:field>
       </mal:composite>
 
       <mal:composite name="OrbitRepetition" shortFormPart="58" comment="E6: A sub-type of Repetition based on the orbital cycle.">
@@ -3811,7 +3781,7 @@ Default = ‘km’.">
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:extends>
         <mal:field name="orbitNumber" canBeNull="false" comment="Orbit number for the first occurrence.  Depending on the relativeOrbit flag, the orbit number may be absolute (since start of mission) or relative (to the orbital repeat cycle).
-The datum with respect to which the orbit number is counted is mission-specific.">
+The datum with respect to which the orbit number is counted is mission specific.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="relativeOrbit" canBeNull="false" comment="Flag indicating if the orbit number is absolute or relative to the orbital repeat cycle.">
@@ -3820,7 +3790,7 @@ The datum with respect to which the orbit number is counted is mission-specific.
         <mal:field name="orbitSeparation" canBeNull="false" comment="The required number of orbits separation between occurrences.  If orbitNumber is Relative and the required repetition is once per repeat cycle, this is the number of orbits in the repeat cycle, but the value 0 may also be used.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="angleSeparation" canBeNull="false" comment="The required angular separation between occurrences.  This allows for multiple repetitions within an orbit.  The value 0 indicates only one occurrence within the orbit.">
+        <mal:field name="angularSeparation" canBeNull="false" comment="The required angular separation between occurrences.  This allows for multiple repetitions within an orbit.  The value 0 indicates only one occurrence within the orbit.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="orbitAngle" canBeNull="false" comment="The required position of the first occurrence within the orbit expressed as an angle.">
@@ -3828,10 +3798,6 @@ The datum with respect to which the orbit number is counted is mission-specific.
         </mal:field>
         <mal:field name="tolerance" canBeNull="false" comment="The allowed tolerance (+/-) in the required orbital angle.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the orbitAngle, angularSeparation, and tolerance are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3851,10 +3817,6 @@ Default = ‘deg’.">
         <mal:field name="tolerance" canBeNull="false" comment="The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the separation and tolerance are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
-        </mal:field>
       </mal:composite>
 
       <mal:composite name="RevolutionRepetition" shortFormPart="60" comment="E6: A sub-type of Repetition based on the revolutions of a rotating spacecraft or instrument.">
@@ -3869,10 +3831,6 @@ Default = ‘deg’.">
         </mal:field>
         <mal:field name="revAngle" canBeNull="false" comment="Specifies the angle within a revolution.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the revAngle is expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3895,7 +3853,7 @@ Default = ‘deg’.">
         <mal:extends>
           <mal:type area="MPS" list="false" name="Repetition"/>
         </mal:extends>
-        <mal:field name="centreObject" canBeNull="false" comment="Position of the centre object.">
+        <mal:field name="centerObject" canBeNull="false" comment="Position of the center object.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="targetObject1" canBeNull="false" comment="Position of target object 1.">
@@ -3904,7 +3862,7 @@ Default = ‘deg’.">
         <mal:field name="targetObject2" canBeNull="false" comment="Position of target object 2.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
-        <mal:field name="initialAngle" canBeNull="false" comment="Initial angle subtended at the centre object by target objects 1 and 2.">
+        <mal:field name="initialAngle" canBeNull="false" comment="Initial angle subtended at the center object by target objects 1 and 2.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
         </mal:field>
         <mal:field name="separation" canBeNull="false" comment="The required angle between occurrences.
@@ -3913,10 +3871,6 @@ If this is zero, this implies that repetition is between multiple occurrences of
         </mal:field>
         <mal:field name="tolerance" canBeNull="false" comment="The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.">
           <mal:type area="MAL" list="false" objectRef="false" name="Element"/>
-        </mal:field>
-        <mal:field name="units" canBeNull="true" comment="Optional.  The units for the quantity of angle, in which the initialAngle, separation and tolerance are expressed in.
-Default = ‘deg’.">
-          <mal:type area="MAL" list="false" objectRef="false" name="String"/>
         </mal:field>
       </mal:composite>
 
@@ -3968,14 +3922,14 @@ Default = ‘deg’.">
         <mal:item nvalue="4" value="CANCELLED" comment="The planning request has been cancelled by the user."/>
         <mal:item nvalue="5" value="PLANNED" comment="The planning request has been incorporated into a Plan (see outputPlanRefs)."/>
         <mal:item nvalue="6" value="PROCESSING" comment="The corresponding Plan has been activated within plan execution."/>
-        <mal:item nvalue="7" value="PROCESSED" comment="Execution of the all constituent activities of the planning request have terminated.  Awaiting confirmation of the status of the planning request. "/>
+        <mal:item nvalue="7" value="PROCESSED" comment="Execution of all constituent activities of the planning request have terminated.  Awaiting confirmation of the status of the planning request. "/>
         <mal:item nvalue="8" value="TERMINATED" comment="The planning request has completed, either successfully or with a failure condition (further information is provided in statusInfo)."/>
       </mal:enumeration>
 
       <mal:enumeration name="PlanStatusEnum" shortFormPart="502" comment="E1: PlanStatusEnum represents the status of a given Plan object. ">
         <mal:item nvalue="1" value="DRAFT" comment="The Plan has been saved by the planning function."/>
         <mal:item nvalue="2" value="RELEASED" comment="The Plan has been released for operational use by the planning function."/>
-        <mal:item nvalue="3" value="SUBMITTED" comment="The Plan has been submitted to the plan execution function and is available for use, but will not execute until activated."/>
+        <mal:item nvalue="3" value="SUBMITTED" comment="The Plan has been submitted to the plan execution function and is available for use, but will not be executed until activated."/>
         <mal:item nvalue="4" value="ACTIVATED" comment="The Plan has been activated by the plan execution function."/>
         <mal:item nvalue="5" value="TERMINATED" comment="The Plan has reached a terminal state, as detailed in the statusInfo.  This includes the following cases:
 - Completed (nominal);
@@ -3997,13 +3951,13 @@ Default = ‘deg’.">
         <mal:item nvalue="2" value="DEACTIVATED" comment="The sub-plan is not active."/>
       </mal:enumeration>
 
-      <mal:enumeration name="ArgTypeEnum" shortFormPart="1" comment="E1: ArgTypeEnum is an MPS extension of the MAL::AttributeType enumeration (see reference [2] section 4.6.4) that also allows specification of the data types Position or Direction.">
+      <mal:enumeration name="ArgTypeEnum" shortFormPart="1" comment="E1: ArgTypeEnum is an MPS extension of the MAL::AttributeType enumeration (see reference [2] section 4.6.4) that also allows specification of the Geometric data types.">
         <mal:item nvalue="1" value="BLOB" comment="Binary object."/>
         <mal:item nvalue="2" value="BOOLEAN" comment="Boolean value (True or False)."/>
         <mal:item nvalue="3" value="DURATION" comment="Length of time in nanosecond resolution."/>
         <mal:item nvalue="4" value="FLOAT" comment="Floating point number (32 bits)."/>
         <mal:item nvalue="5" value="DOUBLE" comment="Double precision floating point number (64 bits)."/>
-        <mal:item nvalue="6" value="IDENTIFIER" comment="The Identifier structure is used to store an identifier and can be used for indexing.  It is a variable-length, unbounded, Unicode string."/>
+        <mal:item nvalue="6" value="IDENTIFIER" comment="The Identifier structure is used to store an identifier and can be used for indexing.  It is a variable-length, unbounded Unicode string."/>
         <mal:item nvalue="7" value="OCTET" comment="Signed 8 bit Integer."/>
         <mal:item nvalue="8" value="UOCTET" comment="Unsigned 8 bit Integer."/>
         <mal:item nvalue="9" value="SHORT" comment="Signed 16 bit Integer."/>
@@ -4012,7 +3966,7 @@ Default = ‘deg’.">
         <mal:item nvalue="12" value="UINTEGER" comment="Unsigned 32 bit Integer."/>
         <mal:item nvalue="13" value="LONG" comment="Signed 64 bit Integer."/>
         <mal:item nvalue="14" value="ULONG" comment="Unsigned 64 bit Integer."/>
-        <mal:item nvalue="15" value="STRING" comment="Text.  It is a variable length, unbounded, Unicode string."/>
+        <mal:item nvalue="15" value="STRING" comment="Text.  It is a variable length, unbounded Unicode string."/>
         <mal:item nvalue="16" value="TIME" comment="Absolute date-time to millisecond resolution."/>
         <mal:item nvalue="17" value="FINETIME" comment="Absolute date-time to nanosecond resolution."/>
         <mal:item nvalue="18" value="URI" comment="Uniform Resource Identifier (address).  It is a variable-length, unbounded Unicode string (see reference [4])."/>
@@ -4022,7 +3976,7 @@ Default = ‘deg’.">
         <mal:item nvalue="131" value="ANGLE" comment="MPS Angle."/>
         <mal:item nvalue="132" value="ANGULAR_RATE" comment="MPS AngularRate."/>
         <mal:item nvalue="133" value="DISTANCE" comment="MPS Distance."/>
-        <mal:item nvalue="134" value="ANY" comment="Argument may be of any type.  It will map to a MAL::Element.  It can be used to specify an argument list of heterogeneous types."/>
+        <mal:item nvalue="134" value="ANY" comment="The argument may be of any type.  It will map to a MAL::Element.  It can be used to specify an argument list of heterogeneous types."/>
       </mal:enumeration>
 
       <mal:enumeration name="LogicOpEnum" shortFormPart="30" comment="E1: A LogicOpEnum represents the type of logic used to combine two Boolean conditions.">
@@ -4030,7 +3984,7 @@ Default = ‘deg’.">
         <mal:item nvalue="2" value="OR" comment="Logical OR"/>
       </mal:enumeration>
 
-      <mal:enumeration name="ExpressionOperatorEnum" shortFormPart="36" comment="E5: Whenever a value comparison is needed in this standard, multiple Boolean operations may be chosen from. These operations are described by each of the possible enumeration values of ExpressionOperatorEnum.">
+      <mal:enumeration name="ExpressionOperatorEnum" shortFormPart="36" comment="E5: Whenever a value comparison is needed in this standard, multiple Boolean operations may be chosen from.  These operations are described by each of the possible enumeration values of ExpressionOperatorEnum.">
         <mal:item nvalue="1" value="EQUAL" comment="="/>
         <mal:item nvalue="2" value="DIFFER" comment="!="/>
         <mal:item nvalue="3" value="GREATER" comment="&gt;"/>

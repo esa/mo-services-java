@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public abstract class BaseBinaryEncoder extends Encoder {
 
-    protected BinaryTimeHandler timeHandler;
+    private final BinaryTimeHandler timeHandler;
 
     /**
      * Constructor for derived classes that have their own stream holder
@@ -77,10 +77,20 @@ public abstract class BaseBinaryEncoder extends Encoder {
         }
     }
 
+    /**
+     * Returns the output stream.
+     *
+     * @return The output stream.
+     */
     public BaseBinaryStreamHolder getStreamHolder() {
         return (BaseBinaryStreamHolder) outputStream;
     }
 
+    /**
+     * Returns the time handler.
+     *
+     * @return The time handler.
+     */
     public BinaryTimeHandler getTimeHandler() {
         return timeHandler;
     }

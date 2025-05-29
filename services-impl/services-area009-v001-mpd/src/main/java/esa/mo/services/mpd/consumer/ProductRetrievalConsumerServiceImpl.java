@@ -37,10 +37,24 @@ public class ProductRetrievalConsumerServiceImpl extends ConsumerServiceImpl {
 
     private ProductRetrievalStub productRetrievalService = null;
 
+    /**
+     * Constructor.
+     *
+     * @param connectionDetails The connection URIs to the provider.
+     * @throws MALException If the service could not be started.
+     */
     public ProductRetrievalConsumerServiceImpl(final SingleConnectionDetails connectionDetails) throws MALException {
         this(connectionDetails, null, null);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param connectionDetails The connection URIs to the provider.
+     * @param authenticationId The authenticationId token.
+     * @param localNamePrefix The local name prefix.
+     * @throws MALException If the service could not be started.
+     */
     public ProductRetrievalConsumerServiceImpl(final SingleConnectionDetails connectionDetails,
             final Blob authenticationId, final String localNamePrefix) throws MALException {
         this.connectionDetails = connectionDetails;
@@ -71,6 +85,11 @@ public class ProductRetrievalConsumerServiceImpl extends ConsumerServiceImpl {
         return this.getProductRetrievalStub();
     }
 
+    /**
+     * Returns the service stub.
+     *
+     * @return The service stub.
+     */
     public ProductRetrievalStub getProductRetrievalStub() {
         return this.productRetrievalService;
     }

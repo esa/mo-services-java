@@ -40,14 +40,14 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>12.0</version>
+        <version>12.1</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>testbed-malspp-framework</artifactId>
     <packaging>jar</packaging>
-    <version>12.0</version>
+    <version>12.1</version>
     <name>CCSDS MOIMS MO Testbed Framework for MAL/SPP Binding </name>
 
     <organization>

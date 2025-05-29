@@ -64,16 +64,16 @@ public class HelperCommon {
             AddressDetails addressDetails;
 
             // If there are no address info we cannot connect...
-            if (!serviceInfo.getServiceAddresses().isEmpty()) {
-                // Select the first one (index: 0)
-                addressDetails = serviceInfo.getServiceAddresses().get(0);
-
-                if (serviceInfo.getServiceAddresses().size() != 1) {
-                    Logger.getLogger(HelperCommon.class.getName()).log(Level.WARNING,
-                            "There are more than just one service address in the ServiceCapability.");
-                }
-            } else {
+            if (serviceInfo.getServiceAddresses().isEmpty()) {
                 continue;
+            }
+
+            // Select the first one (index: 0)
+            addressDetails = serviceInfo.getServiceAddresses().get(0);
+
+            if (serviceInfo.getServiceAddresses().size() != 1) {
+                Logger.getLogger(HelperCommon.class.getName()).log(Level.WARNING,
+                        "There are more than just one service address in the ServiceCapability.");
             }
 
             SingleConnectionDetails details = new SingleConnectionDetails();

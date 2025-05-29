@@ -34,7 +34,6 @@ import org.ccsds.moims.mo.mal.MALArea;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.ServiceInfo;
-import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
@@ -242,7 +241,7 @@ public class HelperMisc {
                 } else {
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file provider.properties does not exist on the "
-                            + "path: {}. Is the application working directory "
+                            + "path: {0}.\nIs the application working directory "
                             + "configured properly?", providerFile);
                 }
             }
@@ -258,9 +257,9 @@ public class HelperMisc {
                     /*
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file settings.properties does not exist on the "
-                            + "path: {}. Is the application working directory "
+                            + "path: {0}. Is the application working directory "
                             + "configured properly?", settingsFile);
-                    */
+                     */
                 }
             }
 
@@ -277,8 +276,8 @@ public class HelperMisc {
             } else {
                 Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                         "The file transport.properties does not exist on the "
-                        + "path: {}. Is the application working directory "
-                        + "configured properly?" 
+                        + "path: {0}.\nIs the application working directory "
+                        + "configured properly?"
                         + " The App will fallback to the default TCP/IP Transport!", transport_file_path);
                 sysProps.putAll(getTransportDefaults());
             }
@@ -339,32 +338,6 @@ public class HelperMisc {
     }
 
     /**
-     * Checks if an attribute is an Identifier, String or URI MAL data type.
-     *
-     * @param obj The attribute
-     * @return True if the object can be read as a string
-     * @throws java.lang.IllegalArgumentException If obj == null
-     */
-    public static boolean isStringAttribute(Attribute obj) throws IllegalArgumentException {
-        if (obj == null) {
-            throw new IllegalArgumentException("Obj must not be null");
-        }
-        Integer shortFormPart = obj.getTypeId().getSFP();
-
-        if (shortFormPart == 6) { // Identifier
-            return true;
-        }
-        if (shortFormPart == 15) { // String
-            return true;
-        }
-        if (shortFormPart == 18) { // URI
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Finds the service name from the area, areaVersion and service numbers
      *
      * @param area Area of the service
@@ -374,9 +347,7 @@ public class HelperMisc {
      * @throws org.ccsds.moims.mo.mal.MALException The area/service is Unknown
      */
     @Deprecated
-    public static String serviceKey2name(UShort area, UOctet areaVersion, UShort service)
-            throws MALException {
-
+    public static String serviceKey2name(UShort area, UOctet areaVersion, UShort service) throws MALException {
         MALArea malArea = MALContextFactory.lookupArea(area, areaVersion);
 
         if (malArea == null) {
@@ -396,6 +367,9 @@ public class HelperMisc {
         return malSer.getName().toString();
     }
 
+    /**
+     * Sets the number of input processors for the transport layer.
+     */
     public static void setInputProcessorsProperty() {
         System.setProperty("org.ccsds.moims.mo.mal.transport.gen.inputprocessors", "5");
     }

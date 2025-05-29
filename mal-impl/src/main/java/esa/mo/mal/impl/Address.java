@@ -55,14 +55,29 @@ public final class Address {
         this.handler = handler;
     }
 
+    /**
+     * Returns the endpoint of this address.
+     *
+     * @return The endpoint of this address.
+     */
     public MALEndpoint getEndpoint() {
         return endpoint;
     }
 
+    /**
+     * Returns the authentication id.
+     *
+     * @return The authentication id.
+     */
     public Blob getAuthenticationId() {
         return authenticationId;
     }
 
+    /**
+     * Returns the handler.
+     *
+     * @return The handler.
+     */
     public MALInteractionHandler getHandler() {
         return handler;
     }

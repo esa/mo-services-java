@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>12.0</version>
+    <version>12.1</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -73,7 +73,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <esa.mo.version>12.0</esa.mo.version>
+        <esa.mo.version>12.1</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
     
@@ -192,17 +192,7 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>transport-jms</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>transport-zmtp</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>transport-activemq</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
             <dependency>
@@ -382,6 +372,18 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.1.0</version>
                     <configuration>
@@ -396,6 +398,8 @@
                         <archive>
                             <manifest>
                                 <mainClass>${assembly.mainClass}</mainClass>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             </manifest>
                         </archive>
                         <descriptorRefs>

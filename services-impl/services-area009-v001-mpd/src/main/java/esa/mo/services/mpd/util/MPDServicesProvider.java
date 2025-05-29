@@ -35,20 +35,41 @@ public class MPDServicesProvider {
     private final OrderManagementProviderServiceImpl orderManagementService = new OrderManagementProviderServiceImpl();
     private final ProductRetrievalProviderServiceImpl productRetrievalService = new ProductRetrievalProviderServiceImpl();
 
+    /**
+     * Initializes the service providers.
+     *
+     * @param backendProductRetrievalProvider The backend to retrieve products.
+     * @throws MALException if the services could not be initialized.
+     */
     public void init(ProductRetrievalBackend backendProductRetrievalProvider) throws MALException {
         productOrderDeliveryService.init(backendProductRetrievalProvider);
         orderManagementService.init(productOrderDeliveryService);
         productRetrievalService.init(backendProductRetrievalProvider);
     }
 
+    /**
+     * Returns the Product Order Delivery service provider.
+     *
+     * @return The Product Order Delivery service provider.
+     */
     public ProductOrderDeliveryProviderServiceImpl getProductOrderDeliveryService() {
         return this.productOrderDeliveryService;
     }
 
+    /**
+     * Returns the Order Management service provider.
+     *
+     * @return The Order Management service provider.
+     */
     public OrderManagementProviderServiceImpl getOrderManagementService() {
         return this.orderManagementService;
     }
 
+    /**
+     * Returns the Product Retrieval service provider.
+     *
+     * @return The Product Retrieval service provider.
+     */
     public ProductRetrievalProviderServiceImpl getProductRetrievalService() {
         return this.productRetrievalService;
     }

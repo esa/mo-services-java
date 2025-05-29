@@ -33,8 +33,19 @@ import org.ccsds.moims.mo.mal.structures.*;
  */
 public abstract class Encoder implements MALEncoder {
 
+    /**
+     * The UTF-8 Charset encoding.
+     */
     protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+
+    /**
+     * The string to display when a bad encoding is used.
+     */
     protected static final String ENCODING_EXCEPTION_STR = "Bad encoding";
+
+    /**
+     * The output stream.
+     */
     protected final StreamHolder outputStream;
 
     /**

@@ -189,9 +189,8 @@ public class InteractionConsumerMap {
      * @param id The transaction id.
      * @return MAL response message.
      * @throws MALInteractionException When something goes wrong.
-     * @throws MALException When something goes wrong.
      */
-    public MALMessage waitForResponse(final Long id) throws MALInteractionException, MALException {
+    public MALMessage waitForResponse(final Long id) throws MALInteractionException {
         OperationResponseHolder holder = null;
 
         synchronized (syncOpResponseMap) {

@@ -82,6 +82,11 @@ public final class SingleSubscription {
         this(domain, hdr.getServiceArea(), hdr.getService(), hdr.getOperation(), filters, selectedKeys);
     }
 
+    /**
+     * Returns the selected keys.
+     *
+     * @return The selected keys.
+     */
     public IdentifierList getSelectedKeys() {
         return selectedKeys;
     }

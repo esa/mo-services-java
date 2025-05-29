@@ -40,10 +40,20 @@ public class FileTransferManager {
 
     private final URI deliverTo;
 
+    /**
+     * Constructor.
+     *
+     * @param deliverTo The target URI to deliver the file.
+     */
     public FileTransferManager(URI deliverTo) {
         this.deliverTo = deliverTo;
     }
 
+    /**
+     * Connect to the target.
+     *
+     * @throws IOException if target could not be reached.
+     */
     public void connect() throws IOException {
         String location = deliverTo.getValue(); // URI
 
@@ -57,6 +67,13 @@ public class FileTransferManager {
         }
     }
 
+    /**
+     * Performs the product transfer for the selected product and filename.
+     *
+     * @param product The product to be transferred.
+     * @param filename The filename of the stored file.
+     * @return True if the transfer was successful, false otherwise.
+     */
     public boolean executeTransfer(Product product, String filename) {
         String location = deliverTo.getValue(); // URI
 
@@ -94,7 +111,7 @@ public class FileTransferManager {
         if (!productLocation.exists()) {
             try {
                 productLocation.createNewFile();
-                try ( FileOutputStream fos = new FileOutputStream(productLocation)) {
+                try (FileOutputStream fos = new FileOutputStream(productLocation)) {
                     byte[] productBody = product.getProductBody().getValue();
                     productBody = (productBody == null) ? new byte[0] : productBody;
                     fos.write(productBody);
@@ -136,7 +153,7 @@ public class FileTransferManager {
             // Loop through the products in matchedProducts
             byte[] blob = product.getProductBody().getValue();
 
-            try ( InputStream byteArrayInputStream = new ByteArrayInputStream(blob)) {
+            try (InputStream byteArrayInputStream = new ByteArrayInputStream(blob)) {
                 // Upload file to the FTP server
                 boolean uploaded = ftpClient.storeFile(filename, byteArrayInputStream);
 

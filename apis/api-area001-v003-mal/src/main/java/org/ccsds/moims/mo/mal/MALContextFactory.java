@@ -275,8 +275,8 @@ public abstract class MALContextFactory {
 
     protected static class VersionizedAreaNumber {
 
-        public final int areaNumber;
-        public final int version;
+        private final int areaNumber;
+        private final int version;
 
         public VersionizedAreaNumber(int areaNumber, short version) {
             this.areaNumber = areaNumber;
