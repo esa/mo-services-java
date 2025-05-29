@@ -78,7 +78,7 @@ public class Identifier implements Attribute {
     /**
      * Check if this object equals the wildcard.
      *
-     * @return
+     * @return True if it equals the wildcard, false otherwise.
      */
     public boolean isWildcard() {
         return WILDCARD.equals(value);
