@@ -39,8 +39,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
  */
 public abstract class BaseBinaryDecoder extends Decoder {
 
-    protected static final java.util.logging.Logger LOGGER = Logger.getLogger(
-            BaseBinaryDecoder.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BaseBinaryDecoder.class.getName());
     protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     protected static final int BLOCK_SIZE = 65536;
 
@@ -92,10 +91,20 @@ public abstract class BaseBinaryDecoder extends Decoder {
         throw new MALException("The Enumeration could not be decoded!");
     }
 
+    /**
+     * Returns the source buffer.
+     *
+     * @return The source buffer.
+     */
     public BaseBinaryBufferHolder getBufferHolder() {
         return (BaseBinaryBufferHolder) sourceBuffer;
     }
 
+    /**
+     * Returns the time handler.
+     *
+     * @return The time handler.
+     */
     public BinaryTimeHandler getTimeHandler() {
         return timeHandler;
     }
@@ -317,6 +326,11 @@ public abstract class BaseBinaryDecoder extends Decoder {
             return buf;
         }
 
+        /**
+         * Returns the offset.
+         *
+         * @return The offset.
+         */
         public int getOffset() {
             return offset;
         }
