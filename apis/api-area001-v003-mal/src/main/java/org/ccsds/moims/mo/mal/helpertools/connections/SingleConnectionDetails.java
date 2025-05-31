@@ -55,7 +55,10 @@ public class SingleConnectionDetails {
      */
     public SingleConnectionDetails(String providerURI, String brokerURI,
             IdentifierList domain, IntegerList serviceKey) {
-        this(new URI(providerURI), new URI(brokerURI), domain, serviceKey);
+        this(new URI(providerURI),
+                (brokerURI == null) ? null : new URI(brokerURI),
+                domain,
+                serviceKey);
     }
 
     /**

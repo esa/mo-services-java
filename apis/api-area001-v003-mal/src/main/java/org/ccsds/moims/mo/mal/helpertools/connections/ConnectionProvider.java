@@ -382,7 +382,7 @@ public class ConnectionProvider {
         }
     }
 
-    private static File getProviderURIsDirectory(String filename) {
+    public static File getProviderURIsDirectory(String filename) {
         File file = new File(filename);
         if (file.canWrite()) {
             return new File(filename);

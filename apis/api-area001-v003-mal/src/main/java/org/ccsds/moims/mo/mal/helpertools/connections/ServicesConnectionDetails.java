@@ -91,7 +91,8 @@ public class ServicesConnectionDetails {
                     HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME);
         }
 
-        File configFile = new File(filename);
+        //File file = getProviderURIsDirectory(filename);
+        File configFile = ConnectionProvider.getProviderURIsDirectory(filename);
         if (!configFile.exists()) {
             throw new FileNotFoundException(filename + " not found.");
         }
@@ -108,7 +109,7 @@ public class ServicesConnectionDetails {
      * @throws java.net.MalformedURLException when the MALconsumer is not
      * initialized correctly
      */
-    public ServicesConnectionDetails loadURIFromProperties(Properties uriProps) throws MalformedURLException {
+    private ServicesConnectionDetails loadURIFromProperties(Properties uriProps) throws MalformedURLException {
         // Reading the values out of the properties file
         Set propKeys = uriProps.keySet();
         Object[] array = propKeys.toArray();
