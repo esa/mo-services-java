@@ -180,19 +180,23 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     ExtendedServiceType eService = (ExtendedServiceType) service;
                     SupportedFeatures features = eService.getFeatures();
 
-                    if (features != null) {
-                        if (features.getObjects() != null) {
-                            for (ModelObjectType obj : features.getObjects().getObject()) {
-                                TypeKey key = new TypeKey(area.getName(), service.getName(), String.valueOf(obj.getNumber()));
-                                comObjectMap.put(key, obj);
-                            }
-                        }
+                    if (features == null) {
+                        continue;
+                    }
 
-                        if (features.getEvents() != null) {
-                            for (ModelObjectType obj : features.getEvents().getEvent()) {
-                                TypeKey key = new TypeKey(area.getName(), service.getName(), String.valueOf(obj.getNumber()));
-                                comObjectMap.put(key, obj);
-                            }
+                    if (features.getObjects() != null) {
+                        for (ModelObjectType obj : features.getObjects().getObject()) {
+                            String name = String.valueOf(obj.getNumber());
+                            TypeKey key = new TypeKey(area.getName(), service.getName(), name);
+                            comObjectMap.put(key, obj);
+                        }
+                    }
+
+                    if (features.getEvents() != null) {
+                        for (ModelObjectType obj : features.getEvents().getEvent()) {
+                            String name = String.valueOf(obj.getNumber());
+                            TypeKey key = new TypeKey(area.getName(), service.getName(), name);
+                            comObjectMap.put(key, obj);
                         }
                     }
                 }
@@ -1134,12 +1138,15 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     if (i > 0) {
                         buf.append(", ");
                     }
+                    String fieldName = ti.getFieldName();
+                    String getter = arg + ".get" + StubUtils.preCap(fieldName) + "()";
+
                     if (ti.isNativeType()) {
-                        buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ");
+                        buf.append("(").append(getter).append(" == null) ? null : new ");
                         buf.append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder());
-                        buf.append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
+                        buf.append(".").append(StdStrings.UNION).append("(").append(getter).append(")");
                     } else {
-                        buf.append(arg).append(".getBodyElement").append(i).append("()");
+                        buf.append(getter);
                     }
                 }
 
@@ -1196,11 +1203,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create a comment for the body folder if supported
         createServiceMessageBodyFolderComment(destinationFolderName, returnTypeInfo.getArea(), returnTypeInfo.getService());
-
         ClassWriter file = createClassFile(destinationFolderName, returnTypeFqName.replace('.', '/'));
-
         file.addPackageStatement(returnTypeInfo.getArea(), returnTypeInfo.getService(), getConfig().getBodyFolder());
-
         file.addClassOpenStatement(returnTypeInfo.getShortName(), true, false, null, null,
                 "Multi body return class for " + returnTypeInfo.getShortName() + ".");
 
@@ -1239,7 +1243,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
                     returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "The new value.");
-            addGetter(file, argType, "BodyElement" + i);
+            //addGetter(file, argType, "BodyElement" + i);
             //addSetter(file, argType, "BodyElement" + i);
         }
 
