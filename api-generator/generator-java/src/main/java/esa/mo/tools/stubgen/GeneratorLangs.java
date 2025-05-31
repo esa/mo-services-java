@@ -1093,7 +1093,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
+                        + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
                 method.addLine("    break;");
             }
         }
@@ -1132,11 +1133,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
             } else {
                 String arg = op.getName() + "Rt";
                 StringBuilder buf = new StringBuilder();
+                buf.append("\n                    ");
 
                 for (int i = 0; i < targetTypes.size(); i++) {
                     FieldInfo ti = targetTypes.get(i);
                     if (i > 0) {
-                        buf.append(", ");
+                        buf.append(",\n                    ");
                     }
                     String fieldName = ti.getFieldName();
                     String getter = arg + ".get" + StubUtils.preCap(fieldName) + "()";
@@ -1151,7 +1153,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 }
 
                 method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall + ";");
-                method.addLine("    interaction.sendResponse(" + buf.toString() + ");");
+                method.addLine("    interaction.sendResponse(" + buf.toString());
+                method.addLine("    );");
             }
         } else {
             // operation has an empty response
@@ -1331,7 +1334,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, argumentComment);
     }
 
-    public String createAdapterMethodsArgs(List<FieldInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(List<FieldInfo> typeInfos,
+            String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
         if (typeInfos == null) {
             return "";
         }
@@ -1349,7 +1353,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return buf.toString();
     }
 
-    public String createAdapterMethodsArgs(FieldInfo typeInfo, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(FieldInfo typeInfo, String argName,
+            int argIndex, boolean precedingArgs, boolean moreArgs) {
         String retStr = "";
 
         if ((typeInfo.getTargetType() != null) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
@@ -1448,7 +1453,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    public CompositeField createOperationReturnType(LanguageWriter file, String area, String service, OperationSummary op) {
+    public CompositeField createOperationReturnType(LanguageWriter file,
+            String area, String service, OperationSummary op) {
         switch (op.getPattern()) {
             case REQUEST_OP: {
                 if (op.getRetTypes() != null) {
