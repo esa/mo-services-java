@@ -76,11 +76,6 @@ public class HelperCommon {
                         "There are more than just one service address in the ServiceCapability.");
             }
 
-            SingleConnectionDetails details = new SingleConnectionDetails();
-            details.setBrokerURI(addressDetails.getBrokerURI());
-            details.setProviderURI(addressDetails.getServiceURI());
-            details.setDomain(provider.getProviderKey().getDomain());
-
             final MALArea malArea = MALContextFactory.lookupArea(key.getKeyArea(), key.getKeyAreaVersion());
 
             if (malArea == null) {
@@ -100,6 +95,12 @@ public class HelperCommon {
                         + "The service key is: " + key.toString());
                 continue;
             }
+
+            SingleConnectionDetails details = new SingleConnectionDetails(
+                    addressDetails.getServiceURI(),
+                    addressDetails.getBrokerURI(),
+                    provider.getProviderKey().getDomain(),
+                    null);
 
             services.put(malService.getName().toString(), details);
         }

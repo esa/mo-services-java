@@ -61,7 +61,7 @@ public class ConnectionProvider {
     private MALProviderManager providerMgr;
     private MALProvider primaryMALServiceProvider = null;
     private MALProvider secondaryMALServiceProvider = null;
-    private final SingleConnectionDetails primaryConnectionDetails = new SingleConnectionDetails();
+    private SingleConnectionDetails primaryConnectionDetails;
     private SingleConnectionDetails secondaryConnectionDetails = null;
 
     /**
@@ -207,10 +207,11 @@ public class ConnectionProvider {
         serviceKey.add(malService.getServiceNumber().getValue()); // Service
         serviceKey.add((int) malService.getServiceVersion().getValue()); // Version
 
-        primaryConnectionDetails.setProviderURI(serviceProvider.getURI());
-        primaryConnectionDetails.setBrokerURI(serviceProvider.getBrokerURI());
-        primaryConnectionDetails.setDomain(ConfigurationProviderSingleton.getDomain());
-        primaryConnectionDetails.setServiceKey(serviceKey);
+        primaryConnectionDetails = new SingleConnectionDetails(
+                serviceProvider.getURI(),
+                serviceProvider.getBrokerURI(),
+                ConfigurationProviderSingleton.getDomain(),
+                serviceKey);
 
         Logger.getLogger(ConnectionProvider.class.getName()).log(Level.FINE,
                 "\n" + serviceName + " Service URI        : {0}"
@@ -235,8 +236,6 @@ public class ConnectionProvider {
 
         // Check if the secondary Transport is enabled
         if (secondaryProtocol != null) {
-            secondaryConnectionDetails = new SingleConnectionDetails();
-
             MALProvider serviceProvider2 = providerMgr.createProvider(uriName,
                     secondaryProtocol,
                     malService,
@@ -251,10 +250,11 @@ public class ConnectionProvider {
                     sharedBrokerURI,
                     null);
 
-            secondaryConnectionDetails.setProviderURI(serviceProvider2.getURI());
-            secondaryConnectionDetails.setBrokerURI(serviceProvider2.getBrokerURI());
-            secondaryConnectionDetails.setDomain(ConfigurationProviderSingleton.getDomain());
-            secondaryConnectionDetails.setServiceKey(serviceKey);
+            secondaryConnectionDetails = new SingleConnectionDetails(
+                    serviceProvider2.getURI(),
+                    serviceProvider2.getBrokerURI(),
+                    ConfigurationProviderSingleton.getDomain(),
+                    serviceKey);
 
             Logger.getLogger(ConnectionProvider.class.getName()).log(Level.FINE,
                     "\n" + serviceName + " Service URI        : {0}"

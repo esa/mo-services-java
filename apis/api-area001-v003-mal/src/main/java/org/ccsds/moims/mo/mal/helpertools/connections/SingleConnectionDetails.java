@@ -32,28 +32,85 @@ public class SingleConnectionDetails {
     private URI providerURI;
     private URI brokerURI;
     private IdentifierList domain;
-    private IntegerList serviceKey = new IntegerList();
+    private IntegerList serviceKey;
 
+    /**
+     * This is the original method. The are now moving to a class without
+     * setters so this will be removed in the future.
+     *
+     * @deprecated
+     */
+    @Deprecated
+    public SingleConnectionDetails() {
+
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param providerURI The Provider URI.
+     * @param brokerURI The Broker URI.
+     * @param domain The domain.
+     * @param serviceKey The service key.
+     */
+    public SingleConnectionDetails(String providerURI, String brokerURI,
+            IdentifierList domain, IntegerList serviceKey) {
+        this(new URI(providerURI), new URI(brokerURI), domain, serviceKey);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param providerURI The Provider URI.
+     * @param brokerURI The Broker URI.
+     * @param domain The domain.
+     */
+    public SingleConnectionDetails(URI providerURI, URI brokerURI, IdentifierList domain) {
+        this(providerURI, brokerURI, domain, new IntegerList());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param providerURI The Provider URI.
+     * @param brokerURI The Broker URI.
+     * @param domain The domain.
+     * @param serviceKey The service key.
+     */
+    public SingleConnectionDetails(URI providerURI, URI brokerURI,
+            IdentifierList domain, IntegerList serviceKey) {
+        this.providerURI = providerURI;
+        this.brokerURI = brokerURI;
+        this.domain = domain;
+        this.serviceKey = (serviceKey == null) ? new IntegerList() : serviceKey;
+    }
+
+    @Deprecated
     public void setProviderURI(String providerURI) {
         this.providerURI = new URI(providerURI);
     }
 
+    @Deprecated
     public void setProviderURI(URI providerURI) {
         this.providerURI = providerURI;
     }
 
+    @Deprecated
     public void setBrokerURI(String brokerURI) {
         this.brokerURI = new URI(brokerURI);
     }
 
+    @Deprecated
     public void setBrokerURI(URI brokerURI) {
         this.brokerURI = brokerURI;
     }
 
+    @Deprecated
     public void setDomain(IdentifierList domain) {
         this.domain = domain;
     }
 
+    @Deprecated
     public void setServiceKey(IntegerList serviceKey) {
         this.serviceKey = serviceKey;
     }
