@@ -72,7 +72,8 @@ public class JavaCompositeClass {
             }
         }
 
-        file.addPackageStatement(area.getName(), service == null ? null : service.getName(), generator.getConfig().getStructureFolder());
+        String serviceName = (service == null) ? null : service.getName();
+        file.addPackageStatement(area.getName(), serviceName, generator.getConfig().getStructureFolder());
 
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
@@ -84,7 +85,7 @@ public class JavaCompositeClass {
         boolean abstractComposite = (composite.getShortFormPart() == null);
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
                 parentClass, parentInterface, composite.getComment());
-        String fqName = generator.createElementType(area.getName(), service == null ? null : service.getName(), className);
+        String fqName = generator.createElementType(area.getName(), serviceName, className);
 
         if (!abstractComposite) {
             generator.addTypeShortFormDetails(file, area, service, composite.getShortFormPart());

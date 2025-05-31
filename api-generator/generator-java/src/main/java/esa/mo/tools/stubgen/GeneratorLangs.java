@@ -535,28 +535,30 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
         for (OperationSummary op : summary.getOperations()) {
-            if (InteractionPatternEnum.PUBSUB_OP != op.getPattern()) {
-                List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-                CompositeField opRetType = null;
-                String opRetComment = null;
-                CompositeField serviceHandler = intHandler;
-
-                if (InteractionPatternEnum.REQUEST_OP == op.getPattern()) {
-                    opRetType = createOperationReturnType(file, area, service, op);
-                    opRetComment = "The return value of the operation";
-                } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
-                    serviceHandler = createCompositeElementsDetails(file, false, "interaction",
-                            TypeUtils.createTypeReference(area,
-                                    service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
-                            false, true, "The MAL object representing the interaction in the provider.");
-                }
-
-                file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
-                        StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException,
-                        "Implements the operation " + op.getName(), opRetComment,
-                        Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                throwsMALException + " if there is an implementation exception"));
+            if (InteractionPatternEnum.PUBSUB_OP == op.getPattern()) {
+                continue;
             }
+
+            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
+            CompositeField opRetType = null;
+            String opRetComment = null;
+            CompositeField serviceHandler = intHandler;
+
+            if (InteractionPatternEnum.REQUEST_OP == op.getPattern()) {
+                opRetType = createOperationReturnType(file, area, service, op);
+                opRetComment = "The return value of the operation";
+            } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
+                serviceHandler = createCompositeElementsDetails(file, false, "interaction",
+                        TypeUtils.createTypeReference(area,
+                                service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
+                        false, true, "The MAL object representing the interaction in the provider.");
+            }
+
+            file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
+                    StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException,
+                    "Implements the operation " + op.getName(), opRetComment,
+                    Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                            throwsMALException + " if there is an implementation exception"));
         }
 
         CompositeField skel = createCompositeElementsDetails(file, false, "skeleton",
