@@ -109,7 +109,7 @@ public class GeneratorXML extends XmlGenerator {
             correctedText = newLineFix.toString();
 
             return correctedText;
-            // logger.debug("Finished generation of XML file '{}'.", targetFile);
+            // logger.debug("Finished generation of XML file: {}", targetFile);
         } catch (JAXBException ex) {
             throw new IOException(ex);
         }
