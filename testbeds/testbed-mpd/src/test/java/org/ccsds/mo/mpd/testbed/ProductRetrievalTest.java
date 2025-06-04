@@ -225,7 +225,7 @@ public class ProductRetrievalTest extends MPDTest {
             ObjectRefList productRefs = new ObjectRefList();
             productRefs.add(dataset.ref);
             URI deliverTo = TMP_DIR;
-            this.testGetProductFiles(productRefs, deliverTo);
+            this.testDeliverProductFiles(productRefs, deliverTo);
         } catch (MALInteractionException ex) {
             Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
             fail("The operation was not expected to throw an exception!");
@@ -245,7 +245,7 @@ public class ProductRetrievalTest extends MPDTest {
             String path = TMP_DIR.getValue().replace("file://", "");
             File targetDir = new File(path, "wrong_directory");
             URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
-            this.testGetProductFiles(productRefs, deliverTo);
+            this.testDeliverProductFiles(productRefs, deliverTo);
             fail("The operation was expected to throw an 'Delivery Failed' exception!");
         } catch (MALInteractionException ex) {
             MOErrorException moError = ex.getStandardError();
@@ -277,7 +277,7 @@ public class ProductRetrievalTest extends MPDTest {
             ObjectRefList productRefs = new ObjectRefList();
             productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
             URI deliverTo = TMP_DIR;
-            this.testGetProductFiles(productRefs, deliverTo);
+            this.testDeliverProductFiles(productRefs, deliverTo);
             fail("The operation was expected to throw an 'Unknown' exception!");
         } catch (MALInteractionException ex) {
             MOErrorException moError = ex.getStandardError();
@@ -326,7 +326,7 @@ public class ProductRetrievalTest extends MPDTest {
         }
     }
 
-    private void testGetProductFiles(ObjectRefList productRefs, URI deliverTo) throws MALInteractionException {
+    private void testDeliverProductFiles(ObjectRefList productRefs, URI deliverTo) throws MALInteractionException {
         try {
             ProductMetadataList returnedMetadatas = new ProductMetadataList();
             long startTime = System.currentTimeMillis();
@@ -386,8 +386,20 @@ public class ProductRetrievalTest extends MPDTest {
             });
 
             // ------------------------------------------------------------------------
-            // Wait while UPDATE has not been received and 1 second has not passed yet...
+            // Wait while ACK has not been received and 1 second has not passed yet...
             long timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            while (!ackReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
+                // Recalculate it
+                timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
+            }
+
+            if (!ackReceived.get()) {
+                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                        Level.SEVERE, "The ACK was not received!");
+                fail("The ACK was not received!");
+            }
+
+            // Wait while UPDATE has not been received and 1 second has not passed yet...
             while (!updateReceived.get() && timeSinceInteractionStarted < TIMEOUT) {
                 // Recalculate it
                 timeSinceInteractionStarted = System.currentTimeMillis() - startTime;
