@@ -64,15 +64,16 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
             if (!receivedAck) {
                 if (interactionStage == MALInvokeOperation._INVOKE_ACK_STAGE) {
                     receivedAck = true;
+
                     if (isSynchronous) {
                         responseHolder.signalResponse(isError, msg);
+                    }
+
+                    if (isError) {
+                        finished = true;
+                        listener.invokeAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
                     } else {
-                        if (isError) {
-                            finished = true;
-                            listener.invokeAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
-                        } else {
-                            listener.invokeAckReceived(header, msg.getBody(), qos);
-                        }
+                        listener.invokeAckReceived(header, msg.getBody(), qos);
                     }
                 } else {
                     finished = true;
