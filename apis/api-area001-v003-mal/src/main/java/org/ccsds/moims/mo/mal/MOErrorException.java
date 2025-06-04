@@ -97,8 +97,8 @@ public class MOErrorException extends Exception implements Serializable, MALErro
         final StringBuilder buf = new StringBuilder();
         buf.append("(");
         buf.append("errorNumber=").append(errorNumber);
-        buf.append(",extraInformation=").append(extraInformation);
-        buf.append(")");
+        buf.append(", extraInformation=\"").append(extraInformation);
+        buf.append("\")");
         return buf.toString();
     }
 }
