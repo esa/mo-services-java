@@ -93,9 +93,7 @@ public class UC1_Ex3_Test extends MPDTest {
     public void testCase_05() {
         productType = backend.typeImage;  //  productType=typeTMPacket
         System.out.println("Running: testCase_05()");
-        TimeWindow contentTimeWindow = new TimeWindow(
-                new Time("2020-01-22T10:10:06.728Z"),
-                new Time("2023-02-22T10:10:06.728Z"));
+        TimeWindow contentTimeWindow = Constants.IMAGES_CONTENT_TIME_WINDOW;
         testWithTimeWindowValueSet("visible", true, "forest flyover", 1, contentTimeWindow);
     }
 

@@ -67,8 +67,8 @@ Product metadata: metadata1
         NamedValueList attributes1 = new NamedValueList();
         attributes1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
         attributes1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
-        attributes1.add(new NamedValue(new Identifier("coordinates.lat"), new Union(34.1949742)));
-        attributes1.add(new NamedValue(new Identifier("coordinates.lon"), new Union(-118.1835993)));
+        attributes1.add(new NamedValue(new Identifier("coordinates.lat"), Constants.IMAGE_DATA_1_LAT));
+        attributes1.add(new NamedValue(new Identifier("coordinates.lon"), Constants.IMAGE_DATA_1_LON));
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
         ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1,
@@ -113,8 +113,8 @@ Product metadata: metadata2
         NamedValueList attributes2 = new NamedValueList();
         attributes2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
         attributes2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
-        attributes2.add(new NamedValue(new Identifier("coordinates.lat"), new Union(42.0929981)));
-        attributes2.add(new NamedValue(new Identifier("coordinates.lon"), new Union(-72.6084406)));
+        attributes2.add(new NamedValue(new Identifier("coordinates.lat"), Constants.IMAGE_DATA_2_LAT));
+        attributes2.add(new NamedValue(new Identifier("coordinates.lon"), Constants.IMAGE_DATA_2_LON));
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2,
@@ -156,8 +156,8 @@ Product metadata: metadata3
         NamedValueList attributes3 = new NamedValueList();
         attributes3.add(new NamedValue(new Identifier("ImageSubject"), new Union("Mars")));
         attributes3.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
-        attributes3.add(new NamedValue(new Identifier("coordinates.lat"), new Union(20)));
-        attributes3.add(new NamedValue(new Identifier("coordinates.lon"), new Union(-130)));
+        attributes3.add(new NamedValue(new Identifier("coordinates.lat"), Constants.IMAGE_DATA_3_LAT));
+        attributes3.add(new NamedValue(new Identifier("coordinates.lon"), Constants.IMAGE_DATA_3_LON));
         ObjectRef<Product> ref3 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData3"), new UInteger(1));
         Blob productBody3 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata3 = new ProductMetadata(typeImage, ref3,
