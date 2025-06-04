@@ -343,7 +343,7 @@ public class MALSender {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType(), true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
-        return initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
+        return synchronousInteraction(transId, details.getEndpoint(), msg);
     }
 
     /**
@@ -367,7 +367,7 @@ public class MALSender {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType(), true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
-        return initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
+        return synchronousInteraction(transId, details.getEndpoint(), msg);
     }
 
     /**
@@ -593,11 +593,11 @@ public class MALSender {
             final Object... msgBody) throws MALInteractionException, MALException {
         final Long transId = icmap.createPubSubTransaction(true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
-        initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
+        synchronousInteraction(transId, details.getEndpoint(), msg);
         return transId;
     }
 
-    private MALMessageBody initiateSynchronousInteraction(final Long transId,
+    private MALMessageBody synchronousInteraction(final Long transId,
             final MALEndpoint endpoint, MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
