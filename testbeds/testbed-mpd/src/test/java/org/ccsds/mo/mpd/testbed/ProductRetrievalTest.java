@@ -394,7 +394,7 @@ public class ProductRetrievalTest extends MPDTest {
             }
 
             if (!ackReceived.get()) {
-                Logger.getLogger(UC1_Ex1_Test.class.getName()).log(
+                Logger.getLogger(ProductRetrievalTest.class.getName()).log(
                         Level.SEVERE, "The ACK was not received!");
                 fail("The ACK was not received!");
             }
