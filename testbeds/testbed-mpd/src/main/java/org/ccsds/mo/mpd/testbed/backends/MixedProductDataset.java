@@ -20,6 +20,7 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.mo.mpd.testbed.Constants;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mpd.structures.*;
 
@@ -61,7 +62,7 @@ Product metadata: metadata4
         ObjectRef<Product> ref4 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData3"), new UInteger(1));
         Blob productBody4 = new Blob(new byte[]{0x01,0x02,0x03});
         ProductMetadata metadata4 = new ProductMetadata(typeTMPacket, ref4,
-                new Time("2010-01-01T09:13:51.352Z"),
+                Constants.APID100_CREATION_DATE,
                 null, null,
                 TMPacketsDataset.contentTimeWindowAPID100, attributes4, "description", null, null);
         super.addNewProduct(ref4, productBody4, metadata4);
@@ -99,7 +100,7 @@ Product metadata: metadata5
         ObjectRef<Product> ref4 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("tmData42"), new UInteger(1));
         Blob productBody4 = new Blob(new byte[]{0x09,0x08,0x07});
         ProductMetadata metadata4 = new ProductMetadata(typeTMPacket, ref4,
-                new Time("2020-01-01T08:24:26.846Z"),
+                Constants.APID200_CREATION_DATE,
                 null, null,
                 TMPacketsDataset.contentTimeWindowAPID200, attributes4, "description", null, null);
         super.addNewProduct(ref4, productBody4, metadata4);

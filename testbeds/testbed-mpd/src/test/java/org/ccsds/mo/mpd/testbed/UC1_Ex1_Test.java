@@ -114,7 +114,7 @@ public class UC1_Ex1_Test extends MPDTest {
     public void testCase_05() {
         System.out.println("Running: testCase_5()");
         UInteger apidValue = new UInteger(100);
-        TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        TimeWindow contentDate = new TimeWindow(Constants.APID100_TIME_START, Constants.APID100_TIME_END);
         testWithTimeWindow(apidValue, 1, contentDate);
     }
 
@@ -140,7 +140,7 @@ public class UC1_Ex1_Test extends MPDTest {
     public void testCase_07() {
         System.out.println("Running: testCase_7()");
         UInteger apidValue = new UInteger(200);
-        TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        TimeWindow contentDate = new TimeWindow(Constants.APID100_TIME_START, Constants.APID100_TIME_END);
         testWithTimeWindow(apidValue, 0, contentDate);
     }
 
@@ -162,7 +162,7 @@ public class UC1_Ex1_Test extends MPDTest {
     @Test
     public void testCase_09() {
         System.out.println("Running: testCase_9()");
-        TimeWindow contentDate = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID200_TIME_END);
+        TimeWindow contentDate = new TimeWindow(Constants.APID100_TIME_START, Constants.APID200_TIME_END);
         testWithTimeWindow(null, 2, contentDate);
     }
 

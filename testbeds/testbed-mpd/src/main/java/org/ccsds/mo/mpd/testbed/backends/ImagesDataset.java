@@ -20,6 +20,7 @@
  */
 package org.ccsds.mo.mpd.testbed.backends;
 
+import org.ccsds.mo.mpd.testbed.Constants;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mpd.Dataset;
 import org.ccsds.moims.mo.mpd.structures.*;
@@ -61,8 +62,8 @@ Product metadata: metadata1
 ///////////////////////////////////////////////////////////////////////////////////////////////
         // product1
         TimeWindow contentTimeWindow1 = new TimeWindow(
-                new Time("2022-01-22T18:14:01.352Z"),
-                new Time("2022-01-22T20:18:10.539Z"));
+                Constants.IMAGE_DATA_1__TIME_START,
+                Constants.IMAGE_DATA_1__TIME_END);
         NamedValueList attributes1 = new NamedValueList();
         attributes1.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
         attributes1.add(new NamedValue(new Identifier("imageType"), new Union("visible")));
@@ -71,7 +72,7 @@ Product metadata: metadata1
         Blob productBody1 = new Blob(new byte[]{0x01, 0x02, 0x03});
         ObjectRef<Product> ref1 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData1"), new UInteger(1));
         ProductMetadata metadata1 = new ProductMetadata(typeImage, ref1,
-                new Time("2022-01-22T20:19:06.728Z"),
+                Constants.IMAGE_DATA_1_CREATION_DATE,
                 new Identifier("forest flyover"), null, contentTimeWindow1, attributes1,
                 "description", null, null);
         super.addNewProduct(ref1, productBody1, metadata1);
@@ -107,8 +108,8 @@ Product metadata: metadata2
 ///////////////////////////////////////////////////////////////////////////////////////////////
         // product2
         TimeWindow contentTimeWindow2 = new TimeWindow(
-                new Time("2018-02-04T07:03:15.532Z"),
-                new Time("2018-02-04T07:03:15.532Z"));
+                Constants.IMAGE_DATA_2__TIME_START,
+                Constants.IMAGE_DATA_2__TIME_END);
         NamedValueList attributes2 = new NamedValueList();
         attributes2.add(new NamedValue(new Identifier("ImageSubject"), new Union("Earth")));
         attributes2.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
@@ -117,16 +118,16 @@ Product metadata: metadata2
         ObjectRef<Product> ref2 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData2"), new UInteger(1));
         Blob productBody2 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata2 = new ProductMetadata(typeImage, ref2,
-                new Time("2018-02-04T07:07:04.145Z"),
+                Constants.IMAGE_DATA_2_CREATION_DATE,
                 new Identifier("take a photo"), null, contentTimeWindow2, attributes2, "description", null, null);
         super.addNewProduct(ref2, productBody2, metadata2);
     }
 
     private void addImgProduct3(IdentifierList domain) {
         /*
-        - creationDate: <IMAGE_DATA_2_CREATION_DATE>	2014-05-05T12:11:53.235Z
-        - timeWindow.start: <IMAGE_DATA_2__TIME_START>	2014-05-05T08:14:35.642Z
-        - timeWindow.end: <IMAGE_DATA_2__TIME_END>	2014-05-05T09:10:25.835Z
+        - creationDate: <IMAGE_DATA_3_CREATION_DATE>	2014-05-05T12:11:53.235Z
+        - timeWindow.start: <IMAGE_DATA_3__TIME_START>	2014-05-05T08:14:35.642Z
+        - timeWindow.end: <IMAGE_DATA_3__TIME_END>	2014-05-05T09:10:25.835Z
 imageData3 lat/long	130W, 20N	Mars
 Product name: product3 (with metadata3)
     - identity.domain: myDomain
@@ -150,8 +151,8 @@ Product metadata: metadata3
     - attributes: imageSubject["Mars",coordinates[lat,lon]],imageType=infrared
          */
         TimeWindow contentTimeWindow3 = new TimeWindow(
-                new Time("2014-05-05T08:14:35.642Z"),
-                new Time("2014-05-05T09:10:25.835Z"));
+                Constants.IMAGE_DATA_3__TIME_START,
+                Constants.IMAGE_DATA_3__TIME_END);
         NamedValueList attributes3 = new NamedValueList();
         attributes3.add(new NamedValue(new Identifier("ImageSubject"), new Union("Mars")));
         attributes3.add(new NamedValue(new Identifier("imageType"), new Union("infrared")));
@@ -160,7 +161,7 @@ Product metadata: metadata3
         ObjectRef<Product> ref3 = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("imageData3"), new UInteger(1));
         Blob productBody3 = new Blob(new byte[]{0x09, 0x08, 0x07});
         ProductMetadata metadata3 = new ProductMetadata(typeImage, ref3,
-                new Time("2014-05-05T12:11:53.235Z"),
+                Constants.IMAGE_DATA_3_CREATION_DATE,
                 null, null,
                 contentTimeWindow3, attributes3, "description", null, null);
         super.addNewProduct(ref3, productBody3, metadata3);
