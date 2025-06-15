@@ -317,7 +317,8 @@ public class MALSender {
      * interaction.
      * @throws MALException on internal error.
      */
-    public void onewayMultiPublish(final MALEndpoint ep, final List<MALMessage> msgs)
+    @Deprecated
+    private void onewayMultiPublish(final MALEndpoint ep, final List<MALMessage> msgs)
             throws MALInteractionException, MALException {
         initiateMultiOnewayInteraction(ep, msgs);
     }
@@ -568,6 +569,7 @@ public class MALSender {
         return msg;
     }
 
+    @Deprecated
     private void initiateMultiOnewayInteraction(final MALEndpoint ep,
             final List<MALMessage> msgs) throws MALInteractionException, MALException {
         try {

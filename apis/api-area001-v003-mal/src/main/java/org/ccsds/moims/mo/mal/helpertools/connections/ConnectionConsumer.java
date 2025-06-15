@@ -175,9 +175,15 @@ public class ConnectionConsumer {
      * the initialization of the MAL
      */
     public MALConsumer startService(final SingleConnectionDetails connectionDetails,
-            final ServiceInfo malService, final Blob authenticationId, final String localNamePrefix) throws MALException {
-        return startService(connectionDetails.getProviderURI(), connectionDetails.getBrokerURI(),
-                connectionDetails.getDomain(), malService, authenticationId, localNamePrefix);
+            final ServiceInfo malService, final Blob authenticationId,
+            final String localNamePrefix) throws MALException {
+        return startService(
+                connectionDetails.getProviderURI(),
+                connectionDetails.getBrokerURI(),
+                connectionDetails.getDomain(),
+                malService,
+                authenticationId,
+                localNamePrefix);
     }
 
     /**
