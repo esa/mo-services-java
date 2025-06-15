@@ -48,8 +48,8 @@ public class TransportThreadFactory implements ThreadFactory {
     public static final String IDLE_INPUT_PROCESSORS_PROPERTY
             = "org.ccsds.moims.mo.mal.transport.gen.idleinputprocessors";
 
-    private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
+    private final ThreadGroup group;
     private final String namePrefix;
 
     public TransportThreadFactory(String prefix) {
@@ -61,9 +61,8 @@ public class TransportThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread t = new Thread(group, r,
-                namePrefix + threadNumber.getAndIncrement(),
-                0);
+        String name = namePrefix + threadNumber.getAndIncrement();
+        Thread t = new Thread(group, r, name, 0);
         if (t.isDaemon()) {
             t.setDaemon(false);
         }
