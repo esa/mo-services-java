@@ -407,11 +407,7 @@ public class MALMessageHeader {
         return this;
     }
 
-    public MALOperation getMALOperation() throws NotFoundException {
-        if (malOperation != null) {
-            return malOperation;
-        }
-
+    public ServiceInfo getServiceInfo() throws NotFoundException {
         MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getAreaVersion());
 
         if (malArea == null) {
@@ -420,16 +416,25 @@ public class MALMessageHeader {
                     + this.getServiceArea() + ", " + this.getAreaVersion() + ")"));
         }
 
-        ServiceInfo malService = malArea.getServiceByNumber(this.getService());
+        ServiceInfo serviceInfo = malArea.getServiceByNumber(this.getService());
 
-        if (malService == null) {
+        if (serviceInfo == null) {
             throw new NotFoundException(new UnsupportedServiceException(
                     "Service for unknown area/version/service received ("
                     + this.getServiceArea() + ", " + this.getAreaVersion()
                     + ", " + this.getService() + ")"));
         }
 
-        MALOperation op = malService.getOperationByNumber(this.getOperation());
+        return serviceInfo;
+    }
+
+    public MALOperation getMALOperation() throws NotFoundException {
+        if (malOperation != null) {
+            return malOperation;
+        }
+
+        ServiceInfo serviceInfo = this.getServiceInfo();
+        MALOperation op = serviceInfo.getOperationByNumber(this.getOperation());
 
         if (op == null) {
             throw new NotFoundException(new UnsupportedOperationException(

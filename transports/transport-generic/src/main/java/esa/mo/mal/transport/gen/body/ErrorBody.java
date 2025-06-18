@@ -20,8 +20,12 @@
  */
 package esa.mo.mal.transport.gen.body;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.NotFoundException;
+import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -67,6 +71,17 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
         decodeMessageBody();
         UInteger errorNumber = (UInteger) messageParts[0];
         Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
+        try {
+            ServiceInfo serviceInfo = ctx.getHeader().getServiceInfo();
+            MOErrorException newMOError = serviceInfo.generateMOError((int) errorNumber.getValue(), extraInfo);
+
+            if(newMOError != null) {
+                return newMOError;
+            }
+        } catch (NotFoundException ex) {
+            Logger.getLogger(ErrorBody.class.getName()).log(Level.SEVERE,
+                    "The serviceInfo for this message was not found!", ex);
+        }
         return new MOErrorException(errorNumber, extraInfo);
     }
 }

@@ -135,6 +135,11 @@ public class TypeId {
         return serviceNumber;
     }
 
+    /**
+     * Returns true if this TypeId is from the old MAL, otherwise false.
+     *
+     * @return True if this TypeId is from the old MAL, otherwise false.
+     */
     public boolean isOldMAL() {
         return (areaNumber == 1 && areaVersion < 3);
     }

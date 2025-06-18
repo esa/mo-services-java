@@ -34,6 +34,7 @@ import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.CompositeType;
 import esa.mo.xsd.EnumerationType;
+import esa.mo.xsd.ErrorDefinitionType;
 import esa.mo.xsd.ExtendedServiceType;
 import esa.mo.xsd.MessageBodyType;
 import esa.mo.xsd.ModelObjectType;
@@ -72,13 +73,10 @@ public class JavaServiceInfo {
         file.addPackageStatement(area.getName(), service.getName(), null);
 
         // Appends the class name
-        if (service instanceof ExtendedServiceType) {
-            file.addClassOpenStatement(serviceName + SERVICE_INFO, false, false, "org.ccsds.moims.mo.com.COMService",
-                    null, "Helper class for " + serviceName + " service.");
-        } else {
-            file.addClassOpenStatement(serviceName + SERVICE_INFO, false, false, "org.ccsds.moims.mo.mal.ServiceInfo",
-                    null, "Helper class for " + serviceName + " service.");
-        }
+        String serviceExtension = (service instanceof ExtendedServiceType) ? "com.COMService" : "mal.ServiceInfo";
+        file.addClassOpenStatement(serviceName + SERVICE_INFO, false,
+                false, "org.ccsds.moims.mo." + serviceExtension,
+                null, "Helper class for " + serviceName + " service.");
 
         // COM service should not have its operations generated, these are generated as part of the specific services
         CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceCAPS + "_SERVICE_NUMBER",
@@ -259,9 +257,36 @@ public class JavaServiceInfo {
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALArea", false),
                 false, true, null);
         MethodWriter method = file.addMethodOpenStatementOverride(opType, "getArea", null, null);
-
         method.addLine("return " + namespace + ";");
         method.addMethodCloseStatement();
+
+        // Add the MOErrorException generateMOError() method
+        CompositeField opTypeMOError = generator.createCompositeElementsDetails(file, false, "return",
+                TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MOErrorException", false),
+                false, true, null);
+
+        List<CompositeField> outputArgs = new LinkedList<>();
+        TypeReference ref1 = TypeUtils.createTypeReference(null, null, "int", false);
+        outputArgs.add(generator.createCompositeElementsDetails(file, true, "errorNumber", ref1, true, true, null));
+        TypeReference ref2 = TypeUtils.createTypeReference(null, null, "Object", false);
+        outputArgs.add(generator.createCompositeElementsDetails(file, true, "extraInfo", ref2, true, true, null));
+
+        // Generate the MO Error method generator
+        MethodWriter method2 = file.addMethodOpenStatementOverride(opTypeMOError, "generateMOError", outputArgs, null);
+        method2.addLine("switch (errorNumber) {");
+
+        if (area.getErrors() != null) {
+            for (ErrorDefinitionType error : area.getErrors().getError()) {
+                String classname = JavaExceptions.convertErrorToClassname(error.getName());
+                method.addLine("    case " + error.getNumber() + ":");
+                String fullClassname = area.getName().toLowerCase() + "." + classname;
+                method.addLine("        return new org.ccsds.moims.mo." + fullClassname + "(extraInfo);");
+            }
+        }
+
+        method2.addLine("}");
+        method2.addLine("return null;");
+        method2.addMethodCloseStatement();
 
         file.addClassCloseStatement();
         file.flush();
