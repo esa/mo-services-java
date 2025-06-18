@@ -585,7 +585,7 @@ public abstract class Transport<I, O> implements MALTransport {
                             srcHdr.getServiceArea(),
                             srcHdr.getService(),
                             srcHdr.getOperation(),
-                            srcHdr.getServiceVersion(),
+                            srcHdr.getAreaVersion(),
                             true,
                             srcHdr.getSupplements(),
                             qosProperties,

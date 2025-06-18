@@ -23,6 +23,8 @@ package org.ccsds.moims.mo.mal;
 import java.io.Serializable;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 /**
@@ -77,6 +79,19 @@ public class MOErrorException extends Exception implements Serializable, MALErro
         return extraInformation;
     }
 
+    /**
+     * Downcasts a generic MO Error into a specific MO Error for a certain area
+     * and version.
+     *
+     * @param area The area of the specific MO Error.
+     * @param areaVersion The area version of the specific MO Error.
+     * @return The specific MO Error.
+     */
+    public MOErrorException downcastError(UShort area, UOctet areaVersion) {
+        // The code to downcast the MO Error still needs to be impelemented!
+        return this;
+    }
+
     @Override
     public MOErrorException getError() throws MALException {
         return this;
@@ -101,4 +116,5 @@ public class MOErrorException extends Exception implements Serializable, MALErro
         buf.append("\")");
         return buf.toString();
     }
+
 }

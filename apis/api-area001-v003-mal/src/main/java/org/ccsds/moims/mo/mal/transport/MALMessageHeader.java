@@ -257,6 +257,17 @@ public class MALMessageHeader {
      *
      * @return the area version.
      */
+    public UOctet getAreaVersion() {
+        return areaVersion;
+    }
+
+    /**
+     * Returns the area version. Deprecated because the "Service Version" was
+     * reversed back to "Area Version".
+     *
+     * @return the area version.
+     */
+    @Deprecated
     public UOctet getServiceVersion() {
         return areaVersion;
     }
@@ -401,12 +412,12 @@ public class MALMessageHeader {
             return malOperation;
         }
 
-        MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getServiceVersion());
+        MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getAreaVersion());
 
         if (malArea == null) {
             throw new NotFoundException(new UnsupportedAreaException(
                     "Operation for unknown area/version received ("
-                    + this.getServiceArea() + ", " + this.getServiceVersion() + ")"));
+                    + this.getServiceArea() + ", " + this.getAreaVersion() + ")"));
         }
 
         ServiceInfo malService = malArea.getServiceByNumber(this.getService());
@@ -414,7 +425,7 @@ public class MALMessageHeader {
         if (malService == null) {
             throw new NotFoundException(new UnsupportedServiceException(
                     "Service for unknown area/version/service received ("
-                    + this.getServiceArea() + ", " + this.getServiceVersion()
+                    + this.getServiceArea() + ", " + this.getAreaVersion()
                     + ", " + this.getService() + ")"));
         }
 
@@ -423,7 +434,7 @@ public class MALMessageHeader {
         if (op == null) {
             throw new NotFoundException(new UnsupportedOperationException(
                     "Operation for unknown area/version/service/op received ("
-                    + this.getServiceArea() + ", " + this.getServiceVersion() + ", "
+                    + this.getServiceArea() + ", " + this.getAreaVersion() + ", "
                     + this.getService() + ", " + this.getOperation() + ")"));
         }
 

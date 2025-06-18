@@ -493,7 +493,7 @@ public class MALSender {
                     srcHdr.getServiceArea(),
                     srcHdr.getService(),
                     srcHdr.getOperation(),
-                    srcHdr.getServiceVersion(),
+                    srcHdr.getAreaVersion(),
                     false,
                     srcHdr.getSupplements(),
                     qosProperties,
@@ -615,9 +615,16 @@ public class MALSender {
                 if (rtn.getBody() instanceof MALErrorBody) {
                     MALErrorBody errorBody = (MALErrorBody) rtn.getBody();
                     MOErrorException error = errorBody.getError();
+
+                    // We need to downcast the error to a specific MO Error within the Area
+                    MALMessageHeader header = rtn.getHeader();
+                    UShort area = header.getServiceArea();
+                    UOctet version = header.getAreaVersion();
+                    MOErrorException specificError = error.downcastError(area, version);
+
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                            "The provider returned an MO Error: {0}", error.toString());
-                    throw new MALInteractionException(error);
+                            "The provider returned an MO Error: {0}", specificError.toString());
+                    throw new MALInteractionException(specificError);
                 }
 
                 throw new MALInteractionException(new BadEncodingException(
@@ -668,7 +675,7 @@ public class MALSender {
                     srcHdr.getServiceArea(),
                     srcHdr.getService(),
                     srcHdr.getOperation(),
-                    srcHdr.getServiceVersion(),
+                    srcHdr.getAreaVersion(),
                     true,
                     srcHdr.getSupplements(),
                     new HashMap(),
