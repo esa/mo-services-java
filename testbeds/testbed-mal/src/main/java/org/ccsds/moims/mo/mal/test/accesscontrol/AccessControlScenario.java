@@ -80,7 +80,7 @@ public class AccessControlScenario extends LoggingBase {
         TestAccessControlFactory.managerInstance().switchOnAuthenticationModifications(true);
     }
 
-    public void resetMessageCount() {
+    public synchronized void resetMessageCount() {
         TestAccessControlFactory.managerInstance().resetMessageCount();
     }
 
@@ -216,54 +216,31 @@ public class AccessControlScenario extends LoggingBase {
         private boolean receivedCompletion = false;
 
         @Override
-        public void invokeResponseErrorReceived(MALMessageHeader msgHeader,
+        public synchronized void invokeResponseErrorReceived(MALMessageHeader msgHeader,
                 MOErrorException error, Map qosProperties) {
             cond.set();
         }
 
         @Override
-        public void invokeResponseReceived(MALMessageHeader msgHeader,
+        public synchronized void invokeResponseReceived(MALMessageHeader msgHeader,
                 String bodyElement1, Map qosProperties) {
             receivedCompletion = true;
             cond.set();
         }
 
         @Override
-        public void progressResponseErrorReceived(MALMessageHeader msgHeader,
+        public synchronized void progressResponseErrorReceived(MALMessageHeader msgHeader,
                 MOErrorException error, Map qosProperties) {
             cond.set();
         }
 
         @Override
-        public void progressResponseReceived(MALMessageHeader msgHeader,
+        public synchronized void progressResponseReceived(MALMessageHeader msgHeader,
                 String bodyElement1, Map qosProperties) {
             receivedCompletion = true;
             cond.set();
         }
 
-        /*
-    public void invokeErrorReceived(MessageHeader msgHeader, StandardError error)
-    {
-      cond.set();
-    }
-
-    public void invokeResponseReceived(MessageHeader msgHeader, String _String)
-    {
-      receivedCompletion = true;
-      cond.set();
-    }
-
-    public void progressErrorReceived(MessageHeader msgHeader, StandardError error)
-    {
-      cond.set();
-    }
-
-    public void progressResponseReceived(MessageHeader msgHeader, String result)
-    {
-      receivedCompletion = true;
-      cond.set();
-    }
-         */
         public synchronized boolean receivedCompletion() {
             return receivedCompletion;
         }
