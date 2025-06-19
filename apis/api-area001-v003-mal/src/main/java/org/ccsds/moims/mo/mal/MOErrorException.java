@@ -30,21 +30,24 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
  */
 public class MOErrorException extends Exception implements Serializable, MALErrorBody {
 
-    private final UInteger errorNumber;
-    private final Object extraInformation;
     private static final long serialVersionUID = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER + 100;
 
+    private final String errorName;
+    private final UInteger errorNumber;
+    private final Object extraInformation;
+
     /**
-     * Creates a standard error object with the supplied error number and extra
-     * information.
+     * Creates a standard error object with the supplied error name, error
+     * number and extra information.
      *
+     * @param errorName The name of the MO Error.
      * @param errorNumber The MAL error number, must not be null.
      * @param extraInformation Any associated extra information, may be null.
      * @throws java.lang.IllegalArgumentException Thrown if supplied error
      * number is null.
      */
-    public MOErrorException(final UInteger errorNumber, final Object extraInformation)
-            throws java.lang.IllegalArgumentException {
+    public MOErrorException(final String errorName, final UInteger errorNumber,
+            final Object extraInformation) throws IllegalArgumentException {
         super();
 
         if (errorNumber == null) {
@@ -56,7 +59,24 @@ public class MOErrorException extends Exception implements Serializable, MALErro
         }
 
         this.errorNumber = errorNumber;
+        this.errorName = errorName;
         this.extraInformation = extraInformation;
+    }
+
+    /**
+     * Creates a standard error object with the supplied error number and extra
+     * information. Deprecated because the constructor with the errorName field
+     * shall be used in the future.
+     *
+     * @param errorNumber The MAL error number, must not be null.
+     * @param extraInformation Any associated extra information, may be null.
+     * @throws java.lang.IllegalArgumentException Thrown if supplied error
+     * number is null.
+     */
+    @Deprecated
+    public MOErrorException(final UInteger errorNumber,
+            final Object extraInformation) throws IllegalArgumentException {
+        this("????", errorNumber, extraInformation);
     }
 
     /**
@@ -96,7 +116,8 @@ public class MOErrorException extends Exception implements Serializable, MALErro
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         buf.append("(");
-        buf.append("errorNumber=").append(errorNumber);
+        buf.append("errorName=\"").append(errorName);
+        buf.append("\", errorNumber=").append(errorNumber);
         buf.append(", extraInformation=\"").append(extraInformation);
         buf.append("\")");
         return buf.toString();

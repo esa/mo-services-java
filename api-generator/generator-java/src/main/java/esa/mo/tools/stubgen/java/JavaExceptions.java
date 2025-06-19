@@ -74,7 +74,8 @@ public class JavaExceptions {
 
     public void generateException(File folder, String area,
             String service, ErrorDefinitionType error) throws IOException {
-        String className = convertErrorToClassname(error.getName());
+        String errorName = error.getName();
+        String className = convertErrorToClassname(errorName);
         ClassWriter file = generator.createClassFile(folder, className);
         file.addPackageStatement(area, service, null);
 
@@ -88,14 +89,18 @@ public class JavaExceptions {
             errorDescription = "\"" + error.getExtraInformation().getComment() + "\"";
         }
 
+        // Add the variables here:
+        file.addStatement("    private static final String MO_ERROR_NAME = \"" + errorName + "\";");
+        file.addStatement("");
+
         // Construct path to Error in the Helper
-        String errorNameCaps = convertToUppercaseWithUnderscores(error.getName());
+        String errorNameCaps = convertToUppercaseWithUnderscores(errorName);
         String errorPath = area + "Helper." + errorNameCaps + "_ERROR_NUMBER";
 
         // Constructor without parameters
         MethodWriter method_1 = file.addConstructor(StdStrings.PUBLIC, className,
                 null, null, null, "Constructs a new " + className + " exception.", null);
-        method_1.addLine("super(" + errorPath + ", " + errorDescription + ");");
+        method_1.addLine("super(MO_ERROR_NAME, " + errorPath + ", " + errorDescription + ");");
         method_1.addMethodCloseStatement();
 
         // Constructor with an Object for the extraInformation
@@ -107,7 +112,7 @@ public class JavaExceptions {
 
         MethodWriter method_2 = file.addConstructor(StdStrings.PUBLIC, className,
                 args, null, null, "Constructs a new " + className + " exception.", null);
-        method_2.addLine("super(" + errorPath + ", " + "extraInformation);");
+        method_2.addLine("super(MO_ERROR_NAME, " + errorPath + ", " + "extraInformation);");
         method_2.addMethodCloseStatement();
 
         file.addClassCloseStatement();
