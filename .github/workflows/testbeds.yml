@@ -231,7 +231,7 @@ jobs:
           name: testbed-mal-jdk8-report
           path: testbeds/testbed-mal/target/surefire-reports/
 
-  testbed-mal-jdk11:
+  testbed-mal-jdk11-rmi:
     needs: build-testbeds-jdk11
     runs-on: ubuntu-latest
     steps:
@@ -257,7 +257,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testbed-mal-jdk11-report
+          name: testbed-mal-jdk11-report-rmi
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk11-tcpip:
