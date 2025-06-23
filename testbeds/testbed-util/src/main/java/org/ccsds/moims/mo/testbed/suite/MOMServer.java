@@ -29,7 +29,6 @@ package org.ccsds.moims.mo.testbed.suite;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Properties;
-
 import org.ccsds.moims.mo.testbed.util.Configuration;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.testbed.util.RemoteProcessRunner;
@@ -72,9 +71,7 @@ public class MOMServer {
                     startClass, System.getProperty(SERVER_START_ARGS));
 
             String res = waitServerStarting(momServerProcess);
-
             LoggingBase.logMessage("MOM started: " + res);
-
             closeServerStream(momServerProcess);
 
             try {
@@ -148,7 +145,8 @@ public class MOMServer {
 
             int x = 1;
             String prop;
-            while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX + Configuration.getOSname() + "." + String.valueOf(x++)))) {
+            while (null != (prop = System.getProperty(Configuration.REMOTE_CMD_PROPERTY_PREFIX
+                    + Configuration.getOSname() + "." + String.valueOf(x++)))) {
                 command.append(prop);
                 command.append(' ');
             }
