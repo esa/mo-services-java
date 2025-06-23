@@ -21,7 +21,8 @@
 package org.ccsds.moims.mo.mal.test.accesscontrol;
 
 import java.util.Map;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
@@ -65,7 +66,7 @@ public class AccessControlScenario extends LoggingBase {
             throw new StopTest("Test Security Manager has not been created therefore test cannot continue!");
         }
 
-        ipTestConsumer = LocalMALInstance.instance().ipTestStub(AUTHENTICATION_ID, DOMAIN, 
+        ipTestConsumer = LocalMALInstance.instance().ipTestStub(AUTHENTICATION_ID, DOMAIN,
                 NETWORK_ZONE, SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), false);
         ipTestStub = ipTestConsumer.getStub();
 
@@ -106,6 +107,11 @@ public class AccessControlScenario extends LoggingBase {
     }
 
     public boolean anInvokeInteractionCompletes() throws MALInteractionException, MALException {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AccessControlScenario.class.getName()).log(Level.SEVERE, null, ex);
+        }
         MonitorListener monitor = new MonitorListener();
 
         TransportInterceptor.instance().resetTransmitCount(InteractionType.INVOKE);
@@ -121,7 +127,8 @@ public class AccessControlScenario extends LoggingBase {
 
         boolean result = monitor.receivedCompletion();
 
-        logMessage("anInvokeInteractionCompletes: monitor received message (" + retVal + ") and good invoke message returned (" + result + ")");
+        logMessage("anInvokeInteractionCompletes: monitor received message ("
+                + retVal + ") and good invoke message returned (" + result + ")");
 
         return retVal && result;
     }
