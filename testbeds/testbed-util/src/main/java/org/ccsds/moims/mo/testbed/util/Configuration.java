@@ -56,7 +56,7 @@ public abstract class Configuration {
     public static final int PERIOD = 100; // in ms - The code will wait on this PERIOD: ~630 times !
     public static final int MAL_PERIOD_SHORT = 40;
     public static final int MAL_PERIOD_LONG = 100;
-    public static final int COM_PERIOD_SHORT = 100; // in ms
+    public static final int COM_PERIOD_SHORT = 20; // in ms
     public static final int COM_PERIOD_LONG = 500; // in ms
 
     public static final Blob DEFAULT_SHARED_BROKER_AUTHENTICATION_ID = new Blob(new byte[]{0x02, 0x01});
