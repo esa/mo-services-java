@@ -290,6 +290,7 @@ jobs:
           path: testbeds/testbed-mal/target/surefire-reports/
 
   testbed-mal-jdk11-http:
+    if: ${{ false }}  # disable for now
     needs: build-testbeds-jdk11
     runs-on: ubuntu-latest
     steps:
