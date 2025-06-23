@@ -49,7 +49,6 @@ public class HTTPXMLElementInputTest {
 
   @Test
   public void testDecodeRegisterMessage() throws MALException {
-
     String testXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
       + "<malxml:Body xmlns:malxml=\"http://www.ccsds.org/schema/malxml/MAL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
         + "<Subscription malxml:type=\"" + Subscription.TYPE_ID.getTypeId() + "\">"
