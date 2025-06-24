@@ -1244,6 +1244,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             addGetter(file, argType, null);
             addSetter(file, argType, null);
         }
+
+        /*
         // add deprecated getters and setters
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
@@ -1251,6 +1253,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             //addGetter(file, argType, "BodyElement" + i);
             //addSetter(file, argType, "BodyElement" + i);
         }
+        */
 
         file.addClassCloseStatement();
         file.flush();

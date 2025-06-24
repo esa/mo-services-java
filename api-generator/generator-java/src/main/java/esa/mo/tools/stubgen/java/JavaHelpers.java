@@ -82,7 +82,7 @@ public class JavaHelpers {
                 TypeUtils.createTypeReference(area, service.getName(), serviceName + JavaServiceInfo.SERVICE_INFO, false),
                 false, true, "Service singleton instance.");
 
-        file.addClassVariable(true, false, StdStrings.PUBLIC, serviceInstVar, true, "()");
+        file.addClassVariable(true, true, StdStrings.PUBLIC, serviceInstVar, true, "()");
         file.addClassCloseStatement();
         file.flush();
     }
@@ -178,11 +178,6 @@ public class JavaHelpers {
             String helperType = generator.createElementType(area.getName(),
                     service.getName(), null, service.getName() + "Helper");
             String ns = generator.convertToNamespace(helperType) + "." + service.getName().toUpperCase() + "_SERVICE";
-//            String helperType = generator.createElementType(file, area.getName(), service.getName(), null, service.getName() + "ServiceInfo()");
-//            String ns = "new " + generator.convertToNamespace(helperType);
-
-//            String name = service.getName().toLowerCase() + "."
-//                    + service.getName().toLowerCase() + "." + service.getName().toUpperCase() + "_SERVICE";
             buf_2.append("\n        ").append(ns).append(",");
         }
         CompositeField areaServices = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_SERVICES",
@@ -192,7 +187,7 @@ public class JavaHelpers {
                 false, true, buf_2.toString(), false);
 
         String areaObjectInitialValue = createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
-        file.addClassVariable(true, false, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
+        file.addClassVariable(true, true, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
         // create error numbers
         if ((area.getErrors() != null) && !area.getErrors().getError().isEmpty()) {
