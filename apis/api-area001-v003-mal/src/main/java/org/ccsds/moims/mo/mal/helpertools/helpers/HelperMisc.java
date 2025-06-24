@@ -241,7 +241,7 @@ public class HelperMisc {
                 } else {
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file provider.properties does not exist on the "
-                            + "path: {0}.\nIs the application working directory "
+                            + "path: {0}\nIs the application working directory "
                             + "configured properly?", providerFile);
                 }
             }
@@ -257,7 +257,7 @@ public class HelperMisc {
                     /*
                     Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                             "The file settings.properties does not exist on the "
-                            + "path: {0}. Is the application working directory "
+                            + "path: {0}\nIs the application working directory "
                             + "configured properly?", settingsFile);
                      */
                 }
@@ -276,7 +276,7 @@ public class HelperMisc {
             } else {
                 Logger.getLogger(HelperMisc.class.getName()).log(Level.WARNING,
                         "The file transport.properties does not exist on the "
-                        + "path: {0}.\nIs the application working directory "
+                        + "path: {0}\nIs the application working directory "
                         + "configured properly?"
                         + " The App will fallback to the default TCP/IP Transport!", transport_file_path);
                 sysProps.putAll(getTransportDefaults());
