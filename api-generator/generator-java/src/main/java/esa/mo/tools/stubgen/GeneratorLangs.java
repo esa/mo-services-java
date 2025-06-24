@@ -894,7 +894,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             // SetSkeleton method
             CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
                     TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
-                    false, true, "Not used in the inheritance pattern (the skeleton is 'this'");
+                    false, true, "The skeleton (not used)");
             MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                     false, true, null, "setSkeleton", Arrays.asList(skeletonName), null,
                     "Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.",
@@ -954,7 +954,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
 
         String operationNumberGetter = createProviderSkeletonHandlerSwitch();
-        method.addLine("int opNumber = " + operationNumberGetter + ";");
+        method.addLine("int opNumber = " + operationNumberGetter);
         method.addLine("switch (opNumber) {");
 
         //String msg = "Unknown operation number: \" + opNumber + \" - className: " + className + " - method: ";
