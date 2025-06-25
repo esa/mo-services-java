@@ -97,7 +97,7 @@ public class JavaServiceInfo {
         CompositeField serviceKeyType = generator.createCompositeElementsDetails(file, false, "SERVICE_KEY",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.ServiceKey", false),
                 false, false, "The service key of this service.");
-        String args = "\n            " + area.getNumber() + "," + area.getVersion() + "," + serviceCAPS + "_SERVICE_NUMBER";
+        String args = "\n            " + area.getNumber() + ", " + area.getVersion() + ", " + serviceCAPS + "_SERVICE_NUMBER";
         file.addClassVariableNewInit(true, true, StdStrings.PRIVATE, serviceKeyType, false,
                 false, "new org.ccsds.moims.mo.mal.ServiceKey(" + args + ")", false);
 
