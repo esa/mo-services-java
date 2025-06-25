@@ -325,7 +325,6 @@ public class HelperMisc {
         }
 
         System.setProperties(sysProps);
-
     }
 
     private static Properties getTransportDefaults() {
