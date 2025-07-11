@@ -73,7 +73,7 @@
                 </mal:requestIP>
             </mal:capabilitySet>
             <mal:capabilitySet number="2" comment="">
-                <mal:progressIP name="getProducts" number="2" comment="The getProduct operation retrieves the selected mission data products from the provider.">
+                <mal:progressIP name="getProducts" number="2" comment="The getProducts operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
 						A consumer shall send the list of product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
                     </mal:documentation>
