@@ -479,7 +479,7 @@
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="ProductFilter" shortFormPart="105" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters, then all products of the specified type pass the filter.
+            <mal:composite name="ProductFilter" shortFormPart="105" comment="The ProductFilter is used in the context of standing orders and service operations requesting a filtered list of available products. It specifies a filter in terms of productType, domain, sources and metadata attribute values. To pass the filter, the product must satisfy all criteria specified: the productType, the domain, one of any listed source objects and all specified metadata attribute filters. If no filter is specified for source or attribute filters, then all products of the specified type pass the filter.
 A ProductFilter relates to a specific ProductType. Note that the domain filter relates to the domain of the product. The domain of a generic product type (for example an orbit file) may be defined at agency level to avoid the need to define new types for each mission, but the generated product will be associated with a specific mission domain.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
