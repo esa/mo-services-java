@@ -401,7 +401,7 @@
                 </mal:field>
             </mal:composite>
 
-            <mal:composite name="StandingOrder" shortFormPart="201" comment="A StandingOrder is a data structure that holds the details of a standing order. This includes the orderId, the user who owns the product order, the product filter, how the products are to be delivered, the target URI where to deliver the files, and additional comments.">
+            <mal:composite name="StandingOrder" shortFormPart="201" comment="A StandingOrder is a data structure that holds the details of a standing order. This includes the orderID, the user who owns the product order, the product filter, how the products are to be delivered, the target URI where to deliver the files, and additional comments.">
                 <mal:extends>
                     <mal:type area="MAL" list="false" name="Composite"/>
                 </mal:extends>
