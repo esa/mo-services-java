@@ -1,4 +1,4 @@
-package esa.mo.helpertools.test.connections;
+package org.ccsds.moims.mo.mal.helpertools.connections;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;

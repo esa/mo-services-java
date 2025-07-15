@@ -1,4 +1,4 @@
-package esa.mo.helpertools.test.helpers;
+package org.ccsds.moims.mo.mal.helpertools.helpers;
 
 import java.io.File;
 import java.io.IOException;
