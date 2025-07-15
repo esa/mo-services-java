@@ -23,10 +23,12 @@ package esa.mo.mal.encoder.binary;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mal.structures.Time;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -84,5 +86,53 @@ public abstract class EncoderDecoderTest {
         assertEquals("StringList.get(0)", list.get(0), readList.get(0));
         assertEquals("StringList.get(1)", list.get(1), readList.get(1));
         assertEquals("StringList.get(2)", list.get(2), readList.get(2));
+    }
+
+    @Test
+    public void testEncodeDecodeTime2010() throws Exception {
+        System.out.println("Running: testEncodeDecodeTime2010()");
+        Time date = new Time("2010-01-01T09:13:51.352Z");
+
+        Time readTime = (Time) encodeThenDecode(date, null);
+
+        // Assertions:
+        assertNotNull(readTime);
+        assertEquals("Time", date.getValue(), readTime.getValue());
+    }
+
+    @Test
+    public void testEncodeDecodeTime2099() throws Exception {
+        System.out.println("Running: testEncodeDecodeTime2099()");
+        Time date = new Time("2099-12-31T09:13:51.352Z");
+
+        Time readTime = (Time) encodeThenDecode(date, null);
+
+        // Assertions:
+        assertNotNull(readTime);
+        assertEquals("Time", date.getValue(), readTime.getValue());
+    }
+
+    @Test
+    public void testEncodeDecodeFineTime2010() throws Exception {
+        System.out.println("Running: testEncodeDecodeFineTime2010()");
+        FineTime date = new FineTime("2010-01-01T09:13:51.352Z");
+
+        FineTime readTime = (FineTime) encodeThenDecode(date, null);
+
+        // Assertions:
+        assertNotNull(readTime);
+        assertEquals("FineTime", date.getValue(), readTime.getValue());
+    }
+
+    @Test
+    public void testEncodeDecodeFineTime2099() throws Exception {
+        System.out.println("Running: testEncodeDecodeFineTime2099()");
+        FineTime date = new FineTime("2099-12-31T09:13:51.352Z");
+
+        FineTime readTime = (FineTime) encodeThenDecode(date, null);
+
+        // Assertions:
+        assertNotNull(readTime);
+        assertEquals("FineTime", date.getValue(), readTime.getValue());
     }
 }
