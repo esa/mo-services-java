@@ -64,9 +64,9 @@ public class FixedEncoderDecoderTest extends EncoderDecoderTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MALElementOutputStream malWriter = factory.createOutputStream(baos);
         malWriter.writeElement(element, field);
+        byte[] encodedData = baos.toByteArray();
 
         // Decode
-        byte[] encodedData = baos.toByteArray();
         ByteArrayInputStream bais = new ByteArrayInputStream(encodedData);
         MALElementInputStream malReader = factory.createInputStream(bais);
         return malReader.readElement(element.createElement(), field);
