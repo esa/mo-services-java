@@ -1,3 +1,5 @@
+package esa.mo.mal.encoder.binary;
+
 /* ----------------------------------------------------------------------------
  * Copyright (C) 2017      European Space Agency
  *                         European Space Operations Centre
