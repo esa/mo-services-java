@@ -1,7 +1,5 @@
-package esa.mo.mal.encoder.binary.fixed;
-
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2024      European Space Agency
+ * Copyright (C) 20245      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -20,6 +18,8 @@ package esa.mo.mal.encoder.binary.fixed;
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
+package esa.mo.mal.encoder.binary.fixed;
+
 import esa.mo.mal.encoder.binary.EncoderDecoderTest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -66,7 +66,8 @@ public class FixedEncoderDecoderTest extends EncoderDecoderTest {
         malWriter.writeElement(element, field);
 
         // Decode
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        byte[] encodedData = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(encodedData);
         MALElementInputStream malReader = factory.createInputStream(bais);
         return malReader.readElement(element.createElement(), field);
     }

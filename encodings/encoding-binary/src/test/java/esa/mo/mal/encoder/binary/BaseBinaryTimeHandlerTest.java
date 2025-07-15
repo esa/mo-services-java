@@ -1,5 +1,3 @@
-package esa.mo.mal.encoder.binary;
-
 /* ----------------------------------------------------------------------------
  * Copyright (C) 2017      European Space Agency
  *                         European Space Operations Centre
@@ -20,6 +18,8 @@ package esa.mo.mal.encoder.binary;
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
+package esa.mo.mal.encoder.binary;
+
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryDecoder;

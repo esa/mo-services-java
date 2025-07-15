@@ -1,5 +1,3 @@
-package esa.mo.mal.encoder.binary;
-
 /* ----------------------------------------------------------------------------
  * Copyright (C) 2024      European Space Agency
  *                         European Space Operations Centre
@@ -20,6 +18,8 @@ package esa.mo.mal.encoder.binary;
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
+package esa.mo.mal.encoder.binary;
+
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
