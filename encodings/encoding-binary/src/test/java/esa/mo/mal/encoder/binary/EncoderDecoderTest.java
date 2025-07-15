@@ -20,7 +20,6 @@ package esa.mo.mal.encoder.binary;
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.OperationField;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -38,7 +37,7 @@ import org.junit.Test;
 public abstract class EncoderDecoderTest {
 
     public abstract Element encodeThenDecode(Element element, OperationField field) throws MALException;
-    
+
     /**
      * Simple test for encoding decoding a list of NullableAttributeList.
      *
@@ -46,6 +45,7 @@ public abstract class EncoderDecoderTest {
      */
     @Test
     public void testEncodeDecodeNullableAttributeList() throws Exception {
+        System.out.println("Running: testEncodeDecodeNullableAttributeList()");
         NullableAttributeList list = new NullableAttributeList();
         list.add(new NullableAttribute(new Identifier("String A")));
         list.add(new NullableAttribute(new Identifier("String B")));
@@ -70,6 +70,7 @@ public abstract class EncoderDecoderTest {
      */
     @Test
     public void testEncodeDecodeStringList() throws Exception {
+        System.out.println("Running: testEncodeDecodeStringList()");
         StringList list = new StringList();
         list.add("String A");
         list.add("String B");

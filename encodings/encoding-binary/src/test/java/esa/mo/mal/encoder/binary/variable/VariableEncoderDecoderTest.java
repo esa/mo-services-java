@@ -1,4 +1,4 @@
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder.binary.variable;
 
 /* ----------------------------------------------------------------------------
  * Copyright (C) 2024      European Space Agency
@@ -20,8 +20,7 @@ package esa.mo.mal.encoder.binary;
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-
-import esa.mo.mal.encoder.binary.fixed.FixedBinaryStreamFactory;
+import esa.mo.mal.encoder.binary.EncoderDecoderTest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.ccsds.moims.mo.mal.MALException;
@@ -37,9 +36,9 @@ import org.junit.BeforeClass;
 /**
  * Tests for Encoding and Decoding with FixedBinary
  */
-public class FixedEncoderDecoderTest extends EncoderDecoderTest {
+public class VariableEncoderDecoderTest extends EncoderDecoderTest {
 
-    public FixedEncoderDecoderTest() {
+    public VariableEncoderDecoderTest() {
     }
 
     @BeforeClass
@@ -61,7 +60,7 @@ public class FixedEncoderDecoderTest extends EncoderDecoderTest {
     @Override
     public Element encodeThenDecode(Element element, OperationField field) throws MALException {
         // Encode
-        FixedBinaryStreamFactory factory = new FixedBinaryStreamFactory();
+        VariableBinaryStreamFactory factory = new VariableBinaryStreamFactory();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MALElementOutputStream malWriter = factory.createOutputStream(baos);
         malWriter.writeElement(element, field);
