@@ -277,7 +277,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
         if (bookmark) {
             String linkTo = bookmarkSection + "_" + name;
-            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"_" + linkTo + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
+            buffer.append(makeLine(3, "<w:bookmarkStart w:id=\"1\" w:name=\"" + linkTo + "\"/><w:bookmarkEnd w:id=\"1\"/>"));
         }
         buffer.append(makeLine(3, "<w:r><w:t>" + section + name + "</w:t></w:r>"));
         buffer.append(makeLine(2, "</w:p>"));
@@ -471,7 +471,7 @@ public class DocxBaseWriter extends AbstractWriter {
 
         if (withHyperlink) {
             buf.append("<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r>");
-            buf.append("<w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"_");
+            buf.append("<w:r><w:instrText xml:space=\"preserve\"> HYPERLINK  \\l \"");
             buf.append(isObjectRef ? escape(objectRefRemoved) : escape(linkTo));
             buf.append("\" </w:instrText></w:r>");
             buf.append("<w:r><w:fldChar w:fldCharType=\"separate\"/></w:r>");
