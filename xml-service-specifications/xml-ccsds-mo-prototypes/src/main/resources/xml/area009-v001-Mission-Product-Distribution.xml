@@ -12,28 +12,28 @@
 
         <mal:service name="ProductRetrieval" number="1" comment="The Product Retrieval Service allows browsing and retrieval of existing products.">
             <mal:documentation name="Service-level Requirements" order="1">
-				The Product Retrieval service provider may provide the capability to list mission data products, to get mission data products, and/or to remotely deliver mission data products as files.
+                The Product Retrieval service provider may provide the capability to list mission data products, to get mission data products, and/or to remotely deliver mission data products as files.
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="2">
-				The operations of the Product Retrieval service shall uniquely reference the mission data products using ObjectRefs.
-				Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
+                The operations of the Product Retrieval service shall uniquely reference the mission data products using ObjectRefs.
+                Note: The product reference may be known through an out-of-band agreement or may have been determined through the listProducts operation.
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="3">
-				If a mission data product is remotely delivered as a file, then the filename of the file may be taken from the key field of the ObjectIdentity of the Product data structure.
+                If a mission data product is remotely delivered as a file, then the filename of the file may be taken from the key field of the ObjectIdentity of the Product data structure.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listProducts" number="1" comment="The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.">
-					<mal:documentation name="Requirement" order="1">
-						A consumer shall specify the productFilter, and optionally, the time windows for the creationDate and the contentDate of the products intended to be listed.
-					</mal:documentation>
+                    <mal:documentation name="Requirement" order="1">
+                        A consumer shall specify the productFilter, and optionally, the time windows for the creationDate and the contentDate of the products intended to be listed.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall select the products based on the values defined inside the productFilter. The ProductFilter structure specifies the conditions for each of the fields.
+                        The service provider shall select the products based on the values defined inside the productFilter. The ProductFilter structure specifies the conditions for each of the fields.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
+                        If the creationDate is NULL, then the service provider shall not filter the products based on the creationDate.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						If the contentDate is NULL, then the service provider shall not filter the products based on the contentDate.
+                        If the contentDate is NULL, then the service provider shall not filter the products based on the contentDate.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
                         The service provider shall return a list of metadata entries for the products that satisfy all the specified individual criteria defined by the product filter, the creation date, and the content creation date.
@@ -75,16 +75,16 @@
             <mal:capabilitySet number="2" comment="">
                 <mal:progressIP name="getProducts" number="2" comment="The getProducts operation retrieves the selected mission data products from the provider.">
                     <mal:documentation name="Requirement" order="1">
-						A consumer shall send the list of product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
+                        A consumer shall send the list of product references (as ObjectRefs) to the service provider of the products intended to be retrieved.
                     </mal:documentation>
-					<mal:documentation name="Requirement" order="2">
-						The provider shall send an Acknowledge message indicating that there are no unknown product references.
+                    <mal:documentation name="Requirement" order="2">
+                        The provider shall send an Acknowledge message indicating that there are no unknown product references.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						The service provider shall return each referenced product to the service consumer in a separate Update message.
+                        The service provider shall return each referenced product to the service consumer in a separate Update message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						The final Response message shall be empty, and it indicates to the consumer that all products have been returned.
+                        The final Response message shall be empty, and it indicates to the consumer that all products have been returned.
                     </mal:documentation>
                     <mal:messages>
                         <mal:progress>
@@ -114,20 +114,20 @@
             </mal:capabilitySet>
             <mal:capabilitySet number="3" comment="">
                 <mal:progressIP name="deliverProductFiles" number="3" comment="The deliverProductFiles operation allows consumers to instruct the provider to initiate a remote file transfer delivery of the selected mission data products to a specified target.">
-					<mal:documentation name="Requirement" order="1">
-						A consumer shall send a list of product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
-					</mal:documentation>
-					<mal:documentation name="Requirement" order="2">
-						The provider shall send an Acknowledge message indicating that there are no unknown product references and that the selected deliverTo URI is reachable.
+                    <mal:documentation name="Requirement" order="1">
+                        A consumer shall send a list of product references (as ObjectRefs) to the service provider of the products intended to be transferred and the delivery address as a URI.
                     </mal:documentation>
-					<mal:documentation name="Requirement" order="3">
-						The provider shall initiate the file transfer of the referenced mission data products to the selected deliverTo URI.
+                    <mal:documentation name="Requirement" order="2">
+                        The provider shall send an Acknowledge message indicating that there are no unknown product references and that the selected deliverTo URI is reachable.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="3">
+                        The provider shall initiate the file transfer of the referenced mission data products to the selected deliverTo URI.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata, the respective filename, and a success status reporting if the file was successfully transferred.
-					</mal:documentation>
-					<mal:documentation name="Requirement" order="5">
-						The final Response message shall be empty, and it indicates to the consumer that all products have been delivered.
+                        After each referenced product has been delivered by file transfer, a separate Update message shall be returned containing the product metadata, the respective filename, and a success status reporting if the file was successfully transferred.
+                    </mal:documentation>
+                    <mal:documentation name="Requirement" order="5">
+                        The final Response message shall be empty, and it indicates to the consumer that all products have been delivered.
                     </mal:documentation>
                     <mal:messages>
                         <mal:progress>
@@ -176,25 +176,25 @@
                 Each standing order shall specify how newly added mission data products are handled by the provider.
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="2">
-				Note: This standard deliberately does not specify how to handle network outages. This is expected to be handled either in an implementation-specific manner or by the use of a transport layer that ensures delivery (e.g. ZMQueue). Additionally, in case there are missing products, these can be retrieved using the getProducts operation.
+                Note: This standard deliberately does not specify how to handle network outages. This is expected to be handled either in an implementation-specific manner or by the use of a transport layer that ensures delivery (e.g. ZMQueue). Additionally, in case there are missing products, these can be retrieved using the getProducts operation.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:requestIP name="listStandingOrders" number="1" comment="The listStandingOrders operation lists the existing standing orders on the service provider for a given user and domain.">
                     <mal:documentation name="Requirement" order="1">
-						A consumer shall specify the user, and the domain, of the standing order intended to returned.
+                        A consumer shall specify the user, and the domain, of the standing order intended to returned.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						If the user is NULL, then the service provider shall not filter the standing orders based on the user.
+                        If the user is NULL, then the service provider shall not filter the standing orders based on the user.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						If the domain is NULL, then the service provider shall not filter the standing orders based on the domain of the product filter in the standing order.
+                        If the domain is NULL, then the service provider shall not filter the standing orders based on the domain of the product filter in the standing order.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						If the domain is not NULL, then the domain shall be compared against the domain of the product filter in the standing order.
+                        If the domain is not NULL, then the domain shall be compared against the domain of the product filter in the standing order.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
-						The response shall contain a list of standing orders that match the specified user and domain.
-						Note: Depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
+                        The response shall contain a list of standing orders that match the specified user and domain.
+                        Note: Depending on any mission-specific confidentiality policy, the list of standing orders may be restricted to those belonging to the user associated with the service consumer.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -212,23 +212,23 @@
                         </mal:response>
                     </mal:messages>
                 </mal:requestIP>
-			</mal:capabilitySet>
+            </mal:capabilitySet>
             <mal:capabilitySet number="2" comment="">
                 <mal:requestIP name="submitStandingOrder" number="2" comment="The submitStandingOrder operation creates a new standing order in the provider for delivery of mission data products.">
                     <mal:documentation name="Requirement" order="1">
-						The service provider shall ignore the received value in the orderID field of the orderDetails from the Request message.
+                        The service provider shall ignore the received value in the orderID field of the orderDetails from the Request message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall generate a new unique ID and assign it to the received standing order, then return it to the consumer in the Response message.
+                        The service provider shall generate a new unique ID and assign it to the received standing order, then return it to the consumer in the Response message.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						Following successful creation of a new standing order, the service provider shall initiate the delivery of products following the specified criteria in the standing order.
-                   </mal:documentation>
+                        Following successful creation of a new standing order, the service provider shall initiate the delivery of products following the specified criteria in the standing order.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						When the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
-                   </mal:documentation>
+                        When the end of the specified validity window is reached, the service provider shall cease delivery of products associated with the standing order.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
-						If the specified delivery method is by file transfer, then the delivery occurs outside the service interface. If the specified delivery method is by service, then the delivery is performed through the operations of the Product Delivery service.
+                        If the specified delivery method is by file transfer, then the delivery occurs outside the service interface. If the specified delivery method is by service, then the delivery is performed through the operations of the Product Delivery service.
                     </mal:documentation>
                     <mal:messages>
                         <mal:request>
@@ -259,11 +259,11 @@
                 </mal:requestIP>
                 <mal:submitIP name="cancelStandingOrder" number="3" comment="The cancelStandingOrder operation cancels an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
-						The service consumer shall send to the service provider, the orderID of the standing order intended to be cancelled.
-						Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation, the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
+                        The service consumer shall send to the service provider, the orderID of the standing order intended to be cancelled.
+                        Note: The authorization aspects of who is allowed to cancel which standing orders is not in the scope of this service specification, as this service specifies only the interface of a product distribution system. In a full system implementation, the authorization is either handled by the implementation of respective rules in the Access Control element of MAL or as part of the service provider software implementation.
                     </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The provider shall cancel the standing order associated with the submitted orderID.
+                        The provider shall cancel the standing order associated with the submitted orderID.
                     </mal:documentation>
                     <mal:messages>
                         <mal:submit>
@@ -291,28 +291,28 @@
                 If access control policies are implemented, then their configuration shall be specified on a case-by-case basis for each deployment.
             </mal:documentation>
             <mal:documentation name="Service-level Requirements" order="3">
-				If a mission data product is remotely delivered as a file, then the filename of the file may be taken from the key field of the ObjectIdentity of the Product data structure.
+                If a mission data product is remotely delivered as a file, then the filename of the file may be taken from the key field of the ObjectIdentity of the Product data structure.
             </mal:documentation>
             <mal:capabilitySet number="1" comment="">
                 <mal:pubsubIP name="notifyProductDelivery" number="1" comment="The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
-						Upon successful file transfer of a mission data product that is associated with a standing order, the service provider shall publish a delivery notification.
-					</mal:documentation>
+                        Upon successful file transfer of a mission data product that is associated with a standing order, the service provider shall publish a delivery notification.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall publish the delivery notification together with subscription keys corresponding to the associated user and orderID.
-					</mal:documentation>
+                        The service provider shall publish the delivery notification together with subscription keys corresponding to the associated user and orderID.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						A service consumer may subscribe to notifications for a specific user, or for all users with the use of the wildcard in the user field.
-					</mal:documentation>
+                        A service consumer may subscribe to notifications for a specific user, or for all users with the use of the wildcard in the user field.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						A service consumer may subscribe to notifications for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
-					</mal:documentation>
+                        A service consumer may subscribe to notifications for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="5">
-						If the delivery of a mission data product is not successful, then the respective success field of the Publish message shall be set to FALSE.
-					</mal:documentation>
+                        If the delivery of a mission data product is not successful, then the respective success field of the Publish message shall be set to FALSE.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="6">
-						The published message shall contain the metadata, filename, the mission data product's delivered location, and the status indicating if the delivery was successful.
-					</mal:documentation>
+                        The published message shall contain the metadata, filename, the mission data product's delivered location, and the status indicating if the delivery was successful.
+                    </mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
                             <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
@@ -342,18 +342,18 @@
             <mal:capabilitySet number="2" comment="">
                 <mal:pubsubIP name="deliverProducts" number="2" comment="The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.">
                     <mal:documentation name="Requirement" order="1">
-						Upon the creation (or availability) of a new mission data product that matches a certain standing order, the service provider shall publish this mission data product via the service interface.
-						Note: The operation will only send newly added products (equivalent behaviour to listenning to a radio channel). For previous products, the consumer can use the getProducts operation.
-					</mal:documentation>
+                        Upon the creation (or availability) of a new mission data product that matches a certain standing order, the service provider shall publish this mission data product via the service interface.
+                        Note: The operation will only send newly added products (equivalent behaviour to listenning to a radio channel). For previous products, the consumer can use the getProducts operation.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="2">
-						The service provider shall publish the mission data product together with subscription keys corresponding to the associated user and orderID.
-					</mal:documentation>
+                        The service provider shall publish the mission data product together with subscription keys corresponding to the associated user and orderID.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="3">
-						A service consumer may subscribe to mission data products for a specific user, or for all users with the use of the wildcard in the user field.
-					</mal:documentation>
+                        A service consumer may subscribe to mission data products for a specific user, or for all users with the use of the wildcard in the user field.
+                    </mal:documentation>
                     <mal:documentation name="Requirement" order="4">
-						A service consumer may subscribe to mission data products for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
-					</mal:documentation>
+                        A service consumer may subscribe to mission data products for a specific standing order, or for all standing orders with the use of the wildcard in the orderID field.
+                    </mal:documentation>
                     <mal:messages>
                         <mal:subscriptionKeys>
                             <mal:field name="user" canBeNull="false" comment="The user associated with the standing order of the product being notified.">
