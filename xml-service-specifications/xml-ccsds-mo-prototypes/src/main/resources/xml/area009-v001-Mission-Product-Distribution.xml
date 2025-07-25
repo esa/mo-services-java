@@ -439,7 +439,7 @@
                 <mal:field name="source" canBeNull="true" comment="The source that triggered the generation of the product.">
                     <mal:type area="MAL" list="false" name="Identifier"/>
                 </mal:field>
-                <mal:field name="externalURI" canBeNull="true" comment="An external URI for the products to be retrieved. For example, this can be used for pulling a mission data product file via an http URL link.">
+                <mal:field name="externalURI" canBeNull="true" comment="An external URI for the products to be retrieved. For example, this can be used for pulling a mission data product file via a HTTP URL link.">
                     <mal:type area="MAL" list="false" name="URI"/>
                 </mal:field>
                 <mal:field name="contentDate" canBeNull="false" comment="Period of time to which the source data used to generate the product relates.">
