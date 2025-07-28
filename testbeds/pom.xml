@@ -63,6 +63,7 @@
 
     <modules>
         <module>testbed-pom</module>
+        <module>testbed-encoders</module>
         <module>testbed-util</module>
         <module>xml-tests</module>
         <module>test-apis</module>
