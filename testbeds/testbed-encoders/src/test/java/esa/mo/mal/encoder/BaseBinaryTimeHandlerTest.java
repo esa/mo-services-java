@@ -18,7 +18,7 @@
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryEncoder;

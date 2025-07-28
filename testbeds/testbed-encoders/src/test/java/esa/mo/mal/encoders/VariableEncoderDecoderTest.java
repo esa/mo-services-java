@@ -18,9 +18,10 @@
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary.variable;
+package esa.mo.mal.encoders;
 
-import esa.mo.mal.encoder.binary.EncoderDecoderTest;
+import esa.mo.mal.encoder.EncoderDecoderTest;
+import esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.ccsds.moims.mo.mal.MALException;

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 20245      European Space Agency
+ * Copyright (C) 2025      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,12 +18,12 @@
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.xml;
+package esa.mo.mal.encoders;
 
-import esa.mo.mal.encoder.binary.EncoderDecoderTest;
+import esa.mo.mal.encoder.EncoderDecoderTest;
+import esa.mo.mal.encoder.xml.XMLStreamFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;

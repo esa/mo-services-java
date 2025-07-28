@@ -18,7 +18,7 @@
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary;
+package esa.mo.mal.encoder;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.OperationField;
@@ -45,12 +45,12 @@ public abstract class EncoderDecoderTest {
     @BeforeClass
     public static void setUpClass() {
         System.out.println("--------------------------------------------");
-        System.out.println("Running testbed for Encoder: ");
+        System.out.println("Running tests...");
     }
 
     @AfterClass
     public static void tearDownClass() {
-        System.out.println("Completed the tests!");
+        System.out.println("Completed all tests!");
         System.out.println("--------------------------------------------");
     }
 
