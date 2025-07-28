@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 20245      European Space Agency
+ * Copyright (C) 2025      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -18,7 +18,7 @@
  * limitations under the License.
  * ----------------------------------------------------------------------------
  */
-package esa.mo.mal.encoder.binary.fixed;
+package esa.mo.mal.encoder.binary.variable;
 
 import esa.mo.mal.encoder.binary.EncoderDecoderTest;
 import java.io.ByteArrayInputStream;
@@ -29,24 +29,14 @@ import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 /**
  * Tests for Encoding and Decoding with FixedBinary
  */
-public class FixedEncoderDecoderTest extends EncoderDecoderTest {
+public class VariableEncoderDecoderTest extends EncoderDecoderTest {
 
-    public FixedEncoderDecoderTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
+    public VariableEncoderDecoderTest() {
     }
 
     @Before
@@ -60,7 +50,7 @@ public class FixedEncoderDecoderTest extends EncoderDecoderTest {
     @Override
     public Element encodeThenDecode(Element element, OperationField field) throws MALException {
         // Encode
-        FixedBinaryStreamFactory factory = new FixedBinaryStreamFactory();
+        VariableBinaryStreamFactory factory = new VariableBinaryStreamFactory();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MALElementOutputStream malWriter = factory.createOutputStream(baos);
         malWriter.writeElement(element, field);

@@ -29,8 +29,10 @@ import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.structures.Time;
+import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -39,6 +41,18 @@ import org.junit.Test;
 public abstract class EncoderDecoderTest {
 
     public abstract Element encodeThenDecode(Element element, OperationField field) throws MALException;
+
+    @BeforeClass
+    public static void setUpClass() {
+        System.out.println("--------------------------------------------");
+        System.out.println("Running testbed for Encoder: ");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        System.out.println("Completed the tests!");
+        System.out.println("--------------------------------------------");
+    }
 
     /**
      * Simple test for encoding decoding a list of NullableAttributeList.

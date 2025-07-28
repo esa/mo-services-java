@@ -55,7 +55,7 @@
     <dependencies>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>mal-impl</artifactId>
+            <artifactId>api-area001-v003-mal</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
@@ -63,7 +63,11 @@
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
-            <artifactId>transport-rmi</artifactId>
+            <artifactId>encoding-string</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>encoding-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
