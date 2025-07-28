@@ -35,6 +35,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALElementsRegistry;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Composite;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -335,7 +336,9 @@ public class XMLReader {
         try {
             return (Element) elementsRegistry.createElement(shortForm);
         } catch (Exception e) {
-            throw new MALException("Can't find element with shortForm: " + shortForm.toString());
+            TypeId typeId = new TypeId(shortForm);
+            throw new MALException("Can't find element with shortForm: "
+                    + shortForm.toString() + " (type: " + typeId.toString() + ")");
         }
     }
 
