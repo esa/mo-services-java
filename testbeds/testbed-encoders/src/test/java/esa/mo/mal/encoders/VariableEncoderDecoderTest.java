@@ -55,6 +55,7 @@ public class VariableEncoderDecoderTest extends EncoderDecoderTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MALElementOutputStream malWriter = factory.createOutputStream(baos);
         malWriter.writeElement(element, field);
+        malWriter.close();
         byte[] encodedData = baos.toByteArray();
 
         // Decode

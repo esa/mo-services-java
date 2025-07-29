@@ -42,8 +42,6 @@ import org.junit.Before;
 public class StringEncoderDecoderTest extends EncoderDecoderTest {
 
     public StringEncoderDecoderTest() {
-        // Needs to load the full MAL Area
-        //MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
     }
 
     @Before
@@ -63,7 +61,7 @@ public class StringEncoderDecoderTest extends EncoderDecoderTest {
         malWriter.writeElement(element, field);
         malWriter.close();
         byte[] encodedData = baos.toByteArray();
-        //Useful for debugging:
+        // Print the encoded data:
         System.out.println("Encoded data as ASCII: " + new String(encodedData, StandardCharsets.US_ASCII));
         System.out.println("Encoded data as Array:\n" + Arrays.toString(encodedData));
 
