@@ -61,7 +61,7 @@ public class StringEncoderDecoderTest extends EncoderDecoderTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MALElementOutputStream malWriter = factory.createOutputStream(baos);
         malWriter.writeElement(element, field);
-        malWriter.flush();
+        malWriter.close();
         byte[] encodedData = baos.toByteArray();
         //Useful for debugging:
         System.out.println("Encoded data as ASCII: " + new String(encodedData, StandardCharsets.US_ASCII));
