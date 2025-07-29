@@ -178,6 +178,12 @@ public class MonitorActivityScenario extends BaseActivityScenario {
     public boolean createActivityServiceRelayCalledToRelayTo(String relayName, String relayTo) throws Exception {
         logMessage(loggingClassName + ":createActivityServiceRelayCalled " + relayName + " which relays to " + relayTo);
         LocalMALInstance.instance().activityRelayManagementStub().createRelay(relayName, relayTo);
+        // Wait here
+        try {
+            Thread.sleep((long) Configuration.COM_PERIOD_LONG);
+        } catch (Exception ex) {
+        }
+
         relayList[noRelays++] = relayName;
         return true;
     }
@@ -282,7 +288,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
 
         MonitorActivityTestAdapter monitor = ((MonitorActivityTestAdapter) monitorMap.get(monitorKey));
         try {
-            retVal = monitor.cond.waitFor(Configuration.COM_PERIOD_LONG);
+            retVal = monitor.cond.waitFor(2 * Configuration.COM_PERIOD_LONG);
         } catch (InterruptedException ex) {
             // do nothing, we are expecting this
         }
@@ -339,6 +345,10 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      */
     public boolean receivedExpectedExecutionActivity(String monitorKey, String[] expEvents) {
         logMessage(loggingClassName + ":receivedExpectedExecutionActivity");
+        try {
+            Thread.sleep((long) Configuration.COM_PERIOD_LONG);
+        } catch (Exception ex) {
+        }
         MonitorEventDetailsList eventList = monitorEventAdapter.getMonitorEventList();
         int noExecutionEvents = eventList.noEvents("EXECUTION");
         int noExecutionErrorEvents = eventList.noEvents("EXECUTION_ERROR");
