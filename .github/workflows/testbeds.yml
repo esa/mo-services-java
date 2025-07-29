@@ -637,7 +637,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for Encoders
-        run: mvn --batch-mode --update-snapshots
+        run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-encoders
 
   testbed-encoders-jdk17:
@@ -660,7 +660,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for Encoders
-        run: mvn --batch-mode --update-snapshots
+        run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-encoders
 
   testbed-encoders-jdk21:
@@ -683,7 +683,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ steps.get-date.outputs.date }}
       - name: Run the Testbed for Encoders
-        run: mvn --batch-mode --update-snapshots
+        run: mvn --batch-mode --update-snapshots -P ESA test
         working-directory: testbeds/testbed-encoders
 
 
