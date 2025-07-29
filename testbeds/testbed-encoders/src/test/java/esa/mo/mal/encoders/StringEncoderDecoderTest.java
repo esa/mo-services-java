@@ -43,7 +43,7 @@ public class StringEncoderDecoderTest extends EncoderDecoderTest {
 
     public StringEncoderDecoderTest() {
         // Needs to load the full MAL Area
-        MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
+        //MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
     }
 
     @Before
