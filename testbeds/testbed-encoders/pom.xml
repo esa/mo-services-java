@@ -20,7 +20,7 @@
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
         <version>12.2-SNAPSHOT</version>
-        <relativePath>../testbed-pom/pom.xml</relativePath>
+        <relativePath>../../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-encoders</artifactId>
