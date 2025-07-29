@@ -64,8 +64,8 @@ public class StringEncoderDecoderTest extends EncoderDecoderTest {
         malWriter.flush();
         byte[] encodedData = baos.toByteArray();
         //Useful for debugging:
-        System.out.println("Encoded data:\n" + Arrays.toString(encodedData));
-        System.out.println("Encoded data:\n" + new String(encodedData, StandardCharsets.US_ASCII));
+        System.out.println("Encoded data as ASCII: " + new String(encodedData, StandardCharsets.US_ASCII));
+        System.out.println("Encoded data as Array:\n" + Arrays.toString(encodedData));
 
         // Decode
         ByteArrayInputStream bais = new ByteArrayInputStream(encodedData);
