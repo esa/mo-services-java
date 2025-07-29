@@ -37,7 +37,7 @@ import org.junit.After;
 import org.junit.Before;
 
 /**
- * Tests for Encoding and Decoding with XML
+ * Tests for Encoding and Decoding with String Encoder
  */
 public class StringEncoderDecoderTest extends EncoderDecoderTest {
 

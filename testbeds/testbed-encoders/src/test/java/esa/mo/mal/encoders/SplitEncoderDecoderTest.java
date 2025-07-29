@@ -21,7 +21,7 @@
 package esa.mo.mal.encoders;
 
 import esa.mo.mal.encoder.EncoderDecoderTest;
-import esa.mo.mal.encoder.binary.variable.VariableBinaryStreamFactory;
+import esa.mo.mal.encoder.binary.split.SplitBinaryStreamFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.ccsds.moims.mo.mal.MALException;
@@ -33,11 +33,11 @@ import org.junit.After;
 import org.junit.Before;
 
 /**
- * Tests for Encoding and Decoding with VariableBinary
+ * Tests for Encoding and Decoding with SplitBinary
  */
-public class VariableEncoderDecoderTest extends EncoderDecoderTest {
+public class SplitEncoderDecoderTest extends EncoderDecoderTest {
 
-    public VariableEncoderDecoderTest() {
+    public SplitEncoderDecoderTest() {
     }
 
     @Before
@@ -51,7 +51,7 @@ public class VariableEncoderDecoderTest extends EncoderDecoderTest {
     @Override
     public Element encodeThenDecode(Element element, OperationField field) throws MALException {
         // Encode
-        VariableBinaryStreamFactory factory = new VariableBinaryStreamFactory();
+        SplitBinaryStreamFactory factory = new SplitBinaryStreamFactory();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MALElementOutputStream malWriter = factory.createOutputStream(baos);
         malWriter.writeElement(element, field);
