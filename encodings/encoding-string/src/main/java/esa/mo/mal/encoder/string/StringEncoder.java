@@ -95,7 +95,7 @@ public class StringEncoder extends Encoder {
          */
         public StringStreamHolder(OutputStream outputStream) {
             super(outputStream);
-            this.buffer = new PrintWriter(outputStream, true);
+            this.buffer = new PrintWriter(outputStream, false);
         }
 
         @Override
