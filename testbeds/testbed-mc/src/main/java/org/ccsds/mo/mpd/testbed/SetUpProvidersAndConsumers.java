@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Testbed - MPD
+ * System                : CCSDS MO Testbed
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -61,8 +61,8 @@ public class SetUpProvidersAndConsumers {
     private static ParameterInheritanceSkeleton parameterProviderService = null;
     private static ParameterStub parameterConsumerStub = null;
 
-    public void setUp(ActionBackend actionBackend, AggregationBackend aggregationBackend,
-            AlertBackend alertBackend, PacketBackend packetBackend, ParameterBackend parameterBackend,
+    public void setUp(ActionBackend actionBackend, AlertBackend alertBackend,
+            PacketBackend packetBackend, ParameterBackend parameterBackend,
             boolean startAction, boolean startAggregation, boolean startAlert,
             boolean startPacket, boolean startParameter) throws IOException {
         HelperMisc.loadPropertiesFile();
@@ -107,7 +107,7 @@ public class SetUpProvidersAndConsumers {
             }
 
             if (startAggregation) {
-                aggregationProviderService = factoryProvider.createProviderAggregation(aggregationBackend);
+                aggregationProviderService = factoryProvider.createProviderAggregation(parameterBackend);
 
                 if (aggregationProviderService == null) {
                     throw new MALException("The Aggregation service provider was not created!");

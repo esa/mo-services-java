@@ -20,7 +20,12 @@
  */
 package esa.mo.services.mc.util;
 
+import esa.mo.services.mc.consumer.ActionConsumerServiceImpl;
+import esa.mo.services.mc.consumer.AggregationConsumerServiceImpl;
+import esa.mo.services.mc.consumer.AlertConsumerServiceImpl;
+import esa.mo.services.mc.consumer.PacketConsumerServiceImpl;
 import esa.mo.services.mc.consumer.ParameterConsumerServiceImpl;
+import esa.mo.services.mc.provider.AggregationProviderServiceImpl;
 import esa.mo.services.mc.provider.ParameterProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
@@ -33,7 +38,6 @@ import org.ccsds.moims.mo.mc.aggregation.provider.AggregationInheritanceSkeleton
 import org.ccsds.moims.mo.mc.alert.consumer.AlertStub;
 import org.ccsds.moims.mo.mc.alert.provider.AlertInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.backends.ActionBackend;
-import org.ccsds.moims.mo.mc.backends.AggregationBackend;
 import org.ccsds.moims.mo.mc.backends.AlertBackend;
 import org.ccsds.moims.mo.mc.backends.PacketBackend;
 import org.ccsds.moims.mo.mc.backends.ParameterBackend;
@@ -48,6 +52,7 @@ import org.ccsds.moims.mo.mc.parameter.provider.ParameterInheritanceSkeleton;
 public class ESAMCServicesFactory extends MCServicesFactory {
 
     private ParameterProviderServiceImpl parameterService = null;
+    private AggregationProviderServiceImpl aggregationService = null;
 
     /**
      * Constructor.
@@ -61,8 +66,14 @@ public class ESAMCServicesFactory extends MCServicesFactory {
     }
 
     @Override
-    public AggregationInheritanceSkeleton createProviderAggregation(AggregationBackend backend) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public AggregationInheritanceSkeleton createProviderAggregation(ParameterBackend backend) throws MALException {
+        if (parameterService == null) {
+            throw new MALException("The backend needs to be instantiated before!");
+        }
+
+        aggregationService = new AggregationProviderServiceImpl();
+        aggregationService.init(backend);
+        return aggregationService;
     }
 
     @Override
@@ -84,31 +95,42 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     @Override
     public ActionStub createConsumerStubAction(SingleConnectionDetails details) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (details == null) {
+            throw new MALException("The provider details are null!");
+        }
+
+        ConsumerServiceImpl consumerService = new ActionConsumerServiceImpl(details);
+        return (ActionStub) consumerService.getStub();
     }
 
     @Override
     public AggregationStub createConsumerStubAggregation(SingleConnectionDetails details) throws MALException {
-        if (parameterService == null) {
-            throw new MALException("The parameterService needs to be instantiated before!");
+        if (details == null) {
+            throw new MALException("The provider details are null!");
         }
 
-        /*
-        aggregationService = new AggregationProviderServiceImpl();
-        aggregationService.init(parameterService);
-        return aggregationService;
-         */
-        return null;
+        ConsumerServiceImpl consumerService = new AggregationConsumerServiceImpl(details);
+        return (AggregationStub) consumerService.getStub();
     }
 
     @Override
     public AlertStub createConsumerStubAlert(SingleConnectionDetails details) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (details == null) {
+            throw new MALException("The provider details are null!");
+        }
+
+        ConsumerServiceImpl consumerService = new AlertConsumerServiceImpl(details);
+        return (AlertStub) consumerService.getStub();
     }
 
     @Override
     public PacketStub createConsumerStubPacket(SingleConnectionDetails details) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (details == null) {
+            throw new MALException("The provider details are null!");
+        }
+
+        ConsumerServiceImpl consumerService = new PacketConsumerServiceImpl(details);
+        return (PacketStub) consumerService.getStub();
     }
 
     @Override
