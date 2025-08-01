@@ -58,6 +58,7 @@
 
     <modules>
         <module>services-area003-v001-common</module>
+        <module>services-area004-v002-mc</module>
         <module>services-area009-v001-mpd</module>
     </modules>
 </project>
