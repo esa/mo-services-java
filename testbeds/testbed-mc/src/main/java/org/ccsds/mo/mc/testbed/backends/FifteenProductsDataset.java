@@ -18,8 +18,9 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.mo.mpd.testbed.backends;
+package org.ccsds.mo.mc.testbed.backends;
 
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
@@ -29,11 +30,11 @@ import org.ccsds.moims.mo.mc.structures.ParameterDefinition;
 /**
  * A dummy backend in order to try out the provider.
  */
-public class OneProductDataset extends ParameterDataset {
+public class FifteenProductsDataset extends ParameterDataset {
 
     public ObjectRef<ParameterDefinition> ref;
 
-    public OneProductDataset() {
+    public FifteenProductsDataset() {
         IdentifierList domain = new IdentifierList();
         domain.add(new Identifier("myDomain"));
 
@@ -44,11 +45,13 @@ public class OneProductDataset extends ParameterDataset {
         // ---------------------------------------------------
         // Products
         // ---------------------------------------------------
-        //TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
-        //ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
-        //Blob productBody = new Blob();
-        //ProductMetadata metadata = new ProductMetadata(type1, ref, Time.now(), timeWindow);
-        //super.addNewProduct(ref, productBody, metadata);
+        for (int i = 0; i < 15; i++) {
+            Identifier name = new Identifier("product_" + i);
+            //ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), name, new UInteger(1));
+            Blob productBody = new Blob();
+            //ProductMetadata metadata = new ProductMetadata(type1, ref, Time.now(), timeWindow);
+            //super.addNewProduct(ref, productBody, metadata);
+        }
     }
 
 }

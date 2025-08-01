@@ -33,7 +33,6 @@ import org.ccsds.moims.mo.mc.packet.provider.PacketInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.parameter.consumer.ParameterStub;
 import org.ccsds.moims.mo.mc.parameter.provider.ParameterInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.backends.ActionBackend;
-import org.ccsds.moims.mo.mc.backends.AggregationBackend;
 import org.ccsds.moims.mo.mc.backends.AlertBackend;
 import org.ccsds.moims.mo.mc.backends.PacketBackend;
 import org.ccsds.moims.mo.mc.backends.ParameterBackend;
@@ -45,7 +44,7 @@ public abstract class MCServicesFactory {
 
     public abstract ActionInheritanceSkeleton createProviderAction(ActionBackend backend) throws MALException;
 
-    public abstract AggregationInheritanceSkeleton createProviderAggregation(AggregationBackend backend) throws MALException;
+    public abstract AggregationInheritanceSkeleton createProviderAggregation(ParameterBackend backend) throws MALException;
 
     public abstract AlertInheritanceSkeleton createProviderAlert(AlertBackend backend) throws MALException;
 

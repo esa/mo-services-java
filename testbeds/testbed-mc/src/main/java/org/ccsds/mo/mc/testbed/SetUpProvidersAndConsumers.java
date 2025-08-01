@@ -18,7 +18,7 @@
  * limitations under the License. 
  * ----------------------------------------------------------------------------
  */
-package org.ccsds.mo.mpd.testbed;
+package org.ccsds.mo.mc.testbed;
 
 import java.io.IOException;
 import java.util.logging.Level;
