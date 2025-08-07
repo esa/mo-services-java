@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>12.2</version>
+        <version>14.0-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>generator-interfaces</artifactId>
-    <version>12.2</version>
+    <version>14.0-SNAPSHOT</version>
     <packaging>jar</packaging>
   
     <name>ESA MO API Generator - Interfaces</name>
@@ -65,12 +65,12 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-prototypes</artifactId>
-            <version>12.2</version>
+            <version>14.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-standards</artifactId>
-            <version>12.2</version>
+            <version>14.0-SNAPSHOT</version>
         </dependency>
         <!-- The dependencies below are needed for Java 9 and higher -->
         <dependency>
