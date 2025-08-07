@@ -47,7 +47,7 @@ Release to Maven Central
     * Update the RELEASE_NOTES.md for the impending release
     * Make sure the javadocs generation does not have any errors:  `mvn javadoc:javadoc`
     * Make sure the MO Testbeds are passing
-    * Update the versions of ALL the pom files. Example, from: 9.0-SNAPSHOT to: 9.0
+    * Update the versions of ALL the pom files. Example, from: 12.2-SNAPSHOT to: 12.2
     * Delete the local ~/.m2/repository and make sure that the project can be built from scratch
 
 2. Compile the projects with sources and javadocs (and enter your GPG Passphrase when prompted) and deploy to OSSRH (Maven Central):
@@ -61,7 +61,7 @@ mvn clean deploy -P release
     * Release it if everything looks alright 
     * Or Drop it if there are errors
 
-4. Tag the release (tag name example: release-10.0)
+4. Tag the release (tag name example: release-12.2)
     * Tag: `git tag release-XX.Y`
     * Then push it to the repo: `git push origin --tags`
 
