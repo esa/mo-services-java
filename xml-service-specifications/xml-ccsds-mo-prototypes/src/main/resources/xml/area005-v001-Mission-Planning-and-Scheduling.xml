@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2025
 
-  Generated from 529x1r1_RID_closeout_v3_clean 06/05/2025
+  Generated from 529x1r1_RID_closeout_v3 05/08/2025
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema-v003"
@@ -21,19 +21,19 @@ In the context of a hierarchical or federated planning system, the Planning Requ
         d) Planning Resource Definitions (as Resource objects [4.5.4.2.1]) [Optional];
       </mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">
-        3.5.5.1 In response to a submitRequest operation, the service provider shall create a corresponding RequestInstance object, set its creationTime and return its identity (key and version) to the consumer.
-        3.5.5.2 In response to an updateRequest operation, if supported, the service provider shall create a new version of the referenced RequestInstance object, set its creationTime and return its identity (key and version) to the consumer.
+        3.5.5.1 In response to a submitRequest operation, the service provider shall create a corresponding RequestInstance object, set its creationTime and return a reference to the object to the consumer.
+        3.5.5.2 In response to an updateRequest operation, if supported, the service provider shall create a new version of the referenced RequestInstance object, set its creationTime and return a reference to the object to the consumer.
         3.5.5.3 The service provider shall only consider the latest version of a RequestInstance in the generation of future Plans, following a successful updateRequest operation.
         3.5.5.4 In response to a cancelRequest operation, if supported, the service provider shall set the requestStatus of the referenced RequestInstance object to ‘CANCELLED’ and stop it being considered in the generation of future Plans.
         3.5.5.5 In response to internal planning and feedback from external plan execution processes, the service provider shall model the status of RequestInstance objects in accordance with the planning request state model (4.5.5.2).
         NOTE	–	Following a successful updateRequest operation, it is implementation dependent what the status of the previous version of the RequestInstance is set to.  Previous versions may already have been incorporated into Plans.
         3.5.5.6 If a service consumer generates a planning request based on an existing planning request definition, then the PlanningRequestDetails submitted shall:
-        a) Reference the source RequestDefinition (key and version) in the definition field;
+        a) Reference the source RequestDefinition in the definition field;
         b) Contain a matching set of arguments (name and type) to the RequestDefinition in the arguments field;
         c) Have a matching value to the RequestDefinition in the standingOrder field.
         NOTE	–	While typically the PlanningRequestDetails will also have matching content to the RequestDefinition in the activities and constraints fields it is allowed to add and remove individual activities and constraints.
         3.5.5.7 In the context of a planning request that contains or references an existing Plan, the Plan shall be a full plan, patch plans are not permitted.
-        3.5.5.8 Following successful inclusion of a planning request in a generated Plan, the service provider shall update the outputPlanRefs field of the RequestInstance with the identity of the Plan (key and version).
+        3.5.5.8 Following successful inclusion of a planning request in a generated Plan, the service provider shall update the outputPlanRefs field of the RequestInstance with a reference to the Plan.
         NOTE	–	The consumer may then use the reference to the output Plan to retrieve the Plan or its status using the PlanDistributionService.  Where the planning request has been incorporated into multiple alternate plans, these will be listed in the outputPlanRefs field.
       </mal:documentation>
 
@@ -72,12 +72,14 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
         <mal:requestIP name="getRequestSummaries" number="2" comment="The getRequestSummaries operation allows consumers to obtain a filtered list of currently available RequestInstances.  The request uses the RequestFilter structure to select the set of planning requests of interest, using the following keys:
 Domain of the RequestInstance;
-Instance ID (key and version) of the RequestInstance;
-Creation date and time of the RequestInstance version (as a time range);
-Definition ID (key and version) of the RequestInstance (the RequestDefinition from which it was created);
+Reference to the RequestInstance;
+Creation date and time of the RequestInstance (as a time range);
+Reference to the RequestDefinition from which the RequestInstance was created;
 User ID of the PlanningUser who initiated the RequestInstance;
-User Reference supplied by the User when submitting the RequestInstance.
-The response returns a list of RequestSummaryStatus structures containing the identity (key and version), descriptive header fields, and status of the RequestInstances that match the filter.">
+User Reference supplied by the User when submitting the RequestInstance;
+Current status of the RequestInstance;
+Reference to the output Plan(s) generated in response to the RequestInstance.
+The response returns a list of RequestSummaryStatus structures containing references to the identities, descriptive header fields, and status of the RequestInstances that match the filter.">
           <mal:messages>
             <mal:request>
               <mal:field name="requestFilter" canBeNull="false" comment="">
@@ -165,7 +167,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:capabilitySet number="3" comment="">
 
-        <mal:requestIP name="updateRequest" number="5" comment="The updateRequest operation may be used to modify the PlanningRequestDetails associated with a previously submitted planning request.  This results in the creation of a new version of the RequestInstance (with the same key) by the service provider, which returns the identity (key and version) of the new version to the consumer.">
+        <mal:requestIP name="updateRequest" number="5" comment="The updateRequest operation may be used to modify the PlanningRequestDetails associated with a previously submitted planning request.  This results in the creation of a new version of the RequestInstance (with the same key) by the service provider, which returns a reference to the new version to the consumer.">
           <mal:messages>
             <mal:request>
               <mal:field name="requestRef" canBeNull="false" comment="">
@@ -294,12 +296,12 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
         <mal:requestIP name="getPlanSummaries" number="1" comment="The getPlanSummaries operation allows consumers to obtain a filtered list of currently available Plans.  The request uses the PlanFilter structure to select the set of plans of interest, using the following keys:
 Domain of the Plan;
-planID (key and version) of the Plan;
-precursorPlan of the Plan;
-status of the Plan;
-originator of the Plan;
-validity period of the Plan as a time window.
-The response returns a list of PlanSummaryStatus structures containing the identity (key and version), descriptive header fields, and status of the Plans that match the filter.">
+Reference to the Plan;
+Reference to the precursor Plan of the Plan;
+Current status of the Plan;
+Originator of the Plan;
+Validity period of the Plan (as a time window).
+The response returns a list of PlanSummaryStatus structures containing references to the identities, descriptive header fields, and status of the Plans that match the filter.">
           <mal:messages>
             <mal:request>
               <mal:field name="planFilter" canBeNull="false" comment="">
@@ -1024,7 +1026,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:capabilitySet number="1" comment="">
 
-        <mal:progressIP name="listRequestDefs" number="1" comment="The listRequestDefs operation is used to obtain a list of available RequestDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
+        <mal:progressIP name="listRequestDefs" number="1" comment="The listRequestDefs operation is used to obtain a list of available RequestDefinitions together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
             <mal:progress>
@@ -1086,7 +1088,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:capabilitySet number="2" comment="">
 
-        <mal:progressIP name="listEventDefs" number="3" comment="The listEventDefs operation is used to obtain a list of available EventDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
+        <mal:progressIP name="listEventDefs" number="3" comment="The listEventDefs operation is used to obtain a list of available EventDefinitions together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
             <mal:progress>
@@ -1148,7 +1150,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:capabilitySet number="3" comment="">
 
-        <mal:progressIP name="listActivityDefs" number="5" comment="The listActivityDefs operation is used to obtain a list of available ActivityDefinitions (key and version) together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
+        <mal:progressIP name="listActivityDefs" number="5" comment="The listActivityDefs operation is used to obtain a list of available ActivityDefinitions together with their descriptions.  The list can be filtered by domain or restricted to specified definition IDs.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
             <mal:progress>
@@ -1213,7 +1215,7 @@ A MAL::UShort giving a secondary error code that details the reason for invalidi
 
       <mal:capabilitySet number="4" comment="">
 
-        <mal:progressIP name="listResourceDefs" number="7" comment="The listResourceDefs operation is used to obtain a list of available Resources (key and version) together with their descriptions.  The list can be filtered by domain or restricted to data types.  All available versions are listed.
+        <mal:progressIP name="listResourceDefs" number="7" comment="The listResourceDefs operation is used to obtain a list of available Resources together with their descriptions.  The list can be filtered by domain or restricted to data types.  All available versions are listed.
 The domain field is an ordered list of identifiers representing a domain hierarchy, any node of which can use ‘*’ as a wildcard (meaning any domain identifier at that level of the hierarchy).  If a set of domains is required that cannot be represented through the use of wildcards, then the operation will need to be repeated using different domain filters.">
           <mal:messages>
             <mal:progress>
@@ -2336,7 +2338,7 @@ It may also be used to provide the reason for rejection.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PlanningRequestDetails" shortFormPart="405" comment="E1: PlanningRequestDetails is a data structure used in the context of the MPS Planning Request service SubmitRequest and UpdateRequest operations, where the RequestInstance MO object cannot be used as the full identity of the resulting RequestInstance (key and version) is not yet known.">
+      <mal:composite name="PlanningRequestDetails" shortFormPart="405" comment="E1: PlanningRequestDetails is a data structure used in the context of the MPS Planning Request service submitRequest and updateRequest operations, where the RequestInstance MO object cannot be used, because the full identity of the resulting RequestInstance is not yet known at the time of submitting or updating the request.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -2391,11 +2393,11 @@ Only one of inputPlanRef and inputPlan should be present within the planning req
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PlanningRequestResponse" shortFormPart="406" comment="E1: PlanningRequestResponse is a data structure used in the context of the MPS Planning Request service SubmitRequest and UpdateRequest operations, in response to the submitted PlanningRequestDetails defined above.  It contains a reference to the created RequestInstance and the supplied userReference to allow the user to correlate the two.">
+      <mal:composite name="PlanningRequestResponse" shortFormPart="406" comment="E1: PlanningRequestResponse is a data structure used in the context of the MPS Planning Request service submitRequest and updateRequest operations, in response to the submitted PlanningRequestDetails defined above.  It contains a reference to the created RequestInstance and the supplied userReference to allow the user to correlate the two.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="instance" canBeNull="false" comment="Reference to the RequestInstance created in response to a SubmitRequest operation, or the updated version of the RequestInstance following an UpdateRequest operation.">
+        <mal:field name="instance" canBeNull="false" comment="Reference to the RequestInstance created in response to a submitRequest operation, or the updated version of the RequestInstance following an updateRequest operation.">
           <mal:type area="MPS" list="false" objectRef="true" name="RequestInstance"/>
         </mal:field>
         <mal:field name="userReference" canBeNull="false" comment="User supplied reference for the planning request.  This is distinct from the identity of the RequestInstance that is assigned by the planning function.">
@@ -2407,7 +2409,7 @@ Only one of inputPlanRef and inputPlan should be present within the planning req
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="requestInstance" canBeNull="false" comment="Reference to the RequestInstance (key and version).">
+        <mal:field name="requestInstance" canBeNull="false" comment="Reference to the RequestInstance.">
           <mal:type area="MPS" list="false" objectRef="true" name="RequestInstance"/>
         </mal:field>
         <mal:field name="userReference" canBeNull="true" comment="Optional user supplied reference for the planning request.  This is distinct from the identity of the RequestInstance that is assigned by the planning function.">
@@ -2467,16 +2469,16 @@ NOTE	–	All fields are nullable and it is valid to specify a RequestFilter with
         <mal:field name="domain" canBeNull="true" comment="Domain of the RequestInstance.  An ordered list representing a domain hierarchy, ‘*’ can be used to represent a wildcard at that level.">
           <mal:type area="MAL" list="true" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="instanceID" canBeNull="true" comment="Identity (key and version) of the RequestInstance.">
+        <mal:field name="instanceID" canBeNull="true" comment="Reference to the RequestInstance.">
           <mal:type area="MPS" list="false" objectRef="true" name="RequestInstance"/>
         </mal:field>
-        <mal:field name="creationTime" canBeNull="true" comment="Creation date and time of the RequestInstance version.">
-          <mal:type area="MAL" list="false" objectRef="false" name="Time"/>
+        <mal:field name="creationTime" canBeNull="true" comment="Query for request instances with a creation date and time in the specified range.">
+          <mal:type area="MPS" list="false" objectRef="false" name="TimeWindow"/>
         </mal:field>
-        <mal:field name="definitionID" canBeNull="true" comment="Identity (key and version) of the RequestDefinition from which the RequestInstance was created.">
+        <mal:field name="definitionID" canBeNull="true" comment="Reference to the RequestDefinition from which the RequestInstance was created.">
           <mal:type area="MPS" list="false" objectRef="true" name="RequestDefinition"/>
         </mal:field>
-        <mal:field name="userID" canBeNull="true" comment="userID of the User who initiated the RequestInstance.">
+        <mal:field name="userID" canBeNull="true" comment="Reference of the User who initiated the RequestInstance.">
           <mal:type area="MPS" list="false" objectRef="true" name="PlanningUser"/>
         </mal:field>
         <mal:field name="userReference" canBeNull="true" comment="Reference supplied by User when submitting the RequestInstance.">
@@ -2545,7 +2547,7 @@ If Null, the default time system is used.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="revisedPlan" canBeNull="false" comment="Reference to the Plan (key and version) with respect to which the plan revisions are detailed.  Typically, this is the precursor Plan, but any other Plan can be used.">
+        <mal:field name="revisedPlan" canBeNull="false" comment="Reference to the Plan with respect to which the plan revisions are detailed.  Typically, this is the precursor Plan, but any other Plan can be used.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
         <mal:field name="revisionStart" canBeNull="false" comment="Start time of the earliest revision.">
@@ -2577,7 +2579,7 @@ PlanUpdates may be distributed to subscribing applications, including status dis
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="plan" canBeNull="false" comment="Reference to the Plan (key and version) to which the status update relates.">
+        <mal:field name="plan" canBeNull="false" comment="Reference to the Plan to which the status update relates.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
         <mal:field name="timestamp" canBeNull="false" comment="Time of status update.">
@@ -2599,11 +2601,11 @@ PlanUpdates may be distributed to subscribing applications, including status dis
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PlanSummaryStatus" shortFormPart="509" comment="E1: PlanSummaryStatus is a data structure that provides a summary view of a Plan that includes the PlanInformation section and current status, but not the full details of the Plan.  It is returned in the context of the MPS Plan Distribution service GetPlanSummaries operation.">
+      <mal:composite name="PlanSummaryStatus" shortFormPart="509" comment="E1: PlanSummaryStatus is a data structure that provides a summary view of a Plan that includes the PlanInformation section and current status, but not the full details of the Plan.  It is returned in the context of the MPS Plan Distribution service getPlanSummaries operation.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="plan" canBeNull="false" comment="Reference to the Plan (key and version) to which the summary status relates.">
+        <mal:field name="plan" canBeNull="false" comment="Reference to the Plan to which the summary status relates.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
         <mal:field name="isPatchPlan" canBeNull="false" comment="Flag indicating if the Plan is a patch plan that only contains details of the changes from the precursor Plan.  A patch plan must have a precursor.  It must also include a single PlanRevision relative to the precursor Plan.">
@@ -2630,11 +2632,11 @@ If the Plan is a Patch Plan, then a precursor plan must be specified.">
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="PlanActivationStatus" shortFormPart="510" comment="E1: PlanActivationStatus is a data structure that returns the activation status of a Plan in the context of the MPS Plan Execution Control service ActivatePlan and DeactivatePlan operations.">
+      <mal:composite name="PlanActivationStatus" shortFormPart="510" comment="E1: PlanActivationStatus is a data structure that returns the activation status of a Plan in the context of the MPS Plan Execution Control service activatePlan and deactivatePlan operations.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
-        <mal:field name="plan" canBeNull="false" comment="Reference to the Plan (key and version) to which the status relates.">
+        <mal:field name="plan" canBeNull="false" comment="Reference to the Plan to which the status relates.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
         <mal:field name="status" canBeNull="false" comment="Current status of the Plan.">
@@ -2661,7 +2663,7 @@ Sub-plans are not defined as objects within the MPS model.  Individual activitie
         </mal:field>
       </mal:composite>
 
-      <mal:composite name="SubPlanActivationStatus" shortFormPart="513" comment="E1: SubPlanActivationStatus is a data structure that returns the activation status of a sub-plan in the context of the MPS Plan Execution Control service ActivateSubPlan and DeactivateSubPlan operations.">
+      <mal:composite name="SubPlanActivationStatus" shortFormPart="513" comment="E1: SubPlanActivationStatus is a data structure that returns the activation status of a sub-plan in the context of the MPS Plan Execution Control service activateSubPlan and deactivateSubPlan operations.">
         <mal:extends>
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
@@ -2762,10 +2764,10 @@ An ordered list representing a domain hierarchy, ‘*’ can be used to represen
 An ordered list representing a domain hierarchy, ‘*’ can be used to represent a wildcard at that level.">
           <mal:type area="MAL" list="true" objectRef="false" name="Identifier"/>
         </mal:field>
-        <mal:field name="planID" canBeNull="true" comment="Identity (key and version) of the Plan.">
+        <mal:field name="planID" canBeNull="true" comment="Reference to the Plan.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
-        <mal:field name="precursorPlan" canBeNull="true" comment="Identity (key and version) of the precursor Plan.">
+        <mal:field name="precursorPlan" canBeNull="true" comment="Reference to the precursor Plan of the Plan.">
           <mal:type area="MPS" list="false" objectRef="true" name="Plan"/>
         </mal:field>
         <mal:field name="status" canBeNull="true" comment="Current status (enum) of the Plan.">
@@ -2905,7 +2907,7 @@ Default is no offset.">
           <mal:type area="MAL" list="false" name="Composite"/>
         </mal:extends>
         <mal:field name="definitionID" canBeNull="false" comment="Object Type: ActivityDefinition | EventDefinition | Resource | RequestDefinition.
-Item Definition (key and version).">
+Reference to an Item.">
           <mal:type area="MAL" list="false" objectRef="true" name="Element"/>
         </mal:field>
         <mal:field name="description" canBeNull="false" comment="Description of the item.">
