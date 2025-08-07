@@ -4,6 +4,9 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 14.0
+* Removes the setters from the auto-generated classes
+
 ### Version 12.2 (07 August 2025)
 * Removes the pipeline tests for Java 8
 * Adds the new Encoding tests and integrated them with the GitHub pipeline
