@@ -143,4 +143,13 @@ public abstract class ServiceInfo {
      * @return The top-level Area of this service.
      */
     public abstract MALArea getArea();
+
+    /**
+     * Generates a specific MO Error for this service based on the error number.
+     *
+     * @param errorNumber The error number.
+     * @param extraInfo The extra information.
+     * @return The specific MO Error.
+     */
+    public abstract MOErrorException generateMOError(int errorNumber, Object extraInfo);
 }

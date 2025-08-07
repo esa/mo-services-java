@@ -187,12 +187,12 @@ public class StringEncoder extends Encoder {
         public void writeIsNull() throws IOException {
             buffer.append(STR_NULL);
             buffer.append(STR_DELIM);
+            buffer.flush();
         }
 
         @Override
         public void close() throws IOException {
             buffer.flush();
-
             super.close();
         }
 
@@ -201,6 +201,7 @@ public class StringEncoder extends Encoder {
                     .replace(STR_NULL, STR_NULL_ESC)
                     .replace(STR_DELIM, STR_DELIM_ESC));
             buffer.append(STR_DELIM);
+            buffer.flush();
         }
 
         private static String byteArrayToHexString(final byte[] data) {

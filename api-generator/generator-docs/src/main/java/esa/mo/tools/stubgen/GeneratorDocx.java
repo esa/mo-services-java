@@ -281,7 +281,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 }
 
                 // process errors
-                docxDataFile.addTitle(1, "Error codes");
+                docxDataFile.addTitle(1, "MO Errors");
 
                 List<ErrorDefinitionType> errors = new LinkedList<>();
 
@@ -323,7 +323,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 if (!errors.isEmpty()) {
                     docxDataFile.addComment("The following table lists the errors defined in this specification:");
 
-                    docxDataFile.startTable(ERROR_TABLE_WIDTHS, area.getName() + " Error Codes");
+                    docxDataFile.startTable(ERROR_TABLE_WIDTHS, area.getName() + " MO Errors");
                     docxDataFile.startRow();
                     docxDataFile.addCell(0, ERROR_TABLE_WIDTHS, "Error", HEADER_COLOUR);
                     docxDataFile.addCell(1, ERROR_TABLE_WIDTHS, "Error #", HEADER_COLOUR);

@@ -64,15 +64,16 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
             if (!receivedAck) {
                 if (interactionStage == MALProgressOperation._PROGRESS_ACK_STAGE) {
                     receivedAck = true;
+
                     if (isSynchronous) {
                         responseHolder.signalResponse(isError, msg);
+                    }
+
+                    if (isError) {
+                        finished = true;
+                        listener.progressAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
                     } else {
-                        if (isError) {
-                            finished = true;
-                            listener.progressAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
-                        } else {
-                            listener.progressAckReceived(header, msg.getBody(), qos);
-                        }
+                        listener.progressAckReceived(header, msg.getBody(), qos);
                     }
                 } else {
                     finished = true;

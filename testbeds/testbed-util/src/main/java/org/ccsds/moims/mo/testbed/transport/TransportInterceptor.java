@@ -45,7 +45,7 @@ public class TransportInterceptor {
 
     private static TransportInterceptor instance;
 
-    public static TransportInterceptor instance() {
+    public synchronized static TransportInterceptor instance() {
         if (instance == null) {
             instance = new TransportInterceptor();
         }

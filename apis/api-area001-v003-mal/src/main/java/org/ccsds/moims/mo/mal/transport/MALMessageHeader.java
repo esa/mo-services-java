@@ -257,6 +257,17 @@ public class MALMessageHeader {
      *
      * @return the area version.
      */
+    public UOctet getAreaVersion() {
+        return areaVersion;
+    }
+
+    /**
+     * Returns the area version. Deprecated because the "Service Version" was
+     * reversed back to "Area Version".
+     *
+     * @return the area version.
+     */
+    @Deprecated
     public UOctet getServiceVersion() {
         return areaVersion;
     }
@@ -396,34 +407,39 @@ public class MALMessageHeader {
         return this;
     }
 
+    public ServiceInfo getServiceInfo() throws NotFoundException {
+        MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getAreaVersion());
+
+        if (malArea == null) {
+            throw new NotFoundException(new UnsupportedAreaException(
+                    "Operation for unknown area/version received ("
+                    + this.getServiceArea() + ", " + this.getAreaVersion() + ")"));
+        }
+
+        ServiceInfo serviceInfo = malArea.getServiceByNumber(this.getService());
+
+        if (serviceInfo == null) {
+            throw new NotFoundException(new UnsupportedServiceException(
+                    "Service for unknown area/version/service received ("
+                    + this.getServiceArea() + ", " + this.getAreaVersion()
+                    + ", " + this.getService() + ")"));
+        }
+
+        return serviceInfo;
+    }
+
     public MALOperation getMALOperation() throws NotFoundException {
         if (malOperation != null) {
             return malOperation;
         }
 
-        MALArea malArea = MALContextFactory.lookupArea(this.getServiceArea(), this.getServiceVersion());
-
-        if (malArea == null) {
-            throw new NotFoundException(new UnsupportedAreaException(
-                    "Operation for unknown area/version received ("
-                    + this.getServiceArea() + ", " + this.getServiceVersion() + ")"));
-        }
-
-        ServiceInfo malService = malArea.getServiceByNumber(this.getService());
-
-        if (malService == null) {
-            throw new NotFoundException(new UnsupportedServiceException(
-                    "Service for unknown area/version/service received ("
-                    + this.getServiceArea() + ", " + this.getServiceVersion()
-                    + ", " + this.getService() + ")"));
-        }
-
-        MALOperation op = malService.getOperationByNumber(this.getOperation());
+        ServiceInfo serviceInfo = this.getServiceInfo();
+        MALOperation op = serviceInfo.getOperationByNumber(this.getOperation());
 
         if (op == null) {
             throw new NotFoundException(new UnsupportedOperationException(
                     "Operation for unknown area/version/service/op received ("
-                    + this.getServiceArea() + ", " + this.getServiceVersion() + ", "
+                    + this.getServiceArea() + ", " + this.getAreaVersion() + ", "
                     + this.getService() + ", " + this.getOperation() + ")"));
         }
 

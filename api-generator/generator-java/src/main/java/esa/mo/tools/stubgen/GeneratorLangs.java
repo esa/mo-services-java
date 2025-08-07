@@ -180,19 +180,23 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     ExtendedServiceType eService = (ExtendedServiceType) service;
                     SupportedFeatures features = eService.getFeatures();
 
-                    if (features != null) {
-                        if (features.getObjects() != null) {
-                            for (ModelObjectType obj : features.getObjects().getObject()) {
-                                TypeKey key = new TypeKey(area.getName(), service.getName(), String.valueOf(obj.getNumber()));
-                                comObjectMap.put(key, obj);
-                            }
-                        }
+                    if (features == null) {
+                        continue;
+                    }
 
-                        if (features.getEvents() != null) {
-                            for (ModelObjectType obj : features.getEvents().getEvent()) {
-                                TypeKey key = new TypeKey(area.getName(), service.getName(), String.valueOf(obj.getNumber()));
-                                comObjectMap.put(key, obj);
-                            }
+                    if (features.getObjects() != null) {
+                        for (ModelObjectType obj : features.getObjects().getObject()) {
+                            String name = String.valueOf(obj.getNumber());
+                            TypeKey key = new TypeKey(area.getName(), service.getName(), name);
+                            comObjectMap.put(key, obj);
+                        }
+                    }
+
+                    if (features.getEvents() != null) {
+                        for (ModelObjectType obj : features.getEvents().getEvent()) {
+                            String name = String.valueOf(obj.getNumber());
+                            TypeKey key = new TypeKey(area.getName(), service.getName(), name);
+                            comObjectMap.put(key, obj);
                         }
                     }
                 }
@@ -531,28 +535,30 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
         for (OperationSummary op : summary.getOperations()) {
-            if (InteractionPatternEnum.PUBSUB_OP != op.getPattern()) {
-                List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-                CompositeField opRetType = null;
-                String opRetComment = null;
-                CompositeField serviceHandler = intHandler;
-
-                if (InteractionPatternEnum.REQUEST_OP == op.getPattern()) {
-                    opRetType = createOperationReturnType(file, area, service, op);
-                    opRetComment = "The return value of the operation";
-                } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
-                    serviceHandler = createCompositeElementsDetails(file, false, "interaction",
-                            TypeUtils.createTypeReference(area,
-                                    service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
-                            false, true, "The MAL object representing the interaction in the provider.");
-                }
-
-                file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
-                        StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException,
-                        "Implements the operation " + op.getName(), opRetComment,
-                        Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                                throwsMALException + " if there is an implementation exception"));
+            if (InteractionPatternEnum.PUBSUB_OP == op.getPattern()) {
+                continue;
             }
+
+            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
+            CompositeField opRetType = null;
+            String opRetComment = null;
+            CompositeField serviceHandler = intHandler;
+
+            if (InteractionPatternEnum.REQUEST_OP == op.getPattern()) {
+                opRetType = createOperationReturnType(file, area, service, op);
+                opRetComment = "The return value of the operation";
+            } else if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
+                serviceHandler = createCompositeElementsDetails(file, false, "interaction",
+                        TypeUtils.createTypeReference(area,
+                                service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Interaction", false),
+                        false, true, "The MAL object representing the interaction in the provider.");
+            }
+
+            file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
+                    StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException,
+                    "Implements the operation " + op.getName(), opRetComment,
+                    Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
+                            throwsMALException + " if there is an implementation exception"));
         }
 
         CompositeField skel = createCompositeElementsDetails(file, false, "skeleton",
@@ -888,7 +894,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             // SetSkeleton method
             CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
                     TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
-                    false, true, "Not used in the inheritance pattern (the skeleton is 'this'");
+                    false, true, "The skeleton (not used)");
             MethodWriter method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                     false, true, null, "setSkeleton", Arrays.asList(skeletonName), null,
                     "Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.",
@@ -948,7 +954,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 Arrays.asList(throwsMALException + " if there is a internal error", throwsInteractionException + " if there is a operation interaction error"));
 
         String operationNumberGetter = createProviderSkeletonHandlerSwitch();
-        method.addLine("int opNumber = " + operationNumberGetter + ";");
+        method.addLine("int opNumber = " + operationNumberGetter);
         method.addLine("switch (opNumber) {");
 
         //String msg = "Unknown operation number: \" + opNumber + \" - className: " + className + " - method: ";
@@ -1089,7 +1095,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
-                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
+                method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
+                        + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
                 method.addLine("    break;");
             }
         }
@@ -1128,23 +1135,28 @@ public abstract class GeneratorLangs extends GeneratorBase {
             } else {
                 String arg = op.getName() + "Rt";
                 StringBuilder buf = new StringBuilder();
+                buf.append("\n                    ");
 
                 for (int i = 0; i < targetTypes.size(); i++) {
                     FieldInfo ti = targetTypes.get(i);
                     if (i > 0) {
-                        buf.append(", ");
+                        buf.append(",\n                    ");
                     }
+                    String fieldName = ti.getFieldName();
+                    String getter = arg + ".get" + StubUtils.preCap(fieldName) + "()";
+
                     if (ti.isNativeType()) {
-                        buf.append("(").append(arg).append(".getBodyElement").append(i).append("()").append(" == null) ? null : new ");
+                        buf.append("(").append(getter).append(" == null) ? null : new ");
                         buf.append(getConfig().getAreaPackage(StdStrings.MAL)).append("mal.").append(getConfig().getStructureFolder());
-                        buf.append(".").append(StdStrings.UNION).append("(").append(arg).append(".getBodyElement").append(i).append("()").append(")");
+                        buf.append(".").append(StdStrings.UNION).append("(").append(getter).append(")");
                     } else {
-                        buf.append(arg).append(".getBodyElement").append(i).append("()");
+                        buf.append(getter);
                     }
                 }
 
                 method.addLine("    " + opRetType.getTypeName() + " " + arg + " = " + opCall + ";");
-                method.addLine("    interaction.sendResponse(" + buf.toString() + ");");
+                method.addLine("    interaction.sendResponse(" + buf.toString());
+                method.addLine("    );");
             }
         } else {
             // operation has an empty response
@@ -1196,11 +1208,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // create a comment for the body folder if supported
         createServiceMessageBodyFolderComment(destinationFolderName, returnTypeInfo.getArea(), returnTypeInfo.getService());
-
         ClassWriter file = createClassFile(destinationFolderName, returnTypeFqName.replace('.', '/'));
-
         file.addPackageStatement(returnTypeInfo.getArea(), returnTypeInfo.getService(), getConfig().getBodyFolder());
-
         file.addClassOpenStatement(returnTypeInfo.getShortName(), true, false, null, null,
                 "Multi body return class for " + returnTypeInfo.getShortName() + ".");
 
@@ -1235,13 +1244,16 @@ public abstract class GeneratorLangs extends GeneratorBase {
             addGetter(file, argType, null);
             addSetter(file, argType, null);
         }
+
+        /*
         // add deprecated getters and setters
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
                     returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "The new value.");
-            addGetter(file, argType, "BodyElement" + i);
+            //addGetter(file, argType, "BodyElement" + i);
             //addSetter(file, argType, "BodyElement" + i);
         }
+        */
 
         file.addClassCloseStatement();
         file.flush();
@@ -1327,7 +1339,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, argumentComment);
     }
 
-    public String createAdapterMethodsArgs(List<FieldInfo> typeInfos, String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(List<FieldInfo> typeInfos,
+            String argNamePrefix, boolean precedingArgs, boolean moreArgs) {
         if (typeInfos == null) {
             return "";
         }
@@ -1345,7 +1358,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return buf.toString();
     }
 
-    public String createAdapterMethodsArgs(FieldInfo typeInfo, String argName, int argIndex, boolean precedingArgs, boolean moreArgs) {
+    public String createAdapterMethodsArgs(FieldInfo typeInfo, String argName,
+            int argIndex, boolean precedingArgs, boolean moreArgs) {
         String retStr = "";
 
         if ((typeInfo.getTargetType() != null) && !(StdStrings.VOID.equals(typeInfo.getTargetType()))) {
@@ -1444,7 +1458,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return null;
     }
 
-    public CompositeField createOperationReturnType(LanguageWriter file, String area, String service, OperationSummary op) {
+    public CompositeField createOperationReturnType(LanguageWriter file,
+            String area, String service, OperationSummary op) {
         switch (op.getPattern()) {
             case REQUEST_OP: {
                 if (op.getRetTypes() != null) {

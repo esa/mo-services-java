@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.time.Instant;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
@@ -53,6 +54,24 @@ public class FineTime implements Attribute {
      */
     public FineTime(final long value) {
         this.value = value;
+    }
+
+    /**
+     * Initialises the object with a certain time. The value must represent a
+     * valid instant in UTC and is parsed using DateTimeFormatter#ISO_INSTANT.
+     * The time must be in a text string such as
+     * {@code 2007-12-03T10:15:30.00Z}.
+     *
+     * <p>
+     * See the description of the class <code>Date</code> for a discussion of
+     * slight discrepancies that may arise between "computer time" and
+     * coordinated universal time (UTC).
+     *
+     * @param value The time in UTC and is parsed using
+     * DateTimeFormatter#ISO_INSTANT.
+     */
+    public FineTime(final String value) {
+        this(Instant.parse(value).toEpochMilli());
     }
 
     @Override

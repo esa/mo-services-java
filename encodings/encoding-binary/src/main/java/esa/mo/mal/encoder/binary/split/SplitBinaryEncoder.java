@@ -64,7 +64,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
      */
     @Override
     public void encodeString(String val) throws MALException {
-
         try {
             outputStream.writeString(val);
         } catch (IOException e) {
@@ -74,7 +73,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
 
     @Override
     public void encodeNullableString(String value) throws MALException {
-
         try {
             if (value != null) {
                 // encode presence flag
@@ -171,7 +169,7 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
         }
 
         @Deprecated
-        private void addFixedUnsignedLong(long value) throws IOException {
+        private void writeFixedUnsignedLong(long value) throws IOException {
             write(java.nio.ByteBuffer.allocate(8).putLong(value).array());
         }
 

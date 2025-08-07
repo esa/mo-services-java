@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.com.InvalidException;
 import org.ccsds.moims.mo.com.structures.ObjectKey;
 import org.ccsds.moims.mo.common.directory.DirectoryHelper;
-import org.ccsds.moims.mo.common.directory.DirectoryServiceInfo;
 import org.ccsds.moims.mo.common.directory.body.PublishProviderResponse;
 import org.ccsds.moims.mo.common.directory.provider.DirectoryInheritanceSkeleton;
 import org.ccsds.moims.mo.common.directory.structures.AddressDetails;
@@ -94,7 +93,6 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         }
 
         directoryServiceProvider = connection.startService(
-                DirectoryServiceInfo.DIRECTORY_SERVICE_NAME.toString(),
                 DirectoryHelper.DIRECTORY_SERVICE, false, this);
 
         running = true;

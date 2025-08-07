@@ -901,7 +901,7 @@ public class ArchiveScenario {
 
     public boolean notifiedUpdateHeaderListIs(int size) {
         // Small delay to allow sufficient time to receive event
-        waitForShortTime();
+        waitForLongTime();
         return notifiedUpdateHeaderList.size() == size;
     }
 
@@ -1266,7 +1266,7 @@ public class ArchiveScenario {
         return (queriedObjectTypes.size() == expectedSize);
     }
 
-    private void waitForShortTime() {
+    private void waitForLongTime() {
         try {
             Thread.sleep((long) Configuration.COM_PERIOD_LONG);
         } catch (Exception ex) {

@@ -140,12 +140,6 @@ public class MonitorActivityScenario extends BaseActivityScenario {
     public boolean subscribeForActivityEventsFrom(String relay) throws Exception {
         logMessage(loggingClassName + ":registerForEvents START");
         EventStub evStub = LocalMALInstance.instance().activityEventStub(relay, domain);
-        /*
-    EntityKeyList ekl = new EntityKeyList();
-    EntityRequestList erl = new EntityRequestList();
-    ekl.add(new EntityKey(ALL_ID, new Long(ALL_INT), new Long(ALL_INT), new Long(ALL_INT)));
-    erl.add(new EntityRequest(null, Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, ekl));
-         */
         SubscriptionFilterList filters = new SubscriptionFilterList();
         Subscription sub = new Subscription(new Identifier("SubA"), domain, null, filters);
         evStub.monitorEventRegister(sub, monitorEventAdapter);
@@ -184,6 +178,12 @@ public class MonitorActivityScenario extends BaseActivityScenario {
     public boolean createActivityServiceRelayCalledToRelayTo(String relayName, String relayTo) throws Exception {
         logMessage(loggingClassName + ":createActivityServiceRelayCalled " + relayName + " which relays to " + relayTo);
         LocalMALInstance.instance().activityRelayManagementStub().createRelay(relayName, relayTo);
+        // Wait here
+        try {
+            Thread.sleep((long) Configuration.COM_PERIOD_LONG);
+        } catch (Exception ex) {
+        }
+
         relayList[noRelays++] = relayName;
         return true;
     }
@@ -192,7 +192,6 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * Clears any existing activity reports.
      *
      * @return success indication - currently always true.
-     * @throws Exception generated in case of comms failures
      */
     public boolean clearReceivedActivityReportsList() {
         logMessage(loggingClassName + ":clearReceivedActivityReportsList");
@@ -211,7 +210,8 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * @param transactivity the transport phases
      * @param exeactivity the execution phases
      * @return monitorkey to be used to check result of the pattern.
-     * @throws Exception generated in case of comms failures
+     * @throws org.ccsds.moims.mo.mal.MALException
+     * @throws org.ccsds.moims.mo.mal.MALInteractionException
      */
     public String patternInitiationForViaWithTransportActivityAndExecutionActivity(String pattern,
             String relay, String[] transactivity, String[] exeactivity) throws MALException, MALInteractionException {
@@ -288,7 +288,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
 
         MonitorActivityTestAdapter monitor = ((MonitorActivityTestAdapter) monitorMap.get(monitorKey));
         try {
-            retVal = monitor.cond.waitFor(Configuration.COM_PERIOD_LONG);
+            retVal = monitor.cond.waitFor(2 * Configuration.COM_PERIOD_LONG);
         } catch (InterruptedException ex) {
             // do nothing, we are expecting this
         }
@@ -330,15 +330,6 @@ public class MonitorActivityScenario extends BaseActivityScenario {
                 }
             }
         }
-//        for (int i = 0; i < transactivity.length; i++)
-//        {
-//            logMessage(loggingClassName + " EXP Trans " + transactivity[i]);
-//        }
-//
-//        for (int i = 0; i < monitorEventAdapter.getMonitorEventList().size(); i++)
-//        {
-//            logMessage(loggingClassName + " RX " + monitorEventAdapter.getMonitorEventList().get(i));
-//        }
 
         logMessage(loggingClassName + ":receivedExpectedTransportActivity RET = " + transEventsMatch);
         return transEventsMatch;
@@ -354,6 +345,10 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      */
     public boolean receivedExpectedExecutionActivity(String monitorKey, String[] expEvents) {
         logMessage(loggingClassName + ":receivedExpectedExecutionActivity");
+        try {
+            Thread.sleep((long) Configuration.COM_PERIOD_LONG);
+        } catch (Exception ex) {
+        }
         MonitorEventDetailsList eventList = monitorEventAdapter.getMonitorEventList();
         int noExecutionEvents = eventList.noEvents("EXECUTION");
         int noExecutionErrorEvents = eventList.noEvents("EXECUTION_ERROR");

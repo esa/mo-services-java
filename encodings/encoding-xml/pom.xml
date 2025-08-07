@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>12.1</version>
+        <version>12.2</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>encoding-xml</artifactId>
     <packaging>jar</packaging>
-    <version>12.1</version>
+    <version>12.2</version>
 
     <name>ESA MO Encoder - XML</name>
     <description>A simple Java String based encoder for the CCSDS MAL</description>
@@ -69,7 +69,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

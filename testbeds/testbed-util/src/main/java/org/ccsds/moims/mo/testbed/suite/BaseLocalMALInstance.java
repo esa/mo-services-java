@@ -23,11 +23,9 @@ package org.ccsds.moims.mo.testbed.suite;
 import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Properties;
-
 import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALContextFactory;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.broker.MALBrokerManager;
 import org.ccsds.moims.mo.mal.provider.MALProviderManager;

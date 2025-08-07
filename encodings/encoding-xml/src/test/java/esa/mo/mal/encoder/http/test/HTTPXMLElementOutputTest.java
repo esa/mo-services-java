@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package esa.mo.mal.encoder.http.test;
 
@@ -16,7 +16,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
-import static org.ccsds.moims.mo.mal.structures.InteractionType.SEND;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilter;
 import org.ccsds.moims.mo.mal.structures.SubscriptionFilterList;
@@ -36,150 +35,144 @@ import org.w3c.dom.NodeList;
  */
 public class HTTPXMLElementOutputTest {
 
-  XMLTestHelper helper = new XMLTestHelper();
-  ByteArrayOutputStream baos;
-  MALElementOutputStream httpElementOutputStream;
+    XMLTestHelper helper = new XMLTestHelper();
+    ByteArrayOutputStream baos;
+    MALElementOutputStream httpElementOutputStream;
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
-  }
+    /**
+     * @throws java.lang.Exception
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        MALContextFactory.getElementsRegistry().loadFullArea(MALHelper.MAL_AREA);
+    }
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {
-  }
+    /**
+     * @throws java.lang.Exception
+     */
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+    }
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception {
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        baos = new ByteArrayOutputStream();
+        httpElementOutputStream = new XMLElementOutputStream(baos);
+    }
 
-    baos = new ByteArrayOutputStream();
-    httpElementOutputStream = new XMLElementOutputStream(baos);
+    /**
+     * @throws java.lang.Exception
+     */
+    @After
+    public void tearDown() throws Exception {
+    }
 
-  }
+    @Test
+    public void testSubDomain() throws Exception {
+        IdentifierList subDomain = new IdentifierList();
+        subDomain.add(new Identifier("Id1"));
+        subDomain.add(new Identifier("Id2"));
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown() throws Exception {
-  }
+        httpElementOutputStream.writeElement(subDomain, null);
+        httpElementOutputStream.close();
 
-  @Test
-  public void testSubDomain() throws Exception {
+        String xmlResult = baos.toString();
 
-    IdentifierList subDomain = new IdentifierList();
-    subDomain.add(new Identifier("Id1"));
-    subDomain.add(new Identifier("Id2"));
+        helper.assertAgainstSchema(xmlResult);
 
-    httpElementOutputStream.writeElement(subDomain, null);
-    httpElementOutputStream.close();
+        // SubDomain
+        assertNotNull(helper.queryXPath(xmlResult, "/Body/IdentifierList"));
+        assertEquals(1, helper.queryXPath(xmlResult, "/Body/IdentifierList").getLength());
+        NodeList identifiers = helper.queryXPath(xmlResult, "/Body/IdentifierList/Identifier");
+        assertNotNull(identifiers);
+        assertEquals(2, identifiers.getLength());
+        assertNotNull(identifiers.item(0));
+        assertEquals("Identifier", identifiers.item(0).getNodeName());
+        assertEquals("Id1", identifiers.item(0).getTextContent().replaceAll("\\n|\\t", ""));
+        assertNotNull(identifiers.item(1));
+        assertEquals("Identifier", identifiers.item(1).getNodeName());
+        assertEquals("Id2", identifiers.item(1).getTextContent().replaceAll("\\n|\\t", ""));
+    }
 
-    String xmlResult = baos.toString();
+    @Test
+    public void testEmptyBody() throws Exception {
+        httpElementOutputStream.writeElement(null, null);
+        httpElementOutputStream.close();
 
-    helper.assertAgainstSchema(xmlResult);
+        String xmlResult = baos.toString();
+        helper.assertAgainstSchema(xmlResult);
 
-    // SubDomain
-    assertNotNull(helper.queryXPath(xmlResult, "/Body/IdentifierList"));
-    assertEquals(1, helper.queryXPath(xmlResult, "/Body/IdentifierList").getLength());
-    NodeList identifiers = helper.queryXPath(xmlResult, "/Body/IdentifierList/Identifier");
-    assertNotNull(identifiers);
-    assertEquals(2, identifiers.getLength());
-    assertNotNull(identifiers.item(0));
-    assertEquals("Identifier", identifiers.item(0).getNodeName());
-    assertEquals("Id1", identifiers.item(0).getTextContent().replaceAll("\\n|\\t", ""));
-    assertNotNull(identifiers.item(1));
-    assertEquals("Identifier", identifiers.item(1).getNodeName());
-    assertEquals("Id2", identifiers.item(1).getTextContent().replaceAll("\\n|\\t", ""));
-  }
+        NodeList bodyNode = helper.queryXPath(xmlResult, "/Body");
+        assertNotNull(bodyNode);
+        NodeList nodes = helper.queryXPath(xmlResult, "/Body/*");
+        assertNotNull(nodes);
+        assertEquals(1, nodes.getLength());
+        NodeList childNode = helper.queryXPath(xmlResult, "/Body/Element");
+        assertNotNull(childNode);
+    }
 
-  @Test
-  public void testEmptyBody() throws Exception {
+    @Test
+    public void testEncodeEnumeration() throws Exception {
+        InteractionType it = InteractionType.SEND;
+        httpElementOutputStream.writeElement(it, null);
+        httpElementOutputStream.close();
 
-    httpElementOutputStream.writeElement(null, null);
-    httpElementOutputStream.close();
+        String xmlResult = baos.toString();
 
-    String xmlResult = baos.toString();
-    helper.assertAgainstSchema(xmlResult);
+        helper.assertAgainstSchema(xmlResult);
 
-    NodeList bodyNode = helper.queryXPath(xmlResult, "/Body");
-    assertNotNull(bodyNode);
-    NodeList nodes = helper.queryXPath(xmlResult, "/Body/*");
-    assertNotNull(nodes);
-    assertEquals(1, nodes.getLength());
-    NodeList childNode = helper.queryXPath(xmlResult, "/Body/Element");
-    assertNotNull(childNode);
-  }
+        NodeList nodes = helper.queryXPath(xmlResult, "/Body/InteractionType");
 
-  @Test
-  public void testEncodeEnumeration() throws Exception {
+        assertNotNull(nodes);
+        assertEquals(1, nodes.getLength());
+        Node itNode = nodes.item(0);
+        assertNotNull(itNode);
+        assertEquals("InteractionType", itNode.getNodeName());
+        assertEquals(1, itNode.getAttributes().getLength());
+        assertNotNull(itNode.getAttributes().item(0));
+        Node att = itNode.getAttributes().item(0);
+        assertEquals("malxml:type", att.getNodeName());
+        assertEquals(String.valueOf(InteractionType.TYPE_ID.getTypeId()), att.getNodeValue());
+    }
 
-    InteractionType it = InteractionType.SEND;
+    @Test
+    public void encodeSubscription() throws Exception {
+        IdentifierList domain = new IdentifierList();
+        domain.add(new Identifier("Test"));
+        domain.add(new Identifier("Domain0"));
 
-    httpElementOutputStream.writeElement(it, null);
-    httpElementOutputStream.close();
+        IdentifierList selectedKeys = new IdentifierList();
+        selectedKeys.add(new Identifier("key1"));
 
-    String xmlResult = baos.toString();
+        SubscriptionFilterList filterList = new SubscriptionFilterList();
+        AttributeList values = new AttributeList();
+        values.add(new Blob("TestValue".getBytes()));
+        values.add(new Union(new Boolean(true)));
+        SubscriptionFilter filter = new SubscriptionFilter(new Identifier("TestFilter"), values);
+        filterList.add(filter);
+        Subscription subscription = new Subscription(new Identifier("Demo"), domain, selectedKeys, filterList);
 
-    helper.assertAgainstSchema(xmlResult);
+        // Encode
+        httpElementOutputStream.writeElement(subscription, null);
+        httpElementOutputStream.close();
 
-    NodeList nodes = helper.queryXPath(xmlResult, "/Body/InteractionType");
+        String xmlResult = baos.toString();
+        System.out.println(xmlResult);
 
-    assertNotNull(nodes);
-    assertEquals(1, nodes.getLength());
-    Node itNode = nodes.item(0);
-    assertNotNull(itNode);
-    assertEquals("InteractionType", itNode.getNodeName());
-    assertEquals(1, itNode.getAttributes().getLength());
-    assertNotNull(itNode.getAttributes().item(0));
-    Node att = itNode.getAttributes().item(0);
-    assertEquals("malxml:type", att.getNodeName());
-    assertEquals(String.valueOf(InteractionType.TYPE_ID.getTypeId()), att.getNodeValue());
-  }
+        NodeList nodes = helper.queryXPath(xmlResult, "/Body/Subscription");
+        assertNotNull(nodes);
+        assertEquals(1, nodes.getLength());
+        assertNotNull(nodes.item(0));
 
-  @Test
-  public void encodeSubscription() throws Exception {
-    IdentifierList domain = new IdentifierList();
-    domain.add(new Identifier("Test"));
-    domain.add(new Identifier("Domain0"));
+        // Decode
+        InputStream inputStream = new ByteArrayInputStream(xmlResult.getBytes());
+        XMLElementInputStream xmlInputStream = new XMLElementInputStream(inputStream);
+        Subscription decodedSubscription = (Subscription) xmlInputStream.readElement(null, null);
 
-    IdentifierList selectedKeys = new IdentifierList();
-    selectedKeys.add(new Identifier("key1"));
-
-    SubscriptionFilterList filterList = new SubscriptionFilterList();
-    AttributeList values = new AttributeList();
-    values.add(new Blob("TestValue".getBytes()));
-    values.add(new Union(new Boolean(true)));
-    SubscriptionFilter filter = new SubscriptionFilter(new Identifier("TestFilter"), values);
-    filterList.add(filter);
-    Subscription subscription = new Subscription(new Identifier("Demo"), domain, selectedKeys, filterList);
-
-    // Encode
-    httpElementOutputStream.writeElement(subscription, null);
-    httpElementOutputStream.close();
-
-    String xmlResult = baos.toString();
-    System.out.println(xmlResult);
-
-    NodeList nodes = helper.queryXPath(xmlResult, "/Body/Subscription");
-    assertNotNull(nodes);
-    assertEquals(1, nodes.getLength());
-    assertNotNull(nodes.item(0));
-
-    // Decode
-    InputStream inputStream = new ByteArrayInputStream(xmlResult.getBytes());
-    XMLElementInputStream xmlInputStream = new XMLElementInputStream(inputStream);
-    Subscription decodedSubscription = (Subscription) xmlInputStream.readElement(null, null);
-
-    assertNotNull(decodedSubscription);
-    assertEquals(subscription, decodedSubscription);
-  }
+        assertNotNull(decodedSubscription);
+        assertEquals(subscription, decodedSubscription);
+    }
 }

@@ -39,7 +39,7 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
 
 class MonitorEventAdapter extends EventAdapter {
 
-    private MonitorEventDetailsList monitorEventList = new MonitorEventDetailsList();
+    private final MonitorEventDetailsList monitorEventList = new MonitorEventDetailsList();
     // private MALMessage sentMsg = null;
     private MALMessageHeader hdr = null;
     private String pattern = null;

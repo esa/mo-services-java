@@ -138,7 +138,7 @@ public class MosdlSpecLoader implements SpecLoader {
         ParseListener parseListener = new ParseListener(spec, isLaxMode);
         ErrorListener errorListener = new ErrorListener(isLaxMode);
         for (File file : inputFiles) {
-            logger.debug("Loading MOSDL spec file '{}'. Lax mode: {}", file, isLaxMode);
+            logger.debug("Loading MOSDL spec file: {} \nLax mode: {}", file, isLaxMode);
             try {
                 CharStream input = CharStreams.fromFileName(file.getPath());
                 MOSDLLexer lexer = new MOSDLLexer(input);
@@ -149,7 +149,7 @@ public class MosdlSpecLoader implements SpecLoader {
                 parser.addErrorListener(errorListener);
                 ParseTree parseTree = parser.area();
                 ParseTreeWalker.DEFAULT.walk(parseListener, parseTree);
-                logger.debug("Loaded MOSDL spec file '{}'.", file);
+                logger.debug("Loaded MOSDL spec file: {}", file);
             } catch (ParseCancellationException | IOException ex) {
                 throw new LoaderException(ex);
             }

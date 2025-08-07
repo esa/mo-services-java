@@ -114,16 +114,14 @@ public class MALElementsRegistry {
             return (ElementList) obj;
         }
 
-        //long l = obj.getTypeId().getSFP();
-        //long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
         TypeId typeId = obj.getTypeId();
         int sfp = typeId.getSFP();
         int newSPF = (sfp > 0) ? -sfp : sfp;
-        long ll = (new TypeId(typeId.getAreaNumber(), typeId.getAreaVersion(),
+        long newTypeId = (new TypeId(typeId.getAreaNumber(), typeId.getAreaVersion(),
                 typeId.getServiceNumber(), newSPF)).getTypeId();
 
         try {
-            Element createdElement = MALContextFactory.getElementsRegistry().createElement(ll);
+            Element createdElement = MALContextFactory.getElementsRegistry().createElement(newTypeId);
             return (ElementList) createdElement;
         } catch (Exception ex) {
             throw new NotFoundException("The element could not be found in the MAL ElementFactory!"
@@ -145,12 +143,10 @@ public class MALElementsRegistry {
             return null;
         }
 
-        //long l = obj.getTypeId().getSFP();
-        //long ll = (-((l) & 0xFFFFFFL)) & 0xFFFFFFL + (l & 0xFFFFFFFFFF000000L);
-        long ll = obj.getTypeId().generateTypeIdPositive().getTypeId();
+        long newTypeId = obj.getTypeId().generateTypeIdPositive().getTypeId();
 
         try {
-            return MALContextFactory.getElementsRegistry().createElement(ll);
+            return MALContextFactory.getElementsRegistry().createElement(newTypeId);
         } catch (Exception ex) {
             throw new NotFoundException("The element could not be found in the MAL ElementFactory!"
                     + " The object type is: " + obj.getClass().getSimpleName()

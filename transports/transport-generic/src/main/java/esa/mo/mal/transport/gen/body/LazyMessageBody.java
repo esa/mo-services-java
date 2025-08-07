@@ -130,6 +130,10 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             throws IllegalArgumentException, MALException {
         decodeMessageBody();
 
+        if (index >= messageParts.length) {
+            throw new IllegalArgumentException("The index is out of bounds!");
+        }
+
         Object bodyPart = messageParts[index];
 
         // Downcast the List to the provided (specialized) type if

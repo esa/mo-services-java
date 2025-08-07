@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>12.1</version>
+        <version>12.2</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>services-impl</artifactId>
-    <version>12.1</version>
+    <version>12.2</version>
     <packaging>pom</packaging>
     <name>ESA MO Services Implementations</name>
 
@@ -58,6 +58,7 @@
 
     <modules>
         <module>services-area003-v001-common</module>
+        <module>services-area004-v002-mc</module>
         <module>services-area009-v001-mpd</module>
     </modules>
 </project>

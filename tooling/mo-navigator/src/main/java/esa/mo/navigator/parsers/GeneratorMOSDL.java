@@ -214,7 +214,7 @@ public class GeneratorMOSDL extends Generator {
         for (AreaType area : spec.getArea()) {
             currentArea = area;
             // File targetFile = new File(targetDirectory, area.getName() + MOSDL_SPEC_FILE_ENDING);
-            // logger.debug("Generating MOSDL file '{}'.", targetFile);
+            // logger.debug("Generating MOSDL file: {}", targetFile);
             try {
                 // currentWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8));
                 currentWriter = strWriter;
@@ -342,7 +342,7 @@ public class GeneratorMOSDL extends Generator {
                 currentArea = null;
                 currentWriter.close();
                 return currentWriter.toString();
-                //logger.debug("Generated MOSDL file '{}", targetFile);
+                //logger.debug("Generated MOSDL file: {}", targetFile);
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(FileSupport.class.getName()).log(Level.WARNING,
                         "Error! ");
@@ -432,11 +432,11 @@ public class GeneratorMOSDL extends Generator {
 
     @Override
     public void generate(SpecificationType spec, File targetDirectory) throws GeneratorException {
-        logger.debug("Generating MOSDL file(s) into directory '{}'.", targetDirectory);
+        logger.debug("Generating MOSDL file(s) into directory: {}", targetDirectory);
         for (AreaType area : spec.getArea()) {
             currentArea = area;
             File targetFile = new File(targetDirectory, area.getName() + MOSDL_SPEC_FILE_ENDING);
-            logger.debug("Generating MOSDL file '{}'.", targetFile);
+            logger.debug("Generating MOSDL file: {}", targetFile);
             try {
                 currentWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8));
                 writeDoc(area.getComment());
@@ -560,12 +560,12 @@ public class GeneratorMOSDL extends Generator {
                 writeErrors(area.getErrors());
                 currentArea = null;
                 currentWriter.close();
-                logger.debug("Generated MOSDL file '{}", targetFile);
+                logger.debug("Generated MOSDL file: {}", targetFile);
             } catch (IOException ex) {
                 throw new GeneratorException(ex);
             }
         }
-        logger.debug("Generated all MOSDL files for the supplied specification into directory '{}'.", targetDirectory);
+        logger.debug("Generated all MOSDL files for the supplied specification into directory: {}", targetDirectory);
     }
 
     private void writeMessage(String prefix, MessageDetails msg) throws IOException {

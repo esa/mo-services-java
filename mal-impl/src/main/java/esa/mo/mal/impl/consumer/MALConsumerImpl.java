@@ -47,7 +47,9 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
     private MALTransmitErrorListener transmissionListener;
 
     /**
-     * Constructor.
+     * Constructor. Deprecated because many of the fields are no longer used and
+     * will have to be removed from this method signature.
+     *
      * @param impl MAL Context implementation.
      * @param localName Local name.
      * @param uriTo Receiver URI.
@@ -64,6 +66,7 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
      * @param supplements MAL Supplements.
      * @throws MALException on error.
      */
+    @Deprecated
     MALConsumerImpl(final MALContextImpl impl,
             final String localName,
             final URI uriTo,
@@ -104,7 +107,8 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
     }
 
     /**
-     * Constructor.
+     * Constructor. Deprecated because many of the fields are no longer used and
+     * will have to be removed from this method signature.
      *
      * @param impl MAL Context Implementation.
      * @param endPoint MAL Endpoint
@@ -121,6 +125,7 @@ public class MALConsumerImpl implements MALConsumer, MALCloseable {
      * @param priority Priority.
      * @throws MALException on error
      */
+    @Deprecated
     MALConsumerImpl(final MALContextImpl impl,
             final MALEndpoint endPoint,
             final URI uriTo,

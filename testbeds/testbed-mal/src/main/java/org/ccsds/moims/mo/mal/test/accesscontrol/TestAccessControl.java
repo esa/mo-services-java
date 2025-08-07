@@ -22,7 +22,6 @@ package org.ccsds.moims.mo.mal.test.accesscontrol;
 
 import java.util.Vector;
 import org.ccsds.moims.mo.mal.AuthenticationFailedException;
-
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;

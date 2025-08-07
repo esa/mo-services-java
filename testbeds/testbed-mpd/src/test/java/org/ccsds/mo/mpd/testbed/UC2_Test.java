@@ -113,7 +113,7 @@ public class UC2_Test extends MPDTest {
     }
 
     private synchronized void test(UInteger apidValue, int steps, int expectedNumberOfResults) {
-        TimeWindow window = new TimeWindow(TMPacketsDataset.APID100_TIME_START, TMPacketsDataset.APID100_TIME_END);
+        TimeWindow window = new TimeWindow(Constants.APID100_TIME_START, Constants.APID100_TIME_END);
         int counter = 0;
         long interval = window.getEnd().getValue() - window.getStart().getValue();
         long halfInterval = interval / 2;

@@ -20,18 +20,18 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.connections;
 
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperConnections;
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperConnections;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
-import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
  * Holds the details of the service connections.
@@ -87,10 +87,12 @@ public class ServicesConnectionDetails {
      */
     public ServicesConnectionDetails loadURIFromFiles(String filename) throws MalformedURLException, FileNotFoundException {
         if (filename == null) {
-            filename = System.getProperty("providerURI.properties", HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME);
+            filename = System.getProperty("providerURI.properties",
+                    HelperMisc.PROVIDER_URIS_PROPERTIES_FILENAME);
         }
 
-        File configFile = new File(filename);
+        //File file = getProviderURIsDirectory(filename);
+        File configFile = ConnectionProvider.getProviderURIsDirectory(filename);
         if (!configFile.exists()) {
             throw new FileNotFoundException(filename + " not found.");
         }
@@ -107,7 +109,7 @@ public class ServicesConnectionDetails {
      * @throws java.net.MalformedURLException when the MALconsumer is not
      * initialized correctly
      */
-    public ServicesConnectionDetails loadURIFromProperties(Properties uriProps) throws MalformedURLException {
+    private ServicesConnectionDetails loadURIFromProperties(Properties uriProps) throws MalformedURLException {
         // Reading the values out of the properties file
         Set propKeys = uriProps.keySet();
         Object[] array = propKeys.toArray();
@@ -119,30 +121,32 @@ public class ServicesConnectionDetails {
             if (propString.endsWith(HelperConnections.SUFFIX_URI)) {
                 // Remove the URI part of it
                 String serviceName = propString.substring(0, propString.length() - HelperConnections.SUFFIX_URI.length());
-                SingleConnectionDetails details = new SingleConnectionDetails();
 
                 // Get the URI + Broker + Domain from the Properties
-                details.setProviderURI(uriProps.getProperty(serviceName + HelperConnections.SUFFIX_URI));
+                String providerURI = uriProps.getProperty(serviceName + HelperConnections.SUFFIX_URI);
 
                 String brokerURI = uriProps.getProperty(serviceName + HelperConnections.SUFFIX_BROKER);
-                details.setBrokerURI(brokerURI);
 
                 if ("null".equals(brokerURI)) {
-                    details.setBrokerURI((URI) null);
+                    brokerURI = null;
                 }
 
-                details.setDomain(HelperDomain.domainId2domain(uriProps.getProperty(serviceName + HelperConnections.SUFFIX_DOMAIN)));
+                String domainId = uriProps.getProperty(serviceName + HelperConnections.SUFFIX_DOMAIN);
+                IdentifierList domain = HelperDomain.domainId2domain(domainId);
                 String serviceKeyRaw = uriProps.getProperty(serviceName + HelperConnections.SUFFIX_SERVICE_KEY);
+                IntegerList serviceKey = null;
 
                 if (serviceKeyRaw != null) {
                     // 1 in order to remove the '['
                     String[] a = serviceKeyRaw.substring(1, serviceKeyRaw.length() - 1).split(", ");
-                    IntegerList serviceKey = new IntegerList();
+                    serviceKey = new IntegerList();
                     serviceKey.add(Integer.parseInt(a[0]));
                     serviceKey.add(Integer.parseInt(a[1]));
                     serviceKey.add(Integer.parseInt(a[2]));
-                    details.setServiceKey(serviceKey);
                 }
+
+                SingleConnectionDetails details = new SingleConnectionDetails(
+                        providerURI, brokerURI, domain, serviceKey);
 
                 // Put it in the Hash Map
                 services.put(serviceName, details);

@@ -45,16 +45,6 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
      * Constructor for the Directory service consumer.
      *
      * @param providerURI The URI of the provider.
-     * @throws MALException If the Directory service could not be started.
-     */
-    public DirectoryConsumerServiceImpl(final URI providerURI) throws MALException {
-        this(providerURI, null, null);
-    }
-
-    /**
-     * Constructor for the Directory service consumer.
-     *
-     * @param providerURI The URI of the provider.
      * @param authenticationId The authenticationId token.
      * @param localNamePrefix The local name prefix.
      * @throws MALException If the Directory service could not be started.
@@ -81,6 +71,16 @@ public class DirectoryConsumerServiceImpl extends ConsumerServiceImpl {
                 DirectoryHelper.DIRECTORY_SERVICE, authenticationId, localNamePrefix);
 
         this.directoryService = new DirectoryStub(tmConsumer);
+    }
+
+    /**
+     * Constructor for the Directory service consumer.
+     *
+     * @param providerURI The URI of the provider.
+     * @throws MALException If the Directory service could not be started.
+     */
+    public DirectoryConsumerServiceImpl(final URI providerURI) throws MALException {
+        this(providerURI, null, null);
     }
 
     /**

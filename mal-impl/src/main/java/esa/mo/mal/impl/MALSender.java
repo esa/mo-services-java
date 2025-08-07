@@ -317,7 +317,8 @@ public class MALSender {
      * interaction.
      * @throws MALException on internal error.
      */
-    public void onewayMultiPublish(final MALEndpoint ep, final List<MALMessage> msgs)
+    @Deprecated
+    private void onewayMultiPublish(final MALEndpoint ep, final List<MALMessage> msgs)
             throws MALInteractionException, MALException {
         initiateMultiOnewayInteraction(ep, msgs);
     }
@@ -343,7 +344,7 @@ public class MALSender {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType(), true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
-        return initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
+        return synchronousInteraction(transId, details.getEndpoint(), msg);
     }
 
     /**
@@ -367,7 +368,7 @@ public class MALSender {
             throws MALInteractionException, MALException {
         final Long transId = icmap.createTransaction(op.getInteractionType(), true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
-        return initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
+        return synchronousInteraction(transId, details.getEndpoint(), msg);
     }
 
     /**
@@ -492,7 +493,7 @@ public class MALSender {
                     srcHdr.getServiceArea(),
                     srcHdr.getService(),
                     srcHdr.getOperation(),
-                    srcHdr.getServiceVersion(),
+                    srcHdr.getAreaVersion(),
                     false,
                     srcHdr.getSupplements(),
                     qosProperties,
@@ -568,6 +569,7 @@ public class MALSender {
         return msg;
     }
 
+    @Deprecated
     private void initiateMultiOnewayInteraction(final MALEndpoint ep,
             final List<MALMessage> msgs) throws MALInteractionException, MALException {
         try {
@@ -593,11 +595,11 @@ public class MALSender {
             final Object... msgBody) throws MALInteractionException, MALException {
         final Long transId = icmap.createPubSubTransaction(true, listener);
         MALMessage msg = details.createMessage(op, transId, syncStage, msgBody);
-        initiateSynchronousInteraction(transId, details.getEndpoint(), msg);
+        synchronousInteraction(transId, details.getEndpoint(), msg);
         return transId;
     }
 
-    private MALMessageBody initiateSynchronousInteraction(final Long transId,
+    private MALMessageBody synchronousInteraction(final Long transId,
             final MALEndpoint endpoint, MALMessage msg) throws MALInteractionException, MALException {
         try {
             msg = securityManager.check(msg);
@@ -666,7 +668,7 @@ public class MALSender {
                     srcHdr.getServiceArea(),
                     srcHdr.getService(),
                     srcHdr.getOperation(),
-                    srcHdr.getServiceVersion(),
+                    srcHdr.getAreaVersion(),
                     true,
                     srcHdr.getSupplements(),
                     new HashMap(),

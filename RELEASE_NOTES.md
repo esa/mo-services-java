@@ -4,6 +4,14 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 12.2 (07 August 2025)
+* Removes the pipeline tests for Java 8
+* Adds the new Encoding tests and integrated them with the GitHub pipeline
+* Improves the log message of the MO Errors when they are returned by a provider
+* Adds the first project skeleton for the M&C v2
+* Bug Fix: the INVOKE and PROGRESS interaction patterns were not returning correctly the ACK message on async calls
+* Updates the MPS spec with the final version
+
 ### Version 12.1 (29 May 2025)
 * Removes JMS and ActiveMQ transports
 * Refactors HelperTime
@@ -18,7 +26,7 @@ The different versions and respective updates are the following:
 * Improvements to the API and Word generator
 * Simplification of the pom variables
 * Multiple updates to the MPD specs and respective testbed
-* Updates the MPS spec with the final round of RIDs
+* Updates the MPS spec with the latest round of RID updates
 * Updates the M&C spec with the latest changes
 * Adds jetty to the http transport implementation
 

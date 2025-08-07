@@ -45,22 +45,22 @@ public class TypeId {
     /**
      * Area number (defined as UShort by the MAL).
      */
-    private final short areaNumber;
+    private Short areaNumber = null;
 
     /**
      * Area version (defined as UShort by the MAL).
      */
-    private final short areaVersion;
+    private short areaVersion;
 
     /**
      * Service number (defined as UShort by the MAL).
      */
-    private final short serviceNumber;
+    private short serviceNumber;
 
     /**
      * Short Form Part number (defined as Short by the MAL).
      */
-    private final short sfp;
+    private short sfp;
 
     private Long typeId = null;
 
@@ -71,10 +71,6 @@ public class TypeId {
      */
     public TypeId(final Long typeId) {
         this.typeId = typeId;
-        this.areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & MASK_16);
-        this.areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & MASK_08);
-        this.serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & MASK_16);
-        this.sfp = (short) (typeId & MASK_24);
     }
 
     /**
@@ -108,12 +104,22 @@ public class TypeId {
         this((short) areaNumber, (short) areaVersion, (short) serviceNumber, (short) sfp);
     }
 
+    private void calculateIfNeeded() {
+        if (areaNumber == null) {
+            areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & MASK_16);
+            areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & MASK_08);
+            serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & MASK_16);
+            sfp = (short) (typeId & MASK_24);
+        }
+    }
+
     /**
      * Returns the area number of the service.
      *
      * @return The area number of the service.
      */
     public int getAreaNumber() {
+        calculateIfNeeded();
         return areaNumber;
     }
 
@@ -123,6 +129,7 @@ public class TypeId {
      * @return The area version of the service.
      */
     public int getAreaVersion() {
+        calculateIfNeeded();
         return areaVersion;
     }
 
@@ -132,10 +139,17 @@ public class TypeId {
      * @return The service number of the service.
      */
     public int getServiceNumber() {
+        calculateIfNeeded();
         return serviceNumber;
     }
 
+    /**
+     * Returns true if this TypeId is from the old MAL, otherwise false.
+     *
+     * @return True if this TypeId is from the old MAL, otherwise false.
+     */
     public boolean isOldMAL() {
+        calculateIfNeeded();
         return (areaNumber == 1 && areaVersion < 3);
     }
 
@@ -145,6 +159,7 @@ public class TypeId {
      * @return The short form part number.
      */
     public int getSFP() {
+        calculateIfNeeded();
         return sfp;
     }
 
@@ -154,6 +169,7 @@ public class TypeId {
      * @return True if it represents a list type.
      */
     public boolean isList() {
+        calculateIfNeeded();
         return (sfp <= 0);
     }
 
@@ -185,12 +201,14 @@ public class TypeId {
     }
 
     public TypeId generateTypeIdPositive() {
+        calculateIfNeeded();
         int newSPF = (sfp > 0) ? sfp : (-1) * sfp;
         return new TypeId(areaNumber, areaVersion, serviceNumber, newSPF);
     }
 
     @Override
     public String toString() {
+        calculateIfNeeded();
         StringBuilder buf = new StringBuilder();
         buf.append("(TypeId: ");
         buf.append(" areaNumber=").append(areaNumber);

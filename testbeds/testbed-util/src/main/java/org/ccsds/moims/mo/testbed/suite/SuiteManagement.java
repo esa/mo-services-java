@@ -82,11 +82,8 @@ public class SuiteManagement extends LoggingBase {
 
     public boolean suiteTeardown() throws Exception {
         RemoteMALInstance.instance().stopProcess();
-
         BaseLocalMALInstance.binstance().closeMAL();
-
         RemoteMALInstance.instance().waitForSeconds(2);
-
         MOMServer.instance().stop();
 
         return RemoteMALInstance.instance().processIsStopped();

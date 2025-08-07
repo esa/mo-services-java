@@ -34,7 +34,6 @@ import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
-import esa.mo.xsd.ErrorReferenceType;
 import esa.mo.xsd.OperationErrorList;
 import java.io.File;
 import java.io.IOException;
@@ -636,7 +635,9 @@ public class JavaConsumer {
 
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, true, null, op.getName() + "Register",
-                            StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException, "Register method for the " + op.getName() + " PubSub interaction", null, throwsComment);
+                            StubUtils.concatenateArguments(subStr, serviceAdapterArg),
+                            throwsInteractionAndMALException,
+                            "Register method for the " + op.getName() + " PubSub interaction", null, throwsComment);
                     method.addLine(consumerMethodCall + "register(" + operationInstanceVar + ", subscription, adapter);");
                     method.addMethodCloseStatement();
 
@@ -644,7 +645,8 @@ public class JavaConsumer {
                         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                                 false, true, msgType,
                                 "async" + StubUtils.preCap(op.getName()) + "Register",
-                                StubUtils.concatenateArguments(subStr, serviceAdapterArg), throwsInteractionAndMALException,
+                                StubUtils.concatenateArguments(subStr, serviceAdapterArg),
+                                throwsInteractionAndMALException,
                                 "Asynchronous version of method " + op.getName() + "Register", "the MAL message sent to initiate the interaction", throwsComment);
                         method.addLine("return " + consumerMethodCall + "asyncRegister(" + operationInstanceVar + ", subscription, adapter);");
                         method.addMethodCloseStatement();
@@ -652,7 +654,8 @@ public class JavaConsumer {
 
                     method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                             false, true, null, op.getName() + "Deregister",
-                            Arrays.asList(idStr), throwsInteractionAndMALException,
+                            Arrays.asList(idStr),
+                            throwsInteractionAndMALException,
                             "Deregister method for the " + op.getName() + " PubSub interaction", null, throwsComment);
                     method.addLine(consumerMethodCall + "deregister(" + operationInstanceVar + ", identifierList);");
                     method.addMethodCloseStatement();
@@ -661,7 +664,8 @@ public class JavaConsumer {
                         method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
                                 false, true, msgType, "async" + StubUtils.preCap(op.getName()) + "Deregister",
                                 StubUtils.concatenateArguments(idStr, serviceAdapterArg),
-                                throwsInteractionAndMALException, "Asynchronous version of method " + op.getName() + "Deregister",
+                                throwsInteractionAndMALException,
+                                "Asynchronous version of method " + op.getName() + "Deregister",
                                 "the MAL message sent to initiate the interaction", throwsComment);
                         method.addLine("return " + consumerMethodCall + "asyncDeregister(" + operationInstanceVar + ", identifierList, adapter);");
                         method.addMethodCloseStatement();
@@ -685,13 +689,17 @@ public class JavaConsumer {
             OperationSummary op, CompositeField opRetType) throws IOException {
         List<FieldInfo> targetTypes = op.getRetTypes();
 
-        if ((InteractionPatternEnum.INVOKE_OP == op.getPattern()) || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
+        if ((InteractionPatternEnum.INVOKE_OP == op.getPattern())
+                || (InteractionPatternEnum.PROGRESS_OP == op.getPattern())) {
             targetTypes = op.getAckTypes();
         }
 
-        if ((null != targetTypes) && (!targetTypes.isEmpty())) {
+        if ((targetTypes != null) && (!targetTypes.isEmpty())) {
             if (targetTypes.size() == 1) {
-                method.addLine("return " + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0) + ";");
+                method.addLine(
+                        "return "
+                        + generator.createOperationArgReturn(file, method, targetTypes.get(0), "body", 0)
+                        + ";");
             } else {
                 StringBuilder buf = new StringBuilder();
 

@@ -47,8 +47,7 @@ public class InvokeIPProviderHandler extends IPProviderHandler implements MALInv
      * @throws MALInteractionException if the received message operation is
      * unknown.
      */
-    public InvokeIPProviderHandler(final MALSender sender,
-            final Address address,
+    public InvokeIPProviderHandler(final MALSender sender, final Address address,
             final MALMessage msg) throws MALInteractionException {
         super(sender, address, msg);
     }
