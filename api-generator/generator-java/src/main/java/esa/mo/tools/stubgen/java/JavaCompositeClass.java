@@ -113,7 +113,7 @@ public class JavaCompositeClass {
         // add getters and setters
         for (CompositeField element : compElements) {
             GeneratorLangs.addGetter(file, element, null);
-            GeneratorLangs.addSetter(file, element, null);
+            //GeneratorLangs.addSetter(file, element, null);
         }
 
         // create equals method
