@@ -40,14 +40,14 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>12.2-SNAPSHOT</version>
+        <version>12.2</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>testbed-util-spp</artifactId>
     <packaging>jar</packaging>
-    <version>12.2-SNAPSHOT</version>
+    <version>12.2</version>
     <name>CCSDS MOIMS MO Testbed utilities for the Space Packet Protocol</name>
 
     <organization>
