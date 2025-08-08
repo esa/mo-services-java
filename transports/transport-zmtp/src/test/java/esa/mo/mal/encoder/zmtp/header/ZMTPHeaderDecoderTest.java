@@ -152,7 +152,7 @@ public class ZMTPHeaderDecoderTest {
         assertEquals("Interaction Stage", header.getInteractionStage(), decodedHeader.getInteractionStage());
         assertEquals("TransactionId", header.getTransactionId(), decodedHeader.getTransactionId());
         assertEquals("Area", header.getServiceArea(), decodedHeader.getServiceArea());
-        assertEquals("Area Version", header.getServiceVersion(), decodedHeader.getServiceVersion());
+        assertEquals("Area Version", header.getAreaVersion(), decodedHeader.getAreaVersion());
         assertEquals("Service", header.getService(), decodedHeader.getService());
         assertEquals("Operation", header.getOperation(), decodedHeader.getOperation());
         assertEquals("EncodingExtendedId", header.getEncodingExtendedId(), decodedHeader.getEncodingExtendedId());

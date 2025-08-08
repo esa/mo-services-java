@@ -20,9 +20,8 @@
  */
 package org.ccsds.moims.mo.com.test.util;
 
+import org.ccsds.moims.mo.mal.DeliveryTimedoutException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
@@ -50,8 +49,9 @@ public class COMInterceptor implements TestEndPointSendInterceptor {
             LoggingBase.logMessage("COMInterceptor:sendMsg BODY string list = " + msg.getHeader().getTransactionId());
 
             if (myStr.contains("RELEASE_ERROR")) {
-                throw new MALTransmitErrorException(msg.getHeader(), new MOErrorException(
-                        MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, msg), msg.getQoSProperties());
+                throw new MALTransmitErrorException(msg.getHeader(),
+                        new DeliveryTimedoutException(msg),
+                        msg.getQoSProperties());
             }
         }
     }

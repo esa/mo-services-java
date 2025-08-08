@@ -111,8 +111,8 @@ public class AssertionHelper {
                     expectedHeader.getFrom());
             checkEquality(procedureName, assertions, "To", header.getTo(),
                     expectedHeader.getTo());
-            checkEquality(procedureName, assertions, "Version", header.getServiceVersion(),
-                    expectedHeader.getServiceVersion());
+            checkEquality(procedureName, assertions, "Version", header.getAreaVersion(),
+                    expectedHeader.getAreaVersion());
         }
     }
 

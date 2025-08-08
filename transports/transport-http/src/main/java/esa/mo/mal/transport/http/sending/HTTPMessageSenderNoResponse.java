@@ -132,7 +132,7 @@ public class HTTPMessageSenderNoResponse extends HTTPMessageSenderNoEncoding {
         client.setRequestHeader("X-MAL-Operation",
                 encodeAscii(String.valueOf(malMessageHeader.getOperation().getValue())));
         client.setRequestHeader("X-MAL-Area-Version",
-                encodeAscii(String.valueOf(malMessageHeader.getServiceVersion().getValue())));
+                encodeAscii(String.valueOf(malMessageHeader.getAreaVersion().getValue())));
         client.setRequestHeader("X-MAL-Is-Error-Message", malMessageHeader.getIsErrorMessage() ? "True" : "False");
 
         String supplements = SupplementsEncoder.encode(malMessageHeader.getSupplements());

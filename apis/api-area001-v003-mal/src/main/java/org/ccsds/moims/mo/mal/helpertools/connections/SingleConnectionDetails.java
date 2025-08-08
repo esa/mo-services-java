@@ -83,28 +83,8 @@ public class SingleConnectionDetails {
     }
 
     @Deprecated
-    public void setProviderURI(URI providerURI) {
-        this.providerURI = providerURI;
-    }
-
-    @Deprecated
     public void setBrokerURI(String brokerURI) {
         this.brokerURI = new URI(brokerURI);
-    }
-
-    @Deprecated
-    public void setBrokerURI(URI brokerURI) {
-        this.brokerURI = brokerURI;
-    }
-
-    @Deprecated
-    public void setDomain(IdentifierList domain) {
-        this.domain = domain;
-    }
-
-    @Deprecated
-    public void setServiceKey(IntegerList serviceKey) {
-        this.serviceKey = serviceKey;
     }
 
     public URI getProviderURI() {

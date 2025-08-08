@@ -309,21 +309,6 @@ public class MALSender {
     }
 
     /**
-     * Sends a set of oneway PUBLISH messages.
-     *
-     * @param ep The endpoint to use to send the messages.
-     * @param msgs Set of messages to send.
-     * @throws MALInteractionException if there is a problem during the
-     * interaction.
-     * @throws MALException on internal error.
-     */
-    @Deprecated
-    private void onewayMultiPublish(final MALEndpoint ep, final List<MALMessage> msgs)
-            throws MALInteractionException, MALException {
-        initiateMultiOnewayInteraction(ep, msgs);
-    }
-
-    /**
      * Performs a two way interaction, sends the message and then waits for the
      * specified stage before returning.
      *

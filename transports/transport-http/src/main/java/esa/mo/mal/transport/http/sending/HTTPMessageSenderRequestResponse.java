@@ -192,7 +192,7 @@ public class HTTPMessageSenderRequestResponse extends HTTPMessageSenderNoRespons
         httpResponse.setResponseHeader("X-MAL-Operation",
                 encodeAscii(String.valueOf(malMessageHeader.getOperation().getValue())));
         httpResponse.setResponseHeader("X-MAL-Area-Version",
-                encodeAscii(String.valueOf(malMessageHeader.getServiceVersion().getValue())));
+                encodeAscii(String.valueOf(malMessageHeader.getAreaVersion().getValue())));
         httpResponse.setResponseHeader("X-MAL-Is-Error-Message",
                 encodeAscii(String.valueOf(malMessageHeader.getIsErrorMessage())));
 
