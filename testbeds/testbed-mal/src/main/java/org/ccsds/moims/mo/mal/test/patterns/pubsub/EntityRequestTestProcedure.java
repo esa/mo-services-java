@@ -152,17 +152,6 @@ public class EntityRequestTestProcedure extends LoggingBase {
         }
     }
 
-    @Deprecated
-    public static Union parseNumberKeyValue(String s) {
-        if (s.equals("[null]")) {
-            return null;
-        } else if (s.equals("*")) {
-            return new Union(new Long(0));
-        } else {
-            return new Union(new Long(Long.parseLong(s)));
-        }
-    }
-
     public boolean subscribeToKeyValuesAndSelectKeysAndExpectedKeyValues(String keyValues,
             String selectedKeys, String expectedEntities) throws Exception {
         logMessage("EntityRequestTestProcedure.subscribeToEntityKeyValuesAndExpectedEntities({"

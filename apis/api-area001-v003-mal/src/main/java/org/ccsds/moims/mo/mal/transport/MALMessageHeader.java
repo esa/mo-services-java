@@ -262,17 +262,6 @@ public class MALMessageHeader {
     }
 
     /**
-     * Returns the area version. Deprecated because the "Service Version" was
-     * reversed back to "Area Version".
-     *
-     * @return the area version.
-     */
-    @Deprecated
-    public UOctet getServiceVersion() {
-        return areaVersion;
-    }
-
-    /**
      * Returns the field isError.
      *
      * @return the field isError.

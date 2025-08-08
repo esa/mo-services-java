@@ -219,7 +219,7 @@ public class TCPIPMessageHeader extends MALMessageHeader {
         enc.encodeShort((short) this.getServiceArea().getValue());
         enc.encodeShort((short) this.getService().getValue());
         enc.encodeShort((short) this.getOperation().getValue());
-        enc.encodeUOctet(this.getServiceVersion());
+        enc.encodeUOctet(this.getAreaVersion());
 
         /*
         short parts = (short) (((header.getIsErrorMessage() ? 0x1 : 0x0) << 7)

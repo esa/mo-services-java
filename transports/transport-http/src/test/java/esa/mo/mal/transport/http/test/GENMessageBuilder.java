@@ -23,6 +23,7 @@ package esa.mo.mal.transport.http.test;
 import java.util.Map;
 
 import esa.mo.mal.transport.gen.GENMessage;
+import esa.mo.mal.transport.gen.body.LazyMessageBody;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -59,7 +60,8 @@ public class GENMessageBuilder {
   public GENMessage build() throws MALInteractionException {
     MALMessageHeader header = new MALMessageHeader(from, authenticationId, to, timestamp, interactionType, interactionStage, transactionId,
         serviceArea, service, operation, serviceVersion, isErrorMessage, supplements);
-    return new GENMessage(header, qosProperties, null, body);
+    LazyMessageBody msg = LazyMessageBody.createMessageBody(header, null, body);
+    return new GENMessage(header, msg, null, qosProperties);
   }
 
   public GENMessageBuilder from(final Identifier from) {

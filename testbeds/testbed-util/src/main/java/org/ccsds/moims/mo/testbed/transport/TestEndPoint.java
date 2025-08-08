@@ -116,7 +116,7 @@ public class TestEndPoint implements MALEndpoint {
                 initialHeader.getServiceArea(),
                 initialHeader.getService(),
                 initialHeader.getOperation(),
-                initialHeader.getServiceVersion(),
+                initialHeader.getAreaVersion(),
                 Boolean.TRUE,
                 initialHeader.getSupplements());
         return res;
