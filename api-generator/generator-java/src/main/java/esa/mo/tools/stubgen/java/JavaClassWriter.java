@@ -34,6 +34,7 @@ import esa.mo.tools.stubgen.writers.MethodWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -479,6 +480,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             file.append(makeLine(tabCount, "/**"));
 
             for (String comment : comments) {
+                if(comment == null) {
+                    continue;
+                }
                 // Clean up tags like "<T>"
                 comment = comment.replaceAll("<", "_");
                 comment = comment.replaceAll(">", "_");
@@ -507,13 +511,20 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private List<String> normaliseComments(String comment, String returnComment,
             List<String> argsComments, List<String> throwsComment) {
-        List<String> output = normaliseComment(comment);
-        output.add(""); // Separation between the comment and params
-        normaliseComments(output, StubUtils.conditionalAdd("@param ", argsComments));
-        normaliseComment(output, StubUtils.conditionalAdd("@return ", returnComment));
-        normaliseComments(output, StubUtils.conditionalAdd("@throws ", throwsComment));
+        List<String> concatenated = new ArrayList();
+        concatenated.addAll(normaliseComment(comment));
+        concatenated.add("");
+        if(argsComments != null) {
+            concatenated.addAll(StubUtils.conditionalAdd("@param ", argsComments));
+        }
+        if(returnComment != null) {
+            concatenated.add(StubUtils.conditionalAdd("@return ", returnComment));
+        }
+        if(throwsComment != null) {
+            concatenated.addAll(StubUtils.conditionalAdd("@throws ", throwsComment));
+        }
 
-        return output;
+        return concatenated;
     }
 
     private String processArgs(List<CompositeField> args, boolean includeType) {

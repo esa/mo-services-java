@@ -58,25 +58,6 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
     }
 
     /**
-     * Processes a list of comments making sure they contain a full stop at the
-     * end.
-     *
-     * @param output The list to return.
-     * @param comments The comments to be added.
-     * @return The list of lines for the normalised comment.
-     */
-    @Deprecated
-    public static List<String> normaliseComments(List<String> output, List<String> comments) {
-        if (comments != null) {
-            for (String comment : comments) {
-                normaliseComment(output, comment);
-            }
-        }
-
-        return output;
-    }
-
-    /**
      * Processes a comment making sure it contain a full stop at the end. It
      * will also break it into multiple lines if it is longer than a certain
      * number of characters.
@@ -86,21 +67,8 @@ public abstract class AbstractLanguageWriter extends AbstractWriter implements L
      */
     public static List<String> normaliseComment(String comment) {
         List<String> output = new LinkedList<>();
-        return normaliseComment(output, comment);
-    }
 
-    /**
-     * Processes a comment making sure it contain a full stop at the end. It
-     * will also break it into multiple lines if it is longer than a certain
-     * number of characters.
-     *
-     * @param output The list to return.
-     * @param comment The comment to be added.
-     * @return The list of lines for the normalised comment.
-     */
-    @Deprecated
-    public static List<String> normaliseComment(List<String> output, String comment) {
-        if ((output != null) && (comment != null) && (comment.length() > 0)) {
+        if ((comment != null) && (comment.length() > 0)) {
             if (!comment.endsWith(".")) {
                 comment += ".";
             }

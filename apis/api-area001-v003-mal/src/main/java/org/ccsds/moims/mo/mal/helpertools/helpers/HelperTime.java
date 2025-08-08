@@ -111,39 +111,8 @@ public class HelperTime {
         return new Time(date.getTime());
     }
 
-    /**
-     * Returns the current time encapsulated in a FineTime type
-     *
-     * @return The current time
-     */
-    @Deprecated
-    public static FineTime getTimestamp() {
-        // Convert from milliseconds (10^-3) to nanoseconds (10^-9)
-        return new FineTime(System.currentTimeMillis() * ONE_MILLION);
-    }
-
-    /**
-     * Returns the current time encapsulated in a Time type
-     *
-     * @return The current time
-     */
-    @Deprecated
-    public static Time getTimestampMillis() {
-        return new Time(System.currentTimeMillis());
-    }
-
     private static long fromMilliToNano(long milli) {
         return (milli * ONE_MILLION);
-    }
-
-    @Deprecated
-    public static FineTime timeToFineTime(final Time time) {
-        return (time == null) ? null : time.toFineTime();
-    }
-
-    @Deprecated
-    public static Time fineTimeToTime(final FineTime fineTime) {
-        return (fineTime == null) ? null : fineTime.toTime();
     }
 
     /**

@@ -121,51 +121,6 @@ public class GeneratorGwt extends GeneratorJava {
         file.flush();
     }
 
-    @Deprecated
-    protected void createServiceConsumerStub2(File consumerFolder, String area,
-            String serviceName, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating consumer stub: " + serviceName);
-
-        InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWTAsync");
-        file.addPackageStatement(area, serviceName, CONSUMER_FOLDER);
-        file.addInterfaceOpenStatement(serviceName + "GWTAsync", null, null);
-
-        for (OperationSummary op : summary.getOperations()) {
-            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-            switch (op.getPattern()) {
-                case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC,
-                            null, op.getName(), opArgs, null, null, null, null);
-                    break;
-                }
-                case SUBMIT_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC,
-                            null, op.getName(), opArgs, null, null, null, null);
-                    break;
-                }
-                case REQUEST_OP: {
-//          CompositeField opRetType = createOperationReturnType(file, area, service, op);
-//          String asyncOpArgs = StubUtils.concatenateArguments(opArgs, "com.google.gwt.user.client.rpc.AsyncCallback<" + opRetType + "> _callback");
-//          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), asyncOpArgs, null, null, null, null);
-                    break;
-                }
-                case INVOKE_OP: {
-                    break;
-                }
-                case PROGRESS_OP: {
-                    break;
-                }
-                case PUBSUB_OP: {
-                    break;
-                }
-            }
-        }
-
-        file.addInterfaceCloseStatement();
-
-        file.flush();
-    }
-
     @Override
     protected void createServiceProviderHandler(File providerFolder, String area,
             String service, ServiceSummary summary) throws IOException {
