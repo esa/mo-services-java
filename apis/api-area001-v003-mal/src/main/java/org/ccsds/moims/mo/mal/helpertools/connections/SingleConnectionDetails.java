@@ -35,17 +35,6 @@ public class SingleConnectionDetails {
     private IntegerList serviceKey;
 
     /**
-     * This is the original method. The are now moving to a class without
-     * setters so this will be removed in the future.
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public SingleConnectionDetails() {
-
-    }
-
-    /**
      * Constructor.
      *
      * @param providerURI The Provider URI.

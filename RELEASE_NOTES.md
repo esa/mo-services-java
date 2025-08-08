@@ -6,6 +6,7 @@ The different versions and respective updates are the following:
 
 ### Version 14.0
 * Removes the setters from the auto-generated classes
+* Removes deprecated methods
 
 ### Version 12.2 (07 August 2025)
 * Removes the pipeline tests for Java 8
