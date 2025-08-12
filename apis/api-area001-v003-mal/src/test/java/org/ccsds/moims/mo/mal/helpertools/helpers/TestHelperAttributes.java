@@ -748,7 +748,7 @@ public class TestHelperAttributes {
         Duration attribute = new Duration();
         Duration result = (Duration) HelperAttributes.string2attribute(attribute, "321.123");
         assertTrue(result instanceof Duration);
-        assertEquals(321.123, result.getValue(), 0.000001);
+        assertEquals(321.123, result.getInSeconds(), 0.000001);
     }
 
     @Test
