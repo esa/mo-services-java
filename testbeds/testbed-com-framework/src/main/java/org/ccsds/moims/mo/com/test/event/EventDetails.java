@@ -182,7 +182,7 @@ public class EventDetails {
                 bValid = COMChecker.equalsCheck(strObject, "Element.enumField",
                         ou.getEnumField().toString(), enumField, bValid);
                 bValid = COMChecker.equalsCheck(strObject, "Element.duration",
-                        ou.getDurationField().getValue(), new Integer(durationField).intValue(), bValid);
+                        ou.getDurationField().getInSeconds(), new Integer(durationField).intValue(), bValid);
                 // Check each element in numericListField
                 ShortList list = ou.getNumericListField();
                 LoggingBase.logMessage(loggingClassName + ":updateElementValid list RX " + list);
