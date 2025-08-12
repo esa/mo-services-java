@@ -57,18 +57,6 @@ public class Duration implements Attribute {
     }
 
     /**
-     * Returns the duration in seconds. Deprecated because the Duration might be
-     * returned in different units. So, it is better to select the correct
-     * getter with the desired units.
-     *
-     * @return the value.
-     */
-    @Deprecated
-    public double getValue() {
-        return getInSeconds();
-    }
-
-    /**
      * Returns the duration in seconds.
      *
      * @return The duration in seconds.
