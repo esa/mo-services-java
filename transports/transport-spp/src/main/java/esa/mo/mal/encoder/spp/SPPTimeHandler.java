@@ -120,7 +120,7 @@ public class SPPTimeHandler extends BinaryTimeHandler {
     public void encodeDuration(final BaseBinaryEncoder.BaseBinaryStreamHolder outputStream,
             final Duration value) throws MALException {
         try {
-            long tm = (long) (value.getValue() * 1000);
+            long tm = (long) (value.getInSeconds() * 1000);
 
             int ms = (int) (tm % 1000);
             int s = (int) (tm / 1000);
