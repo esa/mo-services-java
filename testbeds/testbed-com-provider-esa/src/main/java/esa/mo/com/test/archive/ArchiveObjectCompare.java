@@ -101,11 +101,11 @@ public class ArchiveObjectCompare implements Comparator<Archive.ArchiveObject> {
                 retVal = (int) (((Integer) o1.getElement()).intValue()
                         - ((Integer) o2.getElement()).intValue());
             } else if (o1.getElement() instanceof Duration) {
-                retVal = (int) (((Duration) o1.getElement()).getValue()
-                        - ((Duration) o2.getElement()).getValue());
+                retVal = (int) (((Duration) o1.getElement()).getInSeconds()
+                        - ((Duration) o2.getElement()).getInSeconds());
             } else if (o1.getElement() instanceof Long) {
-                retVal = (int) (((Duration) o1.getElement()).getValue()
-                        - ((Duration) o2.getElement()).getValue());
+                retVal = (int) (((Duration) o1.getElement()).getInSeconds()
+                        - ((Duration) o2.getElement()).getInSeconds());
             } else if (o1.getElement() instanceof String) {
                 retVal
                         = (((String) o1.getElement()).compareTo(
