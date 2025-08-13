@@ -587,7 +587,7 @@ public class ArchiveHandlerImpl extends ArchiveInheritanceSkeleton {
 
                     } else if (obj.getElement() instanceof Duration) {
                         doubleFilterVal = ((Union) compositeFilter.getFieldValue()).getDoubleValue();
-                        doubleVal = ((Duration) obj.getElement()).getValue();
+                        doubleVal = ((Duration) obj.getElement()).getInSeconds();
                         filterType = FilterType.NUMERIC;
                     } else if (obj.getElement() instanceof Long) {
                         numericVal = (Long) obj.getElement();
