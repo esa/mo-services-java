@@ -34,7 +34,7 @@ import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
  */
 public class MALElementsRegistry {
 
-    private final HashMap<Long, Callable<Element>> ELEMENTS = new java.util.HashMap<>(128);
+    private final HashMap<Long, Callable<Element>> ELEMENTS = new java.util.HashMap<>(270); // 262!
 
     /**
      * Adds an Element to the map of Elements.
