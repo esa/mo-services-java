@@ -2,7 +2,7 @@
 <!--
   Copyright European Space Agency, 2025
 
-  Generated from 529x1r1_RID_closeout_v3 05/08/2025
+  Generated from 529x1r1_RID_closeout_v3 26/08/2025
 -->
 <mal:specification
   xmlns:mal = "http://www.ccsds.org/schema/ServiceSchema-v003"
@@ -2089,6 +2089,9 @@ Only nullable in the context of an updateActivity operation: the timestamp must 
         </mal:field>
         <mal:field name="argSpecs" canBeNull="true" comment="Set of argument specifications for each argument definition contained in the referenced activity definition.  These supply a value for each argument, or an expression to enable the value to be derived.">
           <mal:type area="MPS" list="true" objectRef="false" name="ArgSpec"/>
+        </mal:field>
+        <mal:field name="user" canBeNull="false" comment="The User ID for the person or organization inserting the activity into the Plan.">
+          <mal:type area="MPS" list="false" objectRef="true" name="PlanningUser"/>
         </mal:field>
         <mal:field name="constraints" canBeNull="true" comment="A single constraint or a constraint node that may contain multiple constraints, specific to the ActivityInstance to be created.">
           <mal:type area="MPS" list="false" objectRef="false" name="Constraint"/>
