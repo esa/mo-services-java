@@ -117,7 +117,7 @@ public class JavaEnumerations {
         file.addStatement("     * " + enumeration.getComment());
         file.addStatement("     */");
         file.addStatement("    public " + enumName + "() {");
-        file.addStatement("        super(0);");
+        file.addStatement("        super(-1);");
         file.addStatement("    }");
         file.addStatement("");
 
