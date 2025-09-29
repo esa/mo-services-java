@@ -67,8 +67,8 @@ public abstract class Enumeration implements Element {
     public void encode(MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
         if (value == -1) {
             throw new MALException("The Enumeration is undefined (value==-1)!");
-
         }
+
         encoder.encodeEnumeration(this);
     }
 
