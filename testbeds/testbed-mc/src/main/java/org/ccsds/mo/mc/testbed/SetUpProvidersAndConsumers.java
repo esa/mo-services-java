@@ -4,7 +4,7 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : CCSDS MO Testbed
+ * System                : CCSDS MO Testbed - M&C
  * ----------------------------------------------------------------------------
  * Licensed under the European Space Agency Public License, Version 2.0
  * You may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class SetUpProvidersAndConsumers {
     private static ParameterInheritanceSkeleton parameterProviderService = null;
     private static ParameterStub parameterConsumerStub = null;
 
-    public void setUp(ActionBackend actionBackend, AlertBackend alertBackend,
+    public void setUp(ActionBackend actionBackend, AggregationBackend aggregationBackend, AlertBackend alertBackend,
             PacketBackend packetBackend, ParameterBackend parameterBackend,
             boolean startAction, boolean startAggregation, boolean startAlert,
             boolean startPacket, boolean startParameter) throws IOException {
@@ -90,13 +90,18 @@ public class SetUpProvidersAndConsumers {
 
             // Provider Factory:
             Class factoryClassProvider = Class.forName(factoryClassForProvider);
+            System.out.println("factoryClassProvider=" + factoryClassProvider);
             MCServicesFactory factoryProvider = (MCServicesFactory) factoryClassProvider.newInstance();
+            System.out.println("factoryProvider=" + factoryProvider);
             // Consumer Factory:
             Class factoryClassConsumer = Class.forName(factoryClassForConsumer);
+            System.out.println("factoryClassConsumer=" + factoryClassConsumer);
             MCServicesFactory factoryConsumer = (MCServicesFactory) factoryClassConsumer.newInstance();
+            System.out.println("factoryConsumer=" + factoryConsumer);
 
             if (startAction) {
                 actionProviderService = factoryProvider.createProviderAction(actionBackend);
+                System.out.println("actionProviderService=" + actionProviderService);
 
                 if (actionProviderService == null) {
                     throw new MALException("The Action service provider was not created!");
@@ -104,10 +109,11 @@ public class SetUpProvidersAndConsumers {
 
                 SingleConnectionDetails details = actionProviderService.getConnection().getConnectionDetails();
                 actionConsumerStub = factoryConsumer.createConsumerStubAction(details);
+                System.out.println("actionConsumerStub=" + actionConsumerStub);
             }
 
             if (startAggregation) {
-                aggregationProviderService = factoryProvider.createProviderAggregation(parameterBackend);
+                aggregationProviderService = factoryProvider.createProviderAggregation(aggregationBackend);
 
                 if (aggregationProviderService == null) {
                     throw new MALException("The Aggregation service provider was not created!");
@@ -140,6 +146,117 @@ public class SetUpProvidersAndConsumers {
             }
 
             if (startParameter) {
+                parameterProviderService = factoryProvider.createProviderParameter(parameterBackend);
+
+                if (parameterProviderService == null) {
+                    throw new MALException("The Parameter service provider was not created!");
+                }
+
+                SingleConnectionDetails details = parameterProviderService.getConnection().getConnectionDetails();
+                parameterConsumerStub = factoryConsumer.createConsumerStubParameter(details);
+            }
+        } catch (InstantiationException ex) {
+            Logger.getLogger(SetUpProvidersAndConsumers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(SetUpProvidersAndConsumers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SetUpProvidersAndConsumers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MALException ex) {
+            Logger.getLogger(SetUpProvidersAndConsumers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Updates the setup.
+     * This function is created to solved the initialization issue of the Aggregation provider.
+     * The Aggregation test backends rely on the prior initialization of the Parameter service.
+     * This function is used to initialize the Aggregation provider, after the Parameter provider
+     * has been initialized in the setUp call.
+     */
+    public void updateSetUp(ActionBackend actionBackend, AggregationBackend aggregationBackend,
+            AlertBackend alertBackend, PacketBackend packetBackend, ParameterBackend parameterBackend,
+            boolean startAction, boolean startAggregation, boolean startAlert,
+            boolean startPacket, boolean startParameter) throws IOException {
+        HelperMisc.loadPropertiesFile();
+
+        try {
+            // Dynamic load here: It can be either for ESA's or CNES's implementation
+            // And also the consumer and provider need to be selectable!
+            // This can be achieved with the Factory pattern
+
+            String factoryClassForProvider = System.getProperty("testbed.provider");
+            String factoryClassForConsumer = System.getProperty("testbed.consumer");
+            System.out.println("  >> factoryClassForProvider: " + factoryClassForProvider);
+            System.out.println("  >> factoryClassForConsumer: " + factoryClassForConsumer);
+
+            if ("null".equals(factoryClassForProvider) || "".equals(factoryClassForProvider)) {
+                throw new IOException("The classname is empty or null for the provider side! "
+                        + "Please select the correct Maven profile before running the test!");
+            }
+
+            if ("null".equals(factoryClassForConsumer) || "".equals(factoryClassForConsumer)) {
+                throw new IOException("The classname is empty or null for the consumer side! "
+                        + "Please select the correct Maven profile before running the test!");
+            }
+
+            // Provider Factory:
+            Class factoryClassProvider = Class.forName(factoryClassForProvider);
+            System.out.println("factoryClassProvider=" + factoryClassProvider);
+            MCServicesFactory factoryProvider = (MCServicesFactory) factoryClassProvider.newInstance();
+            System.out.println("factoryProvider=" + factoryProvider);
+            // Consumer Factory:
+            Class factoryClassConsumer = Class.forName(factoryClassForConsumer);
+            System.out.println("factoryClassConsumer=" + factoryClassConsumer);
+            MCServicesFactory factoryConsumer = (MCServicesFactory) factoryClassConsumer.newInstance();
+            System.out.println("factoryConsumer=" + factoryConsumer);
+
+            if (startAction && actionProviderService == null) {
+                actionProviderService = factoryProvider.createProviderAction(actionBackend);
+                System.out.println("actionProviderService=" + actionProviderService);
+
+                if (actionProviderService == null) {
+                    throw new MALException("The Action service provider was not created!");
+                }
+
+                SingleConnectionDetails details = actionProviderService.getConnection().getConnectionDetails();
+                actionConsumerStub = factoryConsumer.createConsumerStubAction(details);
+                System.out.println("actionConsumerStub=" + actionConsumerStub);
+            }
+
+            if (startAggregation && aggregationProviderService == null) {
+                aggregationProviderService = factoryProvider.createProviderAggregation(aggregationBackend);
+
+                if (aggregationProviderService == null) {
+                    throw new MALException("The Aggregation service provider was not created!");
+                }
+
+                SingleConnectionDetails details = aggregationProviderService.getConnection().getConnectionDetails();
+                aggregationConsumerStub = factoryConsumer.createConsumerStubAggregation(details);
+            }
+
+            if (startAlert && alertProviderService == null) {
+                alertProviderService = factoryProvider.createProviderAlert(alertBackend);
+
+                if (alertProviderService == null) {
+                    throw new MALException("The Alert service provider was not created!");
+                }
+
+                SingleConnectionDetails details = alertProviderService.getConnection().getConnectionDetails();
+                alertConsumerStub = factoryConsumer.createConsumerStubAlert(details);
+            }
+
+            if (startPacket && packetProviderService == null) {
+                packetProviderService = factoryProvider.createProviderPacket(packetBackend);
+
+                if (packetProviderService == null) {
+                    throw new MALException("The Packet service provider was not created!");
+                }
+
+                SingleConnectionDetails details = packetProviderService.getConnection().getConnectionDetails();
+                packetConsumerStub = factoryConsumer.createConsumerStubPacket(details);
+            }
+
+            if (startParameter && parameterProviderService == null) {
                 parameterProviderService = factoryProvider.createProviderParameter(parameterBackend);
 
                 if (parameterProviderService == null) {
