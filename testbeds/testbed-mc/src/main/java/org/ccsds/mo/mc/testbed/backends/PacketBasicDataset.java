@@ -4,7 +4,11 @@
  *                         Darmstadt
  *                         Germany
  * ----------------------------------------------------------------------------
- * System                : ESA CCSDS MO Services
+ * Copyright (C) 2025      CNES, France
+ * Copyright (C) 2025      Serge Lacourte
+ *                         Adapted to the M&C testbed from the MPD testbed
+ * ----------------------------------------------------------------------------
+ * System                : CCSDS MO Testbed - M&C
  * ----------------------------------------------------------------------------
  * Licensed under European Space Agency Public License (ESA-PL) Weak Copyleft – v2.4
  * You may not use this file except in compliance with the License.
@@ -20,35 +24,24 @@
  */
 package org.ccsds.mo.mc.testbed.backends;
 
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.ObjectRef;
-import org.ccsds.moims.mo.mc.ParameterDataset;
-import org.ccsds.moims.mo.mc.structures.ParameterDefinition;
+import org.ccsds.moims.mo.mc.PacketDataset;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * A dummy backend in order to try out the provider.
+ * PacketBasicDataset implements the dataset #PK-1.
  */
-public class OneProductDataset extends ParameterDataset {
+public class PacketBasicDataset extends PacketDataset {
 
-    public ObjectRef<ParameterDefinition> ref;
-
-    public OneProductDataset() {
-        IdentifierList domain = new IdentifierList();
-        domain.add(new Identifier("myDomain"));
-
-        // ---------------------------------------------------
-        // Product Types
-        // ---------------------------------------------------
-        //ProductType type1 = new ProductType(new Identifier("type1"));
-        // ---------------------------------------------------
-        // Products
-        // ---------------------------------------------------
-        //TimeWindow timeWindow = new TimeWindow(Time.now(), Time.now());
-        //ref = new ObjectRef(domain, Product.TYPE_ID.getTypeId(), new Identifier("key1"), new UInteger(1));
-        //Blob productBody = new Blob();
-        //ProductMetadata metadata = new ProductMetadata(type1, ref, Time.now(), timeWindow);
-        //super.addNewProduct(ref, productBody, metadata);
-    }
+	public PacketBasicDataset() {
+		// define the custom subscription keys
+		setCustomSubscriptionKeys(
+				new IdentifierList(new ArrayList<>(Arrays.asList(new Identifier("destID")))),
+				new AttributeTypeList(new ArrayList<>(Arrays.asList(AttributeType.UOCTET))));
+	}
 
 }

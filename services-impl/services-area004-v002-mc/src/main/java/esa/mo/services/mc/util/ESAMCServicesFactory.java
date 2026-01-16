@@ -38,6 +38,7 @@ import org.ccsds.moims.mo.mc.aggregation.provider.AggregationInheritanceSkeleton
 import org.ccsds.moims.mo.mc.alert.consumer.AlertStub;
 import org.ccsds.moims.mo.mc.alert.provider.AlertInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.backends.ActionBackend;
+import org.ccsds.moims.mo.mc.backends.AggregationBackend;
 import org.ccsds.moims.mo.mc.backends.AlertBackend;
 import org.ccsds.moims.mo.mc.backends.PacketBackend;
 import org.ccsds.moims.mo.mc.backends.ParameterBackend;
@@ -66,8 +67,8 @@ public class ESAMCServicesFactory extends MCServicesFactory {
     }
 
     @Override
-    public AggregationInheritanceSkeleton createProviderAggregation(ParameterBackend backend) throws MALException {
-        if (parameterService == null) {
+    public AggregationInheritanceSkeleton createProviderAggregation(AggregationBackend backend) throws MALException {
+        if (aggregationService == null) {
             throw new MALException("The backend needs to be instantiated before!");
         }
 

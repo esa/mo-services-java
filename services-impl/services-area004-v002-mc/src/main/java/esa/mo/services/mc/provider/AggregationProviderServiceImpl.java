@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mc.aggregation.AggregationHelper;
 import org.ccsds.moims.mo.mc.aggregation.provider.AggregationInheritanceSkeleton;
-import org.ccsds.moims.mo.mc.backends.ParameterBackend;
+import org.ccsds.moims.mo.mc.backends.AggregationBackend;
 import org.ccsds.moims.mo.mc.structures.AggregationDefinitionList;
 import org.ccsds.moims.mo.mc.structures.AggregationValueList;
 import org.ccsds.moims.mo.mc.structures.ReportConfigurationList;
@@ -44,7 +44,7 @@ public class AggregationProviderServiceImpl extends AggregationInheritanceSkelet
     private static final Logger LOGGER = Logger.getLogger(AggregationProviderServiceImpl.class.getName());
 
     private final ConnectionProvider connection = new ConnectionProvider();
-    private ParameterBackend backend;
+    private AggregationBackend backend;
     private MALProvider service;
     private boolean running = false;
 
@@ -54,7 +54,7 @@ public class AggregationProviderServiceImpl extends AggregationInheritanceSkelet
      * @param backend The backend of this service.
      * @throws MALException On initialisation error.
      */
-    public synchronized void init(ParameterBackend backend) throws MALException {
+    public synchronized void init(AggregationBackend backend) throws MALException {
         if (backend == null) {
             throw new IllegalArgumentException("The backend cannot be null!");
         }
