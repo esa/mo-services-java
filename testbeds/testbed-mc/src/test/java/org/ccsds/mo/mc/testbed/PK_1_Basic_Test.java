@@ -133,14 +133,13 @@ public class PK_1_Basic_Test extends PacketTestClient {
 		// call backend.publishPacket with testPacket
 		// testPacket=
 		// - domain="fr.cnes.mission.sat1"
-		// - keys={apid=3, destID=11}
-		// - spacePacket: first byte=0, length=20
+		// - keys={destID=11}
+		// - spacePacket: APID=3 in header, length=20
 		packetListener.reset();
 		NullableAttributeList packetKeys =
 				new NullableAttributeList(new ArrayList<> (Arrays.asList(
-						NA_USHORT_3, NA_UOCTET_11)));
-		byte testPacketFirstByte = (byte) 0;
-		Blob testPacket = new Blob(generateTestPacket(20, testPacketFirstByte));
+						NA_UOCTET_11)));
+		Blob testPacket = new Blob(generateTestPacket(20, 3));
 		backend.publishPacket(
 				Constant.DOMAIN_SAT1,
 				packetKeys,

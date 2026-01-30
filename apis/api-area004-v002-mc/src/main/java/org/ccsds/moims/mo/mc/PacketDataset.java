@@ -88,7 +88,7 @@ public abstract class PacketDataset implements PacketBackend {
 	 * In the testbed, this method is expected to be called by the test clients.
 	 * 
 	 * @param domain		domain of the packet to publish
-	 * @param keyValues		values of all subscription keys, including the standard apid and the custom ones
+	 * @param keyValues		values of the custom subscription keys
 	 * @param timestamp		timestamp of the packet
 	 * @param spacePacket	body of the packet
 	 */

@@ -161,16 +161,15 @@ public class PK_2_Extended_Test extends PacketTestClient {
 		// call backend.publishPacket with testPacket
 		// testPacket=
 		// - domain="fr.cnes.mission.sat1"
-		// - keys={apid=3, destID=11}
-		// - spacePacket: first byte=0, length=20
+		// - keys={destID=11}
+		// - spacePacket: APID=3 in header, length=20
 		packetListener1.reset();
 		packetListener2.reset();
-		byte testPacketFirstByte = (byte) 0;
-		Blob testPacket = new Blob(generateTestPacket(20, testPacketFirstByte));
+		Blob testPacket = new Blob(generateTestPacket(20, 3));
 		backend.publishPacket(
 				Constant.DOMAIN_SAT1,
 				new NullableAttributeList(new ArrayList<> (Arrays.asList(
-						NA_USHORT_3, NA_UOCTET_11))),
+						NA_UOCTET_11))),
 				new Time(System.currentTimeMillis()),
 				testPacket);
 
@@ -207,16 +206,15 @@ public class PK_2_Extended_Test extends PacketTestClient {
 		// call backend.publishPacket with testPacket
 		// testPacket=
 		// - domain="fr.cnes.mission.sat1"
-		// - keys={apid=4, destID=11}
-		// - spacePacket: first byte=1, length=20
+		// - keys={destID=11} 
+		// - spacePacket: APID=4 in header, length=20
 		packetListener1.reset();
 		packetListener2.reset();
-		byte testPacketFirstByte = (byte) 1;
-		Blob testPacket = new Blob(generateTestPacket(20, testPacketFirstByte));
+		Blob testPacket = new Blob(generateTestPacket(20, 4));
 		backend.publishPacket(
 				Constant.DOMAIN_SAT1,
 				new NullableAttributeList(new ArrayList<> (Arrays.asList(
-						NA_USHORT_4, NA_UOCTET_11))),
+						NA_UOCTET_11))),
 				new Time(System.currentTimeMillis()),
 				testPacket);
 
@@ -252,16 +250,15 @@ public class PK_2_Extended_Test extends PacketTestClient {
 		// call backend.publishPacket with testPacket
 		// testPacket=
 		// - domain="fr.cnes.mission.sat1"
-		// - keys={apid=3, destID=12}
-		// - spacePacket: first byte=2, length=20
+		// - keys={destID=12}
+		// - spacePacket: APID=3 in header, length=20
 		packetListener1.reset();
 		packetListener2.reset();
-		byte testPacketFirstByte = (byte) 2;
-		Blob testPacket = new Blob(generateTestPacket(20, testPacketFirstByte));
+		Blob testPacket = new Blob(generateTestPacket(20, 3));
 		backend.publishPacket(
 				Constant.DOMAIN_SAT1,
 				new NullableAttributeList(new ArrayList<> (Arrays.asList(
-						NA_USHORT_3, NA_UOCTET_12))),
+						NA_UOCTET_12))),
 				new Time(System.currentTimeMillis()),
 				testPacket);
 
@@ -297,16 +294,15 @@ public class PK_2_Extended_Test extends PacketTestClient {
 		// call backend.publishPacket with testPacket
 		// testPacket=
 		// - domain="fr.cnes.mission.sat1"
-		// - keys={apid=3, destID=null}
-		// - spacePacket: first byte=3, length=20
+		// - keys={destID=null}
+		// - spacePacket: APID=3 in header, length=20
 		packetListener1.reset();
 		packetListener2.reset();
-		byte testPacketFirstByte = (byte) 3;
-		Blob testPacket = new Blob(generateTestPacket(20, testPacketFirstByte));
+		Blob testPacket = new Blob(generateTestPacket(20, 3));
 		backend.publishPacket(
 				Constant.DOMAIN_SAT1,
 				new NullableAttributeList(new ArrayList<> (Arrays.asList(
-						NA_USHORT_3, NA_NULL))),
+						NA_NULL))),
 				new Time(System.currentTimeMillis()),
 				testPacket);
 
@@ -342,19 +338,18 @@ public class PK_2_Extended_Test extends PacketTestClient {
 		// call backend.publishPacket with testPacket
 		// testPacket=
 		// - domain="fr.cnes.mission.sat1"
-		// - keys={apid=3, destID=11}
-		// - spacePacket: first byte=4, length=65542
+		// - keys={destID=11}
+		// - spacePacket: APID=3 in header, length=65542
 		packetListener1.reset();
 		packetListener2.reset();
-		byte testPacketFirstByte = (byte) 4;
-		Blob testPacket = new Blob(generateTestPacket(65542, testPacketFirstByte));
+		Blob testPacket = new Blob(generateTestPacket(65542, 3));
 		backend.publishPacket(
 				Constant.DOMAIN_SAT1,
 				new NullableAttributeList(new ArrayList<> (Arrays.asList(
-						NA_USHORT_3, NA_UOCTET_11))),
+						NA_UOCTET_11))),
 				new Time(System.currentTimeMillis()),
 				testPacket);
-
+				
 		// ------------------------------------------------------------------------
 		// Wait for all updates or TIMOUT
 		// check reception of 1 NOTIFY messages from subscription-1 and subscription-2

@@ -27,6 +27,7 @@ import esa.mo.services.mc.consumer.PacketConsumerServiceImpl;
 import esa.mo.services.mc.consumer.ParameterConsumerServiceImpl;
 import esa.mo.services.mc.provider.AggregationProviderServiceImpl;
 import esa.mo.services.mc.provider.ParameterProviderServiceImpl;
+import esa.mo.services.mc.provider.PacketProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
@@ -54,6 +55,7 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     private ParameterProviderServiceImpl parameterService = null;
     private AggregationProviderServiceImpl aggregationService = null;
+    private PacketProviderServiceImpl packetService = null;
 
     /**
      * Constructor.
@@ -84,7 +86,10 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     @Override
     public PacketInheritanceSkeleton createProviderPacket(PacketBackend backend) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        packetService = new PacketProviderServiceImpl();
+        packetService.init(backend);
+        return packetService;
     }
 
     @Override

@@ -61,7 +61,7 @@ public interface PacketBackend {
 		 * Notifies a new Packet.
 		 * 
 		 * @param domain		domain of the packet to publish
-		 * @param keyValues		values of all subscription keys, including the standard apid and the custom ones
+		 * @param keyValues 	values of the custom subscription keys
 		 * @param timestamp		timestamp of the packet
 		 * @param spacePacket	body of the packet
 		 */

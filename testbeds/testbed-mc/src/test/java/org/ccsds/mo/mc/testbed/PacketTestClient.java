@@ -53,7 +53,7 @@ import org.ccsds.moims.mo.mc.structures.ReportConfigurationList;
 import org.junit.Assert;
 
 /**
-* This class provides shared functions for all Parameter test clients.
+* This class provides shared functions for all Packet test clients.
 */
 public class PacketTestClient extends MCTest {
 
@@ -68,10 +68,11 @@ public class PacketTestClient extends MCTest {
 	public static final UOctet UO_12 = new UOctet(12);
 
 	static final Random random = new Random(System.currentTimeMillis());
-	byte[] generateTestPacket(int size, byte firstByte) {
+	byte[] generateTestPacket(int size, int apid) {
 		byte[] result = new byte[size];
 		random.nextBytes(result);
-		result[0] = firstByte;
+		result[0] = (byte) ((result[0] & 0xF8) | ((apid >> 8) & 0x07));
+		result[1] = (byte) (apid & 0xFF);
 		return result;
 	}
 	protected static void execAndCheckDeliverPacketRegister(
@@ -146,7 +147,7 @@ public class PacketTestClient extends MCTest {
 
 	/**
 	 * Waits for expected updates and checks them.
-	 * All updates relates to the same Parameter.
+	 * All updates relates to the same Packet subscription.
 	 * 
 	 * @param listener	callback listener
 	 * @param maxTime	max waiting time

@@ -150,6 +150,11 @@
             </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>services-area004-v002-mc</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>services-area009-v001-mpd</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
