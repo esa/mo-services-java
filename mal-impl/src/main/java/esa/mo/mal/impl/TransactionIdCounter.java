@@ -13,9 +13,9 @@
  * You on an "as is" basis and without warranties of any kind, including without
  * limitation merchantability, fitness for a particular purpose, absence of
  * defects or errors, accuracy or non-infringement of intellectual property rights.
- * 
+ *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  * ----------------------------------------------------------------------------
  */
 package esa.mo.mal.impl;
@@ -45,34 +45,27 @@ public class TransactionIdCounter {
     private static final long MAX_OFFSET = 0xFFFFL;
     private static final long RANDOM_MASK = 0xFFL;
 
-    private static long partAB = recalculatePartAB(); // Time with Randomness
-    private static final AtomicLong transactionCounter = new AtomicLong(0);
+    private static final AtomicLong fullId = new AtomicLong(recalculatePartAB());
 
-    /**
-     * Increases part C of the transaction id. Resets the counter and
-     * recalculates part A and B if the maximum offset is reached.
-     *
-     * @return the new transaction id
-     */
-    public static synchronized Long nextTransactionId() {
-        long counter = transactionCounter.incrementAndGet();
-
-        if (counter > MAX_OFFSET) {
-            recalculatePartAB();
-            transactionCounter.set(0);
+    public static Long nextTransactionId() {
+        for (;;) {
+            long current = fullId.get();
+            long counter = current & 0xFFFF;
+            long next;
+            if (counter >= MAX_OFFSET) {
+                next = recalculatePartAB() + 1;
+            } else {
+                next = current + 1;
+            }
+            if (fullId.compareAndSet(current, next)) {
+                return next;
+            }
         }
-
-        return partAB + transactionCounter.get();
     }
 
-    /**
-     * Recalculates part A and B of the transaction id.
-     *
-     * @return new part A and B
-     */
     private static long recalculatePartAB() {
-        partAB = (System.currentTimeMillis() - MAL_EPOCH) << 24; // Time
-        partAB += ((System.nanoTime()) & RANDOM_MASK) << 16; // Randomness
+        long partAB = (System.currentTimeMillis() - MAL_EPOCH) << 24;
+        partAB += (System.nanoTime() & RANDOM_MASK) << 16;
         return partAB;
     }
 }
