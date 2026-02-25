@@ -47,6 +47,7 @@ import org.ccsds.moims.mo.mc.packet.consumer.PacketStub;
 import org.ccsds.moims.mo.mc.packet.provider.PacketInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.parameter.consumer.ParameterStub;
 import org.ccsds.moims.mo.mc.parameter.provider.ParameterInheritanceSkeleton;
+import esa.mo.services.mc.provider.AlertProviderServiceImpl;
 
 /**
  * The factory class to instantiate the MC services.
@@ -56,6 +57,7 @@ public class ESAMCServicesFactory extends MCServicesFactory {
     private ParameterProviderServiceImpl parameterService = null;
     private AggregationProviderServiceImpl aggregationService = null;
     private PacketProviderServiceImpl packetService = null;
+    private AlertProviderServiceImpl alertService = null;
 
     /**
      * Constructor.
@@ -81,7 +83,9 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     @Override
     public AlertInheritanceSkeleton createProviderAlert(AlertBackend backend) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        alertService = new AlertProviderServiceImpl();
+        alertService.init(backend);
+        return alertService;
     }
 
     @Override
