@@ -55,7 +55,7 @@ public class GeneratorDocx extends GeneratorDocument {
         2250, 2801, 1382, 1185, 1382
     };
     private static final int[] SERVICE_COM_TYPES_TABLE_WIDTHS = new int[]{
-        2250, 1685, 2801, 1185, 1185
+        1010, 2250, 2500, 1150, 2196
     };
     private static final int[] OPERATION_OVERVIEW_TABLE_WIDTHS = new int[]{
         2200, 1700, 800, 4300
@@ -433,19 +433,19 @@ public class GeneratorDocx extends GeneratorDocument {
                     docxFile.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Object Types");
 
                     docxFile.startRow();
-                    docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Name", HEADER_COLOUR);
-                    docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
+                    docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
+                    docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Name", HEADER_COLOUR);
                     docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
-                    docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
-                    docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
+                    docxFile.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related link", HEADER_COLOUR);
+                    docxFile.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source link", HEADER_COLOUR);
                     docxFile.endRow();
 
                     List<String> cmts = new LinkedList<>();
 
                     for (ModelObjectType obj : features.getObjects().getObject()) {
                         docxFile.startRow();
-                        docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getName());
-                        docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
+                        docxFile.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(obj.getNumber()));
+                        docxFile.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, obj.getName());
 
                         if (null != obj.getObjectType() && (null != obj.getObjectType().getAny())) {
                             docxFile.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS,
@@ -504,17 +504,17 @@ public class GeneratorDocx extends GeneratorDocument {
                 evntTable.startTable(SERVICE_COM_TYPES_TABLE_WIDTHS, service.getName() + " Service Events");
 
                 evntTable.startRow();
-                evntTable.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Event Name", HEADER_COLOUR);
-                evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
+                evntTable.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Number", HEADER_COLOUR);
+                evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, "Event Name", HEADER_COLOUR);
                 evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS, "Object Body Type", HEADER_COLOUR);
-                evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related points to", HEADER_COLOUR);
-                evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source points to", HEADER_COLOUR);
+                evntTable.addCell(3, SERVICE_COM_TYPES_TABLE_WIDTHS, "Related link", HEADER_COLOUR);
+                evntTable.addCell(4, SERVICE_COM_TYPES_TABLE_WIDTHS, "Source link", HEADER_COLOUR);
                 evntTable.endRow();
 
                 for (ModelObjectType evnt : features.getEvents().getEvent()) {
                     evntTable.startRow();
-                    evntTable.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getName(), STD_COLOUR);
-                    evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(evnt.getNumber()), STD_COLOUR);
+                    evntTable.addCell(0, SERVICE_COM_TYPES_TABLE_WIDTHS, String.valueOf(evnt.getNumber()), STD_COLOUR);
+                    evntTable.addCell(1, SERVICE_COM_TYPES_TABLE_WIDTHS, evnt.getName(), STD_COLOUR);
 
                     if (null != evnt.getObjectType()) {
                         evntTable.addCell(2, SERVICE_COM_TYPES_TABLE_WIDTHS,
