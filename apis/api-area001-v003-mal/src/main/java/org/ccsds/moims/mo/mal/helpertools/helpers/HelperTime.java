@@ -39,11 +39,13 @@ public class HelperTime {
 
     /**
      * Converts a FineTime MAL data type timestamp into a readable string
+     * Deprecated because it was added directly to: FineTime.toReadableString();
      *
      * @param timestamp Time
      * @return The String with the time
      * @throws java.lang.IllegalArgumentException If timestamp == null.
      */
+    @Deprecated
     public static String time2readableString(FineTime timestamp) throws IllegalArgumentException {
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp must not be null.");
@@ -55,12 +57,14 @@ public class HelperTime {
     }
 
     /**
-     * Converts a Time MAL data type timestamp into a readable string
+     * Converts a Time MAL data type timestamp into a readable string.
+     * Deprecated because it was added directly to: Time.toReadableString();
      *
      * @param timestamp Time
      * @return The String with the time
      * @throws java.lang.IllegalArgumentException If timestamp == null
      */
+    @Deprecated
     public static String time2readableString(Time timestamp) throws IllegalArgumentException {
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp must not be null.");
