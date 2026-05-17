@@ -353,12 +353,16 @@ public class MALReceiver implements MALMessageListener {
                 handler.handleInvoke(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
+            } catch (RuntimeException ex) {
+                MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
+                        "Unexpected RuntimeException in handleInvoke", ex);
+                interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             }
         } catch (MALException ex) {
             try {
                 interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             } catch (MALException noex) {
-                // this exception cannot actually be thrown in this 
+                // this exception cannot actually be thrown in this
                 // implementation, therefore we can safely ignore it
             }
         }
@@ -378,12 +382,16 @@ public class MALReceiver implements MALMessageListener {
                 handler.handleProgress(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
+            } catch (RuntimeException ex) {
+                MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
+                        "Unexpected RuntimeException in handleProgress", ex);
+                interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             }
         } catch (MALException ex) {
             try {
                 interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             } catch (MALException noex) {
-                // this exception cannot actually be thrown in this 
+                // this exception cannot actually be thrown in this
                 // implementation, therefore we can safely ignore it
             }
         }
