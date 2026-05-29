@@ -1,13 +1,13 @@
 <p align="left">
   <a href="https://github.com/esa/mo-services-java">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/ESA_logo.png/800px-ESA_logo.png" alt="esa logo" title="esa" width="400"/>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/ESA_logo.svg/330px-ESA_logo.svg.png" alt="esa logo" title="esa" width="300"/>
   </a>
 </p>
 
 CCSDS MO services - ESA's Java implementation
 ========================
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/int.esa.ccsds.mo/mo-services-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/int.esa.ccsds.mo/mo-services-java)
+![Maven Central](https://img.shields.io/maven-central/v/int.esa.ccsds.mo/mo-services-java)
 
 CCSDS Mission Operations (MO) services are a set of standard end-to-end services based on a service-oriented architecture defined by the Consultative Committee for Space Data Systems (CCSDS) and it is intended to be used for mission operations of future space missions.
 
@@ -29,13 +29,16 @@ The deployment of standardized interoperable interfaces between operating Agenci
 
 ## List of relevant Links:
 
-- Wikipedia page: https://github.com/esa/CCSDS_MO/wiki
-- Documentation: https://github.com/esa/CCSDS_MO/wiki/Documentation
-- Service interfaces: https://dmarszk.github.io/MOWebViewer4NMF/
+### Links related to CCSDS
 - CCSDS website: https://public.ccsds.org/
-- Online CCSDS Books: https://public.ccsds.org/review/default.aspx
-- CCSDS Mission Operations services for Newbies:  https://github.com/esa/CCSDS_MO/wiki/CCSDS-Mission-Operations-services-for-Newbies
+- Online CCSDS Green Book: https://ccsds.org/publications/greenbooks/ (search for "Mission Operations Services Concept")
+- Online CCSDS Blue Books: https://ccsds.org/publications/bluebooks/ (search for "Mission Operations")
+- MO Service interfaces viewer: https://esa.github.io/mo.viewer.web
+
+### Links related to this implementation
 - GitHub CCSDS MO services source code: https://github.com/esa/mo-services-java
+- Documentation for this implementation: https://github.com/esa/CCSDS_MO/wiki/Documentation
+- CCSDS Mission Operations services for Newbies:  https://github.com/esa/CCSDS_MO/wiki/CCSDS-Mission-Operations-services-for-Newbies
 - MO Training material: https://github.com/esa/CCSDS_MO_TRAINING
 - Online video:  https://www.youtube.com/watch?v=XdGeaJE7yEk
 
