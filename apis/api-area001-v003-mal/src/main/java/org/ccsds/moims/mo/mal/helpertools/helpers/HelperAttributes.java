@@ -20,39 +20,12 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.helpers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.BooleanList;
-import org.ccsds.moims.mo.mal.structures.DoubleList;
-import org.ccsds.moims.mo.mal.structures.Duration;
-import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.FloatList;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IntegerList;
-import org.ccsds.moims.mo.mal.structures.LongList;
-import org.ccsds.moims.mo.mal.structures.OctetList;
-import org.ccsds.moims.mo.mal.structures.ShortList;
-import org.ccsds.moims.mo.mal.structures.StringList;
-import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.ULong;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.*;
 
 /**
  * A Helper class to simplify and solve many problems related with MAL
@@ -77,7 +50,6 @@ public class HelperAttributes {
      * @return The convert Double value or null if in == null
      */
     public static Double attribute2double(Attribute in) {
-
         if (in instanceof Union) {
             Integer sfp = ((Union) in).getTypeId().getSFP();
 
@@ -120,7 +92,6 @@ public class HelperAttributes {
 
                 return dou;
             }
-
         }
 
         if (in instanceof Duration) { // 3
@@ -300,7 +271,6 @@ public class HelperAttributes {
      * @throws java.lang.IllegalArgumentException If attributeName == null
      */
     public static Object attributeName2object(String attributeName) throws IllegalArgumentException {
-
         if (attributeName == null) {
             throw new IllegalArgumentException("AttributeName must not be null.");
         }
@@ -362,6 +332,32 @@ public class HelperAttributes {
             return new Blob();
         }
 
+        return null;
+    }
+
+    /**
+     * Checks the java type and returns the equivalent MO type short form.
+     *
+     * @param type The java type.
+     * @return The type short form in MO.
+     */
+    public static Integer getTypeShortForm(Class<?> type) {
+        Integer helperValue = HelperAttributes.attributeName2typeShortForm(type.getSimpleName());
+        if (helperValue != null) {
+            return helperValue;
+        }
+
+        if (type.equals(boolean.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Boolean");
+        } else if (type.equals(float.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Float");
+        } else if (type.equals(double.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Double");
+        } else if (type.equals(int.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Integer");
+        } else if (type.equals(long.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Long");
+        }
         return null;
     }
 
@@ -826,5 +822,4 @@ public class HelperAttributes {
 
         return (Serializable) o;
     }
-
 }
