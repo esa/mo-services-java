@@ -406,9 +406,11 @@ public class MALReceiver implements MALMessageListener {
             if (msg.getBody() instanceof MALRegisterBody) {
                 // update register list
                 final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
-                brokerHandler.addSubscriber(msg.getHeader().getFrom().getValue());
+                final MALRegisterBody registerBody = (MALRegisterBody) msg.getBody();
+                brokerHandler.addSubscriber(msg.getHeader().getFrom().getValue(),
+                        registerBody.getSubscription().getSubscriptionId().getValue());
                 brokerHandler.getBrokerImpl().getHandler().handleRegister(
-                        interaction, (MALRegisterBody) msg.getBody());
+                        interaction, registerBody);
 
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,
@@ -573,8 +575,12 @@ public class MALReceiver implements MALMessageListener {
             try {
                 // update register list
                 final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
-                brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
-                brokerHandler.removeSubscriber(msg.getHeader().getFrom().getValue());
+                final MALDeregisterBody deregisterBody = (MALDeregisterBody) msg.getBody();
+                brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, deregisterBody);
+                final String consumerURI = msg.getHeader().getFrom().getValue();
+                for (org.ccsds.moims.mo.mal.structures.Identifier subId : deregisterBody.getSubscriptionIds()) {
+                    brokerHandler.removeSubscriber(consumerURI, subId.getValue());
+                }
 
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,
