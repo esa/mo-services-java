@@ -424,9 +424,30 @@ public class JavaServiceInfo {
                 buffer.append(typeInfo.getMalShortFormField());
             }
 
+            buffer.append(", ");
+            buffer.append(toJavaStringLiteral(typeInfo.getFieldComment()));
+
             buffer.append((i != ti.size() - 1) ? ")," : ")");
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Converts a comment into a Java String literal, or the literal {@code null}
+     * when the comment is null.
+     *
+     * @param comment The comment to convert. Can be null.
+     * @return The Java source representation of the comment.
+     */
+    private static String toJavaStringLiteral(String comment) {
+        if (comment == null) {
+            return "null";
+        }
+        String escaped = comment.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+        return "\"" + escaped + "\"";
     }
 }

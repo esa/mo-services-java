@@ -31,6 +31,8 @@ public final class OperationField {
     // Should be Long for normal MAL types or String for XML types:
     private final Long typeId;
 
+    private final String comment;
+
     /**
      * Constructor.
      *
@@ -39,9 +41,22 @@ public final class OperationField {
      * @param typeId The typeId of the field.
      */
     public OperationField(String fieldName, boolean nullable, Long typeId) {
+        this(fieldName, nullable, typeId, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param fieldName The field name.
+     * @param nullable The nullability of the field.
+     * @param typeId The typeId of the field.
+     * @param comment The field comment.
+     */
+    public OperationField(String fieldName, boolean nullable, Long typeId, String comment) {
         this.fieldName = fieldName;
         this.nullable = nullable;
         this.typeId = typeId;
+        this.comment = comment;
     }
 
     /**
@@ -78,5 +93,14 @@ public final class OperationField {
      */
     public boolean isAbstractType() {
         return (typeId == null);
+    }
+
+    /**
+     * Returns the field comment.
+     *
+     * @return The field comment.
+     */
+    public String getComment() {
+        return comment;
     }
 }
