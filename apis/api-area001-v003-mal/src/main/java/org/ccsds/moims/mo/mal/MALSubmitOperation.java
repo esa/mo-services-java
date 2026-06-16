@@ -68,7 +68,29 @@ public class MALSubmitOperation extends MALOperation {
             final UShort capabilitySet,
             final OperationField[] submitStage)
             throws java.lang.IllegalArgumentException {
-        super(serviceKey, number, name, InteractionType.SUBMIT, capabilitySet);
+        this(serviceKey, number, name, capabilitySet, submitStage, null);
+    }
+
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param serviceKey Service Key for the service of this operation.
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param capabilitySet Capability set of the operation.
+     * @param submitStage The stage information for the SUBMIT stage.
+     * @param comment The operation comment.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALSubmitOperation(final ServiceKey serviceKey,
+            final UShort number,
+            final Identifier name,
+            final UShort capabilitySet,
+            final OperationField[] submitStage,
+            final String comment)
+            throws java.lang.IllegalArgumentException {
+        super(serviceKey, number, name, InteractionType.SUBMIT, capabilitySet, comment);
 
         this.submitStage = submitStage;
     }

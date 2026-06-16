@@ -36,6 +36,7 @@ public abstract class MALOperation {
     private final UShort number;
     private final InteractionType interactionType;
     private final UShort capabilitySet;
+    private final String comment;
 
     /**
      * Initialises the internal variables with the supplied values.
@@ -53,6 +54,27 @@ public abstract class MALOperation {
             final InteractionType interactionType,
             final UShort capabilitySet)
             throws java.lang.IllegalArgumentException {
+        this(serviceKey, number, name, interactionType, capabilitySet, null);
+    }
+
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param serviceKey Service Key for the service of this operation.
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param interactionType Interaction type of the operation
+     * @param capabilitySet Capability set of the operation.
+     * @param comment The operation comment.
+     * @throws java.lang.IllegalArgumentException If any argument is null.
+     */
+    public MALOperation(final ServiceKey serviceKey,
+            final UShort number,
+            final Identifier name,
+            final InteractionType interactionType,
+            final UShort capabilitySet,
+            final String comment)
+            throws java.lang.IllegalArgumentException {
         if ((number == null)
                 || (name == null)
                 || (interactionType == null)
@@ -64,6 +86,7 @@ public abstract class MALOperation {
         this.number = number;
         this.interactionType = interactionType;
         this.capabilitySet = capabilitySet;
+        this.comment = comment;
     }
 
     /**
@@ -119,6 +142,15 @@ public abstract class MALOperation {
      */
     public UShort getCapabilitySet() {
         return capabilitySet;
+    }
+
+    /**
+     * Returns the operation comment.
+     *
+     * @return The operation comment.
+     */
+    public String getComment() {
+        return comment;
     }
 
     /**

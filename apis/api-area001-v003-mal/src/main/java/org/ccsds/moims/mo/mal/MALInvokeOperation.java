@@ -80,7 +80,35 @@ public class MALInvokeOperation extends MALOperation {
             final OperationField[] invokeAckStage,
             final OperationField[] invokeResponseStage)
             throws java.lang.IllegalArgumentException {
-        super(serviceKey, number, name, InteractionType.INVOKE, capabilitySet);
+        this(serviceKey, number, name, capabilitySet, invokeStage,
+                invokeAckStage, invokeResponseStage, null);
+    }
+
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param serviceKey Service Key for the service of this operation.
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param capabilitySet Capability set of the operation.
+     * @param invokeStage The stage information for the INVOKE stage.
+     * @param invokeAckStage The stage information for the INVOKE_ACK stage.
+     * @param invokeResponseStage The stage information for the INVOKE_RESPONSE
+     * stage.
+     * @param comment The operation comment.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALInvokeOperation(final ServiceKey serviceKey,
+            final UShort number,
+            final Identifier name,
+            final UShort capabilitySet,
+            final OperationField[] invokeStage,
+            final OperationField[] invokeAckStage,
+            final OperationField[] invokeResponseStage,
+            final String comment)
+            throws java.lang.IllegalArgumentException {
+        super(serviceKey, number, name, InteractionType.INVOKE, capabilitySet, comment);
 
         this.invokeStage = invokeStage;
         this.invokeAckStage = invokeAckStage;

@@ -367,6 +367,8 @@ public class JavaServiceInfo {
                 break;
         }
 
+        opArgs.add(initNewLine + toJavaStringLiteral(op.getComment()));
+
         return opArgs;
     }
 
