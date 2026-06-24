@@ -253,10 +253,9 @@ public class GeneratorGwt extends GeneratorJava {
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    MethodWriter method = file.addMethodOpenStatement(false, false,
-                            StdStrings.PUBLIC, false, true, null, op.getName(),
-                            createOperationArguments(getConfig(), file,
-                                    op.getArgTypes()), throwsMALException);
+                    MethodWriter method = file.method(op.getName()).returnActual()
+                            .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
+                            .addThrows(throwsMALException).open();
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
                     method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null);");
@@ -265,9 +264,9 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case SUBMIT_OP: {
-                    MethodWriter method = file.addMethodOpenStatement(false,
-                            false, StdStrings.PUBLIC, false, true, null, op.getName(),
-                            createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+                    MethodWriter method = file.method(op.getName()).returnActual()
+                            .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
+                            .addThrows(throwsMALException).open();
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
                     method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null);");
@@ -277,9 +276,9 @@ public class GeneratorGwt extends GeneratorJava {
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    MethodWriter method = file.addMethodOpenStatement(false, false,
-                            StdStrings.PUBLIC, false, true, opRetType, op.getName(),
-                            createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+                    MethodWriter method = file.method(op.getName()).returns(opRetType).returnActual()
+                            .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
+                            .addThrows(throwsMALException).open();
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
                     method.addLine("return " + delegateCall + op.getName() + "(" + opArgs + ", null);");

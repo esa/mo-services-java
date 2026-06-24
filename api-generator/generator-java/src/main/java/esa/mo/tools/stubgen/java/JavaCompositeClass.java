@@ -105,7 +105,7 @@ public class JavaCompositeClass {
         createTypedConstructorMethod(file, className, superCompElements, compElements);
 
         if (!abstractComposite) {
-            MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
+            MethodWriter method = file.method("createElement").returns(elementType).asOverride().open();
             method.addLine("return new " + fqName + "();");
             method.addMethodCloseStatement();
         }
@@ -198,17 +198,11 @@ public class JavaCompositeClass {
     private void createEqualsMethod(ClassWriter file, String className,
             String parentClass, List<CompositeField> compElements) throws IOException {
         if (generator.supportsEquals) {
-            CompositeField boolType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "boolean", false),
-                    false, true, "return value");
-            CompositeField intType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "int", false),
-                    false, true, "return value");
             CompositeField objType = generator.createCompositeElementsDetails(file, false, "obj",
                     TypeUtils.createTypeReference(null, null, "Object", false),
                     false, true, "The object to compare with.");
 
-            MethodWriter method = file.addMethodOpenStatementOverride(boolType, "equals", Arrays.asList(objType), null);
+            MethodWriter method = file.method("equals").returns("boolean").addArgument(objType).asOverride().open();
             method.addLine("if (obj instanceof " + className + ") {");
 
             if (null != parentClass) {
@@ -235,7 +229,7 @@ public class JavaCompositeClass {
             method.addLine("return false;");
             method.addMethodCloseStatement();
 
-            method = file.addMethodOpenStatementOverride(intType, "hashCode", null, null);
+            method = file.method("hashCode").returns("int").asOverride().open();
             String line = (parentClass != null) ? "int hash = super.hashCode();" : "int hash = 7;";
             method.addLine(line);
 
@@ -250,11 +244,7 @@ public class JavaCompositeClass {
     private void createToStringMethod(ClassWriter file, String className,
             String parentClass, List<CompositeField> compElements) throws IOException {
         if (generator.supportsToString) {
-            CompositeField strType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "_String", false),
-                    false, true, "return value");
-
-            MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
+            MethodWriter method = file.method("toString").returns("_String").asOverride().open();
             method.addLine("StringBuilder buf = new StringBuilder();");
             method.addLine("buf.append(\"(" + className + ": \");");
 

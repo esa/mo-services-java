@@ -144,8 +144,6 @@ public class GeneratorJava extends GeneratorLangs {
 
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
-        String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
-        String throwsExceptions = "java.lang.IllegalArgumentException, " + throwsInteractionAndMALException;
         CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),
                 false, true, null);
@@ -179,24 +177,23 @@ public class GeneratorJava extends GeneratorLangs {
         argPSListenerList.add(psListener);
 
         // register method
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "register", argPSListenerList, throwsExceptions,
-                "Registers this provider implementation to the set of broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
-                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                        throwsMALException + " if there is an implementation exception"));
+        method = file.method("register").returnActual()
+                .addArguments(argPSListenerList)
+                .comment("Registers this provider implementation to the set of broker connections")
+                .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
+                .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.register(keyNames, keyTypes, listener);");
         method.addMethodCloseStatement();
 
         // registerWithDefaultKeys method
         List<CompositeField> listenerAuto = new LinkedList<>();
         listenerAuto.add(psListener);
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "registerWithDefaultKeys", listenerAuto, throwsInteractionAndMALException,
-                "Registers this provider implementation to the set of broker connections with the default subscription keys", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
-                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                        throwsMALException + " if there is an implementation exception"));
+        method = file.method("registerWithDefaultKeys").returnActual()
+                .addArguments(listenerAuto)
+                .comment("Registers this provider implementation to the set of broker connections with the default subscription keys")
+                .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("org.ccsds.moims.mo.mal.structures.IdentifierList keyNames = new org.ccsds.moims.mo.mal.structures.IdentifierList();");
         method.addLine("org.ccsds.moims.mo.mal.structures.AttributeTypeList keyTypes = new org.ccsds.moims.mo.mal.structures.AttributeTypeList();");
 
@@ -214,12 +211,12 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         // asyncRegister method
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "asyncRegister", argPSListenerList, throwsExceptions,
-                "Asynchronously registers this provider implementation to the set of broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
-                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                        throwsMALException + " if there is an implementation exception"));
+        method = file.method("asyncRegister").returnActual()
+                .addArguments(argPSListenerList)
+                .comment("Asynchronously registers this provider implementation to the set of broker connections")
+                .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
+                .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.asyncRegister(keyNames, keyTypes, listener);");
         method.addMethodCloseStatement();
 
@@ -241,35 +238,34 @@ public class GeneratorJava extends GeneratorLangs {
             argNameList = StubUtils.concatenateStringArguments(true, strList.toArray(new String[0]));
         }
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "publish", argList, throwsExceptions,
-                "Publishes updates to the set of registered broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
-                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                        throwsMALException + " if there is an implementation exception"));
+        method = file.method("publish").returnActual()
+                .addArguments(argList)
+                .comment("Publishes updates to the set of registered broker connections")
+                .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
+                .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.publish(updateHeader" + argNameList + ");");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "deregister", null, throwsInteractionAndMALException,
-                "Deregisters this provider implementation from the set of broker connections", null,
-                Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                        throwsMALException + " if there is an implementation exception"));
+        method = file.method("deregister").returnActual()
+                .comment("Deregisters this provider implementation from the set of broker connections")
+                .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.deregister();");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "asyncDeregister", Arrays.asList(psListener), throwsExceptions,
-                "Asynchronously deregisters this provider implementation from the set of broker connections", null,
-                Arrays.asList("java.lang.IllegalArgumentException If any supplied argument is invalid",
-                        throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                        throwsMALException + " if there is an implementation exception"));
+        method = file.method("asyncDeregister").returnActual()
+                .addArgument(psListener)
+                .comment("Asynchronously deregisters this provider implementation from the set of broker connections")
+                .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
+                .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.asyncDeregister(listener);");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatement(false, false, StdStrings.PUBLIC,
-                false, true, null, "close", null, throwsMALException,
-                "Closes this publisher", null, Arrays.asList(throwsMALException + " if there is an implementation exception"));
+        method = file.method("close").returnActual()
+                .comment("Closes this publisher")
+                .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.close();");
         method.addMethodCloseStatement();
 

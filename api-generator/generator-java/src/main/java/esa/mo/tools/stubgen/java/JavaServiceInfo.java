@@ -249,7 +249,7 @@ public class JavaServiceInfo {
         CompositeField opType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALArea", false),
                 false, true, null);
-        MethodWriter method = file.addMethodOpenStatementOverride(opType, "getArea", null, null);
+        MethodWriter method = file.method("getArea").returns(opType).asOverride().open();
         method.addLine("return " + namespace + ";");
         method.addMethodCloseStatement();
 
@@ -265,7 +265,7 @@ public class JavaServiceInfo {
         outputArgs.add(generator.createCompositeElementsDetails(file, true, "extraInfo", ref2, true, true, null));
 
         // Generate the MO Error method generator
-        MethodWriter method2 = file.addMethodOpenStatementOverride(opTypeMOError, "generateMOError", outputArgs, null);
+        MethodWriter method2 = file.method("generateMOError").returns(opTypeMOError).addArguments(outputArgs).asOverride().open();
         method2.addLine("switch (errorNumber) {");
 
         if (area.getErrors() != null) {

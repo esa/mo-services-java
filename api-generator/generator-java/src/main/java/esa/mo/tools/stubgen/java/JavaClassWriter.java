@@ -25,6 +25,7 @@ import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorJava.JAVA_FILE_EXT;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
@@ -279,47 +280,14 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-        return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype,
-                methodName, args, throwsSpec, null, null, null);
+    public CompositeField type(String name) {
+        return type(null, null, name);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec, String comment,
-            String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst,
-                isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
-    }
-
-    @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-        return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst,
-                isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
-    }
-
-    @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-            boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual,
-            CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec,
-            String comment, String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst,
-                isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
-    }
-
-    @Override
-    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(isFinal, isVirtual, isConst, isStatic, scope,
-                isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec,
-                comment, returnComment, throwsComment, false);
+    public CompositeField type(String area, String service, String name) {
+        return generator.createCompositeElementsDetails(this, false, "return",
+                TypeUtils.createTypeReference(area, service, name, false), false, true, null);
     }
 
     @Override
