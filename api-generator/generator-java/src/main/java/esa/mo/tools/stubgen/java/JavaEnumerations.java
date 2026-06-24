@@ -31,7 +31,6 @@ import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 

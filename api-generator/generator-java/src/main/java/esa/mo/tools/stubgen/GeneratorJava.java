@@ -40,7 +40,6 @@ import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -187,10 +186,8 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         // registerWithDefaultKeys method
-        List<CompositeField> listenerAuto = new LinkedList<>();
-        listenerAuto.add(psListener);
         method = file.method("registerWithDefaultKeys").returnActual()
-                .addArguments(listenerAuto)
+                .addArgument(psListener)
                 .comment("Registers this provider implementation to the set of broker connections with the default subscription keys")
                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                 .addThrows(throwsMALException, "if there is an implementation exception").open();

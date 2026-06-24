@@ -255,12 +255,11 @@ public class JavaServiceInfo {
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MOErrorException", false),
                 false, true, null);
 
-        List<CompositeField> outputArgs = new LinkedList<>();
-        outputArgs.add(file.field("int", "errorNumber", null));
-        outputArgs.add(file.field("Object", "extraInfo", null));
-
         // Generate the MO Error method generator
-        MethodWriter method2 = file.method("generateMOError").returns(opTypeMOError).addArguments(outputArgs).asOverride().open();
+        MethodWriter method2 = file.method("generateMOError").returns(opTypeMOError)
+                .addArgument(file.field("int", "errorNumber", null))
+                .addArgument(file.field("Object", "extraInfo", null))
+                .asOverride().open();
         method2.addLine("switch (errorNumber) {");
 
         if (area.getErrors() != null) {
