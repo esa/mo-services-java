@@ -79,9 +79,7 @@ public class JavaServiceInfo {
                 null, "Helper class for " + serviceName + " service.");
 
         // COM service should not have its operations generated, these are generated as part of the specific services
-        CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceCAPS + "_SERVICE_NUMBER",
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, false, "Service number literal.");
+        CompositeField _serviceNumberVar = file.field("int", "_" + serviceCAPS + "_SERVICE_NUMBER", "Service number literal.");
         CompositeField serviceNumberVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE_NUMBER",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Service number instance.");
@@ -106,9 +104,8 @@ public class JavaServiceInfo {
 
         for (OperationSummary op : summary.getOperations()) {
             String operationInstanceVar = op.getName().toUpperCase();
-            CompositeField _opNumberVar = generator.createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_NUMBER",
-                    TypeUtils.createTypeReference(null, null, "int", false),
-                    false, false, "Operation number literal for operation " + operationInstanceVar);
+            CompositeField _opNumberVar = file.field("int", "_" + operationInstanceVar + "_OP_NUMBER",
+                    "Operation number literal for operation " + operationInstanceVar);
             CompositeField opNumberVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_NUMBER",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                     true, false, "Operation number instance for operation " + operationInstanceVar);
@@ -259,10 +256,8 @@ public class JavaServiceInfo {
                 false, true, null);
 
         List<CompositeField> outputArgs = new LinkedList<>();
-        TypeReference ref1 = TypeUtils.createTypeReference(null, null, "int", false);
-        outputArgs.add(generator.createCompositeElementsDetails(file, true, "errorNumber", ref1, true, true, null));
-        TypeReference ref2 = TypeUtils.createTypeReference(null, null, "Object", false);
-        outputArgs.add(generator.createCompositeElementsDetails(file, true, "extraInfo", ref2, true, true, null));
+        outputArgs.add(file.field("int", "errorNumber", null));
+        outputArgs.add(file.field("Object", "extraInfo", null));
 
         // Generate the MO Error method generator
         MethodWriter method2 = file.method("generateMOError").returns(opTypeMOError).addArguments(outputArgs).asOverride().open();
@@ -290,9 +285,8 @@ public class JavaServiceInfo {
         String objNameCaps = obj.getName().toUpperCase();
         comObjectCalls.add(objNameCaps);
 
-        CompositeField _objNumberVar = generator.createCompositeElementsDetails(file, false, "_" + objNameCaps + "_OBJECT_NUMBER",
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, true, "Literal for object " + objNameCaps);
+        CompositeField _objNumberVar = file.field("int", "_" + objNameCaps + "_OBJECT_NUMBER",
+                "Literal for object " + objNameCaps);
         CompositeField objNumberVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NUMBER",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, true, "Instance for object " + objNameCaps);

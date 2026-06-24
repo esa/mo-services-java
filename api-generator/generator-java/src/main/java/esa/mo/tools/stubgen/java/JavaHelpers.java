@@ -96,9 +96,7 @@ public class JavaHelpers {
 
         file.addPackageStatement(area.getName(), null, null);
 
-        CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNumber,
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, false, "Area number literal.");
+        CompositeField _areaNumberVar = file.field("int", "_" + areaNumber, "Area number literal.");
         CompositeField areaNumberVar = generator.createCompositeElementsDetails(file, false, areaNumber,
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Area number instance.");

@@ -140,9 +140,7 @@ public class JavaLists {
 
         // create initial size contructor
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName,
-                generator.createCompositeElementsDetails(file, false, "initialCapacity",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, "The required initial capacity."),
+                file.field("int", "initialCapacity", "The required initial capacity."),
                 true, null, "Constructor that initialises the capacity of the list.", null);
         method.addMethodCloseStatement();
 

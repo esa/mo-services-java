@@ -66,6 +66,20 @@ public interface ClassWriter extends LanguageWriter {
     CompositeField type(String area, String service, String name);
 
     /**
+     * Builds a named field of a simple (non-list) type, for use as a class
+     * variable or argument. Convenience over building the type and field
+     * separately; resolves the type via {@link #type(String)}.
+     *
+     * @param typeName The field type name.
+     * @param fieldName The field name.
+     * @param comment The field comment.
+     * @return The named field.
+     */
+    default CompositeField field(String typeName, String fieldName, String comment) {
+        return new CompositeField(type(typeName), fieldName, comment);
+    }
+
+    /**
      * Adds a class open statement.
      *
      * @param className The class name.

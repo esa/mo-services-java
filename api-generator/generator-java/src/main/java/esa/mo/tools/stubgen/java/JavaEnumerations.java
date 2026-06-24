@@ -71,9 +71,7 @@ public class JavaEnumerations {
             EnumerationType.Item item = enumeration.getItem().get(i);
             String value = item.getValue();
 
-            CompositeField _eNewValue = generator.createCompositeElementsDetails(file, false, value + "_VALUE",
-                    TypeUtils.createTypeReference(null, null, "int", false), false, false,
-                    "Enumeration value for " + value);
+            CompositeField _eNewValue = file.field("int", value + "_VALUE", "Enumeration value for " + value);
             CompositeField eInstVar = generator.createCompositeElementsDetails(file, false, value,
                     TypeUtils.createTypeReference(area.getName(), serviceName, enumName, false),
                     true, false, "Enumeration singleton for value " + value);
@@ -123,9 +121,7 @@ public class JavaEnumerations {
 
         // Adds Constructor with a start value
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
-                generator.createCompositeElementsDetails(file, false, "value",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, "The value of the Enumeration."),
+                file.field("int", "value", "The value of the Enumeration."),
                 true, null, enumeration.getComment(), null);
         method.addMethodCloseStatement();
     }
