@@ -1242,23 +1242,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         method.addMethodCloseStatement();
 
-        // add getters and setters
+        // add Getters
         for (int i = 0; i < argsList.size(); i++) {
             CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
                     returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "The new value.");
             addGetter(file, argType, null);
-            //addSetter(file, argType, null);
         }
-
-        /*
-        // add deprecated getters and setters
-        for (int i = 0; i < argsList.size(); i++) {
-            CompositeField argType = createCompositeElementsDetails(file, true, argsList.get(i).getFieldName(),
-                    returnTypeInfo.getReturnTypes().get(i).getSourceType(), true, true, "The new value.");
-            //addGetter(file, argType, "BodyElement" + i);
-            //addSetter(file, argType, "BodyElement" + i);
-        }
-        */
 
         file.addClassCloseStatement();
         file.flush();
@@ -1315,26 +1304,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 .comment("Returns the field " + attributeName)
                 .returnComment("The field " + attributeName).deprecated(isDeprecated).open();
         method.addLine("return " + attributeName + ";");
-        method.addMethodCloseStatement();
-    }
-
-    @Deprecated
-    public static void addSetter(ClassWriter file, CompositeField element, String backwardCompatibility) throws IOException {
-        String setOpPrefix = "set";
-        String attributeName = element.getFieldName();
-        //boolean isDeprecated = (backwardCompatibility != null);
-        boolean isDeprecated = true;
-        String getOpName = (backwardCompatibility == null) ? StubUtils.preCap(attributeName) : backwardCompatibility;
-
-        if (StdStrings.BOOLEAN.equals(element.getTypeName()) && getOpName.startsWith("Is")) {
-            getOpName = getOpName.substring(2);
-        }
-
-        CompositeField fld = new CompositeField(element, "__newValue", "The new value.");
-        MethodWriter method = file.method(setOpPrefix + getOpName).returnActual()
-                .addArgument(fld).comment("Sets the field " + attributeName)
-                .deprecated(isDeprecated).open();
-        method.addLine(attributeName + " = __newValue;");
         method.addMethodCloseStatement();
     }
 
