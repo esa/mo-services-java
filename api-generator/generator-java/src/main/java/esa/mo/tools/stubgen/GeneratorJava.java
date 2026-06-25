@@ -200,7 +200,7 @@ public class GeneratorJava extends GeneratorLangs {
             if (keys != null) {
                 for (NamedElementReferenceWithCommentType key : keys.getField()) {
                     method.addLine("keyNames.add(new org.ccsds.moims.mo.mal.structures.Identifier(\"" + key.getName() + "\"));");
-                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + key.getType().getName().toUpperCase() + ");");
+                    method.addLine("keyTypes.add(org.ccsds.moims.mo.mal.structures.AttributeType." + subscriptionKeyAttributeTypeName(key.getType()) + ");");
                 }
             }
         }
@@ -421,5 +421,9 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     protected InterfaceWriter createInterfaceFile(File folder, String className) throws IOException {
         return new JavaClassWriter(folder, className, this);
+    }
+
+    private String subscriptionKeyAttributeTypeName(TypeReference type) {
+        return isEnum(type) ? StdStrings.USHORT.toUpperCase() : type.getName().toUpperCase();
     }
 }
