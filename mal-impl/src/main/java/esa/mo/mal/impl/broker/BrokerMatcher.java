@@ -24,7 +24,6 @@ import esa.mo.mal.impl.pubsub.SingleSubscription;
 import esa.mo.mal.impl.pubsub.UpdateKeyValues;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Union;
@@ -84,7 +83,7 @@ public class BrokerMatcher {
 
         // Check if we have a Wildcard on the consumer subscription...
         if (!consumerIsNull && Attribute.isStringAttribute(consumer)) {
-            String str = HelperAttributes.attribute2string(consumer);
+            String str = consumer.attribute2string();
             // Check the asterisk case
             if (ASTERISK_WILDCARD.equals(str)) {
                 return true;
@@ -104,8 +103,8 @@ public class BrokerMatcher {
 
         // Are we handling strings?
         if (Attribute.isStringAttribute(consumer) && Attribute.isStringAttribute(provider)) {
-            String first = HelperAttributes.attribute2string(consumer);
-            String second = HelperAttributes.attribute2string(provider);
+            String first = consumer.attribute2string();
+            String second = provider.attribute2string();
             return first.equals(second);
         }
 
@@ -119,8 +118,8 @@ public class BrokerMatcher {
                 }
             }
 
-            Object first = HelperAttributes.attribute2JavaType(consumer);
-            Object second = HelperAttributes.attribute2JavaType(provider);
+            Object first = consumer.attribute2JavaType();
+            Object second = provider.attribute2JavaType();
             return first.equals(second);
         }
 

@@ -23,7 +23,6 @@ package esa.mo.services.mpd.util;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
@@ -216,9 +215,9 @@ public class HelperProductFilters {
             }
 
             try {
-                Double doubleMin = HelperAttributes.attribute2double(min);
-                Double doubleMax = HelperAttributes.attribute2double(max);
-                Double doubleValue = HelperAttributes.attribute2double(value);
+                Double doubleMin = min.attribute2double();
+                Double doubleMax = max.attribute2double();
+                Double doubleValue = value.attribute2double();
 
                 if (doubleValue >= doubleMin && doubleValue <= doubleMax) {
                     matchedAtLeastOne = true;

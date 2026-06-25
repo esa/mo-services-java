@@ -179,7 +179,7 @@ class MonitorEventDetails {
         // Second Sub Key = event object type (3 sub-fields)
 
         Attribute attVal = updateHeader.getKeyValues().get(1).getValue();
-        Long myLong1 = (Long) Attribute.attribute2JavaType(attVal);
+        Long myLong1 = (Long) attVal.attribute2JavaType();
 
         bValid = COMChecker.equalsCheck(strObject,
                 "Header.Key.Second",
@@ -190,7 +190,7 @@ class MonitorEventDetails {
 
         // Third sub key is event instance identifier check = TBC - just need to ensure it is unique
         Attribute attVal2 = updateHeader.getKeyValues().get(2).getValue();
-        Long myLong2 = (Long) Attribute.attribute2JavaType(attVal2);
+        Long myLong2 = (Long) attVal2.attribute2JavaType();
 
         bInstIdValid = InstIdLists.inst().add(objectNumber, myLong2);
         if (!bInstIdValid) {
@@ -201,7 +201,7 @@ class MonitorEventDetails {
         }
         // Fourth Sub Key = event source object type (4 sub-fields)
         Attribute attVal3 = updateHeader.getKeyValues().get(3).getValue();
-        Long myLong3 = (Long) Attribute.attribute2JavaType(attVal3);
+        Long myLong3 = (Long) attVal3.attribute2JavaType();
 
         bValid = COMChecker.equalsCheck(strObject,
                 "Header.Key.Fourth",

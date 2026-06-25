@@ -202,8 +202,8 @@ public class TypeId {
 
     public TypeId generateTypeIdPositive() {
         calculateIfNeeded();
-        int newSPF = (sfp > 0) ? sfp : (-1) * sfp;
-        return new TypeId(areaNumber, areaVersion, serviceNumber, newSPF);
+        int newSFP = (sfp > 0) ? sfp : (-1) * sfp;
+        return new TypeId(areaNumber, areaVersion, serviceNumber, newSFP);
     }
 
     @Override

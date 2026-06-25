@@ -567,7 +567,7 @@ public class EventTestScenario extends LoggingBase {
         EventDetails ev = eventDetailsList.get(Integer.parseInt(instIndex));
         ArchiveDetails archiveDetails = retrievedArchiveDetailsList.get(0);
         Attribute attVal = ev.updateHeader.getKeyValues().get(2).getValue();
-        Long myLong1 = (Long) Attribute.attribute2JavaType(attVal);
+        Long myLong1 = (Long) attVal.attribute2JavaType();
         boolean bMatch = archiveDetails.getInstId().equals(myLong1);
         logMessage(loggingClassName + ":retrievedArchiveItemInstanceIdentifierMatchesForEvent:RET" + bMatch);
         return bMatch;
@@ -607,7 +607,7 @@ public class EventTestScenario extends LoggingBase {
             domainId.add(new Identifier(eventDomain));
             // Set instance
             Attribute attVal = ev.getUpdateHeader().getKeyValues().get(2).getValue();
-            Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
+            Long instanceId = (Long) attVal.attribute2JavaType();
             LongList instanceIdsToRetrieve = new LongList();
             instanceIdsToRetrieve.add(instanceId);
             // Set Object Type

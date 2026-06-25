@@ -298,7 +298,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
             ElementList elementList, String objectNumber) throws MALInteractionException, MALException {
         ArchiveDetailsList archiveDetailsList = new ArchiveDetailsList();
         Attribute attVal = updateHeader.getKeyValues().get(2).getValue();
-        Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
+        Long instanceId = (Long) attVal.attribute2JavaType();
         archiveDetailsList.add(new ArchiveDetails(instanceId, objDetails, NETWORK,
                 FineTime.now(), new URI(updateHeader.getSource().getValue())));
 

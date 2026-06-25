@@ -366,6 +366,101 @@ public interface Attribute extends Element {
     }
 
     /**
+     * Converts this MAL Attribute data type into a Java data type.
+     *
+     * @return The object in the Java data type
+     */
+    default Object attribute2JavaType() {
+        return attribute2JavaType(this);
+    }
+
+    /**
+     * Converts any MAL Attribute data type to a Double java type
+     *
+     * @param in The MAL Attribute data type
+     * @return The converted Double value or null if in == null
+     */
+    public static Double attribute2double(Attribute in) {
+        if (in instanceof Union) {
+            Integer sfp = ((Union) in).getTypeId().getSFP();
+
+            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
+                return ((Union) in).getBooleanValue() ? 1.0 : 0.0;
+            }
+            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) {
+                return ((Union) in).getFloatValue().doubleValue();
+            }
+            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
+                return ((Union) in).getDoubleValue();
+            }
+            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) {
+                return (double) (short) ((Union) in).getOctetValue();
+            }
+            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) {
+                return ((Union) in).getShortValue().doubleValue();
+            }
+            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) {
+                return ((Union) in).getIntegerValue().doubleValue();
+            }
+            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) {
+                return ((Union) in).getLongValue().doubleValue();
+            }
+            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) {
+                try {
+                    return Double.parseDouble(((Union) in).getStringValue());
+                } catch (NumberFormatException ex) {
+                    return null;
+                }
+            }
+        }
+        if (in instanceof Duration) {
+            return ((Duration) in).getInSeconds();
+        }
+        if (in instanceof Identifier) {
+            try {
+                return Double.parseDouble(((Identifier) in).getValue());
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+        }
+        if (in instanceof UOctet) {
+            return (double) ((UOctet) in).getValue();
+        }
+        if (in instanceof UShort) {
+            return (double) ((UShort) in).getValue();
+        }
+        if (in instanceof UInteger) {
+            return (double) ((UInteger) in).getValue();
+        }
+        if (in instanceof ULong) {
+            return ((ULong) in).getValue().doubleValue();
+        }
+        if (in instanceof Time) {
+            return (double) ((Time) in).getValue();
+        }
+        if (in instanceof FineTime) {
+            return (double) ((FineTime) in).getValue();
+        }
+        if (in instanceof URI) {
+            try {
+                return Double.parseDouble(((URI) in).getValue());
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Converts this MAL Attribute data type to a Double java type.
+     *
+     * @return The converted Double value
+     */
+    default Double attribute2double() {
+        return attribute2double(this);
+    }
+
+    /**
      * Converts any MAL Attribute data type to a String java type
      *
      * @param in The MAL Attribute data type
