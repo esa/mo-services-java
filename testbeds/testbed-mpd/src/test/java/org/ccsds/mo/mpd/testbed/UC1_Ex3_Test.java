@@ -197,8 +197,8 @@ public class UC1_Ex3_Test extends MPDTest {
             int index = 0;
             for (NamedValue att : attributes) {
                 if ("ImageSubject".equals(att.getName().toString())) {
-                    assertEquals(actualValues.get(index++), att.getValue().attribute2JavaType());
-//                    Integer attributeValue = (int) att.getValue().attribute2JavaType();
+                    assertEquals(actualValues.get(index++), Attribute.attribute2JavaType(att.getValue()));
+//                    Integer attributeValue = (int) Attribute.attribute2JavaType(att.getValue());
 //                    assertTrue();
                 }
             }
