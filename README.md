@@ -1,6 +1,6 @@
 <p align="left">
-  <a href="http://www.esa.int/">
-      <img src="http://www.esa.int/esalogo/images/logotype/img_colorlogo_darkblue.gif" alt="esa logo" title="esa" width="400"/>
+  <a href="https://www.esa.int/">
+      <img src="docs/esa_logo.svg" alt="esa logo" title="esa" width="300"/>
   </a>
 </p>
 
