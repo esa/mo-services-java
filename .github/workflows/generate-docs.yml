@@ -1,0 +1,62 @@
+name: Generate MO XML Docs
+
+on: [push]
+
+permissions:
+  contents: read
+
+jobs:
+  generate-docx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Date
+        id: get-date
+        run: echo "date=$(/bin/date -u "+%Y-%m-%dT%H-%M-%S")" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Cache Maven local repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-docgen-${{ steps.get-date.outputs.date }}
+          restore-keys: |
+            ${{ runner.os }}-maven-docgen-
+
+      - name: Build mo-navigator (and dependencies only)
+        run: mvn --batch-mode install -DskipTests -pl tooling/mo-navigator --also-make
+
+      - name: Generate DOCX files for XML prototypes
+        run: |
+          mkdir -p docx-output/prototypes
+          java -cp tooling/mo-navigator/target/mo-navigator-jar-with-dependencies.jar \
+            esa.mo.navigator.AppGenerateDocx \
+            xml-service-specifications/xml-ccsds-mo-prototypes/src/main/resources/xml \
+            docx-output/prototypes
+
+      - name: Generate DOCX files for XML standards
+        run: |
+          mkdir -p docx-output/standards
+          java -cp tooling/mo-navigator/target/mo-navigator-jar-with-dependencies.jar \
+            esa.mo.navigator.AppGenerateDocx \
+            xml-service-specifications/xml-ccsds-mo-standards/src/main/resources/xml \
+            docx-output/standards
+
+      - name: Upload DOCX artifacts for XML prototypes
+        uses: actions/upload-artifact@v4
+        with:
+          name: mo-prototypes-docx-${{ steps.get-date.outputs.date }}
+          path: docx-output/prototypes/
+          if-no-files-found: error
+
+      - name: Upload DOCX artifacts for XML standards
+        uses: actions/upload-artifact@v4
+        with:
+          name: mo-standards-docx-${{ steps.get-date.outputs.date }}
+          path: docx-output/standards/
+          if-no-files-found: error
