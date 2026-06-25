@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 import org.ccsds.mo.mc.testbed.Constant;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeType;
 import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
@@ -232,7 +233,7 @@ public class ActionDefaultDataset extends ActionDataset {
 		NullableAttribute argManeuvTypeNA = executionRequest.getArgumentValues().get(2);
 		if (argManeuvTypeNA == null)
 			return "Invalid value for argument " + Constant.ID_MANEUVTYPE + ": null";
-		String maneuvType = argManeuvTypeNA.getValue().attribute2string();
+		String maneuvType = Attribute.attribute2string(argManeuvTypeNA.getValue());
 		if (Constant.STR_OK.equals(maneuvType) ||
 				Constant.STR_STEPS.equals(maneuvType) ||
 				Constant.STR_SKIP.equals(maneuvType) ||
@@ -258,7 +259,7 @@ public class ActionDefaultDataset extends ActionDataset {
 			return super.execute(executionRequest, definition, listener);
 
 		// GENE_AR_MANEUVTYPE is the third argument, index 2
-		String maneuvType = executionRequest.getArgumentValues().get(2).getValue().attribute2string();
+		String maneuvType = Attribute.attribute2string(executionRequest.getArgumentValues().get(2).getValue());
 		if (Constant.STR_OK.equals(maneuvType)) {
 			return super.execute(executionRequest, definition, listener);
 		} else if (Constant.STR_STEPS.equals(maneuvType)) {
