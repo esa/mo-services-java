@@ -68,6 +68,14 @@ public class PublishRegisterTestProcedure extends LoggingBase {
     public static final QoSLevel QOS_LEVEL = QoSLevel.ASSURED;
     public static final UInteger PRIORITY = new UInteger(1);
 
+    // Use a dedicated domain so that this procedure's pub-sub state (the provider's
+    // publisher and the cached publish-register transaction id it reuses for every
+    // PUBLISH / PUBLISH ERROR) cannot collide with the other pub-sub procedures. The
+    // suite execution order is not guaranteed (newer FitNesse versions order pages
+    // alphabetically), so a preceding procedure sharing the same domain/session would
+    // otherwise leave a stale transaction id behind that corrupts the header checks.
+    public static final IdentifierList DOMAIN = HeaderTestProcedure.getDomain(9);
+
     public static final Identifier SUBSCRIPTION_ID = new Identifier("PublishRegisterSubscription");
 
     private boolean withSharedBroker;
@@ -87,7 +95,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
 
         ipTest = LocalMALInstance.instance().ipTestStub(
                 HeaderTestProcedure.AUTHENTICATION_ID,
-                HeaderTestProcedure.DOMAIN,
+                DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE,
                 SESSION, SESSION_NAME, QOS_LEVEL, PRIORITY, new NamedValueList(), withSharedBroker).getStub();
 
@@ -111,7 +119,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishRegister testPublishRegister
                 = new TestPublishRegister(QOS_LEVEL, PRIORITY,
-                        HeaderTestProcedure.DOMAIN,
+                        DOMAIN,
                         HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false,
                         myKeys, keyTypes, expectedErrorCode);
         ipTest.publishRegister(testPublishRegister);
@@ -128,12 +136,12 @@ public class PublishRegisterTestProcedure extends LoggingBase {
 
         // Empty filters list because we don't want any filter
         SubscriptionFilterList filters = new SubscriptionFilterList();
-        Subscription subscription = new Subscription(SUBSCRIPTION_ID, HeaderTestProcedure.DOMAIN, null, filters);
+        Subscription subscription = new Subscription(SUBSCRIPTION_ID, DOMAIN, null, filters);
         ipTest.monitorRegister(subscription, listener);
 
         boolean expectError = Boolean.parseBoolean(error);
         UpdateHeaderList updateHeaders = new UpdateHeaderList();
-        updateHeaders.add(new UpdateHeader(new Identifier("source"), HeaderTestProcedure.DOMAIN, values));
+        updateHeaders.add(new UpdateHeader(new Identifier("source"), DOMAIN, values));
 
         TestUpdateList updateList = new TestUpdateList();
         updateList.add(new TestUpdate(new Integer(0)));
@@ -149,7 +157,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
             failedEntityKeys = null;
         }
         TestPublishUpdate testPublishUpdate = new TestPublishUpdate(
-                QOS_LEVEL, PRIORITY, HeaderTestProcedure.DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
+                QOS_LEVEL, PRIORITY, DOMAIN, HeaderTestProcedure.NETWORK_ZONE,
                 SESSION, SESSION_NAME, false, updateHeaders, updateList, values, expectedErrorCode, (!publishRegistered),
                 failedEntityKeys);
 
@@ -187,7 +195,7 @@ public class PublishRegisterTestProcedure extends LoggingBase {
         UInteger expectedErrorCode = new UInteger(999);
         TestPublishDeregister testPublishDeregister = new TestPublishDeregister(
                 QOS_LEVEL, PRIORITY,
-                HeaderTestProcedure.DOMAIN,
+                DOMAIN,
                 HeaderTestProcedure.NETWORK_ZONE, SESSION, SESSION_NAME, false, expectedErrorCode);
         ipTest.publishDeregister(testPublishDeregister);
         publishRegistered = false;
