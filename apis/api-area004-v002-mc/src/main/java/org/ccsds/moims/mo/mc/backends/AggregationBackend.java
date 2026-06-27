@@ -33,14 +33,14 @@ import org.ccsds.moims.mo.mc.structures.AggregationDefinitionList;
  * 
  * In the testbed, we consider that the Aggregation provider gets the values of the aggregations parameters
  * from a Parameter provider. The Aggregation backend interface reflects this choice.
- * The method {@link getParameterConnectionDetails} allows the Aggregation provider to retrieve the
+ * The method {@link #getParameterConnectionDetails()} allows the Aggregation provider to retrieve the
  * connection details to the Parameter provider.
  * 
  * The Aggregation backend requires a {@link BackendTimer} to answer to time related calls. The timer is provided
  * in the constructor of the concrete classes implementing the <code>AggregationBackend</code>, and can be
- * retrieved by the {@link getTimer} method. This timer should be the same as the Parameter backend's.
+ * retrieved by the {@link #getTimer()} method. This timer should be the same as the Parameter backend's.
  * 
- * Unlike other M&C service, the Aggregation service allows to define new object Definitions. This does not
+ * Unlike other M&amp;C service, the Aggregation service allows to define new object Definitions. This does not
  * show in the backend interface. Dynamically defined aggregations will be handled completely by the Aggregation
  * provider. There is however a specific method in the backend to retrieve the default configuration of those
  * dynamically defined aggregations.
@@ -65,7 +65,7 @@ public interface AggregationBackend {
 
 	/**
 	 * The DefaultReportConfiguration class is used to provide the default report configuration of an
-	 * Aggregation, in the {@link getDefaultReportConfig} method.
+	 * Aggregation, in the {@link AggregationBackend#getDefaultReportConfig()} method.
 	 */
 	public class DefaultReportConfiguration {
 		public boolean generationEnabled;

@@ -42,7 +42,7 @@ public interface BackendTimer {
 
 	/**
 	 * Gets the current virtual time of the timer in milliseconds.
-	 * This results in a call to {@link System.currentTimeMillis} in a standard implementation.
+	 * This results in a call to {@link System#currentTimeMillis()} in a standard implementation.
 	 * 
 	 * @return	the current time
 	 */
@@ -50,7 +50,7 @@ public interface BackendTimer {
 
 	/**
 	 * Causes the currently executing thread to sleep for the specified number of milliseconds of virtual time.
-	 * This results in a call to {@link Thread.sleep} in a standard implementation.
+	 * This results in a call to {@link Thread#sleep(long)} in a standard implementation.
 	 * 
 	 * @param millis	time to wait in milliseconds 	
 	 * @throws InterruptedException
@@ -61,7 +61,7 @@ public interface BackendTimer {
 	/**
 	 * Submits a one-shot task that will be planified for execution by the provided Executor
 	 * after the specified number of milliseconds of virtual time.
-	 * This results in a call to {@link ScheduledExecutorService.schedule} in a standard implementation.
+	 * This results in a call to {@link java.util.concurrent.ScheduledExecutorService#schedule(Runnable, long, java.util.concurrent.TimeUnit)} in a standard implementation.
 	 * 
 	 * @param command	task to execute
 	 * @param executor	executor to use for executing the task
