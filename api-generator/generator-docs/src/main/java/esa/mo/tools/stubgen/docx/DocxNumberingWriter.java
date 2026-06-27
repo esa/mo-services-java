@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
+ * Writes the numbering definitions for the generated .docx documents.
  *
  * @author Cesar.Coelho
  */

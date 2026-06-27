@@ -111,7 +111,7 @@ public interface AggregationBackend {
 	/**
 	 * Retrieves the details of the Parameter provider used to collect the Parameter values.
 	 * 
-	 * @return
+	 * @return the connection details of the Parameter provider
 	 */
 	public SingleConnectionDetails getParameterConnectionDetails();
 

@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- *
+ * The ZMTP transport {@link Endpoint} implementation.
  */
 public class ZMTPEndpoint extends Endpoint {
 

@@ -32,7 +32,7 @@ import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.TypeReference;
 
 /**
- *
+ * Helper methods for generating the fields of the MO Composite structures.
  */
 public class JavaCompositeFields {
 

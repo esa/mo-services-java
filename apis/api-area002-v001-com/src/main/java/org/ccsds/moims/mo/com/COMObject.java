@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.com.structures.ObjectType;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 
 /**
- *
+ * Represents a COM object together with its type, name and body.
  */
 public class COMObject {
 

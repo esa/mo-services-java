@@ -41,7 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Writes Java source files for the generated code.
  */
 public class JavaClassWriter extends AbstractLanguageWriter implements ClassWriter, InterfaceWriter, MethodWriter {
 

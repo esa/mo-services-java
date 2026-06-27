@@ -36,7 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java code for the MO Composite structures.
  */
 public class JavaCompositeClass {
 

@@ -104,7 +104,7 @@ public class HTTPTransport extends Transport<HTTPHeaderAndBody, byte[]> {
     public static final int HTTP_DEFAULT_TIMEOUT = 60;
 
     /**
-     *
+     * The timestamp format used by the HTTP transport.
      */
     public static final String TIMESTAMP_STRING_FORMAT = "yyyy-DDD'T'HH:mm:ss.SSS";
 

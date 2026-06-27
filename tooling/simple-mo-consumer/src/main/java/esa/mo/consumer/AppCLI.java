@@ -37,6 +37,7 @@ import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 
 /**
+ * Command-line entry point for the simple MO consumer example.
  *
  * @author Cesar Coelho
  */

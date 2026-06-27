@@ -39,7 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java helper classes for an area or service.
  */
 public class JavaHelpers {
 

@@ -31,7 +31,7 @@ import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- *
+ * An {@link MALElementOutputStream} that encodes MO elements as XML.
  */
 public class XMLElementOutputStream implements MALElementOutputStream {
 

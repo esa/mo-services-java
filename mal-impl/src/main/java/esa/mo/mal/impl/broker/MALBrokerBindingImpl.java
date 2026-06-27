@@ -273,6 +273,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
      * Adds a subscriber from this binding.
      *
      * @param uriTo The URI of the subscriber.
+     * @param subscriptionId The subscription ID being added.
      */
     public void addSubscriber(String uriTo, String subscriptionId) {
         subscriberSet.add(subscriptionId + uriTo);

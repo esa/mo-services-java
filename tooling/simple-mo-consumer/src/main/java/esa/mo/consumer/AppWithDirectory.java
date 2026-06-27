@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mpd.structures.StandingOrder;
 import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
 
 /**
+ * Command-line entry point for the simple MO consumer example that resolves the provider via the Directory service.
  *
  * @author Cesar Coelho
  */

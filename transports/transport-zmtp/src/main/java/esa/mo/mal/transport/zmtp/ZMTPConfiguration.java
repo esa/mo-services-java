@@ -153,6 +153,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns the default authentication identifier.
+     *
      * @return the defaultAuth
      */
     public String getDefaultAuth() {
@@ -160,6 +162,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns the default domain.
+     *
      * @return the defaultDomain
      */
     public String getDefaultDomain() {
@@ -167,6 +171,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns the default network zone.
+     *
      * @return the defaultNetwork
      */
     public String getDefaultNetwork() {
@@ -174,6 +180,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns the default priority.
+     *
      * @return the defaultPriority
      */
     public int getDefaultPriority() {
@@ -181,6 +189,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns the default session name.
+     *
      * @return the defaultSessionName
      */
     public String getDefaultSessionName() {
@@ -188,6 +198,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns whether the priority flag is set.
+     *
      * @return the priorityFlag
      */
     public boolean isPriorityFlag() {
@@ -195,6 +207,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns whether the timestamp flag is set.
+     *
      * @return the timestampFlag
      */
     public boolean isTimestampFlag() {
@@ -202,6 +216,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns whether the network flag is set.
+     *
      * @return the networkFlag
      */
     public boolean isNetworkFlag() {
@@ -209,6 +225,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns whether the session name flag is set.
+     *
      * @return the sessionNameFlag
      */
     public boolean isSessionNameFlag() {
@@ -216,6 +234,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns whether the domain flag is set.
+     *
      * @return the domainFlag
      */
     public boolean isDomainFlag() {
@@ -223,6 +243,8 @@ public class ZMTPConfiguration {
     }
 
     /**
+     * Returns whether the authentication flag is set.
+     *
      * @return the authFlag
      */
     public boolean isAuthFlag() {

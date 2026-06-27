@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Base writer with the shared helpers for generating .docx documents.
  *
  * @author Cesar.Coelho
  */

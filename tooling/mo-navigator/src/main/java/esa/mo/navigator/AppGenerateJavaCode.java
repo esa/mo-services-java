@@ -36,6 +36,7 @@ import javax.swing.JButton;
 import javax.xml.bind.JAXBException;
 
 /**
+ * Application that generates Java code from MO service specifications.
  *
  * @author Cesar Coelho
  */

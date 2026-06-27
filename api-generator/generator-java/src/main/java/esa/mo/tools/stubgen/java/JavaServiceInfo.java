@@ -49,7 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java ServiceInfo class for a service.
  */
 public class JavaServiceInfo {
 

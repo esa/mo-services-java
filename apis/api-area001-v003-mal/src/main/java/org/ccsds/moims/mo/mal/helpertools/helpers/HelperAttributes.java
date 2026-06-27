@@ -43,6 +43,10 @@ public class HelperAttributes {
     public static String SERIAL_OBJECT_STRING = "SerializedObject";
 
     /**
+     * Converts an {@link Attribute} into a Java Double.
+     *
+     * @param in the Attribute to convert
+     * @return the converted Double value
      * @deprecated Use {@link Attribute#attribute2double(Attribute)} directly.
      */
     @Deprecated
@@ -51,6 +55,10 @@ public class HelperAttributes {
     }
 
     /**
+     * Converts a value into its String representation.
+     *
+     * @param in the value to convert
+     * @return the String representation
      * @deprecated Use {@link Attribute#attribute2string(Object)} directly.
      */
     @Deprecated
@@ -259,6 +267,10 @@ public class HelperAttributes {
     }
 
     /**
+     * Converts a Java type into an MO {@link Attribute}.
+     *
+     * @param obj the Java object to convert
+     * @return the resulting Attribute
      * @deprecated Use {@link Attribute#javaType2Attribute(Object)} directly.
      */
     @Deprecated

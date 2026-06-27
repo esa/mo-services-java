@@ -46,7 +46,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java consumer code (stubs and adapters) for a service.
  */
 public class JavaConsumer {
 

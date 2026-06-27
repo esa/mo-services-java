@@ -39,6 +39,7 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
 /**
+ * A toolbar that provides text search within the MO Navigator GUI.
  *
  * @author Cesar Coelho
  */

@@ -35,7 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java code for the MO Enumeration types.
  */
 public class JavaEnumerations {
 

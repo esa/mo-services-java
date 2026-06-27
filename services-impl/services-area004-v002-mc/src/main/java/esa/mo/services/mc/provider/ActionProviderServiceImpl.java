@@ -89,6 +89,9 @@ public class ActionProviderServiceImpl extends ActionInheritanceSkeleton {
 
     /**
      * Starts the service and registers the monitorExecution publisher
+     *
+     * @param backend the backend that provides the action execution logic
+     * @throws MALException if the service fails to initialize
      */
     public synchronized void init(ActionBackend backend) throws MALException {
         if (backend == null) {

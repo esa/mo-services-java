@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- *
+ * Generates the Java code for the MO error exceptions.
  */
 public class JavaExceptions {
 
