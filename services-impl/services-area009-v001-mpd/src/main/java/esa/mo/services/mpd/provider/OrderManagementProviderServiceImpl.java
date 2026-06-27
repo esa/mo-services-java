@@ -136,30 +136,31 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
 
     @Override
     public Long submitStandingOrder(StandingOrder orderDetails,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws InvalidException, OrderFailedException,
+            MALInteractionException, MALException {
         // Validate the validity
         TimeWindow validity = orderDetails.getValidityPeriod();
 
         if (!HelperMPD.isTimeWindowValid(validity)) {
             String text = "The end date of the validity period is less than the start date!";
-            throw new MALInteractionException(new InvalidException(text));
+            throw new InvalidException(text);
         }
 
         URI deliverTo = orderDetails.getDeliverTo();
 
         if (DeliveryMethodEnum.FILETRANSFER.equals(orderDetails.getDeliveryMethod()) && deliverTo == null) {
             String text = "The delivery method is selected as FILETRANFER and the delivery URI is set to NULL!";
-            throw new MALInteractionException(new InvalidException(text));
+            throw new InvalidException(text);
         }
 
         if (!DeliveryMethodEnum.FILETRANSFER.equals(orderDetails.getDeliveryMethod()) && deliverTo != null) {
             String text = "The delivery method is not selected as FILETRANFER and the delivery URI is not set to NULL!";
-            throw new MALInteractionException(new InvalidException(text));
+            throw new InvalidException(text);
         }
 
         if (deliverTo != null && !isSchemeSupported(deliverTo)) {
             String text = "The selected URI contains an unsupported scheme/protocol: " + deliverTo;
-            throw new MALInteractionException(new OrderFailedException(text));
+            throw new OrderFailedException(text);
         }
 
         Long id = uniqueIds.getAndIncrement();
@@ -170,7 +171,7 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
 
     @Override
     public void cancelStandingOrder(Long orderID,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws UnknownException, MALInteractionException, MALException {
         if (orderID == null) {
             throw new MALException("The orderRef cannot be null!");
         }
@@ -179,7 +180,7 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
 
         // If not found...
         if (standingOrder == null) {
-            throw new MALInteractionException(new UnknownException(orderID));
+            throw new UnknownException(orderID);
         }
 
         // Cancel the order and Remove from the list of Standing Orders

@@ -108,7 +108,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
     @Override
     public ProductMetadataList listProducts(ProductFilter productFilter, TimeWindow creationDate,
-            TimeWindow contentDate, MALInteraction interaction) throws MALInteractionException, MALException {
+            TimeWindow contentDate, MALInteraction interaction) throws InvalidException, TooManyException, MALInteractionException, MALException {
         // Validate the inputs
         if (productFilter == null) {
             throw new MALException("The productFilter cannot be null!");
@@ -117,13 +117,13 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
         // Validate the creationDate
         if (!HelperMPD.isTimeWindowValid(creationDate)) {
             String text = "The end date of the creationDate period is less than the start date!";
-            throw new MALInteractionException(new InvalidException(text));
+            throw new InvalidException(text);
         }
 
         // Validate the contentDate
         if (!HelperMPD.isTimeWindowValid(contentDate)) {
             String text = "The end date of the contentDate period is less than the start date!";
-            throw new MALInteractionException(new InvalidException(text));
+            throw new InvalidException(text);
         }
 
         ProductMetadataList allProducts = backend.getMetadataFromAllProducts();
@@ -168,7 +168,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
             String text = "Too many entries were found (" + out.size() + "). ";
             text += "The maximum allowed number is " + backend.getMaximumNumberOfResults() + ". ";
             text += "Please refine your search criteria, in order to reduce the number of entries.";
-            throw new MALInteractionException(new TooManyException(text));
+            throw new TooManyException(text);
         }
 
         return out;
@@ -176,7 +176,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
     @Override
     public void getProducts(ObjectRefList productRefs, GetProductsInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws UnknownException, MALInteractionException, MALException {
         if (productRefs == null) {
             throw new MALException("The productRefs cannot be null!");
         }
@@ -195,7 +195,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
         // MO Errors
         if (!productsNotFoundIndex.isEmpty()) {
-            throw new MALInteractionException(new UnknownException(productsNotFoundIndex));
+            throw new UnknownException(productsNotFoundIndex);
         }
 
         for (int i = 0; i < productRefs.size(); i++) {
@@ -206,7 +206,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
                 matchedProducts.add(product);
             } else {
                 // This should never happen because the code above already check if it exists!
-                throw new MALInteractionException(new UnknownException(productsNotFoundIndex));
+                throw new UnknownException(productsNotFoundIndex);
             }
         }
 
@@ -221,7 +221,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
     @Override
     public void deliverProductFiles(ObjectRefList productRefs, URI deliverTo,
-            DeliverProductFilesInteraction interaction) throws MALInteractionException, MALException {
+            DeliverProductFilesInteraction interaction) throws UnknownException, DeliveryFailedException, MALInteractionException, MALException {
         if (productRefs == null) {
             throw new MALException("The productRefs cannot be null!");
         }
@@ -243,7 +243,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
         // MO Errors
         if (!productsNotFoundIndex.isEmpty()) {
-            throw new MALInteractionException(new UnknownException(productsNotFoundIndex));
+            throw new UnknownException(productsNotFoundIndex);
         }
 
         FileTransferManager fileTransfer = new FileTransferManager(deliverTo);
@@ -275,7 +275,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
             }
         } catch (IOException ex) {
             String message = "The provider could not perform the file delivery!";
-            throw new MALInteractionException(new DeliveryFailedException(message));
+            throw new DeliveryFailedException(message);
         }
 
         interaction.sendResponse();

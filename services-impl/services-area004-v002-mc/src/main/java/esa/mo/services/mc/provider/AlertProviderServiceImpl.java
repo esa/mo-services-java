@@ -183,7 +183,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
     public AlertConfigurationList getAlertConfiguration(
             IdentifierList domain,
             IdentifierList keys,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws AmbiguousException, MALInteractionException, MALException {
 
         List<Integer> indices = resolveAlertDefinitions(domain, keys);
 
@@ -204,7 +204,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
     public void enableGeneration(
             IdentifierList domain,
             IdentifierList keys,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws AmbiguousException, MALInteractionException, MALException {
 
         if (keys == null) {
             
@@ -245,7 +245,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
     public void disableGeneration(
             IdentifierList domain,
             IdentifierList keys,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws AmbiguousException, MALInteractionException, MALException {
 
         if (keys == null) {
 
@@ -269,7 +269,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
      * Resolves (domain, keys) into a list of definition indices.
      */
     private List<Integer> resolveAlertDefinitions(IdentifierList domain, IdentifierList keys)
-            throws MALInteractionException {
+            throws AmbiguousException, MALInteractionException {
 
         List<Integer> matchedIndices = new ArrayList<>();
         List<Integer> ambiguousIndices = new ArrayList<>();
@@ -301,7 +301,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
         // Ambiguous takes priority
         if (!ambiguousIndices.isEmpty()) {
             UIntegerList extraInfo = toUIntegerList(ambiguousIndices);
-            throw new MALInteractionException(new AmbiguousException(extraInfo));
+            throw new AmbiguousException(extraInfo);
         }
 
         if (!unknownIndices.isEmpty()) {

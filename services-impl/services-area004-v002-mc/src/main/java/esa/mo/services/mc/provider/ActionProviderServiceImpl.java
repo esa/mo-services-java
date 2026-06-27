@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingleton;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -49,7 +50,10 @@ import org.ccsds.moims.mo.mal.structures.UIntegerList;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mc.DuplicateException;
+import org.ccsds.moims.mo.mc.InvalidException;
 import org.ccsds.moims.mo.mc.MCHelper;
+import org.ccsds.moims.mo.mc.RejectedException;
 import org.ccsds.moims.mo.mc.action.ActionHelper;
 import org.ccsds.moims.mo.mc.action.provider.ActionInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.action.provider.MonitorExecutionPublisher;
@@ -176,33 +180,29 @@ public class ActionProviderServiceImpl extends ActionInheritanceSkeleton {
 
     @Override
     public void execute(ActionExecutionRequest executionRequest, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws DuplicateException, InvalidException, RejectedException, UnknownException, MALInteractionException, MALException {
 
         java.lang.Long requestId = executionRequest.getRequestId();
         if (knownRequestIds.putIfAbsent(requestId, Boolean.TRUE) != null) {
-            throw new MALInteractionException(
-                    new MOErrorException("Duplicate", MCHelper.DUPLICATE_ERROR_NUMBER, null));
+            throw new DuplicateException(null);
         }
 
         ActionDefinition definition = resolveActionDefinition(executionRequest.getActionRef());
         if (definition == null) {
             knownRequestIds.remove(requestId);
-            throw new MALInteractionException(
-                    new MOErrorException("Unknown", MALHelper.UNKNOWN_ERROR_NUMBER, null));
+            throw new UnknownException(null);
         }
 
         UIntegerList invalidIndices = validateArgumentValues(executionRequest, definition);
         if (invalidIndices != null) {
             knownRequestIds.remove(requestId);
-            throw new MALInteractionException(
-                    new MOErrorException("Invalid", MCHelper.INVALID_ERROR_NUMBER, invalidIndices));
+            throw new InvalidException(invalidIndices);
         }
 
         String rejectReason = backend.check(executionRequest, definition);
         if (rejectReason != null) {
             knownRequestIds.remove(requestId);
-            throw new MALInteractionException(
-                    new MOErrorException("Rejected", MCHelper.REJECTED_ERROR_NUMBER, rejectReason));
+            throw new RejectedException(rejectReason);
         }
         
         ((MALSubmit) interaction).sendAcknowledgement();

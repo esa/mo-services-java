@@ -515,6 +515,65 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
     }
 
+    /**
+     * Builds the comma-terminated list of the dedicated MO error exceptions
+     * declared by the operation (for example
+     * "org.ccsds.moims.mo.mpd.InvalidException, "), so they can be prepended to
+     * a method's throws clause. Matching @throws comments are appended to the
+     * supplied list. Returns an empty string if the operation declares no
+     * errors.
+     *
+     * @param op The operation.
+     * @param throwsComments The list to which the @throws comments are added.
+     * @return The throws-clause prefix, or "" if there are no declared errors.
+     */
+    protected String getOperationErrorsThrows(OperationSummary op, List<String> throwsComments) {
+        OperationErrorList errors = op.getErrors();
+        if (errors == null) {
+            return "";
+        }
+        StringBuilder additional = new StringBuilder();
+        for (Object e : errors.getErrorOrErrorRef()) {
+            if (!(e instanceof ErrorReferenceType)) {
+                continue;
+            }
+            ErrorReferenceType error = (ErrorReferenceType) e;
+            String className = JavaExceptions.convertErrorToClassname(error.getType().getName());
+            String fullyQualified = "org.ccsds.moims.mo." + error.getType().getArea().toLowerCase() + "." + className;
+            additional.append(fullyQualified).append(", ");
+            String comment = (error.getComment() == null) ? "if the corresponding MO error occurs" : error.getComment();
+            throwsComments.add(fullyQualified + " " + comment);
+        }
+        return additional.toString();
+    }
+
+    /**
+     * Returns true if at least one operation of the given interaction pattern
+     * declares one or more MO errors. Used to decide whether a dispatch handler
+     * needs to catch and re-wrap MOErrorExceptions (a catch for an exception
+     * that can never be thrown is a compile error).
+     *
+     * @param summary The service summary.
+     * @param pattern The interaction pattern.
+     * @return true if any operation of that pattern declares an error.
+     */
+    protected boolean hasDeclaredErrors(ServiceSummary summary, InteractionPatternEnum pattern) {
+        for (OperationSummary op : summary.getOperations()) {
+            if (op.getPattern() != pattern) {
+                continue;
+            }
+            OperationErrorList errors = op.getErrors();
+            if (errors != null) {
+                for (Object e : errors.getErrorOrErrorRef()) {
+                    if (e instanceof ErrorReferenceType) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     protected void createServiceProviderHandler(File providerFolder, String area,
             String service, ServiceSummary summary) throws IOException {
         logger.info(" > Creating provider handler interface: " + service);
@@ -554,11 +613,17 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         false, true, "The MAL object representing the interaction in the provider.");
             }
 
+            // Prepend the operation's dedicated MO error exceptions to the
+            // throws clause so providers can throw them directly (the layer
+            // above re-wraps them into a MALInteractionException).
+            List<String> opThrowsComments = new ArrayList<>();
+            String opErrorsThrows = getOperationErrorsThrows(op, opThrowsComments);
+            opThrowsComments.add(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.");
+            opThrowsComments.add(throwsMALException + " if there is an implementation exception");
+
             file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
-                    StubUtils.concatenateArguments(opArgs, serviceHandler), throwsInteractionAndMALException,
-                    "Implements the operation " + op.getName(), opRetComment,
-                    Arrays.asList(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.",
-                            throwsMALException + " if there is an implementation exception"));
+                    StubUtils.concatenateArguments(opArgs, serviceHandler), opErrorsThrows + throwsInteractionAndMALException,
+                    "Implements the operation " + op.getName(), opRetComment, opThrowsComments);
         }
 
         CompositeField skel = createCompositeElementsDetails(file, false, "skeleton",
@@ -947,6 +1012,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         // SEND handler
+        boolean wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.SEND_OP);
         method = file.method("handleSend").returnActual()
                 .addArgument(createServiceProviderSkeletonSendHandler(file, "interaction", "The interaction object"))
                 .addArgument(stdBodyArg)
@@ -956,6 +1022,9 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         String operationNumberGetter = createProviderSkeletonHandlerSwitch();
         method.addLine("int opNumber = " + operationNumberGetter);
+        if (wrapErrors) {
+            method.addLine("try {");
+        }
         method.addLine("switch (opNumber) {");
 
         //String msg = "Unknown operation number: \" + opNumber + \" - className: " + className + " - method: ";
@@ -978,18 +1047,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
                 + msg + "));");
         method.addLine("}");
+        if (wrapErrors) {
+            method.addLine("} catch (org.ccsds.moims.mo.mal.MOErrorException error) {");
+            method.addLine("  throw new org.ccsds.moims.mo.mal.MALInteractionException(error);");
+            method.addLine("}");
+        }
         method.addMethodCloseStatement();
 
         // SUBMIT handler
         CompositeField submitInt = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALSubmit", false),
                 false, true, "The interaction object");
+        wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.SUBMIT_OP);
         method = file.method("handleSubmit").returnActual()
                 .addArgument(submitInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
                 .addThrows(throwsInteractionException, "if there is a operation interaction error").open();
         method.addLine("int opNumber = " + operationNumberGetter);
+        if (wrapErrors) {
+            method.addLine("try {");
+        }
         method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
@@ -1011,18 +1089,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
                 + msg + "));");
         method.addLine("}");
+        if (wrapErrors) {
+            method.addLine("} catch (org.ccsds.moims.mo.mal.MOErrorException error) {");
+            method.addLine("  throw new org.ccsds.moims.mo.mal.MALInteractionException(error);");
+            method.addLine("}");
+        }
         method.addMethodCloseStatement();
 
         // REQUEST handler
         CompositeField requestInt = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALRequest", false),
                 false, true, "The interaction object");
+        wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.REQUEST_OP);
         method = file.method("handleRequest").returnActual()
                 .addArgument(requestInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
                 .addThrows(throwsInteractionException, "if there is a operation interaction error").open();
         method.addLine("int opNumber = " + operationNumberGetter);
+        if (wrapErrors) {
+            method.addLine("try {");
+        }
         method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
@@ -1048,18 +1135,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
                 + msg + "));");
         method.addLine("}");
+        if (wrapErrors) {
+            method.addLine("} catch (org.ccsds.moims.mo.mal.MOErrorException error) {");
+            method.addLine("  throw new org.ccsds.moims.mo.mal.MALInteractionException(error);");
+            method.addLine("}");
+        }
         method.addMethodCloseStatement();
 
         // INVOKE handler
         CompositeField invokeInt = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
                 false, true, "The interaction object");
+        wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.INVOKE_OP);
         method = file.method("handleInvoke").returnActual()
                 .addArgument(invokeInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
                 .addThrows(throwsInteractionException, "if there is a operation interaction error").open();
         method.addLine("int opNumber = " + operationNumberGetter);
+        if (wrapErrors) {
+            method.addLine("try {");
+        }
         method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
@@ -1081,18 +1177,27 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
                 + msg + "));");
         method.addLine("}");
+        if (wrapErrors) {
+            method.addLine("} catch (org.ccsds.moims.mo.mal.MOErrorException error) {");
+            method.addLine("  throw new org.ccsds.moims.mo.mal.MALInteractionException(error);");
+            method.addLine("}");
+        }
         method.addMethodCloseStatement();
 
         // PROGRESS handler
         CompositeField progressInt = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
                 false, true, "The interaction object");
+        wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.PROGRESS_OP);
         method = file.method("handleProgress").returnActual()
                 .addArgument(progressInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
                 .addThrows(throwsInteractionException, "if there is a operation interaction error").open();
         method.addLine("int opNumber = " + operationNumberGetter);
+        if (wrapErrors) {
+            method.addLine("try {");
+        }
         method.addLine("switch (opNumber) {");
 
         for (OperationSummary op : summary.getOperations()) {
@@ -1114,6 +1219,11 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 + "(new org.ccsds.moims.mo.mal.UnsupportedOperationException(\n                    "
                 + msg + "));");
         method.addLine("}");
+        if (wrapErrors) {
+            method.addLine("} catch (org.ccsds.moims.mo.mal.MOErrorException error) {");
+            method.addLine("  throw new org.ccsds.moims.mo.mal.MALInteractionException(error);");
+            method.addLine("}");
+        }
         method.addMethodCloseStatement();
 
         file.addClassCloseStatement();

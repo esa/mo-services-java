@@ -24,11 +24,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mc.AmbiguousException;
+import org.ccsds.moims.mo.mc.DuplicateException;
+import org.ccsds.moims.mo.mc.InvalidException;
 import org.ccsds.moims.mo.mc.aggregation.AggregationHelper;
 import org.ccsds.moims.mo.mc.aggregation.provider.AggregationInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.backends.AggregationBackend;
@@ -93,42 +97,42 @@ public class AggregationProviderServiceImpl extends AggregationInheritanceSkelet
     }
 
     @Override
-    public AggregationValueList getValue(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws MALInteractionException, MALException {
+    public AggregationValueList getValue(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws UnknownException, AmbiguousException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public ReportConfigurationList getReportingConfiguration(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ReportConfigurationList getReportingConfiguration(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws UnknownException, AmbiguousException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void enableReporting(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void enableReporting(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws UnknownException, AmbiguousException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void disableReporting(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void disableReporting(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws UnknownException, AmbiguousException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void setReportingPeriod(IdentifierList domain, IdentifierList keys, Duration reportInterval, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void setReportingPeriod(IdentifierList domain, IdentifierList keys, Duration reportInterval, MALInteraction interaction) throws UnknownException, AmbiguousException, InvalidException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AggregationDefinitionList listDefinition(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws MALInteractionException, MALException {
+    public AggregationDefinitionList listDefinition(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws UnknownException, AmbiguousException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void addAggregation(AggregationDefinitionList newObjects, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void addAggregation(AggregationDefinitionList newObjects, MALInteraction interaction) throws DuplicateException, InvalidException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void removeAggregation(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void removeAggregation(IdentifierList domain, IdentifierList keys, MALInteraction interaction) throws UnknownException, AmbiguousException, MALInteractionException, MALException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
