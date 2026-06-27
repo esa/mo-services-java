@@ -339,27 +339,27 @@ public class ActivityRelayNode {
          * operation.
          * @param updateHeader Argument number 1 as defined by the service
          * operation.
-         * @param objectDetails Argument number 2 as defined by the
+         * @param eventLinks Argument number 2 as defined by the
          * service operation.
-         * @param element Argument number 3 as defined by the service
+         * @param eventBody Argument number 3 as defined by the service
          * operation.
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier subscriptionId,
                 UpdateHeader updateHeader,
-                MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
-                Element element, java.util.Map qosProperties) {
+                MonitorEventSubscriptionKeys keys, ObjectDetails eventLinks,
+                Element eventBody, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY");
 
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR" + msgHeader);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + subscriptionId);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + updateHeader);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + objectDetails);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + element);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + eventLinks);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + eventBody);
 
             try {
-                monitorEventPublisher.publish(updateHeader, objectDetails, element);
+                monitorEventPublisher.publish(updateHeader, eventLinks, eventBody);
             } catch (MALInteractionException ex1) {
                 LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived FAILURE " + ex1);
             } catch (MALException ex2) {

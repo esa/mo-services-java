@@ -52,47 +52,47 @@ class MonitorEventAdapter extends EventAdapter {
      * @param msgHeader The header of the received message.
      * @param subscriptionId Argument number 0 as defined by the service
      * operation.
-     * @param header Argument number 1 as defined by the service operation.
-     * @param objectDetails Argument number 2 as defined by the service
+     * @param updateHeader Argument number 1 as defined by the service operation.
+     * @param eventLinks Argument number 2 as defined by the service
      * operation.
-     * @param element Argument number 3 as defined by the service operation.
+     * @param eventBody Argument number 3 as defined by the service operation.
      * @param qosProperties The QoS properties associated with the message.
      */
     @Override
     public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier subscriptionId,
-            UpdateHeader header,
-            MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
-            Element element, java.util.Map qosProperties) {
+            UpdateHeader updateHeader,
+            MonitorEventSubscriptionKeys keys, ObjectDetails eventLinks,
+            Element eventBody, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
         boolean success = false;
 
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
         // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + subscriptionId);
-        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + header);
-        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetails);
-        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + element);
-        Identifier objectNumber = (Identifier) header.getKeyValues().get(0).getValue();
-        Identifier source = header.getSource();
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + updateHeader);
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + eventLinks);
+        // LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + eventBody);
+        Identifier objectNumber = (Identifier) updateHeader.getKeyValues().get(0).getValue();
+        Identifier source = updateHeader.getSource();
         String strObjectNumber = objectNumber.toString();
         String strEventName = objToEventName(objectNumber.toString());
         strEventName.trim();
         if (strObjectNumber.equals(OBJ_NO_ASE_RELEASE_STR) || strObjectNumber.equals(OBJ_NO_ASE_RECEPTION_STR)
                 || strObjectNumber.equals(OBJ_NO_ASE_FORWARD_STR)) {
-            ActivityTransfer activityTransferInstance = (ActivityTransfer) element;
+            ActivityTransfer activityTransferInstance = (ActivityTransfer) eventBody;
             success = activityTransferInstance.getSuccess();
             if (!success) {
                 LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY RELEASE ERR " + strEventName);
             }
         } else if (strObjectNumber.equals(OBJ_NO_ASE_ACCEPTANCE_STR)) {
-            ActivityAcceptance activityTransferAcceptance = (ActivityAcceptance) element;
+            ActivityAcceptance activityTransferAcceptance = (ActivityAcceptance) eventBody;
             success = activityTransferAcceptance.getSuccess();
         } else if (strObjectNumber.equals(OBJ_NO_ASE_EXECUTION_STR)) {
-            ActivityExecution activityTransferExecution = (ActivityExecution) element;
+            ActivityExecution activityTransferExecution = (ActivityExecution) eventBody;
             success = activityTransferExecution.getSuccess();
         }
         // TBC do we need to support multiple updates
         monitorEventList.add(new MonitorEventDetails(strEventName, source.toString(),
-                success, header, objectDetails, (Element) element));
+                success, updateHeader, eventLinks, (Element) eventBody));
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived " + strEventName + " " + success);
     }
 

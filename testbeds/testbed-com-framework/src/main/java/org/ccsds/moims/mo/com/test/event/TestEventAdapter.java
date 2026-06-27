@@ -50,30 +50,30 @@ class TestEventAdapter extends EventAdapter {
      * operation.
      * @param updateHeader Argument number 1 as defined by the service
      * operation.
-     * @param objectDetails Argument number 2 as defined by the service
+     * @param eventLinks Argument number 2 as defined by the service
      * operation.
-     * @param element Argument number 3 as defined by the service
+     * @param eventBody Argument number 3 as defined by the service
      * operation.
      * @param qosProperties The QoS properties associated with the message.
      */
     @Override
     public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier subscriptionId,
             UpdateHeader updateHeader,
-            MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
-            Element element, java.util.Map qosProperties) {
+            MonitorEventSubscriptionKeys keys, ObjectDetails eventLinks,
+            Element eventBody, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
         boolean success = false;
 
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + msgHeader);
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + subscriptionId);
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + updateHeader);
-        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + objectDetails);
-        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + element);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + eventLinks);
+        LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY " + eventBody);
 
         Identifier objectNumber = (Identifier) updateHeader.getKeyValues().get(0).getValue();
         Identifier uri = updateHeader.getSource();
         String strObjectNumber = objectNumber.toString();
-        eventDetailsList.add(new EventDetails(updateHeader, objectDetails, (Element) element));
+        eventDetailsList.add(new EventDetails(updateHeader, eventLinks, (Element) eventBody));
     }
 
     /**
