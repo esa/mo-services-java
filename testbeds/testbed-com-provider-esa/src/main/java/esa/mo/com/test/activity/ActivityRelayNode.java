@@ -335,25 +335,25 @@ public class ActivityRelayNode {
          * the operation monitorEvent.
          *
          * @param msgHeader The header of the received message.
-         * @param _Identifier0 Argument number 0 as defined by the service
+         * @param subscriptionId Argument number 0 as defined by the service
          * operation.
-         * @param _UpdateHeaderList1 Argument number 1 as defined by the service
+         * @param updateHeader Argument number 1 as defined by the service
          * operation.
-         * @param _ObjectDetailsList2 Argument number 2 as defined by the
+         * @param objectDetails Argument number 2 as defined by the
          * service operation.
-         * @param _ElementList3 Argument number 3 as defined by the service
+         * @param element Argument number 3 as defined by the service
          * operation.
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
-        public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
+        public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier subscriptionId,
                 UpdateHeader updateHeader,
                 MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
                 Element element, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY");
 
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR" + msgHeader);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + _Identifier0);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + subscriptionId);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + updateHeader);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + objectDetails);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + element);

@@ -901,9 +901,9 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
 
         @Override
         public void monitorMultiNotifyReceived(MALMessageHeader msgHeader,
-                Identifier _Identifier0, UpdateHeader _UpdateHeaderList1,
+                Identifier subscriptionId, UpdateHeader updateHeader,
                 MonitorMultiSubscriptionKeys keys,
-                TestUpdate _TestUpdateList2, Element _ElementList3, Map qosProperties) {
+                TestUpdate output1, Element output2, Map qosProperties) {
             monitorMultiCond.set();
         }
 
