@@ -501,12 +501,14 @@ public class JavaConsumer {
         String comment = "Returns the value of the \"" + name + "\" Subscription Key, or null if not present.";
 
         if (generator.isEnum(type)) {
+            String fqEnumType = generator.createElementType(type, true);
             CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
-                    TypeUtils.createTypeReference(StdStrings.MAL, null, "UShort", false), false, true, null);
+                    type, true, true, null);
             MethodWriter m = file.method(getterName).returnActual().returns(returnType)
                     .comment(comment + " Enumeration keys are transmitted as their UShort numeric value.")
                     .returnComment("The key value, or null if not present").open();
-            m.addLine("return (org.ccsds.moims.mo.mal.structures.UShort) valueByName(\"" + name + "\");");
+            m.addLine("org.ccsds.moims.mo.mal.structures.UShort v = (org.ccsds.moims.mo.mal.structures.UShort) valueByName(\"" + name + "\");");
+            m.addLine("return (v == null) ? null : new " + fqEnumType + "(v.getValue());");
             m.addMethodCloseStatement();
             return;
         }
