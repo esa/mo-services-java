@@ -20,8 +20,6 @@
  */
 package esa.mo.mal.impl;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * Class that generates a unique transaction id counter that can be used by the
  * MAL interactions for the transactionId field.
@@ -46,7 +44,7 @@ public class TransactionIdCounter {
     private static final long RANDOM_MASK = 0xFFL;
 
     private static long partAB = recalculatePartAB(); // Time with Randomness
-    private static final AtomicLong transactionCounter = new AtomicLong(0);
+    private static long transactionCounter = 0;
 
     /**
      * Increases part C of the transaction id. Resets the counter and
@@ -55,14 +53,14 @@ public class TransactionIdCounter {
      * @return the new transaction id
      */
     public static synchronized Long nextTransactionId() {
-        long counter = transactionCounter.incrementAndGet();
+        transactionCounter++;
 
-        if (counter > MAX_OFFSET) {
+        if (transactionCounter > MAX_OFFSET) {
             recalculatePartAB();
-            transactionCounter.set(0);
+            transactionCounter = 0;
         }
 
-        return partAB + transactionCounter.get();
+        return partAB + transactionCounter;
     }
 
     /**
