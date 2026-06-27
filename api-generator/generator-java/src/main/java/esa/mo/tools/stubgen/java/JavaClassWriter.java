@@ -292,12 +292,14 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     @Override
     public MethodWriter addMethodOpenStatementOverride(CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
+            String methodName, List<CompositeField> args, String throwsSpec,
+            boolean isFinal) throws IOException {
+        String nFinal = isFinal ? "final " : "";
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
         StringBuilder methodSignature = new StringBuilder();
-        methodSignature.append("public ").append(srtype).append(" ").append(methodName);
+        methodSignature.append("public ").append(nFinal).append(srtype).append(" ").append(methodName);
         methodSignature.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {

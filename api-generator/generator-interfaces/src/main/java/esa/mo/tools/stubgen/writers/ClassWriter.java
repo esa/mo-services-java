@@ -190,17 +190,20 @@ public interface ClassWriter extends LanguageWriter {
             String throwsSpec, String comment, String throwsComment) throws IOException;
 
     /**
-     * Add a method to the class.
+     * Add an overriding method to the class (emits an {@code @Override}
+     * annotation). No Javadoc comment is emitted, as an overriding method
+     * inherits the documentation from the method it overrides.
      *
      * @param rtype The return type of the method.
      * @param methodName The method name.
      * @param args The arguments of the method.
      * @param throwsSpec The throws specification.
+     * @param isFinal True if the method should be final.
      * @return Returns a method writer for the method.
      * @throws IOException If there is an IO error.
      */
     MethodWriter addMethodOpenStatementOverride(CompositeField rtype, String methodName,
-            List<CompositeField> args, String throwsSpec) throws IOException;
+            List<CompositeField> args, String throwsSpec, boolean isFinal) throws IOException;
 
     /**
      * Add a method to the class.

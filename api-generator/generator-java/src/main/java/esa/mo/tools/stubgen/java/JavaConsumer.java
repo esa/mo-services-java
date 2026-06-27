@@ -544,7 +544,7 @@ public class JavaConsumer {
     protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
             String serviceInfoName, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.method(opname + "Received").asFinal().asVirtual().returnActual()
+        MethodWriter method = file.method(opname + "Received").asFinal().asOverride().returnActual()
                 .addArguments(args).comment(comment)
                 .addThrows(throwsMALException, "if an error is detected processing the message.").open();
         method.addLine("switch (msgHeader.getOperation().getValue()) {");
@@ -582,7 +582,7 @@ public class JavaConsumer {
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
             String areaHelper, String areaName, String serviceInfoName, String serviceName,
             String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.method(opname + "Received").asFinal().asVirtual().returnActual()
+        MethodWriter method = file.method(opname + "Received").asFinal().asOverride().returnActual()
                 .addArguments(args).comment(comment)
                 .addThrows(throwsMALException, "if an error is detected processing the message.").open();
 
@@ -635,7 +635,7 @@ public class JavaConsumer {
     protected void createServiceConsumerAdapterErrorMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, List<CompositeField> args, String serviceInfoName,
             String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.method(opname + "ErrorReceived").asFinal().asVirtual().returnActual()
+        MethodWriter method = file.method(opname + "ErrorReceived").asFinal().asOverride().returnActual()
                 .addArguments(args).comment(comment)
                 .addThrows(throwsMALException, "if an error is detected processing the message.").open();
         method.addLine("switch (msgHeader.getOperation().getValue()) {");

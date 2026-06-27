@@ -328,7 +328,7 @@ public final class MethodBuilder {
      */
     public MethodWriter open() throws IOException {
         if (isOverride) {
-            return writer.addMethodOpenStatementOverride(returnType, methodName, args, throwsSpec);
+            return writer.addMethodOpenStatementOverride(returnType, methodName, args, throwsSpec, isFinal);
         }
         return writer.addMethodOpenStatement(isFinal, isVirtual, isConst, isStatic, scope,
                 isReturnConst, isReturnActual, returnType, methodName, args, throwsSpec,
