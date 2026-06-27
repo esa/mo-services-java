@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mc.parameter.consumer.MonitorValueSubscriptionKeys;
 import org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter;
 import org.ccsds.moims.mo.mc.structures.ParameterValueData;
 import org.ccsds.moims.mo.mc.structures.ParameterValueList;
@@ -239,6 +240,7 @@ public class ParameterListener extends ParameterAdapter {
 			MALMessageHeader msgHeader,
 			Identifier subscriptionId,
 			UpdateHeader updateHeader,
+			MonitorValueSubscriptionKeys keys,
 			Time timestamp,
 			Time samplingTime,
 			ParameterValueData newValue,

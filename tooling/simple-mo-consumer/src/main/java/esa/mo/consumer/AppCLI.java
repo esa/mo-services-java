@@ -31,6 +31,7 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.Subscription;
+import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.DeliverProductsSubscriptionKeys;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
@@ -84,6 +85,7 @@ public class AppCLI {
         public void deliverProductsNotifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
                 org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
                 org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+                DeliverProductsSubscriptionKeys keys,
                 org.ccsds.moims.mo.mpd.structures.Product product,
                 java.util.Map qosProperties) {
             Blob productBody = product.getProductBody();

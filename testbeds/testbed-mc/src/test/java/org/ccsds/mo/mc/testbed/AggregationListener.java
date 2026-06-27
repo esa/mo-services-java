@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mc.aggregation.consumer.AggregationAdapter;
+import org.ccsds.moims.mo.mc.aggregation.consumer.MonitorValueSubscriptionKeys;
 import org.ccsds.moims.mo.mc.structures.AggregationDefinitionList;
 import org.ccsds.moims.mo.mc.structures.AggregationValueList;
 import org.ccsds.moims.mo.mc.structures.ParameterValueDataList;
@@ -227,6 +228,7 @@ public class AggregationListener extends AggregationAdapter {
 			MALMessageHeader msgHeader,
 			Identifier subscriptionId,
 			UpdateHeader updateHeader,
+			MonitorValueSubscriptionKeys keys,
 			Time timestamp,
 			ParameterValueDataList values,
 			Map qosProperties) {

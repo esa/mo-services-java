@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
+import org.ccsds.moims.mo.com.event.consumer.MonitorEventSubscriptionKeys;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectId;
@@ -346,7 +347,8 @@ public class ActivityRelayNode {
          */
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-                UpdateHeader updateHeader, ObjectDetails objectDetails,
+                UpdateHeader updateHeader,
+                MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
                 Element element, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY");
 

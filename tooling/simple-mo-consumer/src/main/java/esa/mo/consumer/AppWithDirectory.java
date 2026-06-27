@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mpd.ordermanagement.consumer.OrderManagementStub;
+import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.DeliverProductsSubscriptionKeys;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.ProductOrderDeliveryAdapter;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
 import org.ccsds.moims.mo.mpd.structures.StandingOrder;
@@ -111,6 +112,7 @@ public class AppWithDirectory {
         public void deliverProductsNotifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
                 org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
                 org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+                DeliverProductsSubscriptionKeys keys,
                 org.ccsds.moims.mo.mpd.structures.Product product,
                 java.util.Map qosProperties) {
             Blob productBody = product.getProductBody();

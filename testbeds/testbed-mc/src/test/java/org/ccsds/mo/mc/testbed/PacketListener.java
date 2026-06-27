@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mc.packet.consumer.DeliverPacketSubscriptionKeys;
 import org.ccsds.moims.mo.mc.packet.consumer.PacketAdapter;
 
 public class PacketListener extends PacketAdapter {
@@ -130,6 +131,7 @@ public class PacketListener extends PacketAdapter {
 			MALMessageHeader msgHeader,
 			Identifier subscriptionId,
 			UpdateHeader updateHeader,
+			DeliverPacketSubscriptionKeys keys,
 			Time timestamp,
 			Blob spacePacket,
 			Map qosProperties) {

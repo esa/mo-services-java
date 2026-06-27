@@ -24,6 +24,7 @@ import org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityExecution;
 import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
+import org.ccsds.moims.mo.com.event.consumer.MonitorEventSubscriptionKeys;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_ACCEPTANCE_STR;
 import static org.ccsds.moims.mo.com.test.util.COMTestHelper.OBJ_NO_ASE_EXECUTION_STR;
@@ -59,7 +60,8 @@ class MonitorEventAdapter extends EventAdapter {
      */
     @Override
     public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-            UpdateHeader header, ObjectDetails objectDetails,
+            UpdateHeader header,
+            MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
             Element element, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
         boolean success = false;

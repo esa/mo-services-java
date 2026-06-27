@@ -69,6 +69,7 @@ import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.MonitorSubscriptionKeys;
 import org.ccsds.moims.mo.malprototype.structures.IPTestResult;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
@@ -816,6 +817,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         @Override
         public synchronized void monitorNotifyReceived(MALMessageHeader msgHeader,
                 Identifier subscriptionId, UpdateHeader updateHeader,
+                MonitorSubscriptionKeys keys,
                 TestUpdate update, Map qosProperties) {
             monitorNotifyHeader = msgHeader;
             monitorNotifyCond.set();

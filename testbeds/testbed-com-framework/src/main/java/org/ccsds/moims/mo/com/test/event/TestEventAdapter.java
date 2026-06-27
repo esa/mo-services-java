@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.com.test.event;
 
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
+import org.ccsds.moims.mo.com.event.consumer.MonitorEventSubscriptionKeys;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -57,7 +58,8 @@ class TestEventAdapter extends EventAdapter {
      */
     @Override
     public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-            UpdateHeader updateHeader, ObjectDetails objectDetails,
+            UpdateHeader updateHeader,
+            MonitorEventSubscriptionKeys keys, ObjectDetails objectDetails,
             Element element, java.util.Map qosProperties) {
         LoggingBase.logMessage("MonitorEventAdapter:monitorStatusNotifyReceived - NOTIFY");
         boolean success = false;

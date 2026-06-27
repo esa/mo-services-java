@@ -215,9 +215,9 @@ public class HelperProductFilters {
             }
 
             try {
-                Double doubleMin = min.attribute2double();
-                Double doubleMax = max.attribute2double();
-                Double doubleValue = value.attribute2double();
+                Double doubleMin = Attribute.attribute2double(min);
+                Double doubleMax = Attribute.attribute2double(max);
+                Double doubleValue = Attribute.attribute2double(value);
 
                 if (doubleValue >= doubleMin && doubleValue <= doubleMax) {
                     matchedAtLeastOne = true;

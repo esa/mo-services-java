@@ -71,7 +71,7 @@
                 <mal:type area="MAL" name="Identifier"/>
               </mal:field>
               <mal:field name="parameterVersion" canBeNull="false" comment="">
-                <mal:type area="MAL" name="Uinteger"/>
+                <mal:type area="MAL" name="UInteger"/>
               </mal:field>
             </mal:subscriptionKeys>
             <mal:publishNotify>

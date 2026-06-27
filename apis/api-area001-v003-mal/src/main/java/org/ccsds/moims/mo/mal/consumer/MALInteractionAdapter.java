@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.consumer;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -224,15 +225,26 @@ public abstract class MALInteractionAdapter implements MALInteractionListener {
     }
 
     /**
-     * Receives a NOTIFY message.
+     * Receives a NOTIFY message together with the selected Subscription Keys of
+     * the subscription that triggered it. The selectedKeys define the order and
+     * the subset of the Subscription Key values carried in the UpdateHeader when
+     * the consumer enabled trimming (see CCSDS 521.0-B-3, section 3.6.6.5). When
+     * trimming was not enabled, selectedKeys is null and the key values follow
+     * the order defined by the operation.
+     *
+     * Generated consumer adapters override this method to build the typed
+     * Subscription Key accessors.
      *
      * @param header The header of the message.
      * @param body The body of the message.
+     * @param selectedKeys The selected Subscription Key names of the
+     * subscription, or null if trimming was not enabled.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
      */
     public void notifyReceived(final MALMessageHeader header,
-            final MALNotifyBody body, final Map qosProperties) throws MALException {
+            final MALNotifyBody body, final IdentifierList selectedKeys,
+            final Map qosProperties) throws MALException {
     }
 
     /**

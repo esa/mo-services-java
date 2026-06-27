@@ -551,7 +551,11 @@ public class MALReceiver implements MALMessageListener {
 
             if (rcv != null) {
                 try {
-                    rcv.notifyReceived(hdr, notifyBody, msg.getQoSProperties());
+                    // Supply the selectedKeys so the consumer can interpret a
+                    // trimmed NOTIFY key value list (see CCSDS 521.0-B-3, 3.6.6.5).
+                    rcv.notifyReceived(hdr, notifyBody,
+                            pubSubMap.getSelectedKeys(hdr.getTo(), notifyBody.getSubscriptionId()),
+                            msg.getQoSProperties());
                 } catch (MALException ex) {
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                             "Error generated during handling of NOTIFY message, dropping: {0}", ex);

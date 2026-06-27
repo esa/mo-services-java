@@ -32,6 +32,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mc.alert.consumer.AlertAdapter;
+import org.ccsds.moims.mo.mc.alert.consumer.MonitorAlertSubscriptionKeys;
 import org.ccsds.moims.mo.mc.structures.AlertConfigurationList;
 
 public class AlertListener extends AlertAdapter {
@@ -190,6 +191,7 @@ public class AlertListener extends AlertAdapter {
 			MALMessageHeader msgHeader,
 			Identifier subscriptionId,
 			UpdateHeader updateHeader,
+			MonitorAlertSubscriptionKeys keys,
 			Time timestamp,
 			NullableAttributeList arguments,
 			Map qosProperties) {

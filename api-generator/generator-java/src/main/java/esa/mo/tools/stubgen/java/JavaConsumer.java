@@ -31,10 +31,14 @@ import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
+import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.writers.ClassWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
+import esa.mo.xsd.MessageBodyType;
+import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import esa.mo.xsd.OperationErrorList;
+import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,9 +90,17 @@ public class JavaConsumer {
         CompositeField stdErrorArg = generator.createCompositeElementsDetails(file, false, "error",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MOErrorException", false),
                 false, true, "error The received error message");
+        CompositeField stdSelectedKeysArg = generator.createCompositeElementsDetails(file, false, "selectedKeys",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
+                true, true, "selectedKeys The selected Subscription Key names, or null if trimming was not enabled");
         List<CompositeField> stdNoBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdQosArg);
         List<CompositeField> stdBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdBodyArg, stdQosArg);
         List<CompositeField> stdNotifyBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdNotifyBodyArg, stdQosArg);
+        // The generated notifyReceived overrides the four-argument variant on
+        // MALInteractionAdapter so it receives the subscription's selectedKeys.
+        List<CompositeField> stdNotifyDispatchArgs = StubUtils.concatenateArguments(stdHeaderArg,
+                StubUtils.concatenateArguments(stdNotifyBodyArg,
+                        StubUtils.concatenateArguments(stdSelectedKeysArg, stdQosArg)));
         List<CompositeField> stdErrorBodyArgs = StubUtils.concatenateArguments(stdHeaderArg, stdErrorBodyArg, stdQosArg);
         List<CompositeField> stdErrorArgs = StubUtils.concatenateArguments(stdHeaderArg, stdErrorArg, stdQosArg);
 
@@ -220,6 +232,12 @@ public class JavaConsumer {
                     opArgsU.addAll(StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, retTypes)));
                     opArgsU.add(stdQosArg);
 
+                    // Insert the typed Subscription Key accessors right after the
+                    // updateHeader argument (header, subscriptionId, updateHeader, keys, ...).
+                    CompositeField keysArg = file.field(subscriptionKeysClassName(op), "keys",
+                            "The typed Subscription Key accessors for this update");
+                    opArgsU.add(3, keysArg);
+
                     file.method(op.getName() + "RegisterAckReceived").asVirtual().returnActual()
                             .addArgument(stdHeaderArg).addArgument(stdQosArg)
                             .comment("Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation " + op.getName())
@@ -308,7 +326,7 @@ public class JavaConsumer {
                     "register", "Register", stdErrorBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PubSub register acknowledgement error is received from a broker.");
             createServiceConsumerAdapterNotifyMethod(file, InteractionPatternEnum.PUBSUB_OP,
-                    "notify", "Notify", 2, stdNotifyBodyArgs, areaHelper, areaName, serviceInfoName, serviceName, throwsMALException,
+                    "notify", "Notify", 2, stdNotifyDispatchArgs, areaHelper, areaName, serviceInfoName, serviceName, throwsMALException,
                     summary, "Called by the MAL when a PubSub update is received from a broker.");
             createServiceConsumerAdapterErrorMethod(file, InteractionPatternEnum.PUBSUB_OP,
                     "notify", "Notify", stdErrorBodyArgs, serviceInfoName, throwsMALException,
@@ -327,6 +345,198 @@ public class JavaConsumer {
         file.addClassCloseStatement();
 
         file.flush();
+
+        // Generate a typed Subscription Key accessor class per PubSub operation
+        for (OperationSummary op : summary.getOperations()) {
+            if (op.getPattern() == InteractionPatternEnum.PUBSUB_OP) {
+                createSubscriptionKeysClass(consumerFolder, areaName, serviceName, op);
+            }
+        }
+    }
+
+    /**
+     * Returns the name of the generated Subscription Keys accessor class for the
+     * given PubSub operation.
+     *
+     * @param op The PubSub operation.
+     * @return The class name.
+     */
+    private String subscriptionKeysClassName(OperationSummary op) {
+        String n = op.getName();
+        return Character.toUpperCase(n.charAt(0)) + n.substring(1) + "SubscriptionKeys";
+    }
+
+    /**
+     * Returns the Subscription Key fields defined by the operation, or an empty
+     * list if none are defined.
+     *
+     * @param op The PubSub operation.
+     * @return The ordered list of Subscription Key fields.
+     */
+    private List<NamedElementReferenceWithCommentType> subscriptionKeysOf(OperationSummary op) {
+        MessageBodyType keys = op.getSubscriptionKeys();
+        if (keys == null || keys.getField() == null) {
+            return new LinkedList<>();
+        }
+        return keys.getField();
+    }
+
+    /**
+     * Generates a typed Subscription Key accessor class for a single PubSub
+     * operation. The class wraps the NullableAttributeList received in the
+     * UpdateHeader and resolves each key by name, so that a trimmed key value
+     * list (see CCSDS 521.0-B-3, section 3.6.6.5) is interpreted correctly. The
+     * UpdateHeader itself is never modified.
+     *
+     * @param consumerFolder The consumer folder to write the class into.
+     * @param areaName The area name.
+     * @param serviceName The service name.
+     * @param op The PubSub operation.
+     * @throws IOException If there is an IO error.
+     */
+    protected void createSubscriptionKeysClass(File consumerFolder, String areaName,
+            String serviceName, OperationSummary op) throws IOException {
+        String className = subscriptionKeysClassName(op);
+        List<NamedElementReferenceWithCommentType> keys = subscriptionKeysOf(op);
+
+        ClassWriter file = generator.createClassFile(consumerFolder, className);
+        file.addPackageStatement(areaName, serviceName, CONSUMER_FOLDER);
+        file.addClassOpenStatement(className, true, false, null, null,
+                "Typed accessors for the Subscription Keys of the " + op.getName() + " PubSub operation.");
+
+        CompositeField keyValuesField = generator.createCompositeElementsDetails(file, false, "keyValues",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "NullableAttributeList", false),
+                true, true, "The key values as received in the UpdateHeader");
+        CompositeField keyNamesField = generator.createCompositeElementsDetails(file, false, "keyNames",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
+                true, true, "The effective key names for the received key values");
+        file.addClassVariable(false, false, StdStrings.PRIVATE, keyValuesField, false, (String) null);
+        file.addClassVariable(false, false, StdStrings.PRIVATE, keyNamesField, false, (String) null);
+
+        // The Subscription Key names defined by the operation, in order.
+        StringBuilder canon = new StringBuilder(
+                "new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(");
+        for (int i = 0; i < keys.size(); i++) {
+            canon.append((i == 0) ? "" : ", ");
+            canon.append("new org.ccsds.moims.mo.mal.structures.Identifier(\"").append(keys.get(i).getName()).append("\")");
+        }
+        canon.append(")))");
+        CompositeField canonField = generator.createCompositeElementsDetails(file, false, "CANONICAL_KEY_NAMES",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
+                true, false, "The Subscription Key names defined by the operation, in order");
+        file.addClassVariableNewInit(true, true, StdStrings.PRIVATE, canonField, false, false, canon.toString(), false);
+
+        // Constructor
+        CompositeField updateHeaderArg = generator.createCompositeElementsDetails(file, false, "updateHeader",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
+                true, true, "The UpdateHeader received in the NOTIFY message");
+        CompositeField selectedKeysArg = generator.createCompositeElementsDetails(file, false, "selectedKeys",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
+                true, true, "The selectedKeys of the subscription, or null if trimming was not enabled");
+        List<CompositeField> ctorArgs = new LinkedList<>();
+        ctorArgs.add(updateHeaderArg);
+        ctorArgs.add(selectedKeysArg);
+        MethodWriter ctor = file.addConstructor(StdStrings.PUBLIC, className, ctorArgs, null, null,
+                "Creates an instance from the received UpdateHeader and the subscription selectedKeys.", null);
+        ctor.addLine("this.keyValues = (updateHeader == null) ? null : updateHeader.getKeyValues();");
+        ctor.addLine("this.keyNames = (selectedKeys != null) ? selectedKeys : CANONICAL_KEY_NAMES;");
+        ctor.addMethodCloseStatement();
+
+        // Typed getters
+        for (NamedElementReferenceWithCommentType key : keys) {
+            createSubscriptionKeyGetter(file, key);
+        }
+
+        CompositeField attrReturn = generator.createCompositeElementsDetails(file, false, "_return",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, "Attribute", false), true, true, null);
+        CompositeField nameArg = generator.createCompositeElementsDetails(file, false, "name",
+                TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false), false, true,
+                "The Subscription Key name");
+
+        MethodWriter byName = file.method("getByName").returnActual().returns(attrReturn).addArgument(nameArg)
+                .comment("Returns the Subscription Key value with the given name, or null if it is "
+                        + "not present (for example when it was trimmed away or is a custom key that is "
+                        + "not part of this subscription).")
+                .returnComment("The key value, or null if not present").open();
+        byName.addLine("return valueByName(name);");
+        byName.addMethodCloseStatement();
+
+        MethodWriter vbn = file.method("valueByName").scope(StdStrings.PRIVATE).returnActual()
+                .returns(attrReturn).addArgument(nameArg).open();
+        vbn.addLine("if (keyNames == null || keyValues == null) {");
+        vbn.addLine("    return null;");
+        vbn.addLine("}");
+        vbn.addLine("for (int i = 0; i < keyNames.size(); i++) {");
+        vbn.addLine("    if (name.equals(keyNames.get(i).getValue())) {");
+        vbn.addLine("        if (i >= keyValues.size()) {");
+        vbn.addLine("            return null;");
+        vbn.addLine("        }");
+        vbn.addLine("        org.ccsds.moims.mo.mal.structures.NullableAttribute na = keyValues.get(i);");
+        vbn.addLine("        return (na == null) ? null : na.getValue();");
+        vbn.addLine("    }");
+        vbn.addLine("}");
+        vbn.addLine("return null;");
+        vbn.addMethodCloseStatement();
+
+        file.addClassCloseStatement();
+        file.flush();
+    }
+
+    /**
+     * Generates a single typed getter for a Subscription Key. The value is
+     * resolved by name and converted to a Java-friendly type: native MAL
+     * attributes are unwrapped to their Java type, other Attribute types are
+     * returned as-is, and Enumeration keys are returned as the UShort numeric
+     * value used to transmit them.
+     *
+     * @param file The class writer.
+     * @param key The Subscription Key field.
+     * @throws IOException If there is an IO error.
+     */
+    private void createSubscriptionKeyGetter(ClassWriter file,
+            NamedElementReferenceWithCommentType key) throws IOException {
+        String name = key.getName();
+        String getterName = "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        TypeReference type = key.getType();
+        String comment = "Returns the value of the \"" + name + "\" Subscription Key, or null if not present.";
+
+        if (generator.isEnum(type)) {
+            CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, "UShort", false), false, true, null);
+            MethodWriter m = file.method(getterName).returnActual().returns(returnType)
+                    .comment(comment + " Enumeration keys are transmitted as their UShort numeric value.")
+                    .returnComment("The key value, or null if not present").open();
+            m.addLine("return (org.ccsds.moims.mo.mal.structures.UShort) valueByName(\"" + name + "\");");
+            m.addMethodCloseStatement();
+            return;
+        }
+
+        AttributeTypeDetails details = generator.getAttributeDetails(type);
+        if (details == null) {
+            // The key type could not be resolved to a known Attribute type (for
+            // example a malformed type in the service specification). Fall back
+            // to the generic Attribute type so the accessor still compiles.
+            CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
+                    TypeUtils.createTypeReference(StdStrings.MAL, null, "Attribute", false), true, true, null);
+            MethodWriter m = file.method(getterName).returnActual().returns(returnType)
+                    .comment(comment).returnComment("The key value, or null if not present").open();
+            m.addLine("return valueByName(\"" + name + "\");");
+            m.addMethodCloseStatement();
+            return;
+        }
+
+        CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
+                type, true, true, null);
+        MethodWriter m = file.method(getterName).returnActual().returns(returnType)
+                .comment(comment).returnComment("The key value, or null if not present").open();
+        if (details.isNativeType()) {
+            m.addLine("org.ccsds.moims.mo.mal.structures.Attribute v = valueByName(\"" + name + "\");");
+            m.addLine("return (v == null) ? null : (" + details.getTargetType()
+                    + ") org.ccsds.moims.mo.mal.structures.Attribute.attribute2JavaType(v);");
+        } else {
+            m.addLine("return (" + details.getTargetType() + ") valueByName(\"" + name + "\");");
+        }
+        m.addMethodCloseStatement();
     }
 
     protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype,
@@ -383,18 +593,30 @@ public class JavaConsumer {
             if (optype == op.getPattern()) {
                 String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("    case " + ns);
-                List<FieldInfo> opTypes = new LinkedList<>();
-                opTypes.add(0, TypeUtils.convertTypeReference(generator,
-                        TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
-                opTypes.add(1, TypeUtils.convertTypeReference(generator,
-                        TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
 
-                for (FieldInfo ti : op.getRetTypes()) {
-                    opTypes.add(ti);
+                // The subscriptionId (index 0) and the UpdateHeader (index 1).
+                List<FieldInfo> headTypes = new LinkedList<>();
+                headTypes.add(TypeUtils.convertTypeReference(generator,
+                        TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
+                headTypes.add(TypeUtils.convertTypeReference(generator,
+                        TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
+                String headArgs = generator.createAdapterMethodsArgs(headTypes, "body", true, false);
+
+                // The typed Subscription Key accessors, built from the same
+                // UpdateHeader and the subscription's selectedKeys. The
+                // UpdateHeader itself is never modified.
+                String keysArg = ",\n                new " + subscriptionKeysClassName(op)
+                        + "((org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, "
+                        + "new org.ccsds.moims.mo.mal.structures.UpdateHeader()), selectedKeys)";
+
+                // The publishNotify body fields start at index 2.
+                StringBuilder retArgs = new StringBuilder();
+                for (int i = 0; i < op.getRetTypes().size(); i++) {
+                    retArgs.append(generator.createAdapterMethodsArgs(op.getRetTypes().get(i), "body", i + 2, true, false));
                 }
 
-                String opArgs = generator.createAdapterMethodsArgs(opTypes, "body", true, false);
-                method.addLine("      " + op.getName() + subopPostname + "Received(msgHeader" + opArgs + ", qosProperties);");
+                method.addLine("      " + op.getName() + subopPostname + "Received(msgHeader"
+                        + headArgs + keysArg + retArgs.toString() + ", qosProperties);");
                 method.addLine("      break;");
             }
         }

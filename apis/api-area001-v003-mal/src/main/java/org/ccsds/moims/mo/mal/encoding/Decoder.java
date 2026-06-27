@@ -449,7 +449,7 @@ public abstract class Decoder implements MALDecoder {
                 // Case for Attributes that are mapped to the Java API
                 Union union = (Union) element;
                 Attribute att = internalDecodeAttribute(union.getTypeId().getSFP());
-                list.add(att.attribute2JavaType());
+                list.add(Attribute.attribute2JavaType(att));
             } else {
                 // Normal Case
                 list.add(element.decode(this));

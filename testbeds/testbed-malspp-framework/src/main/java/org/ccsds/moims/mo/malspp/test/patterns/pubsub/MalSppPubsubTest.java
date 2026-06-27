@@ -72,6 +72,7 @@ import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
 import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.MonitorMultiSubscriptionKeys;
 import org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
@@ -901,6 +902,7 @@ public class MalSppPubsubTest extends HeaderTestProcedureImpl {
         @Override
         public void monitorMultiNotifyReceived(MALMessageHeader msgHeader,
                 Identifier _Identifier0, UpdateHeader _UpdateHeaderList1,
+                MonitorMultiSubscriptionKeys keys,
                 TestUpdate _TestUpdateList2, Element _ElementList3, Map qosProperties) {
             monitorMultiCond.set();
         }

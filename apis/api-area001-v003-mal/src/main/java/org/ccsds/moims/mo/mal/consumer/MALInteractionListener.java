@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.consumer;
 
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -224,16 +225,22 @@ public interface MALInteractionListener {
             Map qosProperties) throws MALException;
 
     /**
-     * Receives a NOTIFY message.
+     * Receives a NOTIFY message. The selectedKeys define the order and the
+     * subset of the Subscription Key values carried in the UpdateHeader when the
+     * consumer enabled trimming (see CCSDS 521.0-B-3, section 3.6.6.5). When
+     * trimming was not enabled, selectedKeys is null and the key values follow
+     * the order defined by the operation.
      *
      * @param header The header of the message as exchanged between the provider
      * and the consumer.
      * @param body The body of the message.
+     * @param selectedKeys The selected Subscription Key names of the
+     * subscription, or null if trimming was not enabled.
      * @param qosProperties The QoS properties of the message, may be null.
      * @throws MALException If an error occurs
      */
     void notifyReceived(MALMessageHeader header, MALNotifyBody body,
-            Map qosProperties) throws MALException;
+            IdentifierList selectedKeys, Map qosProperties) throws MALException;
 
     /**
      * Receives a NOTIFY ERROR message.

@@ -33,6 +33,7 @@ import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.structures.UpdateHeader;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.mc.action.consumer.ActionAdapter;
+import org.ccsds.moims.mo.mc.action.consumer.MonitorExecutionSubscriptionKeys;
 import org.ccsds.moims.mo.mc.structures.ActionCategory;
 import org.ccsds.moims.mo.mc.structures.ActionEvent;
 import org.ccsds.moims.mo.mc.structures.ParameterValueData;
@@ -180,6 +181,7 @@ public class ActionListener extends ActionAdapter {
 			MALMessageHeader msgHeader,
 			Identifier subscriptionId,
 			UpdateHeader updateHeader,
+			MonitorExecutionSubscriptionKeys keys,
 			ActionEvent progressEvent,
 			Map qosProperties) {
 		System.out.println("Reached: monitorExecutionNotifyReceived() -> " + progressEvent);
