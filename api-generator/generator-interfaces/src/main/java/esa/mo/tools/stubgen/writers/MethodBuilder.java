@@ -54,9 +54,7 @@ public final class MethodBuilder {
     private String returnComment = null;
     private List<String> throwsComment = null;
     private boolean isFinal = false;
-    private boolean isConst = false;
     private boolean isStatic = false;
-    private boolean isReturnConst = false;
     private boolean isDeprecated = false;
     private boolean isOverride = false;
 
@@ -223,16 +221,6 @@ public final class MethodBuilder {
     }
 
     /**
-     * Marks the method as const (ignored by languages without the concept).
-     *
-     * @return This builder.
-     */
-    public MethodBuilder asConst() {
-        this.isConst = true;
-        return this;
-    }
-
-    /**
      * Marks the method as static.
      *
      * @return This builder.
@@ -251,18 +239,6 @@ public final class MethodBuilder {
      */
     public MethodBuilder asOverride() {
         this.isOverride = true;
-        return this;
-    }
-
-    /**
-     * Marks the return value as const (ignored by languages without the
-     * concept).
-     *
-     * @param isReturnConst True if the return value is const.
-     * @return This builder.
-     */
-    public MethodBuilder returnConst(boolean isReturnConst) {
-        this.isReturnConst = isReturnConst;
         return this;
     }
 
@@ -297,8 +273,8 @@ public final class MethodBuilder {
         if (isOverride) {
             return writer.addMethodOpenStatementOverride(returnType, methodName, args, throwsSpec, isFinal);
         }
-        return writer.addMethodOpenStatement(isFinal, isConst, isStatic, scope,
-                isReturnConst, returnType, methodName, args, throwsSpec,
+        return writer.addMethodOpenStatement(isFinal, isStatic, scope,
+                returnType, methodName, args, throwsSpec,
                 comment, returnComment, throwsComment, isDeprecated);
     }
 }

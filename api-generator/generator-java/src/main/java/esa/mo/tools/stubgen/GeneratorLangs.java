@@ -1415,8 +1415,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         boolean isDeprecated = (backwardCompatibility != null);
         String getOpName = (backwardCompatibility == null) ? StubUtils.preCap(attributeName) : backwardCompatibility;
 
-        MethodWriter method = file.method(getOpPrefix + getOpName).asConst()
-                .returns(element).returnConst(!element.isCanBeNull())
+        MethodWriter method = file.method(getOpPrefix + getOpName)
+                .returns(element)
                 .comment("Returns the field " + attributeName)
                 .returnComment("The field " + attributeName).deprecated(isDeprecated).open();
         method.addLine("return " + attributeName + ";");

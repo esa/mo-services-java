@@ -209,10 +209,8 @@ public interface ClassWriter extends LanguageWriter {
      * Add a method to the class.
      *
      * @param isFinal Is the method final.
-     * @param isConst Is the method constant.
      * @param isStatic Is it is static method.
      * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
      * @param rtype The return type of the method.
      * @param methodName The method name.
      * @param args The arguments of the method.
@@ -225,7 +223,7 @@ public interface ClassWriter extends LanguageWriter {
      * @throws IOException If there is an IO error.
      */
     MethodWriter addMethodOpenStatement(boolean isFinal,
-            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
+            boolean isStatic, String scope,
             CompositeField rtype, String methodName,
             List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment, boolean isDeprecated) throws IOException;
