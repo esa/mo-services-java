@@ -27,6 +27,7 @@ import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
+import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.AttributeType;
 import esa.mo.xsd.CompositeType;
@@ -83,6 +84,12 @@ public class JavaHelpers {
                 false, true, "Service singleton instance.");
 
         file.addClassVariable(true, true, StdStrings.PUBLIC, serviceInstVar, true, "()");
+
+        // Utility class: prevent instantiation with a private constructor.
+        MethodWriter ctor = file.addConstructor(StdStrings.PRIVATE, serviceName + "Helper",
+                null, null, null, null, null);
+        ctor.addLine("// Utility class; not meant to be instantiated.");
+        ctor.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
     }
@@ -201,6 +208,11 @@ public class JavaHelpers {
             }
         }
 
+        // Utility class: prevent instantiation with a private constructor.
+        MethodWriter ctor = file.addConstructor(StdStrings.PRIVATE, areaName + "Helper",
+                null, null, null, null, null);
+        ctor.addLine("// Utility class; not meant to be instantiated.");
+        ctor.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
     }

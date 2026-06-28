@@ -446,7 +446,14 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     @Override
     public void addMultilineComment(int tabCount, boolean preBlankLine,
             List<String> comments, boolean postBlankLine) throws IOException {
-        if (!comments.isEmpty()) {
+        boolean hasContent = false;
+        for (String comment : comments) {
+            if (comment != null && !comment.trim().isEmpty()) {
+                hasContent = true;
+                break;
+            }
+        }
+        if (hasContent) {
             if (preBlankLine) {
                 file.append(getLineSeparator());
             }
