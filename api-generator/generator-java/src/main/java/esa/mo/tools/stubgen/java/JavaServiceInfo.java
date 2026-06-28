@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
@@ -57,8 +58,11 @@ public class JavaServiceInfo {
     public final static String SERVICE_INFO = "ServiceInfo";
     private final GeneratorLangs generator;
 
-    public JavaServiceInfo(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaServiceInfo(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createServiceInfoClass(File serviceFolder, AreaType area,
@@ -66,8 +70,8 @@ public class JavaServiceInfo {
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
         // construct area helper class name and variable
-        String hlp = generator.createElementType(area.getName(), null, null, area.getName() + "Helper");
-        String namespace = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
+        String hlp = typeInformation.createElementType(area.getName(), null, null, area.getName() + "Helper");
+        String namespace = typeInformation.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
         file.addPackageStatement(area.getName(), service.getName(), null);
@@ -172,8 +176,8 @@ public class JavaServiceInfo {
                 }
 
                 if (!isAbstract) {
-                    String clsName = generator.createElementType(area.getName(), service.getName(), typeName);
-                    String lclsName = generator.createElementType(area.getName(), service.getName(), typeName + "List");
+                    String clsName = typeInformation.createElementType(area.getName(), service.getName(), typeName);
+                    String lclsName = typeInformation.createElementType(area.getName(), service.getName(), typeName + "List");
                     elementInstantiations.add("new " + clsName + "()");
                     elementInstantiations.add("new " + lclsName + "()");
                 }
@@ -329,9 +333,9 @@ public class JavaServiceInfo {
         List<String> opArgs = new LinkedList<>();
         opArgs.add("SERVICE_KEY");
         opArgs.add(initNewLine + op.getName().toUpperCase() + "_OP_NUMBER");
-        opArgs.add(initNewLine + "new " + generator.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
+        opArgs.add(initNewLine + "new " + typeInformation.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
         // opArgs.add(initNewLine + "" + op.getReplay());
-        opArgs.add(initNewLine + "new " + generator.createElementType(StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
+        opArgs.add(initNewLine + "new " + typeInformation.createElementType(StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
 
         switch (op.getPattern()) {
             case SEND_OP:
@@ -413,7 +417,7 @@ public class JavaServiceInfo {
 
             TypeReference type = typeInfo.getSourceType();
 
-            if (generator.isAbstract(type)) {
+            if (typeInformation.isAbstract(type)) {
                 buffer.append("null");
             } else {
                 buffer.append(typeInfo.getMalShortFormField());

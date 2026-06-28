@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorJava;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorJava.JAVA_FILE_EXT;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
@@ -56,9 +57,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
      * @param generator The java code generator.
      * @throws IOException If any problems creating the file.
      */
-    public JavaClassWriter(File folder, String className, GeneratorJava generator) throws IOException {
+    private final MOTypeInformation typeInformation;
+
+    public JavaClassWriter(File folder, String className, GeneratorJava generator, MOTypeInformation typeInformation) throws IOException {
         this.file = StubUtils.createLowLevelWriter(folder, className, JAVA_FILE_EXT);
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     /**
@@ -69,9 +73,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
      * @param generator The java code generator.
      * @throws IOException If any problems creating the file.
      */
-    public JavaClassWriter(String destinationFolderName, String className, GeneratorJava generator) throws IOException {
+    public JavaClassWriter(String destinationFolderName, String className, GeneratorJava generator, MOTypeInformation typeInformation) throws IOException {
         this.file = StubUtils.createLowLevelWriter(destinationFolderName, className, JAVA_FILE_EXT);
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     @Override
@@ -178,8 +183,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                     buf.append("\n        ").append(initialValue);
                 }
                 buf.append("}");
-            } else if (generator.isNativeType(field.getTypeName())) {
-                NativeTypeDetails dets = generator.getNativeType(field.getTypeName());
+            } else if (typeInformation.isNativeType(field.getTypeName())) {
+                NativeTypeDetails dets = typeInformation.getNativeType(field.getTypeName());
                 if (dets.isObject()) {
                     buf.append(" = new ").append(ltype).append(initialValue);
                 } else {
@@ -222,8 +227,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                 buf.append(" = {").append(initialValue).append("}");
             } else if (!isNewInit) {
                 buf.append(" = ").append(initialValue);
-            } else if (generator.isNativeType(arg.getTypeName())) {
-                NativeTypeDetails dets = generator.getNativeType(arg.getTypeName());
+            } else if (typeInformation.isNativeType(arg.getTypeName())) {
+                NativeTypeDetails dets = typeInformation.getNativeType(arg.getTypeName());
                 if (dets.isObject()) {
                     buf.append(" = new ").append(ltype).append(initialValue);
                 } else {
@@ -553,11 +558,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                     "org.ccsds.moims.mo.mal.TypeId");
         }
 
-        if (generator.isNativeType(fullType)) {
-            NativeTypeDetails dets = generator.getNativeType(fullType);
+        if (typeInformation.isNativeType(fullType)) {
+            NativeTypeDetails dets = typeInformation.getNativeType(fullType);
             return dets.getLanguageTypeName();
-        } else if (!type.isList() && generator.isAttributeType(type.getTypeReference())) {
-            AttributeTypeDetails dets = generator.getAttributeDetails(type.getTypeReference());
+        } else if (!type.isList() && typeInformation.isAttributeType(type.getTypeReference())) {
+            AttributeTypeDetails dets = typeInformation.getAttributeDetails(type.getTypeReference());
             if (dets != null) {
                 return dets.getTargetType();
             }

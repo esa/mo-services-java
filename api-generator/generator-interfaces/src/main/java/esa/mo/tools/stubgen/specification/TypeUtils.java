@@ -20,7 +20,7 @@
  */
 package esa.mo.tools.stubgen.specification;
 
-import esa.mo.tools.stubgen.GeneratorBase;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.xsd.TypeReference;
 import esa.mo.xsd.NamedElementReferenceWithCommentType;
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class TypeUtils {
                     fqName + ".SHORT_FORM", argVersionStr, fieldNullability);
         }
 
-        if (GeneratorBase.isObjectRef(tr)) {
+        if (MOTypeInformation.isObjectRef(tr)) {
             return new FieldInfo(tr, fieldName, fieldComment, tr.getName() + "List",
                     "org.ccsds.moims.mo.mal.structures.ObjectRefList", false,
                     getTypeShortForm(tiSource, tr, "ObjectRefList"),

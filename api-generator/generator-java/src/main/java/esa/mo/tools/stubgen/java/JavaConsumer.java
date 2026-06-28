@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorLangs.CONSUMER_FOLDER;
 import static esa.mo.tools.stubgen.GeneratorLangs.TRANSPORT_FOLDER;
@@ -54,8 +55,11 @@ public class JavaConsumer {
     private final boolean supportsToValue;
     private final boolean supportsAsync;
 
-    public JavaConsumer(GeneratorLangs generator, boolean supportsToValue, boolean supportsAsync) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaConsumer(GeneratorLangs generator, MOTypeInformation typeInformation, boolean supportsToValue, boolean supportsAsync) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
         this.supportsToValue = supportsToValue;
         this.supportsAsync = supportsAsync;
     }
@@ -68,9 +72,9 @@ public class JavaConsumer {
 
         file.addPackageStatement(areaName, serviceName, CONSUMER_FOLDER);
 
-        String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String areaHelper = generator.createElementType(areaName, null, null, areaName + "Helper");
-        String serviceInfoName = generator.createElementType(areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String areaHelper = typeInformation.createElementType(areaName, null, null, areaName + "Helper");
+        String serviceInfoName = typeInformation.createElementType(areaName, serviceName, null, serviceName + JavaServiceInfo.SERVICE_INFO);
 
         CompositeField stdHeaderArg = generator.createCompositeElementsDetails(file, false, "msgHeader",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageHeader", false),
@@ -105,7 +109,7 @@ public class JavaConsumer {
         List<CompositeField> stdErrorArgs = StubUtils.concatenateArguments(stdHeaderArg, stdErrorArg, stdQosArg);
 
         file.addClassOpenStatement(className, false, true,
-                generator.createElementType(StdStrings.MAL, null, CONSUMER_FOLDER, "MALInteractionAdapter"),
+                typeInformation.createElementType(StdStrings.MAL, null, CONSUMER_FOLDER, "MALInteractionAdapter"),
                 null, "Consumer adapter for " + serviceName + " service.");
 
         // Implement the generation of the adapter
@@ -216,10 +220,10 @@ public class JavaConsumer {
                     List<FieldInfo> retTypes = new LinkedList<>();
                     boolean nullableField = false; // Just for subscriptionId, and updateHeader
 
-                    retTypes.add(0, TypeUtils.convertTypeReference(generator,
+                    retTypes.add(0, TypeUtils.convertTypeReference(typeInformation,
                             TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false),
                             "subscriptionId", "The subscriptionId of the subscription.", nullableField));
-                    retTypes.add(1, TypeUtils.convertTypeReference(generator,
+                    retTypes.add(1, TypeUtils.convertTypeReference(typeInformation,
                             TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false),
                             "updateHeader", "The Update header.", nullableField));
 
@@ -500,8 +504,8 @@ public class JavaConsumer {
         TypeReference type = key.getType();
         String comment = "Returns the value of the \"" + name + "\" Subscription Key, or null if not present.";
 
-        if (generator.isEnum(type)) {
-            String fqEnumType = generator.createElementType(type, true);
+        if (typeInformation.isEnum(type)) {
+            String fqEnumType = typeInformation.createElementType(type, true);
             CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
                     type, true, true, null);
             MethodWriter m = file.method(getterName).returns(returnType)
@@ -513,7 +517,7 @@ public class JavaConsumer {
             return;
         }
 
-        AttributeTypeDetails details = generator.getAttributeDetails(type);
+        AttributeTypeDetails details = typeInformation.getAttributeDetails(type);
         if (details == null) {
             // The key type could not be resolved to a known Attribute type (for
             // example a malformed type in the service specification). Fall back
@@ -551,7 +555,7 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
-                String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 List<FieldInfo> opTypes = null;
                 switch (opTypeIndex) {
@@ -593,14 +597,14 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
-                String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("    case " + ns);
 
                 // The subscriptionId (index 0) and the UpdateHeader (index 1).
                 List<FieldInfo> headTypes = new LinkedList<>();
-                headTypes.add(TypeUtils.convertTypeReference(generator,
+                headTypes.add(TypeUtils.convertTypeReference(typeInformation,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, false)));
-                headTypes.add(TypeUtils.convertTypeReference(generator,
+                headTypes.add(TypeUtils.convertTypeReference(typeInformation,
                         TypeUtils.createTypeReference(StdStrings.MAL, null, "UpdateHeader", false)));
                 String headArgs = generator.createAdapterMethodsArgs(headTypes, "body", true, false);
 
@@ -642,7 +646,7 @@ public class JavaConsumer {
 
         for (OperationSummary op : summary.getOperations()) {
             if (optype == op.getPattern()) {
-                String ns = generator.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 method.addLine("    " + op.getName() + subopPostname + "ErrorReceived(msgHeader, body.getError(), qosProperties);");
                 method.addLine("    break;");
@@ -677,8 +681,8 @@ public class JavaConsumer {
                 true, true, "transactionId Transaction identifier of the interaction to continue");
         List<CompositeField> continueOpArgs = StubUtils.concatenateArguments(lastInteractionStage, initiationTimestamp, transactionId, serviceAdapterArg);
 
-        String throwsMALException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = generator.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
         CompositeField msgType = generator.createCompositeElementsDetails(file, false, "return",
@@ -690,8 +694,8 @@ public class JavaConsumer {
         CompositeField uriType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.URI, false),
                 true, true, null);
-        String helperType = generator.createElementType(area, service, null, service + "Helper") + generator.getConfig().getNamingSeparator();
-        String serviceInfoType = generator.createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
+        String helperType = typeInformation.createElementType(area, service, null, service + "Helper") + generator.getConfig().getNamingSeparator();
+        String serviceInfoType = typeInformation.createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO) + generator.getConfig().getNamingSeparator();
         CompositeField consumerType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, CONSUMER_FOLDER, "MALConsumer", false),
                 false, true, null);
@@ -705,7 +709,7 @@ public class JavaConsumer {
                 "Consumer stub for " + service + " service.");
         /*
         file.addClassOpenStatement(className, false, false, null,
-                generator.createElementType(area, service, CONSUMER_FOLDER, service),
+                typeInformation.createElementType(area, service, CONSUMER_FOLDER, service),
                 "Consumer stub for " + service + " service.");
          */
         file.addClassVariable(false, true, StdStrings.PRIVATE, consumerTypeVar, false, (String) null);

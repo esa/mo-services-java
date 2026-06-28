@@ -880,7 +880,7 @@ public class GeneratorDocx extends GeneratorDocument {
                 String errorNumber = "UNKNOWN ERROR NUMBER!";
                 String es;
                 if ((err.getType().getArea() == null) || (err.getType().getArea().equals(area.getName()))) {
-                    ErrorDefinitionType edt = getErrorDefinition(err.getType().getName());
+                    ErrorDefinitionType edt = typeInformation.getErrorDefinition(err.getType().getName());
                     if (edt != null) {
                         errorNumber = String.valueOf(edt.getNumber());
                     }

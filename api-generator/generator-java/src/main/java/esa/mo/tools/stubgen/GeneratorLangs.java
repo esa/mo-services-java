@@ -142,30 +142,30 @@ public abstract class GeneratorLangs extends GeneratorBase {
             Map<String, String> extraProperties) throws IOException {
         super.postinit(destinationFolderName, generateStructures, generateCOM, packageBindings, extraProperties);
 
-        addAttributeType(StdStrings.XML, "hexBinary", getAttributeDetails(StdStrings.MAL, StdStrings.BLOB));
-        addAttributeType(StdStrings.XML, "boolean", getAttributeDetails(StdStrings.MAL, StdStrings.BOOLEAN));
-        addAttributeType(StdStrings.XML, "double", getAttributeDetails(StdStrings.MAL, StdStrings.DOUBLE));
-        addAttributeType(StdStrings.XML, "duration", getAttributeDetails(StdStrings.MAL, StdStrings.DURATION));
-        addAttributeType(StdStrings.XML, "float", getAttributeDetails(StdStrings.MAL, StdStrings.FLOAT));
-        addAttributeType(StdStrings.XML, "int", getAttributeDetails(StdStrings.MAL, StdStrings.INTEGER));
-        addAttributeType(StdStrings.XML, "NCName", getAttributeDetails(StdStrings.MAL, StdStrings.IDENTIFIER));
-        addAttributeType(StdStrings.XML, "long", getAttributeDetails(StdStrings.MAL, StdStrings.LONG));
-        addAttributeType(StdStrings.XML, "byte", getAttributeDetails(StdStrings.MAL, StdStrings.OCTET));
-        addAttributeType(StdStrings.XML, "short", getAttributeDetails(StdStrings.MAL, StdStrings.SHORT));
-        addAttributeType(StdStrings.XML, "unsignedInt", getAttributeDetails(StdStrings.MAL, StdStrings.UINTEGER));
-        addAttributeType(StdStrings.XML, "unsignedLong", getAttributeDetails(StdStrings.MAL, StdStrings.ULONG));
-        addAttributeType(StdStrings.XML, "unsignedByte", getAttributeDetails(StdStrings.MAL, StdStrings.UOCTET));
-        addAttributeType(StdStrings.XML, "unsignedShort", getAttributeDetails(StdStrings.MAL, StdStrings.USHORT));
-        addAttributeType(StdStrings.XML, "string", getAttributeDetails(StdStrings.MAL, StdStrings.STRING));
-        addAttributeType(StdStrings.XML, "dateTime", getAttributeDetails(StdStrings.MAL, StdStrings.TIME));
-        addAttributeType(StdStrings.XML, "dateTime", getAttributeDetails(StdStrings.MAL, StdStrings.FINETIME));
-        addAttributeType(StdStrings.XML, "anyURI", getAttributeDetails(StdStrings.MAL, StdStrings.URI));
-        addAttributeType(StdStrings.XML, "ObjectRef", getAttributeDetails(StdStrings.MAL, StdStrings.OBJECTREF));
+        addAttributeType(StdStrings.XML, "hexBinary", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.BLOB));
+        addAttributeType(StdStrings.XML, "boolean", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.BOOLEAN));
+        addAttributeType(StdStrings.XML, "double", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.DOUBLE));
+        addAttributeType(StdStrings.XML, "duration", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.DURATION));
+        addAttributeType(StdStrings.XML, "float", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.FLOAT));
+        addAttributeType(StdStrings.XML, "int", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.INTEGER));
+        addAttributeType(StdStrings.XML, "NCName", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.IDENTIFIER));
+        addAttributeType(StdStrings.XML, "long", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.LONG));
+        addAttributeType(StdStrings.XML, "byte", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.OCTET));
+        addAttributeType(StdStrings.XML, "short", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.SHORT));
+        addAttributeType(StdStrings.XML, "unsignedInt", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.UINTEGER));
+        addAttributeType(StdStrings.XML, "unsignedLong", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.ULONG));
+        addAttributeType(StdStrings.XML, "unsignedByte", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.UOCTET));
+        addAttributeType(StdStrings.XML, "unsignedShort", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.USHORT));
+        addAttributeType(StdStrings.XML, "string", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.STRING));
+        addAttributeType(StdStrings.XML, "dateTime", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.TIME));
+        addAttributeType(StdStrings.XML, "dateTime", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.FINETIME));
+        addAttributeType(StdStrings.XML, "anyURI", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.URI));
+        addAttributeType(StdStrings.XML, "ObjectRef", typeInformation.getAttributeDetails(StdStrings.MAL, StdStrings.OBJECTREF));
 
-        AttributeTypeDetails att = new AttributeTypeDetails(this, "Element", true, "Object", "");
+        AttributeTypeDetails att = new AttributeTypeDetails(typeInformation, "Element", true, "Object", "");
         addAttributeType(StdStrings.XML, "Element", att);
 
-        AttributeTypeDetails att1 = new AttributeTypeDetails(this, "Object", true, "Object", "");
+        AttributeTypeDetails att1 = new AttributeTypeDetails(typeInformation, "Object", true, "Object", "");
         addAttributeType(StdStrings.XML, "Element", att1);
     }
 
@@ -350,7 +350,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             createAreaFolderComment(areaFolder, area);
 
             // Create Area Helper
-            JavaHelpers helper = new JavaHelpers(this);
+            JavaHelpers helper = new JavaHelpers(this, typeInformation);
             logger.info(" > Creating Area Helper class: " + area.getName());
             helper.createAreaHelperClass(areaFolder, area);
 
@@ -384,10 +384,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
                         } else if (oType instanceof CompositeType) {
                             CompositeType compType = (CompositeType) oType;
                             logger.info(" > Creating Composite class: " + compType.getName());
-                            JavaCompositeClass compositeClass = new JavaCompositeClass(this);
+                            JavaCompositeClass compositeClass = new JavaCompositeClass(this, typeInformation);
                             compositeClass.createCompositeClass(structureFolder, area, null, compType);
                         } else if (oType instanceof EnumerationType) {
-                            JavaEnumerations enumerations = new JavaEnumerations(this);
+                            JavaEnumerations enumerations = new JavaEnumerations(this, typeInformation);
                             EnumerationType enumType = (EnumerationType) oType;
                             logger.info(" > Creating Enumeration class: " + enumType.getName());
                             enumerations.createEnumerationClass(structureFolder, area, null, enumType);
@@ -426,12 +426,12 @@ public abstract class GeneratorLangs extends GeneratorBase {
         // create a comment for the service folder if supported
         createServiceFolderComment(serviceFolder, area.getName(), service);
         // create service helper
-        JavaHelpers helper = new JavaHelpers(this);
+        JavaHelpers helper = new JavaHelpers(this, typeInformation);
         logger.info(" > Creating service Helper class: " + service.getName());
         helper.createServiceHelperClass(serviceFolder, area.getName(), service, summary);
 
         // create service info
-        JavaServiceInfo serviceInfo = new JavaServiceInfo(this);
+        JavaServiceInfo serviceInfo = new JavaServiceInfo(this, typeInformation);
         logger.info(" > Creating ServiceInfo class: " + service.getName());
         serviceInfo.createServiceInfoClass(serviceFolder, area, service, summary);
 
@@ -450,7 +450,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
             for (Object oType : service.getDataTypes().getCompositeOrEnumeration()) {
                 if (oType instanceof EnumerationType) {
-                    JavaEnumerations enumerations = new JavaEnumerations(this);
+                    JavaEnumerations enumerations = new JavaEnumerations(this, typeInformation);
                     EnumerationType enumType = (EnumerationType) oType;
                     logger.info(" > Creating Enumeration class: " + enumType.getName());
                     enumerations.createEnumerationClass(structureFolder, area, service, (EnumerationType) oType);
@@ -458,7 +458,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 } else if (oType instanceof CompositeType) {
                     CompositeType compType = (CompositeType) oType;
                     logger.info(" > Creating Composite class: " + compType.getName());
-                    JavaCompositeClass compositeClass = new JavaCompositeClass(this);
+                    JavaCompositeClass compositeClass = new JavaCompositeClass(this, typeInformation);
                     compositeClass.createCompositeClass(structureFolder, area, service, compType);
                     name = ((CompositeType) oType).getName();
                 } else {
@@ -480,7 +480,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         File consumerFolder = StubUtils.createFolder(serviceFolder, CONSUMER_FOLDER);
         // create a comment for the consumer folder if supported
         createServiceConsumerFolderComment(consumerFolder, area, service);
-        JavaConsumer consumer = new JavaConsumer(this, supportsToValue, true);
+        JavaConsumer consumer = new JavaConsumer(this, typeInformation, supportsToValue, true);
         logger.info(" > Creating consumer adapter: " + service);
         consumer.createServiceConsumerAdapter(consumerFolder, area, service, summary);
         logger.info(" > Creating consumer stub: " + service);
@@ -541,7 +541,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (comment == null || comment.isEmpty()) {
                 // The error reference rarely carries its own comment, so fall
                 // back to the comment of the referenced error definition.
-                ErrorDefinitionType def = getErrorDefinition(error.getType().getName());
+                ErrorDefinitionType def = typeInformation.getErrorDefinition(error.getType().getName());
                 comment = (def != null && def.getComment() != null && !def.getComment().isEmpty())
                         ? def.getComment() : "if the corresponding MO error occurs";
             }
@@ -591,8 +591,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField intHandler = createCompositeElementsDetails(file, false, "interaction",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
                 false, true, "The MAL object representing the interaction in the provider.");
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
 
         for (OperationSummary op : summary.getOperations()) {
             if (InteractionPatternEnum.PUBSUB_OP == op.getPattern()) {
@@ -648,8 +648,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
                 false, true, null);
@@ -716,8 +716,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
                 false, true, null);
@@ -814,7 +814,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         String skeletonName = service + "Skeleton";
         InterfaceWriter file = createInterfaceFile(providerFolder, skeletonName);
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField malDomId = createCompositeElementsDetails(file, false, "domain",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true),
                 true, true, "The domain used for publishing");
@@ -885,18 +885,18 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
-        String malHelper = createElementType(StdStrings.MAL, null, null, "MALHelper");
-        String helperName = createElementType(area, service, null, service + "Helper");
-        String serviceInfoName = createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String malHelper = typeInformation.createElementType(StdStrings.MAL, null, null, "MALHelper");
+        String helperName = typeInformation.createElementType(area, service, null, service + "Helper");
+        String serviceInfoName = typeInformation.createElementType(area, service, null, service + JavaServiceInfo.SERVICE_INFO);
         String malString = malStringAsElement(file);
-        String malInteger = createElementType(StdStrings.MAL, null, StdStrings.INTEGER);
-        String stdError = createElementType(StdStrings.MAL, null, null, "MOErrorException");
+        String malInteger = typeInformation.createElementType(StdStrings.MAL, null, StdStrings.INTEGER);
+        String stdError = typeInformation.createElementType(StdStrings.MAL, null, null, "MOErrorException");
         CompositeField stdBodyArg = createCompositeElementsDetails(file, false, "body",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, "MALMessageBody", false),
                 false, true, "The message body");
-        String stdErrorNs = convertToNamespace("," + stdError + ".," + malString + ".," + malInteger + ".");
+        String stdErrorNs = typeInformation.convertToNamespace("," + stdError + ".," + malString + ".," + malInteger + ".");
         CompositeField malDomId = createCompositeElementsDetails(file, false, "domain",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.IDENTIFIER, true),
                 true, true, "The domain used for publishing");
@@ -924,10 +924,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
         List<CompositeField> psArgs = StubUtils.concatenateArguments(malDomId, malNetworkZone,
                 malSession, malSessionName, malqos, malqosprops, malPriority);
 
-        String implementsList = createElementType(StdStrings.MAL, null, PROVIDER_FOLDER, "MALInteractionHandler")
-                + ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Skeleton");
+        String implementsList = typeInformation.createElementType(StdStrings.MAL, null, PROVIDER_FOLDER, "MALInteractionHandler")
+                + ", " + typeInformation.createElementType(area, service, PROVIDER_FOLDER, service + "Skeleton");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
+            implementsList += ", " + typeInformation.createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
         }
         file.addClassOpenStatement(className, false, !isDelegate, null, implementsList, comment);
 
@@ -1003,7 +1003,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             .comment("Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName())
                             .returnComment("The new publisher object.")
                             .addThrows(throwsMALException, "if a problem is detected during creation of the publisher").open();
-                    String ns = convertToNamespace(serviceInfoName + "." + op.getName().toUpperCase() + "_OP");
+                    String ns = typeInformation.convertToNamespace(serviceInfoName + "." + op.getName().toUpperCase() + "_OP");
                     method.addLine("return new " + updateType.getTypeName()
                             + "(providerSet.createPublisherSet(" + ns + ", domain, sessionType, sessionName, qos, qosProps, null));");
                     method.addMethodCloseStatement();
@@ -1041,7 +1041,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SEND_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                String ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                String ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction);");
                 method.addLine("    break;");
@@ -1080,7 +1080,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.SUBMIT_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs + "interaction);");
                 method.addLine("    interaction.sendAcknowledgement();");
@@ -1123,7 +1123,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (op.getPattern() == InteractionPatternEnum.REQUEST_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
                 String opResp = delegateCall + op.getName() + "(" + opArgs + "interaction)";
-                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 createRequestResponseDecompose(
                         method, op,
@@ -1168,7 +1168,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.INVOKE_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
                         + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
@@ -1210,7 +1210,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         for (OperationSummary op : summary.getOperations()) {
             if (op.getPattern() == InteractionPatternEnum.PROGRESS_OP) {
                 String opArgs = createAdapterMethodsArgs(op.getArgTypes(), "body", false, true);
-                ns = convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
+                ns = typeInformation.convertToNamespace(serviceInfoName + "._" + op.getName().toUpperCase() + "_OP_NUMBER:");
                 method.addLine("  case " + ns);
                 method.addLine("    " + delegateCall + op.getName() + "(" + opArgs
                         + "new " + StubUtils.preCap(op.getName()) + "Interaction" + "(interaction));");
@@ -1291,7 +1291,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String rv = null;
 
         if ((null != ref) && (null != ref.getAny()) && (!ref.getAny().isEmpty())) {
-            List<FieldInfo> refs = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(ref.getAny()));
+            List<FieldInfo> refs = TypeUtils.convertTypeReferences(typeInformation, TypeUtils.getTypeListViaXSDAny(ref.getAny()));
             rv = refs.get(0).getMalShortFormField();
         }
 
@@ -1313,7 +1313,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         }
 
         ModelObjectType refObj = comObjectMap.get(key);
-        return convertToNamespace(createElementType(any.getArea(), service, null, service + JavaServiceInfo.SERVICE_INFO)
+        return typeInformation.convertToNamespace(typeInformation.createElementType(any.getArea(), service, null, service + JavaServiceInfo.SERVICE_INFO)
                 + "." + refObj.getName().toUpperCase() + "_OBJECT_TYPE");
     }
 
@@ -1462,7 +1462,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 String unionType = getConfig().getAreaPackage(StdStrings.MAL)
                         + "mal." + getConfig().getStructureFolder() + "." + StdStrings.UNION;
 
-                AttributeTypeDetails details = getAttributeDetails(typeInfo.getSourceType());
+                AttributeTypeDetails details = typeInformation.getAttributeDetails(typeInfo.getSourceType());
                 String av = argName + ".getBodyElement(" + argIndex + ", "
                         + "new " + unionType + "(" + details.getDefaultValue() + "))";
                 retStr += "(" + av + " == null) ? null : ((" + unionType + ") " + av + ").get" + details.getMalType() + "Value()";
@@ -1488,7 +1488,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         String cast = ti.getTargetType();
         String at = null;
 
-        if (!isAbstract(ti.getSourceType())) {
+        if (!typeInformation.isAbstract(ti.getSourceType())) {
             CompositeField ce = createCompositeElementsDetails(null, false,
                     "", ti.getSourceType(), true, true, null);
             at = ce.getNewCall();
@@ -1618,8 +1618,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             String returnParameter;
 
             if (typeInfo.isNativeType()) {
-                AttributeTypeDetails details = getAttributeDetails(typeInfo.getSourceType());
-                String elementType = createElementType(StdStrings.MAL, null, StdStrings.UNION);
+                AttributeTypeDetails details = typeInformation.getAttributeDetails(typeInfo.getSourceType());
+                String elementType = typeInformation.createElementType(StdStrings.MAL, null, StdStrings.UNION);
                 av = argName + ".getBodyElement(" + argIndex + ", new " + elementType + "(" + details.getDefaultValue() + "))";
                 returnParameter = "(" + tv + " == null) ? null : ((" + elementType + ") " + tv + ").get" + details.getMalType() + "Value()";
             } else {
@@ -1709,7 +1709,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public MethodWriter encodeMethodOpen(ClassWriter file) throws IOException {
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "encoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALEncoder", false),
                 false, true, "The encoder to use for encoding.");
@@ -1718,7 +1718,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     public MethodWriter decodeMethodOpen(ClassWriter file, CompositeField returnType) throws IOException {
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField fld = createCompositeElementsDetails(file, false, "decoder",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, "MALDecoder", false),
                 false, true, "The decoder to use for decoding.");

@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -42,8 +43,11 @@ public class JavaCompositeClass {
 
     private final GeneratorLangs generator;
 
-    public JavaCompositeClass(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaCompositeClass(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
@@ -51,7 +55,7 @@ public class JavaCompositeClass {
         ClassWriter file = generator.createClassFile(folder, className);
         String parentClass = null;
         TypeReference parentType = null;
-        String parentInterface = generator.createElementType(StdStrings.MAL, null, StdStrings.COMPOSITE);
+        String parentInterface = typeInformation.createElementType(StdStrings.MAL, null, StdStrings.COMPOSITE);
 
         // Check if it is an extended Composite Type:
         if (composite.getExtends() != null) {
@@ -59,14 +63,14 @@ public class JavaCompositeClass {
 
             if (!StdStrings.MAL.equals(composite.getExtends().getType().getArea())
                     && !StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())) {
-                parentClass = generator.createElementType(parentType, true);
+                parentClass = typeInformation.createElementType(parentType, true);
                 parentInterface = null;
             }
 
             // Check if it is an MO Object:
             if (StdStrings.MAL.equals(composite.getExtends().getType().getArea())
                     && StdStrings.MOOBJECT.equals(composite.getExtends().getType().getName())) {
-                parentClass = generator.createElementType(parentType, true);
+                parentClass = typeInformation.createElementType(parentType, true);
                 parentInterface = null;
             }
         }
@@ -88,7 +92,7 @@ public class JavaCompositeClass {
         }
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
                 parentClass, parentInterface, compositeComment);
-        String fqName = generator.createElementType(area.getName(), serviceName, className);
+        String fqName = typeInformation.createElementType(area.getName(), serviceName, className);
 
         if (!abstractComposite) {
             generator.addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
@@ -289,7 +293,7 @@ public class JavaCompositeClass {
         }
 
         for (CompositeField element : compElements) {
-            boolean isAbstract = generator.isAbstract(element.getTypeReference())
+            boolean isAbstract = typeInformation.isAbstract(element.getTypeReference())
                     && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String fieldName = element.getFieldName();
@@ -323,7 +327,7 @@ public class JavaCompositeClass {
             method.addSuperMethodStatement("decode", "decoder");
         }
         for (CompositeField element : compElements) {
-            boolean isAbstract = generator.isAbstract(element.getTypeReference())
+            boolean isAbstract = typeInformation.isAbstract(element.getTypeReference())
                     && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String castString = element.getDecodeCast();

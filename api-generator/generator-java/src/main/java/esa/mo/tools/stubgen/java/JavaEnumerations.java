@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -41,8 +42,11 @@ public class JavaEnumerations {
 
     private final GeneratorLangs generator;
 
-    public JavaEnumerations(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaEnumerations(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createEnumerationClass(File folder, AreaType area,
@@ -55,10 +59,10 @@ public class JavaEnumerations {
         file.addPackageStatement(area.getName(), serviceName, generator.getConfig().getStructureFolder());
 
         file.addClassOpenStatement(enumName, true, false,
-                generator.createElementType(StdStrings.MAL, null, StdStrings.ENUMERATION),
+                typeInformation.createElementType(StdStrings.MAL, null, StdStrings.ENUMERATION),
                 null, "Enumeration class for " + enumName + ".");
 
-        String fqEnumName = generator.createElementType(area, service, enumName);
+        String fqEnumName = typeInformation.createElementType(area, service, enumName);
         CompositeField enumType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(area.getName(), serviceName, enumName, false),
                 true, true, null);
@@ -76,7 +80,7 @@ public class JavaEnumerations {
                     true, false, "Enumeration singleton for value " + value);
 
             file.addClassVariable(true, true, StdStrings.PUBLIC, _eNewValue, false, "" + String.valueOf(item.getNvalue()));
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(fqEnumName + "." + value + "_VALUE)"));
+            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + typeInformation.convertToNamespace(fqEnumName + "." + value + "_VALUE)"));
         }
 
         // create arrays

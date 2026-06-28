@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -41,8 +42,11 @@ public class JavaLists {
 
     private final GeneratorLangs generator;
 
-    public JavaLists(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaLists(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     /**
@@ -124,7 +128,7 @@ public class JavaLists {
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
                 true, true, null);
-        String fqSrcTypeName = generator.createElementType(area, service, srcTypeName);
+        String fqSrcTypeName = typeInformation.createElementType(area, service, srcTypeName);
 
         String sElement = "org.ccsds.moims.mo.mal.structures.Homogeneous";
         file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",

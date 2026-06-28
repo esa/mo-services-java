@@ -141,8 +141,8 @@ public class GeneratorJava extends GeneratorLangs {
 
         file.addPackageStatement(publisher.getArea(), publisher.getService(), PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
-        String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsInteractionException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
         CompositeField publisherSetType = createCompositeElementsDetails(file, false, "publisherSet",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALPublisherSet", false),
                 false, true, null);
@@ -274,7 +274,7 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     public void createListClass(File folder, AreaType area, ServiceType service,
             String srcTypeName, boolean isAbstract, Integer shortFormPart) throws IOException {
-        JavaLists javaLists = new JavaLists(this);
+        JavaLists javaLists = new JavaLists(this, typeInformation);
         String listName = srcTypeName + "List";
 
         if (isAbstract) {
@@ -398,32 +398,32 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
-        JavaCompositeFields javaComposites = new JavaCompositeFields(this);
+        JavaCompositeFields javaComposites = new JavaCompositeFields(this, typeInformation);
         return javaComposites.createCompositeElementsDetails((LanguageWriter) file,
                 checkType, fieldName, elementType, isStructure, canBeNull, comment);
     }
 
     @Override
     protected String malStringAsElement(LanguageWriter file) {
-        return createElementType(StdStrings.MAL, null, StdStrings.UNION);
+        return typeInformation.createElementType(StdStrings.MAL, null, StdStrings.UNION);
     }
 
     @Override
     public ClassWriter createClassFile(File folder, String className) throws IOException {
-        return new JavaClassWriter(folder, className, this);
+        return new JavaClassWriter(folder, className, this, typeInformation);
     }
 
     @Override
     public ClassWriter createClassFile(String destinationFolderName, String className) throws IOException {
-        return new JavaClassWriter(destinationFolderName, className, this);
+        return new JavaClassWriter(destinationFolderName, className, this, typeInformation);
     }
 
     @Override
     protected InterfaceWriter createInterfaceFile(File folder, String className) throws IOException {
-        return new JavaClassWriter(folder, className, this);
+        return new JavaClassWriter(folder, className, this, typeInformation);
     }
 
     private String subscriptionKeyAttributeTypeName(TypeReference type) {
-        return isEnum(type) ? StdStrings.USHORT.toUpperCase() : type.getName().toUpperCase();
+        return typeInformation.isEnum(type) ? StdStrings.USHORT.toUpperCase() : type.getName().toUpperCase();
     }
 }

@@ -80,7 +80,7 @@ public class GeneratorGwt extends GeneratorJava {
         file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service + "GWT\")");
         file.addInterfaceOpenStatement(service + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
                 false, true, null);
@@ -135,7 +135,7 @@ public class GeneratorGwt extends GeneratorJava {
                 "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
                 false, true, "interaction The MAL object representing the interaction in the provider.");
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         for (OperationSummary op : summary.getOperations()) {
             List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
             switch (op.getPattern()) {
@@ -222,11 +222,11 @@ public class GeneratorGwt extends GeneratorJava {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
 
-        String implementsList = createElementType(area, service, CONSUMER_FOLDER, service + "GWT");
+        String implementsList = typeInformation.createElementType(area, service, CONSUMER_FOLDER, service + "GWT");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
+            implementsList += ", " + typeInformation.createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
         }
 
         file.addClassOpenStatement(className, false, !isDelegate,
