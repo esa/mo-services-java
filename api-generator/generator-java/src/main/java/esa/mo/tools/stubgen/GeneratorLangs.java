@@ -676,13 +676,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("this.interaction = interaction;");
         method.addMethodCloseStatement();
 
-        method = file.method("getInteraction").returns(opType).returnActual()
+        method = file.method("getInteraction").returns(opType)
                 .comment("Returns the MAL interaction object used for returning messages from the provider.")
                 .returnComment("The MAL interaction object provided in the constructor").open();
         method.addLine("return interaction;");
         method.addMethodCloseStatement();
 
-        method = file.method("sendAcknowledgement").returns(msgType).returnActual()
+        method = file.method("sendAcknowledgement").returns(msgType)
                 .addArguments(createOperationArguments(getConfig(), file, op.getAckTypes()))
                 .comment("Sends a INVOKE acknowledge to the consumer")
                 .returnComment("Returns the MAL message created by the acknowledge")
@@ -691,7 +691,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("return interaction.sendAcknowledgement(" + createArgNameOrNull(op.getAckTypes()) + ");");
         method.addMethodCloseStatement();
 
-        method = file.method("sendResponse").returns(msgType).returnActual()
+        method = file.method("sendResponse").returns(msgType)
                 .addArguments(createOperationArguments(getConfig(), file, op.getRetTypes()))
                 .comment("Sends a INVOKE response to the consumer")
                 .returnComment("Returns the MAL message created by the response")
@@ -745,13 +745,13 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("this.interaction = interaction;");
         method.addMethodCloseStatement();
 
-        method = file.method("getInteraction").returns(opType).returnActual()
+        method = file.method("getInteraction").returns(opType)
                 .comment("Returns the MAL interaction object used for returning messages from the provider.")
                 .returnComment("The MAL interaction object provided in the constructor").open();
         method.addLine("return interaction;");
         method.addMethodCloseStatement();
 
-        method = file.method("sendAcknowledgement").returns(msgType).returnActual()
+        method = file.method("sendAcknowledgement").returns(msgType)
                 .addArguments(createOperationArguments(getConfig(), file, op.getAckTypes()))
                 .comment("Sends a PROGRESS acknowledge to the consumer")
                 .returnComment("Returns the MAL message created by the acknowledge")
@@ -760,7 +760,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("return interaction.sendAcknowledgement(" + createArgNameOrNull(op.getAckTypes()) + ");");
         method.addMethodCloseStatement();
 
-        method = file.method("sendUpdate").returns(msgType).returnActual()
+        method = file.method("sendUpdate").returns(msgType)
                 .addArguments(createOperationArguments(getConfig(), file, op.getUpdateTypes()))
                 .comment("Sends a PROGRESS update to the consumer")
                 .returnComment("Returns the MAL message created by the update")
@@ -769,7 +769,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addLine("return interaction.sendUpdate(" + createArgNameOrNull(op.getUpdateTypes()) + ");");
         method.addMethodCloseStatement();
 
-        method = file.method("sendResponse").returns(msgType).returnActual()
+        method = file.method("sendResponse").returns(msgType)
                 .addArguments(createOperationArguments(getConfig(), file, op.getRetTypes()))
                 .comment("Sends a PROGRESS response to the consumer")
                 .returnComment("Returns the MAL message created by the response")
@@ -787,7 +787,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
     protected void createServiceProviderInteractionErrorHandlers(ClassWriter file, boolean withUpdate, CompositeField msgType,
             CompositeField errType, String throwsInteractionException, String throwsMALException) throws IOException {
-        MethodWriter method = file.method("sendError").returns(msgType).returnActual()
+        MethodWriter method = file.method("sendError").returns(msgType)
                 .addArgument(errType)
                 .comment("Sends an error to the consumer")
                 .returnComment("Returns the MAL message created by the error")
@@ -797,7 +797,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         method.addMethodCloseStatement();
 
         if (withUpdate) {
-            method = file.method("sendUpdateError").returns(msgType).returnActual()
+            method = file.method("sendUpdateError").returns(msgType)
                     .addArgument(errType)
                     .comment("Sends an update error to the consumer")
                     .returnComment("Returns the MAL message created by the error")
@@ -956,7 +956,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                     TypeUtils.createTypeReference(StdStrings.MAL, "helpertools.connections", "ConnectionProvider", false),
                     false, true, "Returns the connection object for this provider.");
 
-            MethodWriter method1 = file.method("getConnection").returns(connectionName).returnActual()
+            MethodWriter method1 = file.method("getConnection").returns(connectionName)
                     .comment("Returns the connection object for this provider.")
                     .returnComment("the connection object for this provider")
                     .addThrows("java.io.IOException", "if the method was not implemented yet.").open();
@@ -967,7 +967,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
                     TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
                     false, true, "The skeleton (not used)");
-            MethodWriter method = file.method("setSkeleton").asOverride().returnActual()
+            MethodWriter method = file.method("setSkeleton").asOverride()
                     .addArgument(skeletonName)
                     .comment("Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.").open();
             method.addLine("// Not used in the inheritance pattern (the skeleton is 'this');");
@@ -977,14 +977,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField providerType = createCompositeElementsDetails(file, false, "provider",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProvider", false),
                 false, true, "The provider to be added.");
-        MethodWriter method = file.method("malInitialize").asOverride().returnActual()
+        MethodWriter method = file.method("malInitialize").asOverride()
                 .addArgument(providerType)
                 .comment("Adds the supplied MAL provider to the internal list of providers used for PubSub")
                 .addThrows(throwsMALException, "If an error is detected.").open();
         method.addLine("providerSet.addProvider(provider);");
         method.addMethodCloseStatement();
 
-        method = file.method("malFinalize").asOverride().returnActual()
+        method = file.method("malFinalize").asOverride()
                 .addArgument(providerType)
                 .comment("Removes the supplied MAL provider from the internal list of providers used for PubSub")
                 .addThrows(throwsMALException, "If an error is detected.").open();
@@ -1020,7 +1020,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // SEND handler
         boolean wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.SEND_OP);
-        method = file.method("handleSend").asOverride().returnActual()
+        method = file.method("handleSend").asOverride()
                 .addArgument(createServiceProviderSkeletonSendHandler(file, "interaction", "The interaction object"))
                 .addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
@@ -1066,7 +1066,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALSubmit", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.SUBMIT_OP);
-        method = file.method("handleSubmit").asOverride().returnActual()
+        method = file.method("handleSubmit").asOverride()
                 .addArgument(submitInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1108,7 +1108,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALRequest", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.REQUEST_OP);
-        method = file.method("handleRequest").asOverride().returnActual()
+        method = file.method("handleRequest").asOverride()
                 .addArgument(requestInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1154,7 +1154,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.INVOKE_OP);
-        method = file.method("handleInvoke").asOverride().returnActual()
+        method = file.method("handleInvoke").asOverride()
                 .addArgument(invokeInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1196,7 +1196,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.PROGRESS_OP);
-        method = file.method("handleProgress").asOverride().returnActual()
+        method = file.method("handleProgress").asOverride()
                 .addArgument(progressInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1417,7 +1417,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         MethodWriter method = file.method(getOpPrefix + getOpName).asConst()
                 .returns(element).returnConst(!element.isCanBeNull())
-                .returnActual(!element.isCanBeNull() && element.isActual())
                 .comment("Returns the field " + attributeName)
                 .returnComment("The field " + attributeName).deprecated(isDeprecated).open();
         method.addLine("return " + attributeName + ";");

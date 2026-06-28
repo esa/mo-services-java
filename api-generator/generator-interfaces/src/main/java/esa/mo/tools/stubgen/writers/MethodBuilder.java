@@ -54,11 +54,9 @@ public final class MethodBuilder {
     private String returnComment = null;
     private List<String> throwsComment = null;
     private boolean isFinal = false;
-    private boolean isVirtual = false;
     private boolean isConst = false;
     private boolean isStatic = false;
     private boolean isReturnConst = false;
-    private boolean isReturnActual = false;
     private boolean isDeprecated = false;
     private boolean isOverride = false;
 
@@ -225,16 +223,6 @@ public final class MethodBuilder {
     }
 
     /**
-     * Marks the method as virtual (ignored by languages without the concept).
-     *
-     * @return This builder.
-     */
-    public MethodBuilder asVirtual() {
-        this.isVirtual = true;
-        return this;
-    }
-
-    /**
      * Marks the method as const (ignored by languages without the concept).
      *
      * @return This builder.
@@ -279,27 +267,6 @@ public final class MethodBuilder {
     }
 
     /**
-     * Marks the return value as an actual instance type.
-     *
-     * @return This builder.
-     */
-    public MethodBuilder returnActual() {
-        this.isReturnActual = true;
-        return this;
-    }
-
-    /**
-     * Sets whether the return value is an actual instance type.
-     *
-     * @param isReturnActual True if the return is an actual instance.
-     * @return This builder.
-     */
-    public MethodBuilder returnActual(boolean isReturnActual) {
-        this.isReturnActual = isReturnActual;
-        return this;
-    }
-
-    /**
      * Marks the method as deprecated.
      *
      * @return This builder.
@@ -330,8 +297,8 @@ public final class MethodBuilder {
         if (isOverride) {
             return writer.addMethodOpenStatementOverride(returnType, methodName, args, throwsSpec, isFinal);
         }
-        return writer.addMethodOpenStatement(isFinal, isVirtual, isConst, isStatic, scope,
-                isReturnConst, isReturnActual, returnType, methodName, args, throwsSpec,
+        return writer.addMethodOpenStatement(isFinal, isConst, isStatic, scope,
+                isReturnConst, returnType, methodName, args, throwsSpec,
                 comment, returnComment, throwsComment, isDeprecated);
     }
 }

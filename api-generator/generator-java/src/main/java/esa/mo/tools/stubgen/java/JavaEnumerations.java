@@ -148,7 +148,7 @@ public class JavaEnumerations {
                 TypeUtils.createTypeReference(null, null, "_String", false),
                 false, true, "s The string to search for.");
 
-        MethodWriter method = file.method("fromString").asStatic().returns(enumType).returnActual()
+        MethodWriter method = file.method("fromString").asStatic().returns(enumType)
                 .addArgument(strType)
                 .comment("Returns the enumeration element represented by the supplied string, or null if not matched.")
                 .returnComment("The matched enumeration element, or null if not matched.").open();

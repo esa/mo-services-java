@@ -254,7 +254,7 @@ public class GeneratorGwt extends GeneratorJava {
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    MethodWriter method = file.method(op.getName()).returnActual()
+                    MethodWriter method = file.method(op.getName())
                             .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
                             .addThrows(throwsMALException).open();
 
@@ -265,7 +265,7 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case SUBMIT_OP: {
-                    MethodWriter method = file.method(op.getName()).returnActual()
+                    MethodWriter method = file.method(op.getName())
                             .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
                             .addThrows(throwsMALException).open();
 
@@ -277,7 +277,7 @@ public class GeneratorGwt extends GeneratorJava {
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    MethodWriter method = file.method(op.getName()).returns(opRetType).returnActual()
+                    MethodWriter method = file.method(op.getName()).returns(opRetType)
                             .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
                             .addThrows(throwsMALException).open();
 

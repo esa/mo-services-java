@@ -126,11 +126,11 @@ public class JavaConsumer {
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case SUBMIT_OP: {
-                    file.method(op.getName() + "AckReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "AckReceived")
                             .addArgument(stdHeaderArg).addArgument(stdQosArg)
                             .comment("Called by the MAL when a SUBMIT acknowledgement is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "ErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a SUBMIT acknowledgement error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
@@ -141,11 +141,11 @@ public class JavaConsumer {
                     List<CompositeField> opArgs = StubUtils.concatenateArguments(stdHeaderArg,
                             StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getRetTypes()), stdQosArg));
 
-                    file.method(op.getName() + "ResponseReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ResponseReceived")
                             .addArguments(opArgs)
                             .comment("Called by the MAL when a REQUEST response is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "ErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a REQUEST response error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
@@ -158,19 +158,19 @@ public class JavaConsumer {
                     List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg,
                             StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getRetTypes()), stdQosArg));
 
-                    file.method(op.getName() + "AckReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "AckReceived")
                             .addArguments(opArgsA)
                             .comment("Called by the MAL when an INVOKE acknowledgement is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "ResponseReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ResponseReceived")
                             .addArguments(opArgsR)
                             .comment("Called by the MAL when an INVOKE response is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "AckErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "AckErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when an INVOKE acknowledgement error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "ResponseErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ResponseErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when an INVOKE response error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
@@ -185,27 +185,27 @@ public class JavaConsumer {
                     List<CompositeField> opArgsR = StubUtils.concatenateArguments(stdHeaderArg,
                             StubUtils.concatenateArguments(generator.createOperationArguments(generator.getConfig(), file, op.getRetTypes()), stdQosArg));
 
-                    file.method(op.getName() + "AckReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "AckReceived")
                             .addArguments(opArgsA)
                             .comment("Called by the MAL when a PROGRESS acknowledgement is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "UpdateReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "UpdateReceived")
                             .addArguments(opArgsU)
                             .comment("Called by the MAL when a PROGRESS update is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "ResponseReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ResponseReceived")
                             .addArguments(opArgsR)
                             .comment("Called by the MAL when a PROGRESS response is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "AckErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "AckErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a PROGRESS acknowledgement error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "UpdateErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "UpdateErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a PROGRESS update error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "ResponseErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "ResponseErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a PROGRESS response error is received from a provider for the operation " + op.getName())
                             .open().addMethodCloseStatement();
@@ -238,23 +238,23 @@ public class JavaConsumer {
                             "The typed Subscription Key accessors for this update");
                     opArgsU.add(3, keysArg);
 
-                    file.method(op.getName() + "RegisterAckReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "RegisterAckReceived")
                             .addArgument(stdHeaderArg).addArgument(stdQosArg)
                             .comment("Called by the MAL when a PubSub register acknowledgement is received from a broker for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "RegisterErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "RegisterErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a PubSub register acknowledgement error is received from a broker for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "DeregisterAckReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "DeregisterAckReceived")
                             .addArgument(stdHeaderArg).addArgument(stdQosArg)
                             .comment("Called by the MAL when a PubSub deregister acknowledgement is received from a broker for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "NotifyReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "NotifyReceived")
                             .addArguments(opArgsU)
                             .comment("Called by the MAL when a PubSub update is received from a broker for the operation " + op.getName())
                             .open().addMethodCloseStatement();
-                    file.method(op.getName() + "NotifyErrorReceived").asVirtual().returnActual()
+                    file.method(op.getName() + "NotifyErrorReceived")
                             .addArguments(stdErrorArgs)
                             .comment("Called by the MAL when a PubSub update error is received from a broker for the operation " + op.getName())
                             .open().addMethodCloseStatement();
@@ -335,7 +335,7 @@ public class JavaConsumer {
                     "deregisterAck", "DeregisterAck", 1, stdNoBodyArgs, serviceInfoName, throwsMALException,
                     summary, "Called by the MAL when a PubSub deregister acknowledgement is received from a broker.");
 
-            file.method("notifyReceivedFromOtherService").asVirtual().returnActual()
+            file.method("notifyReceivedFromOtherService")
                     .addArguments(stdNotifyBodyArgs)
                     .comment("Called by the MAL when a PubSub update from another service is received from a broker.")
                     .addThrows(throwsMALException, "if an error is detected processing the message.")
@@ -453,7 +453,7 @@ public class JavaConsumer {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.STRING, false), false, true,
                 "The Subscription Key name");
 
-        MethodWriter byName = file.method("getByName").returnActual().returns(attrReturn).addArgument(nameArg)
+        MethodWriter byName = file.method("getByName").returns(attrReturn).addArgument(nameArg)
                 .comment("Returns the Subscription Key value with the given name, or null if it is "
                         + "not present (for example when it was trimmed away or is a custom key that is "
                         + "not part of this subscription).")
@@ -461,7 +461,7 @@ public class JavaConsumer {
         byName.addLine("return valueByName(name);");
         byName.addMethodCloseStatement();
 
-        MethodWriter vbn = file.method("valueByName").scope(StdStrings.PRIVATE).returnActual()
+        MethodWriter vbn = file.method("valueByName").scope(StdStrings.PRIVATE)
                 .returns(attrReturn).addArgument(nameArg).open();
         vbn.addLine("if (keyNames == null || keyValues == null) {");
         vbn.addLine("    return null;");
@@ -504,7 +504,7 @@ public class JavaConsumer {
             String fqEnumType = generator.createElementType(type, true);
             CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
                     type, true, true, null);
-            MethodWriter m = file.method(getterName).returnActual().returns(returnType)
+            MethodWriter m = file.method(getterName).returns(returnType)
                     .comment(comment + " Enumeration keys are transmitted as their UShort numeric value.")
                     .returnComment("The key value, or null if not present").open();
             m.addLine("org.ccsds.moims.mo.mal.structures.UShort v = (org.ccsds.moims.mo.mal.structures.UShort) valueByName(\"" + name + "\");");
@@ -520,7 +520,7 @@ public class JavaConsumer {
             // to the generic Attribute type so the accessor still compiles.
             CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
                     TypeUtils.createTypeReference(StdStrings.MAL, null, "Attribute", false), true, true, null);
-            MethodWriter m = file.method(getterName).returnActual().returns(returnType)
+            MethodWriter m = file.method(getterName).returns(returnType)
                     .comment(comment).returnComment("The key value, or null if not present").open();
             m.addLine("return valueByName(\"" + name + "\");");
             m.addMethodCloseStatement();
@@ -529,7 +529,7 @@ public class JavaConsumer {
 
         CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
                 type, true, true, null);
-        MethodWriter m = file.method(getterName).returnActual().returns(returnType)
+        MethodWriter m = file.method(getterName).returns(returnType)
                 .comment(comment).returnComment("The key value, or null if not present").open();
         if (details.isNativeType()) {
             m.addLine("org.ccsds.moims.mo.mal.structures.Attribute v = valueByName(\"" + name + "\");");
@@ -544,7 +544,7 @@ public class JavaConsumer {
     protected void createServiceConsumerAdapterMessageMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
             String serviceInfoName, String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.method(opname + "Received").asFinal().asOverride().returnActual()
+        MethodWriter method = file.method(opname + "Received").asFinal().asOverride()
                 .addArguments(args).comment(comment)
                 .addThrows(throwsMALException, "if an error is detected processing the message.").open();
         method.addLine("switch (msgHeader.getOperation().getValue()) {");
@@ -582,7 +582,7 @@ public class JavaConsumer {
             String opname, String subopPostname, int opTypeIndex, List<CompositeField> args,
             String areaHelper, String areaName, String serviceInfoName, String serviceName,
             String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.method(opname + "Received").asFinal().asOverride().returnActual()
+        MethodWriter method = file.method(opname + "Received").asFinal().asOverride()
                 .addArguments(args).comment(comment)
                 .addThrows(throwsMALException, "if an error is detected processing the message.").open();
 
@@ -635,7 +635,7 @@ public class JavaConsumer {
     protected void createServiceConsumerAdapterErrorMethod(ClassWriter file, InteractionPatternEnum optype,
             String opname, String subopPostname, List<CompositeField> args, String serviceInfoName,
             String throwsMALException, ServiceSummary summary, String comment) throws IOException {
-        MethodWriter method = file.method(opname + "ErrorReceived").asFinal().asOverride().returnActual()
+        MethodWriter method = file.method(opname + "ErrorReceived").asFinal().asOverride()
                 .addArguments(args).comment(comment)
                 .addThrows(throwsMALException, "if an error is detected processing the message.").open();
         method.addLine("switch (msgHeader.getOperation().getValue()) {");
@@ -761,7 +761,7 @@ public class JavaConsumer {
             switch (op.getPattern()) {
                 case SEND_OP: {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
-                    method = file.method(op.getName()).returns(msgType).returnActual()
+                    method = file.method(op.getName()).returns(msgType)
                             .addArguments(opArgs)
                             .comment(op.getComment()).returnComment("the MAL message sent to initiate the interaction")
                             .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -798,7 +798,7 @@ public class JavaConsumer {
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.method("async" + StubUtils.preCap(op.getName())).returns(msgType).returnActual()
+                        method = file.method("async" + StubUtils.preCap(op.getName())).returns(msgType)
                                 .addArguments(opArgs).addArgument(serviceAdapterArg)
                                 .comment("Asynchronous version of method " + op.getName()).returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -808,7 +808,7 @@ public class JavaConsumer {
                         method.addMethodCloseStatement();
                     }
 
-                    method = file.method("continue" + StubUtils.preCap(op.getName())).returnActual()
+                    method = file.method("continue" + StubUtils.preCap(op.getName()))
                             .addArguments(continueOpArgs)
                             .comment("Continues a previously started interaction")
                             .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -840,7 +840,7 @@ public class JavaConsumer {
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.method("async" + StubUtils.preCap(op.getName())).returns(msgType).returnActual()
+                        method = file.method("async" + StubUtils.preCap(op.getName())).returns(msgType)
                                 .addArguments(opArgs)
                                 .comment("Asynchronous version of method " + op.getName()).returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -850,7 +850,7 @@ public class JavaConsumer {
                         method.addMethodCloseStatement();
                     }
 
-                    method = file.method("continue" + StubUtils.preCap(op.getName())).returnActual()
+                    method = file.method("continue" + StubUtils.preCap(op.getName()))
                             .addArguments(continueOpArgs)
                             .comment("Continues a previously started interaction")
                             .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -867,7 +867,7 @@ public class JavaConsumer {
                             TypeUtils.createTypeReference(StdStrings.MAL, null, "Identifier", true),
                             true, true, "identifierList the subscription identifiers to deregister");
 
-                    method = file.method(op.getName() + "Register").returnActual()
+                    method = file.method(op.getName() + "Register")
                             .addArgument(subStr).addArgument(serviceAdapterArg)
                             .comment("Register method for the " + op.getName() + " PubSub interaction")
                             .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -876,7 +876,7 @@ public class JavaConsumer {
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.method("async" + StubUtils.preCap(op.getName()) + "Register").returns(msgType).returnActual()
+                        method = file.method("async" + StubUtils.preCap(op.getName()) + "Register").returns(msgType)
                                 .addArgument(subStr).addArgument(serviceAdapterArg)
                                 .comment("Asynchronous version of method " + op.getName() + "Register").returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -885,7 +885,7 @@ public class JavaConsumer {
                         method.addMethodCloseStatement();
                     }
 
-                    method = file.method(op.getName() + "Deregister").returnActual()
+                    method = file.method(op.getName() + "Deregister")
                             .addArgument(idStr)
                             .comment("Deregister method for the " + op.getName() + " PubSub interaction")
                             .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -894,7 +894,7 @@ public class JavaConsumer {
                     method.addMethodCloseStatement();
 
                     if (supportsAsync) {
-                        method = file.method("async" + StubUtils.preCap(op.getName()) + "Deregister").returns(msgType).returnActual()
+                        method = file.method("async" + StubUtils.preCap(op.getName()) + "Deregister").returns(msgType)
                                 .addArgument(idStr).addArgument(serviceAdapterArg)
                                 .comment("Asynchronous version of method " + op.getName() + "Deregister").returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")

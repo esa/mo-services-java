@@ -317,9 +317,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
+    public MethodWriter addMethodOpenStatement(boolean isFinal,
             boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
+            CompositeField rtype, String methodName, List<CompositeField> args,
             String throwsSpec, String comment, String returnComment, List<String> throwsComment,
             boolean isDeprecated) throws IOException {
         List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);

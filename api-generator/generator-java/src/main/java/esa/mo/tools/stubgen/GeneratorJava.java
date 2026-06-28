@@ -176,7 +176,7 @@ public class GeneratorJava extends GeneratorLangs {
         argPSListenerList.add(psListener);
 
         // register method
-        method = file.method("register").returnActual()
+        method = file.method("register")
                 .addArguments(argPSListenerList)
                 .comment("Registers this provider implementation to the set of broker connections")
                 .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
@@ -186,7 +186,7 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         // registerWithDefaultKeys method
-        method = file.method("registerWithDefaultKeys").returnActual()
+        method = file.method("registerWithDefaultKeys")
                 .addArgument(psListener)
                 .comment("Registers this provider implementation to the set of broker connections with the default subscription keys")
                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
@@ -208,7 +208,7 @@ public class GeneratorJava extends GeneratorLangs {
         method.addMethodCloseStatement();
 
         // asyncRegister method
-        method = file.method("asyncRegister").returnActual()
+        method = file.method("asyncRegister")
                 .addArguments(argPSListenerList)
                 .comment("Asynchronously registers this provider implementation to the set of broker connections")
                 .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
@@ -235,7 +235,7 @@ public class GeneratorJava extends GeneratorLangs {
             argNameList = StubUtils.concatenateStringArguments(true, strList.toArray(new String[0]));
         }
 
-        method = file.method("publish").returnActual()
+        method = file.method("publish")
                 .addArguments(argList)
                 .comment("Publishes updates to the set of registered broker connections")
                 .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
@@ -244,14 +244,14 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("publisherSet.publish(updateHeader" + argNameList + ");");
         method.addMethodCloseStatement();
 
-        method = file.method("deregister").returnActual()
+        method = file.method("deregister")
                 .comment("Deregisters this provider implementation from the set of broker connections")
                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                 .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.deregister();");
         method.addMethodCloseStatement();
 
-        method = file.method("asyncDeregister").returnActual()
+        method = file.method("asyncDeregister")
                 .addArgument(psListener)
                 .comment("Asynchronously deregisters this provider implementation from the set of broker connections")
                 .addThrows("java.lang.IllegalArgumentException", "If any supplied argument is invalid")
@@ -260,7 +260,7 @@ public class GeneratorJava extends GeneratorLangs {
         method.addLine("publisherSet.asyncDeregister(listener);");
         method.addMethodCloseStatement();
 
-        method = file.method("close").returnActual()
+        method = file.method("close")
                 .comment("Closes this publisher")
                 .addThrows(throwsMALException, "if there is an implementation exception").open();
         method.addLine("publisherSet.close();");
