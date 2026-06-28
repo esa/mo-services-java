@@ -525,7 +525,8 @@ public class JavaConsumer {
             CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
                     TypeUtils.createTypeReference(StdStrings.MAL, null, "Attribute", false), true, true, null);
             MethodWriter m = file.method(getterName).returns(returnType)
-                    .comment(comment).returnComment("The key value, or null if not present").open();
+                    .comment(comment)
+                    .returnComment("The key value, or null if not present").open();
             m.addLine("return valueByName(\"" + name + "\");");
             m.addMethodCloseStatement();
             return;
@@ -534,7 +535,8 @@ public class JavaConsumer {
         CompositeField returnType = generator.createCompositeElementsDetails(file, false, name,
                 type, true, true, null);
         MethodWriter m = file.method(getterName).returns(returnType)
-                .comment(comment).returnComment("The key value, or null if not present").open();
+                .comment(comment)
+                .returnComment("The key value, or null if not present").open();
         if (details.isNativeType()) {
             m.addLine("org.ccsds.moims.mo.mal.structures.Attribute v = valueByName(\"" + name + "\");");
             m.addLine("return (v == null) ? null : (" + details.getTargetType()
@@ -767,7 +769,8 @@ public class JavaConsumer {
                     List<CompositeField> opArgs = generator.createOperationArguments(generator.getConfig(), file, op.getArgTypes());
                     method = file.method(op.getName()).returns(msgType)
                             .addArguments(opArgs)
-                            .comment(op.getComment()).returnComment("the MAL message sent to initiate the interaction")
+                            .comment(op.getComment())
+                            .returnComment("the MAL message sent to initiate the interaction")
                             .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                             .addThrows(throwsMALException, "if there is an implementation exception").open();
                     //method.addLine("try {");
