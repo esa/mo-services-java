@@ -960,7 +960,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
             CompositeField skeletonName = createCompositeElementsDetails(file, false, "skeleton",
                     TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
                     false, true, "The skeleton (not used)");
-            MethodWriter method = file.method("setSkeleton").returnActual()
+            MethodWriter method = file.method("setSkeleton").asOverride().returnActual()
                     .addArgument(skeletonName)
                     .comment("Implements the setSkeleton method of the handler interface but does nothing as this is the skeleton.").open();
             method.addLine("// Not used in the inheritance pattern (the skeleton is 'this');");
@@ -970,14 +970,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
         CompositeField providerType = createCompositeElementsDetails(file, false, "provider",
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProvider", false),
                 false, true, "The provider to be added.");
-        MethodWriter method = file.method("malInitialize").returnActual()
+        MethodWriter method = file.method("malInitialize").asOverride().returnActual()
                 .addArgument(providerType)
                 .comment("Adds the supplied MAL provider to the internal list of providers used for PubSub")
                 .addThrows(throwsMALException, "If an error is detected.").open();
         method.addLine("providerSet.addProvider(provider);");
         method.addMethodCloseStatement();
 
-        method = file.method("malFinalize").returnActual()
+        method = file.method("malFinalize").asOverride().returnActual()
                 .addArgument(providerType)
                 .comment("Removes the supplied MAL provider from the internal list of providers used for PubSub")
                 .addThrows(throwsMALException, "If an error is detected.").open();
@@ -992,7 +992,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
                             false, true, null);
                     method = file.method("create" + StubUtils.preCap(op.getName()) + "Publisher")
-                            .returns(updateType).addArguments(psArgs)
+                            .asOverride().returns(updateType).addArguments(psArgs)
                             .comment("Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName())
                             .returnComment("The new publisher object.")
                             .addThrows(throwsMALException, "if a problem is detected during creation of the publisher").open();
@@ -1013,7 +1013,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
 
         // SEND handler
         boolean wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.SEND_OP);
-        method = file.method("handleSend").returnActual()
+        method = file.method("handleSend").asOverride().returnActual()
                 .addArgument(createServiceProviderSkeletonSendHandler(file, "interaction", "The interaction object"))
                 .addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
@@ -1059,7 +1059,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALSubmit", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.SUBMIT_OP);
-        method = file.method("handleSubmit").returnActual()
+        method = file.method("handleSubmit").asOverride().returnActual()
                 .addArgument(submitInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1101,7 +1101,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALRequest", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.REQUEST_OP);
-        method = file.method("handleRequest").returnActual()
+        method = file.method("handleRequest").asOverride().returnActual()
                 .addArgument(requestInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1147,7 +1147,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALInvoke", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.INVOKE_OP);
-        method = file.method("handleInvoke").returnActual()
+        method = file.method("handleInvoke").asOverride().returnActual()
                 .addArgument(invokeInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
@@ -1189,7 +1189,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, "MALProgress", false),
                 false, true, "The interaction object");
         wrapErrors = hasDeclaredErrors(summary, InteractionPatternEnum.PROGRESS_OP);
-        method = file.method("handleProgress").returnActual()
+        method = file.method("handleProgress").asOverride().returnActual()
                 .addArgument(progressInt).addArgument(stdBodyArg)
                 .comment("Called by the provider MAL layer on reception of a message to handle the interaction")
                 .addThrows(throwsMALException, "if there is a internal error")
