@@ -322,11 +322,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isFinal,
-            boolean isStatic, String scope,
-            CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec, String comment, String returnComment, List<String> throwsComment,
-            boolean isDeprecated) throws IOException {
+    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isStatic,
+            String scope, CompositeField rtype, String methodName, List<CompositeField> args,
+            String throwsSpec, String comment, String returnComment,
+            List<String> throwsComment, boolean isDeprecated) throws IOException {
         List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);
         addMultilineComment(1, false, comments, false);
 
@@ -389,8 +388,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addInterfaceMethodDeclaration(CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec, String comment,
+    public void addInterfaceMethodDeclaration(CompositeField rtype, String methodName,
+            List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment) throws IOException {
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);

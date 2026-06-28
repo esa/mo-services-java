@@ -398,7 +398,7 @@ public class GeneratorJava extends GeneratorLangs {
     @Override
     public CompositeField createCompositeElementsDetails(TargetWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
-        JavaCompositeFields javaComposites = new JavaCompositeFields(this, typeInformation);
+        JavaCompositeFields javaComposites = new JavaCompositeFields(typeInformation);
         return javaComposites.createCompositeElementsDetails((LanguageWriter) file,
                 checkType, fieldName, elementType, isStructure, canBeNull, comment);
     }

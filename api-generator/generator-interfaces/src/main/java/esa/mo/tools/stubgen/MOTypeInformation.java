@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2026      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -30,8 +30,8 @@ import esa.mo.xsd.TypeReference;
 
 /**
  * {@link TypeInformation} implementation that composes a neutral
- * {@link MOTypeRegistry} for type classification and renders the fully qualified
- * type names using a {@link GeneratorConfiguration}.
+ * {@link MOTypeRegistry} for type classification and renders the fully
+ * qualified type names using a {@link GeneratorConfiguration}.
  * <p>
  * The rendering is driven entirely by the supplied configuration (package
  * prefix, naming separator, structure folder), so a generator for a different
@@ -170,7 +170,6 @@ public class MOTypeInformation implements TypeInformation {
     // Convenience lookups delegating to the composed registry, so a single
     // type object covers all type queries used by the generators and helpers.
     // ------------------------------------------------------------------------
-
     /**
      * Returns enumeration details if enumeration type.
      *

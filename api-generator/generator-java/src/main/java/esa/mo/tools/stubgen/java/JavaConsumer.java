@@ -775,7 +775,7 @@ public class JavaConsumer {
                             .addThrows(throwsMALException, "if there is an implementation exception").open();
                     //method.addLine("try {");
                     method.addLine("return " + consumerMethodCall
-                            + generator.createConsumerPatternCall(op) + "(" + operationInstanceVar
+                            + StubUtils.createConsumerPatternCall(op) + "(" + operationInstanceVar
                             + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ");");
                     //this.appendCatchClauses(method);
                     method.addMethodCloseStatement();
@@ -791,7 +791,7 @@ public class JavaConsumer {
                         rv = msgBodyType.getTypeName() + " body = ";
                         opRetComment = "The return value of the interaction";
                     }
-                    String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op)
+                    String opGet = rv + consumerMethodCall + StubUtils.createConsumerPatternCall(op)
                             + "(" + operationInstanceVar + ", " + generator.createArgNameOrNull(op.getArgTypes()) + ");";
                     method = file.method(op.getName()).returns(opRetType)
                             .addArguments(opArgs)
@@ -811,7 +811,7 @@ public class JavaConsumer {
                                 .returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                                 .addThrows(throwsMALException, "if there is an implementation exception").open();
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op))
+                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(StubUtils.createConsumerPatternCall(op))
                                 + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ");");
                         method.addMethodCloseStatement();
                     }
@@ -836,7 +836,7 @@ public class JavaConsumer {
                         rv = msgBodyType.getTypeName() + " body = ";
                         opRetComment = "The acknowledge value of the interaction";
                     }
-                    String opGet = rv + consumerMethodCall + generator.createConsumerPatternCall(op) + "("
+                    String opGet = rv + consumerMethodCall + StubUtils.createConsumerPatternCall(op) + "("
                             + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ");";
                     method = file.method(op.getName()).returns(opRetType)
                             .addArguments(opArgs)
@@ -854,7 +854,7 @@ public class JavaConsumer {
                                 .returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                                 .addThrows(throwsMALException, "if there is an implementation exception").open();
-                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op))
+                        method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(StubUtils.createConsumerPatternCall(op))
                                 + "(" + operationInstanceVar + ", adapter, " + generator.createArgNameOrNull(op.getArgTypes()) + ");");
                         method.addMethodCloseStatement();
                     }

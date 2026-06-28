@@ -20,7 +20,6 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.GeneratorBase;
 import esa.mo.tools.stubgen.GeneratorLangs;
 import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.StubUtils;
@@ -37,12 +36,9 @@ import esa.mo.xsd.TypeReference;
  */
 public class JavaCompositeFields {
 
-    private final GeneratorLangs generator;
-
     private final MOTypeInformation typeInformation;
 
-    public JavaCompositeFields(GeneratorLangs generator, MOTypeInformation typeInformation) {
-        this.generator = generator;
+    public JavaCompositeFields(MOTypeInformation typeInformation) {
         this.typeInformation = typeInformation;
     }
 

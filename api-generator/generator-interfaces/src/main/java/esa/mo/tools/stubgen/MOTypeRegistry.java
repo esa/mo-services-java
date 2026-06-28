@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (C) 2013      European Space Agency
+ * Copyright (C) 2026      European Space Agency
  *                         European Space Operations Centre
  *                         Darmstadt
  *                         Germany
@@ -47,8 +47,9 @@ import w3c.xsd.SimpleType;
  * native type, and lookups for their details).
  * <p>
  * It deliberately knows nothing about how types are rendered in any target
- * language; that is the job of a {@link esa.mo.tools.stubgen.specification.TypeInformation}
- * implementation, which composes this registry.
+ * language; that is the job of a
+ * {@link esa.mo.tools.stubgen.specification.TypeInformation} implementation,
+ * which composes this registry.
  */
 public class MOTypeRegistry {
 

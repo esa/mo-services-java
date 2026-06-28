@@ -1512,23 +1512,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
         return (replacementWord != null) ? replacementWord : arg;
     }
 
-    public static String createConsumerPatternCall(OperationSummary op) {
-        switch (op.getPattern()) {
-            case SEND_OP:
-                return "send";
-            case SUBMIT_OP:
-                return "submit";
-            case REQUEST_OP:
-                return "request";
-            case INVOKE_OP:
-                return "invoke";
-            case PROGRESS_OP:
-                return "progress";
-        }
-
-        return null;
-    }
-
     public String getOperationInstanceType(OperationSummary op) {
         switch (op.getPattern()) {
             case SEND_OP:
