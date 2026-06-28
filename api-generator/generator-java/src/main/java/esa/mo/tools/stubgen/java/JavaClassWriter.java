@@ -384,7 +384,7 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addInterfaceMethodDeclaration(String scope, CompositeField rtype,
+    public void addInterfaceMethodDeclaration(CompositeField rtype,
             String methodName, List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment) throws IOException {
         String srtype = createLocalType(rtype);

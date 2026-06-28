@@ -31,6 +31,20 @@ import java.util.List;
 public interface InterfaceWriter extends LanguageWriter {
 
     /**
+     * Starts a fluent builder for an interface method declaration. The builder
+     * accumulates the method description and, on
+     * {@link InterfaceMethodBuilder#declare()}, delegates back to this writer's
+     * {@link #addInterfaceMethodDeclaration} method. It is the preferred
+     * alternative to calling that positional method directly.
+     *
+     * @param methodName The method name.
+     * @return A new interface method builder bound to this writer.
+     */
+    default InterfaceMethodBuilder interfaceMethod(String methodName) {
+        return new InterfaceMethodBuilder(this, methodName);
+    }
+
+    /**
      * Adds an interface open statement.
      *
      * @param interfaceName The interface name.
@@ -45,7 +59,6 @@ public interface InterfaceWriter extends LanguageWriter {
     /**
      * Adds a method declaration to the interface.
      *
-     * @param scope The scope of the method.
      * @param rtype The return type of the method.
      * @param methodName The method name.
      * @param args The arguments of the method.
@@ -55,8 +68,7 @@ public interface InterfaceWriter extends LanguageWriter {
      * @param throwsComment The comment for the throws specification.
      * @throws IOException If there is an IO error.
      */
-    void addInterfaceMethodDeclaration(String scope,
-            CompositeField rtype,
+    void addInterfaceMethodDeclaration(CompositeField rtype,
             String methodName,
             List<CompositeField> args,
             String throwsSpec,

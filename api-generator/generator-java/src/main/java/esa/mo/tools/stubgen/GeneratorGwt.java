@@ -89,19 +89,19 @@ public class GeneratorGwt extends GeneratorJava {
             List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType,
-                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName()).returns(msgType)
+                            .addArguments(opArgs).addThrows(throwsMALException).declare();
                     break;
                 }
                 case SUBMIT_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addThrows(throwsMALException).declare();
                     break;
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType,
-                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName()).returns(opRetType)
+                            .addArguments(opArgs).addThrows(throwsMALException).declare();
                     break;
                 }
                 case INVOKE_OP: {
@@ -140,21 +140,22 @@ public class GeneratorGwt extends GeneratorJava {
             List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(intHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case SUBMIT_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(intHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
-                            StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName()).returns(opRetType)
+                            .addArguments(opArgs).addArgument(intHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case INVOKE_OP: {
@@ -164,9 +165,9 @@ public class GeneratorGwt extends GeneratorJava {
                                     + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
                                     + "Interaction", false), false, true,
                             "interaction The MAL object representing the interaction in the provider.");
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(serviceHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case PROGRESS_OP: {
@@ -176,9 +177,9 @@ public class GeneratorGwt extends GeneratorJava {
                                     + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
                                     + "Interaction", false), false, true,
                             "interaction The MAL object representing the interaction in the provider.");
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(serviceHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case PUBSUB_OP: {

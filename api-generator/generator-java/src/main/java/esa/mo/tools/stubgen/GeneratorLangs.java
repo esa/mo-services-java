@@ -36,6 +36,7 @@ import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
+import esa.mo.tools.stubgen.writers.InterfaceMethodBuilder;
 import esa.mo.tools.stubgen.writers.InterfaceWriter;
 import esa.mo.tools.stubgen.writers.LanguageWriter;
 import esa.mo.tools.stubgen.writers.MethodWriter;
@@ -516,23 +517,19 @@ public abstract class GeneratorLangs extends GeneratorBase {
     }
 
     /**
-     * Builds the comma-terminated list of the dedicated MO error exceptions
-     * declared by the operation (for example
-     * "org.ccsds.moims.mo.mpd.InvalidException, "), so they can be prepended to
-     * a method's throws clause. Matching @throws comments are appended to the
-     * supplied list. Returns an empty string if the operation declares no
-     * errors.
+     * Adds the dedicated MO error exceptions declared by the operation to the
+     * supplied interface method builder, each with its description (taken from
+     * the error reference, or the referenced error definition, falling back to a
+     * generic message). Does nothing if the operation declares no errors.
      *
      * @param op The operation.
-     * @param throwsComments The list to which the @throws comments are added.
-     * @return The throws-clause prefix, or "" if there are no declared errors.
+     * @param builder The interface method builder to add the thrown errors to.
      */
-    protected String getOperationErrorsThrows(OperationSummary op, List<String> throwsComments) {
+    protected void addOperationErrorsThrows(OperationSummary op, InterfaceMethodBuilder builder) {
         OperationErrorList errors = op.getErrors();
         if (errors == null) {
-            return "";
+            return;
         }
-        StringBuilder additional = new StringBuilder();
         for (Object e : errors.getErrorOrErrorRef()) {
             if (!(e instanceof ErrorReferenceType)) {
                 continue;
@@ -540,7 +537,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
             ErrorReferenceType error = (ErrorReferenceType) e;
             String className = JavaExceptions.convertErrorToClassname(error.getType().getName());
             String fullyQualified = "org.ccsds.moims.mo." + error.getType().getArea().toLowerCase() + "." + className;
-            additional.append(fullyQualified).append(", ");
             String comment = error.getComment();
             if (comment == null || comment.isEmpty()) {
                 // The error reference rarely carries its own comment, so fall
@@ -549,9 +545,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 comment = (def != null && def.getComment() != null && !def.getComment().isEmpty())
                         ? def.getComment() : "if the corresponding MO error occurs";
             }
-            throwsComments.add(fullyQualified + " " + comment);
+            builder.addThrows(fullyQualified, comment);
         }
-        return additional.toString();
     }
 
     /**
@@ -598,7 +593,6 @@ public abstract class GeneratorLangs extends GeneratorBase {
                 false, true, "The MAL object representing the interaction in the provider.");
         String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         String throwsInteractionException = createElementType(StdStrings.MAL, null, null, StdStrings.MALINTERACTIONEXCEPTION);
-        String throwsInteractionAndMALException = throwsInteractionException + ", " + throwsMALException;
 
         for (OperationSummary op : summary.getOperations()) {
             if (InteractionPatternEnum.PUBSUB_OP == op.getPattern()) {
@@ -623,21 +617,23 @@ public abstract class GeneratorLangs extends GeneratorBase {
             // Prepend the operation's dedicated MO error exceptions to the
             // throws clause so providers can throw them directly (the layer
             // above re-wraps them into a MALInteractionException).
-            List<String> opThrowsComments = new ArrayList<>();
-            String opErrorsThrows = getOperationErrorsThrows(op, opThrowsComments);
-            opThrowsComments.add(throwsInteractionException + " if there is a problem during the interaction as defined by the MAL specification.");
-            opThrowsComments.add(throwsMALException + " if there is an implementation exception");
-
-            file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
-                    StubUtils.concatenateArguments(opArgs, serviceHandler), opErrorsThrows + throwsInteractionAndMALException,
-                    "Implements the operation " + op.getName(), opRetComment, opThrowsComments);
+            InterfaceMethodBuilder operation = file.interfaceMethod(op.getName()).returns(opRetType)
+                    .addArguments(opArgs).addArgument(serviceHandler);
+            addOperationErrorsThrows(op, operation);
+            operation.addThrows(throwsInteractionException,
+                    "if there is a problem during the interaction as defined by the MAL specification.")
+                    .addThrows(throwsMALException, "if there is an implementation exception")
+                    .comment("Implements the operation " + op.getName())
+                    .returnComment(opRetComment)
+                    .declare();
         }
 
         CompositeField skel = createCompositeElementsDetails(file, false, "skeleton",
                 TypeUtils.createTypeReference(area, service + "." + PROVIDER_FOLDER, service + "Skeleton", false),
                 false, true, "The skeleton to be used.");
-        file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null, "setSkeleton", Arrays.asList(skel), null,
-                "Sets the skeleton to be used for creation of publishers.", null, null);
+        file.interfaceMethod("setSkeleton").addArgument(skel)
+                .comment("Sets the skeleton to be used for creation of publishers.")
+                .declare();
 
         file.addInterfaceCloseStatement();
         file.flush();
@@ -856,10 +852,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
                             TypeUtils.createTypeReference(area,
                                     service + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName()) + "Publisher", false),
                             false, true, null);
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, updateTypeField, "create" + StubUtils.preCap(op.getName()) + "Publisher",
-                            StubUtils.concatenateArguments(malDomId, malNetworkZone, malSession, malSessionName, malqos, malqosprops, malPriority), throwsMALException,
-                            "Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName(),
-                            "The new publisher object.", Arrays.asList(throwsMALException + " if a problem is detected during creation of the publisher"));
+                    file.interfaceMethod("create" + StubUtils.preCap(op.getName()) + "Publisher").returns(updateTypeField)
+                            .addArgument(malDomId).addArgument(malNetworkZone).addArgument(malSession)
+                            .addArgument(malSessionName).addArgument(malqos).addArgument(malqosprops)
+                            .addArgument(malPriority)
+                            .addThrows(throwsMALException, "if a problem is detected during creation of the publisher")
+                            .comment("Creates a publisher object using the current registered provider set for the PubSub operation " + op.getName())
+                            .returnComment("The new publisher object.")
+                            .declare();
                     break;
                 }
             }
