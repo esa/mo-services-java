@@ -472,7 +472,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         if (argsComments != null) {
             for (CompositeField arg : argsComments) {
-                list.add(arg.getFieldName() + " " + arg.getComment());
+                String argComment = arg.getComment();
+                if (argComment == null || argComment.isEmpty()) {
+                    argComment = "The " + arg.getFieldName() + " field.";
+                }
+                list.add(arg.getFieldName() + " " + argComment);
             }
         }
 

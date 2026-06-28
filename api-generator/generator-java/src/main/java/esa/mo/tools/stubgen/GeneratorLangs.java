@@ -541,7 +541,14 @@ public abstract class GeneratorLangs extends GeneratorBase {
             String className = JavaExceptions.convertErrorToClassname(error.getType().getName());
             String fullyQualified = "org.ccsds.moims.mo." + error.getType().getArea().toLowerCase() + "." + className;
             additional.append(fullyQualified).append(", ");
-            String comment = (error.getComment() == null) ? "if the corresponding MO error occurs" : error.getComment();
+            String comment = error.getComment();
+            if (comment == null || comment.isEmpty()) {
+                // The error reference rarely carries its own comment, so fall
+                // back to the comment of the referenced error definition.
+                ErrorDefinitionType def = getErrorDefinition(error.getType().getName());
+                comment = (def != null && def.getComment() != null && !def.getComment().isEmpty())
+                        ? def.getComment() : "if the corresponding MO error occurs";
+            }
             throwsComments.add(fullyQualified + " " + comment);
         }
         return additional.toString();
