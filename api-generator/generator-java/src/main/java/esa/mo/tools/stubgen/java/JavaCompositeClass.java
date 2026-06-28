@@ -82,8 +82,12 @@ public class JavaCompositeClass {
         List<CompositeField> superCompElements = generator.createCompositeSuperElementsList(file, parentType);
 
         boolean abstractComposite = (composite.getShortFormPart() == null);
+        String compositeComment = composite.getComment();
+        if (compositeComment == null || compositeComment.isEmpty()) {
+            compositeComment = "The " + className + " structure.";
+        }
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
-                parentClass, parentInterface, composite.getComment());
+                parentClass, parentInterface, compositeComment);
         String fqName = generator.createElementType(area.getName(), serviceName, className);
 
         if (!abstractComposite) {

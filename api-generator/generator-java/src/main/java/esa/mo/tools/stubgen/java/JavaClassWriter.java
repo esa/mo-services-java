@@ -144,7 +144,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     protected void addClassVariable(boolean isDeprecated, boolean isStatic, boolean isFinal, String scope,
             CompositeField field, boolean isObject, boolean isArray, String initialValue) throws IOException {
-        addMultilineComment(1, false, field.getComment(), false);
+        String fieldComment = field.getComment();
+        if (fieldComment == null || fieldComment.isEmpty()) {
+            fieldComment = "The " + field.getFieldName() + " field.";
+        }
+        addMultilineComment(1, false, fieldComment, false);
 
         StringBuilder buf = new StringBuilder(scope);
         buf.append(" ");
