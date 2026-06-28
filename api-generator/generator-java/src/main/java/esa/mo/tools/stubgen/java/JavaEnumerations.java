@@ -119,9 +119,13 @@ public class JavaEnumerations {
         file.addStatement("");
 
         // Adds Constructor with a start value
+        String enumComment = enumeration.getComment();
+        if (enumComment == null || enumComment.isEmpty()) {
+            enumComment = "Creates an instance of the " + enumName + " Enumeration.";
+        }
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
                 file.field("int", "value", "The value of the Enumeration."),
-                true, null, enumeration.getComment(), null);
+                true, null, enumComment, null);
         method.addMethodCloseStatement();
     }
 

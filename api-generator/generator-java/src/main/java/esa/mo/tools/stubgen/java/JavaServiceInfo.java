@@ -236,7 +236,7 @@ public class JavaServiceInfo {
 
         // Constructor - shouldn't it be started with the constructor method?
         MethodWriter constructor = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
-                null, null, null, null, null);
+                null, null, null, "Creates an instance of the " + serviceName + " ServiceInfo.", null);
         String ending = hasCOMObjects ? ", COM_OBJECTS)" : ")";
         constructor.addLine("super(SERVICE_KEY, " + serviceCAPS + "_SERVICE_NAME, "
                 + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending + ";");
