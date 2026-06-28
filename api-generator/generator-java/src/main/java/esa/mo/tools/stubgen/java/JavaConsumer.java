@@ -804,7 +804,8 @@ public class JavaConsumer {
                     if (supportsAsync) {
                         method = file.method("async" + StubUtils.preCap(op.getName())).returns(msgType)
                                 .addArguments(opArgs).addArgument(serviceAdapterArg)
-                                .comment("Asynchronous version of method " + op.getName()).returnComment("the MAL message sent to initiate the interaction")
+                                .comment("Asynchronous version of method " + op.getName())
+                                .returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                                 .addThrows(throwsMALException, "if there is an implementation exception").open();
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op))
@@ -846,7 +847,8 @@ public class JavaConsumer {
                     if (supportsAsync) {
                         method = file.method("async" + StubUtils.preCap(op.getName())).returns(msgType)
                                 .addArguments(opArgs)
-                                .comment("Asynchronous version of method " + op.getName()).returnComment("the MAL message sent to initiate the interaction")
+                                .comment("Asynchronous version of method " + op.getName())
+                                .returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                                 .addThrows(throwsMALException, "if there is an implementation exception").open();
                         method.addLine("return " + consumerMethodCall + "async" + StubUtils.preCap(generator.createConsumerPatternCall(op))
@@ -882,7 +884,8 @@ public class JavaConsumer {
                     if (supportsAsync) {
                         method = file.method("async" + StubUtils.preCap(op.getName()) + "Register").returns(msgType)
                                 .addArgument(subStr).addArgument(serviceAdapterArg)
-                                .comment("Asynchronous version of method " + op.getName() + "Register").returnComment("the MAL message sent to initiate the interaction")
+                                .comment("Asynchronous version of method " + op.getName() + "Register")
+                                .returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                                 .addThrows(throwsMALException, "if there is an implementation exception").open();
                         method.addLine("return " + consumerMethodCall + "asyncRegister(" + operationInstanceVar + ", subscription, adapter);");
@@ -900,7 +903,8 @@ public class JavaConsumer {
                     if (supportsAsync) {
                         method = file.method("async" + StubUtils.preCap(op.getName()) + "Deregister").returns(msgType)
                                 .addArgument(idStr).addArgument(serviceAdapterArg)
-                                .comment("Asynchronous version of method " + op.getName() + "Deregister").returnComment("the MAL message sent to initiate the interaction")
+                                .comment("Asynchronous version of method " + op.getName() + "Deregister")
+                                .returnComment("the MAL message sent to initiate the interaction")
                                 .addThrows(throwsInteractionException, "if there is a problem during the interaction as defined by the MAL specification.")
                                 .addThrows(throwsMALException, "if there is an implementation exception").open();
                         method.addLine("return " + consumerMethodCall + "asyncDeregister(" + operationInstanceVar + ", identifierList, adapter);");
