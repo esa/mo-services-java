@@ -76,6 +76,8 @@ git pull
 git checkout -b vAA.B
 ```
 
+8. Bump the versions of ALL the pom files to the next development version (example, from: 14.0 to: 14.1-SNAPSHOT), then commit and push. Make sure every pom is updated, including any modules that are detached from the main reactor (e.g. the testbeds), which a single reactor-wide command may miss.
+
 Extra
 -------------
 Complete Maven Central publishing guide available [here][sonatype_guide]!
