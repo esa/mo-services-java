@@ -43,6 +43,7 @@ import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
+ * The ZMTP-specific {@link MALMessageHeader} implementation.
  *
  * @author Dominik Marszk
  */

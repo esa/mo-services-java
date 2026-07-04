@@ -28,7 +28,6 @@ import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.OperationSummary;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
-import esa.mo.tools.stubgen.specification.TypeInformation;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.TargetWriter;
 import esa.mo.xsd.*;
@@ -36,30 +35,27 @@ import esa.mo.xsd.util.XmlSpecification;
 import esa.mo.xsd.util.XsdSpecification;
 import java.io.IOException;
 import java.util.*;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import w3c.xsd.ComplexType;
-import w3c.xsd.NoFixedFacet;
-import w3c.xsd.OpenAttrs;
 import w3c.xsd.Schema;
-import w3c.xsd.SimpleType;
 
 /**
  * This class provides the generators with the basic type processing required.
  */
-public abstract class GeneratorBase implements Generator, TypeInformation {
+public abstract class GeneratorBase implements Generator {
 
     /**
      * The configuration of the generator.
      */
     private final GeneratorConfiguration config;
-    private final Set<TypeKey> enumTypesSet = new TreeSet<>();
-    private final Set<TypeKey> abstractTypesSet = new TreeSet<>();
-    private final Map<TypeKey, Object> allTypesMap = new HashMap<>();
-    private final Map<TypeKey, CompositeType> compositeTypesMap = new HashMap<>();
-    private final Map<TypeKey, AttributeTypeDetails> attributeTypesMap = new HashMap<>();
-    private final Map<String, NativeTypeDetails> nativeTypesMap = new HashMap<>();
-    private final Map<String, ErrorDefinitionType> errorDefinitionMap = new HashMap<>();
+    /**
+     * The neutral registry of all parsed MO types.
+     */
+    protected final MOTypeRegistry registry = new MOTypeRegistry();
+    /**
+     * The type information (classification + name rendering), composing the
+     * registry. Generators and their helpers use this for all type queries.
+     */
+    protected final MOTypeInformation typeInformation;
     private boolean generateCOM;
 
     /**
@@ -69,6 +65,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      */
     protected GeneratorBase(GeneratorConfiguration config) {
         this.config = config;
+        this.typeInformation = new MOTypeInformation(registry, config);
     }
 
     @Override
@@ -103,25 +100,25 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         // load in types and error definitions
         for (AreaType area : spec.getArea()) {
             if (null != area.getDataTypes()) {
-                loadTypesFromObjectList(area.getName(), null,
+                registry.loadTypesFromObjectList(area.getName(), null,
                         area.getDataTypes().getFundamentalOrAttributeOrComposite());
             }
 
             if ((null != area.getErrors()) && (null != area.getErrors().getError())) {
                 for (ErrorDefinitionType error : area.getErrors().getError()) {
-                    errorDefinitionMap.put(error.getName(), error);
+                    registry.registerError(error);
                 }
             }
 
             for (ServiceType service : area.getService()) {
                 if (service.getDataTypes() != null) {
-                    loadTypesFromObjectList(area.getName(), service.getName(),
+                    registry.loadTypesFromObjectList(area.getName(), service.getName(),
                             service.getDataTypes().getCompositeOrEnumeration());
                 }
 
                 if ((service.getErrors() != null) && (service.getErrors().getError() != null)) {
                     for (ErrorDefinitionType error : service.getErrors().getError()) {
-                        errorDefinitionMap.put(error.getName(), error);
+                        registry.registerError(error);
                     }
                 }
             }
@@ -133,7 +130,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         Schema spec = xsd.getSchema();
         // load in types
         if (spec.getSimpleTypeOrComplexTypeOrGroup() != null) {
-            loadTypesFromXsdList(StdStrings.XML, spec.getTargetNamespace(),
+            registry.loadTypesFromXsdList(StdStrings.XML, spec.getTargetNamespace(),
                     spec.getSimpleTypeOrComplexTypeOrGroup());
         }
     }
@@ -144,19 +141,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
     @Override
     public void reset() {
-        enumTypesSet.clear();
-        abstractTypesSet.clear();
-        allTypesMap.clear();
-        compositeTypesMap.clear();
-        attributeTypesMap.clear();
-        nativeTypesMap.clear();
-        errorDefinitionMap.clear();
+        registry.reset();
         config.resetAreaPackages();
-    }
-
-    @Override
-    public String getAreaPackage(String area) {
-        return config.getAreaPackage(area);
     }
 
     /**
@@ -168,280 +154,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         return generateCOM;
     }
 
-    @Override
-    public boolean isAbstract(TypeReference type) {
-        return abstractTypesSet.contains(new TypeKey(type));
-    }
-
-    @Override
-    public boolean isEnum(TypeReference type) {
-        return enumTypesSet.contains(new TypeKey(type));
-    }
-
-    /**
-     * Returns enumeration details if enumeration type.
-     *
-     * @param type The type to look for.
-     * @return the details if found, otherwise null.
-     */
-    public EnumerationType getEnum(TypeReference type) {
-        if (isEnum(type)) {
-            return (EnumerationType) allTypesMap.get(new TypeKey(type));
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean isAttributeType(TypeReference type) {
-        if (type == null) {
-            return false;
-        }
-
-        return attributeTypesMap.containsKey(new TypeKey(type));
-    }
-
-    /**
-     * Returns attribute details if attribute type.
-     *
-     * @param type The type to look for.
-     * @return the details if found, otherwise null.
-     */
-    public AttributeTypeDetails getAttributeDetails(TypeReference type) {
-        if (type == null) {
-            return null;
-        }
-
-        return attributeTypesMap.get(new TypeKey(type));
-    }
-
-    /**
-     * Returns attribute details if attribute type.
-     *
-     * @param area the type area.
-     * @param type The type to look for.
-     * @return the details if found, otherwise null.
-     */
-    public AttributeTypeDetails getAttributeDetails(String area, String type) {
-        if (type != null) {
-            return attributeTypesMap.get(new TypeKey(area, null, type));
-        }
-        return null;
-    }
-
-    /**
-     * Returns attribute details if attribute type.
-     *
-     * @param area the type area.
-     * @param service the type service.
-     * @param type The type to look for.
-     * @return the details if found, otherwise null.
-     */
-    public AttributeTypeDetails getAttributeDetails(String area, String service, String type) {
-        if (null != type) {
-            return attributeTypesMap.get(new TypeKey(area, service, type));
-        }
-        return null;
-    }
-
-    /**
-     * Returns true if the type is a native type.
-     *
-     * @param type the type to look for.
-     * @return true if native.
-     */
-    public boolean isNativeType(String type) {
-        if (type.contains("<")) {
-            type = type.substring(0, type.indexOf('<'));
-        }
-        return nativeTypesMap.containsKey(type);
-    }
-
-    @Override
-    public boolean isAttributeNativeType(TypeReference type) {
-        return isAttributeType(type) && getAttributeDetails(type).isNativeType();
-    }
-
-    /**
-     * Returns native details if native type.
-     *
-     * @param type The type to look for.
-     * @return the details if found, otherwise null.
-     */
-    public NativeTypeDetails getNativeType(String type) {
-        if (type.contains("<")) {
-            type = type.substring(0, type.indexOf('<'));
-        }
-        NativeTypeDetails rType = nativeTypesMap.get(type);
-        if (rType == null) {
-            rType = new NativeTypeDetails("<Unknown native type of " + type + ">", false, false, null);
-        }
-        return rType;
-    }
-
-    /**
-     * Returns true if the type definition has been loaded.
-     *
-     * @param type the type to look for.
-     * @return true if a known type.
-     */
-    public boolean isKnownType(TypeReference type) {
-        return allTypesMap.containsKey(new TypeKey(type));
-    }
-
-    /**
-     * Returns true if the type is a composite.
-     *
-     * @param type the type to look for.
-     * @return true if a composite.
-     */
-    public boolean isComposite(TypeReference type) {
-        boolean compType = false;
-        if (compositeTypesMap.containsKey(new TypeKey(type))) {
-            compType = true;
-        }
-        return compType;
-    }
-
-    /**
-     * Returns composite details if composite type.
-     *
-     * @param type The type to look for.
-     * @return the details if found, otherwise null.
-     */
-    public CompositeType getCompositeDetails(TypeReference type) {
-        if (type == null) {
-            return null;
-        }
-
-        return compositeTypesMap.get(new TypeKey(type));
-    }
-
-    /**
-     * Returns error details if defined.
-     *
-     * @param error The error to look for.
-     * @return the details if found, otherwise null.
-     */
-    public ErrorDefinitionType getErrorDefinition(String error) {
-        if (errorDefinitionMap.containsKey(error)) {
-            return errorDefinitionMap.get(error);
-        }
-        return null;
-    }
-
-    @Override
-    public String createElementType(TypeReference type, boolean isStructure) {
-        if (type == null) {
-            return null;
-        }
-
-        String typeName = type.isObjectRef() ? "ObjectRef<" + type.getName() + ">" : type.getName();
-        return createElementType(type.getArea(), type.getService(),
-                isStructure ? config.getStructureFolder() : null, typeName);
-    }
-
-    @Override
-    public String createElementType(String areaName, String serviceName, String typeName) {
-        return createElementType(areaName, serviceName, config.getStructureFolder(), typeName);
-    }
-
-    /**
-     * Creates the full name of a structure type from the supplied details.
-     *
-     * @param area The area of the type.
-     * @param service The service of the type, may be null.
-     * @param type The type.
-     * @return the full name of the type.
-     */
-    public String createElementType(AreaType area, ServiceType service, String type) {
-        String areaName = (area != null) ? area.getName() : null;
-        String serviceName = (service != null) ? service.getName() : null;
-        return createElementType(areaName, serviceName, config.getStructureFolder(), type);
-    }
-
-    public static String extractTypeFromObjectRef(String type) {
-        if (!type.contains(StdStrings.OBJECTREF)) {
-            return type;
-        }
-        if (type.contains(StdStrings.OBJECTREF + "<") || type.contains(StdStrings.OBJECTREF + "List<")) {
-            return type.substring(type.indexOf('<') + 1, type.indexOf('>'));
-        }
-        if (type.contains(StdStrings.OBJECTREF + "(") || type.contains(StdStrings.OBJECTREF + "List(")) {
-            return type.substring(type.indexOf('(') + 1, type.indexOf(')'));
-        }
-        return type;
-    }
-
-    public static boolean isObjectRef(TypeReference elementType) {
-        if (elementType.isObjectRef()) {
-            return true;
-        }
-
-        // The code below is to allow compatibility with the old style. Example: ObjectRef(xyz)
-        String type = elementType.getName();
-        return !extractTypeFromObjectRef(type).equals(type);
-    }
-
-    /**
-     * Creates the full name of a type from the supplied details.
-     *
-     * @param area The area of the type.
-     * @param service The service of the type, may be null.
-     * @param extraPackageLevel String to insert after the area/service before
-     * the type name.
-     * @param type The type.
-     * @return the full name of the type.
-     */
-    public String createElementType(String area, String service, String extraPackageLevel, String type) {
-        if (area == null) {
-            return type;
-        }
-
-        if (type.contains("ObjectRef<") || type.contains("ObjectRef(")) {
-            String internalType = extractTypeFromObjectRef(type);
-            internalType = createElementType(area, service, extraPackageLevel, internalType);
-            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRef<" + internalType + ">");
-        }
-
-        if (type.contains("ObjectRefList<") || type.contains("ObjectRefList(")) {
-            // String internalType = extractTypeFromObjectRef(type);
-            // internalType = createElementType(file, area, service, extraPackageLevel, internalType);
-            // return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList<" + internalType + ">");
-            return convertToNamespace("org.ccsds.moims.mo.mal.structures.ObjectRefList");
-        }
-
-        String retVal = "";
-
-        if (isAttributeType(TypeUtils.createTypeReference(area, service, type, false))) {
-            AttributeTypeDetails details = getAttributeDetails(area, type);
-            retVal = details.getTargetType();
-        } else {
-            if (StdStrings.XML.equals(area)) {
-                retVal = config.getAreaPackage(service) + StubUtils.preCap(type);
-            } else {
-                retVal += config.getAreaPackage(area) + area.toLowerCase() + config.getNamingSeparator();
-
-                if (service != null) {
-                    retVal += service.toLowerCase() + config.getNamingSeparator();
-                }
-
-                if (extraPackageLevel != null && extraPackageLevel.length() > 0) {
-                    retVal += extraPackageLevel + config.getNamingSeparator();
-                }
-
-                retVal += type;
-            }
-        }
-
-        return convertToNamespace(retVal);
-    }
-
-    @Override
-    public String convertToNamespace(String targetType) {
-        return targetType;
-    }
-
     /**
      * To be used by derived generators to add an entry to the attribute type
      * details map.
@@ -451,7 +163,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param details The new details.
      */
     protected void addAttributeType(final String area, final String name, AttributeTypeDetails details) {
-        attributeTypesMap.put(new TypeKey(area, null, name), details);
+        registry.registerAttributeType(area, name, details);
     }
 
     /**
@@ -466,17 +178,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      */
     protected void addAttributeType(final String area, final String name,
             final boolean isNativeType, final String targetType, final String defaultValue) {
-        attributeTypesMap.put(new TypeKey(area, null, name),
-                new AttributeTypeDetails(this, name, isNativeType, targetType, defaultValue));
-    }
-
-    /**
-     * Returns the internal attribute type map.
-     *
-     * @return the internal map.
-     */
-    protected Map<TypeKey, AttributeTypeDetails> getAttributeTypesMap() {
-        return attributeTypesMap;
+        registry.registerAttributeType(area, name,
+                new AttributeTypeDetails(typeInformation, name, isNativeType, targetType, defaultValue));
     }
 
     /**
@@ -487,7 +190,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      * @param details The new details.
      */
     protected void addNativeType(String name, NativeTypeDetails details) {
-        nativeTypesMap.put(name, details);
+        registry.registerNativeType(name, details);
     }
 
     /**
@@ -539,7 +242,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
                 return lst;
             }
 
-            CompositeType theType = compositeTypesMap.get(new TypeKey(type));
+            CompositeType theType = registry.getCompositeDetails(type);
 
             if (theType == null) {
                 String typeName = type.getName();
@@ -576,7 +279,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
      */
     protected TypeReference getCompositeElementSuperType(TypeReference type) {
         if ((type != null) && (!StdStrings.COMPOSITE.equals(type.getName()))) {
-            CompositeType theType = compositeTypesMap.get(new TypeKey(type));
+            CompositeType theType = registry.getCompositeDetails(type);
 
             if ((theType != null) && (theType.getExtends() != null)
                     && (!StdStrings.COMPOSITE.equals(theType.getExtends().getType().getName()))) {
@@ -612,7 +315,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
         if (op instanceof SendOperationType) {
             SendOperationType lop = (SendOperationType) op;
             return new OperationSummary(InteractionPatternEnum.SEND_OP, op, capNum,
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getSend().getField())),
                     lop.getMessages().getSend().getComment(),
                     null, "",
@@ -623,7 +326,7 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             SubmitOperationType lop = (SubmitOperationType) op;
             OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.SUBMIT_OP, op, capNum,
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getSubmit().getField())),
                     lop.getMessages().getSubmit().getComment(),
                     null, "",
@@ -634,12 +337,12 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             RequestOperationType lop = (RequestOperationType) op;
             OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.REQUEST_OP, op, capNum,
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getRequest().getField())),
                     lop.getMessages().getRequest().getComment(),
                     null, "",
                     null, "",
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
                     lop.getMessages().getResponse().getComment(),
                     errors);
@@ -647,14 +350,14 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             InvokeOperationType lop = (InvokeOperationType) op;
             OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.INVOKE_OP, op, capNum,
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getInvoke().getField())),
                     lop.getMessages().getInvoke().getComment(),
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getAcknowledgement().getField())),
                     lop.getMessages().getAcknowledgement().getComment(),
                     null, "",
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
                     lop.getMessages().getResponse().getComment(),
                     errors);
@@ -662,16 +365,16 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             ProgressOperationType lop = (ProgressOperationType) op;
             OperationErrorList errors = lop.getErrors();
             return new OperationSummary(InteractionPatternEnum.PROGRESS_OP, op, capNum,
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getProgress().getField())),
                     lop.getMessages().getProgress().getComment(),
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getAcknowledgement().getField())),
                     lop.getMessages().getAcknowledgement().getComment(),
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getUpdate().getField())),
                     lop.getMessages().getUpdate().getComment(),
-                    TypeUtils.convertTypeReferences(this,
+                    TypeUtils.convertTypeReferences(typeInformation,
                             TypeUtils.getTypeListViaField(lop.getMessages().getResponse().getField())),
                     lop.getMessages().getResponse().getComment(),
                     errors);
@@ -680,8 +383,8 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
             OperationErrorList errors = lop.getErrors();
             MessageBodyType subs = lop.getMessages().getSubscriptionKeys();
             List<FieldInfo> subKeysList = (subs == null) ? null
-                    : TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaField(subs.getField()));
-            List<FieldInfo> riList = TypeUtils.convertTypeReferences(this,
+                    : TypeUtils.convertTypeReferences(typeInformation, TypeUtils.getTypeListViaField(subs.getField()));
+            List<FieldInfo> riList = TypeUtils.convertTypeReferences(typeInformation,
                     TypeUtils.getTypeListViaField(lop.getMessages().getPublishNotify().getField()));
 
             return new OperationSummary(InteractionPatternEnum.PUBSUB_OP, op, capNum,
@@ -694,67 +397,6 @@ public abstract class GeneratorBase implements Generator, TypeInformation {
 
         return null;
     }
-
-    private void loadTypesFromObjectList(String area, String service, List<Object> typeList) {
-        for (Object object : typeList) {
-            if (object instanceof EnumerationType) {
-                EnumerationType ty = (EnumerationType) object;
-                TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
-                allTypesMap.put(key, object);
-                enumTypesSet.add(key);
-            } else if (object instanceof FundamentalType) {
-                FundamentalType ty = (FundamentalType) object;
-                TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
-                allTypesMap.put(key, object);
-                abstractTypesSet.add(key);
-            } else if (object instanceof AttributeType) {
-                AttributeType ty = (AttributeType) object;
-                TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
-                allTypesMap.put(key, object);
-            } else if (object instanceof CompositeType) {
-                CompositeType ty = (CompositeType) object;
-                TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
-                allTypesMap.put(key, object);
-                compositeTypesMap.put(key, ty);
-                if (((CompositeType) object).getShortFormPart() == null) {
-                    abstractTypesSet.add(key);
-                }
-            }
-        }
-    }
-
-    private void loadTypesFromXsdList(String area, String service, List<OpenAttrs> typeList) {
-        for (OpenAttrs object : typeList) {
-            if (object instanceof SimpleType) {
-                SimpleType ty = (SimpleType) object;
-                TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
-                if (null != ty.getRestriction()) {
-                    for (Object o : ty.getRestriction().getFacetOrAny()) {
-                        if ("enumeration".equalsIgnoreCase(((JAXBElement) o).getName().getLocalPart())) {
-                            EnumerationType e = new EnumerationType();
-                            EnumerationType.Item i = new EnumerationType.Item();
-                            i.setValue(((NoFixedFacet) ((JAXBElement) o).getValue()).getValue());
-                            e.getItem().add(i);
-                            allTypesMap.put(key, e);
-                            enumTypesSet.add(key);
-                            break;
-                        }
-                    }
-                } else {
-                    // ignore unexpected type, maybe warn in future?
-                }
-            } else if (object instanceof ComplexType) {
-                ComplexType ty = (ComplexType) object;
-                TypeKey key = new TypeKey(TypeUtils.createTypeReference(area, service, ty.getName(), false));
-                allTypesMap.put(key, object);
-                compositeTypesMap.put(key, new CompositeType());
-                if (ty.isAbstract()) {
-                    abstractTypesSet.add(key);
-                }
-            }
-        }
-    }
-
     /**
      * Creates a composite element detail object for a field of a composite.
      *

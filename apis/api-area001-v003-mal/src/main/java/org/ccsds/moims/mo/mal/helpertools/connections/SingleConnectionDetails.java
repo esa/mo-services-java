@@ -35,17 +35,6 @@ public class SingleConnectionDetails {
     private IntegerList serviceKey;
 
     /**
-     * This is the original method. The are now moving to a class without
-     * setters so this will be removed in the future.
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public SingleConnectionDetails() {
-
-    }
-
-    /**
      * Constructor.
      *
      * @param providerURI The Provider URI.
@@ -94,28 +83,8 @@ public class SingleConnectionDetails {
     }
 
     @Deprecated
-    public void setProviderURI(URI providerURI) {
-        this.providerURI = providerURI;
-    }
-
-    @Deprecated
     public void setBrokerURI(String brokerURI) {
         this.brokerURI = new URI(brokerURI);
-    }
-
-    @Deprecated
-    public void setBrokerURI(URI brokerURI) {
-        this.brokerURI = brokerURI;
-    }
-
-    @Deprecated
-    public void setDomain(IdentifierList domain) {
-        this.domain = domain;
-    }
-
-    @Deprecated
-    public void setServiceKey(IntegerList serviceKey) {
-        this.serviceKey = serviceKey;
     }
 
     public URI getProviderURI() {

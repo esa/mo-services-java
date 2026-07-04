@@ -72,7 +72,7 @@ public abstract class StructureHelper {
 
         if (file.exists()) {
             try {
-                sysProps.putAll(StructureHelper.loadProperties(file.toURI().toURL(), chainProperty));
+                sysProps.putAll(loadProperties(file.toURI().toURL(), chainProperty));
             } catch (MalformedURLException ex) {
                 LOGGER.log(Level.WARNING,
                         "Failed to load properties file {0} {1}", new Object[]{

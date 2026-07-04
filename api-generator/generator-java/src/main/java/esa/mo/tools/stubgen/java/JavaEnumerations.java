@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -31,19 +32,21 @@ import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.ServiceType;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java code for the MO Enumeration types.
  */
 public class JavaEnumerations {
 
     private final GeneratorLangs generator;
 
-    public JavaEnumerations(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaEnumerations(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createEnumerationClass(File folder, AreaType area,
@@ -56,10 +59,10 @@ public class JavaEnumerations {
         file.addPackageStatement(area.getName(), serviceName, generator.getConfig().getStructureFolder());
 
         file.addClassOpenStatement(enumName, true, false,
-                generator.createElementType(StdStrings.MAL, null, StdStrings.ENUMERATION),
+                typeInformation.createElementType(StdStrings.MAL, null, StdStrings.ENUMERATION),
                 null, "Enumeration class for " + enumName + ".");
 
-        String fqEnumName = generator.createElementType(area, service, enumName);
+        String fqEnumName = typeInformation.createElementType(area, service, enumName);
         CompositeField enumType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(area.getName(), serviceName, enumName, false),
                 true, true, null);
@@ -71,15 +74,13 @@ public class JavaEnumerations {
             EnumerationType.Item item = enumeration.getItem().get(i);
             String value = item.getValue();
 
-            CompositeField _eNewValue = generator.createCompositeElementsDetails(file, false, value + "_VALUE",
-                    TypeUtils.createTypeReference(null, null, "int", false), false, false,
-                    "Enumeration value for " + value);
+            CompositeField _eNewValue = file.field("int", value + "_VALUE", "Enumeration value for " + value);
             CompositeField eInstVar = generator.createCompositeElementsDetails(file, false, value,
                     TypeUtils.createTypeReference(area.getName(), serviceName, enumName, false),
                     true, false, "Enumeration singleton for value " + value);
 
             file.addClassVariable(true, true, StdStrings.PUBLIC, _eNewValue, false, "" + String.valueOf(item.getNvalue()));
-            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + generator.convertToNamespace(fqEnumName + "." + value + "_VALUE)"));
+            file.addClassVariable(true, true, StdStrings.PUBLIC, eInstVar, true, "(" + typeInformation.convertToNamespace(fqEnumName + "." + value + "_VALUE)"));
         }
 
         // create arrays
@@ -117,25 +118,23 @@ public class JavaEnumerations {
         file.addStatement("     * " + enumeration.getComment());
         file.addStatement("     */");
         file.addStatement("    public " + enumName + "() {");
-        file.addStatement("        super(0);");
+        file.addStatement("        super(-1);");
         file.addStatement("    }");
         file.addStatement("");
 
         // Adds Constructor with a start value
+        String enumComment = enumeration.getComment();
+        if (enumComment == null || enumComment.isEmpty()) {
+            enumComment = "Creates an instance of the " + enumName + " Enumeration.";
+        }
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, enumName,
-                generator.createCompositeElementsDetails(file, false, "value",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, "The value of the Enumeration."),
-                true, null, enumeration.getComment(), null);
+                file.field("int", "value", "The value of the Enumeration."),
+                true, null, enumComment, null);
         method.addMethodCloseStatement();
     }
 
     private void generateToString(ClassWriter file, EnumerationType enumeration) throws IOException {
-        CompositeField strType = generator.createCompositeElementsDetails(file, false, "s",
-                TypeUtils.createTypeReference(null, null, "_String", false),
-                false, true, "s The string to search for.");
-
-        MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
+        MethodWriter method = file.method("toString").returns("_String").asOverride().open();
         method.addLine("switch (getValue()) {");
 
         for (EnumerationType.Item item : enumeration.getItem()) {
@@ -153,10 +152,10 @@ public class JavaEnumerations {
                 TypeUtils.createTypeReference(null, null, "_String", false),
                 false, true, "s The string to search for.");
 
-        MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PUBLIC,
-                false, true, enumType, "fromString", Arrays.asList(strType), null,
-                "Returns the enumeration element represented by the supplied string, or null if not matched.",
-                "The matched enumeration element, or null if not matched.", null);
+        MethodWriter method = file.method("fromString").asStatic().returns(enumType)
+                .addArgument(strType)
+                .comment("Returns the enumeration element represented by the supplied string, or null if not matched.")
+                .returnComment("The matched enumeration element, or null if not matched.").open();
         method.addLine("switch (s) {");
 
         for (EnumerationType.Item item : enumeration.getItem()) {
@@ -177,7 +176,7 @@ public class JavaEnumerations {
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.INTEGER, false),
                 true, false, "value The value of the Enumeration.");
 
-        MethodWriter method = file.addMethodOpenStatementOverride(enumType, "fromValue", Arrays.asList(intType), null);
+        MethodWriter method = file.method("fromValue").returns(enumType).addArgument(intType).asOverride().open();
         method.addLine("switch (value) {");
 
         for (EnumerationType.Item item : enumeration.getItem()) {
@@ -194,17 +193,15 @@ public class JavaEnumerations {
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
                 true, true, null);
-        MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
+        MethodWriter method = file.method("createElement").returns(elementType).asOverride().open();
         method.addLine("return _ENUMERATIONS[0];");
         method.addMethodCloseStatement();
     }
 
     private void generateGetEnum(ClassWriter file, long enumSize) throws IOException {
-        file.addStatement("    @Override");
-        file.addStatement("    public int getEnumSize() {");
-        file.addStatement("        return " + enumSize + ";");
-        file.addStatement("    }");
-        file.addStatement("");
+        MethodWriter method = file.method("getEnumSize").returns("int").asOverride().open();
+        method.addLine("return " + enumSize + ";");
+        method.addMethodCloseStatement();
     }
 
     protected String getEnumValueCompare(String lhs, String rhs) {

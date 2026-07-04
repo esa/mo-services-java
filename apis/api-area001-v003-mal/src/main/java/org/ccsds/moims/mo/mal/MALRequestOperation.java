@@ -70,7 +70,32 @@ public class MALRequestOperation extends MALOperation {
             final OperationField[] requestStage,
             final OperationField[] responseStage)
             throws java.lang.IllegalArgumentException {
-        super(serviceKey, number, name, InteractionType.REQUEST, capabilitySet);
+        this(serviceKey, number, name, capabilitySet, requestStage, responseStage, null);
+    }
+
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param serviceKey Service Key for the service of this operation.
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param capabilitySet Capability set of the operation.
+     * @param requestStage The stage information for the REQUEST stage.
+     * @param responseStage The stage information for the REQUEST_RESPONSE
+     * stage.
+     * @param comment The operation comment.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALRequestOperation(final ServiceKey serviceKey,
+            final UShort number,
+            final Identifier name,
+            final UShort capabilitySet,
+            final OperationField[] requestStage,
+            final OperationField[] responseStage,
+            final String comment)
+            throws java.lang.IllegalArgumentException {
+        super(serviceKey, number, name, InteractionType.REQUEST, capabilitySet, comment);
 
         this.requestStage = requestStage;
         this.responseStage = responseStage;

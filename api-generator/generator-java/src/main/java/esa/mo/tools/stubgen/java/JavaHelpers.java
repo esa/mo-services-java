@@ -21,12 +21,14 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.ServiceSummary;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.writers.ClassWriter;
+import esa.mo.tools.stubgen.writers.MethodWriter;
 import esa.mo.xsd.AreaType;
 import esa.mo.xsd.AttributeType;
 import esa.mo.xsd.CompositeType;
@@ -39,14 +41,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java helper classes for an area or service.
  */
 public class JavaHelpers {
 
     private final GeneratorLangs generator;
 
-    public JavaHelpers(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaHelpers(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createServiceHelperClass(File serviceFolder, String area,
@@ -83,6 +88,12 @@ public class JavaHelpers {
                 false, true, "Service singleton instance.");
 
         file.addClassVariable(true, true, StdStrings.PUBLIC, serviceInstVar, true, "()");
+
+        // Utility class: prevent instantiation with a private constructor.
+        MethodWriter ctor = file.addConstructor(StdStrings.PRIVATE, serviceName + "Helper",
+                null, null, null, null, null);
+        ctor.addLine("// Utility class; not meant to be instantiated.");
+        ctor.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
     }
@@ -96,9 +107,7 @@ public class JavaHelpers {
 
         file.addPackageStatement(area.getName(), null, null);
 
-        CompositeField _areaNumberVar = generator.createCompositeElementsDetails(file, false, "_" + areaNumber,
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, false, "Area number literal.");
+        CompositeField _areaNumberVar = file.field("int", "_" + areaNumber, "Area number literal.");
         CompositeField areaNumberVar = generator.createCompositeElementsDetails(file, false, areaNumber,
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Area number instance.");
@@ -129,31 +138,31 @@ public class JavaHelpers {
             for (Object oType : area.getDataTypes().getFundamentalOrAttributeOrComposite()) {
                 if (oType instanceof AttributeType) {
                     AttributeType dt = (AttributeType) oType;
-                    AttributeTypeDetails details = generator.getAttributeDetails(area.getName(), dt.getName());
+                    AttributeTypeDetails details = typeInformation.getAttributeDetails(area.getName(), dt.getName());
                     String theType;
 
                     if (details.isNativeType()) {
-                        theType = generator.createElementType(StdStrings.MAL, null, StdStrings.UNION) + "(" + details.getDefaultValue() + ")";
+                        theType = typeInformation.createElementType(StdStrings.MAL, null, StdStrings.UNION) + "(" + details.getDefaultValue() + ")";
                     } else {
-                        theType = generator.createElementType(area.getName(), null, dt.getName()) + "()";
+                        theType = typeInformation.createElementType(area.getName(), null, dt.getName()) + "()";
                     }
 
-                    String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
+                    String lclsName = typeInformation.createElementType(area.getName(), null, dt.getName() + "List");
                     elementList.add("new " + theType);
                     elementList.add("new " + lclsName + "()");
                 } else if (oType instanceof CompositeType) {
                     CompositeType dt = (CompositeType) oType;
 
                     if (dt.getShortFormPart() != null) {
-                        String clsName = generator.createElementType(area.getName(), null, dt.getName());
-                        String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
+                        String clsName = typeInformation.createElementType(area.getName(), null, dt.getName());
+                        String lclsName = typeInformation.createElementType(area.getName(), null, dt.getName() + "List");
                         elementList.add("new " + clsName + "()");
                         elementList.add("new " + lclsName + "()");
                     }
                 } else if (oType instanceof EnumerationType) {
                     EnumerationType dt = (EnumerationType) oType;
-                    String clsName = generator.createElementType(area.getName(), null, dt.getName());
-                    String lclsName = generator.createElementType(area.getName(), null, dt.getName() + "List");
+                    String clsName = typeInformation.createElementType(area.getName(), null, dt.getName());
+                    String lclsName = typeInformation.createElementType(area.getName(), null, dt.getName() + "List");
                     elementList.add("new " + clsName + "()");
                     elementList.add("new " + lclsName + "()");
                     // Old code for Enumerations
@@ -175,9 +184,9 @@ public class JavaHelpers {
 
         StringBuilder buf_2 = new StringBuilder();
         for (ServiceType service : area.getService()) {
-            String helperType = generator.createElementType(area.getName(),
+            String helperType = typeInformation.createElementType(area.getName(),
                     service.getName(), null, service.getName() + "Helper");
-            String ns = generator.convertToNamespace(helperType) + "." + service.getName().toUpperCase() + "_SERVICE";
+            String ns = typeInformation.convertToNamespace(helperType) + "." + service.getName().toUpperCase() + "_SERVICE";
             buf_2.append("\n        ").append(ns).append(",");
         }
         CompositeField areaServices = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_SERVICES",
@@ -203,6 +212,11 @@ public class JavaHelpers {
             }
         }
 
+        // Utility class: prevent instantiation with a private constructor.
+        MethodWriter ctor = file.addConstructor(StdStrings.PRIVATE, areaName + "Helper",
+                null, null, null, null, null);
+        ctor.addLine("// Utility class; not meant to be instantiated.");
+        ctor.addMethodCloseStatement();
         file.addClassCloseStatement();
         file.flush();
     }

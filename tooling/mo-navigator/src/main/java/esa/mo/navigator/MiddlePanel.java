@@ -37,6 +37,7 @@ import javax.swing.JMenuItem;
 import org.fife.ui.rtextarea.RTextArea;
 
 /**
+ * The central panel of the MO Navigator GUI.
  *
  * @author Cesar Coelho
  */

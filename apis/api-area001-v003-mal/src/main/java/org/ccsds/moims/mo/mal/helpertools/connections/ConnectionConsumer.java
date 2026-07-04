@@ -345,6 +345,7 @@ public class ConnectionConsumer {
      * @param key4 Fourth key
      * @return The subscription object
      */
+    @Deprecated
     public static Subscription subscriptionKeys(Identifier subId, Identifier key1, Long key2, Long key3, Long key4) {
         if (key1 == null || key2 == null || key3 == null || key4 == null) {
             Logger.getLogger(ConnectionConsumer.class.getName()).log(

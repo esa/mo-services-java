@@ -46,11 +46,6 @@ public class OutgoingMessageHolder<O> {
      */
     private final int timeout;
     /**
-     * The destination root URI, holds the connection level URI
-     */
-    @Deprecated
-    private final String destinationRootURI;
-    /**
      * The complete destination URI
      */
     private final String destinationURI;
@@ -97,7 +92,6 @@ public class OutgoingMessageHolder<O> {
             O encodedMessage) {
         replyQueue = new LinkedBlockingQueue<>();
         this.timeout = timeout;
-        this.destinationRootURI = destinationRootURI;
         this.destinationURI = destinationURI;
         this.multiSendHandle = multiSendHandle;
         this.lastForHandle = lastForHandle;
@@ -140,16 +134,6 @@ public class OutgoingMessageHolder<O> {
      */
     public String getDestinationURI() {
         return destinationURI;
-    }
-
-    /**
-     * Returns the destination root URI.
-     *
-     * @return The root URI.
-     */
-    @Deprecated
-    public String getDestinationRootURI() {
-        return destinationRootURI;
     }
 
     /**

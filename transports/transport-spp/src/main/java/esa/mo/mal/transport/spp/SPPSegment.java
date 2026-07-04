@@ -21,6 +21,7 @@
 package esa.mo.mal.transport.spp;
 
 /**
+ * Represents a single segment of a segmented SPP packet.
  *
  * @author Cesar Coelho
  */

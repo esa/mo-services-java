@@ -28,6 +28,7 @@ import org.ccsds.moims.mo.com.activitytracking.structures.ActivityTransfer;
 import org.ccsds.moims.mo.com.event.EventHelper;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
 import org.ccsds.moims.mo.com.event.consumer.EventStub;
+import org.ccsds.moims.mo.com.event.consumer.MonitorEventSubscriptionKeys;
 import org.ccsds.moims.mo.com.event.provider.MonitorEventPublisher;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectId;
@@ -334,30 +335,31 @@ public class ActivityRelayNode {
          * the operation monitorEvent.
          *
          * @param msgHeader The header of the received message.
-         * @param _Identifier0 Argument number 0 as defined by the service
+         * @param subscriptionId Argument number 0 as defined by the service
          * operation.
-         * @param _UpdateHeaderList1 Argument number 1 as defined by the service
+         * @param updateHeader Argument number 1 as defined by the service
          * operation.
-         * @param _ObjectDetailsList2 Argument number 2 as defined by the
+         * @param eventLinks Argument number 2 as defined by the
          * service operation.
-         * @param _ElementList3 Argument number 3 as defined by the service
+         * @param eventBody Argument number 3 as defined by the service
          * operation.
          * @param qosProperties The QoS properties associated with the message.
          */
         @Override
-        public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier _Identifier0,
-                UpdateHeader updateHeader, ObjectDetails objectDetails,
-                Element element, java.util.Map qosProperties) {
+        public void monitorEventNotifyReceived(MALMessageHeader msgHeader, Identifier subscriptionId,
+                UpdateHeader updateHeader,
+                MonitorEventSubscriptionKeys keys, ObjectDetails eventLinks,
+                Element eventBody, java.util.Map qosProperties) {
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY");
 
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR" + msgHeader);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + _Identifier0);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ID0" + subscriptionId);
             LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY HDR1" + updateHeader);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + objectDetails);
-            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + element);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY ODL2" + eventLinks);
+            LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived - NOTIFY EL3" + eventBody);
 
             try {
-                monitorEventPublisher.publish(updateHeader, objectDetails, element);
+                monitorEventPublisher.publish(updateHeader, eventLinks, eventBody);
             } catch (MALInteractionException ex1) {
                 LoggingBase.logMessage("ActivityRelayNode:monitorStatusNotifyReceived FAILURE " + ex1);
             } catch (MALException ex2) {

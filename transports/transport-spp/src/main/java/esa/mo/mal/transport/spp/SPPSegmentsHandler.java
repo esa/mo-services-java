@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
+ * Manages the {@link SPPSegmentsAssembler}s for the SPP packets being reassembled.
  *
  * @author Cesar Coelho
  */

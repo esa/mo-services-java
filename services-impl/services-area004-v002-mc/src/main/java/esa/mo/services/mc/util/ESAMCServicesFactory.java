@@ -27,6 +27,7 @@ import esa.mo.services.mc.consumer.PacketConsumerServiceImpl;
 import esa.mo.services.mc.consumer.ParameterConsumerServiceImpl;
 import esa.mo.services.mc.provider.AggregationProviderServiceImpl;
 import esa.mo.services.mc.provider.ParameterProviderServiceImpl;
+import esa.mo.services.mc.provider.PacketProviderServiceImpl;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.helpertools.connections.SingleConnectionDetails;
 import org.ccsds.moims.mo.mal.helpertools.misc.ConsumerServiceImpl;
@@ -38,6 +39,7 @@ import org.ccsds.moims.mo.mc.aggregation.provider.AggregationInheritanceSkeleton
 import org.ccsds.moims.mo.mc.alert.consumer.AlertStub;
 import org.ccsds.moims.mo.mc.alert.provider.AlertInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.backends.ActionBackend;
+import org.ccsds.moims.mo.mc.backends.AggregationBackend;
 import org.ccsds.moims.mo.mc.backends.AlertBackend;
 import org.ccsds.moims.mo.mc.backends.PacketBackend;
 import org.ccsds.moims.mo.mc.backends.ParameterBackend;
@@ -45,6 +47,8 @@ import org.ccsds.moims.mo.mc.packet.consumer.PacketStub;
 import org.ccsds.moims.mo.mc.packet.provider.PacketInheritanceSkeleton;
 import org.ccsds.moims.mo.mc.parameter.consumer.ParameterStub;
 import org.ccsds.moims.mo.mc.parameter.provider.ParameterInheritanceSkeleton;
+import esa.mo.services.mc.provider.AlertProviderServiceImpl;
+import esa.mo.services.mc.provider.ActionProviderServiceImpl;
 
 /**
  * The factory class to instantiate the MC services.
@@ -53,6 +57,9 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     private ParameterProviderServiceImpl parameterService = null;
     private AggregationProviderServiceImpl aggregationService = null;
+    private PacketProviderServiceImpl packetService = null;
+    private AlertProviderServiceImpl alertService = null;
+    private ActionProviderServiceImpl actionService = null;
 
     /**
      * Constructor.
@@ -62,12 +69,15 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     @Override
     public ActionInheritanceSkeleton createProviderAction(ActionBackend backend) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        actionService = new ActionProviderServiceImpl();
+        actionService.init(backend);
+        return actionService;
     }
 
     @Override
-    public AggregationInheritanceSkeleton createProviderAggregation(ParameterBackend backend) throws MALException {
-        if (parameterService == null) {
+    public AggregationInheritanceSkeleton createProviderAggregation(AggregationBackend backend) throws MALException {
+        if (aggregationService == null) {
             throw new MALException("The backend needs to be instantiated before!");
         }
 
@@ -78,12 +88,17 @@ public class ESAMCServicesFactory extends MCServicesFactory {
 
     @Override
     public AlertInheritanceSkeleton createProviderAlert(AlertBackend backend) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        alertService = new AlertProviderServiceImpl();
+        alertService.init(backend);
+        return alertService;
     }
 
     @Override
     public PacketInheritanceSkeleton createProviderPacket(PacketBackend backend) throws MALException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        packetService = new PacketProviderServiceImpl();
+        packetService.init(backend);
+        return packetService;
     }
 
     @Override

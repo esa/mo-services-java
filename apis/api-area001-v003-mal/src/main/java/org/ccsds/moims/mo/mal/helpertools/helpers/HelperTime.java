@@ -39,11 +39,13 @@ public class HelperTime {
 
     /**
      * Converts a FineTime MAL data type timestamp into a readable string
+     * Deprecated because it was added directly to: FineTime.toReadableString();
      *
      * @param timestamp Time
      * @return The String with the time
      * @throws java.lang.IllegalArgumentException If timestamp == null.
      */
+    @Deprecated
     public static String time2readableString(FineTime timestamp) throws IllegalArgumentException {
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp must not be null.");
@@ -55,12 +57,14 @@ public class HelperTime {
     }
 
     /**
-     * Converts a Time MAL data type timestamp into a readable string
+     * Converts a Time MAL data type timestamp into a readable string.
+     * Deprecated because it was added directly to: Time.toReadableString();
      *
      * @param timestamp Time
      * @return The String with the time
      * @throws java.lang.IllegalArgumentException If timestamp == null
      */
+    @Deprecated
     public static String time2readableString(Time timestamp) throws IllegalArgumentException {
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp must not be null.");
@@ -111,39 +115,8 @@ public class HelperTime {
         return new Time(date.getTime());
     }
 
-    /**
-     * Returns the current time encapsulated in a FineTime type
-     *
-     * @return The current time
-     */
-    @Deprecated
-    public static FineTime getTimestamp() {
-        // Convert from milliseconds (10^-3) to nanoseconds (10^-9)
-        return new FineTime(System.currentTimeMillis() * ONE_MILLION);
-    }
-
-    /**
-     * Returns the current time encapsulated in a Time type
-     *
-     * @return The current time
-     */
-    @Deprecated
-    public static Time getTimestampMillis() {
-        return new Time(System.currentTimeMillis());
-    }
-
     private static long fromMilliToNano(long milli) {
         return (milli * ONE_MILLION);
-    }
-
-    @Deprecated
-    public static FineTime timeToFineTime(final Time time) {
-        return (time == null) ? null : time.toFineTime();
-    }
-
-    @Deprecated
-    public static Time fineTimeToTime(final FineTime fineTime) {
-        return (fineTime == null) ? null : fineTime.toTime();
     }
 
     /**

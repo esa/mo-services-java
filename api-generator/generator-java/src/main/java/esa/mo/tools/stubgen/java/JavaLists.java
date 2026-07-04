@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -35,14 +36,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java code for the MO List types.
  */
 public class JavaLists {
 
     private final GeneratorLangs generator;
 
-    public JavaLists(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaLists(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     /**
@@ -86,7 +90,7 @@ public class JavaLists {
         CompositeField rtype = generator.createCompositeElementsDetails(file, false, "element",
                 type, false, true, "List element.");
 
-        MethodWriter method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
+        MethodWriter method = file.method("add").returns(rtype).addArguments(argList).asOverride().open();
         method.addLine("if (element != null && !(element instanceof " + srcTypeName + ")) {");
         method.addLine("    throw new java.lang.ClassCastException(\"The added element does not extend the type: " + srcTypeName + "\");");
         method.addLine("}");
@@ -124,7 +128,7 @@ public class JavaLists {
         CompositeField elementType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.ELEMENT, false),
                 true, true, null);
-        String fqSrcTypeName = generator.createElementType(area, service, srcTypeName);
+        String fqSrcTypeName = typeInformation.createElementType(area, service, srcTypeName);
 
         String sElement = "org.ccsds.moims.mo.mal.structures.Homogeneous";
         file.addClassOpenStatement(listName, true, false, "java.util.ArrayList<" + fqSrcTypeName + ">",
@@ -140,9 +144,7 @@ public class JavaLists {
 
         // create initial size contructor
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, listName,
-                generator.createCompositeElementsDetails(file, false, "initialCapacity",
-                        TypeUtils.createTypeReference(null, null, "int", false),
-                        false, false, "The required initial capacity."),
+                file.field("int", "initialCapacity", "The required initial capacity."),
                 true, null, "Constructor that initialises the capacity of the list.", null);
         method.addMethodCloseStatement();
 
@@ -165,7 +167,7 @@ public class JavaLists {
         CompositeField rtype = generator.createCompositeElementsDetails(file, false, "element",
                 type, false, true, "List element.");
 
-        method = file.addMethodOpenStatementOverride(rtype, "add", argList, null);
+        method = file.method("add").returns(rtype).addArguments(argList).asOverride().open();
         method.addLine("if (element == null) {");
         method.addLine("    throw new IllegalArgumentException(\"The added argument cannot be null!\");");
         method.addLine("}");
@@ -173,11 +175,11 @@ public class JavaLists {
         method.addLine("return super.add(element);");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
+        method = file.method("createElement").returns(elementType).asOverride().open();
         method.addLine("return new " + listName + "();");
         method.addMethodCloseStatement();
 
-        method = file.addMethodOpenStatementOverride(elementType, "createTypedElement", null, null);
+        method = file.method("createTypedElement").returns(elementType).asOverride().open();
 
         // Wrap in Union if needed:
         if (listElement.getNewCall().contains("structures")) {

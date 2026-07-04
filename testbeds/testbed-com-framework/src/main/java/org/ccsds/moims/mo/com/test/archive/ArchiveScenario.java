@@ -51,6 +51,7 @@ import org.ccsds.moims.mo.com.archive.structures.CompositeFilterSet;
 import org.ccsds.moims.mo.com.archive.structures.ExpressionOperator;
 import org.ccsds.moims.mo.com.archive.structures.QueryFilterList;
 import org.ccsds.moims.mo.com.event.consumer.EventAdapter;
+import org.ccsds.moims.mo.com.event.consumer.MonitorEventSubscriptionKeys;
 import org.ccsds.moims.mo.com.structures.ObjectDetails;
 import org.ccsds.moims.mo.com.structures.ObjectDetailsList;
 import org.ccsds.moims.mo.com.structures.ObjectId;
@@ -1374,6 +1375,7 @@ public class ArchiveScenario {
         @Override
         public void monitorEventNotifyReceived(MALMessageHeader msgHeader,
                 Identifier subscriptionId, UpdateHeader updateHeader,
+                MonitorEventSubscriptionKeys keys,
                 ObjectDetails monitorEventUpdate,
                 Element monitorEventUpdate2, Map qosProperties) {
 

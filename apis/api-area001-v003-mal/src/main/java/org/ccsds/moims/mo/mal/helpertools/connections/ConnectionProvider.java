@@ -280,26 +280,6 @@ public class ConnectionProvider {
     }
 
     /**
-     * Closes all running threads and releases the MAL resources. The method has
-     * been deprecated and closeAll should be used instead.
-     */
-    @Deprecated
-    public void close() {
-        try {
-            if (null != providerMgr) {
-                providerMgr.close();
-            }
-
-            if (null != mal) {
-                mal.close();
-            }
-        } catch (MALException ex) {
-            Logger.getLogger(ConnectionProvider.class.getName()).log(Level.WARNING,
-                    "Exception during close down of the provider!", ex);
-        }
-    }
-
-    /**
      * Closes all running threads and releases the MAL resources.
      */
     public void closeAll() {

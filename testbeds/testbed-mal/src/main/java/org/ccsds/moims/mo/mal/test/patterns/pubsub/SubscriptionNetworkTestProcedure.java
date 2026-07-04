@@ -56,6 +56,7 @@ import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.MonitorSubscriptionKeys;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
@@ -190,6 +191,7 @@ public class SubscriptionNetworkTestProcedure extends LoggingBase {
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
                 Identifier subscriptionId, UpdateHeader updateHeader,
+                MonitorSubscriptionKeys keys,
                 TestUpdate update, Map qosProperties) {
             logMessage("MonitorListener.monitorNotifyReceived(" + msgHeader + ','
                     + updateHeader + ')');

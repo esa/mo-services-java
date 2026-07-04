@@ -546,12 +546,12 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void requestResponseReceived(MALMessageHeader msgHeader, StringList _StringList0, Map qosProperties) {
-            LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:requestResponseReceived " + _StringList0);
+        public void requestResponseReceived(MALMessageHeader msgHeader, StringList out1, Map qosProperties) {
+            LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:requestResponseReceived " + out1);
 
             // Error details returned in StringList
-            for (int i = 0; i < _StringList0.size() && isError == false; i++) {
-                if (_StringList0.get(i).contains("RESPONSE_ERROR")) {
+            for (int i = 0; i < out1.size() && isError == false; i++) {
+                if (out1.get(i).contains("RESPONSE_ERROR")) {
                     isError = true;
                 }
             }
@@ -578,7 +578,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void invokeResponseReceived(MALMessageHeader msgHeader, StringList _StringList0, Map qosProperties) {
+        public void invokeResponseReceived(MALMessageHeader msgHeader, StringList out1, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:invokeResponseReceived");
             synchronized (cond) {
                 isError = false;
@@ -605,7 +605,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressUpdateReceived(MALMessageHeader msgHeader, StringList _StringList0, Map qosProperties) {
+        public void progressUpdateReceived(MALMessageHeader msgHeader, StringList out1, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressUpdateReceived"); // <editor-fold defaultstate="collapsed" desc="Compiled Code">
             /* 0: return
        *  */
@@ -631,7 +631,7 @@ public class MonitorActivityScenario extends BaseActivityScenario {
         }
 
         @Override
-        public void progressResponseReceived(MALMessageHeader msgHeader, StringList _StringList0, Map qosProperties) {
+        public void progressResponseReceived(MALMessageHeader msgHeader, StringList out2, Map qosProperties) {
             LoggingBase.logMessage("ActivityTestRelayHandlerImpl:MATA:progressResponseReceived");
             cond.set();
         }

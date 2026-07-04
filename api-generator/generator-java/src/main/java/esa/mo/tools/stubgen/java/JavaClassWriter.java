@@ -21,10 +21,12 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorJava;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.StubUtils;
 import static esa.mo.tools.stubgen.GeneratorJava.JAVA_FILE_EXT;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
+import esa.mo.tools.stubgen.specification.TypeUtils;
 import esa.mo.tools.stubgen.specification.NativeTypeDetails;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.writers.AbstractLanguageWriter;
@@ -34,12 +36,13 @@ import esa.mo.tools.stubgen.writers.MethodWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Writes Java source files for the generated code.
  */
 public class JavaClassWriter extends AbstractLanguageWriter implements ClassWriter, InterfaceWriter, MethodWriter {
 
@@ -54,9 +57,12 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
      * @param generator The java code generator.
      * @throws IOException If any problems creating the file.
      */
-    public JavaClassWriter(File folder, String className, GeneratorJava generator) throws IOException {
+    private final MOTypeInformation typeInformation;
+
+    public JavaClassWriter(File folder, String className, GeneratorJava generator, MOTypeInformation typeInformation) throws IOException {
         this.file = StubUtils.createLowLevelWriter(folder, className, JAVA_FILE_EXT);
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     /**
@@ -67,9 +73,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
      * @param generator The java code generator.
      * @throws IOException If any problems creating the file.
      */
-    public JavaClassWriter(String destinationFolderName, String className, GeneratorJava generator) throws IOException {
+    public JavaClassWriter(String destinationFolderName, String className, GeneratorJava generator, MOTypeInformation typeInformation) throws IOException {
         this.file = StubUtils.createLowLevelWriter(destinationFolderName, className, JAVA_FILE_EXT);
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     @Override
@@ -142,7 +149,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     protected void addClassVariable(boolean isDeprecated, boolean isStatic, boolean isFinal, String scope,
             CompositeField field, boolean isObject, boolean isArray, String initialValue) throws IOException {
-        addMultilineComment(1, false, field.getComment(), false);
+        String fieldComment = field.getComment();
+        if (fieldComment == null || fieldComment.isEmpty()) {
+            fieldComment = "The " + field.getFieldName() + " field.";
+        }
+        addMultilineComment(1, false, fieldComment, false);
 
         StringBuilder buf = new StringBuilder(scope);
         buf.append(" ");
@@ -172,8 +183,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                     buf.append("\n        ").append(initialValue);
                 }
                 buf.append("}");
-            } else if (generator.isNativeType(field.getTypeName())) {
-                NativeTypeDetails dets = generator.getNativeType(field.getTypeName());
+            } else if (typeInformation.isNativeType(field.getTypeName())) {
+                NativeTypeDetails dets = typeInformation.getNativeType(field.getTypeName());
                 if (dets.isObject()) {
                     buf.append(" = new ").append(ltype).append(initialValue);
                 } else {
@@ -216,8 +227,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                 buf.append(" = {").append(initialValue).append("}");
             } else if (!isNewInit) {
                 buf.append(" = ").append(initialValue);
-            } else if (generator.isNativeType(arg.getTypeName())) {
-                NativeTypeDetails dets = generator.getNativeType(arg.getTypeName());
+            } else if (typeInformation.isNativeType(arg.getTypeName())) {
+                NativeTypeDetails dets = typeInformation.getNativeType(arg.getTypeName());
                 if (dets.isObject()) {
                     buf.append(" = new ").append(ltype).append(initialValue);
                 } else {
@@ -278,57 +289,26 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-        return addMethodOpenStatement(isConst, isStatic, scope, isReturnConst, isReturnActual, rtype,
-                methodName, args, throwsSpec, null, null, null);
+    public CompositeField type(String name) {
+        return type(null, null, name);
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec, String comment,
-            String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(false, isConst, isStatic, scope, isReturnConst,
-                isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
-    }
-
-    @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
-        return addMethodOpenStatement(isVirtual, isConst, isStatic, scope, isReturnConst,
-                isReturnActual, rtype, methodName, args, throwsSpec, null, null, null);
-    }
-
-    @Override
-    public MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-            boolean isStatic, String scope, boolean isReturnConst, boolean isReturnActual,
-            CompositeField rtype, String methodName, List<CompositeField> args, String throwsSpec,
-            String comment, String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(false, isVirtual, isConst, isStatic, scope, isReturnConst,
-                isReturnActual, rtype, methodName, args, throwsSpec, comment, returnComment, throwsComment);
-    }
-
-    @Override
-    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec, String comment, String returnComment, List<String> throwsComment) throws IOException {
-        return addMethodOpenStatement(isFinal, isVirtual, isConst, isStatic, scope,
-                isReturnConst, isReturnActual, rtype, methodName, args, throwsSpec,
-                comment, returnComment, throwsComment, false);
+    public CompositeField type(String area, String service, String name) {
+        return generator.createCompositeElementsDetails(this, false, "return",
+                TypeUtils.createTypeReference(area, service, name, false), false, true, null);
     }
 
     @Override
     public MethodWriter addMethodOpenStatementOverride(CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec) throws IOException {
+            String methodName, List<CompositeField> args, String throwsSpec,
+            boolean isFinal) throws IOException {
+        String nFinal = isFinal ? "final " : "";
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
 
         StringBuilder methodSignature = new StringBuilder();
-        methodSignature.append("public ").append(srtype).append(" ").append(methodName);
+        methodSignature.append("public ").append(nFinal).append(srtype).append(" ").append(methodName);
         methodSignature.append("(").append(argString).append(")");
 
         if (null != throwsSpec) {
@@ -342,11 +322,10 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec, String comment, String returnComment, List<String> throwsComment,
-            boolean isDeprecated) throws IOException {
+    public MethodWriter addMethodOpenStatement(boolean isFinal, boolean isStatic,
+            String scope, CompositeField rtype, String methodName, List<CompositeField> args,
+            String throwsSpec, String comment, String returnComment,
+            List<String> throwsComment, boolean isDeprecated) throws IOException {
         List<String> comments = normaliseArgComments(comment, returnComment, args, throwsComment);
         addMultilineComment(1, false, comments, false);
 
@@ -409,8 +388,8 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     }
 
     @Override
-    public void addInterfaceMethodDeclaration(String scope, CompositeField rtype,
-            String methodName, List<CompositeField> args, String throwsSpec, String comment,
+    public void addInterfaceMethodDeclaration(CompositeField rtype, String methodName,
+            List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment) throws IOException {
         String srtype = createLocalType(rtype);
         String argString = processArgs(args, true);
@@ -471,7 +450,14 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
     @Override
     public void addMultilineComment(int tabCount, boolean preBlankLine,
             List<String> comments, boolean postBlankLine) throws IOException {
-        if (!comments.isEmpty()) {
+        boolean hasContent = false;
+        for (String comment : comments) {
+            if (comment != null && !comment.trim().isEmpty()) {
+                hasContent = true;
+                break;
+            }
+        }
+        if (hasContent) {
             if (preBlankLine) {
                 file.append(getLineSeparator());
             }
@@ -479,6 +465,9 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
             file.append(makeLine(tabCount, "/**"));
 
             for (String comment : comments) {
+                if(comment == null) {
+                    continue;
+                }
                 // Clean up tags like "<T>"
                 comment = comment.replaceAll("<", "_");
                 comment = comment.replaceAll(">", "_");
@@ -498,7 +487,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
         if (argsComments != null) {
             for (CompositeField arg : argsComments) {
-                list.add(arg.getFieldName() + " " + arg.getComment());
+                String argComment = arg.getComment();
+                if (argComment == null || argComment.isEmpty()) {
+                    argComment = "The " + arg.getFieldName() + " field.";
+                }
+                list.add(arg.getFieldName() + " " + argComment);
             }
         }
 
@@ -507,13 +500,20 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
 
     private List<String> normaliseComments(String comment, String returnComment,
             List<String> argsComments, List<String> throwsComment) {
-        List<String> output = normaliseComment(comment);
-        output.add(""); // Separation between the comment and params
-        normaliseComments(output, StubUtils.conditionalAdd("@param ", argsComments));
-        normaliseComment(output, StubUtils.conditionalAdd("@return ", returnComment));
-        normaliseComments(output, StubUtils.conditionalAdd("@throws ", throwsComment));
+        List<String> concatenated = new ArrayList();
+        concatenated.addAll(normaliseComment(comment));
+        concatenated.add("");
+        if(argsComments != null) {
+            concatenated.addAll(StubUtils.conditionalAdd("@param ", argsComments));
+        }
+        if(returnComment != null) {
+            concatenated.add(StubUtils.conditionalAdd("@return ", returnComment));
+        }
+        if(throwsComment != null) {
+            concatenated.addAll(StubUtils.conditionalAdd("@throws ", throwsComment));
+        }
 
-        return output;
+        return concatenated;
     }
 
     private String processArgs(List<CompositeField> args, boolean includeType) {
@@ -557,11 +557,11 @@ public class JavaClassWriter extends AbstractLanguageWriter implements ClassWrit
                     "org.ccsds.moims.mo.mal.TypeId");
         }
 
-        if (generator.isNativeType(fullType)) {
-            NativeTypeDetails dets = generator.getNativeType(fullType);
+        if (typeInformation.isNativeType(fullType)) {
+            NativeTypeDetails dets = typeInformation.getNativeType(fullType);
             return dets.getLanguageTypeName();
-        } else if (!type.isList() && generator.isAttributeType(type.getTypeReference())) {
-            AttributeTypeDetails dets = generator.getAttributeDetails(type.getTypeReference());
+        } else if (!type.isList() && typeInformation.isAttributeType(type.getTypeReference())) {
+            AttributeTypeDetails dets = typeInformation.getAttributeDetails(type.getTypeReference());
             if (dets != null) {
                 return dets.getTargetType();
             }

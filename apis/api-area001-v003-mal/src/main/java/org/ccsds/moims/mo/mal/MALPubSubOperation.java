@@ -162,7 +162,30 @@ public class MALPubSubOperation extends MALOperation {
             final UShort capabilitySet,
             final OperationField[] fields)
             throws java.lang.IllegalArgumentException {
-        super(serviceKey, number, name, InteractionType.PUBSUB, capabilitySet);
+        this(serviceKey, number, name, capabilitySet, fields, null);
+    }
+
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param serviceKey Service Key for the service of this operation.
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param capabilitySet Capability set of the operation.
+     * @param fields PUB-SUB fields. transmitted by the PUBLISH/NOTIFY message
+     * of a PUBLISH-SUBSCRIBE operation.
+     * @param comment The operation comment.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALPubSubOperation(final ServiceKey serviceKey,
+            final UShort number,
+            final Identifier name,
+            final UShort capabilitySet,
+            final OperationField[] fields,
+            final String comment)
+            throws java.lang.IllegalArgumentException {
+        super(serviceKey, number, name, InteractionType.PUBSUB, capabilitySet, comment);
 
         OperationField[] publishFields = new OperationField[fields.length + 1];
         OperationField[] notifyFields = new OperationField[fields.length + 2];

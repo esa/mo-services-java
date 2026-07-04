@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
+ * Reassembles the segments of a segmented SPP packet in order.
  *
  * @author Cesar Coelho
  */

@@ -30,7 +30,7 @@ import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.MALException;
 
 /**
- *
+ * An {@link MALElementStreamFactory} for the XML encoding.
  */
 public class XMLStreamFactory extends MALElementStreamFactory {
 

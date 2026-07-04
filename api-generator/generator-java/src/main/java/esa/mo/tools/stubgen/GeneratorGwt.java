@@ -80,7 +80,7 @@ public class GeneratorGwt extends GeneratorJava {
         file.addStatement("@com.google.gwt.user.client.rpc.RemoteServiceRelativePath(\"" + service + "GWT\")");
         file.addInterfaceOpenStatement(service + "GWT", "com.google.gwt.user.client.rpc.RemoteService", null);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         CompositeField msgType = createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(StdStrings.MAL, TRANSPORT_FOLDER, StdStrings.MALMESSAGE, false),
                 false, true, null);
@@ -89,64 +89,19 @@ public class GeneratorGwt extends GeneratorJava {
             List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, msgType,
-                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName()).returns(msgType)
+                            .addArguments(opArgs).addThrows(throwsMALException).declare();
                     break;
                 }
                 case SUBMIT_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), opArgs, throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addThrows(throwsMALException).declare();
                     break;
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType,
-                            op.getName(), opArgs, throwsMALException, null, null, null);
-                    break;
-                }
-                case INVOKE_OP: {
-                    break;
-                }
-                case PROGRESS_OP: {
-                    break;
-                }
-                case PUBSUB_OP: {
-                    break;
-                }
-            }
-        }
-
-        file.addInterfaceCloseStatement();
-
-        file.flush();
-    }
-
-    @Deprecated
-    protected void createServiceConsumerStub2(File consumerFolder, String area,
-            String serviceName, ServiceSummary summary) throws IOException {
-        logger.info(" > Creating consumer stub: " + serviceName);
-
-        InterfaceWriter file = createInterfaceFile(consumerFolder, serviceName + "GWTAsync");
-        file.addPackageStatement(area, serviceName, CONSUMER_FOLDER);
-        file.addInterfaceOpenStatement(serviceName + "GWTAsync", null, null);
-
-        for (OperationSummary op : summary.getOperations()) {
-            List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
-            switch (op.getPattern()) {
-                case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC,
-                            null, op.getName(), opArgs, null, null, null, null);
-                    break;
-                }
-                case SUBMIT_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC,
-                            null, op.getName(), opArgs, null, null, null, null);
-                    break;
-                }
-                case REQUEST_OP: {
-//          CompositeField opRetType = createOperationReturnType(file, area, service, op);
-//          String asyncOpArgs = StubUtils.concatenateArguments(opArgs, "com.google.gwt.user.client.rpc.AsyncCallback<" + opRetType + "> _callback");
-//          file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, StdStrings.VOID, op.getName(), asyncOpArgs, null, null, null, null);
+                    file.interfaceMethod(op.getName()).returns(opRetType)
+                            .addArguments(opArgs).addThrows(throwsMALException).declare();
                     break;
                 }
                 case INVOKE_OP: {
@@ -180,26 +135,27 @@ public class GeneratorGwt extends GeneratorJava {
                 "interaction", TypeUtils.createTypeReference(StdStrings.MAL, PROVIDER_FOLDER, StdStrings.MALINTERACTION, false),
                 false, true, "interaction The MAL object representing the interaction in the provider.");
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
         for (OperationSummary op : summary.getOperations()) {
             List<CompositeField> opArgs = createOperationArguments(getConfig(), file, op.getArgTypes());
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(intHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case SUBMIT_OP: {
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, intHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(intHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, opRetType, op.getName(),
-                            StubUtils.concatenateArguments(opArgs, intHandlerStr), throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName()).returns(opRetType)
+                            .addArguments(opArgs).addArgument(intHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case INVOKE_OP: {
@@ -209,9 +165,9 @@ public class GeneratorGwt extends GeneratorJava {
                                     + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
                                     + "Interaction", false), false, true,
                             "interaction The MAL object representing the interaction in the provider.");
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(serviceHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case PROGRESS_OP: {
@@ -221,9 +177,9 @@ public class GeneratorGwt extends GeneratorJava {
                                     + "." + PROVIDER_FOLDER, StubUtils.preCap(op.getName())
                                     + "Interaction", false), false, true,
                             "interaction The MAL object representing the interaction in the provider.");
-                    file.addInterfaceMethodDeclaration(StdStrings.PUBLIC, null,
-                            op.getName(), StubUtils.concatenateArguments(opArgs, serviceHandlerStr),
-                            throwsMALException, null, null, null);
+                    file.interfaceMethod(op.getName())
+                            .addArguments(opArgs).addArgument(serviceHandlerStr)
+                            .addThrows(throwsMALException).declare();
                     break;
                 }
                 case PUBSUB_OP: {
@@ -266,11 +222,11 @@ public class GeneratorGwt extends GeneratorJava {
 
         file.addPackageStatement(area, service, PROVIDER_FOLDER);
 
-        String throwsMALException = createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
+        String throwsMALException = typeInformation.createElementType(StdStrings.MAL, null, null, StdStrings.MALEXCEPTION);
 
-        String implementsList = createElementType(area, service, CONSUMER_FOLDER, service + "GWT");
+        String implementsList = typeInformation.createElementType(area, service, CONSUMER_FOLDER, service + "GWT");
         if (!isDelegate) {
-            implementsList += ", " + createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
+            implementsList += ", " + typeInformation.createElementType(area, service, PROVIDER_FOLDER, service + "Handler");
         }
 
         file.addClassOpenStatement(className, false, !isDelegate,
@@ -298,10 +254,9 @@ public class GeneratorGwt extends GeneratorJava {
         for (OperationSummary op : summary.getOperations()) {
             switch (op.getPattern()) {
                 case SEND_OP: {
-                    MethodWriter method = file.addMethodOpenStatement(false, false,
-                            StdStrings.PUBLIC, false, true, null, op.getName(),
-                            createOperationArguments(getConfig(), file,
-                                    op.getArgTypes()), throwsMALException);
+                    MethodWriter method = file.method(op.getName())
+                            .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
+                            .addThrows(throwsMALException).open();
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
                     method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null);");
@@ -310,9 +265,9 @@ public class GeneratorGwt extends GeneratorJava {
                     break;
                 }
                 case SUBMIT_OP: {
-                    MethodWriter method = file.addMethodOpenStatement(false,
-                            false, StdStrings.PUBLIC, false, true, null, op.getName(),
-                            createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+                    MethodWriter method = file.method(op.getName())
+                            .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
+                            .addThrows(throwsMALException).open();
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
                     method.addLine(delegateCall + op.getName() + "(" + opArgs + ", null);");
@@ -322,9 +277,9 @@ public class GeneratorGwt extends GeneratorJava {
                 }
                 case REQUEST_OP: {
                     CompositeField opRetType = createOperationReturnType(file, area, service, op);
-                    MethodWriter method = file.addMethodOpenStatement(false, false,
-                            StdStrings.PUBLIC, false, true, opRetType, op.getName(),
-                            createOperationArguments(getConfig(), file, op.getArgTypes()), throwsMALException);
+                    MethodWriter method = file.method(op.getName()).returns(opRetType)
+                            .addArguments(createOperationArguments(getConfig(), file, op.getArgTypes()))
+                            .addThrows(throwsMALException).open();
 
                     String opArgs = createArgNameOrNull(op.getArgTypes());
                     method.addLine("return " + delegateCall + op.getName() + "(" + opArgs + ", null);");

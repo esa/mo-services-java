@@ -20,8 +20,8 @@
  */
 package esa.mo.tools.stubgen.java;
 
-import esa.mo.tools.stubgen.GeneratorBase;
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.StubUtils;
 import esa.mo.tools.stubgen.specification.AttributeTypeDetails;
 import esa.mo.tools.stubgen.specification.CompositeField;
@@ -32,40 +32,40 @@ import esa.mo.xsd.EnumerationType;
 import esa.mo.xsd.TypeReference;
 
 /**
- *
+ * Helper methods for generating the fields of the MO Composite structures.
  */
 public class JavaCompositeFields {
 
-    private final GeneratorLangs generator;
+    private final MOTypeInformation typeInformation;
 
-    public JavaCompositeFields(GeneratorLangs generator) {
-        this.generator = generator;
+    public JavaCompositeFields(MOTypeInformation typeInformation) {
+        this.typeInformation = typeInformation;
     }
 
     public CompositeField createCompositeElementsDetails(LanguageWriter file, boolean checkType,
             String fieldName, TypeReference elementType, boolean isStructure, boolean canBeNull, String comment) {
         String typeName = elementType.getName();
-        boolean isObjectRef = GeneratorBase.isObjectRef(elementType);
+        boolean isObjectRef = MOTypeInformation.isObjectRef(elementType);
 
         if (elementType.isList()) {
             String fqTypeName;
 
-            if (generator.isAttributeNativeType(elementType)) {
-                fqTypeName = generator.createElementType(StdStrings.MAL, null, typeName + "List");
+            if (typeInformation.isAttributeNativeType(elementType)) {
+                fqTypeName = typeInformation.createElementType(StdStrings.MAL, null, typeName + "List");
             } else {
                 if (isObjectRef) {
-                    //String temp = generator.createElementType(file, elementType, true);
+                    //String temp = typeInformation.createElementType(file, elementType, true);
                     // String lastCharRemoved = temp.substring(0, temp.length() - 1); // Strip the last '>'
                     // fqTypeName = lastCharRemoved + "List>";
                     fqTypeName = "org.ccsds.moims.mo.mal.structures.ObjectRefList";
                 } else {
-                    fqTypeName = generator.createElementType(elementType, true) + "List";
+                    fqTypeName = typeInformation.createElementType(elementType, true) + "List";
                 }
             }
 
             String newCall = null;
             String encCall = null;
-            if (!generator.isAbstract(elementType)) {
+            if (!typeInformation.isAbstract(elementType)) {
                 newCall = "new " + fqTypeName + "()";
                 encCall = StdStrings.ELEMENT;
             }
@@ -73,9 +73,9 @@ public class JavaCompositeFields {
             return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                     canBeNull, false, encCall, "(" + fqTypeName + ") ",
                     StdStrings.ELEMENT, true, newCall, comment);
-        } else if (generator.isAttributeType(elementType)) {
-            AttributeTypeDetails details = generator.getAttributeDetails(elementType);
-            String fqTypeName = generator.createElementType(elementType, isStructure);
+        } else if (typeInformation.isAttributeType(elementType)) {
+            AttributeTypeDetails details = typeInformation.getAttributeDetails(elementType);
+            String fqTypeName = typeInformation.createElementType(elementType, isStructure);
             return new CompositeField(details.getTargetType(), elementType, fieldName,
                     elementType.isList(), canBeNull, false, typeName, "",
                     typeName, false, "new " + fqTypeName + "()", comment);
@@ -88,10 +88,10 @@ public class JavaCompositeFields {
                         elementType.getService(), StubUtils.preCap(elementType.getName()), elementType.isList());
             }
 
-            String fqTypeName = generator.createElementType(elementTypeIndir, isStructure);
+            String fqTypeName = typeInformation.createElementType(elementTypeIndir, isStructure);
 
-            if (generator.isEnum(elementType)) {
-                EnumerationType typ = generator.getEnum(elementType);
+            if (typeInformation.isEnum(elementType)) {
+                EnumerationType typ = typeInformation.getEnum(elementType);
                 String firstEle = fqTypeName + "." + typ.getItem().get(0).getValue();
                 return new CompositeField(fqTypeName, elementType, fieldName, elementType.isList(),
                         canBeNull, false, StdStrings.ELEMENT, "(" + fqTypeName + ") ",

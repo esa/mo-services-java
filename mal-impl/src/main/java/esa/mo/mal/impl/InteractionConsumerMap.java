@@ -20,13 +20,7 @@
  */
 package esa.mo.mal.impl;
 
-import esa.mo.mal.impl.interactionpatterns.IPConsumerHandler;
-import esa.mo.mal.impl.interactionpatterns.RequestIPConsumerHandler;
-import esa.mo.mal.impl.interactionpatterns.InvokeIPConsumerHandler;
-import esa.mo.mal.impl.interactionpatterns.OperationResponseHolder;
-import esa.mo.mal.impl.interactionpatterns.SubmitIPConsumerHandler;
-import esa.mo.mal.impl.interactionpatterns.PubSubIPConsumerHandler;
-import esa.mo.mal.impl.interactionpatterns.ProgressIPConsumerHandler;
+import esa.mo.mal.impl.interactionpatterns.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -191,7 +185,7 @@ public class InteractionConsumerMap {
      * @throws MALInteractionException When something goes wrong.
      */
     public MALMessage waitForResponse(final Long id) throws MALInteractionException {
-        OperationResponseHolder holder = null;
+        OperationResponseHolder holder;
 
         synchronized (syncOpResponseMap) {
             holder = syncOpResponseMap.get(id);

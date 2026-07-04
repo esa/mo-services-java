@@ -54,6 +54,7 @@ import org.ccsds.moims.mo.maldemo.MALDemoHelper;
 import org.ccsds.moims.mo.maldemo.basicmonitor.BasicMonitorHelper;
 import org.ccsds.moims.mo.maldemo.basicmonitor.consumer.BasicMonitorAdapter;
 import org.ccsds.moims.mo.maldemo.basicmonitor.consumer.BasicMonitorStub;
+import org.ccsds.moims.mo.maldemo.basicmonitor.consumer.MonitorSubscriptionKeys;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicComposite;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicEnum;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.BasicUpdate;
@@ -262,6 +263,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
         @Override
         public void monitorNotifyReceived(final MALMessageHeader msgHeader,
                 final Identifier lIdentifier, final UpdateHeader updateHeader,
+                final MonitorSubscriptionKeys keys,
                 final BasicUpdate updateValue, final Map qosp) {
             LOGGER.log(Level.INFO, "Received update message!");
 

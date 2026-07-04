@@ -353,12 +353,16 @@ public class MALReceiver implements MALMessageListener {
                 handler.handleInvoke(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
+            } catch (RuntimeException ex) {
+                MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
+                        "Unexpected RuntimeException in handleInvoke", ex);
+                interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             }
         } catch (MALException ex) {
             try {
                 interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             } catch (MALException noex) {
-                // this exception cannot actually be thrown in this 
+                // this exception cannot actually be thrown in this
                 // implementation, therefore we can safely ignore it
             }
         }
@@ -378,12 +382,16 @@ public class MALReceiver implements MALMessageListener {
                 handler.handleProgress(interaction, msg.getBody());
             } catch (MALInteractionException ex) {
                 interaction.sendError(ex.getStandardError());
+            } catch (RuntimeException ex) {
+                MALContextFactoryImpl.LOGGER.log(Level.SEVERE,
+                        "Unexpected RuntimeException in handleProgress", ex);
+                interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             }
         } catch (MALException ex) {
             try {
                 interaction.sendError(new InternalException(ex.getLocalizedMessage()));
             } catch (MALException noex) {
-                // this exception cannot actually be thrown in this 
+                // this exception cannot actually be thrown in this
                 // implementation, therefore we can safely ignore it
             }
         }
@@ -398,9 +406,11 @@ public class MALReceiver implements MALMessageListener {
             if (msg.getBody() instanceof MALRegisterBody) {
                 // update register list
                 final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
-                brokerHandler.addSubscriber(msg.getHeader().getFrom().getValue());
+                final MALRegisterBody registerBody = (MALRegisterBody) msg.getBody();
+                brokerHandler.addSubscriber(msg.getHeader().getFrom().getValue(),
+                        registerBody.getSubscription().getSubscriptionId().getValue());
                 brokerHandler.getBrokerImpl().getHandler().handleRegister(
-                        interaction, (MALRegisterBody) msg.getBody());
+                        interaction, registerBody);
 
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,
@@ -541,7 +551,11 @@ public class MALReceiver implements MALMessageListener {
 
             if (rcv != null) {
                 try {
-                    rcv.notifyReceived(hdr, notifyBody, msg.getQoSProperties());
+                    // Supply the selectedKeys so the consumer can interpret a
+                    // trimmed NOTIFY key value list (see CCSDS 521.0-B-3, 3.6.6.5).
+                    rcv.notifyReceived(hdr, notifyBody,
+                            pubSubMap.getSelectedKeys(hdr.getTo(), notifyBody.getSubscriptionId()),
+                            msg.getQoSProperties());
                 } catch (MALException ex) {
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                             "Error generated during handling of NOTIFY message, dropping: {0}", ex);
@@ -565,8 +579,12 @@ public class MALReceiver implements MALMessageListener {
             try {
                 // update register list
                 final MALInteraction interaction = new PubSubIPProviderHandler(sender, address, msg);
-                brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, (MALDeregisterBody) msg.getBody());
-                brokerHandler.removeSubscriber(msg.getHeader().getFrom().getValue());
+                final MALDeregisterBody deregisterBody = (MALDeregisterBody) msg.getBody();
+                brokerHandler.getBrokerImpl().getHandler().handleDeregister(interaction, deregisterBody);
+                final String consumerURI = msg.getHeader().getFrom().getValue();
+                for (org.ccsds.moims.mo.mal.structures.Identifier subId : deregisterBody.getSubscriptionIds()) {
+                    brokerHandler.removeSubscriber(consumerURI, subId.getValue());
+                }
 
                 // because we don't pass this upwards, we have to generate the ack
                 sender.returnResponse(address,

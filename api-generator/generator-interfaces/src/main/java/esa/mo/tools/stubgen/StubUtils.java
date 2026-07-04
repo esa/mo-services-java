@@ -21,6 +21,12 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.specification.CompositeField;
+import static esa.mo.tools.stubgen.specification.InteractionPatternEnum.INVOKE_OP;
+import static esa.mo.tools.stubgen.specification.InteractionPatternEnum.PROGRESS_OP;
+import static esa.mo.tools.stubgen.specification.InteractionPatternEnum.REQUEST_OP;
+import static esa.mo.tools.stubgen.specification.InteractionPatternEnum.SEND_OP;
+import static esa.mo.tools.stubgen.specification.InteractionPatternEnum.SUBMIT_OP;
+import esa.mo.tools.stubgen.specification.OperationSummary;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -299,5 +305,22 @@ public abstract class StubUtils {
         firstArg.addAll(Arrays.asList(args));
 
         return firstArg;
+    }
+
+    public static String createConsumerPatternCall(OperationSummary op) {
+        switch (op.getPattern()) {
+            case SEND_OP:
+                return "send";
+            case SUBMIT_OP:
+                return "submit";
+            case REQUEST_OP:
+                return "request";
+            case INVOKE_OP:
+                return "invoke";
+            case PROGRESS_OP:
+                return "progress";
+        }
+
+        return null;
     }
 }

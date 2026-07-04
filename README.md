@@ -1,13 +1,13 @@
 <p align="left">
-  <a href="https://github.com/esa/mo-services-java">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/ESA_logo.png/800px-ESA_logo.png" alt="esa logo" title="esa" width="400"/>
+  <a href="https://www.esa.int/">
+      <img src="docs/esa_logo.svg" alt="esa logo" title="esa" width="300"/>
   </a>
 </p>
 
 CCSDS MO services - ESA's Java implementation
 ========================
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/int.esa.ccsds.mo/mo-services-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/int.esa.ccsds.mo/mo-services-java)
+[![Maven Central](https://img.shields.io/maven-central/v/int.esa.ccsds.mo/parent)](https://central.sonatype.com/artifact/int.esa.ccsds.mo/parent)
 
 CCSDS Mission Operations (MO) services are a set of standard end-to-end services based on a service-oriented architecture defined by the Consultative Committee for Space Data Systems (CCSDS) and it is intended to be used for mission operations of future space missions.
 
@@ -99,7 +99,7 @@ Bug Reports are directly in the source code repository can be submitted on: [Iss
 
 The CCSDS MO services are **licensed** under: **[European Space Agency Public License (ESA-PL) Weak Copyleft - v2.0]**
 	
-[ESAImage]: https://upload.wikimedia.org/wikipedia/commons/a/af/ESA_logo.png
+[ESAImage]: http://www.esa.int/esalogo/images/logotype/img_colorlogo_darkblue.gif
 [European Space Agency Public License (ESA-PL) Weak Copyleft - v2.0]: LICENCE.md
 [GitHub]: https://github.com/esa/mo-services-java
 [Release Notes]: RELEASE_NOTES.md

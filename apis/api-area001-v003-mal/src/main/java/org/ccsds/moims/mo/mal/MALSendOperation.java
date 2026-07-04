@@ -58,7 +58,29 @@ public class MALSendOperation extends MALOperation {
             final UShort capabilitySet,
             final OperationField[] sendStage)
             throws java.lang.IllegalArgumentException {
-        super(serviceKey, number, name, InteractionType.SEND, capabilitySet);
+        this(serviceKey, number, name, capabilitySet, sendStage, null);
+    }
+
+    /**
+     * Initialises the internal variables with the supplied values.
+     *
+     * @param serviceKey Service Key for the service of this operation.
+     * @param number Number of the operation.
+     * @param name Name of the operation.
+     * @param capabilitySet Capability set of the operation.
+     * @param sendStage The stage information for the SEND stage.
+     * @param comment The operation comment.
+     * @throws java.lang.IllegalArgumentException If any argument is null,
+     * except the operation stage arguments.
+     */
+    public MALSendOperation(final ServiceKey serviceKey,
+            final UShort number,
+            final Identifier name,
+            final UShort capabilitySet,
+            final OperationField[] sendStage,
+            final String comment)
+            throws java.lang.IllegalArgumentException {
+        super(serviceKey, number, name, InteractionType.SEND, capabilitySet, comment);
         this.sendStage = sendStage;
     }
 

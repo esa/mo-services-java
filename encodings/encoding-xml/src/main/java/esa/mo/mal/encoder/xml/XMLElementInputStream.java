@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- *
+ * An {@link MALElementInputStream} that decodes MO elements from XML.
  */
 public class XMLElementInputStream implements MALElementInputStream {
 

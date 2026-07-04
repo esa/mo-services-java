@@ -54,6 +54,7 @@ import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
 /**
+ * An {@link MALEncoder} that writes MO elements as XML.
  *
  * @author rvangijlswijk
  *

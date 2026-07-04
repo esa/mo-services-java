@@ -26,6 +26,7 @@ import esa.mo.mal.transport.gen.sending.MessageSender;
 import esa.mo.mal.transport.gen.ReceptionHandler;
 
 /**
+ * Handles the reception of messages for the ZMTP transport.
  *
  * @author Dominik Marszk
  */

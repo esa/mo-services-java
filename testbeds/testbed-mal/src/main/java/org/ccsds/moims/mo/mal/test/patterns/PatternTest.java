@@ -329,7 +329,7 @@ public class PatternTest {
                 expectedFinalHeader.getServiceArea(),
                 expectedFinalHeader.getService(),
                 expectedFinalHeader.getOperation(),
-                expectedFinalHeader.getServiceVersion(),
+                expectedFinalHeader.getAreaVersion(),
                 isError,
                 expectedFinalHeader.getSupplements());
     }
@@ -619,7 +619,7 @@ public class PatternTest {
                 srcHdr.getServiceArea(),
                 srcHdr.getService(),
                 srcHdr.getOperation(),
-                srcHdr.getServiceVersion(),
+                srcHdr.getAreaVersion(),
                 isError,
                 srcHdr.getSupplements());
 

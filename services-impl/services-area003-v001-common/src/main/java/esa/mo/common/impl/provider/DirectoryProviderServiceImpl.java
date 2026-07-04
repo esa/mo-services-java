@@ -160,7 +160,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
 
     @Override
     public ProviderSummaryList lookupProvider(final ServiceFilter filter,
-            final MALInteraction interaction) throws MALInteractionException, MALException {
+            final MALInteraction interaction) throws InvalidException, MALInteractionException, MALException {
         if (filter == null) { // Is the input null?
             throw new IllegalArgumentException("filter argument must not be null");
         }
@@ -172,7 +172,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
             Identifier domainPart = inputDomain.get(i);
 
             if (domainPart.toString().equals("*") && i != (inputDomain.size() - 1)) {
-                throw new MALInteractionException(new InvalidException(null));
+                throw new InvalidException(null);
             }
         }
 
@@ -329,7 +329,11 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
                     // It is repeated!!
                     LOGGER.warning("There was already a provider with the same name in the Directory service. "
                             + "Removing the old one and adding the new one...");
-                    withdrawProvider(key, null);
+                    try {
+                        withdrawProvider(key, null);
+                    } catch (UnknownException e) {
+                        throw new RuntimeException("Unreachable: key came from providersAvailable", e);
+                    }
                 }
             }
 
@@ -340,10 +344,10 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
     }
 
     @Override
-    public void withdrawProvider(Long providerObjectKey, MALInteraction interaction) throws MALInteractionException {
+    public void withdrawProvider(Long providerObjectKey, MALInteraction interaction) throws UnknownException, MALInteractionException {
         synchronized (MUTEX) {
             if (!this.providersAvailable.containsKey(providerObjectKey)) { // The requested provider does not exist
-                throw new MALInteractionException(new UnknownException(null));
+                throw new UnknownException(null);
             }
 
             this.providersAvailable.remove(providerObjectKey); // Remove the provider...
@@ -358,7 +362,11 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
     public void withdrawAllProviders() throws MALInteractionException {
         synchronized (MUTEX) {
             for (Long key : providersAvailable.keySet()) {
-                withdrawProvider(key, null);
+                try {
+                    withdrawProvider(key, null);
+                } catch (UnknownException e) {
+                    throw new RuntimeException("Unreachable: key came from providersAvailable", e);
+                }
             }
         }
     }

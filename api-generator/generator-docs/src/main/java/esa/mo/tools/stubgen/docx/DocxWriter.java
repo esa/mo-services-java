@@ -36,6 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
+ * Writes the content of the generated .docx documents.
  *
  * @author Cesar.Coelho
  */

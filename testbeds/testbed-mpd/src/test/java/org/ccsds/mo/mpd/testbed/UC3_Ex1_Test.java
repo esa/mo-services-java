@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.DeliverProductsSubscriptionKeys;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerOM;
 import org.ccsds.mo.mpd.testbed.backends.TMPacketsDataset;
 import org.ccsds.moims.mo.mal.MALException;
@@ -322,6 +323,7 @@ public class UC3_Ex1_Test extends MPDTest {
                         org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
                         org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
                         org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+                        DeliverProductsSubscriptionKeys keys,
                         org.ccsds.moims.mo.mpd.structures.Product product,
                         java.util.Map qosProperties) {
                     System.out.println("Reached: deliverProductsNotifyReceived()");

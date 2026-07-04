@@ -30,6 +30,7 @@ import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALInteractionListener;
 import org.ccsds.moims.mo.mal.provider.MALPublishInteractionListener;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageBody;
@@ -209,7 +210,8 @@ public class OperationResponseHolder {
 
         @Override
         public void notifyReceived(final MALMessageHeader header,
-                final MALNotifyBody body, final Map qosProperties) throws MALException {
+                final MALNotifyBody body, final IdentifierList selectedKeys,
+                final Map qosProperties) throws MALException {
             // nothing to do here
         }
 

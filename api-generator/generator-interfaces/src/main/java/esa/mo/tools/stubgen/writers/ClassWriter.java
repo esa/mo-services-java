@@ -30,6 +30,56 @@ import java.util.List;
 public interface ClassWriter extends LanguageWriter {
 
     /**
+     * Starts a fluent builder for opening a method declaration. The builder
+     * accumulates a language-neutral description of the method and, on
+     * {@link MethodBuilder#open()}, delegates back to this writer. It is the
+     * preferred alternative to the positional {@code addMethodOpenStatement}
+     * overloads.
+     *
+     * @param methodName The method name.
+     * @return A new method builder bound to this writer.
+     */
+    default MethodBuilder method(String methodName) {
+        return new MethodBuilder(this, methodName);
+    }
+
+    /**
+     * Builds a non-list field/return type from a simple type name, resolving it
+     * to its fully qualified form. Convenience for native or otherwise
+     * unqualified types (for example {@code "int"}); equivalent to
+     * {@link #type(String, String, String) type(null, null, name)}.
+     *
+     * @param name The type name.
+     * @return The resolved type.
+     */
+    CompositeField type(String name);
+
+    /**
+     * Builds a non-list field/return type from an area/service qualified type
+     * name, resolving it to its fully qualified form.
+     *
+     * @param area The area the type belongs to, or null.
+     * @param service The service the type belongs to, or null.
+     * @param name The type name.
+     * @return The resolved type.
+     */
+    CompositeField type(String area, String service, String name);
+
+    /**
+     * Builds a named field of a simple (non-list) type, for use as a class
+     * variable or argument. Convenience over building the type and field
+     * separately; resolves the type via {@link #type(String)}.
+     *
+     * @param typeName The field type name.
+     * @param fieldName The field name.
+     * @param comment The field comment.
+     * @return The named field.
+     */
+    default CompositeField field(String typeName, String fieldName, String comment) {
+        return new CompositeField(type(typeName), fieldName, comment);
+    }
+
+    /**
      * Adds a class open statement.
      *
      * @param className The class name.
@@ -140,144 +190,27 @@ public interface ClassWriter extends LanguageWriter {
             String throwsSpec, String comment, String throwsComment) throws IOException;
 
     /**
-     * Add a method to the class.
-     *
-     * @param isConst Is the method constant.
-     * @param isStatic Is it is static method.
-     * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
-     * @param isReturnActual Is the return an instance.
-     * @param rtype The return type of the method.
-     * @param methodName The method name.
-     * @param args The arguments of the method.
-     * @param throwsSpec The throws specification.
-     * @return Returns a method writer for the method.
-     * @throws IOException If there is an IO error.
-     */
-    MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual,
-            CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec) throws IOException;
-
-    /**
-     * Add a method to the class.
-     *
-     * @param isConst Is the method constant.
-     * @param isStatic Is it is static method.
-     * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
-     * @param isReturnActual Is the return an instance.
-     * @param rtype The return type of the method.
-     * @param methodName The method name.
-     * @param args The arguments of the method.
-     * @param throwsSpec The throws specification.
-     * @param comment The comment for the method.
-     * @param returnComment The comment for the return value.
-     * @param throwsComment The comment for the throws specification.
-     * @return Returns a method writer for the method.
-     * @throws IOException If there is an IO error.
-     */
-    MethodWriter addMethodOpenStatement(boolean isConst, boolean isStatic,
-            String scope, boolean isReturnConst, boolean isReturnActual,
-            CompositeField rtype, String methodName, List<CompositeField> args,
-            String throwsSpec, String comment, String returnComment,
-            List<String> throwsComment) throws IOException;
-
-    /**
-     * Add a method to the class.
+     * Add an overriding method to the class (emits an {@code @Override}
+     * annotation). No Javadoc comment is emitted, as an overriding method
+     * inherits the documentation from the method it overrides.
      *
      * @param rtype The return type of the method.
      * @param methodName The method name.
      * @param args The arguments of the method.
      * @param throwsSpec The throws specification.
+     * @param isFinal True if the method should be final.
      * @return Returns a method writer for the method.
      * @throws IOException If there is an IO error.
      */
     MethodWriter addMethodOpenStatementOverride(CompositeField rtype, String methodName,
-            List<CompositeField> args, String throwsSpec) throws IOException;
-
-    /**
-     * Add a method to the class.
-     *
-     * @param isVirtual Is the method a virtual method.
-     * @param isConst Is the method constant.
-     * @param isStatic Is it is static method.
-     * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
-     * @param isReturnActual Is the return an instance.
-     * @param rtype The return type of the method.
-     * @param methodName The method name.
-     * @param args The arguments of the method.
-     * @param throwsSpec The throws specification.
-     * @return Returns a method writer for the method.
-     * @throws IOException If there is an IO error.
-     */
-    MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-            boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName,
-            List<CompositeField> args, String throwsSpec) throws IOException;
-
-    /**
-     * Add a method to the class.
-     *
-     * @param isVirtual Is the method a virtual method.
-     * @param isConst Is the method constant.
-     * @param isStatic Is it is static method.
-     * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
-     * @param isReturnActual Is the return an instance.
-     * @param rtype The return type of the method.
-     * @param methodName The method name.
-     * @param args The arguments of the method.
-     * @param throwsSpec The throws specification.
-     * @param comment The comment for the method.
-     * @param returnComment The comment for the return value.
-     * @param throwsComment The comment for the throws specification.
-     * @return Returns a method writer for the method.
-     * @throws IOException If there is an IO error.
-     */
-    MethodWriter addMethodOpenStatement(boolean isVirtual, boolean isConst,
-            boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName,
-            List<CompositeField> args, String throwsSpec, String comment,
-            String returnComment, List<String> throwsComment) throws IOException;
+            List<CompositeField> args, String throwsSpec, boolean isFinal) throws IOException;
 
     /**
      * Add a method to the class.
      *
      * @param isFinal Is the method final.
-     * @param isVirtual Is the method a virtual method.
-     * @param isConst Is the method constant.
      * @param isStatic Is it is static method.
      * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
-     * @param isReturnActual Is the return an instance.
-     * @param rtype The return type of the method.
-     * @param methodName The method name.
-     * @param args The arguments of the method.
-     * @param throwsSpec The throws specification.
-     * @param comment The comment for the method.
-     * @param returnComment The comment for the return value.
-     * @param throwsComment The comment for the throws specification.
-     * @return Returns a method writer for the method.
-     * @throws IOException If there is an IO error.
-     */
-    MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName,
-            List<CompositeField> args, String throwsSpec, String comment,
-            String returnComment, List<String> throwsComment) throws IOException;
-
-    /**
-     * Add a method to the class.
-     *
-     * @param isFinal Is the method final.
-     * @param isVirtual Is the method a virtual method.
-     * @param isConst Is the method constant.
-     * @param isStatic Is it is static method.
-     * @param scope Method scope.
-     * @param isReturnConst Is the return constant.
-     * @param isReturnActual Is the return an instance.
      * @param rtype The return type of the method.
      * @param methodName The method name.
      * @param args The arguments of the method.
@@ -289,9 +222,9 @@ public interface ClassWriter extends LanguageWriter {
      * @return Returns a method writer for the method.
      * @throws IOException If there is an IO error.
      */
-    MethodWriter addMethodOpenStatement(boolean isFinal, boolean isVirtual,
-            boolean isConst, boolean isStatic, String scope, boolean isReturnConst,
-            boolean isReturnActual, CompositeField rtype, String methodName,
+    MethodWriter addMethodOpenStatement(boolean isFinal,
+            boolean isStatic, String scope,
+            CompositeField rtype, String methodName,
             List<CompositeField> args, String throwsSpec, String comment,
             String returnComment, List<String> throwsComment, boolean isDeprecated) throws IOException;
 

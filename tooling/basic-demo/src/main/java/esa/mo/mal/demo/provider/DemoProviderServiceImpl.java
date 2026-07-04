@@ -58,7 +58,7 @@ import org.ccsds.moims.mo.maldemo.basicmonitor.provider.MonitorPublisher;
 import org.ccsds.moims.mo.maldemo.basicmonitor.structures.*;
 
 /**
- *
+ * The provider-side implementation of the Demo Basic Monitor service.
  */
 public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
 

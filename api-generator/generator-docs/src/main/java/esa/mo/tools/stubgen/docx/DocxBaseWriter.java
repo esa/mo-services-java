@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.docx;
 
 import esa.mo.tools.stubgen.GeneratorBase;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.TypeRef;
 import esa.mo.tools.stubgen.writers.AbstractWriter;
 import esa.mo.xsd.AreaType;
@@ -32,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Base writer with the shared helpers for generating .docx documents.
  *
  * @author Cesar.Coelho
  */
@@ -482,7 +484,7 @@ public class DocxBaseWriter extends AbstractWriter {
             buf.append("<w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr>");
         }
         if (isObjectRef) {
-            typeName = GeneratorBase.extractTypeFromObjectRef(typeName);
+            typeName = MOTypeInformation.extractTypeFromObjectRef(typeName);
         }
 
         buf.append("<w:t>").append(escape(typeName)).append("</w:t>");

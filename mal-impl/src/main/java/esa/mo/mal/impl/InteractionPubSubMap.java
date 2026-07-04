@@ -39,6 +39,9 @@ public class InteractionPubSubMap {
     private final Map<String, MALPublishInteractionListener> publisherMap = new HashMap<>();
     private final Map<String, Map<String, MALInteractionListener>> notifyListenersMap = new HashMap<>();
     private final Map<StringPair, MALInteractionListener> notifyMap = new HashMap<>();
+    // Holds the selectedKeys of each subscription so that the consumer can
+    // interpret a trimmed NOTIFY key value list (see CCSDS 521.0-B-3, 3.6.6.5).
+    private final Map<StringPair, IdentifierList> selectedKeysMap = new HashMap<>();
 
     /**
      * Registers a publish listener.
@@ -140,6 +143,7 @@ public class InteractionPubSubMap {
 
         synchronized (notifyMap) {
             notifyMap.put(id, list);
+            selectedKeysMap.put(id, subscription.getSelectedKeys());
             Map<String, MALInteractionListener> listeners = notifyListenersMap.get(uri);
 
             if (listeners == null) {
@@ -187,6 +191,24 @@ public class InteractionPubSubMap {
     }
 
     /**
+     * Returns the selectedKeys of the subscription for the given uri and
+     * subscription id. A null return value means that trimming was not enabled
+     * and therefore the NOTIFY key values follow the order defined by the
+     * operation (see CCSDS 521.0-B-3, section 3.6.6.5).
+     *
+     * @param uri The URI.
+     * @param subscription The subscription id.
+     * @return The selectedKeys, or null if trimming was not enabled.
+     */
+    public IdentifierList getSelectedKeys(final Identifier uri, final Identifier subscription) {
+        final StringPair id = new StringPair(uri.getValue(), subscription.getValue());
+
+        synchronized (notifyMap) {
+            return selectedKeysMap.get(id);
+        }
+    }
+
+    /**
      * Returns a MAP representation of the notified listeners and removes them.
      *
      * @param uri The URI.
@@ -203,6 +225,7 @@ public class InteractionPubSubMap {
                             new Object[]{this, uri}
                     );
                     notifyMap.remove(new StringPair(uri, e.getKey()));
+                    selectedKeysMap.remove(new StringPair(uri, e.getKey()));
                 }
             }
 
@@ -228,6 +251,7 @@ public class InteractionPubSubMap {
                             new Object[]{this, uri, unsubId}
                     );
                     notifyMap.remove(id);
+                    selectedKeysMap.remove(id);
 
                     final Map<String, MALInteractionListener> listeners = notifyListenersMap.get(uri);
                     if (listeners != null) {

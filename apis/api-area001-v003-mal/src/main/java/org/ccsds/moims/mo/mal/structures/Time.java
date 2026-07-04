@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.helpertools.helpers.HelperTime;
 
 /**
  * Class representing MAL Time type.
@@ -107,6 +108,10 @@ public class Time implements Attribute {
      */
     public FineTime toFineTime() {
         return new FineTime(value * ONE_MILLION);
+    }
+
+    public String toReadableString() {
+        return HelperTime.time2readableString(this);
     }
 
     public static Time generateTime(int year, int month, int day) {

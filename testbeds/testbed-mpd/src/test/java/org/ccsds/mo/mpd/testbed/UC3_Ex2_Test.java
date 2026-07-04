@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.NotifyProductDeliverySubscriptionKeys;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerOM;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerPOD;
 import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
@@ -637,6 +638,7 @@ public class UC3_Ex2_Test extends MPDTest {
                 public void notifyProductDeliveryNotifyReceived(MALMessageHeader msgHeader,
                         org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
                         org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+                        NotifyProductDeliverySubscriptionKeys keys,
                         org.ccsds.moims.mo.mpd.structures.ProductMetadata metadata,
                         String filename,
                         org.ccsds.moims.mo.mal.structures.URI deliveredTo,

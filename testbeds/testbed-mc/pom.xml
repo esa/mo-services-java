@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>testbed-pom</artifactId>
-        <version>12.3</version>
+        <version>14.0</version>
         <relativePath>../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-mc</artifactId>
     <packaging>jar</packaging>
-    <version>12.3</version>
+    <version>14.0</version>
     <name>CCSDS MOIMS MO Testbed MC</name>
 
     <organization>
@@ -133,12 +133,12 @@
         <profile>
             <id>CNES</id>
             <properties>
-                <testbed.consumer>CNES-TBD</testbed.consumer>
-                <testbed.provider>CNES-TBD</testbed.provider>
+                <testbed.consumer>fr.cnes.ccsds.mo.mc.util.CNESMCServicesFactory</testbed.consumer>
+                <testbed.provider>fr.cnes.ccsds.mo.mc.util.CNESMCServicesFactory</testbed.provider>
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>CNES-TBD</groupId>
+                    <groupId>fr.cnes.ccsds.mo</groupId>
                     <artifactId>services-area004-v002-mc</artifactId>
                     <version>1.0</version>
                 </dependency>

@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.StdStrings;
 import esa.mo.tools.stubgen.specification.TypeUtils;
@@ -32,19 +33,21 @@ import esa.mo.xsd.ServiceType;
 import esa.mo.xsd.TypeReference;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java code for the MO Composite structures.
  */
 public class JavaCompositeClass {
 
     private final GeneratorLangs generator;
 
-    public JavaCompositeClass(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaCompositeClass(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createCompositeClass(File folder, AreaType area, ServiceType service, CompositeType composite) throws IOException {
@@ -52,7 +55,7 @@ public class JavaCompositeClass {
         ClassWriter file = generator.createClassFile(folder, className);
         String parentClass = null;
         TypeReference parentType = null;
-        String parentInterface = generator.createElementType(StdStrings.MAL, null, StdStrings.COMPOSITE);
+        String parentInterface = typeInformation.createElementType(StdStrings.MAL, null, StdStrings.COMPOSITE);
 
         // Check if it is an extended Composite Type:
         if (composite.getExtends() != null) {
@@ -60,14 +63,14 @@ public class JavaCompositeClass {
 
             if (!StdStrings.MAL.equals(composite.getExtends().getType().getArea())
                     && !StdStrings.COMPOSITE.equals(composite.getExtends().getType().getName())) {
-                parentClass = generator.createElementType(parentType, true);
+                parentClass = typeInformation.createElementType(parentType, true);
                 parentInterface = null;
             }
 
             // Check if it is an MO Object:
             if (StdStrings.MAL.equals(composite.getExtends().getType().getArea())
                     && StdStrings.MOOBJECT.equals(composite.getExtends().getType().getName())) {
-                parentClass = generator.createElementType(parentType, true);
+                parentClass = typeInformation.createElementType(parentType, true);
                 parentInterface = null;
             }
         }
@@ -83,9 +86,13 @@ public class JavaCompositeClass {
         List<CompositeField> superCompElements = generator.createCompositeSuperElementsList(file, parentType);
 
         boolean abstractComposite = (composite.getShortFormPart() == null);
+        String compositeComment = composite.getComment();
+        if (compositeComment == null || compositeComment.isEmpty()) {
+            compositeComment = "The " + className + " structure.";
+        }
         file.addClassOpenStatement(className, !abstractComposite, abstractComposite,
-                parentClass, parentInterface, composite.getComment());
-        String fqName = generator.createElementType(area.getName(), serviceName, className);
+                parentClass, parentInterface, compositeComment);
+        String fqName = typeInformation.createElementType(area.getName(), serviceName, className);
 
         if (!abstractComposite) {
             generator.addTypeShortFormDetails(file, area, service, composite.getShortFormPart());
@@ -105,15 +112,14 @@ public class JavaCompositeClass {
         createTypedConstructorMethod(file, className, superCompElements, compElements);
 
         if (!abstractComposite) {
-            MethodWriter method = file.addMethodOpenStatementOverride(elementType, "createElement", null, null);
+            MethodWriter method = file.method("createElement").returns(elementType).asOverride().open();
             method.addLine("return new " + fqName + "();");
             method.addMethodCloseStatement();
         }
 
-        // add getters and setters
+        // add Getters
         for (CompositeField element : compElements) {
             GeneratorLangs.addGetter(file, element, null);
-            GeneratorLangs.addSetter(file, element, null);
         }
 
         // create equals method
@@ -198,17 +204,11 @@ public class JavaCompositeClass {
     private void createEqualsMethod(ClassWriter file, String className,
             String parentClass, List<CompositeField> compElements) throws IOException {
         if (generator.supportsEquals) {
-            CompositeField boolType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "boolean", false),
-                    false, true, "return value");
-            CompositeField intType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "int", false),
-                    false, true, "return value");
             CompositeField objType = generator.createCompositeElementsDetails(file, false, "obj",
                     TypeUtils.createTypeReference(null, null, "Object", false),
                     false, true, "The object to compare with.");
 
-            MethodWriter method = file.addMethodOpenStatementOverride(boolType, "equals", Arrays.asList(objType), null);
+            MethodWriter method = file.method("equals").returns("boolean").addArgument(objType).asOverride().open();
             method.addLine("if (obj instanceof " + className + ") {");
 
             if (null != parentClass) {
@@ -235,7 +235,7 @@ public class JavaCompositeClass {
             method.addLine("return false;");
             method.addMethodCloseStatement();
 
-            method = file.addMethodOpenStatementOverride(intType, "hashCode", null, null);
+            method = file.method("hashCode").returns("int").asOverride().open();
             String line = (parentClass != null) ? "int hash = super.hashCode();" : "int hash = 7;";
             method.addLine(line);
 
@@ -250,11 +250,7 @@ public class JavaCompositeClass {
     private void createToStringMethod(ClassWriter file, String className,
             String parentClass, List<CompositeField> compElements) throws IOException {
         if (generator.supportsToString) {
-            CompositeField strType = generator.createCompositeElementsDetails(file, false, "return",
-                    TypeUtils.createTypeReference(null, null, "_String", false),
-                    false, true, "return value");
-
-            MethodWriter method = file.addMethodOpenStatementOverride(strType, "toString", null, null);
+            MethodWriter method = file.method("toString").returns("_String").asOverride().open();
             method.addLine("StringBuilder buf = new StringBuilder();");
             method.addLine("buf.append(\"(" + className + ": \");");
 
@@ -297,7 +293,7 @@ public class JavaCompositeClass {
         }
 
         for (CompositeField element : compElements) {
-            boolean isAbstract = generator.isAbstract(element.getTypeReference())
+            boolean isAbstract = typeInformation.isAbstract(element.getTypeReference())
                     && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String fieldName = element.getFieldName();
@@ -331,7 +327,7 @@ public class JavaCompositeClass {
             method.addSuperMethodStatement("decode", "decoder");
         }
         for (CompositeField element : compElements) {
-            boolean isAbstract = generator.isAbstract(element.getTypeReference())
+            boolean isAbstract = typeInformation.isAbstract(element.getTypeReference())
                     && !element.getTypeReference().getName().contentEquals(StdStrings.ATTRIBUTE);
             String canBeNullStr = element.isCanBeNull() ? "Nullable" : "";
             String castString = element.getDecodeCast();

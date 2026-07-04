@@ -73,8 +73,8 @@ public class GENMessage implements MALMessage, java.io.Serializable {
             final MALElementStreamFactory encFactory,
             final Object... body) throws MALInteractionException {
         this.header = header;
-        this.encFactory = encFactory;
         this.body = LazyMessageBody.createMessageBody(header, encFactory, body);
+        this.encFactory = encFactory;
         this.qosProperties = qosProperties;
     }
 

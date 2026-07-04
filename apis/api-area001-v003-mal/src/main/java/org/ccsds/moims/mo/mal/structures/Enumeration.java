@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.structures;
 
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
 
 /**
  * The abstract class represents the MAL Enumeration type. The class is extended
@@ -36,7 +37,8 @@ public abstract class Enumeration implements Element {
     protected Integer value;
 
     /**
-     * The constructor of the Enumeration class.
+     * The constructor of the Enumeration class. The value -1 represents an
+     * undefined enumeration that cannot be encoded.
      *
      * @param value The value of the enumeration.
      */
@@ -54,7 +56,8 @@ public abstract class Enumeration implements Element {
     }
 
     /**
-     * Encodes the value of this object using the provided MALEncoder.
+     * Encodes the value of this object using the provided MALEncoder or throws
+     * an exception if the enumeration is undefined (value==-1).
      *
      * @param encoder The encoder to use for encoding.
      * @throws org.ccsds.moims.mo.mal.MALException if any encoding errors are
@@ -62,6 +65,10 @@ public abstract class Enumeration implements Element {
      */
     @Override
     public void encode(MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+        if (value == -1) {
+            throw new MALException("The Enumeration is undefined (value==-1)!");
+        }
+
         encoder.encodeEnumeration(this);
     }
 

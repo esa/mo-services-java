@@ -24,7 +24,6 @@ import esa.mo.xsd.MessageBodyType;
 import esa.mo.xsd.OperationErrorList;
 import esa.mo.xsd.OperationType;
 import esa.mo.xsd.PubSubOperationType;
-import esa.mo.xsd.SubmitOperationType;
 import java.util.List;
 
 /**

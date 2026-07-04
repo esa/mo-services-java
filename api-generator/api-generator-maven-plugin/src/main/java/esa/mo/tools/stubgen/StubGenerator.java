@@ -41,6 +41,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -49,79 +50,60 @@ import w3c.xsd.Schema;
 
 /**
  * Generates stubs and skeletons for CCSDS MO Service specifications.
- *
- * @goal generate
- *
- * @phase generate-sources
  */
-@Mojo(name = "generate-apis", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class StubGenerator extends AbstractMojo {
 
     /**
      * The directory for XML files
-     *
-     * @parameter default-value="${basedir}/src/main/xml"
-     * @required
      */
+    @Parameter(defaultValue = "${basedir}/src/main/xml", required = true)
     protected File xmlDirectory;
     /**
      * The directory for XML reference files
-     *
-     * @parameter default-value="${basedir}/src/main/xml-ref"
-     * @required
      */
+    @Parameter(defaultValue = "${basedir}/src/main/xml-ref", required = true)
     protected File xmlRefDirectory;
     /**
      * The directory for XSD type reference files
-     *
-     * @parameter default-value="${basedir}/src/main/xsd-ref"
-     * @required
      */
+    @Parameter(defaultValue = "${basedir}/src/main/xsd-ref", required = true)
     protected File xsdRefDirectory;
     /**
      * The working directory to create the generated java source files.
-     *
-     * @parameter
-     * default-value="${project.build.directory}/generated-sources/stub"
-     * @required
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/stub", required = true)
     protected File outputDirectory;
     /**
      * The target language to create.
-     *
-     * @parameter
      */
+    @Parameter
     protected String[] targetLanguages;
     /**
      * Generate structures code?
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     protected boolean generateStructures;
     /**
      * Generate COM code?
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     protected boolean generateCOM;
     /**
      * Force generation
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     protected boolean forceGeneration;
     /**
      * Extra generator specific properties, held in name/value pairs
-     *
-     * @parameter
      */
+    @Parameter
     protected HashMap<String, String> extraProperties;
     /**
      * Package bindings, held in AREA/package pairs For JAXB bindings, held in
      * URI/package pairs
-     *
-     * @parameter
      */
+    @Parameter
     protected HashMap<String, String> packageBindings;
     private final Map<String, Generator> GENERATOR_MAP = new HashMap<>();
     private boolean generatorsLoaded = false;

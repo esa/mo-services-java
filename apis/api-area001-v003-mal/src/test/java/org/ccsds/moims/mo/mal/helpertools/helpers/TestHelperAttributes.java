@@ -3,6 +3,7 @@ package org.ccsds.moims.mo.mal.helpertools.helpers;
 import java.io.IOException;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperAttributes;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BooleanList;
 import org.ccsds.moims.mo.mal.structures.DoubleList;
@@ -748,7 +749,7 @@ public class TestHelperAttributes {
         Duration attribute = new Duration();
         Duration result = (Duration) HelperAttributes.string2attribute(attribute, "321.123");
         assertTrue(result instanceof Duration);
-        assertEquals(321.123, result.getValue(), 0.000001);
+        assertEquals(321.123, result.getInSeconds(), 0.000001);
     }
 
     @Test
@@ -926,61 +927,61 @@ public class TestHelperAttributes {
     /* Tests for attribute2JavaType */
     @Test
     public void testAttribute2JavaType1() {
-        assertEquals(null, HelperAttributes.attribute2JavaType(null));
+        assertEquals(null, Attribute.attribute2JavaType(null));
     }
 
     @Test
     public void testAttribute2JavaType2() {
         Union attribute = new Union(true);
-        assertEquals(true, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals(true, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType3() {
         Union attribute = new Union(false);
-        assertEquals(false, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals(false, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType4() {
         Union attribute = new Union(42);
-        assertEquals(42, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals(42, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType5() {
         Union attribute = new Union(133742247331L);
-        assertEquals(133742247331L, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals(133742247331L, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType6() {
         Union attribute = new Union((short) 42);
-        assertEquals((short) 42, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals((short) 42, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType7() {
         Union attribute = new Union((byte) 42);
-        assertEquals((byte) 42, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals((byte) 42, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType8() {
         Union attribute = new Union(42.0f);
-        assertEquals(42.0f, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals(42.0f, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType9() {
         Union attribute = new Union(42.0);
-        assertEquals(42.0, HelperAttributes.attribute2JavaType(attribute));
+        assertEquals(42.0, attribute.attribute2JavaType());
     }
 
     @Test
     public void testAttribute2JavaType10() {
         Union attribute = new Union("I am a string now.");
-        assertEquals("I am a string now.", HelperAttributes.attribute2JavaType(attribute));
+        assertEquals("I am a string now.", attribute.attribute2JavaType());
     }
 
     /* Tests for generateElementListFromJavaType */

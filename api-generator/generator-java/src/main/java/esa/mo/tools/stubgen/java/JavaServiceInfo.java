@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen.java;
 
 import esa.mo.tools.stubgen.GeneratorLangs;
+import esa.mo.tools.stubgen.MOTypeInformation;
 import esa.mo.tools.stubgen.specification.CompositeField;
 import esa.mo.tools.stubgen.specification.FieldInfo;
 import esa.mo.tools.stubgen.specification.InteractionPatternEnum;
@@ -49,7 +50,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Generates the Java ServiceInfo class for a service.
  */
 public class JavaServiceInfo {
 
@@ -57,8 +58,11 @@ public class JavaServiceInfo {
     public final static String SERVICE_INFO = "ServiceInfo";
     private final GeneratorLangs generator;
 
-    public JavaServiceInfo(GeneratorLangs generator) {
+    private final MOTypeInformation typeInformation;
+
+    public JavaServiceInfo(GeneratorLangs generator, MOTypeInformation typeInformation) {
         this.generator = generator;
+        this.typeInformation = typeInformation;
     }
 
     public void createServiceInfoClass(File serviceFolder, AreaType area,
@@ -66,8 +70,8 @@ public class JavaServiceInfo {
         ClassWriter file = generator.createClassFile(serviceFolder, service.getName() + SERVICE_INFO);
 
         // construct area helper class name and variable
-        String hlp = generator.createElementType(area.getName(), null, null, area.getName() + "Helper");
-        String namespace = generator.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
+        String hlp = typeInformation.createElementType(area.getName(), null, null, area.getName() + "Helper");
+        String namespace = typeInformation.convertToNamespace(hlp + "." + area.getName().toUpperCase() + "_AREA");
         String serviceName = service.getName();
         String serviceCAPS = serviceName.toUpperCase();
         file.addPackageStatement(area.getName(), service.getName(), null);
@@ -79,9 +83,7 @@ public class JavaServiceInfo {
                 null, "Helper class for " + serviceName + " service.");
 
         // COM service should not have its operations generated, these are generated as part of the specific services
-        CompositeField _serviceNumberVar = generator.createCompositeElementsDetails(file, false, "_" + serviceCAPS + "_SERVICE_NUMBER",
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, false, "Service number literal.");
+        CompositeField _serviceNumberVar = file.field("int", "_" + serviceCAPS + "_SERVICE_NUMBER", "Service number literal.");
         CompositeField serviceNumberVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE_NUMBER",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, false, "Service number instance.");
@@ -106,9 +108,8 @@ public class JavaServiceInfo {
 
         for (OperationSummary op : summary.getOperations()) {
             String operationInstanceVar = op.getName().toUpperCase();
-            CompositeField _opNumberVar = generator.createCompositeElementsDetails(file, false, "_" + operationInstanceVar + "_OP_NUMBER",
-                    TypeUtils.createTypeReference(null, null, "int", false),
-                    false, false, "Operation number literal for operation " + operationInstanceVar);
+            CompositeField _opNumberVar = file.field("int", "_" + operationInstanceVar + "_OP_NUMBER",
+                    "Operation number literal for operation " + operationInstanceVar);
             CompositeField opNumberVar = generator.createCompositeElementsDetails(file, false, operationInstanceVar + "_OP_NUMBER",
                     TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                     true, false, "Operation number instance for operation " + operationInstanceVar);
@@ -175,8 +176,8 @@ public class JavaServiceInfo {
                 }
 
                 if (!isAbstract) {
-                    String clsName = generator.createElementType(area.getName(), service.getName(), typeName);
-                    String lclsName = generator.createElementType(area.getName(), service.getName(), typeName + "List");
+                    String clsName = typeInformation.createElementType(area.getName(), service.getName(), typeName);
+                    String lclsName = typeInformation.createElementType(area.getName(), service.getName(), typeName + "List");
                     elementInstantiations.add("new " + clsName + "()");
                     elementInstantiations.add("new " + lclsName + "()");
                 }
@@ -239,7 +240,7 @@ public class JavaServiceInfo {
 
         // Constructor - shouldn't it be started with the constructor method?
         MethodWriter constructor = file.addConstructor(StdStrings.PUBLIC, serviceName + SERVICE_INFO,
-                null, null, null, null, null);
+                null, null, null, "Creates an instance of the " + serviceName + " ServiceInfo.", null);
         String ending = hasCOMObjects ? ", COM_OBJECTS)" : ")";
         constructor.addLine("super(SERVICE_KEY, " + serviceCAPS + "_SERVICE_NAME, "
                 + serviceCAPS + "_SERVICE_ELEMENTS" + ", OPERATIONS" + ending + ";");
@@ -249,7 +250,7 @@ public class JavaServiceInfo {
         CompositeField opType = generator.createCompositeElementsDetails(file, false, "return",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MALArea", false),
                 false, true, null);
-        MethodWriter method = file.addMethodOpenStatementOverride(opType, "getArea", null, null);
+        MethodWriter method = file.method("getArea").returns(opType).asOverride().open();
         method.addLine("return " + namespace + ";");
         method.addMethodCloseStatement();
 
@@ -258,14 +259,11 @@ public class JavaServiceInfo {
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.MOErrorException", false),
                 false, true, null);
 
-        List<CompositeField> outputArgs = new LinkedList<>();
-        TypeReference ref1 = TypeUtils.createTypeReference(null, null, "int", false);
-        outputArgs.add(generator.createCompositeElementsDetails(file, true, "errorNumber", ref1, true, true, null));
-        TypeReference ref2 = TypeUtils.createTypeReference(null, null, "Object", false);
-        outputArgs.add(generator.createCompositeElementsDetails(file, true, "extraInfo", ref2, true, true, null));
-
         // Generate the MO Error method generator
-        MethodWriter method2 = file.addMethodOpenStatementOverride(opTypeMOError, "generateMOError", outputArgs, null);
+        MethodWriter method2 = file.method("generateMOError").returns(opTypeMOError)
+                .addArgument(file.field("int", "errorNumber", null))
+                .addArgument(file.field("Object", "extraInfo", null))
+                .asOverride().open();
         method2.addLine("switch (errorNumber) {");
 
         if (area.getErrors() != null) {
@@ -290,9 +288,8 @@ public class JavaServiceInfo {
         String objNameCaps = obj.getName().toUpperCase();
         comObjectCalls.add(objNameCaps);
 
-        CompositeField _objNumberVar = generator.createCompositeElementsDetails(file, false, "_" + objNameCaps + "_OBJECT_NUMBER",
-                TypeUtils.createTypeReference(null, null, "int", false),
-                false, true, "Literal for object " + objNameCaps);
+        CompositeField _objNumberVar = file.field("int", "_" + objNameCaps + "_OBJECT_NUMBER",
+                "Literal for object " + objNameCaps);
         CompositeField objNumberVar = generator.createCompositeElementsDetails(file, false, objNameCaps + "_OBJECT_NUMBER",
                 TypeUtils.createTypeReference(StdStrings.MAL, null, StdStrings.USHORT, false),
                 true, true, "Instance for object " + objNameCaps);
@@ -336,9 +333,9 @@ public class JavaServiceInfo {
         List<String> opArgs = new LinkedList<>();
         opArgs.add("SERVICE_KEY");
         opArgs.add(initNewLine + op.getName().toUpperCase() + "_OP_NUMBER");
-        opArgs.add(initNewLine + "new " + generator.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
+        opArgs.add(initNewLine + "new " + typeInformation.createElementType(StdStrings.MAL, null, StdStrings.IDENTIFIER) + "(\"" + op.getName() + "\")");
         // opArgs.add(initNewLine + "" + op.getReplay());
-        opArgs.add(initNewLine + "new " + generator.createElementType(StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
+        opArgs.add(initNewLine + "new " + typeInformation.createElementType(StdStrings.MAL, null, StdStrings.USHORT) + "(" + op.getSet() + ")");
 
         switch (op.getPattern()) {
             case SEND_OP:
@@ -366,6 +363,8 @@ public class JavaServiceInfo {
                 opArgs.add(addMalTypes(op.getRetTypes()));
                 break;
         }
+
+        opArgs.add(initNewLine + toJavaStringLiteral(op.getComment()));
 
         return opArgs;
     }
@@ -418,15 +417,36 @@ public class JavaServiceInfo {
 
             TypeReference type = typeInfo.getSourceType();
 
-            if (generator.isAbstract(type)) {
+            if (typeInformation.isAbstract(type)) {
                 buffer.append("null");
             } else {
                 buffer.append(typeInfo.getMalShortFormField());
             }
 
+            buffer.append(", ");
+            buffer.append(toJavaStringLiteral(typeInfo.getFieldComment()));
+
             buffer.append((i != ti.size() - 1) ? ")," : ")");
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Converts a comment into a Java String literal, or the literal {@code null}
+     * when the comment is null.
+     *
+     * @param comment The comment to convert. Can be null.
+     * @return The Java source representation of the comment.
+     */
+    private static String toJavaStringLiteral(String comment) {
+        if (comment == null) {
+            return "null";
+        }
+        String escaped = comment.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+        return "\"" + escaped + "\"";
     }
 }

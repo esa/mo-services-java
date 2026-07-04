@@ -57,6 +57,7 @@ import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.MonitorSubscriptionKeys;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
@@ -149,17 +150,6 @@ public class EntityRequestTestProcedure extends LoggingBase {
             return null;
         } else {
             return new Identifier(s);
-        }
-    }
-
-    @Deprecated
-    public static Union parseNumberKeyValue(String s) {
-        if (s.equals("[null]")) {
-            return null;
-        } else if (s.equals("*")) {
-            return new Union(new Long(0));
-        } else {
-            return new Union(new Long(Long.parseLong(s)));
         }
     }
 
@@ -297,6 +287,7 @@ public class EntityRequestTestProcedure extends LoggingBase {
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
                 Identifier subscriptionId, UpdateHeader updateHeader,
+                MonitorSubscriptionKeys keys,
                 TestUpdate updateList, Map qosProperties) {
             notifiedKeyValues.add(updateHeader.getKeyValues());
         }

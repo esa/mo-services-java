@@ -24,7 +24,7 @@ import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.URI;
 
 /**
- *
+ * A simple {@link SPPURIRepresentation} implementation.
  */
 public class SPPURIRepresentationSimple implements SPPURIRepresentation {
 

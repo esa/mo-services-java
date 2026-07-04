@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mal:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema"
-                   xmlns:com="http://www.ccsds.org/schema/COMSchema">
+                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema-v003">
   <mal:area comment="Contains services required to support testing of the MC service."
             name="MCPrototype"
             number="210"
-            version="1">
+            version="2">
 
     <mal:service xsi:type="com:ExtendedServiceType"
                  comment=""

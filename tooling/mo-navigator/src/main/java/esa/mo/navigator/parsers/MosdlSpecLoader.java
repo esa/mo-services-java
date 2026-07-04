@@ -92,7 +92,7 @@ public class MosdlSpecLoader implements SpecLoader {
     /**
      * Sets the input files or directories that comprise a single MO service
      * specification in MOSDL format.
-     * <p>
+     *
      * @param input a set of MOSDL files that comprise an MO service
      * specification. Alternatively, directories containing MOSDL files.
      */

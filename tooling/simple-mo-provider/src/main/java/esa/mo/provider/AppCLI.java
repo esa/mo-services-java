@@ -21,6 +21,7 @@
 package esa.mo.provider;
 
 /**
+ * Command-line entry point for the simple MO provider example.
  *
  * @author Cesar Coelho
  */

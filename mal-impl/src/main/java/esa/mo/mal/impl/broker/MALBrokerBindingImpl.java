@@ -273,18 +273,20 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
      * Adds a subscriber from this binding.
      *
      * @param uriTo The URI of the subscriber.
+     * @param subscriptionId The subscription ID being added.
      */
-    public void addSubscriber(String uriTo) {
-        subscriberSet.add(uriTo);
+    public void addSubscriber(String uriTo, String subscriptionId) {
+        subscriberSet.add(subscriptionId + uriTo);
     }
 
     /**
      * Removes a subscriber from this binding.
      *
      * @param uriTo The URI of the subscriber.
+     * @param subscriptionId The subscription ID being removed.
      */
-    public void removeSubscriber(String uriTo) {
-        subscriberSet.remove(uriTo);
+    public void removeSubscriber(String uriTo, String subscriptionId) {
+        subscriberSet.remove(subscriptionId + uriTo);
     }
 
     /**
@@ -294,7 +296,7 @@ public class MALBrokerBindingImpl extends ServiceComponentImpl implements MALBro
      * @return True if a subscriber known to this binding.
      */
     public boolean hasSubscriber(String uri) {
-        return subscriberSet.contains(uri);
+        return subscriberSet.stream().anyMatch(k -> k.endsWith(uri));
     }
 
 }

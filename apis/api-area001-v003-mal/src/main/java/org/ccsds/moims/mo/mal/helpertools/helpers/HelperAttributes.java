@@ -20,39 +20,11 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.helpers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.BooleanList;
-import org.ccsds.moims.mo.mal.structures.DoubleList;
-import org.ccsds.moims.mo.mal.structures.Duration;
-import org.ccsds.moims.mo.mal.structures.ElementList;
-import org.ccsds.moims.mo.mal.structures.FineTime;
-import org.ccsds.moims.mo.mal.structures.FloatList;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IntegerList;
-import org.ccsds.moims.mo.mal.structures.LongList;
-import org.ccsds.moims.mo.mal.structures.OctetList;
-import org.ccsds.moims.mo.mal.structures.ShortList;
-import org.ccsds.moims.mo.mal.structures.StringList;
-import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mal.structures.UInteger;
-import org.ccsds.moims.mo.mal.structures.ULong;
-import org.ccsds.moims.mo.mal.structures.UOctet;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.*;
 
 /**
  * A Helper class to simplify and solve many problems related with MAL
@@ -71,225 +43,27 @@ public class HelperAttributes {
     public static String SERIAL_OBJECT_STRING = "SerializedObject";
 
     /**
-     * Converts any MAL Attribute data type to a Double java type
+     * Converts an {@link Attribute} into a Java Double.
      *
-     * @param in The MAL Attribute data type
-     * @return The convert Double value or null if in == null
+     * @param in the Attribute to convert
+     * @return the converted Double value
+     * @deprecated Use {@link Attribute#attribute2double(Attribute)} directly.
      */
+    @Deprecated
     public static Double attribute2double(Attribute in) {
-
-        if (in instanceof Union) {
-            Integer sfp = ((Union) in).getTypeId().getSFP();
-
-            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) { // 2
-                double dou = ((Union) in).getBooleanValue() ? 1 : 0;
-                return dou;
-            }
-
-            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) { // 4
-                return new Double(((Union) in).getFloatValue());
-            }
-
-            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) { // 5
-                return ((Union) in).getDoubleValue();
-            }
-
-            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) { // 7
-                return new Double((short) ((Union) in).getOctetValue());
-            }
-
-            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) { // 9
-                return new Double(((Union) in).getShortValue());
-            }
-
-            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) { // 11
-                return new Double(((Union) in).getIntegerValue());
-            }
-
-            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) { // 13
-                return new Double(((Union) in).getLongValue());
-            }
-
-            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) { // 15
-                Double dou;
-                try {
-                    dou = Double.parseDouble(((Union) in).getStringValue());
-                } catch (NumberFormatException ex) {
-                    return null; // Return a null
-                }
-
-                return dou;
-            }
-
-        }
-
-        if (in instanceof Duration) { // 3
-            return ((Duration) in).getInSeconds();
-        }
-
-        if (in instanceof Identifier) { // 6
-            try {
-                return Double.parseDouble(((Identifier) in).getValue());
-            } catch (NumberFormatException ex) {
-                return null;
-            }
-        }
-
-        if (in instanceof UOctet) { // 8
-            return (double) ((UOctet) in).getValue();
-        }
-
-        if (in instanceof UShort) { // 10
-            return (double) ((UShort) in).getValue();
-        }
-
-        if (in instanceof UInteger) { // 12
-            return (double) ((UInteger) in).getValue();
-        }
-
-        if (in instanceof ULong) { // 14
-            return ((ULong) in).getValue().doubleValue();
-        }
-
-        if (in instanceof Time) { // 16
-            return (double) ((Time) in).getValue();
-        }
-
-        if (in instanceof FineTime) { // 17
-            return (double) ((FineTime) in).getValue();
-        }
-
-        if (in instanceof URI) { // 18
-            try {
-                return Double.parseDouble(((URI) in).getValue());
-            } catch (NumberFormatException ex) {
-                return null;
-            }
-        }
-
-        return null;
+        return Attribute.attribute2double(in);
     }
 
     /**
-     * Converts any MAL Attribute data type to a String java type. Deprecated
-     * because it was moved to the Attribute interface.
+     * Converts a value into its String representation.
      *
-     * @param in The MAL Attribute data type
-     * @return The convert String value
+     * @param in the value to convert
+     * @return the String representation
+     * @deprecated Use {@link Attribute#attribute2string(Object)} directly.
      */
     @Deprecated
     public static String attribute2string(Object in) {
-        if (in == null) {
-            return "null";
-        }
-
-        if (in instanceof Union) {
-            Integer sfp = ((Union) in).getTypeId().getSFP();
-
-            if (sfp.equals(Union.DOUBLE_TYPE_SHORT_FORM)) {
-                if (((Union) in).getDoubleValue() == null) {
-                    return "";
-                }
-                return ((Union) in).getDoubleValue().toString();
-            }
-
-            if (sfp.equals(Union.BOOLEAN_TYPE_SHORT_FORM)) {
-                if (((Union) in).getBooleanValue() == null) {
-                    return "";
-                }
-                String dou = ((Union) in).getBooleanValue() ? "true" : "false";
-                return dou;
-            }
-
-            if (sfp.equals(Union.FLOAT_TYPE_SHORT_FORM)) {
-                if (((Union) in).getFloatValue() == null) {
-                    return "";
-                }
-                return (((Union) in).getFloatValue()).toString();
-            }
-
-            if (sfp.equals(Union.INTEGER_TYPE_SHORT_FORM)) {
-                if (((Union) in).getIntegerValue() == null) {
-                    return "";
-                }
-                return (((Union) in).getIntegerValue()).toString();
-            }
-
-            if (sfp.equals(Union.LONG_TYPE_SHORT_FORM)) {
-                if (((Union) in).getLongValue() == null) {
-                    return "";
-                }
-                return (((Union) in).getLongValue()).toString();
-            }
-
-            if (sfp.equals(Union.OCTET_TYPE_SHORT_FORM)) {
-                if (((Union) in).getOctetValue() == null) {
-                    return "";
-                }
-                return (((Union) in).getOctetValue()).toString();
-            }
-
-            if (sfp.equals(Union.SHORT_TYPE_SHORT_FORM)) {
-                if (((Union) in).getShortValue() == null) {
-                    return "";
-                }
-                return (((Union) in).getShortValue()).toString();
-            }
-
-            if (sfp.equals(Union.STRING_TYPE_SHORT_FORM)) {
-                if (((Union) in).getStringValue() == null) {
-                    return "";
-                }
-                return ((Union) in).getStringValue();
-            }
-
-        }
-
-        if (in instanceof Duration) {
-            return String.valueOf(((Duration) in).toString());
-        }
-
-        if (in instanceof UOctet) {
-            return String.valueOf(((UOctet) in).getValue());
-        }
-
-        if (in instanceof UShort) {
-            return String.valueOf(((UShort) in).getValue());
-        }
-
-        if (in instanceof UInteger) {
-            return String.valueOf(((UInteger) in).getValue());
-        }
-
-        if (in instanceof Blob) {
-            return Arrays.toString(((Blob) in).getValue());
-        }
-
-        if (in instanceof ULong) {
-            return String.valueOf(((ULong) in).getValue());
-        }
-
-        if (in instanceof Time) {
-            return String.valueOf(((Time) in).getValue());
-        }
-
-        if (in instanceof Identifier) {
-            return ((Identifier) in).getValue();
-        }
-
-        if (in instanceof FineTime) {
-            return String.valueOf(((FineTime) in).getValue());
-        }
-
-        if (in instanceof URI) {
-            return ((URI) in).toString();
-        }
-
-        if (in instanceof Long) {
-            return ((Long) in).toString();
-        }
-
-        return "";
+        return Attribute.attribute2string(in);
     }
 
     /**
@@ -300,7 +74,6 @@ public class HelperAttributes {
      * @throws java.lang.IllegalArgumentException If attributeName == null
      */
     public static Object attributeName2object(String attributeName) throws IllegalArgumentException {
-
         if (attributeName == null) {
             throw new IllegalArgumentException("AttributeName must not be null.");
         }
@@ -362,6 +135,32 @@ public class HelperAttributes {
             return new Blob();
         }
 
+        return null;
+    }
+
+    /**
+     * Checks the java type and returns the equivalent MO type short form.
+     *
+     * @param type The java type.
+     * @return The type short form in MO.
+     */
+    public static Integer getTypeShortForm(Class<?> type) {
+        Integer helperValue = HelperAttributes.attributeName2typeShortForm(type.getSimpleName());
+        if (helperValue != null) {
+            return helperValue;
+        }
+
+        if (type.equals(boolean.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Boolean");
+        } else if (type.equals(float.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Float");
+        } else if (type.equals(double.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Double");
+        } else if (type.equals(int.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Integer");
+        } else if (type.equals(long.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Long");
+        }
         return null;
     }
 
@@ -468,46 +267,15 @@ public class HelperAttributes {
     }
 
     /**
-     * Converts a Java data type into a MAL data type if possible
+     * Converts a Java type into an MO {@link Attribute}.
      *
-     * @param obj The object in the Java data type
-     * @return The object in the MAL data type or the original object
+     * @param obj the Java object to convert
+     * @return the resulting Attribute
+     * @deprecated Use {@link Attribute#javaType2Attribute(Object)} directly.
      */
+    @Deprecated
     public static Object javaType2Attribute(Object obj) {
-
-        if (obj instanceof java.lang.Boolean) {
-            return new Union((Boolean) obj);
-        }
-
-        if (obj instanceof java.lang.Integer) {
-            return new Union((Integer) obj);
-        }
-
-        if (obj instanceof java.lang.Long) {
-            return new Union((Long) obj);
-        }
-
-        if (obj instanceof java.lang.String) {
-            return new Union((String) obj);
-        }
-
-        if (obj instanceof java.lang.Double) {
-            return new Union((Double) obj);
-        }
-
-        if (obj instanceof java.lang.Float) {
-            return new Union((Float) obj);
-        }
-
-        if (obj instanceof java.lang.Byte) {
-            return new Union((Byte) obj);
-        }
-
-        if (obj instanceof java.lang.Short) {
-            return new Union((Short) obj);
-        }
-
-        return obj;
+        return Attribute.javaType2Attribute(obj);
     }
 
     /**
@@ -515,46 +283,11 @@ public class HelperAttributes {
      *
      * @param obj The object in the MAL data type
      * @return The object in the Java data type
+     * @deprecated Use {@link Attribute#attribute2JavaType(Object)} directly.
      */
+    @Deprecated
     public static Object attribute2JavaType(Object obj) {
-
-        if (obj instanceof Union) {
-            Integer typeShortForm = ((Union) obj).getTypeId().getSFP();
-
-            if (typeShortForm.intValue() == Attribute.BOOLEAN_TYPE_SHORT_FORM.intValue()) {
-                return (boolean) ((Union) obj).getBooleanValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.INTEGER_TYPE_SHORT_FORM.intValue()) {
-                return (int) ((Union) obj).getIntegerValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.LONG_TYPE_SHORT_FORM.intValue()) {
-                return (long) ((Union) obj).getLongValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.STRING_TYPE_SHORT_FORM.intValue()) {
-                return ((Union) obj).getStringValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.DOUBLE_TYPE_SHORT_FORM.intValue()) {
-                return (double) ((Union) obj).getDoubleValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.FLOAT_TYPE_SHORT_FORM.intValue()) {
-                return (float) ((Union) obj).getFloatValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.OCTET_TYPE_SHORT_FORM.intValue()) {
-                return (byte) ((Union) obj).getOctetValue();
-            }
-
-            if (typeShortForm.intValue() == Attribute.SHORT_TYPE_SHORT_FORM.intValue()) {
-                return (short) ((Union) obj).getShortValue();
-            }
-        }
-
-        return obj;
+        return Attribute.attribute2JavaType(obj);
     }
 
     /**
@@ -826,5 +559,4 @@ public class HelperAttributes {
 
         return (Serializable) o;
     }
-
 }

@@ -20,6 +20,7 @@
  */
 package org.ccsds.moims.mo.mal;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -126,6 +127,15 @@ public abstract class ServiceInfo {
      */
     public MALOperation getOperationByNumber(final UShort opNumber) {
         return operationsByNumber.get(opNumber.getValue());
+    }
+
+    /**
+     * Returns all the operations of this service.
+     *
+     * @return The operations of this service.
+     */
+    public Collection<MALOperation> getOperations() {
+        return operationsByNumber.values();
     }
 
     /**

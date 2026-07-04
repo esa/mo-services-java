@@ -57,6 +57,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
+import org.ccsds.moims.mo.malprototype.iptest.consumer.MonitorSubscriptionKeys;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
 import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
 import org.ccsds.moims.mo.malprototype.structures.TestUpdate;
@@ -194,6 +195,7 @@ public class ReceiveMultipleTestProcedure {
         @Override
         public void monitorNotifyReceived(MALMessageHeader msgHeader,
                 Identifier subscriptionId, UpdateHeader updateHeader,
+                MonitorSubscriptionKeys keys,
                 TestUpdate update, Map qosProperties) {
             LoggingBase.logMessage("monitorNotifyReceived(" + msgHeader + ',' + updateHeader + ')');
             notifyHeaders.add(msgHeader);

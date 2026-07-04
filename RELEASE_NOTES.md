@@ -4,6 +4,19 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 14.0
+* Removes the setters from the auto-generated classes
+* Removes deprecated methods
+* Adds the partial Monitor & Control service implementations (Action, Alert, and Packet) and respective testbed
+* Adds feature to allow Enumeration types to be used as PUB-SUB subscription keys
+* Adds typed Subscription Key accessors for PUB-SUB on the consumer side
+* Surfaces the MO exceptions directly on the provider Handler interfaces
+* Carries the operation and field comments into the runtime metadata (enables MCP servers to be easily plugged in)
+* Multiple improvements and cleanup to the api-generator
+* Adds a GitHub workflow to generate the .docx files from the XML service specifications
+* Fixes the PUB-SUB broker bug that dropped subscriptions on a partial deregister
+* Updates the MPS spec with the final version from 26/08/2025
+
 ### Version 12.3 (27 August 2025)
 * Updates the MPS spec with the final version from 26/08/2025
 

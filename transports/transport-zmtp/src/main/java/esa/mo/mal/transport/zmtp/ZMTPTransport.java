@@ -451,6 +451,8 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     /**
+     * Returns the body encoding selector.
+     *
      * @return the bodyEncodingSelector
      */
     public ZMTPEncodingSelector getBodyEncodingSelector() {
@@ -519,6 +521,8 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
     }
 
     /**
+     * Returns the ZMQ context.
+     *
      * @return the zmqContext
      */
     public ZContext getZmqContext() {

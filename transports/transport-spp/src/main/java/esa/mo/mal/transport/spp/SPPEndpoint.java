@@ -40,7 +40,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
- *
+ * The SPP transport {@link Endpoint} implementation.
  */
 public class SPPEndpoint extends Endpoint {
 

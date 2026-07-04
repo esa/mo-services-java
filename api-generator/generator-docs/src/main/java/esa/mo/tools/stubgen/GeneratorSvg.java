@@ -176,7 +176,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                                 List<FieldInfo> types = new LinkedList<>();
                                 if (null != evt.getObjectType()) {
-                                    types = TypeUtils.convertTypeReferences(this, TypeUtils.getTypeListViaXSDAny(evt.getObjectType().getAny()));
+                                    types = TypeUtils.convertTypeReferences(typeInformation, TypeUtils.getTypeListViaXSDAny(evt.getObjectType().getAny()));
                                 }
                                 drawOperationTypes(eventBodyBuff, summary, (int) evt.getNumber(), "Event additional application data:", types, evt.getComment(), evt.getName(), "EVENT");
                             }
@@ -287,13 +287,13 @@ public class GeneratorSvg extends GeneratorDocument {
                 updateHdr.setArea("MAL");
                 updateHdr.setName("UpdateHeader");
                 updateHdr.setList(Boolean.TRUE);
-                types.add(0, TypeUtils.convertTypeReference(this, subId));
-                types.add(1, TypeUtils.convertTypeReference(this, updateHdr));
+                types.add(0, TypeUtils.convertTypeReference(typeInformation, subId));
+                types.add(1, TypeUtils.convertTypeReference(typeInformation, updateHdr));
 
                 for (FieldInfo typeInfo : op.getRetTypes()) {
                     TypeReference refType = typeInfo.getSourceType();
                     refType.setList(Boolean.TRUE);
-                    types.add(TypeUtils.convertTypeReference(this, refType));
+                    types.add(TypeUtils.convertTypeReference(typeInformation, refType));
                     refType.setList(Boolean.FALSE);
                 }
                 drawOperationTypes(svgFile, summary, opNumber, "Notify telemetry report application data:",
@@ -438,9 +438,9 @@ public class GeneratorSvg extends GeneratorDocument {
             if (type.getSourceType().isList()) {
                 svgFile.addField("N", StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), false, false);
                 svgFile.addSpan(1, 1, "Repeated N times");
-                svgFile.addField(partName, type.getSourceType().getName(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getSourceType().getName()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
+                svgFile.addField(partName, type.getSourceType().getName(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getSourceType().getName()), typeInformation.isAbstract(type.getSourceType()), typeInformation.isEnum(type.getSourceType()));
             } else {
-                svgFile.addField(partName, type.getActualMalType(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getActualMalType()), isAbstract(type.getSourceType()), isEnum(type.getSourceType()));
+                svgFile.addField(partName, type.getActualMalType(), createXlink(type.getSourceType().getArea(), type.getSourceType().getService(), type.getActualMalType()), typeInformation.isAbstract(type.getSourceType()), typeInformation.isEnum(type.getSourceType()));
             }
         }
     }
@@ -473,7 +473,7 @@ public class GeneratorSvg extends GeneratorDocument {
                     svgFile.addField("N", StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), false, false);
                     svgFile.addSpan(1, 1, "Repeated N times");
                 }
-                svgFile.addField(element.getFieldName(), element.getTypeName(), createXlink(element.getEncodeCall(), element.getDecodeCall(), element.getTypeName()), isAbstract(element.getTypeReference()), isEnum(element.getTypeReference()));
+                svgFile.addField(element.getFieldName(), element.getTypeName(), createXlink(element.getEncodeCall(), element.getDecodeCall(), element.getTypeName()), typeInformation.isAbstract(element.getTypeReference()), typeInformation.isEnum(element.getTypeReference()));
             }
         }
         svgFile.endDrawing();
@@ -584,7 +584,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                 int li = getListIndex();
                 svgFile.addSubField("N" + li, StdStrings.INTEGER, createXlink(StdStrings.MAL, null, StdStrings.INTEGER), xOff, yOff, 1, fullDepth, false, false, false);
-                svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff + 1, yOff, width, thisDepth, isAbstract(typeRef), isEnum(typeRef), isComposite(typeRef));
+                svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff + 1, yOff, width, thisDepth, typeInformation.isAbstract(typeRef), typeInformation.isEnum(typeRef), typeInformation.isComposite(typeRef));
 
                 if (isOptional) {
                     svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Nullable");
@@ -593,7 +593,7 @@ public class GeneratorSvg extends GeneratorDocument {
 
                 svgFile.addSubSpan(xOff + 1, yOff + fullDepth, width, repSpanDepth, "Repeated N" + li + " times");
             } else {
-                svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff, yOff, getWidth(), thisDepth, isAbstract(typeRef), isEnum(typeRef), isComposite(typeRef));
+                svgFile.addSubField(name, type, createXlink(typeRef.getArea(), typeRef.getService(), typeRef.getName()), xOff, yOff, getWidth(), thisDepth, typeInformation.isAbstract(typeRef), typeInformation.isEnum(typeRef), typeInformation.isComposite(typeRef));
 
                 if (isOptional) {
                     svgFile.addSubSpan(xOff, yOff + fullDepth, getWidth(), spanDepth, "Nullable");
@@ -695,10 +695,10 @@ public class GeneratorSvg extends GeneratorDocument {
         }
 
         public void addTypeElement(String eName, TypeReference type, boolean isOptional) {
-            if (isAttributeType(type) || isEnum(type)) {
+            if (typeInformation.isAttributeType(type) || typeInformation.isEnum(type)) {
                 addElement(new ContainerAttribute(this, type, eName, type.getName(), type.isList(), isOptional));
             } else {
-                if (isComposite(type)) {
+                if (typeInformation.isComposite(type)) {
                     addElement(new CompositeContainer(this, type, eName, type.getName(), type.isList(), isOptional, type));
                 } else {
                     addElement(new AbstractElement(this, type, eName, type.getName(), type.isList(), isOptional));
@@ -806,7 +806,7 @@ public class GeneratorSvg extends GeneratorDocument {
             if (!fullyExpanded) {
                 fullyExpanded = true;
 
-                CompositeType composite = getCompositeDetails(tr);
+                CompositeType composite = typeInformation.getCompositeDetails(tr);
 
                 List<CompositeField> compElements = createCompositeElementsList(null, composite);
 
