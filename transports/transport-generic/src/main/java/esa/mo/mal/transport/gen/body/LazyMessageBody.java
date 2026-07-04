@@ -283,10 +283,6 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
         } catch (NotFoundException ex) {
             Transport.LOGGER.log(Level.WARNING,
                     "(2) Unable to decode the Message Body!", ex);
-            // Propagate instead of swallowing: otherwise messageParts stays
-            // null and readers fail later with an NPE that hides this cause
-            throw new MALException("Unable to decode the Message Body! "
-                    + "The operation could not be found!", ex);
         }
     }
 
