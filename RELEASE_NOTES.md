@@ -4,7 +4,7 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 14.0
+### Version 14.0 (04 July 2026)
 * Removes the setters from the auto-generated classes
 * Removes deprecated methods
 * Adds the partial Monitor & Control service implementations (Action, Alert, and Packet) and respective testbed
