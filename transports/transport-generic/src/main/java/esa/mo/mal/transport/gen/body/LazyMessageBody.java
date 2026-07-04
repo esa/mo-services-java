@@ -228,12 +228,21 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
     }
 
     /**
-     * Decodes the message body.
+     * Decodes the message body. Synchronized because the same body can be
+     * decoded from two threads: the thread of a synchronous consumer call
+     * unblocked by the interaction handler, and the message dispatcher thread
+     * delivering the same message to the interaction listener.
      *
      * @throws MALException if any error detected.
      */
-    protected void decodeMessageBody() throws MALException {
+    protected synchronized void decodeMessageBody() throws MALException {
         if (decodedBody) {
+            if (messageParts == null) {
+                // A previous decode attempt failed; fail loudly instead of
+                // letting the callers trip over the null messageParts
+                throw new MALException("The Message Body could not be decoded "
+                        + "by a previous decoding attempt!");
+            }
             return;
         }
 
@@ -274,6 +283,10 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
         } catch (NotFoundException ex) {
             Transport.LOGGER.log(Level.WARNING,
                     "(2) Unable to decode the Message Body!", ex);
+            // Propagate instead of swallowing: otherwise messageParts stays
+            // null and readers fail later with an NPE that hides this cause
+            throw new MALException("Unable to decode the Message Body! "
+                    + "The operation could not be found!", ex);
         }
     }
 
