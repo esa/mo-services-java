@@ -92,7 +92,11 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
             final Object[] messageParts) {
         this.ctx = ctx;
         this.bodyPartCount = (messageParts != null) ? messageParts.length : 0;
-        this.messageParts = messageParts;
+        // Never leave messageParts null while decodedBody is true: an empty body
+        // (e.g. a request with no arguments) is passed as null, and the repeated-
+        // read guard in decodeMessageBody() would otherwise report it as a failed
+        // decode. An empty array encodes as a zero-part body.
+        this.messageParts = (messageParts != null) ? messageParts : new Object[0];
         this.encFactory = encFactory;
         decodedBody = true;
     }
@@ -283,6 +287,15 @@ public class LazyMessageBody implements MALMessageBody, java.io.Serializable {
         } catch (NotFoundException ex) {
             Transport.LOGGER.log(Level.WARNING,
                     "(2) Unable to decode the Message Body!", ex);
+            // The operation fields are unknown, so the body structure cannot be
+            // recovered. Degrade to an empty body (the historical log-and-continue
+            // behavior) instead of leaving messageParts null: otherwise the
+            // repeated-read guard above would later report this tolerated path as
+            // a SEVERE encoding error.
+            if (messageParts == null) {
+                bodyPartCount = 0;
+                messageParts = new Element[0];
+            }
         }
     }
 
