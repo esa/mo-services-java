@@ -124,6 +124,16 @@ public class HelperMisc {
      * @throws IOException if the file consumer properties file does no exist
      */
     public static void loadConsumerProperties() throws MalformedURLException, IOException {
+        // Were they loaded already? This flag is independent from the provider's
+        // "PropertiesLoadedFlag" so that an application acting as both a consumer
+        // and a provider still loads both property files.
+        String propAreLoaded = System.getProperty("ConsumerPropertiesLoadedFlag");
+        if (propAreLoaded != null) {
+            if (propAreLoaded.equals("true")) {
+                return;
+            }
+        }
+
         final Properties sysProps = System.getProperties();
         final File file = new File(System.getProperty("consumer.properties", CONSUMER_PROPERTIES_FILE));
 
@@ -134,6 +144,7 @@ public class HelperMisc {
         }
 
         System.setProperties(sysProps);
+        System.setProperty("ConsumerPropertiesLoadedFlag", "true");
     }
 
     /**
