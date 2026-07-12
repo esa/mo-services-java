@@ -229,7 +229,6 @@ public class HelperMisc {
      * SHARED_BROKER_PROPERTIES file will be read
      */
     public static void loadPropertiesFile(Boolean useSharedBroker) {
-
         // Were they loaded already?
         String propAreLoaded = System.getProperty("PropertiesLoadedFlag");
         if (propAreLoaded != null) {
@@ -307,11 +306,9 @@ public class HelperMisc {
 
             System.setProperties(sysProps);
             System.setProperty("PropertiesLoadedFlag", "true");
-
         } catch (MalformedURLException ex) {
             Logger.getLogger(HelperMisc.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**
