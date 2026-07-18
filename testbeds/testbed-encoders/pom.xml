@@ -19,13 +19,13 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>14.0</version>
+        <version>14.1</version>
         <relativePath>../../testbed-pom/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbed-encoders</artifactId>
     <packaging>jar</packaging>
-    <version>14.0</version>
+    <version>14.1</version>
     <name>CCSDS MOIMS MO Testbed Encoders</name>
 
     <organization>

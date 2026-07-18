@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>14.0</version>
+        <version>14.1</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>generator-interfaces</artifactId>
-    <version>14.0</version>
+    <version>14.1</version>
     <packaging>jar</packaging>
   
     <name>ESA MO API Generator - Interfaces</name>
@@ -65,12 +65,12 @@
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-prototypes</artifactId>
-            <version>14.0</version>
+            <version>14.1</version>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>xml-ccsds-mo-standards</artifactId>
-            <version>14.0</version>
+            <version>14.1</version>
         </dependency>
         <!-- The dependencies below are needed for Java 9 and higher -->
         <dependency>
@@ -133,7 +133,7 @@
                             <packageName>w3c.xsd</packageName>
                             <laxSchemaValidation>true</laxSchemaValidation>
                             <sources>
-                                <source>${project.build.directory}/xsd-ref/XMLSchema.xsd</source>
+                                <source>${basedir}/src/main/xsd-ref/XMLSchema.xsd</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -153,49 +153,6 @@
                             <sources>
                                 <source>target/generated-sources/stub</source>
                             </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>wagon-maven-plugin</artifactId>
-                <version>2.0.2</version>
-                <executions>
-                    <execution>
-                        <id>get-xsd</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>download-single</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://www.w3.org/2009/XMLSchema</url>
-                            <fromFile>XMLSchema.xsd</fromFile>
-                            <toDir>${project.build.directory}/xsd-ref</toDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>get-dtd</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>download-single</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://www.w3.org/2009/XMLSchema</url>
-                            <fromFile>XMLSchema.dtd</fromFile>
-                            <toDir>${project.build.directory}/xsd-ref</toDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>get-dtd-types</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>download-single</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://www.w3.org/2009/XMLSchema</url>
-                            <fromFile>datatypes.dtd</fromFile>
-                            <toDir>${project.build.directory}/xsd-ref</toDir>
                         </configuration>
                     </execution>
                 </executions>

@@ -4,7 +4,14 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 14.0
+### Version 14.1 (18 July 2026)
+* Vendors the W3C XML Schema files instead of downloading them at build time (removes the build's dependency on network access to w3.org)
+* Fixes a race condition and silent failures in the LazyMessageBody decoding
+* Restores the log-and-continue handling of NotFoundException during decoding
+* No longer reports empty message bodies as failed decodes
+* Loads the consumer.properties file only once per JVM
+
+### Version 14.0 (04 July 2026)
 * Removes the setters from the auto-generated classes
 * Removes deprecated methods
 * Adds the partial Monitor & Control service implementations (Action, Alert, and Packet) and respective testbed
