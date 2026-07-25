@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal.structures;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
@@ -79,6 +80,25 @@ public class Blob implements Attribute {
         this.length = 0;
         this.uvalue = sourceUrl;
         urlValue = null;
+    }
+
+    /**
+     * File constructor. The resource identified by the file should not be
+     * modified until the method ‘detach’ is called. If the resource identified
+     * by the file is modified after the constructor has been called then the
+     * Blob behaviour is unspecified.
+     *
+     * @param file Source file.
+     * @throws java.lang.IllegalArgumentException If the argument is null.
+     */
+    public Blob(final File file) throws java.lang.IllegalArgumentException {
+        if (file == null) {
+            throw new IllegalArgumentException("The file argument cannot be null!");
+        }
+        this.value = null;
+        this.length = 0;
+        this.uvalue = file.toURI().toString();
+        this.urlValue = null;
     }
 
     @Override
