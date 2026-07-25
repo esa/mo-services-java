@@ -668,7 +668,8 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
      */
     protected TCPIPTransportDataTransceiver createDataTransceiver(Socket socket) throws IOException {
         RLOGGER.fine("TCPIPTransport.createDataTransceiver()");
-        return new TCPIPTransportDataTransceiver(socket, ((clientPort == 0) ? serverPort : clientPort));
+        int port = ((clientPort == 0) ? serverPort : clientPort);
+        return new TCPIPTransportDataTransceiver(socket, port, clientSockets);
     }
 
     /**
