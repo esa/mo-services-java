@@ -189,7 +189,15 @@ public class MALReceiver implements MALMessageListener {
                             handlePublishRegister(msg, address);
                             break;
                         case MALPubSubOperation._PUBLISH_STAGE:
-                            address = lookupAddress(callingEndpoint, null);
+                            // Only brokers hold a provider endpoint for the PUBLISH
+                            // operation. A publish error is returned to the publisher
+                            // as a PUBLISH message with the isError flag set; the
+                            // publisher is not a provider, so looking up its (absent)
+                            // address would only log a spurious warning. handlePublish
+                            // does not use the address for error messages anyway.
+                            if (!msg.getHeader().getIsErrorMessage()) {
+                                address = lookupAddress(callingEndpoint, null);
+                            }
                             handlePublish(msg, address);
                             break;
                         case MALPubSubOperation._NOTIFY_STAGE:
