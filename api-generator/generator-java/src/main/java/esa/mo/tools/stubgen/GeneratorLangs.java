@@ -734,8 +734,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addClassOpenStatement(className, false, false, null, null,
                 "Provider PROGRESS interaction class for " + service + "::" + op.getName() + " operation.");
 
-        file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar,
-                false, (String) null);
+        file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar, false, (String) null);
 
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
                 createCompositeElementsDetails(file, false, "interaction",
