@@ -319,12 +319,30 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      */
     public boolean receivedExpectedTransportActivity(String monitorKey, String[] transactivity) {
         logMessage(loggingClassName + ":receivedExpectedTransportActivity");
-        boolean transEventsMatch = true;
 
-        for (int transCnt = 0; transCnt < transactivity.length && transEventsMatch; transCnt++) {
-            if (!transactivity[transCnt].isEmpty()) {
-                transEventsMatch = monitorEventAdapter.getMonitorEventList().matches(transactivity[transCnt]);
-                if (!transEventsMatch) {
+        // The transport-activity events arrive asynchronously over pub-sub, and the
+        // last one (e.g. ACCEPTANCE) can still be in flight when this check runs.
+        // Poll until all expected events have been received or a reasonable timeout
+        // elapses, instead of sampling the received list only once.
+        final long deadline = System.currentTimeMillis() + 2 * Configuration.COM_PERIOD_LONG;
+        boolean transEventsMatch;
+        do {
+            transEventsMatch = allTransportActivityReceived(transactivity);
+            if (transEventsMatch || System.currentTimeMillis() >= deadline) {
+                break;
+            }
+            try {
+                Thread.sleep(Configuration.COM_PERIOD_SHORT);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        } while (true);
+
+        if (!transEventsMatch) {
+            for (int transCnt = 0; transCnt < transactivity.length; transCnt++) {
+                if (!transactivity[transCnt].isEmpty()
+                        && !monitorEventAdapter.getMonitorEventList().matches(transactivity[transCnt])) {
                     logMessage(loggingClassName + ":patternCompletesAsExpectedWithTransportActivityAndExecutionActivity NO MATCH for "
                             + transactivity[transCnt]);
                 }
@@ -333,6 +351,23 @@ public class MonitorActivityScenario extends BaseActivityScenario {
 
         logMessage(loggingClassName + ":receivedExpectedTransportActivity RET = " + transEventsMatch);
         return transEventsMatch;
+    }
+
+    /**
+     * Checks whether all of the expected transport activity events have been
+     * received so far.
+     *
+     * @param transactivity the expected transport activity events
+     * @return {@code true} if every non-empty expected event has been received
+     */
+    private boolean allTransportActivityReceived(String[] transactivity) {
+        for (int transCnt = 0; transCnt < transactivity.length; transCnt++) {
+            if (!transactivity[transCnt].isEmpty()
+                    && !monitorEventAdapter.getMonitorEventList().matches(transactivity[transCnt])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
