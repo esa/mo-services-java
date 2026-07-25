@@ -20,8 +20,10 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
@@ -155,6 +157,58 @@ public class Blob implements Attribute {
      */
     public int getLength() {
         return length;
+    }
+
+    /**
+     * Returns the content of this Blob as a stream, without loading the whole
+     * content into memory. For a URL-based Blob the stream is opened lazily over
+     * the designated resource; for a byte array based Blob the stream reads from
+     * the wrapped array. The returned stream should be closed by the caller.
+     *
+     * @return The Blob content as an input stream.
+     * @throws MALException if the stream could not be opened.
+     */
+    public InputStream getAsStream() throws MALException {
+        if (isURLBased()) {
+            try {
+                return new URL(uvalue).openStream();
+            } catch (IOException ex) {
+                throw new MALException("The Blob URL stream could not be opened: " + uvalue, ex);
+            }
+        }
+
+        return new ByteArrayInputStream((value != null) ? value : new byte[0]);
+    }
+
+    /**
+     * Returns the length of the Blob content as a {@code long}, allowing lengths
+     * larger than {@link Integer#MAX_VALUE}. For a URL-based Blob the length is
+     * that of the designated resource; for a byte array based Blob it is the
+     * length of the wrapped array.
+     *
+     * @return The length of the Blob content in bytes.
+     * @throws MALException if the length could not be determined.
+     */
+    public long getLengthLong() throws MALException {
+        if (isURLBased()) {
+            try {
+                final URL url = new URL(uvalue);
+
+                if ("file".equals(url.getProtocol())) {
+                    return new File(url.toURI()).length();
+                }
+
+                final long len = url.openConnection().getContentLengthLong();
+                if (len < 0) {
+                    throw new MALException("The Blob URL length is unknown: " + uvalue);
+                }
+                return len;
+            } catch (IOException | java.net.URISyntaxException ex) {
+                throw new MALException("The Blob URL length could not be determined: " + uvalue, ex);
+            }
+        }
+
+        return (value != null) ? value.length : 0;
     }
 
     /**

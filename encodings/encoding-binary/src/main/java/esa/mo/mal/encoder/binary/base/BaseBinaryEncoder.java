@@ -21,6 +21,7 @@
 package esa.mo.mal.encoder.binary.base;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
@@ -118,6 +119,45 @@ public abstract class BaseBinaryEncoder extends Encoder {
             } else {
                 writeUnsignedInt(value.length);
                 write(value);
+            }
+        }
+
+        @Override
+        public void writeStream(final InputStream input, final long length) throws IOException {
+            if (length > Integer.MAX_VALUE) {
+                throw new IOException("Blob is too large to encode: " + length
+                        + " bytes exceeds the maximum of " + Integer.MAX_VALUE
+                        + " supported by this encoding's 32-bit length field");
+            }
+            writeUnsignedInt((int) length);
+            copyStream(input, length);
+        }
+
+        /**
+         * Copies exactly {@code length} bytes from the input to the output stream
+         * in fixed-size chunks, without holding the whole payload in memory. The
+         * input stream is always closed. The length prefix must already have been
+         * written by the caller.
+         *
+         * @param input the source of the bytes to copy.
+         * @param length the number of bytes to copy.
+         * @throws IOException if there is a problem reading or writing, or if the
+         * input ends before {@code length} bytes have been copied.
+         */
+        protected void copyStream(final InputStream input, final long length) throws IOException {
+            try (InputStream in = input) {
+                final byte[] chunk = new byte[65536];
+                long remaining = length;
+                int read;
+                while (remaining > 0
+                        && (read = in.read(chunk, 0, (int) Math.min(chunk.length, remaining))) != -1) {
+                    write(chunk, 0, read);
+                    remaining -= read;
+                }
+                if (remaining != 0) {
+                    throw new IOException("Blob stream ended early: " + remaining
+                            + " of " + length + " bytes were missing");
+                }
             }
         }
 

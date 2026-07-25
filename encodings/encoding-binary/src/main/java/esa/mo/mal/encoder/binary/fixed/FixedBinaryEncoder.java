@@ -22,6 +22,7 @@ package esa.mo.mal.encoder.binary.fixed;
 
 import esa.mo.mal.encoder.binary.base.BinaryTimeHandler;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.encoding.StreamHolder;
@@ -164,6 +165,22 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
                 }
                 write(value);
             }
+        }
+
+        @Override
+        public void writeStream(final InputStream input, final long length) throws IOException {
+            final long max = shortLengthField ? 0xFFFFL : Integer.MAX_VALUE;
+            if (length > max) {
+                throw new IOException("Blob is too large to encode: " + length
+                        + " bytes exceeds the maximum of " + max
+                        + " supported by this encoding's length field");
+            }
+            if (shortLengthField) {
+                writeUnsignedShort((int) length);
+            } else {
+                writeUnsignedInt((int) length);
+            }
+            copyStream(input, length);
         }
     }
 }

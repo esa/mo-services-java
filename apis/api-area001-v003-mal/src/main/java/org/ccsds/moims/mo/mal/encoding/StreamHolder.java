@@ -20,7 +20,9 @@
  */
 package org.ccsds.moims.mo.mal.encoding;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 
@@ -152,6 +154,29 @@ public abstract class StreamHolder {
      * @throws IOException is there is a problem adding the value to the stream.
      */
     public abstract void writeBytes(final byte[] value) throws IOException;
+
+    /**
+     * Adds a length-prefixed byte block to the output stream, streamed from an
+     * input source without holding the whole payload in memory. The default
+     * implementation reads the input fully and delegates to
+     * {@link #writeBytes(byte[])} for backwards compatibility; sub-classes that
+     * can stream should override this. The input stream is always closed.
+     *
+     * @param input the source of the bytes to encode.
+     * @param length the number of bytes provided by the input.
+     * @throws IOException is there is a problem adding the value to the stream.
+     */
+    public void writeStream(final InputStream input, final long length) throws IOException {
+        try (InputStream in = input) {
+            final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            final byte[] chunk = new byte[8192];
+            int read;
+            while ((read = in.read(chunk)) != -1) {
+                buffer.write(chunk, 0, read);
+            }
+            writeBytes(buffer.toByteArray());
+        }
+    }
 
     /**
      * Adds a byte to the output stream.
