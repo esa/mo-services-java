@@ -35,13 +35,16 @@ import java.net.URI;
 import java.util.Random;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import static org.junit.Assert.assertEquals;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * Encodes and decodes Blobs of a range of sizes, including sizes larger than
  * 2 GB, to check that the whole round-trip is streamed (never fully held in
  * memory) and preserves the content length.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LargeBlobTest {
 
     private static final long KB = 1024;
@@ -49,27 +52,27 @@ public class LargeBlobTest {
     private static final long GB = 1024 * MB;
 
     @Test
-    public void blob512KB() throws Exception {
+    public void blob1_512KB() throws Exception {
         encodeThenDecodeBlob("512 KB", 512 * KB);
     }
 
     @Test
-    public void blob32MB() throws Exception {
+    public void blob2_32MB() throws Exception {
         encodeThenDecodeBlob("32 MB", 32 * MB);
     }
 
     @Test
-    public void blob1GB() throws Exception {
+    public void blob3_1GB() throws Exception {
         encodeThenDecodeBlob("1 GB", 1 * GB);
     }
 
     @Test
-    public void blob3GB() throws Exception {
+    public void blob4_3GB() throws Exception {
         encodeThenDecodeBlob("3 GB", 3 * GB);
     }
 
     @Test
-    public void blob5GB() throws Exception {
+    public void blob5_5GB() throws Exception {
         encodeThenDecodeBlob("5 GB", 5 * GB);
     }
 
