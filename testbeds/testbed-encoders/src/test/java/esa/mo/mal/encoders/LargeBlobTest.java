@@ -31,83 +31,117 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.Random;
 import org.ccsds.moims.mo.mal.structures.Blob;
-import org.ccsds.moims.mo.mal.structures.Element;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Probes whether a Blob larger than 2 GB can be encoded and decoded:
- * generate a 3 GB file, wrap it in a Blob, encode, then decode.
+ * Encodes and decodes Blobs of a range of sizes, including sizes larger than
+ * 2 GB, to check that the whole round-trip is streamed (never fully held in
+ * memory) and preserves the content length.
  */
 public class LargeBlobTest {
 
-    private static final long SIZE = 3L * 1024 * 1024 * 1024; // 3 GB (on purpose > 2 GB)
+    private static final long KB = 1024;
+    private static final long MB = 1024 * KB;
+    private static final long GB = 1024 * MB;
 
     @Test
-    public void encodeThenDecode3GBBlob() throws Exception {
+    public void blob512KB() throws Exception {
+        encodeThenDecodeBlob("512 KB", 512 * KB);
+    }
+
+    @Test
+    public void blob32MB() throws Exception {
+        encodeThenDecodeBlob("32 MB", 32 * MB);
+    }
+
+    @Test
+    public void blob1GB() throws Exception {
+        encodeThenDecodeBlob("1 GB", 1 * GB);
+    }
+
+    @Test
+    public void blob3GB() throws Exception {
+        encodeThenDecodeBlob("3 GB", 3 * GB);
+    }
+
+    @Test
+    public void blob5GB() throws Exception {
+        encodeThenDecodeBlob("5 GB", 5 * GB);
+    }
+
+    /**
+     * Generates a random file of the given size, wraps it in a Blob, encodes it
+     * with the fixed binary encoder, decodes it back and checks the decoded Blob
+     * has the same length. The round-trip is streamed, so it works for files
+     * larger than the heap. Source, encoded and any spooled temporary files are
+     * cleaned up afterwards.
+     *
+     * @param label a human-readable size label, for messages.
+     * @param size the Blob size in bytes.
+     * @throws Exception if the round-trip fails.
+     */
+    private void encodeThenDecodeBlob(String label, long size) throws Exception {
+        System.out.println("=== " + label + " (" + size + " bytes) ===");
+
         File dir = new File("target/large-blob-test");
         dir.mkdirs();
-        File srcFile = new File(dir, "blob-3gb.bin");
+        File srcFile = new File(dir, "blob-src.bin");
         File encodedFile = new File(dir, "encoded.bin");
 
-        // Pre-flight resource checks. This test deliberately uses a 3 GB Blob to
-        // exercise the >2 GB limitation. Without enough heap or disk it would fail
-        // for the wrong reason (a heap OutOfMemoryError, or "No space left on
-        // device") which would mask the actual Blob limitation. In that case,
-        // alert and skip the test rather than report a misleading failure.
-        long maxHeap = Runtime.getRuntime().maxMemory();
-        long freeDisk = dir.getUsableSpace();
-
-        if (maxHeap < SIZE) {
-            System.err.println("ALERT: skipping - not enough heap for a " + SIZE
-                    + " byte Blob. Need -Xmx >= " + SIZE + " bytes, have " + maxHeap
-                    + ". The test would fail with a heap OutOfMemoryError for lack of RAM,"
-                    + " not because of the Blob 2 GB limitation.");
-        }
-        if (freeDisk < SIZE) {
-            System.err.println("ALERT: skipping - not enough free disk to generate a " + SIZE
-                    + " byte file in " + dir.getAbsolutePath() + ". Need " + SIZE
-                    + " bytes, have " + freeDisk + ". The test would fail while writing the"
-                    + " file, not because of the Blob limitation.");
-        }
-        assumeTrue("Not enough heap (-Xmx) for a 3 GB Blob", maxHeap >= SIZE);
-        assumeTrue("Not enough free disk for a 3 GB file", freeDisk >= SIZE);
-
         try {
-            // 1. Generate a 3 GB file with random content
-            System.out.println("[1] Generating " + SIZE + " byte random file...");
-            generateRandomFile(srcFile, SIZE);
-            System.out.println("    File generated: " + srcFile.length() + " bytes");
+            // 1. Generate a file of the requested size with random content
+            long start = System.nanoTime();
+            generateRandomFile(srcFile, size);
+            System.out.println("[1] Generated " + srcFile.length() + " byte file in "
+                    + elapsedMs(start) + " ms");
 
-            // 2. Create a Blob with it (file-based: a byte[] cannot hold 3 GB)
+            // 2. Wrap it in a Blob (file-based, so a byte[] is never needed)
             Blob blob = new Blob(srcFile);
             System.out.println("[2] Blob created: " + blob);
 
             // 3. Encode
-            System.out.println("[3] Encoding...");
+            start = System.nanoTime();
             try (OutputStream fos = new BufferedOutputStream(new FileOutputStream(encodedFile))) {
                 FixedBinaryEncoder encoder = new FixedBinaryEncoder(fos, new BinaryTimeHandler(), false);
                 blob.encode(encoder);
                 encoder.close();
             }
-            System.out.println("    Encoded: " + encodedFile.length() + " bytes");
+            System.out.println("[3] Encoded " + encodedFile.length() + " bytes in "
+                    + elapsedMs(start) + " ms");
 
-            // 4. Decode
-            System.out.println("[4] Decoding...");
+            // 4. Decode and check the content length survived the round-trip
+            start = System.nanoTime();
             try (InputStream fis = new BufferedInputStream(new FileInputStream(encodedFile))) {
                 FixedBinaryDecoder decoder = new FixedBinaryDecoder(fis, new BinaryTimeHandler(), false);
-                Element decoded = new Blob().decode(decoder);
-                System.out.println("    Decoded: " + decoded);
-            }
+                Blob decoded = (Blob) new Blob().decode(decoder);
+                System.out.println("[4] Decoded " + decoded + " in " + elapsedMs(start) + " ms");
+                assertEquals(label + ": decoded length", size, decoded.getLengthLong());
 
-            System.out.println("RESULT: PASS");
+                // Remove the temporary file the decoder spools large Blobs into
+                if (decoded.isURLBased()) {
+                    new File(URI.create(decoded.getURL())).delete();
+                }
+            }
         } finally {
             srcFile.delete();
             encodedFile.delete();
             dir.delete();
         }
+    }
+
+    /**
+     * Returns the number of milliseconds elapsed since the given nanosecond
+     * timestamp.
+     *
+     * @param startNanos the start time, from {@link System#nanoTime()}.
+     * @return the elapsed time in milliseconds.
+     */
+    private static long elapsedMs(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1_000_000;
     }
 
     /**

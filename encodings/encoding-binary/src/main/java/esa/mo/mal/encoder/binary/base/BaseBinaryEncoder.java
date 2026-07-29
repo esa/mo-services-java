@@ -124,12 +124,11 @@ public abstract class BaseBinaryEncoder extends Encoder {
 
         @Override
         public void writeStream(final InputStream input, final long length) throws IOException {
-            if (length > Integer.MAX_VALUE) {
-                throw new IOException("Blob is too large to encode: " + length
-                        + " bytes exceeds the maximum of " + Integer.MAX_VALUE
-                        + " supported by this encoding's 32-bit length field");
-            }
-            writeUnsignedInt((int) length);
+            // Blobs use a 64-bit length so they are not capped at 2 GB. For the
+            // variable-length encoding a varint of a value <= Integer.MAX_VALUE is
+            // byte-identical to the old 32-bit length, so existing data stays
+            // readable; only lengths above 2 GB use the extended range.
+            writeUnsignedLong(length);
             copyStream(input, length);
         }
 
