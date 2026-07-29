@@ -28,13 +28,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Element;
 import static org.junit.Assume.assumeTrue;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -45,9 +45,6 @@ public class LargeBlobTest {
 
     private static final long SIZE = 3L * 1024 * 1024 * 1024; // 3 GB (on purpose > 2 GB)
 
-    @Ignore("A Blob larger than 2 GB cannot yet be encoded (the length prefix is a "
-            + "32-bit field); this probe is expected to fail until that is addressed. "
-            + "Enable it manually to reproduce the limitation.")
     @Test
     public void encodeThenDecode3GBBlob() throws Exception {
         File dir = new File("target/large-blob-test");
@@ -81,17 +78,7 @@ public class LargeBlobTest {
         try {
             // 1. Generate a 3 GB file with random content
             System.out.println("[1] Generating " + SIZE + " byte random file...");
-            byte[] chunk = new byte[8 * 1024 * 1024];
-            Random rnd = new Random(42);
-            long written = 0;
-            try (OutputStream os = new BufferedOutputStream(new FileOutputStream(srcFile))) {
-                while (written < SIZE) {
-                    rnd.nextBytes(chunk);
-                    int toWrite = (int) Math.min(chunk.length, SIZE - written);
-                    os.write(chunk, 0, toWrite);
-                    written += toWrite;
-                }
-            }
+            generateRandomFile(srcFile, SIZE);
             System.out.println("    File generated: " + srcFile.length() + " bytes");
 
             // 2. Create a Blob with it (file-based: a byte[] cannot hold 3 GB)
@@ -120,6 +107,30 @@ public class LargeBlobTest {
             srcFile.delete();
             encodedFile.delete();
             dir.delete();
+        }
+    }
+
+    /**
+     * Generates a file of the given size filled with deterministic pseudo-random
+     * bytes. The content is written in fixed-size chunks so the generation itself
+     * never holds the whole file in memory, allowing sizes larger than the heap.
+     * Reusable by any test that needs a large file.
+     *
+     * @param file the file to (over)write.
+     * @param size the number of bytes to write.
+     * @throws IOException if the file could not be written.
+     */
+    public static void generateRandomFile(File file, long size) throws IOException {
+        byte[] chunk = new byte[8 * 1024 * 1024];
+        Random rnd = new Random(42);
+        long written = 0;
+        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
+            while (written < size) {
+                rnd.nextBytes(chunk);
+                int toWrite = (int) Math.min(chunk.length, size - written);
+                os.write(chunk, 0, toWrite);
+                written += toWrite;
+            }
         }
     }
 }
