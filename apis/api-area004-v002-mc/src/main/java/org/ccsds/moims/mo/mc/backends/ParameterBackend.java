@@ -23,7 +23,6 @@
  */
 package org.ccsds.moims.mo.mc.backends;
 
-import java.io.IOException;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mc.structures.ParameterDefinitionList;
