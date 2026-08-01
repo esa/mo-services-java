@@ -20,6 +20,8 @@
  */
 package esa.mo.mal.transport.gen;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.MALException;
@@ -113,6 +115,17 @@ public class EndpointRegistry {
         }
 
         return null;
+    }
+
+    /**
+     * Returns every registered endpoint.
+     *
+     * @return The registered endpoints.
+     */
+    public Collection<Endpoint> all() {
+        // A copy: the caller walks this while a disconnect may be registering
+        // or removing endpoints, and the maps here are not synchronised.
+        return new ArrayList<>(endpointMalMap.values());
     }
 
     /**

@@ -39,21 +39,8 @@ import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
-import org.ccsds.moims.mo.mal.structures.Attribute;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
-import org.ccsds.moims.mo.mal.structures.NamedValue;
-import org.ccsds.moims.mo.mal.structures.NamedValueList;
-import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
-import org.ccsds.moims.mo.mal.structures.Subscription;
-import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mal.structures.UpdateHeader;
-import org.ccsds.moims.mo.mal.transport.MALDeregisterBody;
-import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mal.transport.MALPublishBody;
-import org.ccsds.moims.mo.mal.transport.MALPublishRegisterBody;
-import org.ccsds.moims.mo.mal.transport.MALRegisterBody;
-import org.ccsds.moims.mo.mal.transport.MALTransmitErrorException;
+import org.ccsds.moims.mo.mal.structures.*;
+import org.ccsds.moims.mo.mal.transport.*;
 
 /**
  * Base implementation of the MALBrokerHandler class that should be extended by
@@ -287,6 +274,20 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
         }
     }
 
+    /**
+     * Returns true if subscriptions are still held for a consumer on a broker.
+     * Package private, for the tests in this package.
+     *
+     * @param brokerKey The URI of the broker.
+     * @param consumerURI The URI of the consumer.
+     * @return True if subscriptions are held for that consumer.
+     */
+    synchronized boolean hasSubscriptions(final String brokerKey, final String consumerURI) {
+        final Map<String, SubscriptionSource> subs = consumers.get(brokerKey);
+
+        return subs != null && subs.containsKey(consumerURI);
+    }
+
     private Map<String, SubscriptionSource> getConsumerSubscriptions(final String brokerKey) {
         Map<String, SubscriptionSource> subs = consumers.get(brokerKey);
 
@@ -353,17 +354,58 @@ public class MALBrokerHandlerImpl implements MALBrokerHandler, MALCloseable {
         }
     }
 
+    /**
+     * Removes every subscription held on behalf of the consumers of a peer that
+     * the transport reports as gone.
+     *
+     * Without this the subscriptions are only dropped one at a time, each after
+     * a NOTIFY has failed to reach a consumer that is no longer there.
+     *
+     * @param remoteUriPrefix The prefix shared by the URIs of the lost peer.
+     */
+    public synchronized void removeConsumerSubscriptions(final String remoteUriPrefix) {
+        if (remoteUriPrefix == null) {
+            return;
+        }
+
+        // Collected first, because deregistering removes entries from the very
+        // maps that are being walked.
+        final List<String[]> lost = new LinkedList<>();
+
+        for (Map.Entry<String, Map<String, SubscriptionSource>> broker : consumers.entrySet()) {
+            for (String consumerURI : broker.getValue().keySet()) {
+                if (consumerURI.startsWith(remoteUriPrefix)) {
+                    lost.add(new String[]{broker.getKey(), consumerURI});
+                }
+            }
+        }
+
+        for (String[] entry : lost) {
+            final String brokerKey = entry[0];
+            final String consumerURI = entry[1];
+            final SubscriptionSource subSource = getConsumerSubscriptions(brokerKey).get(consumerURI);
+
+            if (subSource != null) {
+                MALBrokerImpl.LOGGER.log(Level.FINE,
+                        "Removing the Subscriptions of a Consumer that is gone: {0}", consumerURI);
+                internalDeregisterSubscriptions(brokerKey, subSource, null);
+            }
+        }
+    }
+
     private void internalDeregisterSubscriptions(final String brokerKey,
             final SubscriptionSource subSource, final IdentifierList subscriptionIds) {
-        if (subSource != null) {
-            subSource.removeSubscriptions(subscriptionIds);
-            if (!subSource.active()) {
-                Map<String, SubscriptionSource> subs = getConsumerSubscriptions(brokerKey);
-                subs.remove(subSource.getSignature());
+        if (subSource == null) {
+            return;
+        }
 
-                if (subs.isEmpty()) {
-                    consumers.remove(brokerKey);
-                }
+        subSource.removeSubscriptions(subscriptionIds);
+        if (!subSource.active()) {
+            Map<String, SubscriptionSource> subs = getConsumerSubscriptions(brokerKey);
+            subs.remove(subSource.getSignature());
+
+            if (subs.isEmpty()) {
+                consumers.remove(brokerKey);
             }
         }
     }

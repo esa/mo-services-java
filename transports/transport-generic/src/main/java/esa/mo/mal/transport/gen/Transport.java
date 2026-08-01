@@ -355,10 +355,35 @@ public abstract class Transport<I, O> implements MALTransport {
 
         if (localUriTo != null) {
             outgoingDataChannelsManager.closeConnection(localUriTo);
+            notifyConnectionLost(localUriTo);
         }
 
         if (receptionHandler != null) {
             receptionHandler.close();
+        }
+    }
+
+    /**
+     * Tells the MAL layer that a remote peer is gone, so that it can release
+     * the state it holds for it, such as the subscriptions a broker is still
+     * holding on behalf of a consumer that disconnected. Without this the loss
+     * is only discovered one failed message at a time.
+     *
+     * @param remoteRootURI The root URI of the peer that was lost.
+     */
+    protected void notifyConnectionLost(final String remoteRootURI) {
+        // The endpoints of the peer all start with its root URI followed by the
+        // service delimiter. Comparing against the delimiter too keeps a peer
+        // on port 1025 from matching one on port 10250.
+        String prefix = remoteRootURI + addressing.getServiceDelim();
+
+        for (Endpoint endpoint : endpoints.all()) {
+            try {
+                endpoint.connectionLost(prefix);
+            } catch (Throwable ex) {
+                LOGGER.log(Level.WARNING,
+                        "Error informing the endpoint that a connection was lost", ex);
+            }
         }
     }
 
