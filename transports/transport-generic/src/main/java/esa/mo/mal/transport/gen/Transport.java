@@ -30,7 +30,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -79,28 +78,9 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected static final Random RANDOM_NAME = new Random();
     /**
-     * The delimiter to use to separate the protocol part from the address part
-     * of the URL.
+     * The shape of the URIs used by this transport, and the parsing of them.
      */
-    protected final String protocolDelim;
-    /**
-     * The delimiter to use to separate the external address part from the
-     * internal object part of the URL.
-     */
-    protected final char serviceDelim;
-    /**
-     * If the protocol delimiter is the same as the service delimiter then we
-     * need a count to find the correct service delimiter.
-     */
-    protected final int serviceDelimCounter;
-    /**
-     * Delimiter to use when holding routing information in a URL
-     */
-    protected final char routingDelim;
-    /**
-     * True if protocol supports the concept of routing.
-     */
-    protected final boolean supportsRouting;
+    protected final TransportAddressing addressing;
     /**
      * True if calls to ourselves should be handled in-process i.e. not via the
      * underlying transport.
@@ -110,10 +90,6 @@ public abstract class Transport<I, O> implements MALTransport {
      * The timeout in seconds to wait for confirmation of delivery.
      */
     protected final int deliveryTimeout;
-    /**
-     * The string used to represent this protocol.
-     */
-    protected final String protocol;
     /**
      * The endpoints created by this transport, indexed by MAL local name and by
      * transport routing name.
@@ -147,14 +123,6 @@ public abstract class Transport<I, O> implements MALTransport {
      * The stream factory used for encoding and decoding messages.
      */
     private final MALElementStreamFactory streamFactory;
-    /**
-     * The base string for URL for this protocol.
-     */
-    protected String uriBase;
-    /**
-     * Map of cachedRoutingParts. This associates a URI to its Routing part.
-     */
-    private final ConcurrentHashMap<String, String> cachedRoutingParts = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -193,23 +161,13 @@ public abstract class Transport<I, O> implements MALTransport {
             final char routingDelim,
             final boolean supportsRouting,
             final java.util.Map properties) throws MALException {
-        this.protocol = protocol;
-        this.supportsRouting = supportsRouting;
-        this.protocolDelim = protocolDelim;
-        this.serviceDelim = serviceDelim;
-        this.routingDelim = routingDelim;
+        this.addressing = new TransportAddressing(protocol, protocolDelim,
+                serviceDelim, routingDelim, supportsRouting);
         this.qosProperties = properties;
 
         streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
         LOGGER.log(Level.FINE, "Created element stream: {0}",
                 streamFactory.getClass().getName());
-
-        if (protocolDelim.contains("" + serviceDelim)) {
-            String replaced = protocolDelim.replace("" + serviceDelim, "");
-            serviceDelimCounter = protocolDelim.length() - replaced.length();
-        } else {
-            serviceDelimCounter = 0;
-        }
 
         // default values
         boolean lInProcessSupport = true;
@@ -241,12 +199,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @throws MALException On error
      */
     public void init() throws MALException {
-        String protocolString = protocol;
-        if (protocol.contains(":")) {
-            protocolString = protocol.substring(0, protocol.indexOf(':'));
-        }
-
-        uriBase = protocolString + protocolDelim + createTransportAddress() + serviceDelim;
+        addressing.initUriBase(createTransportAddress());
     }
 
     @Override
@@ -328,13 +281,13 @@ public abstract class Transport<I, O> implements MALTransport {
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
         String destinationURI = header.getTo().getValue();
-        String remoteRootURI = header.getToURI().getRootURI(serviceDelim, serviceDelimCounter);
+        String remoteRootURI = addressing.getRootURI(header.getToURI());
 
         // first check if its actually a message to ourselves
         String endpointUriPart = getRoutingPart(destinationURI);
 
         if (inProcessSupport
-                && (uriBase.startsWith(remoteRootURI) || remoteRootURI.startsWith(uriBase))
+                && addressing.matchesLocalBase(remoteRootURI)
                 && endpoints.containsRoutingName(endpointUriPart)) {
             LOGGER.log(Level.FINE, "Routing msg internally to: {0}",
                     new Object[]{endpointUriPart});
@@ -622,20 +575,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @return the routing part of the URI
      */
     public String getRoutingPart(String uriValue) {
-        String routingPart = cachedRoutingParts.get(uriValue);
-
-        if (routingPart == null) {
-            final int iFirst = URI.nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
-            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim) : uriValue.length();
-            if (iSecond < 0) {
-                iSecond = uriValue.length();
-            }
-
-            routingPart = uriValue.substring(iFirst + 1, iSecond);
-            cachedRoutingParts.put(uriValue, routingPart);
-        }
-
-        return routingPart;
+        return addressing.getRoutingPart(uriValue);
     }
 
     /**
@@ -651,7 +591,8 @@ public abstract class Transport<I, O> implements MALTransport {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map qosProperties,
             final NamedValueList supplements) throws MALException {
-        return new Endpoint(this, localName, routingName, uriBase + routingName, supplements);
+        return new Endpoint(this, localName, routingName,
+                addressing.getUriBase() + routingName, supplements);
     }
 
     /**
@@ -679,7 +620,7 @@ public abstract class Transport<I, O> implements MALTransport {
                 // this is the first message received form this reception handler
                 // add the remote base URI it is receiving messages from
                 URI sourceURI = msg.getHeader().getFromURI();
-                String sourceRootURI = sourceURI.getRootURI(serviceDelim, serviceDelimCounter);
+                String sourceRootURI = addressing.getRootURI(sourceURI);
                 receptionHandler.setRemoteURI(sourceRootURI);
 
                 //register the communication channel with this URI if needed
@@ -689,7 +630,7 @@ public abstract class Transport<I, O> implements MALTransport {
             // outgoing message
             // get target URI
             URI reroutedMsg = this.rerouteMessage(msg);
-            String remoteRootURI = reroutedMsg.getRootURI(serviceDelim, serviceDelimCounter);
+            String remoteRootURI = addressing.getRootURI(reroutedMsg);
             sender = outgoingDataChannelsManager.manageCommunicationChannelOutgoing(msg.getHeader(), remoteRootURI);
         }
 

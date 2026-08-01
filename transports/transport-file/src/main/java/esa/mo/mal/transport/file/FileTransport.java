@@ -171,7 +171,8 @@ public class FileTransport extends Transport<InputStream, InputStream> {
     @Override
     protected Endpoint internalCreateEndpoint(String localName,
             String routingName, Map qosProperties, NamedValueList supplements) throws MALException {
-        return new Endpoint(this, localName, routingName, uriBase + localName, false, supplements);
+        return new Endpoint(this, localName, routingName,
+                addressing.getUriBase() + localName, false, supplements);
     }
 
     @Override

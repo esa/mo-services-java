@@ -496,8 +496,10 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
     @Override
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
-        RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}", uriBase);
-        return new TCPIPEndpoint(this, localName, routingName, uriBase + routingName, supplements);
+        RLOGGER.log(Level.FINE, "TCPIPTransport.internalCreateEndpoint() with uri: {0}",
+                addressing.getUriBase());
+        return new TCPIPEndpoint(this, localName, routingName,
+                addressing.getUriBase() + routingName, supplements);
     }
 
     /**
@@ -548,7 +550,7 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
      */
     @Override
     public GENMessage decodeMessage(TCPIPPacketInfoHolder packetInfo) throws MALException {
-        String serviceDelimStr = Character.toString(serviceDelim);
+        String serviceDelimStr = Character.toString(addressing.getServiceDelim());
         String from = packetInfo.getUriFrom().getValue();
         if (!from.endsWith(serviceDelimStr)) {
             from += serviceDelimStr;
@@ -711,7 +713,7 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
      * @return The service delimiter.
      */
     public char getServiceDelim() {
-        return this.serviceDelim;
+        return addressing.getServiceDelim();
     }
 
     /**
@@ -724,15 +726,17 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
     private ConnectionTuple getConnectionParts(String addr) throws MALException {
 
         // decode address
-        String targetAddress = addr.replaceAll(protocol + protocolDelim, "");
-        targetAddress = targetAddress.replaceAll(protocol, "");
+        String targetAddress = addr.replaceAll(
+                addressing.getProtocol() + addressing.getProtocolDelim(), "");
+        targetAddress = targetAddress.replaceAll(addressing.getProtocol(), "");
 
         // remove service URI part, i.e. the part after the service delimiter
-        int serviceIdx = targetAddress.indexOf(serviceDelim);
+        int serviceIdx = targetAddress.indexOf(addressing.getServiceDelim());
         if (serviceIdx >= 0) {
             targetAddress = targetAddress.substring(0, serviceIdx);
         }
-        targetAddress = targetAddress.replaceAll(Character.toString(serviceDelim), "");
+        targetAddress = targetAddress.replaceAll(
+                Character.toString(addressing.getServiceDelim()), "");
 
         if (!targetAddress.contains(":")) {
             // malformed URI
