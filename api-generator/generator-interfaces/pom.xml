@@ -132,6 +132,10 @@
                             <clearOutputDir>false</clearOutputDir>
                             <packageName>w3c.xsd</packageName>
                             <laxSchemaValidation>true</laxSchemaValidation>
+                            <!-- Resolves the imported schema for the XML namespace from
+                                 the copy next to the sources, so that a clean build does
+                                 not have to reach www.w3.org. -->
+                            <catalog>${basedir}/src/main/xsd-ref/catalog.xml</catalog>
                             <sources>
                                 <source>${basedir}/src/main/xsd-ref/XMLSchema.xsd</source>
                             </sources>
