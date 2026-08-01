@@ -115,13 +115,10 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected final String protocol;
     /**
-     * Map of string MAL names to endpoints.
+     * The endpoints created by this transport, indexed by MAL local name and by
+     * transport routing name.
      */
-    protected final Map<String, Endpoint> endpointMalMap = new HashMap<>();
-    /**
-     * Map of string transport routing names to endpoints.
-     */
-    protected final Map<String, Endpoint> endpointRoutingMap = new HashMap<>();
+    protected final EndpointRegistry endpoints = new EndpointRegistry();
     /**
      * Map of QoS properties.
      */
@@ -265,14 +262,13 @@ public abstract class Transport<I, O> implements MALTransport {
         }
 
         final String strRoutingName = getLocalName(localName, localProperties);
-        Endpoint endpoint = endpointRoutingMap.get(strRoutingName);
+        Endpoint endpoint = endpoints.getByRoutingName(strRoutingName);
 
         if (endpoint == null) {
             LOGGER.log(Level.FINE, "Creating endpoint {0} : {1}",
                     new Object[]{localName, strRoutingName});
             endpoint = internalCreateEndpoint(localName, strRoutingName, localProperties, supplements);
-            endpointMalMap.put(localName, endpoint);
-            endpointRoutingMap.put(strRoutingName, endpoint);
+            endpoints.add(localName, strRoutingName, endpoint);
         }
 
         return endpoint;
@@ -280,13 +276,13 @@ public abstract class Transport<I, O> implements MALTransport {
 
     @Override
     public MALEndpoint getEndpoint(final String localName) throws IllegalArgumentException {
-        return endpointMalMap.get(localName);
+        return endpoints.getByLocalName(localName);
     }
 
     @Override
     public MALEndpoint getEndpoint(final URI uri) throws IllegalArgumentException {
         String endpointUriPart = getRoutingPart(uri.getValue());
-        return endpointRoutingMap.get(endpointUriPart);
+        return endpoints.getByRoutingName(endpointUriPart);
     }
 
     /**
@@ -339,7 +335,7 @@ public abstract class Transport<I, O> implements MALTransport {
 
         if (inProcessSupport
                 && (uriBase.startsWith(remoteRootURI) || remoteRootURI.startsWith(uriBase))
-                && endpointRoutingMap.containsKey(endpointUriPart)) {
+                && endpoints.containsRoutingName(endpointUriPart)) {
             LOGGER.log(Level.FINE, "Routing msg internally to: {0}",
                     new Object[]{endpointUriPart});
 
@@ -423,24 +419,17 @@ public abstract class Transport<I, O> implements MALTransport {
 
     @Override
     public void deleteEndpoint(final String localName) throws MALException {
-        final Endpoint endpoint = endpointMalMap.get(localName);
+        final Endpoint endpoint = endpoints.remove(localName);
 
         if (null != endpoint) {
             LOGGER.log(Level.INFO, "Deleting endpoint", localName);
-            endpointMalMap.remove(localName);
-            endpointRoutingMap.remove(endpoint.getRoutingName());
             endpoint.close();
         }
     }
 
     @Override
     public void close() throws MALException {
-        for (Endpoint entry : endpointMalMap.values()) {
-            entry.close();
-        }
-
-        endpointMalMap.clear();
-        endpointRoutingMap.clear();
+        endpoints.closeAll();
 
         decoderExecutor.shutdown();
         dispatcherExecutor.shutdown();
@@ -503,7 +492,7 @@ public abstract class Transport<I, O> implements MALTransport {
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
             String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
-            final Endpoint endpoint = endpointRoutingMap.get(endpointUriPart);
+            final Endpoint endpoint = endpoints.getByRoutingName(endpointUriPart);
 
             if (endpoint != null) {
                 LOGGER.log(Level.FINE, "Passing message to endpoint {0} : {1}",
@@ -573,9 +562,9 @@ public abstract class Transport<I, O> implements MALTransport {
                     || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
                     || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
 
-                if (!endpointMalMap.isEmpty()) {
-                    Endpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
+                Endpoint endpoint = endpoints.any();
 
+                if (endpoint != null) {
                     final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
                             srcHdr.getFromURI(),
                             Time.now(),
