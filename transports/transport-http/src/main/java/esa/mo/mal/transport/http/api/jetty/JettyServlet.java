@@ -42,9 +42,12 @@ public class JettyServlet extends HttpServlet {
         try {
             final Continuation continuation = ContinuationSupport.getContinuation(request);
             continuation.suspend(response);
-            contextHandler.processRequest(new JettyHttpRequest(request));
-            contextHandler.processResponse(new JettyHttpResponse(response, continuation));
-            contextHandler.finishHandling();
+            // One handler per request: they carry state between the three calls
+            // below, and requests are served concurrently.
+            IContextHandler handler = contextHandler.forRequest();
+            handler.processRequest(new JettyHttpRequest(request));
+            handler.processResponse(new JettyHttpResponse(response, continuation));
+            handler.finishHandling();
         } catch (HttpApiImplException ex) {
             throw new IOException("JettyServlet: HttpApiImplException at doPost", ex);
         }

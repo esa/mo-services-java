@@ -58,6 +58,13 @@ public class HTTPContextHandlerNoEncoding implements IContextHandler {
     }
 
     @Override
+    public IContextHandler forRequest() {
+        // The body read in processRequest is held for finishHandling, so each
+        // request needs its own handler.
+        return new HTTPContextHandlerNoEncoding(transport);
+    }
+
+    @Override
     public void processRequest(IHttpRequest request) throws HttpApiImplException {
         data = request.readFullBody();
     }

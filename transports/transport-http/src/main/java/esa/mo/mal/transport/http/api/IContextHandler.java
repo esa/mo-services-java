@@ -30,6 +30,24 @@ import esa.mo.mal.transport.http.util.HttpApiImplException;
 public interface IContextHandler {
 
     /**
+     * Returns the handler that shall serve one single request.
+     *
+     * The three methods below are called in turn for one request and carry
+     * state from one to the next, so a handler that holds that state in fields
+     * has to answer with a fresh instance here. A server registers one handler
+     * and serves requests concurrently, so returning the same instance lets
+     * two requests overwrite each other's state.
+     *
+     * The default answers with this handler, which is only correct for a
+     * handler that holds no state between the three calls.
+     *
+     * @return The handler to serve one request with.
+     */
+    default IContextHandler forRequest() {
+        return this;
+    }
+
+    /**
      * Routine handling the AbstractHttpRequest object, e.g. reading header
      * fields and body data.
      *

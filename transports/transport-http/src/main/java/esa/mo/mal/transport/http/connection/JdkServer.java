@@ -71,9 +71,12 @@ public class JdkServer implements IHttpServer {
             @Override
             public void handle(HttpExchange httpExchange) throws IOException {
                 try {
-                    contextHandler.processRequest(new JdkHttpRequest(httpExchange));
-                    contextHandler.processResponse(new JdkHttpResponse(httpExchange));
-                    contextHandler.finishHandling();
+                    // One handler per request: they carry state between the
+                    // three calls below, and requests are served concurrently.
+                    IContextHandler handler = contextHandler.forRequest();
+                    handler.processRequest(new JdkHttpRequest(httpExchange));
+                    handler.processResponse(new JdkHttpResponse(httpExchange));
+                    handler.finishHandling();
                 } catch (HttpApiImplException ex) {
                     RLOGGER.severe(ex.getMessage());
                     throw new IOException("JdkServer.addContextHandler(): HttpApiImplException at HttpHandler.handle()", ex);

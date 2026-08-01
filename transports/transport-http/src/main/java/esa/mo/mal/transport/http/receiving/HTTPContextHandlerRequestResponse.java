@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.http.receiving;
 
+import esa.mo.mal.transport.http.api.IContextHandler;
 import esa.mo.mal.transport.http.api.IHttpResponse;
 import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
@@ -38,6 +39,13 @@ public class HTTPContextHandlerRequestResponse extends HTTPContextHandlerNoRespo
      */
     public HTTPContextHandlerRequestResponse(HTTPTransport transport) {
         super(transport);
+    }
+
+    @Override
+    public IContextHandler forRequest() {
+        // processResponse decides what to answer from the header decoded in
+        // processRequest, so each request needs its own handler.
+        return new HTTPContextHandlerRequestResponse(transport);
     }
 
     @Override

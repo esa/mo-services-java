@@ -48,7 +48,7 @@ public class HTTPMessageHandlerNoResponse {
   }
 
   @Test
-  public void testSupplementsHeader() {
+  public void testSupplementsHeader() throws Exception {
 
     IdentifierList domain = new IdentifierList();
     domain.add(new Identifier("domain"));
