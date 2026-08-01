@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -95,6 +94,11 @@ public abstract class Transport<I, O> implements MALTransport {
      * transport routing name.
      */
     protected final EndpointRegistry endpoints = new EndpointRegistry();
+    /**
+     * Builds and sends the error messages that answer messages which could not
+     * be delivered or processed.
+     */
+    protected final ErrorReplyBuilder errorReplies;
     /**
      * Map of QoS properties.
      */
@@ -164,6 +168,7 @@ public abstract class Transport<I, O> implements MALTransport {
         this.addressing = new TransportAddressing(protocol, protocolDelim,
                 serviceDelim, routingDelim, supportsRouting);
         this.qosProperties = properties;
+        this.errorReplies = new ErrorReplyBuilder(this, endpoints, properties);
 
         streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
         LOGGER.log(Level.FINE, "Created element stream: {0}",
@@ -440,12 +445,16 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param smsg The message in a string representation for logging.
      */
     public void dispatchMessage(final GENMessage msg, PacketToString smsg) {
+        // Held outside the try so that, if the delivery below throws, the error
+        // can be returned from the endpoint the message was destined for.
+        Endpoint endpoint = null;
+
         try {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
             String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
-            final Endpoint endpoint = endpoints.getByRoutingName(endpointUriPart);
+            endpoint = endpoints.getByRoutingName(endpointUriPart);
 
             if (endpoint != null) {
                 LOGGER.log(Level.FINE, "Passing message to endpoint {0} : {1}",
@@ -466,7 +475,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(endpoint, msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE,
@@ -482,7 +491,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(endpoint, msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE, "Error occurred when return error data : {0}", ex);
@@ -500,56 +509,23 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected void returnErrorMessage(final MALMessageHeader srcHdr,
             final UInteger errorNumber, final String errorMsg) throws MALException {
-        try {
-            InteractionType interactionType = srcHdr.getInteractionType();
-            final short stage = (null != srcHdr.getInteractionStage())
-                    ? srcHdr.getInteractionStage().getValue() : 0;
+        returnErrorMessage(null, srcHdr, errorNumber, errorMsg);
+    }
 
-            // first check that message should be responded to
-            if (((interactionType.equals(InteractionType.SUBMIT)) && (stage == MALSubmitOperation._SUBMIT_STAGE))
-                    || ((interactionType.equals(InteractionType.REQUEST)) && (stage == MALRequestOperation._REQUEST_STAGE))
-                    || ((interactionType.equals(InteractionType.INVOKE)) && (stage == MALInvokeOperation._INVOKE_STAGE))
-                    || ((interactionType.equals(InteractionType.PROGRESS)) && (stage == MALProgressOperation._PROGRESS_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._REGISTER_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._DEREGISTER_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
-
-                Endpoint endpoint = endpoints.any();
-
-                if (endpoint != null) {
-                    final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
-                            srcHdr.getFromURI(),
-                            Time.now(),
-                            srcHdr.getInteractionType(),
-                            new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
-                            srcHdr.getTransactionId(),
-                            srcHdr.getServiceArea(),
-                            srcHdr.getService(),
-                            srcHdr.getOperation(),
-                            srcHdr.getAreaVersion(),
-                            true,
-                            srcHdr.getSupplements(),
-                            qosProperties,
-                            errorNumber, new Union(errorMsg));
-
-                    sendMessage(null, true, retMsg);
-                } else {
-                    LOGGER.log(Level.WARNING, "(1) Unable to return error"
-                            + " number ({0}) as no endpoint supplied: {1}",
-                            new Object[]{errorNumber, srcHdr});
-                }
-            } else {
-                LOGGER.log(Level.WARNING, "An MO Error will not be returned because this "
-                        + "combination of type/stage does not have an MO Error to "
-                        + "be returned! For interaction type: {0} - and stage: {1}",
-                        new Object[]{interactionType.toString(), stage});
-            }
-        } catch (MALTransmitErrorException ex) {
-            LOGGER.log(Level.WARNING,
-                    "Error occurred when attempting to return previous error!",
-                    ex);
-        }
+    /**
+     * Creates a return error message based on a received message, sent from the
+     * endpoint the received message was being delivered to.
+     *
+     * @param endpoint The endpoint the message was being delivered to, or null
+     * if it is not known.
+     * @param srcHdr The source header
+     * @param errorNumber The error number
+     * @param errorMsg The error message.
+     * @throws MALException if cannot encode a response message
+     */
+    protected void returnErrorMessage(final Endpoint endpoint, final MALMessageHeader srcHdr,
+            final UInteger errorNumber, final String errorMsg) throws MALException {
+        errorReplies.returnError(endpoint, srcHdr, errorNumber, errorMsg);
     }
 
     /**
