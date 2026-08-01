@@ -189,41 +189,74 @@ public class RemoteProcessRunner extends LoggingBase {
 
         appendMavenDependencies(cp, File.separator, sep, mavenJarList);
 
-        if (RemoteProcessRunner.class.getClassLoader() instanceof URLClassLoader) {
-            URL[] classpath = ((URLClassLoader) RemoteProcessRunner.class.getClassLoader()).getURLs();
+        String[] classpath = currentClasspath(sep);
 
-            if (classpath.length > 0) {
-                StringBuilder filterEnv = new StringBuilder();
+        if (classpath.length > 0) {
+            StringBuilder filterEnv = new StringBuilder();
 
-                for (String str : filterJarList) {
-                    filterEnv.append(System.getProperty(str));
-                    filterEnv.append(',');
-                }
+            for (String str : filterJarList) {
+                filterEnv.append(System.getProperty(str));
+                filterEnv.append(',');
+            }
 
-                String[] filterStr = null;
+            String[] filterStr = null;
 
-                if (filterEnv.length() > 0) {
-                    filterStr = filterEnv.toString().toLowerCase().split(",");
-                }
+            if (filterEnv.length() > 0) {
+                filterStr = filterEnv.toString().toLowerCase().split(",");
+            }
 
-                int length = classpath.length;
+            if (!isLinux) {
+                cp.append('"'); // Adds a Quotation mark before the jars
+            }
 
-                if (length != 0 && !isLinux) {
-                    cp.append('"'); // Adds a Quotation mark before the jars
-                }
+            for (String entry : classpath) {
+                addClasspathEntry(cp, entry, sep, filterStr);
+            }
 
-                for (int i = 0; i < length; i++) {
-                    String path = classpath[i].toURI().getPath();
-                    addClasspathEntry(cp, path, sep, filterStr);
-                }
-
-                if (length != 0 && !isLinux) {
-                    cp.append('"'); // Adds a Quotation mark after the jars
-                }
+            if (!isLinux) {
+                cp.append('"'); // Adds a Quotation mark after the jars
             }
         }
 
         return cp.toString();
+    }
+
+    /**
+     * Returns the entries of the classpath this process was started with, so
+     * that the remote process can be started with the same one.
+     *
+     * Up to Java 8 the class loader could be cast to a URLClassLoader to read
+     * them back, and up to surefire 2 the tests ran under such a loader. Neither
+     * holds any more, so fall back to the java.class.path system property, which
+     * works both on a modern JDK and under the system class loader.
+     *
+     * @param sep The path separator of this platform.
+     * @return The classpath entries, empty if none could be determined.
+     */
+    private static String[] currentClasspath(String sep) throws Exception {
+        ClassLoader loader = RemoteProcessRunner.class.getClassLoader();
+
+        if (loader instanceof URLClassLoader) {
+            URL[] urls = ((URLClassLoader) loader).getURLs();
+
+            if (urls.length > 0) {
+                String[] entries = new String[urls.length];
+
+                for (int i = 0; i < urls.length; i++) {
+                    entries[i] = urls[i].toURI().getPath();
+                }
+
+                return entries;
+            }
+        }
+
+        String classpath = System.getProperty("java.class.path");
+
+        if (classpath == null || classpath.isEmpty()) {
+            return new String[0];
+        }
+
+        return classpath.split(java.util.regex.Pattern.quote(sep));
     }
 
     private static void appendMavenDependencies(StringBuffer cp,
