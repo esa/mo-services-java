@@ -4,7 +4,7 @@ import esa.mo.mal.transport.http.HTTPTransport;
 import esa.mo.mal.transport.http.api.IPostClient;
 import esa.mo.mal.transport.http.connection.JdkTestClient;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
-import esa.mo.mal.transport.http.sending.HTTPMessageSenderNoEncoding;
+import esa.mo.mal.transport.http.sending.HTTPMessageSender;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public abstract class HTTPMessageSenderBaseTest {
 
-  protected HTTPMessageSenderNoEncoding sender;
+  protected HTTPMessageSender sender;
   protected HTTPTransport transport;
   protected MALMessage message;
   protected GENMessageBuilder messageBuilder;
