@@ -70,8 +70,10 @@ public class JettyClient implements IPostClient {
 
     @Override
     public void setRequestHeader(String headerName, String headerValue) {
-        if (headerValue.equals("")) {
-            headerValue = EMPTY_STRING_PLACEHOLDER;
+        if (headerValue == null || headerValue.isEmpty()) {
+            // A header with no value is left out rather than given one that
+            // the MAL HTTP binding does not define.
+            return;
         }
         request.header(headerName, headerValue);
     }
@@ -107,7 +109,9 @@ public class JettyClient implements IPostClient {
     @Override
     public String getResponseHeader(String headerName) {
         String headerValue = response.getHeaders().get(headerName);
-        if (headerValue.equals(EMPTY_STRING_PLACEHOLDER)) {
+        // A header carrying no value is left out by this transport, and older
+        // versions of it sent a placeholder instead. Both mean an empty value.
+        if (headerValue == null || headerValue.equals(EMPTY_STRING_PLACEHOLDER)) {
             headerValue = "";
         }
         return headerValue;

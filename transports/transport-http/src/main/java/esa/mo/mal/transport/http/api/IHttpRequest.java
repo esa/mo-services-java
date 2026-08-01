@@ -48,7 +48,7 @@ public interface IHttpRequest {
     /**
      * Gets the header field value of the given header field name.
      *
-     * Needs to consider AbstractPostClient.EMPTY_STRING_PLACEHOLDER.
+     * A header that was not set reads back as an empty value.
      *
      * @param headerName the header field name
      * @return the header field value

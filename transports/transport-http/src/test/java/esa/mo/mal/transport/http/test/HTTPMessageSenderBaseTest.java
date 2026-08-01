@@ -16,6 +16,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,6 +62,19 @@ public abstract class HTTPMessageSenderBaseTest {
     String authenticationId = new String(
         HTTPTransport.hexStringToByteArray(connection.getRequestProperty("X-MAL-Authentication-Id")));
     assertEquals("http://www.esa.int", authenticationId);
+  }
+
+  @Test
+  public void testEmptyHeaderIsNotSent() throws Exception {
+
+    // An empty authentication id encodes to an empty hex string. The header
+    // is then left out rather than sent with a placeholder value, which a
+    // peer would not be able to tell apart from a real one.
+    message = messageBuilder.authenticationId(new Blob(new byte[0])).build();
+    HttpURLConnection connection = createClient(message);
+
+    assertNotNull(connection);
+    assertNull(connection.getRequestProperty("X-MAL-Authentication-Id"));
   }
 
   @Test
