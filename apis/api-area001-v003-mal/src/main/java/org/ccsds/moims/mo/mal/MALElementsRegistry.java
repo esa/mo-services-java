@@ -20,8 +20,7 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.HashMap;
-import java.util.concurrent.Callable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -29,43 +28,77 @@ import org.ccsds.moims.mo.mal.structures.ElementList;
 import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 
 /**
- * Holds a map of MAL Elements indexed on the absolute short form part. Used to
- * lookup the correct elements for a supplied absolute short form part.
+ * Holds the factory of each registered Area, and asks them for the Element of a
+ * Type Id. A factory creates the Element of a type without an instance of every
+ * other type of its Area having to be held, so the class of a type is only
+ * loaded once a message actually carries that type.
  */
 public class MALElementsRegistry {
 
-    private final HashMap<Long, Callable<Element>> ELEMENTS = new java.util.HashMap<>(270); // 262!
+    /**
+     * The registered factories. There are a handful in total, one per Area plus
+     * the occasional one for types that are written by hand rather than
+     * generated, which is why a scan is enough and no map is needed. Each one
+     * says which Area it belongs to, so nothing here can register a factory
+     * against the wrong number or version.
+     */
+    private final List<AreaElementFactory> AREA_FACTORIES = new java.util.ArrayList<>();
 
     /**
-     * Adds an Element to the map of Elements.
+     * Registers a factory, so that the Elements it creates can be reached
+     * without every one of their classes having to be loaded first.
      *
-     * @param element The Element to be added.
-     * @return True if already previously loaded else false.
+     * More than one factory can be registered for the same Area. Types whose
+     * numbers the XML schema cannot express are written by hand, and their
+     * factory is registered alongside the generated one of that Area.
+     *
+     * @param factory The factory that creates the Elements.
      */
-    public boolean addElement(Element element) {
-        Long typeId = element.getTypeId().getTypeId();
-        Callable<Element> callable = () -> element.createElement();
+    public synchronized void registerAreaFactory(final AreaElementFactory factory) {
+        if (factory == null) {
+            return;
+        }
 
-        Callable<Element> previous = ELEMENTS.put(typeId, callable);
-        return previous != null; // Not the first time?
+        for (AreaElementFactory registered : AREA_FACTORIES) {
+            if (registered.getClass() == factory.getClass()) {
+                return; // Already registered
+            }
+        }
+
+        AREA_FACTORIES.add(factory);
     }
 
     /**
-     * Removes an Element from the map of Elements.
+     * Asks the factories of the Area addressed by a Type Id for the Element,
+     * without loading the classes of the types that are not asked for.
      *
-     * @param absoluteSFP The absolute short form part.
+     * @param typeId The Type Id.
+     * @return The created Element, or null if no factory claims that Type Id.
      */
-    public synchronized void removeCallableElement(Long absoluteSFP) {
-        ELEMENTS.remove(absoluteSFP);
-    }
+    private Element createFromAreaFactory(final long typeId) {
+        // Read once, up front: a Type Id that no Area claims is the rare case,
+        // so there is nothing to be saved by reading the last two only after a
+        // factory has been found.
+        final int areaNumber = TypeId.areaNumberOf(typeId);
+        final int areaVersion = TypeId.areaVersionOf(typeId);
+        final int serviceNumber = TypeId.serviceNumberOf(typeId);
+        final int typeNumber = TypeId.typeNumberOf(typeId);
 
-    /**
-     * Returns the number of elements available on the registry.
-     *
-     * @return The number of elements.
-     */
-    public int howMany() {
-        return ELEMENTS.size();
+        for (int i = 0; i < AREA_FACTORIES.size(); i++) {
+            AreaElementFactory factory = AREA_FACTORIES.get(i);
+
+            if (factory.getAreaNumber() == areaNumber && factory.getAreaVersion() == areaVersion) {
+                Element element = factory.createElement(serviceNumber, typeNumber);
+
+                // An Area can hold more than one factory, so a factory that
+                // does not know the type is asked past, not taken as an answer
+                if (element != null) {
+                    return element;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -80,9 +113,9 @@ public class MALElementsRegistry {
             return new HeterogeneousList();
         }
 
-        Callable<Element> callable = ELEMENTS.get(typeIdLong);
+        Element element = createFromAreaFactory(typeIdLong);
 
-        if (callable == null) {
+        if (element == null) {
             TypeId typeId = new TypeId(typeIdLong);
 
             if (typeId.isOldMAL()) {
@@ -94,7 +127,7 @@ public class MALElementsRegistry {
                     + typeIdLong + " - " + typeId.toString());
         }
 
-        return callable.call();
+        return element;
     }
 
     /**
@@ -156,32 +189,15 @@ public class MALElementsRegistry {
     }
 
     /**
-     * Registers the Elements for a certain area.
+     * Registers the factory of a certain Area.
      *
-     * @param malArea The Area with the Elements to be registered.
+     * @param malArea The Area whose factory is to be registered.
      */
     private synchronized void registerElementsForArea(MALArea malArea) {
-        Element[] elements = malArea.getElements();
-
-        for (Element element : elements) {
-            if (this.addElement(element)) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * Registers the Elements for a certain service.
-     *
-     * @param malService The Service with the Elements to be registered.
-     */
-    private synchronized void registerElementsForService(ServiceInfo malService) {
-        Element[] elements = malService.getElements();
-
-        for (Element element : elements) {
-            if (this.addElement(element)) {
-                break;
-            }
+        // Any area that brings a factory has it registered here, so that every
+        // route into this class registers it, including the MAL area itself.
+        if (malArea.getElementFactory() != null) {
+            this.registerAreaFactory(malArea.getElementFactory());
         }
     }
 
@@ -191,9 +207,14 @@ public class MALElementsRegistry {
      * @param service The Service to be loaded.
      */
     public void loadServiceAndAreaElements(ServiceInfo service) {
+        MALArea parent = service.getArea();
+
+        if (parent != null && parent.getElementFactory() != null) {
+            this.registerAreaFactory(parent.getElementFactory());
+        }
+
         // Load the elements here:
         this.registerElementsForArea(MALHelper.MAL_AREA);
-        this.registerElementsForService(service);
 
         // The Top-level Area loading also needs to be loaded
         this.registerElementsForArea(service.getArea());
@@ -211,6 +232,12 @@ public class MALElementsRegistry {
      * @param area The Area to be loaded.
      */
     public void loadFullArea(MALArea area) {
+        // The factory creates the Elements of this Area on demand, so that the
+        // class of a type is only loaded once a message carries that type.
+        if (area.getElementFactory() != null) {
+            this.registerAreaFactory(area.getElementFactory());
+        }
+
         this.registerElementsForArea(MALHelper.MAL_AREA);
         // The Top-level Area loading also needs to be loaded
         this.registerElementsForArea(area);

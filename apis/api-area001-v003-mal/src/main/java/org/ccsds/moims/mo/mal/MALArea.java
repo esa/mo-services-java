@@ -38,6 +38,7 @@ public class MALArea {
     private final UOctet version;
     private final Element[] elements;
     private final ServiceInfo[] services;
+    private final AreaElementFactory elementFactory;
 
     /**
      * MALArea constructor.
@@ -51,6 +52,23 @@ public class MALArea {
      */
     public MALArea(UShort number, Identifier name, UOctet version,
             Element[] elements, ServiceInfo[] services) {
+        this(number, name, version, elements, services, null);
+    }
+
+    /**
+     * MALArea constructor.
+     *
+     * @param number The number of the Area.
+     * @param name The name of the Area.
+     * @param version The Area version.
+     * @param elements The elements in this Area.
+     * @param services The services in this Area.
+     * @param elementFactory Creates the elements of this Area on demand, so
+     * that their classes do not all have to be loaded up front. May be null.
+     * @throws IllegalArgumentException If either argument is null.
+     */
+    public MALArea(UShort number, Identifier name, UOctet version,
+            Element[] elements, ServiceInfo[] services, AreaElementFactory elementFactory) {
         if (number == null) {
             throw new IllegalArgumentException("Number argument must not be NULL");
         }
@@ -66,6 +84,16 @@ public class MALArea {
         this.version = version;
         this.elements = elements;
         this.services = services;
+        this.elementFactory = elementFactory;
+    }
+
+    /**
+     * Returns the factory that creates the Elements of this Area on demand.
+     *
+     * @return The factory, or null if this Area does not provide one.
+     */
+    public final AreaElementFactory getElementFactory() {
+        return elementFactory;
     }
 
     /**

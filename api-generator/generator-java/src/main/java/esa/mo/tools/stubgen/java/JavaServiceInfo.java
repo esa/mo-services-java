@@ -184,10 +184,10 @@ public class JavaServiceInfo {
             }
         }
 
+        // Left empty on purpose: the Area factory creates these on demand, so
+        // that the class of a type is only loaded once a message carries it.
         StringBuilder buf = new StringBuilder();
-        for (String objectCall : elementInstantiations) {
-            buf.append("\n        ").append(objectCall).append(",");
-        }
+        elementInstantiations.clear();
         CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, serviceCAPS + "_SERVICE_ELEMENTS",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Element", false),
                 false, true, "Area elements.");

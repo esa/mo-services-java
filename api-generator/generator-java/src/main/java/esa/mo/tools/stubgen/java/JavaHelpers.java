@@ -172,10 +172,10 @@ public class JavaHelpers {
             }
         }
 
+        // Left empty on purpose: the Area factory creates these on demand, so
+        // that the class of a type is only loaded once a message carries it.
         StringBuilder buf = new StringBuilder();
-        for (String objectCall : elementList) {
-            buf.append("\n        ").append(objectCall).append(",");
-        }
+        elementList.clear();
         CompositeField objectInstVar = generator.createCompositeElementsDetails(file, false, areaNameCAPS + "_AREA_ELEMENTS",
                 TypeUtils.createTypeReference(null, null, "org.ccsds.moims.mo.mal.structures.Element", false),
                 false, true, "Area Elements.");
@@ -196,6 +196,8 @@ public class JavaHelpers {
                 false, true, buf_2.toString(), false);
 
         String areaObjectInitialValue = createAreaHelperClassInitialValue(areaNameCAPS, area.getVersion());
+        areaObjectInitialValue = areaObjectInitialValue.substring(0, areaObjectInitialValue.length() - 1)
+                + ", new " + areaName + "ElementFactory())";
         file.addClassVariable(true, true, StdStrings.PUBLIC, areaVar, true, areaObjectInitialValue);
 
         // create error numbers
@@ -220,6 +222,7 @@ public class JavaHelpers {
         file.addClassCloseStatement();
         file.flush();
     }
+
 
     public String createAreaHelperClassInitialValue(String areaVar, short areaVersion) {
         return "(" + areaVar + "_AREA_NUMBER, " + areaVar + "_AREA_NAME, "

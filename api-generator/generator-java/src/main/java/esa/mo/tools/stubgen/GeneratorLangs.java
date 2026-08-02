@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.java.JavaCompositeClass;
+import esa.mo.tools.stubgen.java.JavaElementFactory;
 import esa.mo.tools.stubgen.java.JavaServiceInfo;
 import esa.mo.tools.stubgen.java.JavaExceptions;
 import esa.mo.tools.stubgen.java.JavaConsumer;
@@ -353,6 +354,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
             JavaHelpers helper = new JavaHelpers(this, typeInformation);
             logger.info(" > Creating Area Helper class: " + area.getName());
             helper.createAreaHelperClass(areaFolder, area);
+
+            logger.info(" > Creating Area Element Factory class: " + area.getName());
+            JavaElementFactory elementFactory = new JavaElementFactory(this, typeInformation);
+            elementFactory.createAreaElementFactoryClass(areaFolder, area);
 
             // Create Area Exceptions
             JavaExceptions exceptions = new JavaExceptions(this);
