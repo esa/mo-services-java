@@ -21,6 +21,7 @@
 package org.ccsds.moims.mo.mal;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -42,7 +43,7 @@ public class MALElementsRegistry {
      * says which Area it belongs to, so nothing here can register a factory
      * against the wrong number or version.
      */
-    private final List<AreaElementFactory> AREA_FACTORIES = new java.util.ArrayList<>();
+    private final List<AreaElementFactory> AREA_FACTORIES = new CopyOnWriteArrayList<>();
 
     /**
      * Registers a factory, so that the Elements it creates can be reached
@@ -50,7 +51,14 @@ public class MALElementsRegistry {
      *
      * More than one factory can be registered for the same Area. Types whose
      * numbers the XML schema cannot express are written by hand, and their
-     * factory is registered alongside the generated one of that Area.
+     * factory is registered alongside the generated one of that Area. Should
+     * two of them answer for the same type, the one registered first is the one
+     * that is asked, so a factory added later cannot take a type away from the
+     * one that already had it.
+     *
+     * Areas are registered while the messages of the ones already registered
+     * are being decoded, so the list this adds to is one that can be read
+     * through at the same time.
      *
      * @param factory The factory that creates the Elements.
      */
@@ -84,9 +92,10 @@ public class MALElementsRegistry {
         final int serviceNumber = TypeId.serviceNumberOf(typeId);
         final int typeNumber = TypeId.typeNumberOf(typeId);
 
-        for (int i = 0; i < AREA_FACTORIES.size(); i++) {
-            AreaElementFactory factory = AREA_FACTORIES.get(i);
-
+        // Walked in one go, over the factories that were there when this
+        // started: a factory registered halfway through must not be seen for
+        // some of this scan and not for the rest of it.
+        for (AreaElementFactory factory : AREA_FACTORIES) {
             if (factory.getAreaNumber() == areaNumber && factory.getAreaVersion() == areaVersion) {
                 Element element = factory.createElement(serviceNumber, typeNumber);
 

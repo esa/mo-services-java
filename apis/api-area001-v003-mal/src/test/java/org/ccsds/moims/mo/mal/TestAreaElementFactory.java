@@ -21,6 +21,8 @@
 package org.ccsds.moims.mo.mal;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.BlobList;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.ElementList;
@@ -28,6 +30,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -171,6 +174,133 @@ public class TestAreaElementFactory {
             Element element = registry.createElement(typeIdOf(typeNumber));
             assertNotNull("The registry did not reach type number " + typeNumber, element);
             assertEquals(typeIdOf(typeNumber), element.getTypeId().getTypeId());
+        }
+    }
+
+    /**
+     * Builds a Type Id without going through the TypeId constructor that takes
+     * the parts, which narrows the type number to a short. A type number that
+     * needs more than that can only be written out in full here.
+     */
+    private static long rawTypeIdOf(int areaNumber, int areaVersion,
+            int serviceNumber, int typeNumber) {
+        return ((long) areaNumber << 48) | ((long) serviceNumber << 32)
+                | ((long) areaVersion << 24) | (typeNumber & 0xFFFFFFL);
+    }
+
+    /**
+     * A Type Id of zero stands for a list that holds types of more than one
+     * kind, and is answered before any factory is asked.
+     */
+    @Test
+    public void typeIdOfZeroIsAHeterogeneousList() throws Exception {
+        MALElementsRegistry registry = new MALElementsRegistry();
+        registry.registerAreaFactory(factory);
+        assertTrue(registry.createElement(0L) instanceof HeterogeneousList);
+    }
+
+    /**
+     * A Type Id that no registered factory answers for has to be reported,
+     * rather than answered with nothing for the caller to trip over later.
+     */
+    @Test
+    public void aTypeIdThatNoFactoryClaimsIsReported() {
+        MALElementsRegistry registry = new MALElementsRegistry();
+        registry.registerAreaFactory(factory);
+
+        long[] unclaimed = new long[]{
+            rawTypeIdOf(999, 1, 0, 1), // An area that is not registered
+            rawTypeIdOf(1, 9, 0, 1), // The MAL area, at a version that is not
+            rawTypeIdOf(1, 3, 77, 1), // The MAL area, at a service it has not
+            rawTypeIdOf(1, 3, 0, 0), // Zero is not a type number
+            rawTypeIdOf(1, 3, 0, 8388607), // The widest a type number can be
+            rawTypeIdOf(1, 3, 0, -8388607)
+        };
+
+        for (long typeId : unclaimed) {
+            try {
+                Element element = registry.createElement(typeId);
+                fail("Type Id " + typeId + " was answered with " + element);
+            } catch (NotFoundException expected) {
+                // This is what a Type Id that no factory claims has to give
+            } catch (Exception ex) {
+                fail("Type Id " + typeId + " gave " + ex);
+            }
+        }
+    }
+
+    /**
+     * The type number is read over its full width. A type number written by
+     * hand can reach further than the XML schema lets a specification go, and
+     * has to arrive at the factory as it was sent.
+     */
+    @Test
+    public void theWidestTypeNumbersArriveWhole() {
+        assertEquals(8388607, TypeId.typeNumberOf(rawTypeIdOf(1, 3, 0, 8388607)));
+        assertEquals(-8388607, TypeId.typeNumberOf(rawTypeIdOf(1, 3, 0, -8388607)));
+        assertEquals(1, TypeId.typeNumberOf(rawTypeIdOf(1, 3, 0, 1)));
+        assertEquals(-1010, TypeId.typeNumberOf(rawTypeIdOf(1, 3, 0, -1010)));
+    }
+
+    /**
+     * An Area can hold more than one factory, so that types written by hand are
+     * reached next to the generated ones. A factory that does not know a type
+     * has to be asked past rather than end the search.
+     */
+    @Test
+    public void anAreaCanHoldMoreThanOneFactory() throws Exception {
+        MALElementsRegistry registry = new MALElementsRegistry();
+        registry.registerAreaFactory(factory);
+        registry.registerAreaFactory(new HandWrittenTypeFactory());
+
+        // Reached past the generated factory, which does not know this one
+        Element handWritten = registry.createElement(rawTypeIdOf(
+                MAL_AREA_NUMBER, MAL_AREA_VERSION, 0, HandWrittenTypeFactory.TYPE_NUMBER));
+        assertEquals(Identifier.class, handWritten.getClass());
+
+        // The generated types are still reached, and are not shadowed
+        assertEquals(Blob.class, registry.createElement(typeIdOf(1)).getClass());
+        assertEquals(BlobList.class, registry.createElement(typeIdOf(-1)).getClass());
+    }
+
+    /**
+     * Registering the same factory again leaves the registry as it was. Every
+     * route that loads an Area registers its factory, so the same one arrives
+     * here more than once.
+     */
+    @Test
+    public void registeringTheSameFactoryAgainChangesNothing() throws Exception {
+        MALElementsRegistry registry = new MALElementsRegistry();
+        registry.registerAreaFactory(factory);
+        registry.registerAreaFactory(new MALElementFactory());
+        registry.registerAreaFactory(factory);
+        registry.registerAreaFactory(null);
+
+        assertEquals(Blob.class, registry.createElement(typeIdOf(1)).getClass());
+    }
+
+    /**
+     * A factory for a type whose number is wider than the XML schema allows,
+     * standing for the ones the MAL/SPP testbed writes by hand.
+     */
+    private static final class HandWrittenTypeFactory implements AreaElementFactory {
+
+        private static final int TYPE_NUMBER = 8388607;
+
+        @Override
+        public Element createElement(int serviceNumber, int typeNumber) {
+            return (serviceNumber == 0 && typeNumber == TYPE_NUMBER)
+                    ? new Identifier("handWritten") : null;
+        }
+
+        @Override
+        public int getAreaNumber() {
+            return MAL_AREA_NUMBER;
+        }
+
+        @Override
+        public int getAreaVersion() {
+            return MAL_AREA_VERSION;
         }
     }
 }

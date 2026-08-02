@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -188,6 +189,55 @@ public class JavaElementFactory {
      */
     private void addTypeSwitch(ClassWriter file, String methodName,
             List<String[]> types, String comment) throws IOException {
+        TypeSplit split = splitTypes(types);
+
+        // Splitting the types over two methods only pays off when there is a
+        // jump table to keep and something that would otherwise stretch it.
+        if (!split.isSplit()) {
+            addSwitchMethod(file, methodName, comment, split.all(), null);
+            return;
+        }
+
+        addSwitchMethod(file, methodName, comment, split.inBand, outOfBandNameOf(methodName));
+        addOutOfBandMethod(file, methodName, split);
+    }
+
+    /**
+     * The types of one switch, split into the ones a jump table can hold and
+     * the ones whose numbers lie too far out for it.
+     */
+    private static final class TypeSplit {
+
+        private final Map<Integer, String> inBand = new TreeMap<>();
+
+        private final Map<Integer, String> outOfBand = new TreeMap<>();
+
+        /**
+         * @return True if the types have to be reached by two switches.
+         */
+        boolean isSplit() {
+            return !inBand.isEmpty() && !outOfBand.isEmpty();
+        }
+
+        /**
+         * @return Every type, whether or not the jump table can hold it.
+         */
+        Map<Integer, String> all() {
+            Map<Integer, String> every = new TreeMap<>(inBand);
+            every.putAll(outOfBand);
+            return every;
+        }
+    }
+
+    /**
+     * Splits the types into the ones the widest jump table can hold and the
+     * ones that lie past it.
+     *
+     * @param types The types, as pairs of type number and the expression that
+     * creates one.
+     * @return The split.
+     */
+    private static TypeSplit splitTypes(List<String[]> types) {
         Map<Integer, String> byNumber = new TreeMap<>();
 
         for (String[] type : types) {
@@ -195,28 +245,31 @@ public class JavaElementFactory {
         }
 
         int band = widestJumpTableBand(byNumber.keySet());
-        Map<Integer, String> inBand = new TreeMap<>();
-        Map<Integer, String> outOfBand = new TreeMap<>();
+        TypeSplit split = new TypeSplit();
 
         for (Map.Entry<Integer, String> entry : byNumber.entrySet()) {
             boolean fits = Math.abs(entry.getKey()) <= band;
-            (fits ? inBand : outOfBand).put(entry.getKey(), entry.getValue());
+            (fits ? split.inBand : split.outOfBand).put(entry.getKey(), entry.getValue());
         }
 
-        // Splitting the types over two methods only pays off when there is a
-        // jump table to keep and something that would otherwise stretch it.
-        if (inBand.isEmpty() || outOfBand.isEmpty()) {
-            addSwitchMethod(file, methodName, comment, byNumber, null);
-            return;
-        }
+        return split;
+    }
 
-        String outside = methodName + "OutOfBand";
-        addSwitchMethod(file, methodName, comment, inBand, outside);
-        addSwitchMethod(file, outside, "Creates an Element whose type number lies too"
-                + " far out to be held in the jump table of " + methodName + "()."
-                + " This says nothing about how often the type is asked for: the"
-                + " numbers of an Area are not handed out in the order of use.",
-                outOfBand, null);
+    private static String outOfBandNameOf(String methodName) {
+        return methodName + "OutOfBand";
+    }
+
+    /**
+     * Writes the method that answers for the types the jump table could not
+     * hold.
+     */
+    private void addOutOfBandMethod(ClassWriter file, String methodName,
+            TypeSplit split) throws IOException {
+        addSwitchMethod(file, outOfBandNameOf(methodName),
+                "Creates an Element whose type number lies too far out to be held"
+                + " in the jump table that is asked first. This says nothing about"
+                + " how often the type is asked for: the numbers of an Area are not"
+                + " handed out in the order of use.", split.outOfBand, null);
     }
 
     /**
@@ -290,11 +343,26 @@ public class JavaElementFactory {
         MethodWriter method = file.addMethodOpenStatement(false, true, StdStrings.PRIVATE,
                 rtype, methodName, Arrays.asList(arg), null, comment, null, null, false);
 
+        addSwitchBody(method, types, fallback);
+        method.addMethodCloseStatement();
+    }
+
+    /**
+     * Writes the body that answers a type number, into a method that is already
+     * open. The body is one switch, or a switch for each side of zero where the
+     * numbers lie too far out to be held together.
+     *
+     * @param method The method to write the body to.
+     * @param types The types the body answers for, by type number.
+     * @param fallback The method the body falls back on for a type number it
+     * does not answer for, or null to answer with nothing.
+     */
+    private void addSwitchBody(MethodWriter method, Map<Integer, String> types,
+            String fallback) throws IOException {
         String missing = (fallback == null) ? "null" : fallback + "(typeNumber)";
 
         if (types.isEmpty()) {
             method.addLine("return " + missing + ";");
-            method.addMethodCloseStatement();
             return;
         }
 
@@ -314,12 +382,10 @@ public class JavaElementFactory {
             method.addLine("}");
             method.addLine("");
             addSwitchLines(method, negatives, missing, "");
-            method.addMethodCloseStatement();
             return;
         }
 
         addSwitchLines(method, types, missing, "");
-        method.addMethodCloseStatement();
     }
 
     /**
@@ -383,18 +449,46 @@ public class JavaElementFactory {
         CompositeField argType = generator.createCompositeElementsDetails(file, false, "typeNumber",
                 TypeUtils.createTypeReference(null, null, "int", false), false, false, null);
 
-        MethodWriter method = file.addMethodOpenStatementOverride(rtype, "createElement",
-                Arrays.asList(argService, argType), null, false);
-        method.addLine("switch (serviceNumber) {");
-        method.addLine("    case 0: return createAreaElement(typeNumber);");
+        // The types of each service, gathered up front: an Area whose services
+        // declare none of their own is reached without a switch over them.
+        Map<ServiceType, List<String[]>> typesByService = new LinkedHashMap<>();
+        boolean anyServiceHasTypes = false;
 
         for (ServiceType service : area.getService()) {
-            method.addLine("    case " + service.getNumber() + ": return create"
-                    + service.getName() + "Element(typeNumber);");
+            List<String[]> serviceTypes = (service.getDataTypes() == null) ? new LinkedList<>()
+                    : collectTypes(areaName, service.getName(),
+                            service.getDataTypes().getCompositeOrEnumeration());
+            typesByService.put(service, serviceTypes);
+            anyServiceHasTypes = anyServiceHasTypes || !serviceTypes.isEmpty();
         }
 
-        method.addLine("    default: return null;");
-        method.addLine("}");
+        MethodWriter method = file.addMethodOpenStatementOverride(rtype, "createElement",
+                Arrays.asList(argService, argType), null, false);
+        TypeSplit areaSplit = splitTypes(areaTypes);
+
+        if (anyServiceHasTypes) {
+            method.addLine("switch (serviceNumber) {");
+            method.addLine("    case 0: return createAreaElement(typeNumber);");
+
+            for (ServiceType service : area.getService()) {
+                method.addLine("    case " + service.getNumber() + ": return create"
+                        + service.getName() + "Element(typeNumber);");
+            }
+
+            method.addLine("    default: return null;");
+            method.addLine("}");
+        } else {
+            // Every type of this Area is declared by the Area itself, so the
+            // types are answered here rather than through a switch over
+            // services that would only ever lead back to the one branch.
+            method.addLine("if (serviceNumber != 0) {");
+            method.addLine("    return null; // This Area declares no types under a service");
+            method.addLine("}");
+            method.addLine("");
+            addSwitchBody(method, areaSplit.inBand,
+                    areaSplit.isSplit() ? outOfBandNameOf("createAreaElement") : null);
+        }
+
         method.addMethodCloseStatement();
 
         // The factory says which Area it belongs to, so that registering it
@@ -412,15 +506,19 @@ public class JavaElementFactory {
         areaVersion.addLine("return " + area.getVersion() + ";");
         areaVersion.addMethodCloseStatement();
 
-        addTypeSwitch(file, "createAreaElement", areaTypes,
-                "Creates an Element declared by the area itself.");
+        if (anyServiceHasTypes) {
+            addTypeSwitch(file, "createAreaElement", areaTypes,
+                    "Creates an Element declared by the area itself.");
 
-        for (ServiceType service : area.getService()) {
-            List<String[]> serviceTypes = (service.getDataTypes() == null) ? new LinkedList<>()
-                    : collectTypes(areaName, service.getName(),
-                            service.getDataTypes().getCompositeOrEnumeration());
-            addTypeSwitch(file, "create" + service.getName() + "Element", serviceTypes,
-                    "Creates an Element declared by the " + service.getName() + " service.");
+            for (Map.Entry<ServiceType, List<String[]>> entry : typesByService.entrySet()) {
+                addTypeSwitch(file, "create" + entry.getKey().getName() + "Element",
+                        entry.getValue(), "Creates an Element declared by the "
+                        + entry.getKey().getName() + " service.");
+            }
+        } else if (areaSplit.isSplit()) {
+            // createElement() holds the jump table itself, so only the types
+            // that did not fit in it are left to write out
+            addOutOfBandMethod(file, "createAreaElement", areaSplit);
         }
 
         file.addClassCloseStatement();
