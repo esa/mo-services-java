@@ -20,8 +20,6 @@
  */
 package org.ccsds.moims.mo.mal;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.structures.Element;
@@ -37,13 +35,52 @@ import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
 public class MALElementsRegistry {
 
     /**
-     * The registered factories. There are a handful in total, one per Area plus
-     * the occasional one for types that are written by hand rather than
-     * generated, which is why a scan is enough and no map is needed. Each one
-     * says which Area it belongs to, so nothing here can register a factory
-     * against the wrong number or version.
+     * The registered factories, with the Area that each one answers for held
+     * beside it as a plain number.
+     *
+     * Finding the right factory is then a walk over an array of ints rather
+     * than a pair of calls into every factory in turn. Those calls go through
+     * an interface that a handful of classes implement, so they cannot be
+     * bound to one of them, and asking each factory which Area it belongs to
+     * cost more than the switch it was being asked to reach.
      */
-    private final List<AreaElementFactory> AREA_FACTORIES = new CopyOnWriteArrayList<>();
+    private static final class Registered {
+
+        /**
+         * The Area of each factory, as an area number and an area version
+         * packed into one int so that a candidate is one comparison.
+         */
+        private final int[] areas;
+
+        private final AreaElementFactory[] factories;
+
+        Registered(int[] areas, AreaElementFactory[] factories) {
+            this.areas = areas;
+            this.factories = factories;
+        }
+    }
+
+    /**
+     * Replaced as a whole when a factory is registered, so that a scan reads it
+     * once and then walks something that cannot change underneath it. Areas are
+     * registered while the messages of the ones already registered are being
+     * decoded, so this has to hold while both are happening.
+     */
+    private volatile Registered registered
+            = new Registered(new int[0], new AreaElementFactory[0]);
+
+    /**
+     * Packs an area number and an area version into the one int that the scan
+     * compares. An area number is 16 bits wide and a version 8, so the two sit
+     * side by side without either reaching into the other.
+     *
+     * @param areaNumber The area number.
+     * @param areaVersion The area version.
+     * @return The packed value.
+     */
+    private static int areaKeyOf(final int areaNumber, final int areaVersion) {
+        return (areaNumber << 8) | (areaVersion & 0xFF);
+    }
 
     /**
      * Registers a factory, so that the Elements it creates can be reached
@@ -56,10 +93,6 @@ public class MALElementsRegistry {
      * that is asked, so a factory added later cannot take a type away from the
      * one that already had it.
      *
-     * Areas are registered while the messages of the ones already registered
-     * are being decoded, so the list this adds to is one that can be read
-     * through at the same time.
-     *
      * @param factory The factory that creates the Elements.
      */
     public synchronized void registerAreaFactory(final AreaElementFactory factory) {
@@ -67,13 +100,24 @@ public class MALElementsRegistry {
             return;
         }
 
-        for (AreaElementFactory registered : AREA_FACTORIES) {
-            if (registered.getClass() == factory.getClass()) {
+        final Registered current = this.registered;
+
+        for (AreaElementFactory alreadyThere : current.factories) {
+            if (alreadyThere.getClass() == factory.getClass()) {
                 return; // Already registered
             }
         }
 
-        AREA_FACTORIES.add(factory);
+        final int count = current.factories.length;
+        final int[] areas = java.util.Arrays.copyOf(current.areas, count + 1);
+        final AreaElementFactory[] factories
+                = java.util.Arrays.copyOf(current.factories, count + 1);
+
+        // Asked once, here, rather than on every Element that is created
+        areas[count] = areaKeyOf(factory.getAreaNumber(), factory.getAreaVersion());
+        factories[count] = factory;
+
+        this.registered = new Registered(areas, factories);
     }
 
     /**
@@ -87,17 +131,18 @@ public class MALElementsRegistry {
         // Read once, up front: a Type Id that no Area claims is the rare case,
         // so there is nothing to be saved by reading the last two only after a
         // factory has been found.
-        final int areaNumber = TypeId.areaNumberOf(typeId);
-        final int areaVersion = TypeId.areaVersionOf(typeId);
+        final int areaKey = areaKeyOf(TypeId.areaNumberOf(typeId), TypeId.areaVersionOf(typeId));
         final int serviceNumber = TypeId.serviceNumberOf(typeId);
         final int typeNumber = TypeId.typeNumberOf(typeId);
 
-        // Walked in one go, over the factories that were there when this
-        // started: a factory registered halfway through must not be seen for
-        // some of this scan and not for the rest of it.
-        for (AreaElementFactory factory : AREA_FACTORIES) {
-            if (factory.getAreaNumber() == areaNumber && factory.getAreaVersion() == areaVersion) {
-                Element element = factory.createElement(serviceNumber, typeNumber);
+        // Read once, so that a factory registered halfway through is not seen
+        // for some of this scan and not for the rest of it.
+        final Registered current = this.registered;
+        final int[] areas = current.areas;
+
+        for (int i = 0; i < areas.length; i++) {
+            if (areas[i] == areaKey) {
+                Element element = current.factories[i].createElement(serviceNumber, typeNumber);
 
                 // An Area can hold more than one factory, so a factory that
                 // does not know the type is asked past, not taken as an answer
