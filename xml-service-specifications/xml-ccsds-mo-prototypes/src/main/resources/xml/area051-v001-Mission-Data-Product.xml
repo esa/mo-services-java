@@ -477,7 +477,7 @@
 				</mal:field>
 			</mal:composite>
 
-			<mal:composite name="Subscription" shortFormPart="80" comment="The subscription id, plus all the information provided when 'subscribe' was invoked">
+			<mal:composite name="Subscription" shortFormPart="81" comment="The subscription id, plus all the information provided when 'subscribe' was invoked">
 				<mal:extends>
 					<mal:type name="Composite" area="MAL"/>
 				</mal:extends>
