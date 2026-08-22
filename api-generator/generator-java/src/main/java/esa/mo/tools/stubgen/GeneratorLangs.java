@@ -546,7 +546,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (comment == null || comment.isEmpty()) {
                 // The error reference rarely carries its own comment, so fall
                 // back to the comment of the referenced error definition.
-                ErrorDefinitionType def = typeInformation.getErrorDefinition(error.getType().getName());
+                ErrorDefinitionType def = typeInformation.getErrorDefinition(
+                        error.getType().getArea(), error.getType().getName());
                 comment = (def != null && def.getComment() != null && !def.getComment().isEmpty())
                         ? def.getComment() : "if the corresponding MO error occurs";
             }

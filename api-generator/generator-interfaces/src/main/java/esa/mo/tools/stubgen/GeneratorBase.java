@@ -106,7 +106,7 @@ public abstract class GeneratorBase implements Generator {
 
             if ((null != area.getErrors()) && (null != area.getErrors().getError())) {
                 for (ErrorDefinitionType error : area.getErrors().getError()) {
-                    registry.registerError(error);
+                    registry.registerError(area.getName(), error);
                 }
             }
 
@@ -117,8 +117,11 @@ public abstract class GeneratorBase implements Generator {
                 }
 
                 if ((service.getErrors() != null) && (service.getErrors().getError() != null)) {
+                    // Held under the area, not the service: the schema requires an error
+                    // name to be unique across a whole specification, and a reference names
+                    // only the area.
                     for (ErrorDefinitionType error : service.getErrors().getError()) {
-                        registry.registerError(error);
+                        registry.registerError(area.getName(), error);
                     }
                 }
             }

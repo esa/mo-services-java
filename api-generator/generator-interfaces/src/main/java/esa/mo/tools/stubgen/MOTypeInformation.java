@@ -266,11 +266,12 @@ public class MOTypeInformation implements TypeInformation {
     /**
      * Returns error details if defined.
      *
-     * @param error The error to look for.
+     * @param area The area that declares the error, which is part of its identity.
+     * @param error The name of the error to look for.
      * @return the details if found, otherwise null.
      */
-    public esa.mo.xsd.ErrorDefinitionType getErrorDefinition(String error) {
-        return registry.getErrorDefinition(error);
+    public esa.mo.xsd.ErrorDefinitionType getErrorDefinition(String area, String error) {
+        return registry.getErrorDefinition(area, error);
     }
 
     /**

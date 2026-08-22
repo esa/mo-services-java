@@ -77,10 +77,20 @@ public class MOTypeRegistry {
     /**
      * Registers an error definition.
      *
+     * @param area The area that declares it.
      * @param error The error definition to register.
      */
-    public void registerError(ErrorDefinitionType error) {
-        errorDefinitionMap.put(error.getName(), error);
+    public void registerError(String area, ErrorDefinitionType error) {
+        errorDefinitionMap.put(keyOf(area, error.getName()), error);
+    }
+
+    /**
+     * @param area The area that declares the error.
+     * @param name The name of the error.
+     * @return the key an error is held under.
+     */
+    private static String keyOf(String area, String name) {
+        return area + "::" + name;
     }
 
     /**
@@ -352,13 +362,13 @@ public class MOTypeRegistry {
     /**
      * Returns error details if defined.
      *
-     * @param error The error to look for.
+     * @param area The area that declares the error, which is part of its identity: the
+     * specifications reuse a name across areas, and a reference always says which one it
+     * means.
+     * @param error The name of the error to look for.
      * @return the details if found, otherwise null.
      */
-    public ErrorDefinitionType getErrorDefinition(String error) {
-        if (errorDefinitionMap.containsKey(error)) {
-            return errorDefinitionMap.get(error);
-        }
-        return null;
+    public ErrorDefinitionType getErrorDefinition(String area, String error) {
+        return errorDefinitionMap.get(keyOf(area, error));
     }
 }
