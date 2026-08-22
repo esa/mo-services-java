@@ -31,7 +31,7 @@ File transfers that require the file to leave the file system (e.g. transfer ove
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef>
-                            <mal:type are="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
                             <mal:extraInformation comment="">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:extraInformation>
@@ -75,7 +75,7 @@ File transfers that require the file to leave the file system (e.g. transfer ove
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef>
-                            <mal:type are="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
                             <mal:extraInformation comment="">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:extraInformation>
@@ -119,7 +119,7 @@ File transfers that require the file to leave the file system (e.g. transfer ove
                             </mal:extraInformation>
                         </mal:errorRef>                        
                         <mal:errorRef>
-                            <mal:type are="FM" list="false" name="NODE_NOT_FOUND"/>
+                            <mal:type area="FM" list="false" name="NODE_NOT_FOUND"/>
                             <mal:extraInformation comment="">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:extraInformation>
@@ -163,7 +163,7 @@ File transfers that require the file to leave the file system (e.g. transfer ove
                             </mal:extraInformation>
                         </mal:errorRef>
                         <mal:errorRef>
-                            <mal:type are="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
+                            <mal:type area="FM" service="FileSystem" list="false" name="NODE_EXISTS"/>
                             <mal:extraInformation comment="">
                                 <mal:type area="MAL" list="false" name="URI"/>
                             </mal:extraInformation>

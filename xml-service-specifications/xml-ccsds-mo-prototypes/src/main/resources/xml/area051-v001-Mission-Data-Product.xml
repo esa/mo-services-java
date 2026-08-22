@@ -110,7 +110,7 @@
 					</mal:errors>
 				</mal:submitIP>
 
-				<mal:requestIP name="listSubscriptions" number="3" supportInReplay="false"
+				<mal:requestIP name="listSubscriptions" number="6" supportInReplay="false"
 				comment="Lists active subscriptions for the active user">
 					<mal:messages>
 						<mal:request>
