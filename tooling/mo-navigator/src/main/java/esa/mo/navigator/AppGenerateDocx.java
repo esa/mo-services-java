@@ -70,9 +70,24 @@ public class AppGenerateDocx {
             File xmlRefDirectory = new File(sourFolder);
             List<XmlSpecification> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
 
+            // Every specification is loaded before any is generated. An area may name a
+            // type of another area, and the type is only known once the area that
+            // declares it has been loaded, so generating while still loading resolves a
+            // reference only when the file that declares it happens to be read first.
+            // The order files are read in is the order the file system lists them, which
+            // is why the Mission Data Product area could not find a type of the COM area.
             for (XmlSpecification spec : specs) {
                 try {
                     generator.loadXML(spec);
+                } catch (Exception ex) {
+                    Logger.getLogger(AppGenerateDocx.class.getName()).log(Level.SEVERE,
+                            "Exception thrown while loading the XML file: "
+                            + spec.getFile().getPath(), ex);
+                }
+            }
+
+            for (XmlSpecification spec : specs) {
+                try {
                     generator.generate(destFolder, spec, spec.getRootElement());
                 } catch (Exception ex) {
                     Logger.getLogger(AppGenerateDocx.class.getName()).log(Level.SEVERE,
