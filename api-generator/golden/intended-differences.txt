@@ -1,0 +1,16 @@
+# Intended differences — paths excluded from the golden-tree comparison.
+#
+# One glob per line, matched against file or directory names (diff --exclude).
+# Every entry needs a reason and a date. This list is reviewed, not grown silently:
+# when a difference is agreed, the right move is usually to make the change, re-capture
+# the baseline with ./golden.sh capture, and return the diff to zero — a permanently
+# fuzzy diff is no safety net, because the next real regression hides in the noise.
+#
+# See api-generator-lib-DESIGN.md §10.1.
+#
+# Format:
+#   <glob>        # reason — YYYY-MM-DD
+#
+# ---------------------------------------------------------------------------
+
+# (none yet)
