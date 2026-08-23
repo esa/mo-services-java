@@ -1,0 +1,93 @@
+/* The page describes a specification that is read rather than skimmed, so the measure is
+   held short enough to read and the drawings are allowed the full width they need. */
+
+body {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #1a1a1a;
+    background: #ffffff;
+    margin: 0 auto;
+    padding: 2em 3em 6em 3em;
+    max-width: 62em;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: Verdana, Arial, sans-serif;
+    color: #123a5e;
+    line-height: 1.3;
+}
+
+h1 {
+    font-size: 1.7em;
+    border-bottom: 2px solid #123a5e;
+    padding-bottom: 0.2em;
+    margin-top: 1.8em;
+}
+
+h2 {
+    font-size: 1.35em;
+    margin-top: 1.6em;
+}
+
+h3 {
+    font-size: 1.1em;
+    margin-top: 1.5em;
+}
+
+h4 {
+    font-size: 0.95em;
+    margin-top: 1.3em;
+    color: #3c3c3c;
+}
+
+/* A field name introduces the description under it, so it sits tight against it. */
+h5 {
+    font-size: 0.9em;
+    margin: 1em 0 0 0;
+    color: #123a5e;
+}
+
+h5 + p {
+    margin-top: 0.2em;
+}
+
+a {
+    color: #14507f;
+}
+
+/* A drawing is as wide as the message it draws, which can be a good deal wider than the
+   text; it scrolls in its own right rather than widening the page. */
+p.diagram {
+    overflow-x: auto;
+    max-width: 100%;
+    margin: 1.2em 0;
+}
+
+div.index {
+    background: #f4f6f8;
+    border-left: 3px solid #123a5e;
+    padding: 0.1em 1.2em 0.8em 1.2em;
+    margin: 1.2em 0;
+}
+
+div.index h1, div.index h2, div.index h3 {
+    border: none;
+    font-size: 1em;
+    margin-top: 0.8em;
+    padding-bottom: 0;
+}
+
+div.index ul {
+    columns: 4 12em;
+    list-style: none;
+    padding-left: 0;
+    margin: 0.3em 0 0 0;
+}
+
+div.index li {
+    margin: 0.15em 0;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 0.85em;
+    break-inside: avoid;
+}

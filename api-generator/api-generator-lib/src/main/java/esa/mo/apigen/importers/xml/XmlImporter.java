@@ -446,15 +446,19 @@ public final class XmlImporter implements Importer {
         while (c.nextChild()) {
             String name = c.localName();
             if ("objects".equals(name)) {
+                com.setDeclaresObjects(true);
                 com.setObjectsComment(c.comment());
                 readComObjects(c, com.getObjects());
             } else if ("events".equals(name)) {
+                com.setDeclaresEvents(true);
                 com.setEventsComment(c.comment());
                 readComObjects(c, com.getEvents());
             } else if ("archiveUsage".equals(name)) {
+                com.setDeclaresArchiveUsage(true);
                 com.setArchiveUsage(c.comment());
                 c.skip();
             } else if ("activityUsage".equals(name)) {
+                com.setDeclaresActivityUsage(true);
                 com.setActivityUsage(c.comment());
                 c.skip();
             } else if ("documentation".equals(name)) {

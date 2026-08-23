@@ -16,6 +16,16 @@ The baseline lives in `baseline/` (override with `GOLDEN_BASELINE=/some/path`) a
 it is ~20 MB and regenerable. Full diffs are written to `last-diff.txt`; the console shows a
 per-file summary.
 
+**What else reads the baseline.** `testbeds/testbed-api-generator` holds the JUnit side — the
+golden-tree tests that generate with `api-generator-lib` and compare against `baseline/`, so
+capturing one here is what makes them run rather than skip:
+
+```
+cd testbeds/testbed-api-generator && mvn test
+```
+
+Without a baseline those tests skip, which is also what happens in CI (DESIGN.md §10.8).
+
 ## What it captures
 
 | | |

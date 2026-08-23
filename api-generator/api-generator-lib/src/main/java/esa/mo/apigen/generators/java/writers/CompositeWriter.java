@@ -53,7 +53,7 @@ public final class CompositeWriter {
                 : JavaNaming.packageOf(service, JavaNaming.STRUCTURES);
         String fq = pkg + "." + name;
         List<Field> own = type.getFields();
-        List<Field> inherited = inheritedFields(model, type);
+        List<Field> inherited = model.inheritedFields(type);
         List<Field> all = new ArrayList<Field>(inherited);
         all.addAll(own);
 
@@ -337,34 +337,6 @@ public final class CompositeWriter {
             return null;
         }
         return JavaTypeName.qualified(superType);
-    }
-
-    private static List<Field> inheritedFields(MOModel model, CompositeType type) {
-        List<Field> inherited = new ArrayList<Field>();
-        TypeRef superType = type.getSuperType();
-        if (superClassOf(type) == null) {
-            return inherited;
-        }
-        // MOObject is hand-written in the MAL API rather than generated - the schema
-        // declares MAL::Object as a fundamental - so the one field it contributes is
-        // known here rather than read from the model.
-        if ("MAL".equals(superType.getArea()) && "Object".equals(superType.getName())) {
-            Field identity = new Field();
-            identity.setName("objectIdentity");
-            identity.setComment("The identity of the MO Object.");
-            identity.setCanBeNull(false);
-            identity.setType(new TypeRef("MAL", superType.getAreaVersion(), null,
-                    "ObjectIdentity", false, false));
-            inherited.add(identity);
-            return inherited;
-        }
-        Object resolved = model.resolve(superType);
-        if (resolved instanceof CompositeType) {
-            CompositeType parent = (CompositeType) resolved;
-            inherited.addAll(inheritedFields(model, parent));
-            inherited.addAll(parent.getFields());
-        }
-        return inherited;
     }
 
     private static List<Field> requiredOf(List<Field> fields) {

@@ -22,6 +22,7 @@ package esa.mo.apigen.model;
 
 import esa.mo.apigen.model.com.COMObject;
 import esa.mo.apigen.model.com.ObjectReference;
+import esa.mo.apigen.model.types.CompositeType;
 import esa.mo.apigen.model.types.TypeDefinition;
 import esa.mo.apigen.model.types.TypeRef;
 import java.util.ArrayList;
@@ -177,7 +178,7 @@ public final class MOModel {
     /**
      * Resolves a type reference to the type it names.
      *
-     * @param ref The reference, already linked.
+     * @param reference The reference, already linked.
      * @return the type definition, or null if it cannot be resolved.
      */
     public TypeDefinition resolve(TypeRef reference) {
@@ -194,6 +195,45 @@ public final class MOModel {
         }
         Service service = area.getService(ref.getService());
         return service == null ? null : findType(service.getDataTypes(), ref.getName());
+    }
+
+    /**
+     * Returns the fields a composite inherits, outermost ancestor first, followed by the
+     * ones its immediate parent declares.
+     * <p>
+     * A composite extending the MAL's Object contributes one field that is not written
+     * anywhere: the schema declares Object as a fundamental, so it has no fields to read,
+     * but an MO Object is by definition something with an identity. That identity is
+     * named here rather than in each generator that has to show it.
+     *
+     * @param composite The composite whose ancestry is wanted.
+     * @return the inherited fields, empty if it extends nothing but Composite.
+     */
+    public List<Field> inheritedFields(CompositeType composite) {
+        List<Field> inherited = new ArrayList<Field>();
+        TypeRef parent = composite.getSuperType();
+
+        if (parent == null || "Composite".equals(parent.getName())) {
+            return inherited;
+        }
+        if ("MAL".equals(parent.getArea()) && "Object".equals(parent.getName())) {
+            Field identity = new Field();
+            identity.setName("objectIdentity");
+            identity.setComment("The identity of the MO Object.");
+            identity.setCanBeNull(false);
+            identity.setType(new TypeRef("MAL", parent.getAreaVersion(), null,
+                    "ObjectIdentity", false, false));
+            inherited.add(identity);
+            return inherited;
+        }
+
+        TypeDefinition resolved = resolve(parent);
+        if (resolved instanceof CompositeType) {
+            CompositeType above = (CompositeType) resolved;
+            inherited.addAll(inheritedFields(above));
+            inherited.addAll(above.getFields());
+        }
+        return inherited;
     }
 
     private static TypeDefinition findType(List<TypeDefinition> types, String name) {

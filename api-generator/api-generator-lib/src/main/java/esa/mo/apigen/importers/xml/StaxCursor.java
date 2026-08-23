@@ -220,7 +220,12 @@ public final class StaxCursor {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     depth++;
-                    writeStart(out);
+                    // The outermost element carries the namespace it was written in, so
+                    // that what comes out is a document in its own right rather than a
+                    // fragment that only means something back where it came from. A
+                    // diagram is captured here and rendered elsewhere, and a drawing whose
+                    // namespace was dropped renders as an empty picture.
+                    writeStart(out, !wrote);
                     wrote = true;
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -242,8 +247,12 @@ public final class StaxCursor {
         return wrote ? out.toString() : null;
     }
 
-    private void writeStart(StringWriter out) {
+    private void writeStart(StringWriter out, boolean outermost) {
         out.write("<" + in.getLocalName());
+        String namespace = in.getNamespaceURI();
+        if (outermost && namespace != null && !namespace.isEmpty()) {
+            out.write(" xmlns=\"" + escapeAttr(namespace) + "\"");
+        }
         for (int i = 0; i < in.getAttributeCount(); i++) {
             out.write(" " + in.getAttributeLocalName(i) + "=\""
                     + escapeAttr(in.getAttributeValue(i)) + "\"");

@@ -82,12 +82,12 @@ public final class Linker {
     }
 
     private void linkArea(MOModel model, Area area, int malVersion, ValidationResult result) {
-        linkTypes(model, area, area.getDataTypes(), malVersion, result);
+        linkTypes(model, area, null, area.getDataTypes(), malVersion, result);
         for (ErrorDefinition error : area.getErrors()) {
             linkField(model, area, error.getExtraInformation(), result);
         }
         for (Service service : area.getServices()) {
-            linkTypes(model, area, service.getDataTypes(), malVersion, result);
+            linkTypes(model, area, service, service.getDataTypes(), malVersion, result);
             for (ErrorDefinition error : service.getErrors()) {
                 linkField(model, area, error.getExtraInformation(), result);
             }
@@ -100,10 +100,16 @@ public final class Linker {
         }
     }
 
-    private void linkTypes(MOModel model, Area area, List<TypeDefinition> types,
-            int malVersion, ValidationResult result) {
+    /**
+     * @param service The service that declares these types, or null where the area does.
+     * A type knows which of the two it belongs to because where it is declared is part of
+     * what it is: two services of one area may each declare a type of the same name.
+     */
+    private void linkTypes(MOModel model, Area area, Service service,
+            List<TypeDefinition> types, int malVersion, ValidationResult result) {
         for (TypeDefinition type : types) {
             type.setArea(area);
+            type.setService(service);
             if (type instanceof CompositeType) {
                 CompositeType composite = (CompositeType) type;
                 if (composite.getSuperType() == null) {

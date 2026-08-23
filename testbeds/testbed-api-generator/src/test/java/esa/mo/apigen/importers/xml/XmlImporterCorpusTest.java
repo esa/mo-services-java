@@ -207,6 +207,28 @@ public class XmlImporterCorpusTest {
     }
 
     @Test
+    public void aCapturedDiagramIsSelfContained() throws Exception {
+        // A diagram is written inside a specification, in a namespace the specification
+        // declares once at the top. It is read here and rendered somewhere else entirely,
+        // so what is captured has to carry that namespace itself - a drawing whose
+        // namespace was dropped renders as an empty picture.
+        Specification spec = Corpus.read(Corpus.file("area007-v001-Software-Management.xml"));
+        int diagrams = 0;
+        for (Service service : spec.getAreas().get(0).getServices()) {
+            if (service.getCom() == null) {
+                continue;
+            }
+            for (esa.mo.apigen.model.docs.Diagram diagram
+                    : service.getCom().getDocumentation().getDiagrams()) {
+                diagrams++;
+                assertTrue(diagram.getName() + " should stand on its own",
+                        diagram.getSvg().startsWith("<svg xmlns=\"http://www.w3.org/2000/svg\""));
+            }
+        }
+        assertEquals(2, diagrams);
+    }
+
+    @Test
     public void anExtendedServiceIsMarkedWhetherOrNotItDeclaresFeatures() throws Exception {
         // A service says it is a COM extended service on the element itself. Most of them
         // go on to declare objects or events, but not all: this file has two that declare

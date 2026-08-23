@@ -55,6 +55,24 @@ public final class ModelComparison {
         }
     }
 
+    /**
+     * Compares two types by what they denote rather than by how they were written.
+     * <p>
+     * An object reference has two spellings in the corpus - a type named
+     * {@code ObjectRef(Product)}, and {@code Product} with the objectRef flag - and they
+     * mean the same thing. A format that writes one of them is not losing anything by not
+     * writing the other, so the comparison unwraps both before looking at them. The XML
+     * round trip compares the XML text as well, so a change of spelling there is still
+     * caught.
+     */
+    private void diff(String where, TypeRef a, TypeRef b) {
+        TypeRef x = a == null ? null : a.unwrapped();
+        TypeRef y = b == null ? null : b.unwrapped();
+        if (x == null ? y != null : !x.equals(y)) {
+            differences.add(where + ": " + a + " != " + b);
+        }
+    }
+
     private boolean sizes(String where, List<?> a, List<?> b) {
         if (a.size() != b.size()) {
             differences.add(where + ": " + a.size() + " entries != " + b.size());

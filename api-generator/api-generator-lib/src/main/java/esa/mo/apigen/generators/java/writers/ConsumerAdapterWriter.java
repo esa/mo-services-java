@@ -75,6 +75,11 @@ public final class ConsumerAdapterWriter {
     }
 
     /**
+     * Writes the adapter a consumer subclasses to receive what a provider sends back.
+     *
+     * @param model Every loaded specification.
+     * @param area The area the service belongs to.
+     * @param service The service to write the adapter of.
      * @return the source of the service's consumer adapter.
      */
     public static String write(MOModel model, Area area, Service service) {

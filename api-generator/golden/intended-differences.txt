@@ -6,11 +6,18 @@
 # the baseline with ./golden.sh capture, and return the diff to zero — a permanently
 # fuzzy diff is no safety net, because the next real regression hides in the noise.
 #
-# See api-generator-lib-DESIGN.md §10.1.
+# See ../api-generator-lib/DESIGN.md §10.1.
 #
 # Format:
 #   <glob>        # reason — YYYY-MM-DD
 #
 # ---------------------------------------------------------------------------
 
-# (none yet)
+# (none)
+#
+# There was one, and it was fixed rather than tolerated: the existing generator documented
+# an error under the number of another area's error of the same name, because it looked
+# errors up by name alone across every specification loaded. MPS's INVALID was documented
+# as COM's 70000 and MC v002's Invalid as MPD's 1, while the XML says 1 and 3 and the
+# generated Java has always said 1 and 3. MOTypeRegistry now holds an error under its area
+# as well as its name, both generators agree, and the baseline was re-captured. - 2026-08-22

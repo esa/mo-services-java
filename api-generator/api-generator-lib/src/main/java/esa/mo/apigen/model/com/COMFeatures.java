@@ -36,6 +36,14 @@ public final class COMFeatures {
     private String objectsComment;
     private String eventsComment;
     private final List<COMObject> objects = new ArrayList<COMObject>();
+
+    private boolean declaresObjects = false;
+
+    private boolean declaresEvents = false;
+
+    private boolean declaresArchiveUsage = false;
+
+    private boolean declaresActivityUsage = false;
     private final List<COMObject> events = new ArrayList<COMObject>();
     private String archiveUsage;
     private String activityUsage;
@@ -55,6 +63,60 @@ public final class COMFeatures {
 
     public void setEventsComment(String eventsComment) {
         this.eventsComment = eventsComment;
+    }
+
+    /**
+     * Returns true if the service wrote an objects section, whether or not it listed any.
+     * <p>
+     * Kept apart from the list itself: a service that declares the section and nothing in
+     * it is still saying something about how it uses the COM, and the documents say so.
+     *
+     * @return true if the section was declared.
+     */
+    public boolean declaresObjects() {
+        return declaresObjects;
+    }
+
+    public void setDeclaresObjects(boolean declaresObjects) {
+        this.declaresObjects = declaresObjects;
+    }
+
+    /**
+     * @return true if the service wrote an events section, whether or not it listed any.
+     */
+    public boolean declaresEvents() {
+        return declaresEvents;
+    }
+
+    public void setDeclaresEvents(boolean declaresEvents) {
+        this.declaresEvents = declaresEvents;
+    }
+
+    /**
+     * Returns true if the service said how it uses the COM archive, whatever it said.
+     * <p>
+     * Kept apart from the text, which is the whole content of that statement: a format that
+     * leaves documentation out still has to record that the statement was made.
+     *
+     * @return true if the section was declared.
+     */
+    public boolean declaresArchiveUsage() {
+        return declaresArchiveUsage;
+    }
+
+    public void setDeclaresArchiveUsage(boolean declaresArchiveUsage) {
+        this.declaresArchiveUsage = declaresArchiveUsage;
+    }
+
+    /**
+     * @return true if the service said how it uses the COM activity tracking.
+     */
+    public boolean declaresActivityUsage() {
+        return declaresActivityUsage;
+    }
+
+    public void setDeclaresActivityUsage(boolean declaresActivityUsage) {
+        this.declaresActivityUsage = declaresActivityUsage;
     }
 
     public List<COMObject> getObjects() {

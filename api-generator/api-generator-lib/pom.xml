@@ -67,9 +67,14 @@
     </properties>
 
     <!--
-        No third-party dependencies. The model is plain Java, XML I/O uses StAX from the
-        JDK, the MOSpec parser is hand-written, and docx/svg output is written as text.
-        See DESIGN.md, section 3.
+        One third-party dependency, and it earns it. The model is plain Java, XML I/O uses
+        StAX from the JDK, the MOSpec parser is hand-written, and docx and XHTML output are
+        written as text - but a diagram declared in a specification is SVG and a .docx
+        embeds a raster image, so Batik rasterises it. See DESIGN.md, section 3.
+
+        The heavy tests - the golden trees, the corpus walks and the round trips - live in
+        testbeds/testbed-api-generator, not here, so that building this module stays a
+        compile. See DESIGN.md, section 10.8.
     -->
     <dependencies>
         <!-- Build-time only: supplies the XSDs unpacked above, and orders the reactor. -->
@@ -84,6 +89,67 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- The one thing this library cannot do for itself: a diagram declared in a
+             specification is SVG, and a .docx embeds a raster image, so the document
+             generator rasterises it. Nothing else here needs a third party, and nothing in
+             the model may use one - see DESIGN.md, section 3. -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-rasterizer</artifactId>
+            <version>1.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>fop</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-bridge</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-codec</artifactId>
+            <version>1.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-js</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-anim</artifactId>
+            <version>1.16</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
@@ -93,6 +159,11 @@
                 <includes>
                     <include>LICENCE.md</include>
                 </includes>
+            </resource>
+            <!-- Naming any resource directory replaces the default, so the module's own
+                 has to be named again: it holds the fixed parts of a .docx package. -->
+            <resource>
+                <directory>src/main/resources</directory>
             </resource>
         </resources>
         <plugins>

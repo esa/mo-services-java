@@ -4,7 +4,7 @@ Status: **proposal** · New module: 14.x · Cut-over: **v15.0**
 
 `api-generator-lib` is built and matured **alongside** `generator-interfaces`, `generator-java` and
 `generator-docs`, which stay in place and keep driving the build throughout 14.x. The three old
-modules are removed only at the v15.0 cut-over (§10.3). Nothing in 14.x depends on the new library
+modules are removed only at the v15.0 cut-over (§10.9). Nothing in 14.x depends on the new library
 being finished.
 
 ## 1. Purpose
@@ -19,7 +19,7 @@ flowchart LR
     M -->|export| XML2[".xml"]
     M -->|export| TXT2[".mospec"]
     M -->|generate| J["Java API"]
-    M -->|generate| D["docx + svg"]
+    M -->|generate| D["docx"]
 ```
 
 The model is the centre. Formats and outputs are peripheral and independently replaceable.
@@ -55,7 +55,7 @@ api-generator/
 └── generator-docs/               kept through 14.x, deleted at v15.0
 ```
 
-**One new module, not several.** Model, XML, MOSpec, Java, docx and svg all live in
+**One new module, not several.** Model, XML, MOSpec, Java, docx and XHTML all live in
 `api-generator-lib`. Splitting the text format into its own artifact was considered and rejected:
 the only argument for it was isolating a parser dependency, and since the MOSpec parser is
 hand-written (§7.2) there is no dependency to isolate. One library is the point of the exercise.
@@ -73,7 +73,7 @@ Throughout 14.x the new path can be **exercised end to end** — up to and inclu
 `apis/*` module through the new library, compiling the result and running the full test suite —
 while the **default stays the old generators**. A clean checkout, and every release cut from 14.x,
 builds exactly as it does today. Flipping that default is the cut-over, and it happens once, at
-v15.0 (§10.3).
+v15.0 (§10.9).
 
 The plugin already selects a generator by short name, so the new generators register under distinct
 names. Making the choice a property turns a per-module edit into a whole-build switch —
@@ -100,10 +100,15 @@ Cost to accept for the duration: fixes made to the old generators must be mirror
 ones, or the difference consciously accepted. Running both in CI is what keeps that honest — a
 change to either side that moves the output shows up as a diff on the next build.
 
-**Dependencies:** `api-generator-lib` has **zero** third-party dependencies — the model is plain
-Java, XML I/O uses StAX from the JDK, the MOSpec parser is hand-written (§7.2), and docx/svg output
-is written as text. This removes `jaxb-api`, `jaxb-runtime`, `activation`, `reflections`,
-`maven-plugin-api`, `de.dlr.gsoc.mcds:mosdl` and both `xjc` executions. Keeping the library
+**Dependencies:** `api-generator-lib` has **one** third-party dependency, and it earns it. The model
+is plain Java, XML I/O uses StAX from the JDK, the MOSpec parser is hand-written (§7.2), and the
+OOXML of a document is written as text — but a diagram declared in a specification is SVG and a
+`.docx` embeds a raster image, so the document generator rasterises it with **Apache Batik**
+(`batik-rasterizer`, `batik-codec`, `batik-anim`, 1.16, the same version and exclusions the existing
+generator uses). Nothing else needs a third party and nothing in `model/` may use one, invariant 1
+being about the model rather than the generators. This still removes `jaxb-api`, `jaxb-runtime`,
+`activation`, `reflections`, `maven-plugin-api`, `de.dlr.gsoc.mcds:mosdl` and both `xjc`
+executions. Keeping the library
 dependency-free is what makes putting everything in it cost nothing.
 
 `api-generator-maven-plugin` stays a separate module — it is the Maven binding, not part of the
@@ -133,7 +138,7 @@ esa.mo.apigen
 ├── exporters/      Exporter (SPI)
 │   ├── xml/        XmlExporter
 │   └── mospec/     MOSpecExporter, SourceFormatter
-└── generators/     Generator (SPI), java/, docx/, svg/
+└── generators/     Generator (SPI), java/, docx/
 ```
 
 A new root package (`esa.mo.apigen`, not `esa.mo.tools.stubgen`) so old and new coexist during
@@ -635,7 +640,7 @@ Changes from today's `Generator` interface:
 - Exporters write to a **directory**, not to a single stream.
 
 **The plugin's existing configuration options are kept for 14.x**, then reviewed at the cut-over
-(§10.4). None of them is set anywhere in this repository:
+(§10.10). None of them is set anywhere in this repository:
 
 | Option | Set in | Behaviour behind it |
 | --- | --- | --- |
@@ -644,7 +649,7 @@ Changes from today's `Generator` interface:
 | `generateStructures` | 0 poms | live; defaults `true`, branched on at `GeneratorLangs:368,:449` |
 | `forceGeneration` | 0 poms | live; drives the input-timestamp skip in `execute()` |
 | `packageBindings` | 0 poms | inert in practice — an empty map means `addAreaPackage` is never called |
-| `xsdRefDirectory` | 0 poms | inert — no module has such a directory, and the `loadXSD` path behind it goes (§10.4) |
+| `xsdRefDirectory` | 0 poms | inert — no module has such a directory, and the `loadXSD` path behind it goes (§10.10) |
 | `targetLanguages` | 1 pom | in active use — always `Java` |
 
 `extraProperties` deserves attention because it is not a vestigial escape hatch. It is how the docs
@@ -666,7 +671,7 @@ exercise — the aim is that there is nothing to configure.
 Removing the options from the *plugin* is a separate matter and cannot be done in 14.x: Maven fails
 the build on unknown plugin configuration (`Cannot find 'packageBindings' in class …`), so any
 external pom setting one would break on upgrade. The plugin is published to Maven Central, so that
-risk is real even though nothing in this repository sets them. It is queued for v15.0 (§10.4).
+risk is real even though nothing in this repository sets them. It is queued for v15.0 (§10.10).
 
 Note that the plugin can in fact keep its surface indefinitely at no cost to the library: at
 cut-over it simply maps its `@Parameter` fields onto the typed generator constructors.
@@ -998,9 +1003,19 @@ current fork (`GeneratorMOSDL` is a modified copy of DLR's `MosdlGenerator` — 
 | Nullability postfix on the type — `List<X>?`, not `List?<X>` | `resolveType()`, respelled (§7.8) |
 | Keywords quoted when used as identifiers | `getId()` |
 
-Also carried over, but into the **importer** rather than the formatter: auto-numbering (`[n]` may
-be omitted and is assigned from the highest existing number — for COM it must draw from the
-**shared** object/event counter, §9) and the implicit import of MAL fundamental types.
+Also carried over, but into the **importer** rather than the formatter: the implicit import of MAL
+fundamental types. A type of the MAL is written unqualified — `Identifier`, not `MAL::Identifier` —
+except where the area or service being written declares a type of the same name, which is written
+out in full so that an unqualified name never means two things.
+
+**Numbers are always written.** MOSDL let `[n]` be omitted and assigned one from the highest
+existing number; MOSpec does not, and the exporter always emits one. Three reasons, in order of
+weight: a number silently assigned is a specification silently changed, and error numbers in
+particular carry meaning across areas that `max + 1` would not respect; the absence of `[n]` on a
+composite already means something else — that it is abstract — so "no number" cannot also mean
+"choose one for me"; and the corpus contains no file that would use it. The convenience it buys is
+not scanning a file for the next free number when hand-editing, which is worth less than the
+ambiguity it costs.
 
 **`BULK` is the default export mode.** `INLINE` and `SUPPRESS` remain supported options. In `BULK`,
 an operation's message and field documentation is hoisted into a single doc block above the
@@ -1164,20 +1179,39 @@ Most of the existing structure exists to serve requirements that are gone:
 | `StdStrings` (67) — string constants for `"MAL"`, `"Blob"`, `"Composite"`… | untyped identification of MAL types | the model resolves types; constants that survive belong to the Java mapping (§4.2) |
 | `AttributeTypeDetails`, `NativeTypeDetails`, `MultiReturnType`, `RequiredPublisher`, `CompositeField` | scattered carriers between the shadow model and the writers | re-derive from what the Java generator actually needs; none is a given |
 
-The two generators in scope:
+The generators in scope:
 
 - **java** — currently `GeneratorLangs` + `JavaConsumer` + the `java/` writers, ~4.5k lines. Expect
   the rewrite to be substantially smaller, since a large part of that mass is the language
   abstraction and the shadow-model plumbing rather than Java generation.
-- **docx** and **svg** — `GeneratorDocx` (1176) and `GeneratorSvg` (1155). Between them these carry
-  eight of the nine `extraProperties` options (§5.2); per invariant 4 none is reproduced, and each
-  generator simply does what the default already does — descriptive text, indexes, collapsed and
-  expanded messages, message field names and diagrams all included; SVG not split out; `oldStyle`
-  off. `docx.oldStyle` changes only how a field is labelled in the type tables — `name : (List<X>)`
-  instead of `List<X> name` (`DocxBaseWriter.createTypeHyperLink`). It has never been selected and
-  is not reproduced; deleting that branch is the largest single simplification available here.
+- **docx** — `GeneratorDocx` (1176), which writes one Word document per area. This is the output
+  that matters for the specifications, and the one Phase 4 reproduces.
 
-  The three commented-out `styles.xml` variants **are** kept, as resource files (below).
+- **svg** — `GeneratorSvg` (1155) is **not** part of the docx path, despite the name and despite
+  being in the same module. It writes `output<Area>.xhtml`: a navigable browser of a specification
+  in an ECSS PUS style, with interaction diagrams it draws itself, either inline or split out as
+  separate `.svg` files. The diagrams that appear *in the documents* are a different thing entirely
+  — they are SVG declared in the specification's own `<diagram>` elements, and `DocxWriter`
+  rasterises those to PNG. So the two share no code path and no output.
+
+  **Nothing in this repository invokes it.** The only file that names `GeneratorSvg` is
+  `GeneratorSvg.java`; the plugin reaches a generator only through `targetLanguages`, and the one
+  value configured anywhere is `Java` (`parent/pom.xml:357`). The Phase 0 capture holds no `.xhtml`
+  and no `.svg` for the same reason: nothing produces any. That is the same position `GeneratorGwt`
+  is in — with one difference. A navigable browser of a specification is the kind of tool someone
+  runs by hand rather than from a build, so "no caller in the repository" is weak evidence of
+  disuse here in a way it was not for GWT. **Decided: ported, as Phase 6** (§10.7). It is
+  `esa.mo.apigen.generators.xhtml`, registered as `xhtml`.
+
+  Between them the three carry eight of the nine `extraProperties` options (§5.2); per invariant 4
+  none is reproduced, and each generator simply does what the default already does — descriptive
+  text, indexes, collapsed and expanded messages, message field names and diagrams all included;
+  SVG not split out; `oldStyle` off. `docx.oldStyle` changes only how a field is labelled in the
+  type tables — `name : (List<X>)` instead of `List<X> name`
+  (`DocxBaseWriter.createTypeHyperLink`). It has never been selected and is not reproduced;
+  deleting that branch is the largest single simplification available here.
+
+  The four commented-out `styles.xml` variants **are** kept, as resource files (below).
 
 **The docx generator is the exception to "rewritten, not ported".** Its output has to look the same
 as before, and reproducing intricate OOXML — styles, numbering, tables — from scratch is far riskier
@@ -1297,8 +1331,8 @@ Rules include:
 - Short-form parts unique within an area/service.
 - **COM object and event numbers share one namespace per service** — the XSD's
   `serviceObjectShortFormCheck` selects `.//com:object|.//com:event` on a single `@number` field.
-  This is why MC `Action` numbers its objects 1, 2, 3 and its event 6. Auto-numbering must draw
-  from the shared counter or it will silently generate colliding short forms.
+  MC `Check` shows it plainly: objects 1, 2, 3, **5**, 6, 7, 8, 9, with its one event taking **4**
+  in the gap. A validator that numbered them apart would pass a specification the schema rejects.
 - COM object body types are concrete or `Attribute` (normative in the COM area's own prose).
 - A `related`/`source` link with neither target nor comment is meaningless — warn.
 - Operation numbers unique within a service; capability-set numbers unique.
@@ -1362,8 +1396,9 @@ area number (9) rather than the filename (052) — one attribute away from colli
 The rest of this section describes what the harness does and why.
 
 A script that builds every `apis/*` module with the current plugin and snapshots
-`target/generated-sources/stub` into a golden tree, plus the docx/svg output for the six samples in
-`mo-navigator/_docx`. The Java side of that tree is **950 files and about 116 000 lines** across the
+`target/generated-sources/stub` into a golden tree, plus the docx output — 24 documents, unzipped so
+that `word/document.xml` diffs as text. There is no `.xhtml` or `.svg` in the tree, because nothing
+in the build produces any (§8). The Java side of that tree is **950 files and about 116 000 lines** across the
 seven `apis/*` modules, from 73 files for MAL up to 342 for MPS — so Phase 0 is largely a matter of
 freezing what a build already produces and scripting the comparison.
 
@@ -1539,7 +1574,75 @@ The one-line change that makes the swap, kept out of the committed pom for now:
 ...together with swapping `generator-java` for `api-generator-lib` in the plugin's dependencies in
 `parent/pom.xml`.
 
-### 10.4 Held against a specification set from outside this repository
+### 10.4 Phase 4: the documents
+
+18 documents, 126 parts, **all identical byte for byte** — every `document.xml`, `numbering.xml`,
+`styles.xml`, `[Content_Types].xml`, relationship file and rasterised PNG.
+
+The OOXML layer was rebuilt rather than transcribed. `DocxBaseWriter` reached a cell through nine
+overloads of `addCell` plus three of `addCellWithHyperlink`, each taking a column index, the widths
+of every column, and up to four flags in a fixed order. It is now a table that owns its widths, a row
+that counts its own columns, and a cell that says what it is:
+
+```java
+table.row().cell("Area Identifier").shaded(HEADER).centered().next()
+           .cell("Service Identifier").shaded(HEADER).centered().endRow();
+```
+
+`vMerge`/`vRestart` — two booleans of which one combination is meaningless — became a three-state
+enum. The table and figure captions, nine identical lines apiece differing in two words, are written
+once. `oldStyle` and `includeMessageFieldNames` are gone rather than reproduced, per invariant 4.
+
+Three things about the reference output were not obvious and are now written down where they are
+reproduced:
+
+- **`document.xml` ends its lines with CRLF and `numbering.xml` with LF.** Not a decision anyone
+  took: `DocxBaseWriter` calls `super("\r\n")` and `DocxNumberingWriter` takes the `"\n"` default.
+- **Page breaks, section breaks and drawings are appended without indentation or a line ending**,
+  because they sit in the run of text rather than on a line of their own.
+- **An events section counts as declared as soon as it is written; an objects section counts only
+  when it lists something.** That decides whether a service is said to have "COM object" or "COM
+  object and event" relationships, so the model now records that a section was declared, apart from
+  what it holds.
+
+Rendering the diagrams found a real defect in the importer: a diagram was captured by writing each
+element's *local* name, so `<svg:svg>` — bound to the SVG namespace by a declaration at the top of
+the specification — became `<svg>` bound to nothing. It round-tripped through XML and passed every
+test, because nothing had tried to *render* it. Batik found no elements in the SVG namespace and
+produced a valid, empty picture. `StaxCursor.captureChildren` now declares the outermost element's
+namespace on it, which is also what §7.6's sidecar `.svg` files need.
+
+### 10.5 An error documented under another area's number
+
+Two documents came out differing from the captured ones, in one number each, and the new output was
+the correct one.
+
+| Reference in the XML | Definitions of that name | Captured document | Generated Java |
+| --- | --- | --- | --- |
+| MPS: `<mal:type name="INVALID" area="MPS"/>` | **MPS = 1**, COM = 70000 | 70000 ✗ | 1 ✓ |
+| MC v002: `<mal:type name="Invalid" area="MC"/>` | **MC = 3**, MPD = 1 | 1 ✗ | 3 ✓ |
+
+`MOTypeRegistry` held error definitions in a map keyed by name alone, so whichever area was loaded
+last took the name. Which document was affected therefore depended on what else was in the set: the
+standards set holds no MPD, so nothing competed for `Invalid` there and MC v002 came out right.
+
+Two callers used that lookup. `GeneratorDocx` takes the *number*, which is where the wrong numbers
+came from. `GeneratorLangs` takes the *comment*, as the fallback for the `@throws` of a provider
+handler — so the Java path touched the same fault, but no difference materialised: the fallback only
+fires where an `errorRef` carries no comment of its own, and there the names do not collide. The
+Java golden tree staying at 950 of 950 through the fix is the evidence for that, not an argument.
+
+**This was fixed rather than reproduced.** An error is now held under its area as well as its name,
+and both call sites pass the area the reference names. The change is confined to
+`MOTypeRegistry`, `MOTypeInformation`, `GeneratorBase` and the two lookups; the generated Java is
+unchanged, and exactly the two documents changed. Both generators then produced all 18 documents
+byte for byte alike, the baseline was re-captured, and the budget in `DocxGeneratorGoldenTest` is
+empty.
+
+That the two independently-written generators agree on all 126 parts, having disagreed on precisely
+the two the fix addressed, is the strongest check either of them has had.
+
+### 10.6 Held against a specification set from outside this repository
 
 The golden tree pins the CCSDS specifications, which are the ones the library was written against.
 The NanoSat MO Framework carries its own — four areas of its own numbering (COM 51, Monitor and
@@ -1565,11 +1668,12 @@ generator defects, which is exactly what an outside corpus is for:
 
 | # | Deliverable | Verified by |
 | --- | --- | --- |
-| 1 ✅ | Module skeleton, model, validator | 31 unit tests |
+| 1 ✅ | Module skeleton, model, validator | 31 unit tests (73 by Phase 6; the corpus tests moved to a testbed, §10.8) |
 | 2 ✅ | XML importer, linker, exporter, schema validation | round-trip over 18 of 20 specs; the other 2 are refused because they break their own schema (§6.1) |
 | 3 ✅ | Java generator | golden tree from Phase 0 — **950 of 950 files, all byte-identical** |
-| 4 | docx + svg generators | golden docx/svg from Phase 0 — **same zero-diff standard as Java**: the documents must come out looking as they do today (§8) |
-| 5 | MOSpec importer + exporter, incl. COM, documentation and diagrams | §7.3 closure test over all 20 specs, both text-level and `xml → … → xml` (§7.9) |
+| 4 ✅ | docx generator | golden docx from Phase 0 — **126 of 126 parts byte-identical** (§10.5). The XHTML generator is Phase 6, not this; see §8 |
+| 5 ✅ | MOSpec importer + exporter, incl. COM, documentation and diagrams | §7.3 closure test over all 20 specs, both text-level and `xml → … → xml` (§7.9) |
+| 6 ✅ | XHTML generator | properties rather than a baseline, since there is no baseline to have (§10.7) — every area produces a page, every page parses, every link arrives |
 
 Phase 2 comes first because everything else depends on it. Phase 5 comes last because nothing in
 the Maven build depends on it — MOSpec's only consumer is the `mo-navigator` editor.
@@ -1587,7 +1691,138 @@ lines) throughout 14.x, all of which are retired at the cut-over. The cost of wa
 gets no interactive editing use before then — its correctness rests entirely on the §7.3 and §7.9
 round-trip tests, which is a reason to keep those thorough rather than to move the navigator early.
 
-### 10.3 Cut-over — v15.0
+**Re-run after Phase 4.** The check was repeated once the documents were finished, since the
+importer and the model had both changed since:
+
+| Output | Files | Differing |
+| --- | --- | --- |
+| Java, four api modules | 546 | **0** |
+| Documents, five areas | 30 parts | **0** |
+
+The documents had never been compared on this corpus before, and came out identical on the first
+run with no corrections. What they do not exercise is the diagram path: NMF declares no `<diagram>`
+anywhere, so none of its documents embeds an image and Batik is never reached. The only cover for
+that remains the three CCSDS documents that do.
+
+### 10.7 Phase 6: the XHTML generator
+
+`GeneratorSvg` was the one open question of §8 — port it or drop it — and it is ported. The
+argument for dropping was that nothing invokes it; the argument against was that a browsable page
+of a specification is run by hand, so nothing invoking it says little. What settled it is that the
+thing is genuinely useful and nothing else in the toolchain does what it does: the Word documents
+tabulate a message, this draws it.
+
+**There is no baseline, and there cannot be one.** The Phase 0 capture holds no `.xhtml`, because
+no configuration in the repository produces any. So this phase cannot be verified the way Phases 3
+and 4 were. Two things were done instead.
+
+First, the old generator was run by hand over both specification sets, and the drawings compared
+box by box. That is the part where fidelity matters — the geometry took work to get right, and
+none of it is worth re-deriving:
+
+| Drawings | Compared | Identical |
+| --- | --- | --- |
+| Types — every composite and enumeration | 84 | **84** |
+| Messages — every operation but publish-subscribe | 260 | **258** |
+
+The two that differ are the same defect: a composite that opens out to nothing was drawn as a box
+`width="0"`, which is to say not drawn. Publish-subscribe is drawn deliberately differently, below.
+
+Second, since agreeing with the old output is not by itself worth much when the old output is
+wrong, the test asserts what a page has to be true of rather than what it happens to say: every
+area produces a page, every page parses as XHTML, and every link on every page arrives at an anchor
+that exists. Those three caught everything below.
+
+**What the old generator got wrong.** Running it was the first time it had been run, and it does
+not work:
+
+- **It crashes on Mission Planning.** `CompositeContainer.expandType` guards against expanding one
+  node twice but not against a cycle, and MPS declares six composites that contain themselves — a
+  Plan names a precursor Plan and a target Plan, an ActivityInstance holds its children,
+  EventDefinition and EventInstance nest. It recurses until the stack ends, and `outputMPS.xhtml`
+  is written as **zero bytes**. Here a type already open above is drawn but not opened again; the
+  name is a link, so the reader follows it instead.
+- **It loses half the areas it is given.** The page of an area is `output<Area>.xhtml`, which has
+  no version in it, so MAL 1 is overwritten by MAL 3 and Monitor and Control 1 by 2. Twenty
+  specifications produced nine files. The page is now named after the specification it comes from,
+  `area001-v001-MAL.xhtml`, as the documents already were.
+- **Seven links arrive nowhere**, in the standards alone. A field of type `List<ObjectDetails>`
+  linked to `#_ObjectDetailsList`, which is the name of the list rather than of anything a page
+  describes. A list is drawn as a count and the type in it, so the type in it is what is linked to.
+- **A field description was not escaped**, so a `<` or an `&` in one — and the specifications hold
+  both — produced a page no parser accepts. It also nested `<h4>` inside `<p>`.
+- **The index was a `HashMap`**, written out in whatever order it iterated in.
+- **Every page had an empty `<title>`.**
+
+**What is deliberately different beyond those fixes.**
+
+- **A message field says whether it may be omitted.** The old generator passed `isOptional=false`
+  for every field of a message, so the expanded drawing showed nullability for the fields of a
+  composite and never for the fields of the message holding it. The document tables have said it
+  all along.
+- **A publish-subscribe message names its parts.** What a NOTIFY carries is not what the
+  specification writes — the message holds the subscription it answers and a header per update, and
+  carries a list of each published value rather than one of each — and the old generator drew that
+  correctly but labelled all three "Part".
+- **A drawing is bounded at 120 fields.** Opening a composite replaces one field with all of its
+  own, so a message of nested composites grows by multiplication rather than addition: MPS's plan
+  status report opened to 824 fields, a drawing thirty metres wide, in a page of twenty megabytes.
+  Types are opened a level at a time and the last level that does not fit is closed again, so what
+  a reader gets is the first so-many levels of everything rather than the whole of whichever branch
+  came first. The widest drawing anywhere outside MPS is 46 fields, so nothing else is touched;
+  within MPS the median is 5 and 24 of 264 reach the limit.
+- **The page carries a style sheet**, as a resource rather than a string, and the requirement lists
+  the specifications write as `<ol>`/`<li>` are rendered as lists — this is the one output format
+  where that markup is native, and §7.5 was waiting on somewhere to put it.
+
+**One thing this needed from the model.** `TypeDefinition.getService()` was never set: the field
+existed, the linker never filled it, and nothing had read it. A type declared by a service belongs
+to that service — two services of one area may each declare a type of the same name — so the linker
+now sets it. Nothing else read it, and the Java and document golden trees are unmoved.
+
+The five `svg.*` options of `extraProperties` are not reproduced, per invariant 4: descriptive
+text, indexes, collapsed and expanded messages are all included, and SVG is not split out into
+files of its own, which is what every default already said.
+
+### 10.8 Where the tests live
+
+The main build compiles; testbeds test. That is not a new rule — `testbeds` is commented out of the
+root reactor at `pom.xml:60`, the CI main build runs `-DskipTests clean install`, and every testbed
+is run separately against its own `working-directory`. The library follows it like everything else.
+
+**`api-generator-lib` is in the reactor** (`api-generator/pom.xml`), for compilation. What that
+costs the main build is the compile, because the main build skips tests:
+
+| | Time |
+| --- | --- |
+| `clean compile` | 2.8 s |
+| `clean test`, the 73 unit tests that stayed | 3.5 s |
+
+**`testbeds/testbed-api-generator` holds the 39 tests that read a corpus** — the Java and document
+golden trees, the XML importer and validator corpus walks, the XHTML corpus, and the XML and MOSpec
+round trips, together with the `ModelComparison`, `GoldenTree` and `Corpus` helpers they share. The
+line between the two is whether a test reads anything outside its own module: a test of
+`JumpTable` or `JavaMethodBuilder` stays with the code it tests, a test that walks
+`xml-service-specifications/` or `golden/baseline/` does not.
+
+The point of the split is that building the library is a compile. The point of *not* deleting the
+unit tests along with the rest is that they are what fails when someone breaks a builder, and they
+cost 70 ms.
+
+**What CI runs, and what it does not.** `.github/workflows/testbeds.yml` gains a
+`testbed-api-generator` job on each of the four JDKs. Thirty of the 39 tests run there — everything
+that needs only the specifications, which are in the repository. The nine golden-tree tests
+**skip**: they compare against a baseline captured from the old generators, `golden/baseline/` is
+build output rather than source, and it is gitignored. They `Assume`-skip rather than fail, so the
+job is honest about it, but the effect is that the strongest check in the suite is the one CI does
+not perform.
+
+Making CI run them means `golden.sh capture` first, which builds every `apis/*` module with the old
+generators before the testbed builds them again with the new — the parallel-run contract of §3, at
+the cost of generating the APIs twice in the same workflow. That is a real cost and an open
+decision, not an oversight.
+
+### 10.9 Cut-over — v15.0
 
 The cut-over is **flipping the default**, not proving the new path works — that has been
 demonstrable since Phase 3, by building the whole reactor with `-Pnew-generator` (§3). By this point
@@ -1597,14 +1832,14 @@ bookkeeping rather than a leap:
 - `esa.stubgen.generator` defaults to the new generator, and the profile disappears;
 - `parent/pom.xml` points the plugin's dependency at `api-generator-lib`;
 - `generator-interfaces`, `generator-java` and `generator-docs` are deleted, along with everything
-  in §10.4;
+  in §10.10;
 - the golden tree is re-baselined from the new library, since there is no longer a second
   implementation to agree with.
 
 If the new path is not producing agreed output by then, the correct response is to leave the default
 alone and ship 15.0 without the deletion — nothing else in the release depends on it.
 
-### 10.4 Removed at cut-over (v15.0)
+### 10.10 Removed at cut-over (v15.0)
 
 The new library never carries any of these; they disappear from the repository when the old modules
 are deleted. Until then they stay exactly as they are — no clean-up of the old code during 14.x,
@@ -1660,7 +1895,17 @@ the evidence that settled them, so that they are not silently reopened:
 | Diagrams as sidecar SVGs | §7.6 |
 | `BULK` the default doc mode | §7.7 |
 | Type-first field declarations, `replayable`, arrows unchanged | §7.8 |
+| Numbers always explicit; no auto-numbering | §7.7 |
+| MOSpec normalises the older `ObjectRef(X)` spelling; the XML comes back modernised | §7.9 |
+| A comment written empty stays empty, and is shown as one | §7.5 |
 | docx: output unchanged, OOXML layer lifted, styles to resource files | §8 |
+| Batik is the one third-party dependency, for rasterising declared diagrams | §3, §8 |
+| The XHTML generator is ported, not dropped, as Phase 6 | §8, §10.7 |
+| The XHTML page is named after its specification, so two versions of an area no longer collide | §10.7 |
+| A type that contains itself is drawn once and linked, not expanded | §10.7 |
+| A drawing stops at 120 fields, a level at a time | §10.7 |
+| A type knows the service that declares it: the linker now sets it | §10.7 |
 | Rewrite rather than port; no language abstraction before a second language | §8, §8.1 |
 | Parallel generation, with determinism as the binding constraint | §8.2 |
-| Parallel running through 14.x, cut-over at v15.0 | §3, §10.3 |
+| Parallel running through 14.x, cut-over at v15.0 | §3, §10.9 |
+| The library compiles in the reactor; its corpus tests live in a testbed | §10.8 |

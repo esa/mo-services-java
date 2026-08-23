@@ -116,6 +116,11 @@
                 <artifactId>generator-java</artifactId>
                 <version>${esa.mo.version}</version>
             </dependency>
+            <dependency>
+                <groupId>int.esa.ccsds.mo</groupId>
+                <artifactId>api-generator-lib</artifactId>
+                <version>${esa.mo.version}</version>
+            </dependency>
             <!-- APIs -->
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>

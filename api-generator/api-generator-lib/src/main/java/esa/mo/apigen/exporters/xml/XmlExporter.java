@@ -373,12 +373,12 @@ public final class XmlExporter implements Exporter {
             writeComObjects(xml, "event", com.getEvents());
             xml.end();
         }
-        if (com.getArchiveUsage() != null) {
+        if (com.declaresArchiveUsage()) {
             xml.start("com:archiveUsage");
             xml.attr("comment", com.getArchiveUsage());
             xml.end();
         }
-        if (com.getActivityUsage() != null) {
+        if (com.declaresActivityUsage()) {
             xml.start("com:activityUsage");
             xml.attr("comment", com.getActivityUsage());
             xml.end();

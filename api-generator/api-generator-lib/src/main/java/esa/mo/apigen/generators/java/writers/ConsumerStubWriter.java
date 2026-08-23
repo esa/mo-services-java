@@ -67,6 +67,10 @@ public final class ConsumerStubWriter {
     }
 
     /**
+     * Writes the stub a consumer calls to invoke the operations of a service.
+     *
+     * @param model Every loaded specification.
+     * @param service The service to write the stub of.
      * @return the source of the service's consumer stub.
      */
     public static String write(MOModel model, Service service) {
