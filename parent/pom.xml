@@ -91,6 +91,15 @@
         <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml</ccsds.specification.download.ref-filter>
         <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
         <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
+        <!--
+            Which generator builds the APIs. "Java" is the existing one and is what every
+            build uses; "Java2" is api-generator-lib, reached through the adapter in the
+            plugin. Selecting it for the whole build is what -Pnew-generator does, and
+            overriding this property in one module is how a single module is tried.
+            Flipping the default is the v15.0 cut-over - see
+            api-generator/api-generator-lib/DESIGN.md, section 10.9.
+        -->
+        <esa.stubgen.generator>Java</esa.stubgen.generator>
     </properties>
   
     <dependencyManagement>
@@ -359,7 +368,7 @@
                             </goals>
                             <configuration>
                                 <targetLanguages>
-                                    <targetLanguage>Java</targetLanguage>
+                                    <targetLanguage>${esa.stubgen.generator}</targetLanguage>
                                 </targetLanguages>
                                 <xmlDirectory>${esa.stubgen.xmlDirectory}</xmlDirectory>
                                 <xmlRefDirectory>${esa.stubgen.xmlRefDirectory}</xmlRefDirectory>
@@ -543,6 +552,14 @@
         </plugins>
     </reporting>
     <profiles>
+        <profile>
+            <!-- Builds every API with api-generator-lib instead of the existing
+                 generator. Nothing else changes; see DESIGN.md section 3. -->
+            <id>new-generator</id>
+            <properties>
+                <esa.stubgen.generator>Java2</esa.stubgen.generator>
+            </properties>
+        </profile>
         <profile>
             <id>release</id>
             <build>

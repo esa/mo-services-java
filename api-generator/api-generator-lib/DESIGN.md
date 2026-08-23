@@ -75,9 +75,9 @@ while the **default stays the old generators**. A clean checkout, and every rele
 builds exactly as it does today. Flipping that default is the cut-over, and it happens once, at
 v15.0 (§10.9).
 
-The plugin already selects a generator by short name, so the new generators register under distinct
-names. Making the choice a property turns a per-module edit into a whole-build switch —
-`parent/pom.xml:356` currently hardcodes it:
+**This is wired up.** The plugin selects a generator by short name, so `NewJavaGenerator` — an
+adapter in the plugin that reaches the library through the interface the plugin expects —
+registers as `Java2`. `parent/pom.xml` takes the name from a property:
 
 ```xml
 <targetLanguages>
@@ -85,16 +85,23 @@ names. Making the choice a property turns a per-module edit into a whole-build s
 </targetLanguages>
 ```
 
-with `esa.stubgen.generator` defaulting to `Java` (the old path) and a profile selecting the new
-one. Three ways to exercise it then fall out of the same mechanism:
+**`esa.stubgen.generator` defaults to `Java`.** A plain `mvn install`, with no flags and no
+profile, builds every API with the existing generator exactly as it always has; the adapter is
+never constructed. That stays true until the v15.0 cut-over, which is the one line that changes
+(§10.9). Three ways to exercise the other path fall out of the same property:
 
 - **one module** — override the property in that module's pom, for a first pilot;
-- **the whole build** — `mvn -Pnew-generator install`, which is what CI runs as a second job;
+- **the whole build** — `mvn -Pnew-generator install`;
 - **both, compared** — build each way and diff the two `generated-sources/stub` trees, which is the
   golden-tree check (§10.1) applied to a live build rather than a stored snapshot.
 
 That last one is the strongest form of the parallel-run contract, and it is why the two
-implementations coexisting is worth the duplication rather than merely tolerable.
+implementations coexisting is worth the duplication rather than merely tolerable. It has been run:
+**950 of 950 files, byte-identical**, generated through the plugin by the library, with the whole
+reactor compiling and 295 tests across eight testbeds passing against the result.
+
+The name `Java2` is poor — it sits in a list of *languages* and is not one. It is not renamed only
+because it is temporary; if it outlives 14.x, rename it before it reaches anyone's pom.
 
 Cost to accept for the duration: fixes made to the old generators must be mirrored into the new
 ones, or the difference consciously accepted. Running both in CI is what keeps that honest — a

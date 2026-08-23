@@ -85,6 +85,16 @@
             <artifactId>xml-apis</artifactId>
             <version>1.3.04</version>
         </dependency>
+        <!--
+            Temporary, for running the two generators side by side through the same build:
+            NewJavaGenerator reaches the new library through the interface this plugin
+            expects. At v15.0 the library replaces the old generator outright and the
+            adapter goes with the interface. See api-generator-lib/DESIGN.md section 3.
+        -->
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>api-generator-lib</artifactId>
+        </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>generator-interfaces</artifactId>

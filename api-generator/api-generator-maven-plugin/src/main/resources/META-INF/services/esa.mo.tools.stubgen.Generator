@@ -1,0 +1,3 @@
+# The generators this module supplies, found by the plugin without scanning the
+# classpath for them. See StubGenerator.loadGenerators.
+esa.mo.tools.stubgen.NewJavaGenerator
