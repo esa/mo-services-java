@@ -89,6 +89,11 @@
   
     <build>
         <resources>
+            <!-- Restored: the parent declares it, and overriding <resources> here dropped
+                 it, so nothing under src/main/resources was ever packaged. -->
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
             <resource>
                 <directory>${basedir}/..</directory>
                 <includes>
