@@ -12,9 +12,12 @@ See `../api-generator-lib/DESIGN.md` §10.1.
 ./golden.sh compare-only   compare without rebuilding
 ```
 
-The baseline lives in `baseline/` (override with `GOLDEN_BASELINE=/some/path`) and is git-ignored:
-it is ~20 MB and regenerable. Full diffs are written to `last-diff.txt`; the console shows a
-per-file summary.
+The baseline lives in `testbeds/testbed-api-generator/baseline/` (override with
+`GOLDEN_BASELINE=/some/path`) and **is committed**, beside the tests that read it: ~20 MB on disk
+but 1.5 MB packed, and it changes only when the old generators do. Keeping it in the repository is
+what lets CI run the golden tests, and it makes a change in generated output show up as a diff
+rather than only as a failing assertion. Full diffs are written to `last-diff.txt`; the console
+shows a per-file summary.
 
 **What else reads the baseline.** `testbeds/testbed-api-generator` holds the JUnit side — the
 golden-tree tests that generate with `api-generator-lib` and compare against `baseline/`, so
@@ -24,7 +27,8 @@ capturing one here is what makes them run rather than skip:
 cd testbeds/testbed-api-generator && mvn test
 ```
 
-Without a baseline those tests skip, which is also what happens in CI (DESIGN.md §10.8).
+Without a baseline those tests skip — which now only happens to someone who has cleared it to
+re-capture, since CI has the committed one (DESIGN.md §10.8).
 
 ## What it captures
 

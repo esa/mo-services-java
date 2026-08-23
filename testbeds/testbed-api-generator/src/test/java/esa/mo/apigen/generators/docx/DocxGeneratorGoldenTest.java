@@ -56,6 +56,12 @@ public class DocxGeneratorGoldenTest {
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     /**
+     * Where the captured output of the existing generator lives, relative to the root of
+     * the repository. {@code api-generator/golden/golden.sh} writes it here.
+     */
+    private static final String BASELINE = "testbeds/testbed-api-generator/baseline";
+
+    /**
      * How many parts of each document may still differ, keyed by set and document.
      * <p>
      * Empty, and meant to stay that way. It held two entries while the existing generator
@@ -94,7 +100,7 @@ public class DocxGeneratorGoldenTest {
         Assume.assumeNotNull("not inside the repository", root);
         File specs = new File(root, "xml-service-specifications/xml-ccsds-mo-" + set
                 + "/src/main/resources/xml");
-        File baseline = new File(root, "api-generator/golden/baseline/docx/" + set);
+        File baseline = new File(root, BASELINE + "/docx/" + set);
         Assume.assumeTrue("baseline not captured; run api-generator/golden/golden.sh capture",
                 specs.isDirectory() && baseline.isDirectory());
 

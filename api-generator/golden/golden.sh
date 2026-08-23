@@ -15,7 +15,7 @@ set -u -o pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
-BASELINE="${GOLDEN_BASELINE:-$HERE/baseline}"
+BASELINE="${GOLDEN_BASELINE:-$REPO/testbeds/testbed-api-generator/baseline}"
 IGNORE_FILE="$HERE/intended-differences.txt"
 MVN="${MVN:-mvn}"
 MVN_FLAGS="${MVN_FLAGS:---batch-mode -DskipTests}"

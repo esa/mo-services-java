@@ -113,7 +113,8 @@ public class XmlImporterCorpusTest {
         assertEquals("COM objects", 4, comObjects);
         assertEquals("COM events", 6, comEvents);
         assertEquals("documentation sections", 6, docSections);
-        assertEquals("diagrams", 2, diagrams);
+        // None: the diagrams were taken out of this file, being the first step of §8.3.
+        assertEquals("diagrams", 0, diagrams);
     }
 
     @Test
@@ -170,7 +171,10 @@ public class XmlImporterCorpusTest {
 
     @Test
     public void readsDiagramsAsSvgText() throws Exception {
-        Specification spec = Corpus.read(Corpus.file("area007-v001-Software-Management.xml"));
+        // Monitor and Control v001 is where the diagrams still are - sixteen of the
+        // eighteen in the corpus. When they go, so does this test (§8.3).
+        Specification spec = Corpus.read(
+                Corpus.file("area004-v001-Monitor-and-Control.xml"));
         int diagrams = 0;
         for (Service service : spec.getAreas().get(0).getServices()) {
             if (service.getCom() == null) {
@@ -182,7 +186,7 @@ public class XmlImporterCorpusTest {
                 assertTrue(d.getName() + " should carry SVG", d.getSvg().contains("<svg"));
             }
         }
-        assertEquals(2, diagrams);
+        assertEquals(8, diagrams);
     }
 
     @Test
@@ -212,7 +216,8 @@ public class XmlImporterCorpusTest {
         // declares once at the top. It is read here and rendered somewhere else entirely,
         // so what is captured has to carry that namespace itself - a drawing whose
         // namespace was dropped renders as an empty picture.
-        Specification spec = Corpus.read(Corpus.file("area007-v001-Software-Management.xml"));
+        Specification spec = Corpus.read(
+                Corpus.file("area004-v001-Monitor-and-Control.xml"));
         int diagrams = 0;
         for (Service service : spec.getAreas().get(0).getServices()) {
             if (service.getCom() == null) {
@@ -225,7 +230,7 @@ public class XmlImporterCorpusTest {
                         diagram.getSvg().startsWith("<svg xmlns=\"http://www.w3.org/2000/svg\""));
             }
         }
-        assertEquals(2, diagrams);
+        assertEquals(8, diagrams);
     }
 
     @Test

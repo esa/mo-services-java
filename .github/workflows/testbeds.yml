@@ -737,9 +737,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk11-${{ github.sha }}
       # The golden trees compare the new generators against a baseline captured from the
-      # old ones. The baseline is not in the repository - it is build output - so those
-      # tests skip here and the corpus walks and round trips are what run. Capturing it
-      # first would mean building apis/* twice; see DESIGN.md section 10.8.
+      # old ones. It is committed at testbeds/testbed-api-generator/baseline, so they run
+      # here rather than skipping; see DESIGN.md section 10.8.
       - name: Run the Testbed for the API generator
         run: mvn --batch-mode --update-snapshots test
         working-directory: testbeds/testbed-api-generator
@@ -765,9 +764,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk17-${{ github.sha }}
       # The golden trees compare the new generators against a baseline captured from the
-      # old ones. The baseline is not in the repository - it is build output - so those
-      # tests skip here and the corpus walks and round trips are what run. Capturing it
-      # first would mean building apis/* twice; see DESIGN.md section 10.8.
+      # old ones. It is committed at testbeds/testbed-api-generator/baseline, so they run
+      # here rather than skipping; see DESIGN.md section 10.8.
       - name: Run the Testbed for the API generator
         run: mvn --batch-mode --update-snapshots test
         working-directory: testbeds/testbed-api-generator
@@ -793,9 +791,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk21-${{ github.sha }}
       # The golden trees compare the new generators against a baseline captured from the
-      # old ones. The baseline is not in the repository - it is build output - so those
-      # tests skip here and the corpus walks and round trips are what run. Capturing it
-      # first would mean building apis/* twice; see DESIGN.md section 10.8.
+      # old ones. It is committed at testbeds/testbed-api-generator/baseline, so they run
+      # here rather than skipping; see DESIGN.md section 10.8.
       - name: Run the Testbed for the API generator
         run: mvn --batch-mode --update-snapshots test
         working-directory: testbeds/testbed-api-generator
@@ -821,9 +818,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-mo-testbeds-jdk25-${{ github.sha }}
       # The golden trees compare the new generators against a baseline captured from the
-      # old ones. The baseline is not in the repository - it is build output - so those
-      # tests skip here and the corpus walks and round trips are what run. Capturing it
-      # first would mean building apis/* twice; see DESIGN.md section 10.8.
+      # old ones. It is committed at testbeds/testbed-api-generator/baseline, so they run
+      # here rather than skipping; see DESIGN.md section 10.8.
       - name: Run the Testbed for the API generator
         run: mvn --batch-mode --update-snapshots test
         working-directory: testbeds/testbed-api-generator

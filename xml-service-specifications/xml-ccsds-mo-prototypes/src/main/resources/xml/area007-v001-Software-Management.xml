@@ -183,37 +183,6 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
-        <mal:diagram name="PackageManagementObjects">
-          <svg:svg height="200" version="1.1" width="500">
-            <svg:defs>
-              <svg:linearGradient id="box_gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-                <svg:stop offset="0%" style="stop-color:rgb(237,227,212);stop-opacity:1"/>
-                <svg:stop offset="100%" style="stop-color:rgb(249,239,224);stop-opacity:1"/>
-              </svg:linearGradient>
-              <svg:marker id="sourceArrow" markerHeight="10" markerWidth="15" orient="auto" refX="0" refY="5">
-                <svg:path d="M0,0 V10 L15,5 Z" fill="rgb(255,0,0)"/>
-              </svg:marker>
-              <svg:marker id="relatedArrow" markerHeight="10" markerWidth="15" orient="auto" refX="0" refY="5">
-                <svg:path d="M0,0 V10 L15,5 Z" fill="rgb(0,0,0)"/>
-              </svg:marker>
-            </svg:defs>
-            <svg:path d="M135,90 L240,90 L345,90" end="Package" fill="none" marker-mid="url(#relatedArrow)" start="Installation" stroke="rgb(0,0,0)" stroke-width="1"/>
-            <svg:g id="Package" transform="translate(280,50)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="0" width="130" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="0" stroke="black" stroke-width="2" width="130"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="65" y="25">Package</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="65" y="45">1</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="65" y="65">PackageDefinition</svg:text>
-            </svg:g>
-            <svg:g id="Installation" transform="translate(70,50)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="0" width="130" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="0" stroke="black" stroke-width="2" width="130"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="65" y="25">Installation</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="65" y="45">2</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="65" y="65">MAL::Identifier</svg:text>
-            </svg:g>
-          </svg:svg>
-        </mal:diagram>
         <com:objects comment="">
           <com:object comment="" name="Package" number="1">
             <com:objectType>
@@ -509,71 +478,6 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
-        <mal:diagram name="AppsLauncherObjects">
-          <svg:svg height="300" version="1.1" width="760">
-            <svg:defs>
-              <svg:linearGradient id="box_gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-                <svg:stop offset="0%" style="stop-color:rgb(237,227,212);stop-opacity:1"/>
-                <svg:stop offset="100%" style="stop-color:rgb(249,239,224);stop-opacity:1"/>
-              </svg:linearGradient>
-              <svg:marker id="sourceArrow" markerHeight="10" markerWidth="15" orient="auto" refX="0" refY="5">
-                <svg:path d="M0,0 V10 L15,5 Z" fill="rgb(255,0,0)"/>
-              </svg:marker>
-              <svg:marker id="relatedArrow" markerHeight="10" markerWidth="15" orient="auto" refX="0" refY="5">
-                <svg:path d="M0,0 V10 L15,5 Z" fill="rgb(0,0,0)"/>
-              </svg:marker>
-            </svg:defs>
-
-            <svg:path d="M220,188 L301,188 L383,187" end="App" fill="none" marker-mid="url(#relatedArrow)" start="StopApp" stroke="rgb(0,0,0)" stroke-width="1"/>
-            <svg:path d="M220,188 L220,119 L220,50" end="COM::ActivityTracking::OperationActivity" fill="none" marker-mid="url(#sourceArrow)" start="StopApp" stroke="rgb(255,0,0)" stroke-width="1"/>
-            <svg:path d="M57,155 L138,171 L220,188" end="StopApp" fill="none" marker-mid="url(#sourceArrow)" start="Stopping" stroke="rgb(255,0,0)" stroke-width="1"/>
-
-            <svg:path d="M383,187 L507,187 L631,188" end="PackageManagement::Installation" fill="none" marker-mid="url(#sourceArrow)" start="App" stroke="rgb(255,0,0)" stroke-width="1"/>
-            <svg:path d="M60,245 L140,217 L220,188" end="StopApp" fill="none" marker-mid="url(#sourceArrow)" start="Stopped" stroke="rgb(255,0,0)" stroke-width="1"/>
-            <svg:g id="Stopping" transform="translate(7,115)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="15" width="100" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="15" stroke="black" stroke-width="2" width="100"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="50" y="35">Stopping</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="50" y="55">3</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="50" y="75"/>
-            </svg:g>
-            <svg:g id="Stopped" transform="translate(25,215)">
-              <svg:rect fill="rgb(190,190,190)" height="60" id="shadow" opacity="0.5" rx="15" width="70" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="60" id="frame" rx="15" stroke="black" stroke-width="2" width="70"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="35" y="25">Stopped</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="35" y="45">4</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="35" y="65"/>
-            </svg:g>
-            <svg:g id="StopApp" transform="translate(165,148)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="15" width="110" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="15" stroke="black" stroke-width="2" width="110"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="55" y="25">StopApp</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="55" y="45">2</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="55" y="65">MAL::Identifier</svg:text>
-            </svg:g>
-            <svg:g id="COM::ActivityTracking::OperationActivity" transform="translate(85,10)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="0" width="270" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="0" stroke="black" stroke-width="2" width="270"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="135" y="25">COM::ActivityTracking::OperationActivity</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="135" y="45">6</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="135" y="65">COM::ActivityTracking::OperationActivity</svg:text>
-            </svg:g>
-            <svg:g id="App" transform="translate(333,147)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="0" width="100" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="0" stroke="black" stroke-width="2" width="100"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="50" y="25">App</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="50" y="45">1</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="50" y="65">AppDetails</svg:text>
-            </svg:g>
-            <svg:g id="PackageManagement::Installation" transform="translate(519,148)">
-              <svg:rect fill="rgb(190,190,190)" height="80" id="shadow" opacity="0.5" rx="0" width="225" x="4" y="4"/>
-              <svg:rect fill="url(#box_gradient)" height="80" id="frame" rx="0" stroke="black" stroke-width="2" width="225"/>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_name" pointer-events="none" text-anchor="middle" x="112" y="25">PackageManagement::Installation</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_number" pointer-events="none" text-anchor="middle" x="112" y="45">2</svg:text>
-              <svg:text fill="navy" font-family="Verdana,Arial" font-size="12" id="object_type" pointer-events="none" text-anchor="middle" x="112" y="65">MAL::Identifier</svg:text>
-            </svg:g>
-          </svg:svg>
-        </mal:diagram>
         <com:objects comment="An App COM object represents an on-board application. The COM object body shall hold the details of the application.&#10;&lt;ol&gt;&#10;&lt;li&gt;The App COM object source link should point to the package from where the app was installed.&lt;/li&gt;&#10;&lt;/ol&gt;">
           <com:object comment="" name="App" number="1">
             <com:objectType>

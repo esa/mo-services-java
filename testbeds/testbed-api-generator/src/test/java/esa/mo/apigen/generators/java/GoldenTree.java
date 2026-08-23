@@ -43,10 +43,18 @@ import java.util.List;
  * Reaches the output of the existing generators, captured by the Phase 0 harness, so the
  * new generator can be held against it file by file.
  * <p>
- * The baseline is regenerable and not in version control, so everything here degrades to
- * a skipped test when it is absent rather than to a failure.
+ * The baseline is committed, beside the tests that read it, so that a change to what the
+ * generators produce shows up as a diff rather than only as a failing assertion. Anything
+ * here still degrades to a skipped test if it is absent, which is what happens to someone
+ * who has cleared it to re-capture.
  */
 public final class GoldenTree {
+
+    /**
+     * Where the captured output of the existing generators lives, relative to the root of
+     * the repository. {@code api-generator/golden/golden.sh} writes it here.
+     */
+    static final String BASELINE = "testbeds/testbed-api-generator/baseline";
 
     private GoldenTree() {
     }
@@ -70,7 +78,7 @@ public final class GoldenTree {
         if (root == null) {
             return null;
         }
-        File dir = new File(root, "api-generator/golden/baseline/java/" + module);
+        File dir = new File(root, BASELINE + "/java/" + module);
         return dir.isDirectory() ? dir : null;
     }
 

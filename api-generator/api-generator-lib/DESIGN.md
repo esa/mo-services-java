@@ -111,6 +111,10 @@ being about the model rather than the generators. This still removes `jaxb-api`,
 executions. Keeping the library
 dependency-free is what makes putting everything in it cost nothing.
 
+**And Batik is temporary.** It is here only because the specifications carry pictures inside them,
+and they are not going to: §8.3 sets out why the diagrams come out of the XML and in what order.
+When they do, the rasteriser goes and the count returns to zero.
+
 `api-generator-maven-plugin` stays a separate module — it is the Maven binding, not part of the
 library, and it must go on depending on the old generators throughout 14.x.
 
@@ -1319,6 +1323,70 @@ created — and that becomes a real flakiness source the moment those maps are w
 threads. Making them concurrent and sorting at flush is required for parallelism and is an
 improvement without it.
 
+### 8.3 Diagrams in the specification are on the way out
+
+`<mal:diagram>` wraps raw SVG inside the specification XML, and the document generator rasterises
+it with Batik to embed in the `.docx`. That is the whole reason the library has a third-party
+dependency at all (§3). **The intent is to remove it**, and the reasoning is not primarily about
+cost.
+
+**An SVG is a rendering of the model, not part of it.** Nothing can check it. A diagram may say
+something the model does not — a field that no longer exists, an interaction that changed — and no
+validator will ever notice, because to a validator it is an opaque blob of `<svg:rect>`. A picture
+that silently disagrees with the specification it sits inside is worse than no picture. Everything
+else in the file is subject to §9; this alone is not.
+
+**It is one book's feature.** Eighteen `<mal:diagram>` elements exist across both CCSDS sets:
+
+| Specification | Diagrams |
+| --- | --- |
+| MC **v001**, standards | 8 |
+| MC **v001**, prototypes | 8 |
+| Software Management, prototypes | 2 |
+| Everything else, both sets | 0 |
+| **NanoSat MO Framework, all five areas** | **0** — already removed |
+
+Sixteen of the eighteen are in the book that v002 supersedes, and the NMF has none: they were taken
+out there and nothing was lost.
+
+**MOSpec already went the other way.** §7.6 decided sidecars — `diagram X "X.svg"` with the SVG in a
+sibling file — so the text format never inlines a picture. The same argument applies one layer down,
+to the XML.
+
+#### The order matters
+
+The tempting move is to drop the diagrams from the golden tests, since the ten PNGs are a quarter of
+what the baseline costs the repository (§10.1) and sixteen of them belong to a superseded book.
+**That is the wrong end to start from.** While the existing generator still emits those images, the
+golden tree's job is to prove the new one matches it, and removing them from the tests means
+choosing to stop checking something that is still being produced.
+
+Removing them from the **specifications** gets the same result correctly:
+
+1. the `<mal:diagram>` elements come out of the XML;
+2. both generators stop emitting images, because there are none to emit;
+3. `golden.sh capture` is re-run, and the PNGs leave the baseline on their own;
+4. nothing is entered in `intended-differences.txt`, because there is no difference between the two
+   implementations — only a difference in what they were given.
+
+The coverage disappears because the thing it covered disappeared, which is the only honest way for a
+regression net to shrink.
+
+#### What follows
+
+- **Batik goes**, and `api-generator-lib` returns to zero third-party dependencies, which is where
+  §3 wanted it before the document generator forced the exception. `DocxDocument`'s rasterisation
+  path and the image parts of the package go with it.
+- **The baseline loses ~0.27 MB of ten PNGs**, the part of it that neither compresses nor deltas
+  (§10.1). Everything else in the capture is text and costs almost nothing to keep.
+- **MC v001 stays in the golden tests regardless.** Its Java tree is 0.13 MB, `apis/pom.xml:72`
+  still builds and ships `api-area004-v001-mc`, and none of that has anything to do with diagrams.
+  A superseded book is not an unshipped one.
+- **Where the diagrams go instead** is a separate question, and the answer is already written for
+  the text format: beside the specification, not inside it. Whether the published CCSDS books keep
+  their figures is an editorial decision for the working group, not a consequence of this change —
+  the XML stops carrying them either way.
+
 ## 9. Validation
 
 `Validator` runs over an `MOModel` and reports `ValidationIssue(severity, message, SourceLocation)`.
@@ -1367,7 +1435,7 @@ Rules include:
 
 Implemented in **`api-generator/golden/`** — `golden.sh capture | compare`, with
 `intended-differences.txt` for agreed deviations and a `README.md` covering both. The baseline is
-git-ignored and regenerable.
+committed, at `testbeds/testbed-api-generator/baseline/`, beside the tests that read it.
 
 Verified end to end: with all seven `apis/*` generated-source trees deleted and rebuilt from
 scratch, the harness reported **no differences** against the baseline. Generation is reproducible.
@@ -1376,7 +1444,7 @@ scratch, the harness reported **no differences** against the baseline. Generatio
 | --- | --- |
 | Java | 950 files, ~116 000 lines, 7 modules |
 | docx | 18 documents, unzipped so `word/document.xml` diffs as text |
-| Baseline size | ~20 MB |
+| Baseline size | ~20 MB on disk, **1.17 MB** as git stores it — it is repetitive generated text, and packs about 12:1 |
 
 **Two pre-existing defects surfaced on the first capture.** Neither is caused by this migration, and
 both should be fixed independently of it:
@@ -1702,7 +1770,8 @@ importer and the model had both changed since:
 The documents had never been compared on this corpus before, and came out identical on the first
 run with no corrections. What they do not exercise is the diagram path: NMF declares no `<diagram>`
 anywhere, so none of its documents embeds an image and Batik is never reached. The only cover for
-that remains the three CCSDS documents that do.
+that remains the three CCSDS documents that do — and that the NMF has none is not an accident but
+the direction of travel, §8.3.
 
 ### 10.7 Phase 6: the XHTML generator
 
@@ -1803,24 +1872,34 @@ golden trees, the XML importer and validator corpus walks, the XHTML corpus, and
 round trips, together with the `ModelComparison`, `GoldenTree` and `Corpus` helpers they share. The
 line between the two is whether a test reads anything outside its own module: a test of
 `JumpTable` or `JavaMethodBuilder` stays with the code it tests, a test that walks
-`xml-service-specifications/` or `golden/baseline/` does not.
+`xml-service-specifications/` or the captured baseline does not.
 
 The point of the split is that building the library is a compile. The point of *not* deleting the
 unit tests along with the rest is that they are what fails when someone breaks a builder, and they
 cost 70 ms.
 
-**What CI runs, and what it does not.** `.github/workflows/testbeds.yml` gains a
-`testbed-api-generator` job on each of the four JDKs. Thirty of the 39 tests run there — everything
-that needs only the specifications, which are in the repository. The nine golden-tree tests
-**skip**: they compare against a baseline captured from the old generators, `golden/baseline/` is
-build output rather than source, and it is gitignored. They `Assume`-skip rather than fail, so the
-job is honest about it, but the effect is that the strongest check in the suite is the one CI does
-not perform.
+**What CI runs.** `.github/workflows/testbeds.yml` gains a `testbed-api-generator` job on each of
+the four JDKs, and all 39 tests run there, golden trees included.
 
-Making CI run them means `golden.sh capture` first, which builds every `apis/*` module with the old
-generators before the testbed builds them again with the new — the parallel-run contract of §3, at
-the cost of generating the APIs twice in the same workflow. That is a real cost and an open
-decision, not an oversight.
+That last part took a correction. The baseline was gitignored, on the Phase 0 note that it is
+"~20 MB and regenerable", so on a fresh runner the nine golden-tree tests found nothing to compare
+against and `Assume`-skipped — the strongest check in the suite was the one CI did not perform. The
+proposed fix was to run `golden.sh capture` in the workflow, rebuilding every `apis/*` module with
+the old generators before the testbed built them again with the new.
+
+That was the wrong trade, and the 20 MB was the wrong number. It is repetitive generated Java and
+XML, so it **packs to 1.5 MB** against a repository of 11 MB, and it changes only when the old
+generators change, which is to say almost never while they are frozen through 14.x. Spending
+minutes of CI on four JDKs on every push, forever, to avoid committing 1.5 MB once is not a saving.
+
+So the baseline is committed, at `testbeds/testbed-api-generator/baseline/`, next to the tests that
+read it — deliberately not under `src/test/resources/`, since the tests reach it as files and Maven
+would otherwise copy 20 MB into `target/` on every build. `golden.sh` captures to and compares
+against the same path.
+
+The benefit that decided it is one neither option had been weighed for: a committed baseline makes
+a change in generated output **visible in review**. Change the Java generator and the diff names
+the files that moved. A test that reports "7 files differ" says less than a diff that shows what.
 
 ### 10.9 Cut-over — v15.0
 
@@ -1899,7 +1978,7 @@ the evidence that settled them, so that they are not silently reopened:
 | MOSpec normalises the older `ObjectRef(X)` spelling; the XML comes back modernised | §7.9 |
 | A comment written empty stays empty, and is shown as one | §7.5 |
 | docx: output unchanged, OOXML layer lifted, styles to resource files | §8 |
-| Batik is the one third-party dependency, for rasterising declared diagrams | §3, §8 |
+| Batik is the one third-party dependency, for rasterising declared diagrams — and temporary | §3, §8.3 |
 | The XHTML generator is ported, not dropped, as Phase 6 | §8, §10.7 |
 | The XHTML page is named after its specification, so two versions of an area no longer collide | §10.7 |
 | A type that contains itself is drawn once and linked, not expanded | §10.7 |
@@ -1908,4 +1987,5 @@ the evidence that settled them, so that they are not silently reopened:
 | Rewrite rather than port; no language abstraction before a second language | §8, §8.1 |
 | Parallel generation, with determinism as the binding constraint | §8.2 |
 | Parallel running through 14.x, cut-over at v15.0 | §3, §10.9 |
+| Inline SVG diagrams leave the specification; remove them from the XML, not from the tests | §8.3 |
 | The library compiles in the reactor; its corpus tests live in a testbed | §10.8 |

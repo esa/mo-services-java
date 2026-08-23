@@ -1,0 +1,79 @@
+package org.ccsds.moims.mo.mal.structures;
+
+/**
+ * List class for Subscription.
+ */
+public final class SubscriptionList extends java.util.ArrayList<org.ccsds.moims.mo.mal.structures.Subscription> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mal.structures.Subscription> {
+
+    private static final long serialVersionUID = 281475043818519L;
+    /**
+     * The TypeId of this Element as a long.
+     */
+    public static final Long SHORT_FORM = 281475043818519L;
+    /**
+     * The TypeId of this Element.
+     */
+    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+
+    /**
+     * Default constructor for SubscriptionList.
+     * 
+     */
+    public SubscriptionList() {
+    }
+
+    /**
+     * Constructor that initialises the capacity of the list.
+     * 
+     * @param initialCapacity The required initial capacity.
+     */
+    public SubscriptionList(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    /**
+     * Constructor that uses an ArrayList for initialization.
+     * 
+     * @param elementList The ArrayList that is used for initialization.
+     */
+    public SubscriptionList(java.util.ArrayList<org.ccsds.moims.mo.mal.structures.Subscription> elementList) {
+        for(org.ccsds.moims.mo.mal.structures.Subscription element : elementList) {
+            this.add(element);
+        }
+    }
+
+    @Override
+    public boolean add(org.ccsds.moims.mo.mal.structures.Subscription element) {
+        if (element == null) {
+            throw new IllegalArgumentException("The added argument cannot be null!");
+        }
+        return super.add(element);
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+        return new SubscriptionList();
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
+        return new org.ccsds.moims.mo.mal.structures.Subscription();
+    }
+
+    @Override
+    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+        encoder.encodeHomogeneousList(this);
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+        decoder.decodeHomogeneousList(this);
+        return this;
+    }
+
+    @Override
+    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+        return TYPE_ID;
+    }
+
+}
