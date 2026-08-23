@@ -37,7 +37,6 @@ import esa.mo.apigen.model.com.COMObject;
 import esa.mo.apigen.model.com.ObjectLink;
 import esa.mo.apigen.model.com.ObjectReference;
 import esa.mo.apigen.model.docs.DocSection;
-import esa.mo.apigen.model.docs.Diagram;
 import esa.mo.apigen.model.types.AttributeType;
 import esa.mo.apigen.model.types.CompositeType;
 import esa.mo.apigen.model.types.EnumerationItem;
@@ -272,9 +271,6 @@ public final class DocxGenerator implements Generator {
                     + (hasEvents ? (hasObjects ? " and event" : " event") : "") + " relationships";
             body.title(3, "COM Object Relationships");
             body.comment("The Figure below shows the " + what + " for this service:");
-            for (Diagram diagram : com.getDocumentation().getDiagrams()) {
-                document.addDiagram(diagram.getSvg());
-            }
             body.figureCaption(service.getName() + " Service " + what);
         }
 

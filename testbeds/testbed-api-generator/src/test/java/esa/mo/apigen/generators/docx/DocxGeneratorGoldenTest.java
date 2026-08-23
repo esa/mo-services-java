@@ -157,8 +157,7 @@ public class DocxGeneratorGoldenTest {
                 differing++;
                 continue;
             }
-            if (!Arrays.equals(Files.readAllBytes(part.toPath()),
-                    Files.readAllBytes(other.toPath()))) {
+            if (!Arrays.equals(withoutDrawings(part), Files.readAllBytes(other.toPath()))) {
                 differences.add("differs: " + captured.getName() + "/" + relative
                         + describe(part, other));
                 differing++;
@@ -167,6 +166,37 @@ public class DocxGeneratorGoldenTest {
         matching += parts(captured).size() - differing;
         expected += parts(captured).size();
         return differing;
+    }
+
+    /**
+     * Reads a captured part with the figures taken out of it.
+     * <p>
+     * The existing generator rasterises the diagrams a specification declares; this one no
+     * longer does (design section 8.3), and MC v001 is published so the eight it declares
+     * cannot simply be removed from the XML. Rather than stop comparing the two documents
+     * that hold them - 1.3 MB each, over eight figures - the drawing markup is taken off
+     * the reference side and everything else is still compared byte for byte. What is
+     * removed is exactly what a picture contributes: the paragraph wrapping the drawing,
+     * and the relationship naming the image part.
+     *
+     * @param part The captured part.
+     * @return its bytes, with any drawing removed.
+     * @throws IOException if it cannot be read.
+     */
+    private static byte[] withoutDrawings(File part) throws IOException {
+        byte[] raw = Files.readAllBytes(part.toPath());
+        String name = part.getName();
+        if (!name.equals("document.xml") && !name.equals("document.xml.rels")) {
+            return raw;
+        }
+        String text = new String(raw, UTF8);
+        if (name.equals("document.xml")) {
+            text = text.replaceAll("<w:p><w:r><w:drawing>.*?</w:drawing></w:r></w:p>", "");
+        } else {
+            text = text.replaceAll(
+                    "<Relationship Id=\"image\\d+\"[^>]*relationships/image\"[^>]*/>", "");
+        }
+        return text.getBytes(UTF8);
     }
 
     /**

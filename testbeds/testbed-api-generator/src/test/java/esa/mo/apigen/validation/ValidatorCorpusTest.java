@@ -226,10 +226,25 @@ public class ValidatorCorpusTest {
             "area001-v003-MAL.xml"});
         Assume.assumeNotNull(v001, v003);
 
-        assertFalse("MC v1 with MAL v1 should report nothing",
-                new Validator().validate(v001).hasIssues());
-        assertFalse("MC v2 with MAL v3 should report nothing",
-                new Validator().validate(v003).hasIssues());
+        assertEquals("MC v1 with MAL v1 should resolve completely",
+                "", unresolved(new Validator().validate(v001)));
+        assertEquals("MC v2 with MAL v3 should resolve completely",
+                "", unresolved(new Validator().validate(v003)));
+    }
+
+    /**
+     * @return every issue that is about resolution, which is what this test is about.
+     * MC v001 also reports eight diagrams that nothing renders any more - true, and
+     * deliberate (design section 8.3), but not a failure to resolve anything.
+     */
+    private static String unresolved(esa.mo.apigen.validation.ValidationResult result) {
+        StringBuilder buf = new StringBuilder();
+        for (esa.mo.apigen.validation.ValidationIssue issue : result.getIssues()) {
+            if (!"diagram.notRendered".equals(issue.getRule())) {
+                buf.append(issue).append('\n');
+            }
+        }
+        return buf.toString();
     }
 
     /**

@@ -13,7 +13,7 @@
 #
 # ---------------------------------------------------------------------------
 
-# (none)
+word/media          # the rasterised diagrams - see below - 2026-08-23
 #
 # There was one, and it was fixed rather than tolerated: the existing generator documented
 # an error under the number of another area's error of the same name, because it looked
@@ -21,3 +21,23 @@
 # as COM's 70000 and MC v002's Invalid as MPD's 1, while the XML says 1 and 3 and the
 # generated Java has always said 1 and 3. MOTypeRegistry now holds an error under its area
 # as well as its name, both generators agree, and the baseline was re-captured. - 2026-08-22
+#
+# Diagrams declared inside a specification are no longer rendered. An SVG sitting in the
+# XML is a picture of the model that nothing can check against the model, and the support
+# for it cost this library its only third-party dependency (Batik). The reasoning and the
+# order of removal are in ../api-generator-lib/DESIGN.md 8.3.
+#
+# Where the specification is a prototype, the diagrams come out of the XML and there is no
+# difference to record: Software Management was done that way. The standards files cannot
+# be edited - they are published - so MC v001 still declares eight diagrams that the old
+# generator still rasterises and the new one does not. That is the difference recorded
+# here, and it is confined to two documents:
+#
+#     docx/standards/Service_Specification_area004-v001-MC
+#     docx/prototypes/Service_Specification_area004-v001-MC
+#
+# 'word/media' keeps the PNGs out of the capture entirely. The drawing markup they leave
+# behind in word/document.xml and word/_rels/document.xml.rels is normalised out of the
+# reference side by DocxGeneratorGoldenTest, so those two parts stay compared in full
+# rather than being given a budget - a document of 1.3 MB is too much to stop checking
+# over eight figures. - 2026-08-23

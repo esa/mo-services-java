@@ -297,36 +297,6 @@ public final class DocxBody {
     }
 
     /**
-     * Places a picture in the text, as wide as the page allows.
-     *
-     * @param index Which picture this is, which is also what the relationship is named.
-     * @param height How tall to draw it, in English Metric Units.
-     * @param width How wide to draw it, in English Metric Units.
-     */
-    void appendDrawing(int index, int height, int width) {
-        // Appended as it stands, like the breaks: a picture sits in the run of text rather
-        // than on a line of its own.
-        buffer.append("<w:p><w:r><w:drawing><wp:inline distT=\"0\" distB=\"0\" distL=\"0\""
-                + " distR=\"0\"><wp:extent cx=\"" + width + "\" cy=\"" + height + "\"/>"
-                + "<wp:effectExtent l=\"0\" t=\"0\" r=\"0\" b=\"0\"/><wp:docPr id=\"" + index
-                + "\" name=\"Picture " + index + "\"/><wp:cNvGraphicFramePr>"
-                + "<a:graphicFrameLocks xmlns:a=\"http://schemas.openxmlformats.org/drawingml/"
-                + "2006/main\" noChangeAspect=\"1\"/></wp:cNvGraphicFramePr><a:graphic"
-                + " xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"
-                + "<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/"
-                + "picture\"><pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/"
-                + "2006/picture\"><pic:nvPicPr><pic:cNvPr id=\"" + index + "\" name=\"Picture "
-                + index + "\"/><pic:cNvPicPr><a:picLocks noChangeAspect=\"1\""
-                + " noChangeArrowheads=\"1\"/></pic:cNvPicPr></pic:nvPicPr><pic:blipFill>"
-                + "<a:blip r:embed=\"image" + index + "\"></a:blip><a:srcRect/><a:stretch>"
-                + "<a:fillRect/></a:stretch></pic:blipFill><pic:spPr bwMode=\"auto\"><a:xfrm>"
-                + "<a:off x=\"0\" y=\"0\"/><a:ext cx=\"" + width + "\" cy=\"" + height + "\"/>"
-                + "</a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom><a:noFill/><a:ln>"
-                + "<a:noFill/></a:ln></pic:spPr></pic:pic></a:graphicData></a:graphic>"
-                + "</wp:inline></w:drawing></w:r></w:p>");
-    }
-
-    /**
      * @return everything written so far.
      */
     public String toXml() {

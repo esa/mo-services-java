@@ -67,10 +67,11 @@
     </properties>
 
     <!--
-        One third-party dependency, and it earns it. The model is plain Java, XML I/O uses
-        StAX from the JDK, the MOSpec parser is hand-written, and docx and XHTML output are
-        written as text - but a diagram declared in a specification is SVG and a .docx
-        embeds a raster image, so Batik rasterises it. See DESIGN.md, section 3.
+        No third-party dependencies. The model is plain Java, XML I/O uses StAX from the
+        JDK, the MOSpec parser is hand-written, and docx and XHTML output are written as
+        text. Batik was here to rasterise diagrams declared inside a specification; that
+        support is gone, and with it the last third party. See DESIGN.md, sections 3
+        and 8.3.
 
         The heavy tests - the golden trees, the corpus walks and the round trips - live in
         testbeds/testbed-api-generator, not here, so that building this module stays a
@@ -88,67 +89,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <!-- The one thing this library cannot do for itself: a diagram declared in a
-             specification is SVG, and a .docx embeds a raster image, so the document
-             generator rasterises it. Nothing else here needs a third party, and nothing in
-             the model may use one - see DESIGN.md, section 3. -->
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-rasterizer</artifactId>
-            <version>1.16</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>fop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>batik-bridge</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-codec</artifactId>
-            <version>1.16</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>batik-js</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-anim</artifactId>
-            <version>1.16</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

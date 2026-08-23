@@ -100,20 +100,16 @@ Cost to accept for the duration: fixes made to the old generators must be mirror
 ones, or the difference consciously accepted. Running both in CI is what keeps that honest — a
 change to either side that moves the output shows up as a diff on the next build.
 
-**Dependencies:** `api-generator-lib` has **one** third-party dependency, and it earns it. The model
-is plain Java, XML I/O uses StAX from the JDK, the MOSpec parser is hand-written (§7.2), and the
-OOXML of a document is written as text — but a diagram declared in a specification is SVG and a
-`.docx` embeds a raster image, so the document generator rasterises it with **Apache Batik**
-(`batik-rasterizer`, `batik-codec`, `batik-anim`, 1.16, the same version and exclusions the existing
-generator uses). Nothing else needs a third party and nothing in `model/` may use one, invariant 1
-being about the model rather than the generators. This still removes `jaxb-api`, `jaxb-runtime`,
-`activation`, `reflections`, `maven-plugin-api`, `de.dlr.gsoc.mcds:mosdl` and both `xjc`
-executions. Keeping the library
-dependency-free is what makes putting everything in it cost nothing.
+**Dependencies:** `api-generator-lib` has **none**. The model is plain Java, XML I/O uses StAX from
+the JDK, the MOSpec parser is hand-written (§7.2), and the OOXML of a document is written as text.
+This removes `jaxb-api`, `jaxb-runtime`, `activation`, `reflections`, `maven-plugin-api`,
+`de.dlr.gsoc.mcds:mosdl` and both `xjc` executions. Keeping the library dependency-free is what
+makes putting everything in it cost nothing.
 
-**And Batik is temporary.** It is here only because the specifications carry pictures inside them,
-and they are not going to: §8.3 sets out why the diagrams come out of the XML and in what order.
-When they do, the rasteriser goes and the count returns to zero.
+There was one for a while. A diagram declared in a specification is SVG and a `.docx` embeds a
+raster image, so the document generator rasterised it with Apache Batik. That support is **gone**
+(§8.3) — an SVG inside a specification is a picture of the model that nothing can check against the
+model — and it was the only thing standing between this library and no dependencies at all.
 
 `api-generator-maven-plugin` stays a separate module — it is the Maven binding, not part of the
 library, and it must go on depending on the old generators throughout 14.x.
@@ -1353,32 +1349,42 @@ out there and nothing was lost.
 sibling file — so the text format never inlines a picture. The same argument applies one layer down,
 to the XML.
 
-#### The order matters
+#### Two routes, decided by which folder the file is in
 
-The tempting move is to drop the diagrams from the golden tests, since the ten PNGs are a quarter of
-what the baseline costs the repository (§10.1) and sixteen of them belong to a superseded book.
-**That is the wrong end to start from.** While the existing generator still emits those images, the
-golden tree's job is to prove the new one matches it, and removing them from the tests means
-choosing to stop checking something that is still being produced.
+A specification in **`xml-ccsds-mo-prototypes`** can be edited. There the clean route is to take the
+`<mal:diagram>` elements out of the XML: both generators then stop emitting images, `golden.sh
+capture` is re-run, and the PNGs leave the baseline on their own. Nothing is entered in
+`intended-differences.txt`, because the two implementations never disagreed — only what they were
+given changed. Software Management was done this way.
 
-Removing them from the **specifications** gets the same result correctly:
+A specification in **`xml-ccsds-mo-standards` cannot be edited.** That is what the folder means: the
+file is a published CCSDS artifact and the repository holds it as it was issued. So MC v001 keeps
+its eight diagrams whatever this library does with them, and the difference has to be recorded
+rather than removed.
 
-1. the `<mal:diagram>` elements come out of the XML;
-2. both generators stop emitting images, because there are none to emit;
-3. `golden.sh capture` is re-run, and the PNGs leave the baseline on their own;
-4. nothing is entered in `intended-differences.txt`, because there is no difference between the two
-   implementations — only a difference in what they were given.
+That is the case for the only two documents left with figures, and it is handled in three parts:
 
-The coverage disappears because the thing it covered disappeared, which is the only honest way for a
-regression net to shrink.
+- **`golden.sh` no longer captures `word/media`.** The images are the one part of a capture that
+  neither compresses nor deltas, a PNG shows nothing in a diff, and the new generator produces
+  none. `intended-differences.txt` carries the glob with the reasoning.
+- **The drawing markup is normalised off the reference side.** What a picture leaves behind is one
+  paragraph in `word/document.xml` and one relationship in `word/_rels/document.xml.rels`;
+  `DocxGeneratorGoldenTest.withoutDrawings` removes exactly those from the captured part before
+  comparing. The alternative was a per-document budget, which would have meant no longer checking
+  two documents of 1.3 MB each over eight figures. **108 of 108 parts still match byte for byte.**
+- **The validator warns.** `diagram.notRendered` fires for every diagram a specification declares,
+  because the whole argument against inline diagrams is that a picture nothing checks is worse than
+  no picture — and a diagram that quietly produces no figure would be that same failure in a new
+  form.
 
 #### What follows
 
-- **Batik goes**, and `api-generator-lib` returns to zero third-party dependencies, which is where
-  §3 wanted it before the document generator forced the exception. `DocxDocument`'s rasterisation
-  path and the image parts of the package go with it.
-- **The baseline loses ~0.27 MB of ten PNGs**, the part of it that neither compresses nor deltas
-  (§10.1). Everything else in the capture is text and costs almost nothing to keep.
+- **Batik is gone**, and `api-generator-lib` is back to zero third-party dependencies, which is
+  where §3 wanted it before the document generator forced the exception. `DocxDocument.rasterise`
+  (39 lines), `addDiagram`, `DocxBody.appendDrawing` and the image relationships went with it —
+  about 90 lines in three files, and three dependencies.
+- **The baseline holds no images at all**, which was the part of it that neither compressed nor
+  deltaed (§10.1). Everything else in a capture is text and costs almost nothing to keep.
 - **MC v001 stays in the golden tests regardless.** Its Java tree is 0.13 MB, `apis/pom.xml:72`
   still builds and ships `api-area004-v001-mc`, and none of that has anything to do with diagrams.
   A superseded book is not an unshipped one.
@@ -1978,7 +1984,7 @@ the evidence that settled them, so that they are not silently reopened:
 | MOSpec normalises the older `ObjectRef(X)` spelling; the XML comes back modernised | §7.9 |
 | A comment written empty stays empty, and is shown as one | §7.5 |
 | docx: output unchanged, OOXML layer lifted, styles to resource files | §8 |
-| Batik is the one third-party dependency, for rasterising declared diagrams — and temporary | §3, §8.3 |
+| No third-party dependencies; Batik went with diagram rasterisation | §3, §8.3 |
 | The XHTML generator is ported, not dropped, as Phase 6 | §8, §10.7 |
 | The XHTML page is named after its specification, so two versions of an area no longer collide | §10.7 |
 | A type that contains itself is drawn once and linked, not expanded | §10.7 |
@@ -1987,5 +1993,5 @@ the evidence that settled them, so that they are not silently reopened:
 | Rewrite rather than port; no language abstraction before a second language | §8, §8.1 |
 | Parallel generation, with determinism as the binding constraint | §8.2 |
 | Parallel running through 14.x, cut-over at v15.0 | §3, §10.9 |
-| Inline SVG diagrams leave the specification; remove them from the XML, not from the tests | §8.3 |
+| Inline SVG diagrams are not rendered; removed from prototype XML, recorded as a difference for published files | §8.3 |
 | The library compiles in the reactor; its corpus tests live in a testbed | §10.8 |

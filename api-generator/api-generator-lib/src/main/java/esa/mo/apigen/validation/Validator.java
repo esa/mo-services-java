@@ -31,6 +31,7 @@ import esa.mo.apigen.model.SchemaVersion;
 import esa.mo.apigen.model.Service;
 import esa.mo.apigen.model.Specification;
 import esa.mo.apigen.model.com.COMFeatures;
+import esa.mo.apigen.model.docs.Diagram;
 import esa.mo.apigen.model.com.COMObject;
 import esa.mo.apigen.model.com.ObjectLink;
 import esa.mo.apigen.model.types.CompositeType;
@@ -378,6 +379,26 @@ public final class Validator {
         Set<Integer> numbers = new HashSet<Integer>();
         checkComObjects(model, service, com.getObjects(), "object", numbers, result);
         checkComObjects(model, service, com.getEvents(), "event", numbers, result);
+        checkDiagrams(service, com, result);
+    }
+
+    /**
+     * A diagram declared inside a specification is no longer drawn into anything.
+     * <p>
+     * The schema still permits {@code <mal:diagram>}, and the importer still reads it, so a
+     * specification can carry one; nothing renders it. Saying so is the point - the reason
+     * the support went is that an SVG inside a specification is a picture nothing can check
+     * against the model it claims to describe (design section 8.3), and a diagram that
+     * quietly produces no figure would be the same failure in a new form.
+     */
+    private void checkDiagrams(Service service, COMFeatures com, ValidationResult result) {
+        for (Diagram diagram : com.getDocumentation().getDiagrams()) {
+            result.add(issue(Severity.WARNING, "diagram.notRendered",
+                    "Diagram '" + diagram.getName() + "' in service " + service.getName()
+                    + " is declared in the specification but is not rendered into any"
+                    + " output; diagrams belong beside a specification, not inside it",
+                    service.getLocation()));
+        }
     }
 
     private void checkComObjects(MOModel model, Service service, List<COMObject> objects,

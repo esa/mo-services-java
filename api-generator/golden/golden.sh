@@ -76,6 +76,11 @@ snapshot_docx() {
             local out="$dest/$set_name/$name"
             mkdir -p "$out"
             (cd "$out" && unzip -oq "$f")     # unzip: word/document.xml et al diff as text
+            # The rasterised diagrams are not kept. The new generator no longer draws them
+            # (DESIGN.md 8.3), they are the only part of a capture that neither compresses
+            # nor deltas, and a PNG shows nothing in a diff. What the old generator still
+            # emits around them is compared, with the drawing markup normalised away.
+            rm -rf "$out/word/media"
             n=$((n+1))
         done < <(find "$tmp/$set_name" -name '*.docx' -print0 2>/dev/null)
     done
