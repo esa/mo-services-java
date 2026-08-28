@@ -77,16 +77,6 @@ public class SingleConnectionDetails {
         this.serviceKey = (serviceKey == null) ? new IntegerList() : serviceKey;
     }
 
-    @Deprecated
-    public void setProviderURI(String providerURI) {
-        this.providerURI = new URI(providerURI);
-    }
-
-    @Deprecated
-    public void setBrokerURI(String brokerURI) {
-        this.brokerURI = new URI(brokerURI);
-    }
-
     public URI getProviderURI() {
         return this.providerURI;
     }
