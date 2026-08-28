@@ -104,21 +104,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
             <plugin>
-                <!--
-                    The classes xjc derives from the schemas carry the schema's own
-                    documentation, which contains markup that is not valid in a Javadoc
-                    comment: the W3C schema describes a type as annotatable by anything
-                    "other than <schema> itself", and Javadoc reads that as a tag it does
-                    not know. Excluded here as well as on the attached Javadoc jar, so
-                    that javadoc:javadoc succeeds outside the release profile too.
-                -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>w3c.xsd:esa.mo.xsd</excludePackageNames>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <executions>
