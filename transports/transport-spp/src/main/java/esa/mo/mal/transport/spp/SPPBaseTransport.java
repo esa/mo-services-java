@@ -199,7 +199,7 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
 
     @Override
     public String getRoutingPart(String uriValue) {
-        int iFirst = uriValue.indexOf(protocolDelim) + 1;
+        int iFirst = uriValue.indexOf(addressing.getProtocolDelim()) + 1;
 
         return uriValue.substring(iFirst);
     }
@@ -208,7 +208,8 @@ public abstract class SPPBaseTransport<I> extends Transport<I, List<ByteBuffer>>
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map properties, NamedValueList supplements) throws MALException {
         return new SPPEndpoint(this, defaultConfiguration, defaultApidQualifier,
-                uriRep, ssc, localName, routingName, uriBase + routingName, properties);
+                uriRep, ssc, localName, routingName,
+                addressing.getUriBase() + routingName, properties);
     }
 
     @Override

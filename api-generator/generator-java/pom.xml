@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>14.1</version>
+        <version>14.2</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>generator-java</artifactId>
-    <version>14.1</version>
+    <version>14.2</version>
     <packaging>jar</packaging>
 
     <name>ESA MO API Generator - Java</name>
@@ -80,10 +80,20 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
   
     <build>
         <resources>
+            <!-- Restored: the parent declares it, and overriding <resources> here dropped
+                 it, so nothing under src/main/resources was ever packaged. -->
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
             <resource>
                 <directory>${basedir}/..</directory>
                 <includes>

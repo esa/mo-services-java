@@ -439,7 +439,10 @@ public abstract class Encoder implements MALEncoder {
             } else {
                 checkForNull(value.getValue());
             }
-            outputStream.writeBytes(value.getValue());
+            // Stream the content instead of materialising it into a single byte
+            // array, so that large (URL/file-backed) Blobs are not loaded fully
+            // into memory during encoding.
+            outputStream.writeStream(value.getAsStream(), value.getLengthLong());
         } catch (IOException ex) {
             throw new MALException(ENCODING_EXCEPTION_STR, ex);
         }

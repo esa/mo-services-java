@@ -28,7 +28,6 @@ import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
 import org.ccsds.moims.mo.mal.structures.Time;
-import org.ccsds.moims.mo.mc.backends.AlertBackend.AlertListener;
 
 /**
  * The Backend interface to the Packet service.

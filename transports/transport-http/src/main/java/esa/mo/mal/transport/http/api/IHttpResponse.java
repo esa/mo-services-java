@@ -48,7 +48,7 @@ public interface IHttpResponse {
     /**
      * Sets the header field value of the given header field name.
      *
-     * Needs to consider AbstractPostClient.EMPTY_STRING_PLACEHOLDER.
+     * A value that is null or empty is not sent, the header is left out.
      *
      * @param headerName the header field name
      * @param headerValue the header field value

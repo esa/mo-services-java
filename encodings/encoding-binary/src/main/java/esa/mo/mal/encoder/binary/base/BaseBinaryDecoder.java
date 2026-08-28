@@ -20,7 +20,10 @@
  */
 package esa.mo.mal.encoder.binary.base;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -28,6 +31,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.encoding.BufferHolder;
 import org.ccsds.moims.mo.mal.encoding.Decoder;
+import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Enumeration;
@@ -42,6 +46,10 @@ public abstract class BaseBinaryDecoder extends Decoder {
     private static final Logger LOGGER = Logger.getLogger(BaseBinaryDecoder.class.getName());
     protected static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     protected static final int BLOCK_SIZE = 65536;
+    // The largest array the JVM will allocate: HotSpot rejects sizes within a
+    // few bytes of Integer.MAX_VALUE with "Requested array size exceeds VM
+    // limit", so a byte-array-backed Blob is capped here and larger ones spool.
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     protected final BinaryTimeHandler timeHandler;
 
@@ -89,6 +97,37 @@ public abstract class BaseBinaryDecoder extends Decoder {
         }
 
         throw new MALException("The Enumeration could not be decoded!");
+    }
+
+    /**
+     * Decodes a Blob whose body is preceded by a 64-bit length (see the matching
+     * {@code writeStream} in the encoder). Bodies that fit in a single byte array
+     * are returned as a byte-array-backed Blob; larger ones are spooled to a
+     * temporary file and returned as a file-backed Blob, so a Blob above 2 GB is
+     * never held in memory.
+     *
+     * @return the decoded Blob.
+     * @throws MALException if the Blob could not be decoded.
+     */
+    @Override
+    public Blob decodeBlob() throws MALException {
+        final long length = sourceBuffer.readUnsignedLong();
+
+        if (length <= MAX_ARRAY_SIZE) {
+            return new Blob(sourceBuffer.readBytes((int) length));
+        }
+
+        // Too large for a single byte array: spool the body to a temporary file.
+        try {
+            final File tmp = File.createTempFile("mal-blob-", ".bin");
+            tmp.deleteOnExit();
+            try (OutputStream os = new java.io.BufferedOutputStream(new FileOutputStream(tmp))) {
+                getBufferHolder().getBuf().readBytesInto(os, length);
+            }
+            return new Blob(tmp);
+        } catch (IOException ex) {
+            throw new MALException("Unable to spool a large Blob to a temporary file", ex);
+        }
     }
 
     /**
@@ -242,6 +281,49 @@ public abstract class BaseBinaryDecoder extends Decoder {
             }
 
             throw new IllegalArgumentException("Size must not be negative");
+        }
+
+        /**
+         * Streams exactly {@code length} bytes to the given output without holding
+         * them all in memory. Any bytes already buffered are drained first, then
+         * the remainder is read straight from the input stream in chunks. Used to
+         * spool a Blob that is too large to fit in a single byte array.
+         *
+         * @param out the output to write the bytes to.
+         * @param length the number of bytes to stream.
+         * @throws MALException if the bytes could not be read or written.
+         */
+        public void readBytesInto(final OutputStream out, final long length) throws MALException {
+            long remaining = length;
+            try {
+                // Drain whatever is already buffered.
+                if (buf != null && offset < contentLength) {
+                    final int fromBuf = (int) Math.min(contentLength - offset, remaining);
+                    out.write(buf, offset, fromBuf);
+                    offset += fromBuf;
+                    remaining -= fromBuf;
+                }
+
+                if (remaining > 0 && inputStream == null) {
+                    throw new MALException("Unable to read " + remaining + " more bytes: "
+                            + "the buffer is exhausted and there is no input stream");
+                }
+
+                // Stream the rest straight from the input stream in fixed chunks.
+                final byte[] chunk = new byte[BLOCK_SIZE];
+                while (remaining > 0) {
+                    final int toRead = (int) Math.min(chunk.length, remaining);
+                    final int read = inputStream.read(chunk, 0, toRead);
+                    if (read < 0) {
+                        throw new MALException("End of stream while reading the Blob body; "
+                                + remaining + " bytes were missing");
+                    }
+                    out.write(chunk, 0, read);
+                    remaining -= read;
+                }
+            } catch (IOException ex) {
+                throw new MALException("Unable to stream the Blob body from the source", ex);
+            }
         }
 
         /**

@@ -21,6 +21,7 @@
 package esa.mo.tools.stubgen;
 
 import esa.mo.tools.stubgen.java.JavaCompositeClass;
+import esa.mo.tools.stubgen.java.JavaElementFactory;
 import esa.mo.tools.stubgen.java.JavaServiceInfo;
 import esa.mo.tools.stubgen.java.JavaExceptions;
 import esa.mo.tools.stubgen.java.JavaConsumer;
@@ -354,6 +355,10 @@ public abstract class GeneratorLangs extends GeneratorBase {
             logger.info(" > Creating Area Helper class: " + area.getName());
             helper.createAreaHelperClass(areaFolder, area);
 
+            logger.info(" > Creating Area Element Factory class: " + area.getName());
+            JavaElementFactory elementFactory = new JavaElementFactory(this, typeInformation);
+            elementFactory.createAreaElementFactoryClass(areaFolder, area);
+
             // Create Area Exceptions
             JavaExceptions exceptions = new JavaExceptions(this);
             logger.info(" > Creating Area Exceptions for area: " + area.getName());
@@ -541,7 +546,8 @@ public abstract class GeneratorLangs extends GeneratorBase {
             if (comment == null || comment.isEmpty()) {
                 // The error reference rarely carries its own comment, so fall
                 // back to the comment of the referenced error definition.
-                ErrorDefinitionType def = typeInformation.getErrorDefinition(error.getType().getName());
+                ErrorDefinitionType def = typeInformation.getErrorDefinition(
+                        error.getType().getArea(), error.getType().getName());
                 comment = (def != null && def.getComment() != null && !def.getComment().isEmpty())
                         ? def.getComment() : "if the corresponding MO error occurs";
             }
@@ -734,8 +740,7 @@ public abstract class GeneratorLangs extends GeneratorBase {
         file.addClassOpenStatement(className, false, false, null, null,
                 "Provider PROGRESS interaction class for " + service + "::" + op.getName() + " operation.");
 
-        file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar,
-                false, (String) null);
+        file.addClassVariable(false, false, StdStrings.PRIVATE, opTypeVar, false, (String) null);
 
         MethodWriter method = file.addConstructor(StdStrings.PUBLIC, className,
                 createCompositeElementsDetails(file, false, "interaction",

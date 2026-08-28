@@ -56,10 +56,15 @@ public class TCPIPClientSocketsManager {
     private final Map<Integer, Socket> connections = new ConcurrentHashMap<>();
 
     /**
-     * Returns a socket bound to a specific port. If this socket doesn't exist,
-     * this method will try once to create a socket on the same port. If that is
-     * not possible, a socket with an ephemeral port number will be created and
-     * returned.
+     * Returns a socket bound to a specific port. If no usable socket exists yet
+     * for the port, this method will try once to create a socket on the same
+     * port. If that is not possible, a socket with an ephemeral port number will
+     * be created and returned.
+     *
+     * A Java {@link Socket} is single-use: once it has been closed or connected
+     * it can never be connected again. A pooled socket that is closed (or already
+     * connected) is therefore stale and is evicted and replaced with a fresh one,
+     * rather than being handed back to fail with "Socket is closed".
      *
      * @param localPort The port number of the socket to return. Returns a
      * socket with an ephemeral port number if the localPort is occupied or not
@@ -69,7 +74,10 @@ public class TCPIPClientSocketsManager {
     public synchronized Socket get(int localPort) {
         Socket s = connections.get(localPort);
 
-        if (s == null) {
+        if (s == null || s.isClosed() || s.isConnected()) {
+            if (s != null) {
+                connections.remove(localPort); // Evict the stale socket
+            }
             s = createSocket(localPort);
         }
 
@@ -102,6 +110,19 @@ public class TCPIPClientSocketsManager {
 
         connections.put(s.getLocalPort(), s);
         return s;
+    }
+
+    /**
+     * Evicts a socket from the connection pool when its connection is torn down,
+     * so that a stale (closed) socket is never handed back by {@link #get(int)}.
+     * The socket itself is expected to be closed by the caller. Sockets that are
+     * not part of the pool (for example server-side accepted sockets) are simply
+     * ignored.
+     *
+     * @param socket the socket to evict from the pool
+     */
+    public synchronized void remove(Socket socket) {
+        connections.values().remove(socket);
     }
 
     /**

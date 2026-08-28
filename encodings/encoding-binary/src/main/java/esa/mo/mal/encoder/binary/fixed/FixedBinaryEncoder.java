@@ -165,5 +165,6 @@ public class FixedBinaryEncoder extends esa.mo.mal.encoder.binary.base.BaseBinar
                 write(value);
             }
         }
+
     }
 }

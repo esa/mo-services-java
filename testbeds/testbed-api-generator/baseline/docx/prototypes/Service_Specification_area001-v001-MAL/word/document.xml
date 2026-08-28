@@ -1,0 +1,1514 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14">
+    <w:body>
+        <w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+            <w:r><w:t>Specification: MAL</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
+            <w:r><w:t>General</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>This section contains the specifications for the MAL services.</w:t></w:r></w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>This area contains the following services:</w:t></w:r></w:p>
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+            <w:r><w:t>Data types</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
+            <w:r><w:t>Area data types: MAL</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Attribute"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Fundamental: Attribute</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>Attribute is the base type of all attributes of the MAL data model. Attributes are contained within Composites and are used to build complex structures that make the data model.</w:t></w:r></w:p>
+        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Composite"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Fundamental: Composite</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>Composite is the base structure for composite structures that contain a set of elements.</w:t></w:r></w:p>
+        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Element"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Fundamental: Element</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>Element is the base type of all data constructs. All types that make up the MAL data model are derived from it.</w:t></w:r></w:p>
+        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Blob"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Blob</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Blob structure is used to store binary object attributes. It is a variable-length, unbounded, octet array. The distinction between this type and a list of Octet attributes is that this type may allow language mappings and encodings to use more efficient or appropriate representations.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Blob</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>1</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Boolean"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Boolean</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Boolean structure is used to store Boolean attributes. Possible values are 'True' or 'False'.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Boolean</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>2</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Duration"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Duration</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Duration structure is used to store Duration attributes. It represents a length of time in seconds. It may contain a fractional component.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Duration</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>3</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Float"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Float</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Float structure is used to store floating point attributes using the IEEE 754 32-bit range.</w:t></w:r></w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>Three special values exist for this type: POSITIVE_INFINITY, NEGATIVE_INFINITY, and NaN (Not A Number).</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Float</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>4</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Double"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Double</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Double structure is used to store floating point attributes using the IEEE 754 64-bit range.</w:t></w:r></w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>Three special values exist for this type: POSITIVE_INFINITY, NEGATIVE_INFINITY, and NaN (Not A Number).</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Double</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>5</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Identifier"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Identifier</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Identifier structure is used to store an identifier and can be used for indexing. It is a variable-length, unbounded, Unicode string.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Identifier</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>6</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Octet"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Octet</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Octet structure is used to store 8-bit signed attributes. The permitted range is -128 to 127.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Octet</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>7</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_UOctet"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: UOctet</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The UOctet structure is used to store 8-bit unsigned attributes. The permitted range is 0 to 255.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UOctet</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>8</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Short"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Short</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Short structure is used to store 16-bit signed attributes. The permitted range is -32768 to 32767.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>9</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_UShort"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: UShort</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The UShort structure is used to store 16-bit unsigned attributes. The permitted range is 0 to 65535.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UShort</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>10</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Integer"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Integer</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Integer structure is used to store 32-bit signed attributes. The permitted range is -2147483648 to 2147483647.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Integer</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>11</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_UInteger"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: UInteger</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The UInteger structure is used to store 32-bit unsigned attributes. The permitted range is 0 to 4294967295.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UInteger</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>12</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Long"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Long</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Long structure is used to store 64-bit signed attributes. The permitted range is -9223372036854775808 to 9223372036854775807.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Long</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>13</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_ULong"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: ULong</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The ULong structure is used to store 64-bit unsigned attributes. The permitted range is 0 to 18446744073709551615.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>ULong</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>14</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_String"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: String</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The String structure is used to store String attributes. It is a variable-length, unbounded, Unicode string.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>String</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>15</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Time"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: Time</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Time structure is used to store absolute time attributes. It represents an absolute date and time to millisecond resolution.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Time</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>16</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_FineTime"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: FineTime</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The FineTime structure is used to store high-resolution absolute time attributes. It represents an absolute date and time to picosecond resolution.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>FineTime</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>17</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_URI"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Attribute: URI</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The URI structure is used to store URI addresses. It is a variable-length, unbounded, Unicode string.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="6698"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>URI</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Attribute</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>18</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_InteractionType"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Enumeration: InteractionType</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>InteractionType is an enumeration holding the possible interaction pattern types.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="2430"/>
+                <w:gridCol w:w="4268"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>InteractionType</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>19</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Enumeration Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Numerical Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>SEND</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>1</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Send interactions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>SUBMIT</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>2</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Submit interactions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>REQUEST</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>3</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Request interactions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>INVOKE</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>4</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Invoke interactions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>PROGRESS</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>5</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Progress interactions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>PUBSUB</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>6</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Publish/Subscribe interactions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_SessionType"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Enumeration: SessionType</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>SessionType is an enumeration holding the session types.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="2430"/>
+                <w:gridCol w:w="4268"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>SessionType</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>20</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Enumeration Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Numerical Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>LIVE</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>1</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Live sessions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>SIMULATION</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>2</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Simulation sessions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>REPLAY</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>3</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Replay sessions.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_QoSLevel"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Enumeration: QoSLevel</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>QoSLevel is an enumeration holding the possible QoS levels.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="2430"/>
+                <w:gridCol w:w="4268"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>QoSLevel</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>21</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Enumeration Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Numerical Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>BESTEFFORT</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>1</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Best Effort QoS Level.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>ASSURED</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>2</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Assured QoS Level.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>QUEUED</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>3</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Queued QoS Level.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>TIMELY</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>4</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Used for Timely QoS Level.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_UpdateType"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Enumeration: UpdateType</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>UpdateType is an enumeration holding the possible Update types.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="2430"/>
+                <w:gridCol w:w="4268"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UpdateType</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="2"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>22</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Enumeration Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Numerical Value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>CREATION</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>1</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Update is notification of the creation of the item.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UPDATE</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>2</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Update is just a periodic update of the item and has not changed its value.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>MODIFICATION</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>3</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Update is for a changed value or modification of the item.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DELETION</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="2430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>4</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="4268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Update is notification of the removal of the item.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Subscription"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: Subscription</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The Subscription structure is used when subscribing for updates using the PUBSUB interaction pattern. It contains a single identifier that identifies the subscription being defined and a set of entities being requested.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Subscription</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>23</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>subscriptionId</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Identifier" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Identifier</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The identifier of this subscription.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>entities</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>List&lt;</w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_EntityRequest" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>EntityRequest</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve">&gt;</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The list of entities that are being subscribed for by this identified subscription.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_EntityRequest"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: EntityRequest</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The EntityRequest structure is used when subscribing for updates using the PUBSUB interaction pattern.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>EntityRequest</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>24</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>subDomain</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>List&lt;</w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Identifier" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Identifier</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve">&gt;</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Optional subdomain identifier that is appended to the Message Header domain identifier when requesting entities in a subdomain of this domain.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>allAreas</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Boolean" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Boolean</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>If set to True, then all updates regardless of Area shall be sent.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>allServices</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Boolean" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Boolean</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>If set to True, then all updates regardless of Service shall be sent.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>allOperations</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Boolean" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Boolean</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>If set to True, then all updates regardless of Operation shall be sent.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>onlyOnChange</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Boolean" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Boolean</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The Boolean denotes that only change updates are to be sent rather than all updates.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>entityKeys</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>List&lt;</w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_EntityKey" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>EntityKey</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve">&gt;</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The list of entities to be monitored.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_EntityKey"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: EntityKey</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The EntityKey structure is used to identify an entity in the PUBSUB interaction pattern.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>EntityKey</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>25</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>firstSubKey</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Identifier" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Identifier</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The first sub-key of the key.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>secondSubKey</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Long" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Long</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The second sub-key of the key.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>thirdSubKey</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Long" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Long</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The third sub-key of the key.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>fourthSubKey</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Long" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Long</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The fourth sub-key of the key.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_UpdateHeader"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: UpdateHeader</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The UpdateHeader structure is used by updates using the PUBSUB interaction pattern. It holds information that identifies a single update.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UpdateHeader</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>26</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>timestamp</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Time" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Time</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Creation timestamp of the update.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>sourceURI</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_URI" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>URI</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>URI of the source of the update, usually a PUBSUB provider.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>updateType</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_UpdateType" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>UpdateType</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type of update being reported.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>key</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_EntityKey" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>EntityKey</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The key of the entity; shall not contain the wildcard value.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_IdBooleanPair"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: IdBooleanPair</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>IdBooleanPair is a simple pair type of an identifier and Boolean value.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>IdBooleanPair</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>27</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>id</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Identifier" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Identifier</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The Identifier value.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Boolean" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Boolean</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The Boolean value.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_Pair"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: Pair</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>Pair is a simple composite structure for holding pairs. The pairs can be user-defined attributes.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Pair</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>28</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>first</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Attribute" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Attribute</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The attribute value for the first element of this pair.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>second</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Attribute" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Attribute</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The attribute value for the second element of this pair.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_NamedValue"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: NamedValue</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The NamedValue structure represents a simple pair type of an identifier and abstract attribute value.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>NamedValue</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>29</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Identifier" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Identifier</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The Identifier value.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>value</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Attribute" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Attribute</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The Attribute value.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+            <w:bookmarkStart w:id="1" w:name="DATATYPE_File"/><w:bookmarkEnd w:id="1"/>
+            <w:r><w:t>Composite: File</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The File structure represents a File and holds details about a File. It can also, optionally, hold a BLOB of the file data. The file type is denoted using the internet MIME media types, the list of official MIME types is held at http://www.iana.org/assignments/media-types/index.html.</w:t></w:r></w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1830"/>
+                <w:gridCol w:w="1100"/>
+                <w:gridCol w:w="3768"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>File</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Extends</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Composite" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Composite</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Short Form Part</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="6698" w:type="dxa"/><w:gridSpan w:val="3"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>30</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Field</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Type</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Nullable</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>name</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Identifier" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Identifier</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>No</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The file name.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>mimeType</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_String" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>String</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The MIME type of the file, NULL if not known.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>creationDate</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Time" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Time</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The creation timestamp of the file, NULL if not known.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>modificationDate</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Time" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Time</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The last modification timestamp of the file, NULL if not known.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>size</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_ULong" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>ULong</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The size of the file in Octets, NULL if not known.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>content</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t></w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_Blob" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Blob</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve"></w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The contents of the file, NULL if not supplied.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>metaData</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1830" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>List&lt;</w:t></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> HYPERLINK  \l "DATATYPE_NamedValue" </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>NamedValue</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:t xml:space="preserve">&gt;</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1100" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Yes</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="3768" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>A list of extra metadata for the file.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+<w:p><w:pPr><w:sectPr><w:type w:val="continuous"/></w:sectPr></w:pPr></w:p>        <w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+            <w:r><w:t>MO Errors</w:t></w:r>
+        </w:p>
+        <w:p><w:pPr><w:keepNext/></w:pPr><w:r><w:t>The following table lists the errors defined in this specification:</w:t></w:r></w:p>
+        <w:p>
+            <w:pPr><w:pStyle w:val="TableTitle"/></w:pPr><w:r><w:t xml:space="preserve">Table </w:t></w:r>
+            <w:bookmarkStart w:id="0" w:name="T_MAL MO Errors"/>
+            <w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> STYLEREF "Heading 1"\l \n \t  \* MERGEFORMAT </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:r><w:noBreakHyphen/></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> SEQ Table \s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r><w:bookmarkEnd w:id="0"/><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText>tc  \f T "</w:instrText></w:r><w:fldSimple w:instr=" STYLEREF &quot;Heading 1&quot;\l \n \t  \* MERGEFORMAT ">
+            <w:bookmarkStart w:id="1" w:name="_MAL MO Errors"/><w:r><w:instrText>1</w:instrText></w:r></w:fldSimple>
+            <w:r><w:instrText>-</w:instrText></w:r><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> SEQ Table_TOC \s 1 </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:instrText>1</w:instrText></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r>
+            <w:r><w:instrText>MAL MO Errors</w:instrText></w:r>
+            <w:bookmarkEnd w:id="1"/><w:r><w:instrText>"</w:instrText></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r>
+            <w:r><w:t>:  MAL MO Errors</w:t></w:r>
+        </w:p>
+        <w:tbl>
+            <w:tblPr>
+                <w:tblW w:w="00" w:type="auto"/>
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
+            </w:tblPr>
+            <w:tblGrid>
+                <w:gridCol w:w="2302"/>
+                <w:gridCol w:w="1430"/>
+                <w:gridCol w:w="5268"/>
+            </w:tblGrid>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Error</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Error #</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="00CCFF"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Comment</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DELIVERY_FAILED</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65536</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Confirmed communication error.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DELIVERY_TIMEDOUT</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65537</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Unconfirmed communication error.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DELIVERY_DELAYED</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65538</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Message queued somewhere awaiting contact.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DESTINATION_UNKNOWN</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65539</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Destination cannot be contacted.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DESTINATION_TRANSIENT</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65540</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Destination middleware reports destination application does not exist.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>DESTINATION_LOST</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65541</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Destination lost halfway through conversation.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>AUTHENTICATION_FAIL</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65542</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>A failure to authenticate the message correctly.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>AUTHORISATION_FAIL</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65543</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>A failure in the MAL to authorise the message.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>ENCRYPTION_FAIL</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65544</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>A failure in the MAL to encrypt/decrypt the message.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UNSUPPORTED_AREA</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65545</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The destination does not support the service area.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UNSUPPORTED_OPERATION</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65546</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The destination does not support the operation.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UNSUPPORTED_VERSION</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65547</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The destination does not support the service version.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>BAD_ENCODING</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65548</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The destination was unable to decode the message.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>INTERNAL</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65549</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>An internal error has occurred.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>UNKNOWN</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65550</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Operation specific.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>INCORRECT_STATE</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65551</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The destination was not in the correct state for the received message.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>TOO_MANY</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65552</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>Maximum number of subscriptions or providers of a broker has been exceeded.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+            <w:tr>
+                <w:tc><w:tcPr><w:tcW w:w="2302" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>SHUTDOWN</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="1430" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>65553</w:t></w:r></w:p></w:tc>
+                <w:tc><w:tcPr><w:tcW w:w="5268" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:pStyle w:val="MOTable"/></w:pPr><w:r><w:t>The component is being shutdown.</w:t></w:r></w:p></w:tc>
+            </w:tr>
+        </w:tbl>
+    </w:body>
+</w:document>

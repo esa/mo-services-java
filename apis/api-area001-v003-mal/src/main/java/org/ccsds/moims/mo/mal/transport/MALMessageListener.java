@@ -52,4 +52,25 @@ public interface MALMessageListener extends MALTransmitErrorListener {
      * @param err Error to be received by the listener
      */
     void onInternalError(MALEndpoint callingEndpoint, Throwable err);
+
+    /**
+     * The method reports that the transport has lost the connection to a remote
+     * peer, so that the MAL layer can release the state it was holding for it
+     * rather than discovering the loss one failed message at a time.
+     *
+     * The peer is identified by the prefix that its endpoint URIs share, which
+     * is the part of the URI that addresses the peer itself rather than an
+     * endpoint within it, terminated by the delimiter that separates the two. A
+     * URI belongs to the peer that was lost if, and only if, it starts with
+     * that prefix.
+     *
+     * Listeners that hold no state per peer do not need to do anything, which
+     * is why this method does nothing by default.
+     *
+     * @param callingEndpoint MALEndpoint calling the MALMessageListener
+     * @param remoteUriPrefix The prefix shared by the URIs of the lost peer
+     */
+    default void onConnectionLost(MALEndpoint callingEndpoint, String remoteUriPrefix) {
+        // Nothing by default: only listeners that keep state per peer care.
+    }
 }

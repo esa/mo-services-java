@@ -58,7 +58,9 @@ public class JettyHttpRequest implements IHttpRequest {
     @Override
     public String getRequestHeader(String headerName) {
         String headerValue = request.getHeader(headerName);
-        if (headerValue.equals(EMPTY_STRING_PLACEHOLDER)) {
+        // A header carrying no value is left out by this transport, and older
+        // versions of it sent a placeholder instead. Both mean an empty value.
+        if (headerValue == null || headerValue.equals(EMPTY_STRING_PLACEHOLDER)) {
             headerValue = "";
         }
         return headerValue;

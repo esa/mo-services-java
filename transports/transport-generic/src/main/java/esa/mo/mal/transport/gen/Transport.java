@@ -30,7 +30,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -38,7 +37,6 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.*;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.mal.structures.InteractionType;
 import org.ccsds.moims.mo.mal.transport.*;
 
 /**
@@ -79,28 +77,9 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected static final Random RANDOM_NAME = new Random();
     /**
-     * The delimiter to use to separate the protocol part from the address part
-     * of the URL.
+     * The shape of the URIs used by this transport, and the parsing of them.
      */
-    protected final String protocolDelim;
-    /**
-     * The delimiter to use to separate the external address part from the
-     * internal object part of the URL.
-     */
-    protected final char serviceDelim;
-    /**
-     * If the protocol delimiter is the same as the service delimiter then we
-     * need a count to find the correct service delimiter.
-     */
-    protected final int serviceDelimCounter;
-    /**
-     * Delimiter to use when holding routing information in a URL
-     */
-    protected final char routingDelim;
-    /**
-     * True if protocol supports the concept of routing.
-     */
-    protected final boolean supportsRouting;
+    protected final TransportAddressing addressing;
     /**
      * True if calls to ourselves should be handled in-process i.e. not via the
      * underlying transport.
@@ -111,17 +90,15 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected final int deliveryTimeout;
     /**
-     * The string used to represent this protocol.
+     * The endpoints created by this transport, indexed by MAL local name and by
+     * transport routing name.
      */
-    protected final String protocol;
+    protected final EndpointRegistry endpoints = new EndpointRegistry();
     /**
-     * Map of string MAL names to endpoints.
+     * Builds and sends the error messages that answer messages which could not
+     * be delivered or processed.
      */
-    protected final Map<String, Endpoint> endpointMalMap = new HashMap<>();
-    /**
-     * Map of string transport routing names to endpoints.
-     */
-    protected final Map<String, Endpoint> endpointRoutingMap = new HashMap<>();
+    protected final ErrorReplyBuilder errorReplies;
     /**
      * Map of QoS properties.
      */
@@ -150,14 +127,6 @@ public abstract class Transport<I, O> implements MALTransport {
      * The stream factory used for encoding and decoding messages.
      */
     private final MALElementStreamFactory streamFactory;
-    /**
-     * The base string for URL for this protocol.
-     */
-    protected String uriBase;
-    /**
-     * Map of cachedRoutingParts. This associates a URI to its Routing part.
-     */
-    private final ConcurrentHashMap<String, String> cachedRoutingParts = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -196,23 +165,14 @@ public abstract class Transport<I, O> implements MALTransport {
             final char routingDelim,
             final boolean supportsRouting,
             final java.util.Map properties) throws MALException {
-        this.protocol = protocol;
-        this.supportsRouting = supportsRouting;
-        this.protocolDelim = protocolDelim;
-        this.serviceDelim = serviceDelim;
-        this.routingDelim = routingDelim;
+        this.addressing = new TransportAddressing(protocol, protocolDelim,
+                serviceDelim, routingDelim, supportsRouting);
         this.qosProperties = properties;
+        this.errorReplies = new ErrorReplyBuilder(this, endpoints, properties);
 
         streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
         LOGGER.log(Level.FINE, "Created element stream: {0}",
                 streamFactory.getClass().getName());
-
-        if (protocolDelim.contains("" + serviceDelim)) {
-            String replaced = protocolDelim.replace("" + serviceDelim, "");
-            serviceDelimCounter = protocolDelim.length() - replaced.length();
-        } else {
-            serviceDelimCounter = 0;
-        }
 
         // default values
         boolean lInProcessSupport = true;
@@ -244,12 +204,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @throws MALException On error
      */
     public void init() throws MALException {
-        String protocolString = protocol;
-        if (protocol.contains(":")) {
-            protocolString = protocol.substring(0, protocol.indexOf(':'));
-        }
-
-        uriBase = protocolString + protocolDelim + createTransportAddress() + serviceDelim;
+        addressing.initUriBase(createTransportAddress());
     }
 
     @Override
@@ -265,14 +220,13 @@ public abstract class Transport<I, O> implements MALTransport {
         }
 
         final String strRoutingName = getLocalName(localName, localProperties);
-        Endpoint endpoint = endpointRoutingMap.get(strRoutingName);
+        Endpoint endpoint = endpoints.getByRoutingName(strRoutingName);
 
         if (endpoint == null) {
             LOGGER.log(Level.FINE, "Creating endpoint {0} : {1}",
                     new Object[]{localName, strRoutingName});
             endpoint = internalCreateEndpoint(localName, strRoutingName, localProperties, supplements);
-            endpointMalMap.put(localName, endpoint);
-            endpointRoutingMap.put(strRoutingName, endpoint);
+            endpoints.add(localName, strRoutingName, endpoint);
         }
 
         return endpoint;
@@ -280,13 +234,13 @@ public abstract class Transport<I, O> implements MALTransport {
 
     @Override
     public MALEndpoint getEndpoint(final String localName) throws IllegalArgumentException {
-        return endpointMalMap.get(localName);
+        return endpoints.getByLocalName(localName);
     }
 
     @Override
     public MALEndpoint getEndpoint(final URI uri) throws IllegalArgumentException {
         String endpointUriPart = getRoutingPart(uri.getValue());
-        return endpointRoutingMap.get(endpointUriPart);
+        return endpoints.getByRoutingName(endpointUriPart);
     }
 
     /**
@@ -332,14 +286,14 @@ public abstract class Transport<I, O> implements MALTransport {
 
         // get the root URI, (e.g. maltcp://10.0.0.1:61616 )
         String destinationURI = header.getTo().getValue();
-        String remoteRootURI = header.getToURI().getRootURI(serviceDelim, serviceDelimCounter);
+        String remoteRootURI = addressing.getRootURI(header.getToURI());
 
         // first check if its actually a message to ourselves
         String endpointUriPart = getRoutingPart(destinationURI);
 
         if (inProcessSupport
-                && (uriBase.startsWith(remoteRootURI) || remoteRootURI.startsWith(uriBase))
-                && endpointRoutingMap.containsKey(endpointUriPart)) {
+                && addressing.matchesLocalBase(remoteRootURI)
+                && endpoints.containsRoutingName(endpointUriPart)) {
             LOGGER.log(Level.FINE, "Routing msg internally to: {0}",
                     new Object[]{endpointUriPart});
 
@@ -401,10 +355,35 @@ public abstract class Transport<I, O> implements MALTransport {
 
         if (localUriTo != null) {
             outgoingDataChannelsManager.closeConnection(localUriTo);
+            notifyConnectionLost(localUriTo);
         }
 
         if (receptionHandler != null) {
             receptionHandler.close();
+        }
+    }
+
+    /**
+     * Tells the MAL layer that a remote peer is gone, so that it can release
+     * the state it holds for it, such as the subscriptions a broker is still
+     * holding on behalf of a consumer that disconnected. Without this the loss
+     * is only discovered one failed message at a time.
+     *
+     * @param remoteRootURI The root URI of the peer that was lost.
+     */
+    protected void notifyConnectionLost(final String remoteRootURI) {
+        // The endpoints of the peer all start with its root URI followed by the
+        // service delimiter. Comparing against the delimiter too keeps a peer
+        // on port 1025 from matching one on port 10250.
+        String prefix = remoteRootURI + addressing.getServiceDelim();
+
+        for (Endpoint endpoint : endpoints.all()) {
+            try {
+                endpoint.connectionLost(prefix);
+            } catch (Throwable ex) {
+                LOGGER.log(Level.WARNING,
+                        "Error informing the endpoint that a connection was lost", ex);
+            }
         }
     }
 
@@ -423,24 +402,17 @@ public abstract class Transport<I, O> implements MALTransport {
 
     @Override
     public void deleteEndpoint(final String localName) throws MALException {
-        final Endpoint endpoint = endpointMalMap.get(localName);
+        final Endpoint endpoint = endpoints.remove(localName);
 
         if (null != endpoint) {
             LOGGER.log(Level.INFO, "Deleting endpoint", localName);
-            endpointMalMap.remove(localName);
-            endpointRoutingMap.remove(endpoint.getRoutingName());
             endpoint.close();
         }
     }
 
     @Override
     public void close() throws MALException {
-        for (Endpoint entry : endpointMalMap.values()) {
-            entry.close();
-        }
-
-        endpointMalMap.clear();
-        endpointRoutingMap.clear();
+        endpoints.closeAll();
 
         decoderExecutor.shutdown();
         dispatcherExecutor.shutdown();
@@ -498,12 +470,16 @@ public abstract class Transport<I, O> implements MALTransport {
      * @param smsg The message in a string representation for logging.
      */
     public void dispatchMessage(final GENMessage msg, PacketToString smsg) {
+        // Held outside the try so that, if the delivery below throws, the error
+        // can be returned from the endpoint the message was destined for.
+        Endpoint endpoint = null;
+
         try {
             LOGGER.log(Level.FINE, "Processing message : {0} : {1}",
                     new Object[]{msg.getHeader().getTransactionId(), smsg});
 
             String endpointUriPart = getRoutingPart(msg.getHeader().getTo().getValue());
-            final Endpoint endpoint = endpointRoutingMap.get(endpointUriPart);
+            endpoint = endpoints.getByRoutingName(endpointUriPart);
 
             if (endpoint != null) {
                 LOGGER.log(Level.FINE, "Passing message to endpoint {0} : {1}",
@@ -524,7 +500,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(endpoint, msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE,
@@ -540,7 +516,7 @@ public abstract class Transport<I, O> implements MALTransport {
             e.printStackTrace(new PrintWriter(wrt));
 
             try {
-                returnErrorMessage(msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
+                returnErrorMessage(endpoint, msg.getHeader(), MALHelper.INTERNAL_ERROR_NUMBER,
                         "Error occurred: " + e.toString() + " : " + wrt.toString());
             } catch (MALException ex) {
                 LOGGER.log(Level.SEVERE, "Error occurred when return error data : {0}", ex);
@@ -558,56 +534,23 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     protected void returnErrorMessage(final MALMessageHeader srcHdr,
             final UInteger errorNumber, final String errorMsg) throws MALException {
-        try {
-            InteractionType interactionType = srcHdr.getInteractionType();
-            final short stage = (null != srcHdr.getInteractionStage())
-                    ? srcHdr.getInteractionStage().getValue() : 0;
+        returnErrorMessage(null, srcHdr, errorNumber, errorMsg);
+    }
 
-            // first check that message should be responded to
-            if (((interactionType.equals(InteractionType.SUBMIT)) && (stage == MALSubmitOperation._SUBMIT_STAGE))
-                    || ((interactionType.equals(InteractionType.REQUEST)) && (stage == MALRequestOperation._REQUEST_STAGE))
-                    || ((interactionType.equals(InteractionType.INVOKE)) && (stage == MALInvokeOperation._INVOKE_STAGE))
-                    || ((interactionType.equals(InteractionType.PROGRESS)) && (stage == MALProgressOperation._PROGRESS_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._REGISTER_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._DEREGISTER_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_REGISTER_STAGE))
-                    || ((interactionType.equals(InteractionType.PUBSUB)) && (stage == MALPubSubOperation._PUBLISH_DEREGISTER_STAGE))) {
-
-                if (!endpointMalMap.isEmpty()) {
-                    Endpoint endpoint = endpointMalMap.entrySet().iterator().next().getValue();
-
-                    final GENMessage retMsg = (GENMessage) endpoint.createMessage(srcHdr.getAuthenticationId(),
-                            srcHdr.getFromURI(),
-                            Time.now(),
-                            srcHdr.getInteractionType(),
-                            new UOctet((short) (srcHdr.getInteractionStage().getValue() + 1)),
-                            srcHdr.getTransactionId(),
-                            srcHdr.getServiceArea(),
-                            srcHdr.getService(),
-                            srcHdr.getOperation(),
-                            srcHdr.getAreaVersion(),
-                            true,
-                            srcHdr.getSupplements(),
-                            qosProperties,
-                            errorNumber, new Union(errorMsg));
-
-                    sendMessage(null, true, retMsg);
-                } else {
-                    LOGGER.log(Level.WARNING, "(1) Unable to return error"
-                            + " number ({0}) as no endpoint supplied: {1}",
-                            new Object[]{errorNumber, srcHdr});
-                }
-            } else {
-                LOGGER.log(Level.WARNING, "An MO Error will not be returned because this "
-                        + "combination of type/stage does not have an MO Error to "
-                        + "be returned! For interaction type: {0} - and stage: {1}",
-                        new Object[]{interactionType.toString(), stage});
-            }
-        } catch (MALTransmitErrorException ex) {
-            LOGGER.log(Level.WARNING,
-                    "Error occurred when attempting to return previous error!",
-                    ex);
-        }
+    /**
+     * Creates a return error message based on a received message, sent from the
+     * endpoint the received message was being delivered to.
+     *
+     * @param endpoint The endpoint the message was being delivered to, or null
+     * if it is not known.
+     * @param srcHdr The source header
+     * @param errorNumber The error number
+     * @param errorMsg The error message.
+     * @throws MALException if cannot encode a response message
+     */
+    protected void returnErrorMessage(final Endpoint endpoint, final MALMessageHeader srcHdr,
+            final UInteger errorNumber, final String errorMsg) throws MALException {
+        errorReplies.returnError(endpoint, srcHdr, errorNumber, errorMsg);
     }
 
     /**
@@ -633,20 +576,7 @@ public abstract class Transport<I, O> implements MALTransport {
      * @return the routing part of the URI
      */
     public String getRoutingPart(String uriValue) {
-        String routingPart = cachedRoutingParts.get(uriValue);
-
-        if (routingPart == null) {
-            final int iFirst = URI.nthIndexOf(uriValue, serviceDelim, serviceDelimCounter);
-            int iSecond = supportsRouting ? uriValue.indexOf(routingDelim) : uriValue.length();
-            if (iSecond < 0) {
-                iSecond = uriValue.length();
-            }
-
-            routingPart = uriValue.substring(iFirst + 1, iSecond);
-            cachedRoutingParts.put(uriValue, routingPart);
-        }
-
-        return routingPart;
+        return addressing.getRoutingPart(uriValue);
     }
 
     /**
@@ -662,7 +592,8 @@ public abstract class Transport<I, O> implements MALTransport {
     protected Endpoint internalCreateEndpoint(final String localName,
             final String routingName, final Map qosProperties,
             final NamedValueList supplements) throws MALException {
-        return new Endpoint(this, localName, routingName, uriBase + routingName, supplements);
+        return new Endpoint(this, localName, routingName,
+                addressing.getUriBase() + routingName, supplements);
     }
 
     /**
@@ -690,7 +621,7 @@ public abstract class Transport<I, O> implements MALTransport {
                 // this is the first message received form this reception handler
                 // add the remote base URI it is receiving messages from
                 URI sourceURI = msg.getHeader().getFromURI();
-                String sourceRootURI = sourceURI.getRootURI(serviceDelim, serviceDelimCounter);
+                String sourceRootURI = addressing.getRootURI(sourceURI);
                 receptionHandler.setRemoteURI(sourceRootURI);
 
                 //register the communication channel with this URI if needed
@@ -700,7 +631,7 @@ public abstract class Transport<I, O> implements MALTransport {
             // outgoing message
             // get target URI
             URI reroutedMsg = this.rerouteMessage(msg);
-            String remoteRootURI = reroutedMsg.getRootURI(serviceDelim, serviceDelimCounter);
+            String remoteRootURI = addressing.getRootURI(reroutedMsg);
             sender = outgoingDataChannelsManager.manageCommunicationChannelOutgoing(msg.getHeader(), remoteRootURI);
         }
 

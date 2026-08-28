@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>14.1</version>
+        <version>14.2</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>api-generator-maven-plugin</artifactId>
-    <version>14.1</version>
+    <version>14.2</version>
     <packaging>maven-plugin</packaging>
   
     <name>ESA MO API Generator - Maven Plugin</name>
@@ -81,14 +81,19 @@
             <artifactId>jaxb-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.10</version>
-        </dependency>
-        <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
             <version>1.3.04</version>
+        </dependency>
+        <!--
+            Temporary, for running the two generators side by side through the same build:
+            NewJavaGenerator reaches the new library through the interface this plugin
+            expects. At v15.0 the library replaces the old generator outright and the
+            adapter goes with the interface. See api-generator-lib/DESIGN.md section 3.
+        -->
+        <dependency>
+            <groupId>int.esa.ccsds.mo</groupId>
+            <artifactId>api-generator-lib</artifactId>
         </dependency>
         <dependency>
             <groupId>int.esa.ccsds.mo</groupId>
@@ -107,6 +112,11 @@
   
     <build>
         <resources>
+            <!-- Restored: the parent declares it, and overriding <resources> here dropped
+                 it, so nothing under src/main/resources was ever packaged. -->
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
             <resource>
                 <directory>${basedir}/..</directory>
                 <includes>

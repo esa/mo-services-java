@@ -31,8 +31,6 @@ import java.util.logging.Logger;
 
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeType;
-import org.ccsds.moims.mo.mal.structures.Identifier;
-import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mc.backends.BackendTimer;
 import org.ccsds.moims.mo.mc.backends.ConversionFunction;

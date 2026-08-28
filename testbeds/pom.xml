@@ -19,12 +19,12 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>14.1</version>
+        <version>14.2</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
   
     <artifactId>testbeds</artifactId>
-    <version>14.1</version>
+    <version>14.2</version>
     <packaging>pom</packaging>
     <name>ESA CCSDS Testbed reactor build</name>
 
@@ -63,6 +63,7 @@
 
     <modules>
         <module>testbed-pom</module>
+        <module>testbed-api-generator</module>
         <module>testbed-encoders</module>
         <module>testbed-util</module>
         <module>xml-tests</module>

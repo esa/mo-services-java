@@ -21,6 +21,8 @@
 package esa.mo.mal.impl;
 
 import esa.mo.mal.impl.broker.MALBrokerBindingImpl;
+import esa.mo.mal.impl.broker.MALBrokerHandlerImpl;
+import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import esa.mo.mal.impl.interactionpatterns.InvokeIPProviderHandler;
 import esa.mo.mal.impl.interactionpatterns.ProgressIPProviderHandler;
 import esa.mo.mal.impl.interactionpatterns.PubSubIPProviderHandler;
@@ -84,6 +86,20 @@ public class MALReceiver implements MALMessageListener {
         MALContextFactoryImpl.LOGGER.severe("MAL Receiving Transmission ERROR!");
 
         consumersMap.handleError(srcMessageHeader, err, qosMap);
+    }
+
+    @Override
+    public void onConnectionLost(final MALEndpoint callingEndpoint, final String remoteUriPrefix) {
+        // A consumer that is gone cannot be notified, so let the brokers drop
+        // the subscriptions they are still holding on its behalf. Otherwise
+        // each one is only dropped after a NOTIFY has failed to reach it.
+        for (MALBrokerBindingImpl binding : brokers.values()) {
+            MALBrokerHandler handler = binding.getBrokerImpl().getHandler();
+
+            if (handler instanceof MALBrokerHandlerImpl) {
+                ((MALBrokerHandlerImpl) handler).removeConsumerSubscriptions(remoteUriPrefix);
+            }
+        }
     }
 
     @Override
@@ -189,7 +205,15 @@ public class MALReceiver implements MALMessageListener {
                             handlePublishRegister(msg, address);
                             break;
                         case MALPubSubOperation._PUBLISH_STAGE:
-                            address = lookupAddress(callingEndpoint, null);
+                            // Only brokers hold a provider endpoint for the PUBLISH
+                            // operation. A publish error is returned to the publisher
+                            // as a PUBLISH message with the isError flag set; the
+                            // publisher is not a provider, so looking up its (absent)
+                            // address would only log a spurious warning. handlePublish
+                            // does not use the address for error messages anyway.
+                            if (!msg.getHeader().getIsErrorMessage()) {
+                                address = lookupAddress(callingEndpoint, null);
+                            }
                             handlePublish(msg, address);
                             break;
                         case MALPubSubOperation._NOTIFY_STAGE:

@@ -24,14 +24,19 @@ import esa.mo.xsd.util.XmlHelper;
 import esa.mo.xsd.util.XmlSpecification;
 import esa.mo.xsd.util.XsdSpecification;
 import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -42,10 +47,6 @@ import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import w3c.xsd.Schema;
 
 /**
@@ -427,6 +428,21 @@ public class StubGenerator extends AbstractMojo {
         return new XsdSpecification(file, schema);
     }
 
+    /**
+     * The resource each module supplying generators declares them in, one class name per
+     * line, in the form the JDK's own service loading uses.
+     */
+    private static final String SERVICES = "META-INF/services/" + Generator.class.getName();
+
+    /**
+     * Finds the generators on the classpath.
+     * <p>
+     * Each module that supplies one names it in a service file, and this reads those files.
+     * It used to be found by scanning: every jar on the plugin's classpath was walked for
+     * subtypes of {@link Generator}, which cost around 300 ms of every build to discover
+     * five classes - close to ten times what generating the code itself takes. A module
+     * that supplies a generator already knows it does, so it says so.
+     */
     private void loadGenerators(final org.apache.maven.plugin.logging.Log logger) {
         if (generatorsLoaded) {
             return;
@@ -434,26 +450,61 @@ public class StubGenerator extends AbstractMojo {
 
         generatorsLoaded = true;
 
-        final Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forClassLoader())
-                .setScanners(new SubTypesScanner()));
-
-        final Set<Class<? extends Generator>> classes = reflections.getSubTypesOf(Generator.class);
-
-        for (Class<? extends Generator> cls : classes) {
-            final int mods = cls.getModifiers();
-            if (!Modifier.isAbstract(mods)) {
-                try {
-                    final Generator g = (Generator) cls.getConstructor(new Class[]{
-                        org.apache.maven.plugin.logging.Log.class
-                    }).newInstance(new Object[]{logger});
-
-                    GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
-                } catch (Exception ex) {
-                    logger.warn("Could not construct generator : " + cls.getName());
+        for (String name : declaredGenerators(logger)) {
+            try {
+                final Class<?> cls = Class.forName(name, true, loader());
+                if (Modifier.isAbstract(cls.getModifiers())) {
+                    continue;
                 }
+                final Generator g = (Generator) cls.getConstructor(new Class[]{
+                    org.apache.maven.plugin.logging.Log.class
+                }).newInstance(new Object[]{logger});
+
+                GENERATOR_MAP.put(g.getShortName().toLowerCase(), g);
+            } catch (Exception ex) {
+                logger.warn("Could not construct generator : " + name);
             }
         }
+    }
+
+    /**
+     * The plugin's own class loader, which is the realm holding both the plugin and
+     * whatever generators the build supplied to it. The thread's context loader is not it:
+     * inside a Mojo that is Maven's own, and it can see neither.
+     */
+    private static ClassLoader loader() {
+        return StubGenerator.class.getClassLoader();
+    }
+
+    /**
+     * @return the class name of every generator declared on the classpath, in the order the
+     * class loader offers them.
+     */
+    private static Set<String> declaredGenerators(
+            final org.apache.maven.plugin.logging.Log logger) {
+        final Set<String> names = new LinkedHashSet<String>();
+        try {
+            final Enumeration<URL> found = loader().getResources(SERVICES);
+            while (found.hasMoreElements()) {
+                final BufferedReader in = new BufferedReader(new InputStreamReader(
+                        found.nextElement().openStream(), "UTF-8"));
+                try {
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        final int comment = line.indexOf('#');
+                        final String name = (comment < 0 ? line : line.substring(0, comment)).trim();
+                        if (!name.isEmpty()) {
+                            names.add(name);
+                        }
+                    }
+                } finally {
+                    in.close();
+                }
+            }
+        } catch (IOException ex) {
+            logger.warn("Could not read the declared generators: " + ex.getMessage());
+        }
+        return names;
     }
 
     private void processWithGenerator(final Generator generator,

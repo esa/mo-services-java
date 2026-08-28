@@ -24,6 +24,7 @@ import esa.mo.mal.transport.http.HTTPTransport;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import esa.mo.mal.transport.http.api.IPostClient;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
+import esa.mo.mal.transport.http.util.MALHttpHeaders;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
 import esa.mo.mal.transport.http.util.UriHelper;
 import java.io.IOException;
@@ -110,7 +111,8 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
      * @param uriFrom the URIfrom field
      * @return the GENMessageHeader corresponding to the HTTP headers
      */
-    protected MALMessageHeader createMALHeaderFromHttp(IPostClient client, Identifier uriTo, Identifier uriFrom) {
+    protected MALMessageHeader createMALHeaderFromHttp(IPostClient client,
+            Identifier uriTo, Identifier uriFrom) throws HttpApiImplException {
 
         SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(HTTPTransport.TIMESTAMP_STRING_FORMAT);
         TIMESTAMP_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -128,18 +130,24 @@ public class HTTPClientProcessResponse extends HTTPClientShutDown {
             RLOGGER.severe(e.getMessage());
             e.printStackTrace();
         }
-        String iType = client.getResponseHeader("X-MAL-Interaction-Type");
+        String iType = MALHttpHeaders.required("X-MAL-Interaction-Type",
+                client.getResponseHeader("X-MAL-Interaction-Type"));
         InteractionType interactionType = InteractionType.fromString(iType);
         UOctet interactionStage = null;
         if (interactionType.getValue() != InteractionType.SEND_VALUE) {
-            interactionStage = new UOctet(
-                    Short.parseShort(client.getResponseHeader("X-MAL-Interaction-Stage")));
+            interactionStage = new UOctet(Short.parseShort(MALHttpHeaders.required(
+                    "X-MAL-Interaction-Stage", client.getResponseHeader("X-MAL-Interaction-Stage"))));
         }
-        Long transactionId = Long.parseLong(client.getResponseHeader("X-MAL-Transaction-Id"));
-        UShort serviceArea = new UShort(Integer.parseInt(client.getResponseHeader("X-MAL-Service-Area")));
-        UShort service = new UShort(Integer.parseInt(client.getResponseHeader("X-MAL-Service")));
-        UShort operation = new UShort(Integer.parseInt(client.getResponseHeader("X-MAL-Operation")));
-        UOctet serviceVersion = new UOctet(Short.parseShort(client.getResponseHeader("X-MAL-Area-Version")));
+        Long transactionId = Long.parseLong(MALHttpHeaders.required("X-MAL-Transaction-Id",
+                client.getResponseHeader("X-MAL-Transaction-Id")));
+        UShort serviceArea = new UShort(Integer.parseInt(MALHttpHeaders.required("X-MAL-Service-Area",
+                client.getResponseHeader("X-MAL-Service-Area"))));
+        UShort service = new UShort(Integer.parseInt(MALHttpHeaders.required("X-MAL-Service",
+                client.getResponseHeader("X-MAL-Service"))));
+        UShort operation = new UShort(Integer.parseInt(MALHttpHeaders.required("X-MAL-Operation",
+                client.getResponseHeader("X-MAL-Operation"))));
+        UOctet serviceVersion = new UOctet(Short.parseShort(MALHttpHeaders.required("X-MAL-Area-Version",
+                client.getResponseHeader("X-MAL-Area-Version"))));
         Boolean isErrorMessage = client.getResponseHeader("X-MAL-Is-Error-Message")
                 .equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
 

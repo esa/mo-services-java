@@ -64,8 +64,10 @@ public class JdkHttpResponse implements IHttpResponse {
 
     @Override
     public void setResponseHeader(String headerName, String headerValue) {
-        if (headerValue.equals("")) {
-            headerValue = EMPTY_STRING_PLACEHOLDER;
+        if (headerValue == null || headerValue.isEmpty()) {
+            // A header with no value is left out rather than given one that
+            // the MAL HTTP binding does not define.
+            return;
         }
 
         if (Arrays.asList(asciiHeaders).contains(headerName)) {

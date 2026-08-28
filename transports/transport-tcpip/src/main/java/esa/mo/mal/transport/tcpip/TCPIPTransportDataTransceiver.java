@@ -50,17 +50,23 @@ public class TCPIPTransportDataTransceiver implements MessageReceiver<TCPIPPacke
     protected final DataInputStream socketReadIf;
     private final URI from;
     private final URI to;
+    private final TCPIPClientSocketsManager clientSockets;
 
     /**
      * Constructor.
      *
      * @param socket the TCPIP socket.
      * @param localPort the local port.
+     * @param clientSockets the client socket pool the socket belongs to, so it
+     * can be evicted when the connection is torn down, or {@code null} for
+     * server-side sockets that are not pooled.
      * @throws IOException if there is an error.
      */
-    public TCPIPTransportDataTransceiver(Socket socket, int localPort) throws IOException {
+    public TCPIPTransportDataTransceiver(Socket socket, int localPort,
+            TCPIPClientSocketsManager clientSockets) throws IOException {
         RLOGGER.log(Level.FINE, "Creating new Data Transceiver");
         this.socket = socket;
+        this.clientSockets = clientSockets;
         socketWriteIf = new DataOutputStream(socket.getOutputStream());
         socketReadIf = new DataInputStream(socket.getInputStream());
 
@@ -167,6 +173,11 @@ public class TCPIPTransportDataTransceiver implements MessageReceiver<TCPIPPacke
         } catch (IOException e) {
             RLOGGER.log(Level.WARNING,
                     "An exception occured while trying to close the socket!", e);
+        }
+
+        // Evict the now-closed socket from the pool so it is never handed back
+        if (clientSockets != null) {
+            clientSockets.remove(socket);
         }
     }
 

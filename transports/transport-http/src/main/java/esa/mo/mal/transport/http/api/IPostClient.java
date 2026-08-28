@@ -32,9 +32,17 @@ import esa.mo.mal.transport.http.util.HttpApiImplException;
 public interface IPostClient {
 
     /**
-     * Placeholder to use for empty string header values instead, in order to be
-     * sure that the header field will be transmitted and not dropped.
+     * Placeholder that older versions of this transport sent as the value of a
+     * header that had no value.
+     *
+     * It is not defined by the MAL HTTP binding and is no longer sent, because
+     * a peer that does not know it cannot tell it apart from a real value. A
+     * header with no value is now left out altogether. The constant is kept so
+     * that messages from those older versions are still understood.
+     *
+     * @deprecated Only accepted on reception, never sent.
      */
+    @Deprecated
     public static final String EMPTY_STRING_PLACEHOLDER = "<![CDATA[EmptyStringPlaceholder]]>";
 
     /**
@@ -61,7 +69,7 @@ public interface IPostClient {
     /**
      * Sets the header field value of the given header field name.
      *
-     * Needs to consider EMPTY_STRING_PLACEHOLDER.
+     * A value that is null or empty is not sent, the header is left out.
      *
      * @param headerName the header field name
      * @param headerValue the header field value
@@ -106,7 +114,7 @@ public interface IPostClient {
     /**
      * Gets the header field value of the given header field name.
      *
-     * Needs to consider EMPTY_STRING_PLACEHOLDER.
+     * A header that was not set reads back as an empty value.
      *
      * @param headerName the header field name
      * @return the header field value

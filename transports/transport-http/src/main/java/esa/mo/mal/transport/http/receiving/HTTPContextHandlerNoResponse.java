@@ -22,8 +22,10 @@ package esa.mo.mal.transport.http.receiving;
 
 import esa.mo.mal.transport.http.HTTPTransport;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
+import esa.mo.mal.transport.http.api.IContextHandler;
 import esa.mo.mal.transport.http.api.IHttpRequest;
 import esa.mo.mal.transport.http.util.HttpApiImplException;
+import esa.mo.mal.transport.http.util.MALHttpHeaders;
 import esa.mo.mal.transport.http.util.SupplementsEncoder;
 import java.io.IOException;
 import java.text.ParseException;
@@ -57,6 +59,13 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
     }
 
     @Override
+    public IContextHandler forRequest() {
+        // The decoded header and the body are held between the three calls, so
+        // each request needs its own handler.
+        return new HTTPContextHandlerNoResponse(transport);
+    }
+
+    @Override
     public void processRequest(IHttpRequest request) throws HttpApiImplException {
         String requestUrl = request.getRequestUrl();
         RLOGGER.log(Level.FINE, "HTTPContextHandlerNoResponse.processRequest requestUrl={0}", requestUrl);
@@ -87,7 +96,8 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
      * @param uriFrom the URIfrom field
      * @return the GENMessageHeader corresponding to the HTTP headers
      */
-    protected MALMessageHeader createMALHeaderFromHttp(IHttpRequest request, Identifier uriTo, Identifier uriFrom) {
+    protected MALMessageHeader createMALHeaderFromHttp(IHttpRequest request,
+            Identifier uriTo, Identifier uriFrom) throws HttpApiImplException {
         SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat(HTTPTransport.TIMESTAMP_STRING_FORMAT);
         TIMESTAMP_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
         Identifier from = new Identifier(uriFrom.getValue());
@@ -104,18 +114,24 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
             RLOGGER.severe(e.getMessage());
             e.printStackTrace();
         }
-        InteractionType interactionType = InteractionType.fromString(request.getRequestHeader("X-MAL-Interaction-Type"));
+        InteractionType interactionType = InteractionType.fromString(MALHttpHeaders.required(
+                "X-MAL-Interaction-Type", request.getRequestHeader("X-MAL-Interaction-Type")));
         UOctet interactionStage = null;
         if (interactionType.getValue() != InteractionType.SEND_VALUE) {
-            interactionStage = new UOctet(
-                    Short.parseShort(decodeAscii(request.getRequestHeader("X-MAL-Interaction-Stage"))));
+            interactionStage = new UOctet(Short.parseShort(MALHttpHeaders.required(
+                    "X-MAL-Interaction-Stage",
+                    decodeAscii(request.getRequestHeader("X-MAL-Interaction-Stage")))));
         }
-        Long transactionId = Long.parseLong(decodeAscii(request.getRequestHeader("X-MAL-Transaction-Id")));
-        UShort serviceArea = new UShort(Integer.parseInt(decodeAscii(request.getRequestHeader("X-MAL-Service-Area"))));
-        UShort service = new UShort(Integer.parseInt(decodeAscii(request.getRequestHeader("X-MAL-Service"))));
-        UShort operation = new UShort(Integer.parseInt(decodeAscii(request.getRequestHeader("X-MAL-Operation"))));
-        UOctet serviceVersion = new UOctet(
-                Short.parseShort(decodeAscii(request.getRequestHeader("X-MAL-Area-Version"))));
+        Long transactionId = Long.parseLong(MALHttpHeaders.required("X-MAL-Transaction-Id",
+                decodeAscii(request.getRequestHeader("X-MAL-Transaction-Id"))));
+        UShort serviceArea = new UShort(Integer.parseInt(MALHttpHeaders.required("X-MAL-Service-Area",
+                decodeAscii(request.getRequestHeader("X-MAL-Service-Area")))));
+        UShort service = new UShort(Integer.parseInt(MALHttpHeaders.required("X-MAL-Service",
+                decodeAscii(request.getRequestHeader("X-MAL-Service")))));
+        UShort operation = new UShort(Integer.parseInt(MALHttpHeaders.required("X-MAL-Operation",
+                decodeAscii(request.getRequestHeader("X-MAL-Operation")))));
+        UOctet serviceVersion = new UOctet(Short.parseShort(MALHttpHeaders.required("X-MAL-Area-Version",
+                decodeAscii(request.getRequestHeader("X-MAL-Area-Version")))));
         Boolean isErrorMessage = request.getRequestHeader("X-MAL-Is-Error-Message")
                 .equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
 

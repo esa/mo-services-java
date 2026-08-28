@@ -35,7 +35,6 @@ package org.ccsds.moims.mo.malspp.test.util;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.concurrent.Callable;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -48,8 +47,7 @@ import org.ccsds.moims.mo.mal.structures.ULong;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
-import org.ccsds.moims.mo.malspp.test.datatype.LargeEnumeration;
-import org.ccsds.moims.mo.malspp.test.datatype.MediumEnumeration;
+import org.ccsds.moims.mo.malspp.test.datatype.HandWrittenElementFactory;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.orekit.data.DataProvidersManager;
 import org.orekit.data.DirectoryCrawler;
@@ -82,9 +80,9 @@ public class BufferReader {
         fineTimeMalJavaApiEpoch = new AbsoluteDate(epochAsString,
                 TimeScalesFactory.getTAI());
 
-        // Initialize BigEnumeration data type
-        MALContextFactory.getElementsRegistry().addElement(new LargeEnumeration(0));
-        MALContextFactory.getElementsRegistry().addElement(new MediumEnumeration(0));
+        // The two enumerations are written by hand, so their factory is
+        // registered next to the generated one of the same area
+        MALContextFactory.getElementsRegistry().registerAreaFactory(new HandWrittenElementFactory());
     }
 
     private static AbsoluteDate fineTimeMalJavaApiEpoch;

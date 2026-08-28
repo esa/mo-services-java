@@ -168,6 +168,21 @@ public class Endpoint implements MALEndpoint {
     }
 
     /**
+     * Callback method when the transport has lost the connection to a remote
+     * peer, passed on to the listener so that it can release the state it holds
+     * for that peer.
+     *
+     * @param remoteUriPrefix The prefix shared by the URIs of the lost peer.
+     */
+    public void connectionLost(final String remoteUriPrefix) {
+        MALMessageListener listener = this.messageListener;
+
+        if (listener != null) {
+            listener.onConnectionLost(this, remoteUriPrefix);
+        }
+    }
+
+    /**
      * Callback method when a message is received for this endpoint.
      *
      * @param msg The received message.

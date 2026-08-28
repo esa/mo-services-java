@@ -80,10 +80,10 @@ public class JdkHttpRequest implements IHttpRequest {
     @Override
     public String getRequestHeader(String headerName) {
         String headerValue = httpExchange.getRequestHeaders().getFirst(headerName);
+        // A header carrying no value is left out by this transport, and older
+        // versions of it sent a placeholder instead. Both mean an empty value.
         if (headerValue == null || headerValue.equals(EMPTY_STRING_PLACEHOLDER)) {
-            HTTPTransport.RLOGGER.log(Level.WARNING, "Header not found: {0}", headerName);
-        }
-        if (headerValue.equals(EMPTY_STRING_PLACEHOLDER)) {
+            HTTPTransport.RLOGGER.log(Level.FINE, "Header not set: {0}", headerName);
             headerValue = "";
         }
 

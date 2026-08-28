@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Resolves the schema for the XML namespace locally.
+
+    XMLSchema.xsd imports it by its published URL, which made every clean build
+    fetch it from www.w3.org. That turned a network outage, an offline build or
+    a rate limit at the far end into a build failure, with the unhelpful symptom
+    of xml:lang being reported as an undefined attribute.
+
+    The copy next to this file is the one published at that URL.
+-->
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <system systemId="http://www.w3.org/2001/xml.xsd" uri="xml.xsd"/>
+    <system systemId="https://www.w3.org/2001/xml.xsd" uri="xml.xsd"/>
+    <rewriteSystem systemIdStartString="http://www.w3.org/2001/" rewritePrefix="./"/>
+    <rewriteSystem systemIdStartString="https://www.w3.org/2001/" rewritePrefix="./"/>
+</catalog>

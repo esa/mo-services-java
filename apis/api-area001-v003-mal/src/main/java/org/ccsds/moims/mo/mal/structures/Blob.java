@@ -20,7 +20,10 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
@@ -81,6 +84,25 @@ public class Blob implements Attribute {
         urlValue = null;
     }
 
+    /**
+     * File constructor. The resource identified by the file should not be
+     * modified until the method ‘detach’ is called. If the resource identified
+     * by the file is modified after the constructor has been called then the
+     * Blob behaviour is unspecified.
+     *
+     * @param file Source file.
+     * @throws java.lang.IllegalArgumentException If the argument is null.
+     */
+    public Blob(final File file) throws java.lang.IllegalArgumentException {
+        if (file == null) {
+            throw new IllegalArgumentException("The file argument cannot be null!");
+        }
+        this.value = null;
+        this.length = 0;
+        this.uvalue = file.toURI().toString();
+        this.urlValue = null;
+    }
+
     @Override
     public Element createElement() {
         return new Blob();
@@ -135,6 +157,58 @@ public class Blob implements Attribute {
      */
     public int getLength() {
         return length;
+    }
+
+    /**
+     * Returns the content of this Blob as a stream, without loading the whole
+     * content into memory. For a URL-based Blob the stream is opened lazily over
+     * the designated resource; for a byte array based Blob the stream reads from
+     * the wrapped array. The returned stream should be closed by the caller.
+     *
+     * @return The Blob content as an input stream.
+     * @throws MALException if the stream could not be opened.
+     */
+    public InputStream getAsStream() throws MALException {
+        if (isURLBased()) {
+            try {
+                return new URL(uvalue).openStream();
+            } catch (IOException ex) {
+                throw new MALException("The Blob URL stream could not be opened: " + uvalue, ex);
+            }
+        }
+
+        return new ByteArrayInputStream((value != null) ? value : new byte[0]);
+    }
+
+    /**
+     * Returns the length of the Blob content as a {@code long}, allowing lengths
+     * larger than {@link Integer#MAX_VALUE}. For a URL-based Blob the length is
+     * that of the designated resource; for a byte array based Blob it is the
+     * length of the wrapped array.
+     *
+     * @return The length of the Blob content in bytes.
+     * @throws MALException if the length could not be determined.
+     */
+    public long getLengthLong() throws MALException {
+        if (isURLBased()) {
+            try {
+                final URL url = new URL(uvalue);
+
+                if ("file".equals(url.getProtocol())) {
+                    return new File(url.toURI()).length();
+                }
+
+                final long len = url.openConnection().getContentLengthLong();
+                if (len < 0) {
+                    throw new MALException("The Blob URL length is unknown: " + uvalue);
+                }
+                return len;
+            } catch (IOException | java.net.URISyntaxException ex) {
+                throw new MALException("The Blob URL length could not be determined: " + uvalue, ex);
+            }
+        }
+
+        return (value != null) ? value.length : 0;
     }
 
     /**

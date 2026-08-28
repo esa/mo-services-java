@@ -4,6 +4,17 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 14.2 (28 August 2026)
+* Adds the api-generator-lib, which will replace the three existing generators at v15.0
+* Fixes the TCP/IP transport handing back closed sockets from the client pool
+* Skips the address lookup for PUBLISH error messages (fixes #9)
+* Drops the subscriptions of a consumer as soon as it disconnects
+* Extracts the endpoint registry and the URI addressing scheme out of Transport
+* Multiple fixes to the HTTP transport and re-enables the MAL testbed over HTTP
+* Encodes the Blob length as 64-bit so that Blobs above 2 GB work
+* Creates the Elements of an Area on demand instead of holding one of each (Java optimized)
+* Adds the JDK 25 build and testbed jobs
+
 ### Version 14.1 (18 July 2026)
 * Vendors the W3C XML Schema files instead of downloading them at build time (removes the build's dependency on network access to w3.org)
 * Fixes a race condition and silent failures in the LazyMessageBody decoding

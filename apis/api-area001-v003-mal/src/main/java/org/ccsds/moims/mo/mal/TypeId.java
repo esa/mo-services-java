@@ -41,6 +41,56 @@ public class TypeId {
     private final static long MASK_08 = 0xFF;
     private final static long MASK_16 = 0xFFFF;
     private final static long MASK_24 = 0xFFFFFF;
+    /**
+     * The bit that carries the sign of the type number, which is set on the
+     * type numbers of the lists.
+     */
+    private final static int TYPE_NUMBER_SIGN_BIT = 0x800000;
+
+    /**
+     * Reads the area number out of a Type Id.
+     *
+     * @param typeId The Type Id.
+     * @return The area number.
+     */
+    public static int areaNumberOf(final long typeId) {
+        return (int) ((typeId >> AREA_BIT_SHIFT) & MASK_16);
+    }
+
+    /**
+     * Reads the area version out of a Type Id.
+     *
+     * @param typeId The Type Id.
+     * @return The area version.
+     */
+    public static int areaVersionOf(final long typeId) {
+        return (int) ((typeId >> VERSION_BIT_SHIFT) & MASK_08);
+    }
+
+    /**
+     * Reads the service number out of a Type Id.
+     *
+     * @param typeId The Type Id.
+     * @return The service number.
+     */
+    public static int serviceNumberOf(final long typeId) {
+        return (int) ((typeId >> SERVICE_BIT_SHIFT) & MASK_16);
+    }
+
+    /**
+     * Reads the type number out of a Type Id, over the full width of the field
+     * that carries it. The type number of a list is the negative of the type
+     * number of the type it holds.
+     *
+     * @param typeId The Type Id.
+     * @return The type number.
+     */
+    public static int typeNumberOf(final long typeId) {
+        final int typeNumber = (int) (typeId & MASK_24);
+
+        return ((typeNumber & TYPE_NUMBER_SIGN_BIT) != 0)
+                ? typeNumber - (TYPE_NUMBER_SIGN_BIT << 1) : typeNumber;
+    }
 
     /**
      * Area number (defined as UShort by the MAL).
@@ -106,9 +156,9 @@ public class TypeId {
 
     private void calculateIfNeeded() {
         if (areaNumber == null) {
-            areaNumber = (short) ((typeId >> AREA_BIT_SHIFT) & MASK_16);
-            areaVersion = (short) ((typeId >> VERSION_BIT_SHIFT) & MASK_08);
-            serviceNumber = (short) ((typeId >> SERVICE_BIT_SHIFT) & MASK_16);
+            areaNumber = (short) areaNumberOf(typeId);
+            areaVersion = (short) areaVersionOf(typeId);
+            serviceNumber = (short) serviceNumberOf(typeId);
             sfp = (short) (typeId & MASK_24);
         }
     }
