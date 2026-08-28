@@ -19,14 +19,14 @@
     <parent>
         <groupId>int.esa.ccsds.mo</groupId>
         <artifactId>parent</artifactId>
-        <version>14.2</version>
+        <version>15.0-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>testbed-api-generator</artifactId>
     <packaging>jar</packaging>
-    <version>14.2</version>
+    <version>15.0-SNAPSHOT</version>
     <name>CCSDS MOIMS MO Testbed API Generator</name>
     <description>Holds the api-generator-lib tests that read a corpus: the golden trees, the
         corpus walks and the round trips. They live here rather than in the library so that
