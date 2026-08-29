@@ -1,53 +1,39 @@
 package org.ccsds.moims.mo.mal.helpertools.helpers;
 
 import static org.junit.Assert.assertEquals;
-
 import java.sql.Timestamp;
-
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.junit.Test;
-
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperTime;
 
 public class TestHelperTime {
 
     private final long MIO = 1000000L;
 
-    /* Tests for time2readableString */
+    /* Tests for toReadableString */
     @Test
     public void testTime2ReadableString1() {
         FineTime stamp = new FineTime(0L);
-        String res = HelperTime.time2readableString(stamp);
+        String res = stamp.toReadableString();
         assertEquals("Wrong result for epoch begin", "1970-01-01 00:00:00.000", res);
     }
 
     @Test
     public void testTime2ReadableString2() {
         FineTime stamp = new FineTime(1557314923000L * MIO);
-        String res = HelperTime.time2readableString(stamp);
+        String res = stamp.toReadableString();
         assertEquals("Wrong result for valid fine time", "2019-05-08 11:28:43.000", res);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testTime2ReadableString3() {
-        HelperTime.time2readableString((FineTime) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testTime2ReadableString4() {
-        HelperTime.time2readableString((Time) null);
     }
 
     @Test
     public void testTime2ReadableString5() {
-        String res = HelperTime.time2readableString(new Time(0L));
+        String res = new Time(0L).toReadableString();
         assertEquals("Wrong result for epoch begin", "1970-01-01 00:00:00.000", res);
     }
 
     @Test
     public void testTime2ReadableString6() {
-        String res = HelperTime.time2readableString(new Time(1557317072000L));
+        String res = new Time(1557317072000L).toReadableString();
         assertEquals("Wrong result for valid time", "2019-05-08 12:04:32.000", res);
     }
 
