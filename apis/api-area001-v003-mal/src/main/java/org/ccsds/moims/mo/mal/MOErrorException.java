@@ -64,22 +64,6 @@ public class MOErrorException extends Exception implements Serializable, MALErro
     }
 
     /**
-     * Creates a standard error object with the supplied error number and extra
-     * information. Deprecated because the constructor with the errorName field
-     * shall be used in the future.
-     *
-     * @param errorNumber The MAL error number, must not be null.
-     * @param extraInformation Any associated extra information, may be null.
-     * @throws java.lang.IllegalArgumentException Thrown if supplied error
-     * number is null.
-     */
-    @Deprecated
-    public MOErrorException(final UInteger errorNumber,
-            final Object extraInformation) throws IllegalArgumentException {
-        this("????", errorNumber, extraInformation);
-    }
-
-    /**
      * Returns the supplied error number.
      *
      * @return The error number.

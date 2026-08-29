@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestInheritanceSkeleton;
@@ -112,13 +112,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishAcceptance(true, interaction);
             if ((_String.contains(ACK_ERROR))) {
                 publishExecution(false, interaction, 1, 1);
-                throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+                throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
             } else {
                 publishExecution(!_String.contains(RESPONSE_ERROR), interaction, 1, 1);
             }
         } else {
             publishAcceptance(false, interaction);
-            throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+            throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
         }
         return _String;
     }
@@ -129,13 +129,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             publishAcceptance(true, interaction);
             if ((_String.contains(ACK_ERROR))) {
                 publishExecution(false, interaction, 1, 1);
-                throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+                throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
             } else {
                 publishExecution(true, interaction, 1, 1);
             }
         } else {
             publishAcceptance(false, interaction);
-            throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+            throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
         }
     }
 
@@ -147,12 +147,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 publishExecution(false, interaction.getInteraction(), 1, 2);
             }
             // TBD error number to be specified
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else if ((_String.contains(ACK_ERROR))) {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(false, interaction.getInteraction(), 1, 2);
             // TBD error number to be specified
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(true, interaction.getInteraction(), 1, 2);
@@ -167,7 +167,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             } else {
                 // TBD error number to be specified
                 publishExecution(false, interaction.getInteraction(), 2, 2);
-                interaction.sendError(new MOErrorException(new UInteger(0), null));
+                interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
             }
         }
     }
@@ -183,12 +183,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             if (_String.contains(ACK_ERROR)) {
                 publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
             }
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else if ((_String.contains(ACK_ERROR))) {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
             // TBD error number to be specified
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else {
             publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
             publishAcceptance(true, interaction.getInteraction());
@@ -202,7 +202,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 if (_String.get(i).contains(UPDATE_ERROR)) {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send update ERR");
                     publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-                    interaction.sendUpdateError(new MOErrorException(new UInteger(0), null));
+                    interaction.sendUpdateError(new InternalException(new Union("Error triggered by the test procedure")));
                     bUpdateErr = true;
                 } else if (_String.get(i).contains(UPDATE)) {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send UPDATE");
@@ -223,7 +223,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response ERR");
                     publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
                     // TBD error number to be specified
-                    interaction.sendError(new MOErrorException(new UInteger(0), null));
+                    interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                 }
             }
         }

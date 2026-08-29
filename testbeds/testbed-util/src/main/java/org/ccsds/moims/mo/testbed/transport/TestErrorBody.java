@@ -40,6 +40,12 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 public class TestErrorBody implements MALErrorBody {
 
+    /**
+     * The name given to an error whose number is not declared by a loaded
+     * service, so that the name cannot be resolved.
+     */
+    private static final String UNRESOLVED_ERROR_NAME = "UNRESOLVED";
+
     private final UInteger errorNumber;
 
     private final Object extraInformation;
@@ -72,7 +78,7 @@ public class TestErrorBody implements MALErrorBody {
 
     @Override
     public MOErrorException getError() throws MALException {
-        return new MOErrorException(errorNumber, extraInformation);
+        return new MOErrorException(UNRESOLVED_ERROR_NAME, errorNumber, extraInformation);
     }
 
     @Override

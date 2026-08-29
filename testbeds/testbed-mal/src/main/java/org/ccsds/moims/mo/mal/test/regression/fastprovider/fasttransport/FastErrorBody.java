@@ -30,6 +30,12 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
  */
 public class FastErrorBody extends FastBody implements MALErrorBody {
 
+    /**
+     * The name given to an error whose number is not declared by a loaded
+     * service, so that the name cannot be resolved.
+     */
+    private static final String UNRESOLVED_ERROR_NAME = "UNRESOLVED";
+
     public FastErrorBody(Object[] body) {
         super(body);
     }
@@ -37,9 +43,9 @@ public class FastErrorBody extends FastBody implements MALErrorBody {
     @Override
     public MOErrorException getError() throws MALException {
         if (body.length > 1) {
-            return new MOErrorException((UInteger) body[0], body[1]);
+            return new MOErrorException(UNRESOLVED_ERROR_NAME, (UInteger) body[0], body[1]);
         } else {
-            return new MOErrorException((UInteger) body[0], null);
+            return new MOErrorException(UNRESOLVED_ERROR_NAME, (UInteger) body[0], null);
         }
     }
 }

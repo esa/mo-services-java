@@ -93,12 +93,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     // do nothing, should just ack for us
                     break;
                 case 2:
-                    throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
+                    throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
                 case 3:
                     // do nothing, should just ack for us
                     break;
                 case 4:
-                    throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
+                    throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
                 default:
                     throw new MALInteractionException(new InternalException(
                             new Union("Unexpected procedure number of " + transId)));
@@ -123,12 +123,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         // do nothing, should just ack for us
                         break;
                     case 2:
-                        throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
+                        throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
                     case 3:
                         // do nothing, should just ack for us
                         break;
                     case 4:
-                        throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
+                        throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
                     default:
                         throw new MALInteractionException(new InternalException(
                                 new Union("Unexpected procedure number of " + transId)));
@@ -181,10 +181,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 2:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(Configuration.MAL_PERIOD_LONG);
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 3:
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 4:
                         interaction.sendAcknowledgement("");
@@ -194,10 +194,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 5:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(Configuration.PERIOD);
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 6:
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
@@ -268,10 +268,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 2:
                         interaction.sendAcknowledgement("");
                         Thread.sleep(Configuration.MAL_PERIOD_SHORT);
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 3:
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 4:
                         // Needs the sleep or will have issues with the http transport
@@ -288,7 +288,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(Configuration.MAL_PERIOD_SHORT);
-                        interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendUpdateError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 6:
                         // Needs the sleep or will have issues with the http transport
@@ -297,7 +297,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(Configuration.MAL_PERIOD_LONG);
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 7:
                         interaction.sendAcknowledgement("");
@@ -308,7 +308,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         // Needs the sleep or will have issues with the http transport
                         interaction.sendAcknowledgement("");
                         Thread.sleep(Configuration.MAL_PERIOD_LONG);
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 9:
                         interaction.sendAcknowledgement("");
@@ -336,7 +336,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(Configuration.MAL_PERIOD_SHORT);
-                        interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendUpdateError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 13:
                         interaction.sendAcknowledgement("");
@@ -344,7 +344,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(Configuration.MAL_PERIOD_SHORT);
-                        interaction.sendUpdateError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendUpdateError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 14:
                         interaction.sendAcknowledgement("");
@@ -352,10 +352,10 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         interaction.sendUpdate(new Integer(1));
                         interaction.sendUpdate(new Integer(2));
                         Thread.sleep(Configuration.MAL_PERIOD_LONG);
-                        interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                        interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                         break;
                     case 15:
-                      interaction.sendError(new MOErrorException(new UInteger(999), new Union("No error")));
+                      interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                       // the interaction has no final message to match the test case
                       break;
                     default:

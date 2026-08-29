@@ -40,6 +40,12 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
     private static final long serialVersionUID = 222222222222225L;
 
     /**
+     * The name given to an error whose number is not declared by the service of
+     * the message that carried it, so that the name cannot be resolved.
+     */
+    private static final String UNRESOLVED_ERROR_NAME = "UNRESOLVED";
+
+    /**
      * Constructor.
      *
      * @param ctx The encoding context to use.
@@ -82,6 +88,9 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
             Logger.getLogger(ErrorBody.class.getName()).log(Level.SEVERE,
                     "The serviceInfo for this message was not found!", ex);
         }
-        return new MOErrorException(errorNumber, extraInfo);
+        Logger.getLogger(ErrorBody.class.getName()).log(Level.WARNING,
+                "The error number {0} is not declared by the service of this message, "
+                + "so its name could not be resolved.", errorNumber);
+        return new MOErrorException(UNRESOLVED_ERROR_NAME, errorNumber, extraInfo);
     }
 }
