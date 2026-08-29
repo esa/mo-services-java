@@ -20,13 +20,15 @@
  */
 package org.ccsds.moims.mo.mal.structures;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import org.ccsds.moims.mo.mal.MALDecoder;
 import org.ccsds.moims.mo.mal.MALEncoder;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.TypeId;
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperTime;
 
 /**
  * Class representing MAL Time type.
@@ -111,7 +113,10 @@ public class Time implements Attribute {
     }
 
     public String toReadableString() {
-        return HelperTime.time2readableString(this);
+        Date date = new Date(this.getValue());
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return format.format(date);
     }
 
     public static Time generateTime(int year, int month, int day) {

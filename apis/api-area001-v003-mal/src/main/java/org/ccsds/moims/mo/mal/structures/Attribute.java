@@ -276,6 +276,11 @@ public interface Attribute extends Element {
      * ONE_MILLION is used by the Time and FineTime classes.
      */
     public final static long ONE_MILLION = 1000000;
+    /**
+     * The format in which the Time and FineTime classes read and write a
+     * timestamp as text.
+     */
+    public final static String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * Converts a Java data type into a MAL data type if possible

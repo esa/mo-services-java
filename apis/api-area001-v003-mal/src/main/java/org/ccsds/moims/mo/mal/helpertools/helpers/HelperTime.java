@@ -23,9 +23,9 @@ package org.ccsds.moims.mo.mal.helpertools.helpers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.FineTime;
 import org.ccsds.moims.mo.mal.structures.Time;
 
@@ -33,9 +33,6 @@ import org.ccsds.moims.mo.mal.structures.Time;
  * A Helper class to simplify the conversions related with time.
  */
 public class HelperTime {
-
-    private final static String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    private final static long ONE_MILLION = 1000000;
 
     /**
      * Converts a FineTime MAL data type timestamp into a readable string
@@ -50,10 +47,7 @@ public class HelperTime {
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp must not be null.");
         }
-        Date date = new Date(timestamp.getValue() / ONE_MILLION);
-        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return format.format(date);
+        return timestamp.toReadableString();
     }
 
     /**
@@ -69,21 +63,18 @@ public class HelperTime {
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp must not be null.");
         }
-        Date date = new Date(timestamp.getValue());
-        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return format.format(date);
+        return timestamp.toReadableString();
     }
 
     /**
      * Converts a readable time string to a MAL FineTime data type.
      *
      * @param time The readable time string. Expected format is
-     * {@value #DATE_PATTERN}.
+     * {@value Attribute#DATE_PATTERN}.
      * @return The MAL FineTime object or null if ParseException occurred
      */
     public static FineTime readableString2FineTime(String time) {
-        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        SimpleDateFormat format = new SimpleDateFormat(Attribute.DATE_PATTERN);
         Date date;
         try {
             date = format.parse(time);
@@ -92,18 +83,18 @@ public class HelperTime {
                     String.format("Error while parsing %s", time), e);
             return null;
         }
-        return new FineTime(date.getTime() * ONE_MILLION);
+        return new FineTime(date.getTime() * Attribute.ONE_MILLION);
     }
 
     /**
      * Converts a readable time string to a MAL Time data type.
      *
      * @param time The readable time string. Expected format is
-     * {@value #DATE_PATTERN}.
+     * {@value Attribute#DATE_PATTERN}.
      * @return The MAL Time object or null if a ParseException occurred
      */
     public static Time readableString2Time(String time) {
-        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        SimpleDateFormat format = new SimpleDateFormat(Attribute.DATE_PATTERN);
         Date date;
         try {
             date = format.parse(time);
@@ -116,7 +107,7 @@ public class HelperTime {
     }
 
     private static long fromMilliToNano(long milli) {
-        return (milli * ONE_MILLION);
+        return (milli * Attribute.ONE_MILLION);
     }
 
     /**
