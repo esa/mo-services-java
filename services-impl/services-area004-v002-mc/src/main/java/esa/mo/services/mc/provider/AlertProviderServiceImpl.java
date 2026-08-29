@@ -26,9 +26,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingleton;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -306,8 +305,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
 
         if (!unknownIndices.isEmpty()) {
             UIntegerList extraInfo = toUIntegerList(unknownIndices);
-            throw new MALInteractionException(
-                    new MOErrorException("Unknown", MALHelper.UNKNOWN_ERROR_NUMBER, extraInfo));
+            throw new MALInteractionException(new UnknownException(extraInfo));
         }
 
         return matchedIndices;

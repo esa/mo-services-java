@@ -32,6 +32,7 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Hashtable;
 import java.util.Map;
@@ -463,7 +464,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         TestEndPoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
         MALMessage notifyMessage = ep.createTestMessage(expectedMonitorNotifyErrorHeader,
-                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
+                new InternalException(), new Hashtable());
 
         // Inject the Notify error message
         ep.receive(notifyMessage);

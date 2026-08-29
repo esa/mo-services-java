@@ -33,6 +33,7 @@
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
 import org.ccsds.moims.mo.mal.*;
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.test.patterns.IPTestHandlerImpl;
@@ -318,7 +319,7 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
 
     @Override
     public void testMultipleNotify(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
+        throw new MALInteractionException(new InternalException(
                 new Union("The transmit multiple is not supported with a shared broker")));
     }
 

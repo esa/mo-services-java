@@ -20,10 +20,21 @@
  */
 package org.ccsds.moims.mo.mal.test.errors;
 
+import org.ccsds.moims.mo.mal.BadEncodingException;
+import org.ccsds.moims.mo.mal.DeliveryDelayedException;
+import org.ccsds.moims.mo.mal.DeliveryFailedException;
+import org.ccsds.moims.mo.mal.DeliveryTimedoutException;
+import org.ccsds.moims.mo.mal.DestinationLostException;
+import org.ccsds.moims.mo.mal.DestinationTransientException;
+import org.ccsds.moims.mo.mal.DestinationUnknownException;
+import org.ccsds.moims.mo.mal.EncryptionFailException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.UnsupportedAreaException;
+import org.ccsds.moims.mo.mal.UnsupportedAreaVersionException;
+import org.ccsds.moims.mo.mal.UnsupportedOperationException;
+import org.ccsds.moims.mo.mal.UnsupportedServiceException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.malprototype.errortest.provider.ErrorTestInheritanceSkeleton;
@@ -44,67 +55,54 @@ public class ErrorTestHandlerImpl extends ErrorTestInheritanceSkeleton {
     }
 
     public Element testBadEncoding(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.BAD_ENCODING_ERROR_NUMBER, null));
+        throw new MALInteractionException(new BadEncodingException());
     }
 
     public Element testDeliveryDelayed(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.DELIVERY_DELAYED_ERROR_NUMBER, null));
+        throw new MALInteractionException(new DeliveryDelayedException());
     }
 
     public Element testDeliveryFailed(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.DELIVERY_FAILED_ERROR_NUMBER, null));
+        throw new MALInteractionException(new DeliveryFailedException());
     }
 
     public Element testDeliveryTimedout(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.DELIVERY_TIMEDOUT_ERROR_NUMBER, null));
+        throw new MALInteractionException(new DeliveryTimedoutException());
     }
 
     public Element testDestinationLost(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.DESTINATION_LOST_ERROR_NUMBER, null));
+        throw new MALInteractionException(new DestinationLostException());
     }
 
     public Element testDestinationTransient(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.DESTINATION_TRANSIENT_ERROR_NUMBER, null));
+        throw new MALInteractionException(new DestinationTransientException());
     }
 
     public Element testDestinationUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.DESTINATION_UNKNOWN_ERROR_NUMBER, null));
+        throw new MALInteractionException(new DestinationUnknownException());
     }
 
     public Element testEncryptionFail(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.ENCRYPTION_FAIL_ERROR_NUMBER, null));
+        throw new MALInteractionException(new EncryptionFailException());
     }
 
     public Element testUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.UNKNOWN_ERROR_NUMBER, null));
+        throw new MALInteractionException(new UnknownException());
     }
 
     public Element testUnsupportedArea(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.UNSUPPORTED_AREA_ERROR_NUMBER, null));
+        throw new MALInteractionException(new UnsupportedAreaException());
     }
 
     public Element testUnsupportedOperation(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.UNSUPPORTED_OPERATION_ERROR_NUMBER, null));
+        throw new MALInteractionException(new UnsupportedOperationException());
     }
 
     public Element testUnsupportedAreaVersion(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.UNSUPPORTED_AREA_VERSION_ERROR_NUMBER, null));
+        throw new MALInteractionException(new UnsupportedAreaVersionException());
     }
 
     public Element testUnsupportedService(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(
-                MALHelper.UNSUPPORTED_SERVICE_ERROR_NUMBER, null));
+        throw new MALInteractionException(new UnsupportedServiceException());
     }
 }

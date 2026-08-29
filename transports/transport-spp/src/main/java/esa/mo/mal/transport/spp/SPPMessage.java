@@ -23,6 +23,7 @@ package esa.mo.mal.transport.spp;
 import esa.mo.mal.encoder.binary.fixed.FixedBinaryElementOutputStream;
 import esa.mo.mal.transport.gen.GENMessage;
 import esa.mo.mal.transport.gen.body.LazyMessageBody;
+import org.ccsds.moims.mo.mal.InternalException;
 import static esa.mo.mal.transport.spp.SPPBaseTransport.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,9 +32,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.encoding.MALElementOutputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -141,7 +140,7 @@ public class SPPMessage extends GENMessage {
                             + " is too small for encoded MAL Message header or size "
                             + (hdrBuf.length - 6),
                             new MALInteractionException(
-                                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null)));
+                                    new InternalException()));
                 }
 
                 // segment data

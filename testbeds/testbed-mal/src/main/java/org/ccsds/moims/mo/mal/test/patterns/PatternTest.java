@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.ccsds.moims.mo.mal.*;
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.test.patterns.pubsub.HeaderTestProcedure;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
@@ -626,7 +627,7 @@ public class PatternTest {
         MALMessage brokenMessage;
         if (isError) {
             brokenMessage = ep.createTestMessage(brokenHeader,
-                    new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new HashMap());
+                    new InternalException(), new HashMap());
         } else {
             brokenMessage = ep.createTestMessage(brokenHeader, (Element) null, new HashMap());
         }

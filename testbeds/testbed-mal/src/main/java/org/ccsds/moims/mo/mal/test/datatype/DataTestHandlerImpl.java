@@ -27,10 +27,11 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.*;
-import org.ccsds.moims.mo.malprototype.MALPrototypeHelper;
+import org.ccsds.moims.mo.malprototype.DataErrorException;
+import org.ccsds.moims.mo.malprototype.TestErrorException;
+import org.ccsds.moims.mo.malprototype.TestObjectExistsException;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
@@ -257,7 +258,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         if (null != testValue) {
             if (!testValue.equals(rcvdValue)) {
                 // decoding must have failed
-                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new DataErrorException(
                         new Union("Failed comparison in provider of " + exString
                                 + ", type " + testValue.getClass() + ",\nexpected "
                                 + String.valueOf(testValue) + "\n received "
@@ -266,7 +267,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else {
             if (rcvdValue != null) {
                 // decoding must have failed
-                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new DataErrorException(
                         new Union("Failed comparison in provider of " + exString
                                 + ", type should be null but is " + rcvdValue.getClass())));
             }
@@ -331,7 +332,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     @Override
     public ObjectRef<Auto> createObject(Auto auto, MALInteraction interaction) throws MALInteractionException, MALException {
         if (auto == null) {
-            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.TEST_ERROR_ERROR_NUMBER,
+            throw new MALInteractionException(new TestErrorException(
                     new Union("Unexpected exception - null object value.")));
         }
         // MO Objects have a unique and an immutable identity
@@ -351,16 +352,14 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         long versionUpdate = auto.getObjectIdentity().getVersion().getValue();
         if (lastAuto == null) {
             if (versionUpdate != 1) {
-                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
-                        new Union("Wrong version for new object.")));
+                throw new MALInteractionException(new DataErrorException(new Union("Wrong version for new object.")));
             }
         } else {
             versionUpdate -= lastAuto.getObjectIdentity().getVersion().getValue();
             if (versionUpdate == 0) {
-                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.TEST_OBJECT_EXISTS_ERROR_NUMBER,
-                        new Union("Object already exists.")));
+                throw new MALInteractionException(new TestObjectExistsException(new Union("Object already exists.")));
             } else if (versionUpdate != 1) {
-                throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new DataErrorException(
                         new Union("Wrong version for updated object.")));
             }
         }
@@ -393,8 +392,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         }
 
         if (auto != null && !update.booleanValue()) {
-            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
-                    new Union("Object already exists.")));
+            throw new MALInteractionException(new DataErrorException(new Union("Object already exists.")));
         }
         ObjectIdentity autoId = new ObjectIdentity(
                 autoId0.getDomain(),
@@ -406,8 +404,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else if (Porsche.SHORT_FORM.equals(autoType)) {
             auto = new Porsche(autoId, engine, chassis, windows);
         } else {
-            throw new MALInteractionException(new MOErrorException(MALPrototypeHelper.DATA_ERROR_ERROR_NUMBER,
-                    new Union("Unexpected Auto value.")));
+            throw new MALInteractionException(new DataErrorException(new Union("Unexpected Auto value.")));
         }
 
         return createObject(auto, interaction);

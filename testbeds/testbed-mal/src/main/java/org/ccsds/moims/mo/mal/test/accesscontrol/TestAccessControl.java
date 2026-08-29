@@ -22,8 +22,7 @@ package org.ccsds.moims.mo.mal.test.accesscontrol;
 
 import java.util.Vector;
 import org.ccsds.moims.mo.mal.AuthenticationFailedException;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.AuthorisationFailException;
 import org.ccsds.moims.mo.mal.accesscontrol.MALAccessControl;
 import org.ccsds.moims.mo.mal.accesscontrol.MALCheckErrorException;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -80,14 +79,14 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
                     && msg.getHeader().getInteractionStage().getValue() == 1) {
                 if (msg.getHeader().getOperation().getValue() == ErrorTestServiceInfo._TESTAUTHENTICATIONFAILURE_OP_NUMBER) {
                     logMessage("Rejecting operation " + ErrorTestServiceInfo.TESTAUTHENTICATIONFAILURE_OP.getName().getValue());
-                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,
+                    throw new MALCheckErrorException(new AuthenticationFailedException(
                             new Union(errorPrefix + "Rejecting operation " + ErrorTestServiceInfo.TESTAUTHENTICATIONFAILURE_OP.getName().getValue())),
                             msg.getQoSProperties());
                 }
 
                 if (msg.getHeader().getOperation().getValue() == ErrorTestServiceInfo._TESTAUTHORIZATIONFAILURE_OP_NUMBER) {
                     logMessage("Rejecting operation " + ErrorTestServiceInfo.TESTAUTHORIZATIONFAILURE_OP.getName().getValue());
-                    throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHORISATION_FAIL_ERROR_NUMBER,
+                    throw new MALCheckErrorException(new AuthorisationFailException(
                             new Union(errorPrefix + "Rejecting operation " + ErrorTestServiceInfo.TESTAUTHORIZATIONFAILURE_OP.getName().getValue())),
                             msg.getQoSProperties());
                 }
@@ -100,7 +99,7 @@ public class TestAccessControl extends LoggingBase implements MALAccessControl {
             try {
                 authId = msg.getHeader().getAuthenticationId().getValue();
             } catch (Exception exc) {
-                throw new MALCheckErrorException(new MOErrorException(MALHelper.AUTHENTICATION_FAILED_ERROR_NUMBER,
+                throw new MALCheckErrorException(new AuthenticationFailedException(
                         new Union("Could not get the authentication id: " + exc)),
                         msg.getQoSProperties());
             }

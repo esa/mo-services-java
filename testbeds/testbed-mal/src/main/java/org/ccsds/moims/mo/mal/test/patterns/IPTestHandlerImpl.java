@@ -23,6 +23,7 @@ package org.ccsds.moims.mo.mal.test.patterns;
 import java.util.HashMap;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.mal.*;
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.test.util.AssertionHelper;
@@ -99,7 +100,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                 case 4:
                     throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
                 default:
-                    throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
+                    throw new MALInteractionException(new InternalException(
                             new Union("Unexpected procedure number of " + transId)));
             }
         }
@@ -129,7 +130,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     case 4:
                         throw new MALInteractionException(new MOErrorException(new UInteger(999), new Union("No error")));
                     default:
-                        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
+                        throw new MALInteractionException(new InternalException(
                                 new Union("Unexpected procedure number of " + transId)));
                 }
             } catch (NumberFormatException ex) {
@@ -208,7 +209,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         // the interaction has no final message to match the test case
                         break;
                     default:
-                        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
+                        throw new MALInteractionException(new InternalException(
                                 new Union("Unexpected procedure number of " + transId)));
                 }
             } catch (Exception ex) {
@@ -358,7 +359,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                       // the interaction has no final message to match the test case
                       break;
                     default:
-                        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
+                        throw new MALInteractionException(new InternalException(
                                 new Union("Unexpected procedure number of " + transId)));
                 }
             } catch (Exception ex) {

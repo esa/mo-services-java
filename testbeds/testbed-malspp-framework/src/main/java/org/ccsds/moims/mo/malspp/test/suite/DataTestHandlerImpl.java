@@ -21,7 +21,6 @@ package org.ccsds.moims.mo.malspp.test.suite;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
@@ -45,7 +44,7 @@ import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.UShort;
 import org.ccsds.moims.mo.mal.structures.Union;
-import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
+import org.ccsds.moims.mo.malprototype.DataErrorException;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse;
@@ -81,13 +80,13 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         if (null != testValue) {
             if (!testValue.equals(rcvdValue)) {
                 // decoding must have failed
-                throw new MALInteractionException(new MOErrorException(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new DataErrorException(
                         new Union("Failed comparison in provider of " + exString + ", type " + testValue.getClass() + ", expected " + String.valueOf(testValue) + " but received " + String.valueOf(rcvdValue))));
             }
         } else {
             if (null != rcvdValue) {
                 // decoding must have failed
-                throw new MALInteractionException(new MOErrorException(DataTestHelper.DATA_ERROR_ERROR_NUMBER,
+                throw new MALInteractionException(new DataErrorException(
                         new Union("Failed comparison in provider of " + exString + ", type should be null but is " + rcvdValue.getClass())));
             }
         }

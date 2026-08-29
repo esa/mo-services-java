@@ -19,10 +19,9 @@
  */
 package org.ccsds.moims.mo.malspp.test.suite;
 
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.IntegerList;
@@ -135,7 +134,7 @@ public class IPSegmentationTestHandlerImpl extends IPTestInheritanceSkeleton {
                 throw new Exception("Not a valid procedure name.");
             }
         } catch (Exception ex) {
-            throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, ex.toString()));
+            throw new MALInteractionException(new InternalException(ex.toString()));
         }
     }
 
@@ -154,7 +153,7 @@ public class IPSegmentationTestHandlerImpl extends IPTestInheritanceSkeleton {
         } else if (identifier.equals("B")) {
             progressB = interaction;
         } else {
-            interaction.sendError(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, "Invalid identifier " + identifier));
+            interaction.sendError(new InternalException("Invalid identifier " + identifier));
         }
         interaction.sendAcknowledgement(null, null);
     }
