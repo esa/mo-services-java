@@ -380,22 +380,26 @@ public abstract class BaseBinaryDecoder extends Decoder {
                     }
 
                     try {
-                        // read into the empty space of the buffer
-                        LOGGER.log(Level.FINER, "Reading from input stream: {0}",
-                                (existingBufferLength - this.contentLength));
-                        final int read = inputStream.read(this.buf, this.contentLength,
-                                existingBufferLength - this.contentLength);
-                        LOGGER.log(Level.FINER, "Read from input stream: {0}", read);
-                        if (read < 0) {
-                            throw new MALException(
-                                    "(1) Unable to read required amount from source stream: end of file.");
+                        // A stream read may return fewer bytes than requested.
+                        while (this.contentLength - this.offset < requiredLength) {
+                            LOGGER.log(Level.FINER, "Reading from input stream: {0}",
+                                    (existingBufferLength - this.contentLength));
+                            final int read = inputStream.read(this.buf, this.contentLength,
+                                    existingBufferLength - this.contentLength);
+                            LOGGER.log(Level.FINER, "Read from input stream: {0}", read);
+                            if (read <= 0) {
+                                throw new MALException(
+                                        "(1) Unable to read required amount from source stream: no more data.");
+                            }
+                            this.contentLength += read;
                         }
-                        this.contentLength += read;
                     } catch (IOException ex) {
                         throw new MALException(
                                 "(2) Unable to read required amount from source stream", ex);
                     }
                 }
+            } else if (requiredLength > this.contentLength - this.offset) {
+                throw new MALException("Unable to read required amount from source buffer");
             }
         }
 
