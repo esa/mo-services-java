@@ -24,13 +24,12 @@ The sets of matched StatisticFunction objects and ParameterIdentity objects shal
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested groups or parameters do not exist in the provider or statistic functions is not supported by the provider.
      * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of groups or ParameterIdentity objects.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList getStatistics(org.ccsds.moims.mo.mal.structures.LongList funcObjInstIds,
             Boolean isGroup,
             org.ccsds.moims.mo.com.structures.ObjectKeyList paramObjInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation resetEvaluation.
      * 
@@ -46,13 +45,12 @@ If an error is raised then no resetting of evaluations shall be made as a result
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of groups or StatisticLink objects.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested groups or functions is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList resetEvaluation(Boolean isStatLinkGroup,
             org.ccsds.moims.mo.mal.structures.LongList objInstIds,
             Boolean returnLatestEval,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation enableService.
      * 
@@ -60,20 +58,18 @@ If an error is raised then no resetting of evaluations shall be made as a result
 If enableService is set to FALSE then all evaluation of statistics shall be suspended and no statistics will be reported.
 If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void enableService(Boolean enableService,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation getServiceStatus.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
-    Boolean getServiceStatus(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+    Boolean getServiceStatus(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation enableReporting.
      * 
@@ -91,12 +87,11 @@ The provider should create and store a new StatisticLinkDefinition object in the
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested StatisticFunction or Group objects is unknown.
      * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of groups or StatisticLink objects.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void enableReporting(Boolean isGroupIds,
             org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation listParameterEvaluations.
      * 
@@ -107,11 +102,10 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList listParameterEvaluations(org.ccsds.moims.mo.mal.structures.LongList statObjInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation addParameterEvaluation.
      * 
@@ -130,11 +124,10 @@ The referenced parameter shall be sampled immediately and the sampling, reportin
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.com.InvalidException One or more of the supplied StatisticLink is either requesting an invalid sampling interval or invalid function for the request parameter.
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the requested StatisticLink objects references either an unknown StatisticFunction object or an unknown ParameterIdentity object.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameterEvaluation(org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequestList newDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation updateParameterEvaluation.
      * 
@@ -153,12 +146,11 @@ If any of the intervals are updated then the service shall reset the relevant ti
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the supplied StatisticLink object instance identifiers is unknown.
      * @throws org.ccsds.moims.mo.com.InvalidException One or more of the supplied object instance identifiers list contains either a NULL or '0' or is requesting an invalid sampling interval for the request parameter or the two supplied lists are not the same length.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.LongList updateParameterEvaluation(org.ccsds.moims.mo.mal.structures.LongList linkIds,
             org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkDetailsList newDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation removeParameterEvaluation.
      * 
@@ -171,11 +163,10 @@ If an error is raised then no StatisticLink objects shall be removed as a result
 If the operation succeeds then the provider shall not evaluate those parameter/function definition combinations for the deleted StatisticLink objects anymore.
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the supplied StatisticLink object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void removeParameterEvaluation(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 

@@ -179,7 +179,7 @@ public class ActionProviderServiceImpl extends ActionInheritanceSkeleton {
 
     @Override
     public void execute(ActionExecutionRequest executionRequest, MALInteraction interaction)
-            throws DuplicateException, InvalidException, RejectedException, UnknownException, MALInteractionException, MALException {
+            throws DuplicateException, InvalidException, RejectedException, UnknownException, MALException {
 
         java.lang.Long requestId = executionRequest.getRequestId();
         if (knownRequestIds.putIfAbsent(requestId, Boolean.TRUE) != null) {
@@ -204,7 +204,11 @@ public class ActionProviderServiceImpl extends ActionInheritanceSkeleton {
             throw new RejectedException(rejectReason);
         }
         
-        ((MALSubmit) interaction).sendAcknowledgement();
+        try {
+            ((MALSubmit) interaction).sendAcknowledgement();
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
 
         runExecutionAsync(executionRequest, definition);
     }

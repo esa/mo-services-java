@@ -41,11 +41,11 @@ import java.util.List;
  * operation, and nothing else.
  * <p>
  * The errors an operation declares are on the throws clause, so a provider raises them
- * directly and the layer above wraps them into an interaction exception.
+ * directly and the layer above wraps them into an interaction exception. Nothing else is:
+ * an error the operation does not declare cannot be raised, and a failure of the provider
+ * itself is a MALException, which the MAL returns as an internal error.
  */
 public final class ProviderHandlerWriter {
-
-    private static final String INTERACTION_EXCEPTION = JavaNaming.MAL + "MALInteractionException";
 
     private static final String MAL_EXCEPTION = JavaNaming.MAL + "MALException";
 
@@ -110,9 +110,7 @@ public final class ProviderHandlerWriter {
 
         method.argument(interactionTypeOf(service, operation), "interaction", INTERACTION_COMMENT);
         addErrors(method, model, operation);
-        method.throwing(INTERACTION_EXCEPTION,
-                "if there is a problem during the interaction as defined by the MAL specification.")
-                .throwing(MAL_EXCEPTION, "if there is an implementation exception")
+        method.throwing(MAL_EXCEPTION, "if there is an implementation exception")
                 .write(out);
     }
 

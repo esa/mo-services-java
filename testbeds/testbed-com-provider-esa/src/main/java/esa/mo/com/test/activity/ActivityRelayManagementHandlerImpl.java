@@ -43,12 +43,16 @@ public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementI
         this.testService = testService;
     }
 
-    public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException {
+    public void resetTest(MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityRelayManagementHandlerImpl:resetTest");
 
         for (Map.Entry<String, ActivityRelayNode> entry : relayMap.entrySet()) {
             ActivityRelayNode activityRelayNode = entry.getValue();
-            activityRelayNode.close();
+            try {
+                activityRelayNode.close();
+            } catch (MALInteractionException ex) {
+                throw new MALException(ex.getMessage(), ex);
+            }
         }
 
         relayMap.clear();

@@ -79,12 +79,12 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public void sendMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void testSubmit(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALInteractionException {
+    public void testSubmit(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALException {
         if (null != _IPTestDefinition) {
             int transId = Integer.parseInt(_IPTestDefinition.getProcedureName());
 
@@ -93,27 +93,26 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                     // do nothing, should just ack for us
                     break;
                 case 2:
-                    throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
+                    throw new MALException("Error triggered by the test procedure");
                 case 3:
                     // do nothing, should just ack for us
                     break;
                 case 4:
-                    throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
+                    throw new MALException("Error triggered by the test procedure");
                 default:
-                    throw new MALInteractionException(new InternalException(
-                            new Union("Unexpected procedure number of " + transId)));
+                    throw new MALException("Unexpected procedure number of " + transId);
             }
         }
     }
 
     @Override
     public void submitMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         testSubmit(_IPTestDefinition0, interaction);
     }
 
     @Override
-    public String request(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALInteractionException {
+    public String request(IPTestDefinition _IPTestDefinition, MALInteraction interaction) throws MALException {
         if (null != _IPTestDefinition) {
             try {
                 int transId = Integer.parseInt(_IPTestDefinition.getProcedureName());
@@ -123,15 +122,14 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         // do nothing, should just ack for us
                         break;
                     case 2:
-                        throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
+                        throw new MALException("Error triggered by the test procedure");
                     case 3:
                         // do nothing, should just ack for us
                         break;
                     case 4:
-                        throw new MALInteractionException(new InternalException(new Union("Error triggered by the test procedure")));
+                        throw new MALException("Error triggered by the test procedure");
                     default:
-                        throw new MALInteractionException(new InternalException(
-                                new Union("Unexpected procedure number of " + transId)));
+                        throw new MALException("Unexpected procedure number of " + transId);
                 }
             } catch (NumberFormatException ex) {
                 // ignore, this is expected for some interactions
@@ -143,19 +141,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public RequestMultiResponse requestMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         return new RequestMultiResponse(request(_IPTestDefinition0, interaction), null);
     }
 
     @Override
     public void testRequestEmptyBody(IPTestDefinition _IPTestDefinition,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         request(_IPTestDefinition, interaction);
     }
 
     @Override
     public void invoke(IPTestDefinition _IPTestDefinition, InvokeInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         if (_IPTestDefinition == null) {
             // this is the access control test then
             interaction.sendAcknowledgement(null);
@@ -209,8 +207,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                         // the interaction has no final message to match the test case
                         break;
                     default:
-                        throw new MALInteractionException(new InternalException(
-                                new Union("Unexpected procedure number of " + transId)));
+                        throw new MALException("Unexpected procedure number of " + transId);
                 }
             } catch (Exception ex) {
                 // do nothing
@@ -220,19 +217,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public void invokeMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
-            InvokeMultiInteraction interaction) throws MALInteractionException, MALException {
+            InvokeMultiInteraction interaction) throws MALException {
         invoke(_IPTestDefinition0, new InvokeMultiToInvokeInteractionMapper(interaction));
     }
 
     @Override
     public void testInvokeEmptyBody(IPTestDefinition _IPTestDefinition,
-            TestInvokeEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
+            TestInvokeEmptyBodyInteraction interaction) throws MALException {
         invoke(_IPTestDefinition, new InvokeEmptyToInvokeInteractionMapper(interaction));
     }
 
     @Override
     public void progress(IPTestDefinition _IPTestDefinition, ProgressInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         if (_IPTestDefinition == null) {
             // this is the access control test then
             interaction.sendAcknowledgement(null);
@@ -359,8 +356,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
                       // the interaction has no final message to match the test case
                       break;
                     default:
-                        throw new MALInteractionException(new InternalException(
-                                new Union("Unexpected procedure number of " + transId)));
+                        throw new MALException("Unexpected procedure number of " + transId);
                 }
             } catch (Exception ex) {
                 // do nothing
@@ -370,19 +366,19 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public void progressMulti(IPTestDefinition _IPTestDefinition0, Element _Element1,
-            ProgressMultiInteraction interaction) throws MALInteractionException, MALException {
+            ProgressMultiInteraction interaction) throws MALException {
         progress(_IPTestDefinition0, new ProgressMultiToProgressInteractionMapper(interaction));
     }
 
     @Override
     public void testProgressEmptyBody(IPTestDefinition _IPTestDefinition,
-            TestProgressEmptyBodyInteraction interaction) throws MALInteractionException, MALException {
+            TestProgressEmptyBodyInteraction interaction) throws MALException {
         progress(_IPTestDefinition, new ProgressEmptyToProgressInteractionMapper(interaction));
     }
 
     @Override
     public void publishRegister(TestPublishRegister publishRegister, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         LoggingBase.logMessage("IPTestHandlerImpl.publishRegister(" + publishRegister + ')');
         resetAssertions();
 
@@ -394,7 +390,11 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         MonitorPublishInteractionListener listener = defaultListener;
         listener.setKey(key);
 
-        doPublishRegister(publishRegister, listener);
+        try {
+            doPublishRegister(publishRegister, listener);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
         // The Publish Register header is checked with a shared broker
         // (see test.patterns.pubsub.IPTestHandlerWithSharedBroker)
     }
@@ -582,13 +582,17 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public void publishDeregister(TestPublishDeregister publishDeregister, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         LoggingBase.logMessage("IPTestHandlerImpl.publishDeregister(" + publishDeregister + ')');
         resetAssertions();
 
         MonitorPublishInteractionListener listener = defaultListener;
 
-        doPublishDeregister(publishDeregister, listener);
+        try {
+            doPublishDeregister(publishDeregister, listener);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
         // The Publish Deregister header is checked with a shared broker
         // (see test.patterns.pubsub.IPTestHandlerWithSharedBroker)
 
@@ -711,7 +715,7 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public void testMultipleNotify(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         resetAssertions();
 
         TransportInterceptor.instance().resetTransmitMultipleCount();
@@ -735,6 +739,8 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
             }
         } catch (MALTransmitMultipleErrorException exc) {
             expectedException = exc;
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
 
         try {
@@ -780,17 +786,17 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendAcknowledgement(String _String0) throws MALException {
                 return interaction.sendAcknowledgement(_String0, null);
         }
 
         @Override
-        public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendResponse(String _String0) throws MALException {
             return interaction.sendResponse(_String0, null);
         }
 
         @Override
-        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALException {
             return interaction.sendError(error);
         }
     }
@@ -806,17 +812,17 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendAcknowledgement(String _String0) throws MALException {
             return interaction.sendAcknowledgement();
         }
 
         @Override
-        public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendResponse(String _String0) throws MALException {
             return interaction.sendResponse();
         }
 
         @Override
-        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALException {
             return interaction.sendError(error);
         }
     }
@@ -832,27 +838,27 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendAcknowledgement(String _String0) throws MALException {
             return interaction.sendAcknowledgement(_String0, null);
         }
 
         @Override
-        public MALMessage sendUpdate(Integer _Integer0) throws MALInteractionException, MALException {
+        public MALMessage sendUpdate(Integer _Integer0) throws MALException {
             return interaction.sendUpdate(_Integer0, null);
         }
 
         @Override
-        public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendResponse(String _String0) throws MALException {
             return interaction.sendResponse(_String0, null);
         }
 
         @Override
-        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALException {
             return interaction.sendError(error);
         }
 
         @Override
-        public MALMessage sendUpdateError(MOErrorException error) throws MALInteractionException, MALException {
+        public MALMessage sendUpdateError(MOErrorException error) throws MALException {
             return interaction.sendUpdateError(error);
         }
     }
@@ -868,27 +874,27 @@ public class IPTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
 
         @Override
-        public MALMessage sendAcknowledgement(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendAcknowledgement(String _String0) throws MALException {
             return interaction.sendAcknowledgement();
         }
 
         @Override
-        public MALMessage sendUpdate(Integer _Integer0) throws MALInteractionException, MALException {
+        public MALMessage sendUpdate(Integer _Integer0) throws MALException {
             return interaction.sendUpdate();
         }
 
         @Override
-        public MALMessage sendResponse(String _String0) throws MALInteractionException, MALException {
+        public MALMessage sendResponse(String _String0) throws MALException {
             return interaction.sendResponse();
         }
 
         @Override
-        public MALMessage sendError(MOErrorException error) throws MALInteractionException, MALException {
+        public MALMessage sendError(MOErrorException error) throws MALException {
             return interaction.sendError(error);
         }
 
         @Override
-        public MALMessage sendUpdateError(MOErrorException error) throws MALInteractionException, MALException {
+        public MALMessage sendUpdateError(MOErrorException error) throws MALException {
             return interaction.sendUpdateError(error);
         }
     }

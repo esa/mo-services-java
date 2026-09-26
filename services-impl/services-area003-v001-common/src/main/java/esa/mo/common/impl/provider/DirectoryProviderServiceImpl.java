@@ -42,7 +42,6 @@ import org.ccsds.moims.mo.common.directory.structures.ServiceCapabilityList;
 import org.ccsds.moims.mo.common.directory.structures.ServiceFilter;
 import org.ccsds.moims.mo.common.structures.ServiceKey;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingleton;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
@@ -160,7 +159,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
 
     @Override
     public ProviderSummaryList lookupProvider(final ServiceFilter filter,
-            final MALInteraction interaction) throws InvalidException, MALInteractionException, MALException {
+            final MALInteraction interaction) throws InvalidException, MALException {
         if (filter == null) { // Is the input null?
             throw new IllegalArgumentException("filter argument must not be null");
         }
@@ -313,7 +312,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
 
     @Override
     public PublishProviderResponse publishProvider(final PublishDetails newProviderDetails,
-            final MALInteraction interaction) throws MALInteractionException, MALException {
+            final MALInteraction interaction) throws MALException {
         Identifier serviceProviderName = newProviderDetails.getProviderId();
         HeterogeneousList objBodies = new HeterogeneousList();
         objBodies.add(serviceProviderName);
@@ -344,7 +343,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
     }
 
     @Override
-    public void withdrawProvider(Long providerObjectKey, MALInteraction interaction) throws UnknownException, MALInteractionException {
+    public void withdrawProvider(Long providerObjectKey, MALInteraction interaction) throws UnknownException {
         synchronized (MUTEX) {
             if (!this.providersAvailable.containsKey(providerObjectKey)) { // The requested provider does not exist
                 throw new UnknownException(null);
@@ -356,10 +355,8 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
 
     /**
      * Withdraws all providers from the Directory service.
-     *
-     * @throws MALInteractionException if the providers could not be removed.
      */
-    public void withdrawAllProviders() throws MALInteractionException {
+    public void withdrawAllProviders() {
         synchronized (MUTEX) {
             for (Long key : providersAvailable.keySet()) {
                 try {
@@ -433,7 +430,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
         try {
             this.publishProvider(newProviderDetails, null);
             return newProviderDetails;
-        } catch (MALInteractionException | MALException ex) {
+        } catch (MALException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
 
@@ -441,7 +438,7 @@ public class DirectoryProviderServiceImpl extends DirectoryInheritanceSkeleton {
     }
 
     @Override
-    public FileList getServiceXML(Long l, MALInteraction mali) throws MALInteractionException, MALException {
+    public FileList getServiceXML(Long l, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

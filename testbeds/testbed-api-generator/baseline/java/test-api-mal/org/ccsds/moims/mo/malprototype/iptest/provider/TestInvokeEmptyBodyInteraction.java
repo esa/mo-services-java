@@ -34,22 +34,28 @@ public class TestInvokeEmptyBodyInteraction {
      * Sends a INVOKE acknowledge to the consumer.
      * 
      * @return Returns the MAL message created by the acknowledge
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return interaction.sendAcknowledgement((Object[]) null);
+    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALException {
+        try {
+            return interaction.sendAcknowledgement((Object[]) null);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        }
     }
 
     /**
      * Sends a INVOKE response to the consumer.
      * 
      * @return Returns the MAL message created by the response
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse() throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return interaction.sendResponse((Object[]) null);
+    public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse() throws org.ccsds.moims.mo.mal.MALException {
+        try {
+            return interaction.sendResponse((Object[]) null);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -57,11 +63,14 @@ public class TestInvokeEmptyBodyInteraction {
      * 
      * @param error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return interaction.sendError(error);
+    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+        try {
+            return interaction.sendError(error);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        }
     }
 
 }

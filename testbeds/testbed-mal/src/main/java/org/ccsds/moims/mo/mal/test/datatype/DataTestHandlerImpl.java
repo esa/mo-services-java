@@ -26,11 +26,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.malprototype.DataErrorException;
-import org.ccsds.moims.mo.malprototype.TestErrorException;
 import org.ccsds.moims.mo.malprototype.TestObjectExistsException;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse;
 import org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse;
@@ -67,7 +65,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public Element testData(Element rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Element testData(Element rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         int i = testIndex++;
 
         _testDataValue(TestData.testAll.get(i), rcvdValue, "data test at step: " + String.valueOf(i));
@@ -76,7 +74,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public Blob testDataBlob(Blob rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+    public Blob testDataBlob(Blob rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         LoggingBase.logMessage("testDataBlob: " + new String(rcvdValue.getValue()));
 
         if ((rcvdValue != null) && (rcvdValue.getValue().length != TestData.testBlob.getValue().length)) {
@@ -89,135 +87,135 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     }
 
     @Override
-    public Boolean testDataBoolean(Boolean rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Boolean testDataBoolean(Boolean rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testBoolean, rcvdValue, "Boolean test");
         return rcvdValue;
     }
 
     @Override
-    public Double testDataDouble(Double rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Double testDataDouble(Double rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testDouble, rcvdValue, "Double test");
         return rcvdValue;
     }
 
     @Override
-    public Duration testDataDuration(Duration rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Duration testDataDuration(Duration rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testDuration, rcvdValue, "Duration test");
         return rcvdValue;
     }
 
     @Override
-    public FineTime testDataFineTime(FineTime rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public FineTime testDataFineTime(FineTime rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testFineTime, rcvdValue, "FineTime test");
         return rcvdValue;
     }
 
     @Override
-    public Float testDataFloat(Float rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Float testDataFloat(Float rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testFloat, rcvdValue, "Float test");
         return rcvdValue;
     }
 
     @Override
-    public Identifier testDataIdentifier(Identifier rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Identifier testDataIdentifier(Identifier rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testIdentifier, rcvdValue, "Identifier test");
         return rcvdValue;
     }
 
     @Override
-    public Integer testDataInteger(Integer rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Integer testDataInteger(Integer rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testInteger, rcvdValue, "Integer test");
         return rcvdValue;
     }
 
     @Override
-    public Long testDataLong(Long rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Long testDataLong(Long rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testLong, rcvdValue, "Long test");
         return rcvdValue;
     }
 
     @Override
-    public Byte testDataOctet(Byte rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Byte testDataOctet(Byte rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testOctet, rcvdValue, "Byte test");
         return rcvdValue;
     }
 
     @Override
-    public Short testDataShort(Short rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Short testDataShort(Short rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testShort, rcvdValue, "Short test");
         return rcvdValue;
     }
 
     @Override
-    public String testDataString(String rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public String testDataString(String rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testString, rcvdValue, "String test");
         return rcvdValue;
     }
 
     @Override
-    public Time testDataTime(Time rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Time testDataTime(Time rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testTime, rcvdValue, "Time test");
         return rcvdValue;
     }
 
     @Override
-    public URI testDataURI(URI rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public URI testDataURI(URI rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testURI, rcvdValue, "URI test");
         return rcvdValue;
     }
 
     @Override
-    public Assertion testDataComposite(Assertion rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public Assertion testDataComposite(Assertion rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testComposite, rcvdValue, "Composite test");
         return rcvdValue;
     }
 
     @Override
-    public SessionType testDataEnumeration(SessionType rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public SessionType testDataEnumeration(SessionType rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testEnumeration, rcvdValue, "Enumeration test");
         return rcvdValue;
     }
 
     @Override
-    public AssertionList testDataList(AssertionList rcvdValue, MALInteraction interaction) throws MALInteractionException {
+    public AssertionList testDataList(AssertionList rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testList, rcvdValue, "List test");
         return rcvdValue;
     }
 
     @Override
-    public UOctet testDataUOctet(UOctet rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+    public UOctet testDataUOctet(UOctet rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testUOctet, rcvdValue, "UOctet test");
         return rcvdValue;
     }
 
     @Override
-    public UShort testDataUShort(UShort rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+    public UShort testDataUShort(UShort rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testUShort, rcvdValue, "UShort test");
         return rcvdValue;
     }
 
     @Override
-    public UInteger testDataUInteger(UInteger rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+    public UInteger testDataUInteger(UInteger rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testUInteger, rcvdValue, "UInteger test");
         return rcvdValue;
     }
 
     @Override
-    public ULong testDataULong(ULong rcvdValue, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ULong testDataULong(ULong rcvdValue, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testULong, rcvdValue, "ULong test");
         return rcvdValue;
     }
 
     @Override
     public ObjectRef<Auto> testDataObjectRef(ObjectRef<Auto> rcvdValue,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testObjectRef, rcvdValue, "ObjectRef test");
         return rcvdValue;
     }
 
     @Override
     public TestExplicitMultiReturnResponse testExplicitMultiReturn(UOctet _UOctet0, UShort _UShort1,
-            UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws MALInteractionException, MALException {
+            UInteger _UInteger2, ULong _ULong3, MALInteraction interaction) throws DataErrorException, MALException {
         if (54 == testIndex) {
             _testDataValue(TestData.testUOctet, _UOctet0, "Explicit multi test part 1");
             _testDataValue(TestData.testUShort, _UShort1, "Explicit multi test part 2");
@@ -234,7 +232,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     @Override
     public TestAbstractMultiReturnResponse testAbstractMultiReturn(UOctet _UOctet0, UShort _UShort1, UInteger _UInteger2,
-            Element _Element3, MALInteraction interaction) throws MALInteractionException, MALException {
+            Element _Element3, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
         _testDataValue(TestData.testUShort, _UShort1, "Abstract multi test part 2");
         _testDataValue(TestData.testUInteger, _UInteger2, "Abstract multi test part 3");
@@ -244,7 +242,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     @Override
     public TestInnerAbstractMultiReturnResponse testInnerAbstractMultiReturn(UOctet _UOctet0, Element _Element1,
-            Element _Element2, UInteger _UInteger3, MALInteraction interaction) throws MALInteractionException, MALException {
+            Element _Element2, UInteger _UInteger3, MALInteraction interaction) throws DataErrorException, MALException {
         _testDataValue(TestData.testUOctet, _UOctet0, "Abstract multi test part 1");
         _testDataValue(TestData.testULong, _Element1, "Abstract multi test part 2");
         _testDataValue(TestData.testUShort, _Element2, "Abstract multi test part 3");
@@ -252,72 +250,72 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         return new TestInnerAbstractMultiReturnResponse(_UOctet0, _Element1, _Element2, _UInteger3);
     }
 
-    protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws MALInteractionException {
+    protected static void _testDataValue(Object testValue, Object rcvdValue, String exString) throws DataErrorException {
         LoggingBase.logMessage("DataTestHandlerImpl:" + exString + " : " + testValue + " : " + rcvdValue);
 
         if (null != testValue) {
             if (!testValue.equals(rcvdValue)) {
                 // decoding must have failed
-                throw new MALInteractionException(new DataErrorException(
+                throw new DataErrorException(
                         new Union("Failed comparison in provider of " + exString
                                 + ", type " + testValue.getClass() + ",\nexpected "
                                 + String.valueOf(testValue) + "\n received "
-                                + String.valueOf(rcvdValue))));
+                                + String.valueOf(rcvdValue)));
             }
         } else {
             if (rcvdValue != null) {
                 // decoding must have failed
-                throw new MALInteractionException(new DataErrorException(
+                throw new DataErrorException(
                         new Union("Failed comparison in provider of " + exString
-                                + ", type should be null but is " + rcvdValue.getClass())));
+                                + ", type should be null but is " + rcvdValue.getClass()));
             }
         }
     }
 
     @Override
-    public void testEmptyBody(MALInteraction mali) throws MALInteractionException, MALException {
+    public void testEmptyBody(MALInteraction mali) throws MALException {
         // Do nothing
     }
 
     @Override
     public Attribute testMalAttribute(Attribute atrbt,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return atrbt;
     }
 
     @Override
     public Composite testMalComposite(Composite cmpst,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return cmpst;
     }
 
     @Override
     public TestPublish testAbstractComposite(TestPublish tp,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return tp;
     }
 
     @Override
     public AttributeList testMalAttributeList(AttributeList al,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return al;
     }
 
     @Override
     public HeterogeneousList testMalElementList(HeterogeneousList el,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return el;
     }
 
     @Override
     public CompositeList testMalCompositeList(CompositeList cl,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return cl;
     }
 
     @Override
     public TestPublishList testAbstractCompositeList(TestPublishList tpl,
-            MALInteraction mali) throws MALInteractionException, MALException {
+            MALInteraction mali) throws MALException {
         return tpl;
     }
 
@@ -330,10 +328,10 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
     HashMap<ObjectIdentity, Lamborghini> lamboList = new HashMap<>();
 
     @Override
-    public ObjectRef<Auto> createObject(Auto auto, MALInteraction interaction) throws MALInteractionException, MALException {
+    public ObjectRef<Auto> createObject(Auto auto, MALInteraction interaction)
+            throws TestObjectExistsException, DataErrorException, MALException {
         if (auto == null) {
-            throw new MALInteractionException(new TestErrorException(
-                    new Union("Unexpected exception - null object value.")));
+            throw new MALException("Unexpected exception - null object value.");
         }
         // MO Objects have a unique and an immutable identity
         ObjectIdentity autoId0 = new ObjectIdentity(
@@ -352,15 +350,15 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         long versionUpdate = auto.getObjectIdentity().getVersion().getValue();
         if (lastAuto == null) {
             if (versionUpdate != 1) {
-                throw new MALInteractionException(new DataErrorException(new Union("Wrong version for new object.")));
+                throw new DataErrorException(new Union("Wrong version for new object."));
             }
         } else {
             versionUpdate -= lastAuto.getObjectIdentity().getVersion().getValue();
             if (versionUpdate == 0) {
-                throw new MALInteractionException(new TestObjectExistsException(new Union("Object already exists.")));
+                throw new TestObjectExistsException(new Union("Object already exists."));
             } else if (versionUpdate != 1) {
-                throw new MALInteractionException(new DataErrorException(
-                        new Union("Wrong version for updated object.")));
+                throw new DataErrorException(
+                        new Union("Wrong version for updated object."));
             }
         }
 
@@ -378,7 +376,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     public ObjectRef<Auto> createObjectFromFields(Long autoType, Identifier key,
             Boolean update, String engine, String chassis, StringList windows,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws TestObjectExistsException, DataErrorException, MALException {
         ObjectIdentity autoId0 = new ObjectIdentity(testDomain,
                 key,
                 new UInteger(0));
@@ -392,7 +390,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         }
 
         if (auto != null && !update.booleanValue()) {
-            throw new MALInteractionException(new DataErrorException(new Union("Object already exists.")));
+            throw new DataErrorException(new Union("Object already exists."));
         }
         ObjectIdentity autoId = new ObjectIdentity(
                 autoId0.getDomain(),
@@ -404,13 +402,13 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
         } else if (Porsche.SHORT_FORM.equals(autoType)) {
             auto = new Porsche(autoId, engine, chassis, windows);
         } else {
-            throw new MALInteractionException(new DataErrorException(new Union("Unexpected Auto value.")));
+            throw new DataErrorException(new Union("Unexpected Auto value."));
         }
 
         return createObject(auto, interaction);
     }
 
-    public void deleteObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void deleteObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALException {
         ObjectIdentity autoId = new ObjectIdentity(
                 autoRef.getDomain(),
                 autoRef.getKey(),
@@ -447,7 +445,7 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
      * @param autoRef
      */
     @Override
-    public Auto getObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALInteractionException, MALException {
+    public Auto getObject(ObjectRef<Auto> autoRef, MALInteraction interaction) throws MALException {
         ObjectIdentity autoId = new ObjectIdentity(
                 autoRef.getDomain(),
                 autoRef.getKey(),
@@ -464,26 +462,26 @@ public class DataTestHandlerImpl extends DataTestInheritanceSkeleton {
 
     @Override
     public AbstractCompositeList testPolymorphicAbstractCompositeList(AbstractCompositeList bacl,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         return bacl;
     }
 
     @Override
     public CompositeList testPolymorphicMalCompositeList(CompositeList cl,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         return cl;
     }
 
     @Override
     public HeterogeneousList testPolymorphicMalElementList(HeterogeneousList el,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         return el;
     }
 
     @Override
     public TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(
             Garage _Garage0, ObjectRefList _Porsche_1, ObjectRefList _Auto_2,
-            ObjectRefList _Element_3, MALInteraction interaction) throws MALInteractionException, MALException {
+            ObjectRefList _Element_3, MALInteraction interaction) throws MALException {
         return new TestPolymorphicObjectRefTypesResponse(_Garage0,
                 _Porsche_1, _Auto_2, _Element_3);
     }

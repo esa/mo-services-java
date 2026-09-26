@@ -20,21 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.test.errors;
 
-import org.ccsds.moims.mo.mal.BadEncodingException;
-import org.ccsds.moims.mo.mal.DeliveryDelayedException;
-import org.ccsds.moims.mo.mal.DeliveryFailedException;
-import org.ccsds.moims.mo.mal.DeliveryTimedoutException;
-import org.ccsds.moims.mo.mal.DestinationLostException;
-import org.ccsds.moims.mo.mal.DestinationTransientException;
-import org.ccsds.moims.mo.mal.DestinationUnknownException;
-import org.ccsds.moims.mo.mal.EncryptionFailException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.UnknownException;
-import org.ccsds.moims.mo.mal.UnsupportedAreaException;
-import org.ccsds.moims.mo.mal.UnsupportedAreaVersionException;
-import org.ccsds.moims.mo.mal.UnsupportedOperationException;
-import org.ccsds.moims.mo.mal.UnsupportedServiceException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.malprototype.errortest.provider.ErrorTestInheritanceSkeleton;
@@ -54,55 +40,68 @@ public class ErrorTestHandlerImpl extends ErrorTestInheritanceSkeleton {
         return null;
     }
 
-    public Element testBadEncoding(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new BadEncodingException());
+    public Element testBadEncoding(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testDeliveryDelayed(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new DeliveryDelayedException());
+    public Element testDeliveryDelayed(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testDeliveryFailed(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new DeliveryFailedException());
+    public Element testDeliveryFailed(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testDeliveryTimedout(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new DeliveryTimedoutException());
+    public Element testDeliveryTimedout(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testDestinationLost(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new DestinationLostException());
+    public Element testDestinationLost(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testDestinationTransient(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new DestinationTransientException());
+    public Element testDestinationTransient(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testDestinationUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new DestinationUnknownException());
+    public Element testDestinationUnknown(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testEncryptionFail(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new EncryptionFailException());
+    public Element testEncryptionFail(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testUnknown(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new UnknownException());
+    public Element testUnknown(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testUnsupportedArea(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new UnsupportedAreaException());
+    public Element testUnsupportedArea(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testUnsupportedOperation(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new UnsupportedOperationException());
+    public Element testUnsupportedOperation(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testUnsupportedAreaVersion(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new UnsupportedAreaVersionException());
+    public Element testUnsupportedAreaVersion(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 
-    public Element testUnsupportedService(Element _Element, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new UnsupportedServiceException());
+    public Element testUnsupportedService(Element _Element, MALInteraction interaction) throws MALException {
+        // should never be reached
+        return null;
     }
 }

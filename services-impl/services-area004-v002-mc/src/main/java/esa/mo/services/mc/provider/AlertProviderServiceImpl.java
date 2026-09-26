@@ -182,7 +182,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
     public AlertConfigurationList getAlertConfiguration(
             IdentifierList domain,
             IdentifierList keys,
-            MALInteraction interaction) throws AmbiguousException, MALInteractionException, MALException {
+            MALInteraction interaction) throws UnknownException, AmbiguousException, MALException {
 
         List<Integer> indices = resolveAlertDefinitions(domain, keys);
 
@@ -203,7 +203,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
     public void enableGeneration(
             IdentifierList domain,
             IdentifierList keys,
-            MALInteraction interaction) throws AmbiguousException, MALInteractionException, MALException {
+            MALInteraction interaction) throws UnknownException, AmbiguousException, MALException {
 
         if (keys == null) {
             
@@ -244,7 +244,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
     public void disableGeneration(
             IdentifierList domain,
             IdentifierList keys,
-            MALInteraction interaction) throws AmbiguousException, MALInteractionException, MALException {
+            MALInteraction interaction) throws UnknownException, AmbiguousException, MALException {
 
         if (keys == null) {
 
@@ -268,7 +268,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
      * Resolves (domain, keys) into a list of definition indices.
      */
     private List<Integer> resolveAlertDefinitions(IdentifierList domain, IdentifierList keys)
-            throws AmbiguousException, MALInteractionException {
+            throws UnknownException, AmbiguousException {
 
         List<Integer> matchedIndices = new ArrayList<>();
         List<Integer> ambiguousIndices = new ArrayList<>();
@@ -305,7 +305,7 @@ public class AlertProviderServiceImpl extends AlertInheritanceSkeleton {
 
         if (!unknownIndices.isEmpty()) {
             UIntegerList extraInfo = toUIntegerList(unknownIndices);
-            throw new MALInteractionException(new UnknownException(extraInfo));
+            throw new UnknownException(extraInfo);
         }
 
         return matchedIndices;

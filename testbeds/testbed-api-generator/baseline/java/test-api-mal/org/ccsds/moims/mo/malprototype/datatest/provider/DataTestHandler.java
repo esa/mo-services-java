@@ -11,11 +11,10 @@ public interface DataTestHandler {
      * 
      * @param input1 The input1 field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void setTestDataOffset(Integer input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testData.
      * 
@@ -23,11 +22,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Element testData(org.ccsds.moims.mo.mal.structures.Element input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataBlob.
      * 
@@ -35,11 +33,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Blob testDataBlob(org.ccsds.moims.mo.mal.structures.Blob input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataBoolean.
      * 
@@ -47,11 +44,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Boolean testDataBoolean(Boolean input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataDouble.
      * 
@@ -59,11 +55,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Double testDataDouble(Double input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataDuration.
      * 
@@ -71,11 +66,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Duration testDataDuration(org.ccsds.moims.mo.mal.structures.Duration input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataFineTime.
      * 
@@ -83,11 +77,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.FineTime testDataFineTime(org.ccsds.moims.mo.mal.structures.FineTime input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataFloat.
      * 
@@ -95,11 +88,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Float testDataFloat(Float input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataIdentifier.
      * 
@@ -107,11 +99,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Identifier testDataIdentifier(org.ccsds.moims.mo.mal.structures.Identifier input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataInteger.
      * 
@@ -119,11 +110,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Integer testDataInteger(Integer input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataLong.
      * 
@@ -131,11 +121,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Long testDataLong(Long input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataOctet.
      * 
@@ -143,11 +132,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Byte testDataOctet(Byte input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataShort.
      * 
@@ -155,11 +143,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Short testDataShort(Short input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataString.
      * 
@@ -167,11 +154,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     String testDataString(String input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataTime.
      * 
@@ -179,11 +165,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Time testDataTime(org.ccsds.moims.mo.mal.structures.Time input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataURI.
      * 
@@ -191,11 +176,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.URI testDataURI(org.ccsds.moims.mo.mal.structures.URI input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataComposite.
      * 
@@ -203,11 +187,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.structures.Assertion testDataComposite(org.ccsds.moims.mo.malprototype.structures.Assertion input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataEnumeration.
      * 
@@ -215,11 +198,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.SessionType testDataEnumeration(org.ccsds.moims.mo.mal.structures.SessionType input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataList.
      * 
@@ -227,11 +209,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.structures.AssertionList testDataList(org.ccsds.moims.mo.malprototype.structures.AssertionList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataUInteger.
      * 
@@ -239,11 +220,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.UInteger testDataUInteger(org.ccsds.moims.mo.mal.structures.UInteger input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataULong.
      * 
@@ -251,11 +231,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.ULong testDataULong(org.ccsds.moims.mo.mal.structures.ULong input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataUOctet.
      * 
@@ -263,11 +242,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.UOctet testDataUOctet(org.ccsds.moims.mo.mal.structures.UOctet input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataUShort.
      * 
@@ -275,11 +253,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.UShort testDataUShort(org.ccsds.moims.mo.mal.structures.UShort input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testExplicitMultiReturn.
      * 
@@ -290,14 +267,13 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.datatest.body.TestExplicitMultiReturnResponse testExplicitMultiReturn(org.ccsds.moims.mo.mal.structures.UOctet in1,
             org.ccsds.moims.mo.mal.structures.UShort in2,
             org.ccsds.moims.mo.mal.structures.UInteger in3,
             org.ccsds.moims.mo.mal.structures.ULong in4,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testAbstractMultiReturn.
      * 
@@ -308,23 +284,21 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.datatest.body.TestAbstractMultiReturnResponse testAbstractMultiReturn(org.ccsds.moims.mo.mal.structures.UOctet in1,
             org.ccsds.moims.mo.mal.structures.UShort in2,
             org.ccsds.moims.mo.mal.structures.UInteger in3,
             org.ccsds.moims.mo.mal.structures.Element in4,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testEmptyBody.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
-    void testEmptyBody(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+    void testEmptyBody(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testMalAttribute.
      * 
@@ -332,11 +306,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Attribute testMalAttribute(org.ccsds.moims.mo.mal.structures.Attribute input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testMalComposite.
      * 
@@ -344,11 +317,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.Composite testMalComposite(org.ccsds.moims.mo.mal.structures.Composite input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testAbstractComposite.
      * 
@@ -356,11 +328,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.structures.TestPublish testAbstractComposite(org.ccsds.moims.mo.malprototype.structures.TestPublish input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testMalAttributeList.
      * 
@@ -368,11 +339,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.AttributeList testMalAttributeList(org.ccsds.moims.mo.mal.structures.AttributeList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testMalElementList.
      * 
@@ -380,11 +350,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.HeterogeneousList testMalElementList(org.ccsds.moims.mo.mal.structures.HeterogeneousList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testMalCompositeList.
      * 
@@ -392,11 +361,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.CompositeList testMalCompositeList(org.ccsds.moims.mo.mal.structures.CompositeList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testAbstractCompositeList.
      * 
@@ -404,11 +372,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.structures.TestPublishList testAbstractCompositeList(org.ccsds.moims.mo.malprototype.structures.TestPublishList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testDataObjectRef.
      * 
@@ -416,11 +383,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> testDataObjectRef(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testInnerAbstractMultiReturn.
      * 
@@ -431,14 +397,13 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.datatest.body.TestInnerAbstractMultiReturnResponse testInnerAbstractMultiReturn(org.ccsds.moims.mo.mal.structures.UOctet in1,
             org.ccsds.moims.mo.mal.structures.Element in2,
             org.ccsds.moims.mo.mal.structures.Element in3,
             org.ccsds.moims.mo.mal.structures.UInteger in4,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testPolymorphicAbstractCompositeList.
      * 
@@ -446,11 +411,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList testPolymorphicAbstractCompositeList(org.ccsds.moims.mo.malprototype.structures.AbstractCompositeList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testPolymorphicMalCompositeList.
      * 
@@ -458,11 +422,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.CompositeList testPolymorphicMalCompositeList(org.ccsds.moims.mo.mal.structures.CompositeList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testPolymorphicMalElementList.
      * 
@@ -470,11 +433,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.HeterogeneousList testPolymorphicMalElementList(org.ccsds.moims.mo.mal.structures.HeterogeneousList input1,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation testPolymorphicObjectRefTypes.
      * 
@@ -485,14 +447,13 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.datatest.body.TestPolymorphicObjectRefTypesResponse testPolymorphicObjectRefTypes(org.ccsds.moims.mo.malprototype.structures.Garage garage,
             org.ccsds.moims.mo.mal.structures.ObjectRefList porsches,
             org.ccsds.moims.mo.mal.structures.ObjectRefList autos,
             org.ccsds.moims.mo.mal.structures.ObjectRefList elements,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation createObject.
      * 
@@ -500,11 +461,11 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.TestObjectExistsException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> createObject(org.ccsds.moims.mo.malprototype.structures.Auto input,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.TestObjectExistsException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.TestObjectExistsException, org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation createObjectFromFields.
      * 
@@ -517,7 +478,7 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.TestObjectExistsException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
+     * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> createObjectFromFields(Long autoType,
@@ -526,18 +487,17 @@ public interface DataTestHandler {
             String engine,
             String chassis,
             org.ccsds.moims.mo.mal.structures.StringList windows,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.TestObjectExistsException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.TestObjectExistsException, org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation deleteObject.
      * 
      * @param input The input field.
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void deleteObject(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> input,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation getObject.
      * 
@@ -545,11 +505,10 @@ public interface DataTestHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.malprototype.DataErrorException Data interoperability error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.malprototype.structures.Auto getObject(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.malprototype.structures.Auto> input,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.malprototype.DataErrorException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 

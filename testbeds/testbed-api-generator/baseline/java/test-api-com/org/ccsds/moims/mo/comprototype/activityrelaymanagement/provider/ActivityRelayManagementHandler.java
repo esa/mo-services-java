@@ -10,22 +10,20 @@ public interface ActivityRelayManagementHandler {
      * Implements the operation resetTest.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
-    void resetTest(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+    void resetTest(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation createRelay.
      * 
      * @param in1 The in1 field.
      * @param in2 The in2 field.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void createRelay(String in1,
             String in2,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 

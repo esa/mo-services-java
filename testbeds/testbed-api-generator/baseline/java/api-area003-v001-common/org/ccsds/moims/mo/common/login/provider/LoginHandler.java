@@ -28,20 +28,18 @@ A LoginEvent COM event shall be generated at this point.
      * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values. No further information is provided as it may compromise security.
      * @throws org.ccsds.moims.mo.mal.TooManyException Role concurrent session limit count exceeded.
      * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/role/password combination.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.common.login.body.LoginResponse login(org.ccsds.moims.mo.common.login.structures.Profile userDetails,
             String password,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation logout.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
-    void logout(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+    void logout(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation listRoles.
      * 
@@ -52,12 +50,11 @@ If the username field is either the wildcard '*', NULL or empty an INVALID error
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/password combination.
      * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.LongList listRoles(org.ccsds.moims.mo.mal.structures.Identifier username,
             String password,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation handover.
      * 
@@ -81,12 +78,11 @@ If the handover operation is successful a LogoutEvent COM event shall be generat
      * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values.
      * @throws org.ccsds.moims.mo.mal.TooManyException Role concurrent session limit count exceeded.
      * @throws org.ccsds.moims.mo.com.DuplicateException Username/role combination currently in use.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.common.login.body.HandoverResponse handover(org.ccsds.moims.mo.common.login.structures.Profile newUserDetails,
             String newUserPassword,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
