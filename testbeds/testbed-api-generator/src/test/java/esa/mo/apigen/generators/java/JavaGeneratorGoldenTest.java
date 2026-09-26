@@ -30,11 +30,10 @@ import org.junit.Assume;
 import org.junit.Test;
 
 /**
- * The new Java generator held against the output of the existing one.
+ * The Java generator held against the output of the generator it replaced.
  * <p>
- * Only the files it claims to produce are compared: the point at this stage is that what
- * it writes is right, not that it writes everything. As categories are added they are
- * added here, and the count in each test says how far along the module is.
+ * Every file is compared both ways: one the generator writes differently, writes without
+ * the baseline having it, or fails to write at all is a difference.
  */
 public class JavaGeneratorGoldenTest {
 
@@ -56,6 +55,8 @@ public class JavaGeneratorGoldenTest {
         REMAINING.put("api-area004-v002-mc", 0);
         REMAINING.put("api-area005-v001-mps", 0);
         REMAINING.put("api-area009-v001-mpd", 0);
+        REMAINING.put("test-api-mal", 0);
+        REMAINING.put("test-api-com", 0);
     }
 
     /**
@@ -88,7 +89,7 @@ public class JavaGeneratorGoldenTest {
             List<String> differences = GoldenTree.compare(out, baseline);
             int budget = REMAINING.containsKey(module) ? REMAINING.get(module) : 0;
             int differing = countDifferingFiles(differences);
-            matching += GoldenTree.countGenerated(out) - differing;
+            matching += GoldenTree.countBaseline(baseline) - differing;
             expected += GoldenTree.countBaseline(baseline);
             if (differing > budget) {
                 StringBuilder message = new StringBuilder(module + ": " + differing
@@ -108,7 +109,8 @@ public class JavaGeneratorGoldenTest {
     private static int countDifferingFiles(List<String> differences) {
         int count = 0;
         for (String difference : differences) {
-            if (difference.startsWith("differs: ") || difference.startsWith("only generated: ")) {
+            if (difference.startsWith("differs: ") || difference.startsWith("only generated: ")
+                    || difference.startsWith("not generated: ")) {
                 count++;
             }
         }
@@ -168,5 +170,23 @@ public class JavaGeneratorGoldenTest {
     public void missionPlanningAndScheduling() throws Exception {
         check("api-area005-v001-mps", "area005-v001-Mission-Planning-and-Scheduling.xml",
                 "area001-v003-MAL.xml");
+    }
+
+    /**
+     * The test API of the MAL testbed. It is the only specification that writes an object
+     * reference as {@code ObjectRef(Auto)} to an abstract type, and the only one with an
+     * INVOKE or PROGRESS acknowledgement of more than one field. The references are those
+     * its pom downloads.
+     */
+    @Test
+    public void malTestApi() throws Exception {
+        check("test-api-mal", "MALPrototype.xml",
+                "area001-v003-MAL.xml", "COMPrototype.xml", "MCPrototype.xml");
+    }
+
+    @Test
+    public void comTestApi() throws Exception {
+        check("test-api-com", "COMPrototype.xml",
+                "area001-v003-MAL.xml", "area002-v001-COM.xml");
     }
 }

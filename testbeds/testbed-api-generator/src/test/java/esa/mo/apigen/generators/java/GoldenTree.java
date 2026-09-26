@@ -94,7 +94,9 @@ public final class GoldenTree {
                 return f;
             }
         }
-        return null;
+        // The specifications the testbeds generate their test APIs from.
+        File f = new File(root, "testbeds/xml-tests/src/main/resources/" + fileName);
+        return f.isFile() ? f : null;
     }
 
     public static Specification read(File file) throws Exception {
@@ -137,9 +139,8 @@ public final class GoldenTree {
     }
 
     /**
-     * Compares generated files against the baseline, considering only the files the new
-     * generator claims to produce. Everything it does not yet write is simply not looked
-     * at - the point is that what it does write is right, not that it is complete.
+     * Compares generated files against the baseline, in both directions: a file the
+     * baseline holds and the generator did not write is a difference like any other.
      *
      * @param generated The directory just written.
      * @param baseline The captured output.
@@ -163,6 +164,16 @@ public final class GoldenTree {
                     Files.readAllBytes(expected.toPath()), Charset.forName("UTF-8"));
             if (!expectedText.equals(actualText)) {
                 differences.add("differs: " + relative + describe(expectedText, actualText));
+            }
+        }
+
+        List<Path> captured = new ArrayList<Path>();
+        collect(baseline.toPath(), captured);
+        Collections.sort(captured);
+        for (Path file : captured) {
+            String relative = baseline.toPath().relativize(file).toString();
+            if (!generated.resolve(relative).toFile().isFile()) {
+                differences.add("not generated: " + relative);
             }
         }
         return differences;
