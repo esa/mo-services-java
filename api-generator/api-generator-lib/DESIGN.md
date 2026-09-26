@@ -1,11 +1,11 @@
 # api-generator-lib — Design
 
-Status: **proposal** · New module: 14.x · Cut-over: **v15.0**
+Status: **implemented** · New module: 14.x · Cut-over: **v15.0, done** (§10.9)
 
-`api-generator-lib` is built and matured **alongside** `generator-interfaces`, `generator-java` and
-`generator-docs`, which stay in place and keep driving the build throughout 14.x. The three old
-modules are removed only at the v15.0 cut-over (§10.9). Nothing in 14.x depends on the new library
-being finished.
+`api-generator-lib` was built and matured **alongside** `generator-interfaces`, `generator-java` and
+`generator-docs`, which stayed in place and kept driving the build throughout 14.x. The three old
+modules were removed at the v15.0 cut-over (§10.9). The sections below describe the parallel-running
+period as it was planned and run; §10.9 records what the cut-over changed.
 
 ## 1. Purpose
 
@@ -50,9 +50,9 @@ plus `MosdlSpecLoader` (1247) and `GeneratorMOSDL` (972) vendored into `mo-navig
 api-generator/
 ├── api-generator-lib/            NEW  — model, all import/export, all generators
 ├── api-generator-maven-plugin/   kept — thin Mojo, drives both paths during 14.x
-├── generator-interfaces/         kept through 14.x, deleted at v15.0
-├── generator-java/               kept through 14.x, deleted at v15.0
-└── generator-docs/               kept through 14.x, deleted at v15.0
+├── generator-interfaces/         kept through 14.x, deleted at v15.0 (done)
+├── generator-java/               kept through 14.x, deleted at v15.0 (done)
+└── generator-docs/               kept through 14.x, deleted at v15.0 (done)
 ```
 
 **One new module, not several.** Model, XML, MOSpec, Java, docx and XHTML all live in
@@ -1930,6 +1930,24 @@ bookkeeping rather than a leap:
 
 If the new path is not producing agreed output by then, the correct response is to leave the default
 alone and ship 15.0 without the deletion — nothing else in the release depends on it.
+
+**Done.** What the cut-over changed, against the list above:
+
+- The plugin calls the library directly. `NewJavaGenerator`, the `Generator` interface it adapted
+  to and the service-file discovery are gone; `targetLanguages` selects among the library's own
+  generators by short name (`Java`, `docx`, `xhtml`). `parent/pom.xml` names `Java` outright, and
+  the `esa.stubgen.generator` property and the `new-generator` profile are removed.
+- The plugin loses `packageBindings`, `generateStructures`, `generateCOM`, `extraProperties` and
+  `xsdRefDirectory` (§10.10). `forceGeneration` is kept: it overrides the plugin's own up-to-date
+  check, not the generator, so something still stands behind it.
+- `mo-navigator` generates Java and documents through the library. The library writes a document
+  as a directory of parts (§10.4); the navigator zips each into a `.docx`, which is what the old
+  generator produced and what `golden.sh` and the document workflow consume. Its MOSDL editor is
+  unchanged and still uses `de.dlr.gsoc.mcds:mosdl`; moving it to MOSpec is separate work.
+- A build of every `apis/*` module matches the committed baseline in all 950 Java files. The only
+  document differences are the MC v001 diagrams recorded in `intended-differences.txt`.
+- The golden tree is **not yet** re-baselined. Doing so removes those diagram differences from the
+  baseline, and with them the need for `DocxGeneratorGoldenTest.withoutDrawings`.
 
 ### 10.10 Removed at cut-over (v15.0)
 

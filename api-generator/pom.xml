@@ -67,9 +67,6 @@
 
     <modules>
         <module>api-generator-lib</module>
-        <module>generator-interfaces</module>
-        <module>generator-java</module>
-        <module>generator-docs</module>
         <module>api-generator-maven-plugin</module>
     </modules>
 </project>

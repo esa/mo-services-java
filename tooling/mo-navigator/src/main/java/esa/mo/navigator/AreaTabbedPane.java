@@ -26,9 +26,6 @@ import esa.mo.navigator.parsers.GeneratorMOSDL;
 import esa.mo.navigator.parsers.GeneratorXML;
 import esa.mo.navigator.parsers.ParserMOSDL;
 import esa.mo.navigator.parsers.ParserXML;
-import esa.mo.tools.stubgen.GeneratorDocx;
-import esa.mo.xsd.util.XmlHelper;
-import esa.mo.xsd.util.XmlSpecification;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -42,7 +39,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -158,40 +154,21 @@ public class AreaTabbedPane extends JTabbedPane {
             @Override
             public void run() {
                 long timestamp = System.currentTimeMillis();
-                org.apache.maven.plugin.logging.SystemStreamLog logger = new org.apache.maven.plugin.logging.SystemStreamLog();
-                GeneratorDocx generator = new GeneratorDocx(logger);
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String userDir = System.getProperty("user.dir");
                 String sourFolder = userDir + File.separator + DEFAULT_TEMP_DIR + File.separator + timeStamp;
                 String destFolder = userDir + File.separator + DEFAULT_DOCX_DIR;
-                HashMap<String, String> packageBindings = new HashMap();
-                HashMap<String, String> extraProperties = new HashMap();
 
                 try {
                     final File folder = new File(sourFolder);
                     folder.mkdirs();
-                    generator.init(destFolder, true, true, packageBindings, extraProperties);
 
                     // Output the edited XML file in a temporary folder...
                     String tempFilePath = sourFolder + File.separator + timeStamp + "_temp.xml";
                     String text = textEditorFrom.getTextArea().getText();
                     FileSupport.writeFile(tempFilePath, text);
 
-                    File xmlRefDirectory = new File(sourFolder);
-                    List<XmlSpecification> specs;
-                    specs = XmlHelper.loadSpecifications(xmlRefDirectory);
-
-                    // now generator from each specification
-                    for (XmlSpecification spec : specs) {
-                        try {
-                            generator.loadXML(spec);
-                            generator.generate(destFolder, spec, spec.getRootElement());
-                        } catch (Exception ex) {
-                            Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
-                                    "Exception thrown during the processing of XML file: "
-                                    + spec.getFile().getPath(), ex);
-                        }
-                    }
+                    Generation.generateDocuments(folder, new File(destFolder));
 
                     openButton.addActionListener((new ActionListener() {
                         @Override
@@ -214,11 +191,6 @@ public class AreaTabbedPane extends JTabbedPane {
                     Logger.getLogger(AreaTabbedPane.class.getName()).log(Level.INFO,
                             "Success! Generated the Book in " + timestamp + " miliseconds! "
                             + "Location:\n >> " + destFolder, text);
-                } catch (JAXBException ex) {
-                    panel.remove(LABEL_GENERATING);
-                    panel.add(LABEL_ERROR_GENERATION);
-                    Logger.getLogger(AreaTabbedPane.class.getName()).log(
-                            Level.SEVERE, "(1) Something went wrong...", ex);
                 } catch (Exception ex) {
                     panel.remove(LABEL_GENERATING);
                     panel.add(LABEL_ERROR_GENERATION);

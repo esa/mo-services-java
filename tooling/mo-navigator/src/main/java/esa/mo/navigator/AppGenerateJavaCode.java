@@ -20,20 +20,11 @@
  */
 package esa.mo.navigator;
 
-import esa.mo.tools.stubgen.GeneratorJava;
-import esa.mo.xsd.util.XmlHelper;
-import esa.mo.xsd.util.XmlSpecification;
-import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import esa.mo.apigen.generators.java.JavaGenerator;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.xml.bind.JAXBException;
 
 /**
  * Application that generates Java code from MO service specifications.
@@ -52,46 +43,16 @@ public class AppGenerateJavaCode {
      */
     public static void main(String[] args) {
         long timestamp = System.currentTimeMillis();
-        org.apache.maven.plugin.logging.SystemStreamLog logger = new org.apache.maven.plugin.logging.SystemStreamLog();
-        GeneratorJava generator = new GeneratorJava(logger);
         String sourFolder = DEFAULT_XMLS_DIR;
         String destFolder = DEFAULT_JAVA_API_DIR;
-        HashMap<String, String> packageBindings = new HashMap();
-        HashMap<String, String> extraProperties = new HashMap();
 
         try {
-            generator.init(destFolder, true, true, packageBindings, extraProperties);
-            File xmlRefDirectory = new File(sourFolder);
-            List<XmlSpecification> specs = XmlHelper.loadSpecifications(xmlRefDirectory);
+            Generation.generate(new JavaGenerator(), new File(sourFolder), new File(destFolder));
 
-            // now generator from each specification
-            for (XmlSpecification spec : specs) {
-                try {
-                    generator.loadXML(spec);
-                    generator.generate(destFolder, spec, spec.getRootElement());
-                } catch (Exception ex) {
-                    Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.INFO,
-                            "Exception thrown during the processing of XML file: "
-                            + spec.getFile().getPath(), ex);
-                }
-            }
-
-            JButton openButton = new JButton("Open Folder");
-            openButton.addActionListener((new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        Desktop.getDesktop().open(new File(destFolder));
-                    } catch (IOException ex) {
-                        Logger.getLogger(AppGenerateJavaCode.class.getName()).log(
-                                Level.SEVERE, "The folder could not be opened!", ex);
-                    }
-                }
-            }));
             timestamp = System.currentTimeMillis() - timestamp;
             Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.INFO,
                     "Success! Generated the code in " + timestamp + " miliseconds!");
-        } catch (IOException | JAXBException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(AppGenerateJavaCode.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
