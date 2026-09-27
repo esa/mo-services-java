@@ -20,18 +20,22 @@
  */
 package esa.mo.mal.impl;
 
+import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.NotFoundException;
+import org.ccsds.moims.mo.mal.UndefinedError;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  * The body of an error message, whose error is answered as its own class.
  * <p>
- * A transport decodes an error as a number. Resolving it against the operation of the
- * message is done here, once for every transport, so that a consumer receives the error
- * of the operation's specification whichever transport delivered it.
+ * The error is built here from the number and extra information the transport decoded,
+ * against the operation of the message, once for every transport: a consumer receives the
+ * error the specifications define whichever transport delivered it, or an UndefinedError
+ * where none defines the number.
  */
 public final class ResolvedErrorBody implements MALErrorBody {
 
@@ -51,7 +55,17 @@ public final class ResolvedErrorBody implements MALErrorBody {
 
     @Override
     public MOErrorException getError() throws MALException {
-        return resolve(header, body.getError());
+        return errorOf(header, body);
+    }
+
+    @Override
+    public UInteger getErrorNumber() throws MALException {
+        return body.getErrorNumber();
+    }
+
+    @Override
+    public Object getExtraInformation() throws MALException {
+        return body.getExtraInformation();
     }
 
     @Override
@@ -65,22 +79,41 @@ public final class ResolvedErrorBody implements MALErrorBody {
     }
 
     /**
-     * Returns the error as its own class, resolved against the operation of the message
-     * that carried it.
+     * Returns the error an error message carries, as its own class.
+     * <p>
+     * A body that is itself an error was created where the message was, and is that
+     * error. Any other is built from its number and extra information, against the
+     * operation of the message.
      *
      * @param header The header of the message, may be null.
-     * @param error The error as the transport decoded it.
-     * @return The error as its own class, where its number resolves.
+     * @param body The body of the message.
+     * @return The error.
+     * @throws MALException If the body cannot be decoded.
      */
-    public static MOErrorException resolve(final MALMessageHeader header,
-            final MOErrorException error) {
-        if (header == null) {
-            return error;
+    public static MOErrorException errorOf(final MALMessageHeader header,
+            final MALErrorBody body) throws MALException {
+        if (body instanceof MOErrorException) {
+            return (MOErrorException) body;
         }
-        try {
-            return header.getServiceInfo().resolveError(header.getOperation().getValue(), error);
-        } catch (NotFoundException ex) {
-            return error;
+        final UInteger errorNumber = body.getErrorNumber();
+        final Object extraInfo = body.getExtraInformation();
+        MOErrorException error = null;
+        if (header != null) {
+            try {
+                error = header.getServiceInfo().errorOf(header.getOperation().getValue(),
+                        errorNumber, extraInfo);
+            } catch (NotFoundException ex) {
+                // No service to resolve against: the number is defined by nothing known
+            }
         }
+        if (error == null) {
+            error = new UndefinedError(errorNumber, extraInfo);
+        }
+        if (error instanceof UndefinedError) {
+            MALContextFactoryImpl.LOGGER.log(Level.FINE,
+                    "The error number {0} is not defined by the operation of this message, "
+                    + "its area or the MAL.", errorNumber);
+        }
+        return error;
     }
 }

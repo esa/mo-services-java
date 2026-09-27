@@ -24,29 +24,29 @@ import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 
 /**
- * An error received as a number that has not been resolved to the error it stands for.
+ * An error whose number none of the specifications in use defines: not the operation
+ * that returned it, nor its area, nor the MAL.
  * <p>
- * A transport decodes every error as its number and returns it as this class; the MAL
- * then resolves it against the errors the operation declares, those of its area and the
- * MAL standard errors. An error that stays unresolved has a number none of these define,
- * as from a provider built against another version of the specification.
+ * It is typically returned by a provider built against another version of a
+ * specification. A consumer stub throws it wrapped in a MALException, since the operation
+ * does not declare it.
  */
-public final class UnresolvedError extends MOErrorException {
+public final class UndefinedError extends MOErrorException {
 
     private static final long serialVersionUID = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER + 102;
 
     /**
-     * The name given to an error whose number has not been resolved.
+     * The name given to an error whose number no specification defines.
      */
-    public static final String NAME = "UNRESOLVED";
+    public static final String NAME = "UNDEFINED";
 
     /**
-     * Creates an unresolved error.
+     * Creates an undefined error.
      *
      * @param errorNumber The number of the error, must not be null.
      * @param extraInformation The extra information of the error, may be null.
      */
-    public UnresolvedError(final UInteger errorNumber, final Object extraInformation) {
+    public UndefinedError(final UInteger errorNumber, final Object extraInformation) {
         super(NAME, errorNumber, extraInformation);
     }
 }

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.NotFoundException;
-import org.ccsds.moims.mo.mal.UnresolvedError;
+import org.ccsds.moims.mo.mal.UndefinedError;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -69,22 +69,34 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
 
     @Override
     public MOErrorException getError() throws MALException {
-        decodeMessageBody();
-        UInteger errorNumber = (UInteger) messageParts[0];
-        Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
-        MOErrorException error = new UnresolvedError(errorNumber, extraInfo);
+        UInteger errorNumber = getErrorNumber();
+        Object extraInfo = getExtraInformation();
+        MOErrorException error;
         try {
-            error = ctx.getHeader().getServiceInfo().resolveError(
-                    ctx.getHeader().getOperation().getValue(), error);
+            error = ctx.getHeader().getServiceInfo().errorOf(
+                    ctx.getHeader().getOperation().getValue(), errorNumber, extraInfo);
         } catch (NotFoundException ex) {
             Logger.getLogger(ErrorBody.class.getName()).log(Level.SEVERE,
                     "The serviceInfo for this message was not found!", ex);
+            error = new UndefinedError(errorNumber, extraInfo);
         }
-        if (error instanceof UnresolvedError) {
+        if (error instanceof UndefinedError) {
             Logger.getLogger(ErrorBody.class.getName()).log(Level.FINE,
-                    "The error number {0} is not declared by the operation of this message, "
-                    + "its area or the MAL, so its name could not be resolved.", errorNumber);
+                    "The error number {0} is not defined by the operation of this message, "
+                    + "its area or the MAL.", errorNumber);
         }
         return error;
+    }
+
+    @Override
+    public UInteger getErrorNumber() throws MALException {
+        decodeMessageBody();
+        return (UInteger) messageParts[0];
+    }
+
+    @Override
+    public Object getExtraInformation() throws MALException {
+        decodeMessageBody();
+        return (messageParts.length > 1) ? messageParts[1] : null;
     }
 }

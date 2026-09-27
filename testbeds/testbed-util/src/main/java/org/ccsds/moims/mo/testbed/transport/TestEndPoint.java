@@ -154,7 +154,7 @@ public class TestEndPoint implements MALEndpoint {
     }
 
     public MALMessage createTestMessage(MALMessageHeader header, MOErrorException error, Map props) {
-        return new TestMessage(header, new TestErrorBody(error.getErrorNumber(), error.getExtraInformation()), props);
+        return new TestMessage(header, new TestErrorBody(error), props);
     }
 
     public void receiveMultiple(MALMessage[] messages) {

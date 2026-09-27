@@ -29,7 +29,7 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
  * Represents a MAL error.
  * <p>
  * Every error is an instance of its own class: the class generated for each error a
- * specification defines, or UnresolvedError for a number that resolves to none of them.
+ * specification defines, or UndefinedError for a number that none of them defines.
  */
 public abstract class MOErrorException extends Exception implements Serializable, MALErrorBody {
 

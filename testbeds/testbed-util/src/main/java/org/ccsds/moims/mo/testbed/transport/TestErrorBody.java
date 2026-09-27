@@ -34,21 +34,16 @@ package org.ccsds.moims.mo.testbed.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
-import org.ccsds.moims.mo.mal.UnresolvedError;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALEncodedBody;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 public class TestErrorBody implements MALErrorBody {
 
+    private final MOErrorException error;
 
-    private final UInteger errorNumber;
-
-    private final Object extraInformation;
-
-    public TestErrorBody(UInteger errorNumber, Object extraInformation) {
-        this.errorNumber = errorNumber;
-        this.extraInformation = extraInformation;
+    public TestErrorBody(MOErrorException error) {
+        this.error = error;
     }
 
     public MALEncodedBody getBodyElement() throws MALException {
@@ -59,9 +54,9 @@ public class TestErrorBody implements MALErrorBody {
     public Object getBodyElement(int index, Object element) throws IllegalArgumentException, MALException {
         switch (index) {
             case 0:
-                return errorNumber;
+                return error.getErrorNumber();
             case 1:
-                return extraInformation;
+                return error.getExtraInformation();
             default:
                 throw new MALException("Out of bound index");
         }
@@ -74,12 +69,22 @@ public class TestErrorBody implements MALErrorBody {
 
     @Override
     public MOErrorException getError() throws MALException {
-        return new UnresolvedError(errorNumber, extraInformation);
+        return error;
+    }
+
+    @Override
+    public UInteger getErrorNumber() throws MALException {
+        return error.getErrorNumber();
+    }
+
+    @Override
+    public Object getExtraInformation() throws MALException {
+        return error.getExtraInformation();
     }
 
     @Override
     public String toString() {
-        return "TestErrorBody [errorNumber=" + errorNumber + ", extraInformation="
-                + extraInformation + "]";
+        return "TestErrorBody [errorNumber=" + error.getErrorNumber() + ", extraInformation="
+                + error.getExtraInformation() + "]";
     }
 }

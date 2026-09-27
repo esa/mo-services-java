@@ -102,8 +102,7 @@ public class OperationResponseHolder {
     public void signalResponse(final boolean isError, final MALMessage msg) {
         if (isError) {
             try {
-                signalError(ResolvedErrorBody.resolve(msg.getHeader(),
-                        ((MALErrorBody) msg.getBody()).getError()));
+                signalError(ResolvedErrorBody.errorOf(msg.getHeader(), (MALErrorBody) msg.getBody()));
             } catch (MALException ex) {
                 Logger.getLogger(OperationResponseHolder.class.getName()).log(
                         Level.SEVERE, "Something went wrong!", ex);

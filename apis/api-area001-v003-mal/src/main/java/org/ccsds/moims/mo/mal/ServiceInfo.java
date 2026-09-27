@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
@@ -168,22 +169,18 @@ public abstract class ServiceInfo {
             Object extraInfo);
 
     /**
-     * Returns the error an operation of this service returned, as its own class.
-     * <p>
-     * An error that already is its own class is returned unchanged. An UnresolvedError,
-     * which is how a transport decodes an error, is resolved with generateMOError, and
-     * returned unchanged if the number resolves to no error.
+     * Returns the error an operation of this service returned, as its own class: the
+     * one generateMOError resolves the number to, or an UndefinedError where it resolves
+     * to none.
      *
      * @param operationNumber The number of the operation that returned the error.
-     * @param error The error as received.
-     * @return The error as its own class, where the number resolves.
+     * @param errorNumber The error number.
+     * @param extraInfo The extra information.
+     * @return The error.
      */
-    public MOErrorException resolveError(int operationNumber, MOErrorException error) {
-        if (!(error instanceof UnresolvedError)) {
-            return error;
-        }
-        MOErrorException resolved = generateMOError(operationNumber,
-                (int) error.getErrorNumber().getValue(), error.getExtraInformation());
-        return (resolved != null) ? resolved : error;
+    public MOErrorException errorOf(int operationNumber, UInteger errorNumber, Object extraInfo) {
+        MOErrorException error = generateMOError(operationNumber,
+                (int) errorNumber.getValue(), extraInfo);
+        return (error != null) ? error : new UndefinedError(errorNumber, extraInfo);
     }
 }
