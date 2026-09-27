@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.NotFoundException;
+import org.ccsds.moims.mo.mal.UnresolvedError;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -38,12 +39,6 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
 
     private static final long serialVersionUID = 222222222222225L;
 
-    /**
-     * The name given to an error whose number is not declared by the operation of
-     * the message that carried it, its area or the MAL, so that the name cannot be
-     * resolved.
-     */
-    private static final String UNRESOLVED_ERROR_NAME = "UNRESOLVED";
 
     /**
      * Constructor.
@@ -77,7 +72,7 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
         decodeMessageBody();
         UInteger errorNumber = (UInteger) messageParts[0];
         Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
-        MOErrorException error = new MOErrorException(UNRESOLVED_ERROR_NAME, errorNumber, extraInfo);
+        MOErrorException error = new UnresolvedError(errorNumber, extraInfo);
         try {
             error = ctx.getHeader().getServiceInfo().resolveError(
                     ctx.getHeader().getOperation().getValue(), error);
@@ -85,7 +80,7 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
             Logger.getLogger(ErrorBody.class.getName()).log(Level.SEVERE,
                     "The serviceInfo for this message was not found!", ex);
         }
-        if (error.getClass() == MOErrorException.class) {
+        if (error instanceof UnresolvedError) {
             Logger.getLogger(ErrorBody.class.getName()).log(Level.FINE,
                     "The error number {0} is not declared by the operation of this message, "
                     + "its area or the MAL, so its name could not be resolved.", errorNumber);

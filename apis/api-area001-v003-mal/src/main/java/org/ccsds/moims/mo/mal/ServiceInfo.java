@@ -170,16 +170,16 @@ public abstract class ServiceInfo {
     /**
      * Returns the error an operation of this service returned, as its own class.
      * <p>
-     * An error that already is its own class is returned unchanged. One that arrived as a
-     * bare number, which is how a transport decodes it, is resolved with generateMOError,
-     * and returned unchanged if the number resolves to no error.
+     * An error that already is its own class is returned unchanged. An UnresolvedError,
+     * which is how a transport decodes an error, is resolved with generateMOError, and
+     * returned unchanged if the number resolves to no error.
      *
      * @param operationNumber The number of the operation that returned the error.
      * @param error The error as received.
      * @return The error as its own class, where the number resolves.
      */
     public MOErrorException resolveError(int operationNumber, MOErrorException error) {
-        if (error == null || error.getClass() != MOErrorException.class) {
+        if (!(error instanceof UnresolvedError)) {
             return error;
         }
         MOErrorException resolved = generateMOError(operationNumber,
