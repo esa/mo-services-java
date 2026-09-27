@@ -345,36 +345,6 @@ public class HelperMisc {
     }
 
     /**
-     * Finds the service name from the area, areaVersion and service numbers
-     *
-     * @param area Area of the service
-     * @param areaVersion Area version of the service
-     * @param service Service number
-     * @return The name of the service
-     * @throws org.ccsds.moims.mo.mal.MALException The area/service is Unknown
-     */
-    @Deprecated
-    public static String serviceKey2name(UShort area, UOctet areaVersion, UShort service) throws MALException {
-        MALArea malArea = MALContextFactory.lookupArea(area, areaVersion);
-
-        if (malArea == null) {
-            throw new MALException(
-                    "(" + area.getValue() + "," + areaVersion.getValue() + "," + service.getValue() + ") "
-                    + "Unknown area to the MAL! Maybe the API was not initialized.");
-        }
-
-        ServiceInfo malSer = malArea.getServiceByNumber(service);
-
-        if (malSer == null) {
-            throw new MALException(
-                    "(" + area.getValue() + "," + areaVersion.getValue() + "," + service.getValue() + ") "
-                    + "Unknown service to the MAL! Maybe the API was not initialized.");
-        }
-
-        return malSer.getName().toString();
-    }
-
-    /**
      * Sets the number of input processors for the transport layer.
      */
     public static void setInputProcessorsProperty() {

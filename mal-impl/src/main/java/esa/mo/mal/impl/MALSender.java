@@ -554,26 +554,6 @@ public class MALSender {
         return msg;
     }
 
-    @Deprecated
-    private void initiateMultiOnewayInteraction(final MALEndpoint ep,
-            final List<MALMessage> msgs) throws MALInteractionException, MALException {
-        try {
-            for (int i = 0; i < msgs.size(); i++) {
-                MALMessage msg = msgs.get(i);
-                msg = securityManager.check(msg);
-                msgs.set(i, msg);
-            }
-
-            ep.sendMessages(msgs.toArray(new MALMessage[msgs.size()]));
-        } catch (IllegalArgumentException ex) {
-            throw new MALException("ERROR: Error with one way send : IllegalArgumentException : ", ex);
-        } catch (MALException ex) {
-            MALContextFactoryImpl.LOGGER.log(Level.WARNING,
-                    "Error with multi one way send : {0}", ep.getURI());
-            throw ex;
-        }
-    }
-
     private Long initiateSynchronousInteraction(final MessageTarget details,
             final MALOperation op, final UOctet syncStage,
             final MALPublishInteractionListener listener,
@@ -599,7 +579,7 @@ public class MALSender {
             if (rtn.getHeader().getIsErrorMessage()) {
                 if (rtn.getBody() instanceof MALErrorBody) {
                     MALErrorBody errorBody = (MALErrorBody) rtn.getBody();
-                    MOErrorException error = errorBody.getError();
+                    MOErrorException error = ResolvedErrorBody.errorOf(rtn.getHeader(), errorBody);
                     MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                             "The provider returned an MO Error: {0}", error.toString());
                     throw new MALInteractionException(error);

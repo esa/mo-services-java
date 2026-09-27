@@ -26,13 +26,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.OneProductDataset;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Time;
 import org.ccsds.moims.mo.mal.structures.URI;
-import org.ccsds.moims.mo.mpd.MPDHelper;
+import org.ccsds.moims.mo.mpd.InvalidException;
+import org.ccsds.moims.mo.mpd.OrderFailedException;
+import org.ccsds.moims.mo.mpd.UnknownException;
 import org.ccsds.moims.mo.mpd.structures.AttributeFilter;
 import org.ccsds.moims.mo.mpd.structures.AttributeFilterList;
 import org.ccsds.moims.mo.mpd.structures.DeliveryMethodEnum;
@@ -72,7 +74,7 @@ public class OrderManagementTest extends MPDTest {
             StandingOrderList standingOrders = consumerOM.listStandingOrders(user, domain);
             int size = standingOrders.size();
             assertEquals(0, size);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
@@ -95,7 +97,7 @@ public class OrderManagementTest extends MPDTest {
 
         try {
             test(user, domain, dMethod, null, null, 1);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
@@ -116,7 +118,7 @@ public class OrderManagementTest extends MPDTest {
 
         try {
             test(user, domain, dMethod, null, null, 0);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(OrderManagementTest.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         }
@@ -136,19 +138,8 @@ public class OrderManagementTest extends MPDTest {
         AttributeFilter attributeFilter = null;
         Time now = Time.now();
         TimeWindow validityPeriod = new TimeWindow(now, new Time(now.getValue() - 100));
-        try {
-            test(user, domain, dMethod, attributeFilter, validityPeriod, 0);
-            fail("The operation was expected to throw an Invalid exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an Invalid exception!");
-            }
-        }
+        assertThrows(InvalidException.class, () -> test(user, domain, dMethod, attributeFilter, validityPeriod, 0));
+        Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
     /**
@@ -161,19 +152,8 @@ public class OrderManagementTest extends MPDTest {
         DeliveryMethodEnum dMethod = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = null;
 
-        try {
-            testMOErrorSubmitStandingOrder(dMethod, deliverTo);
-            fail("The operation was expected to throw an Invalid exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an Invalid exception!");
-            }
-        }
+        assertThrows(InvalidException.class, () -> testMOErrorSubmitStandingOrder(dMethod, deliverTo));
+        Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
     /**
@@ -186,19 +166,8 @@ public class OrderManagementTest extends MPDTest {
         DeliveryMethodEnum dMethod = DeliveryMethodEnum.SERVICE_COMPLETE;
         URI deliverTo = new URI("file://tmp/testfolder/");
 
-        try {
-            testMOErrorSubmitStandingOrder(dMethod, deliverTo);
-            fail("The operation was expected to throw an Invalid exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an Invalid exception!");
-            }
-        }
+        assertThrows(InvalidException.class, () -> testMOErrorSubmitStandingOrder(dMethod, deliverTo));
+        Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
     /**
@@ -211,19 +180,8 @@ public class OrderManagementTest extends MPDTest {
         DeliveryMethodEnum dMethod = DeliveryMethodEnum.FILETRANSFER;
         URI deliverTo = new URI("wrongscheme://123.4.5.6:1234/folder/");
 
-        try {
-            testMOErrorSubmitStandingOrder(dMethod, deliverTo);
-            fail("The operation was expected to throw an 'Order Failed' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.ORDER_FAILED_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Order Failed' exception!");
-            }
-        }
+        assertThrows(OrderFailedException.class, () -> testMOErrorSubmitStandingOrder(dMethod, deliverTo));
+        Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
     /**
@@ -233,24 +191,13 @@ public class OrderManagementTest extends MPDTest {
     public void testCase_08() {
         System.out.println("Running: testCase_08()");
 
-        try {
-            Random random = new Random();
-            Long orderId = random.nextLong();
-            testMOErrorCancelStandingOrder(orderId);
-            fail("The operation was expected to throw an 'Unknown' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.UNKNOWN_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Unknown' exception!");
-            }
-        }
+        Random random = new Random();
+        Long orderId = random.nextLong();
+        assertThrows(UnknownException.class, () -> testMOErrorCancelStandingOrder(orderId));
+        Logger.getLogger(OrderManagementTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
-    private void testMOErrorCancelStandingOrder(Long orderId) throws MALInteractionException {
+    private void testMOErrorCancelStandingOrder(Long orderId) throws UnknownException, MALStandardError {
         try {
             consumerOM.cancelStandingOrder(orderId);
         } catch (MALException ex) {
@@ -259,7 +206,8 @@ public class OrderManagementTest extends MPDTest {
         }
     }
 
-    private void testMOErrorSubmitStandingOrder(DeliveryMethodEnum dMethod, URI deliverTo) throws MALInteractionException {
+    private void testMOErrorSubmitStandingOrder(DeliveryMethodEnum dMethod, URI deliverTo)
+            throws InvalidException, OrderFailedException, UnknownException, MALStandardError {
         try {
             Identifier user = new Identifier("john.doe");
             StandingOrder orderDetails = new StandingOrder(null, user,
@@ -280,7 +228,8 @@ public class OrderManagementTest extends MPDTest {
     }
 
     private void test(Identifier user, IdentifierList domain, DeliveryMethodEnum dMethod, AttributeFilter attributeFilter,
-            TimeWindow validityPeriod, int expectedNumberOfResults) throws MALInteractionException {
+            TimeWindow validityPeriod, int expectedNumberOfResults)
+            throws InvalidException, OrderFailedException, UnknownException, MALStandardError {
         try {
             IdentifierList domainFilter = new IdentifierList();
             domainFilter.add(new Identifier("nasa"));

@@ -27,6 +27,10 @@ import org.ccsds.moims.mo.mal.MOErrorException;
 /**
  * The MALTransmitErrorException class represents a TRANSMIT ERROR as an
  * exception.
+ * <p>
+ * The error it carries takes this exception as its cause, so that a consumer
+ * stub, which throws the error itself, still reaches the header of the message
+ * that could not be transmitted.
  */
 public class MALTransmitErrorException extends MALInteractionException {
 
@@ -46,6 +50,10 @@ public class MALTransmitErrorException extends MALInteractionException {
         super(standardError);
         this.header = header;
         this.qosProperties = qosProperties;
+
+        if ((standardError != null) && (standardError.getCause() == null)) {
+            standardError.initCause(this);
+        }
     }
 
     /**

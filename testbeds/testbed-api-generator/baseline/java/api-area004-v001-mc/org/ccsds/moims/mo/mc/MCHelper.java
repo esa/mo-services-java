@@ -73,6 +73,24 @@ public class MCHelper {
      */
     public static final org.ccsds.moims.mo.mal.structures.UInteger REFERENCED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_REFERENCED_ERROR_NUMBER);
 
+    /**
+     * Returns the exception of the error of this area with the given number.
+     * 
+     * @param errorNumber The number of the error.
+     * @param extraInfo The extra information of the error.
+     * @return the exception, or null if the area declares no error with that number
+     */
+    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+            Object extraInfo) {
+        switch (errorNumber) {
+            case 70020:
+                return new org.ccsds.moims.mo.mc.ReadonlyException(extraInfo);
+            case 70021:
+                return new org.ccsds.moims.mo.mc.ReferencedException(extraInfo);
+        }
+        return null;
+    }
+
     private MCHelper() {
         // Utility class; not meant to be instantiated.
     }

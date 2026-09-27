@@ -23,12 +23,11 @@ The SUBMIT acknowledgement shall be returned once the action has been accepted f
      * @throws org.ccsds.moims.mo.com.InvalidException The list sizes held in the ActionInstanceDetails do not match the argument definitions or it contains one or more invalid argument values.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
      * @throws org.ccsds.moims.mo.mal.UnknownException Submitted action definition is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void submitAction(Long actionInstId,
             org.ccsds.moims.mo.mc.action.structures.ActionInstanceDetails actionDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation preCheckAction.
      * 
@@ -40,11 +39,10 @@ A service provider may apply some deployment specific checks to the action insta
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.com.InvalidException The argument list contains one or more invalid arguments.
      * @throws org.ccsds.moims.mo.mal.UnknownException Submitted action definition is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     Boolean preCheckAction(org.ccsds.moims.mo.mc.action.structures.ActionInstanceDetails actionDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation listDefinition.
      * 
@@ -55,11 +53,10 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ObjectInstancePairList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList actionNames,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation addAction.
      * 
@@ -73,11 +70,10 @@ The provider shall create a new ActionDefinition object and store it, and any ne
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied ActionIdentity objects contains an invalid action name.
      * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the ActionIdentity objects being added has supplied an action name that is already in use in the domain.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addAction(org.ccsds.moims.mo.mc.action.structures.ActionCreationRequestList actionDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation updateDefinition.
      * 
@@ -95,12 +91,11 @@ The new ActionDefinition object shall be the current ActionDefinition used for t
      * @throws org.ccsds.moims.mo.com.InvalidException The supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied ActionIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.LongList updateDefinition(org.ccsds.moims.mo.mal.structures.LongList actionObjInstIds,
             org.ccsds.moims.mo.mc.action.structures.ActionDefinitionDetailsList actionDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation removeAction.
      * 
@@ -114,11 +109,10 @@ Removed ActionIdentity object shall not be allowed to be referenced by new actio
 If an error is raised then no actions shall be removed as a result of this operation call.
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied ActionIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void removeAction(org.ccsds.moims.mo.mal.structures.LongList actionInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 

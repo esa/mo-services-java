@@ -22,6 +22,7 @@ package org.ccsds.moims.mo.mal.transport;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 
 /**
  * The MALErrorBody interface gives access to the body of an ERROR message,
@@ -36,4 +37,20 @@ public interface MALErrorBody extends MALMessageBody {
      * @throws MALException If an error occurs
      */
     MOErrorException getError() throws MALException;
+
+    /**
+     * The method returns the number of the error in the ERROR message.
+     *
+     * @return The error number.
+     * @throws MALException If an error occurs
+     */
+    UInteger getErrorNumber() throws MALException;
+
+    /**
+     * The method returns the extra information of the error in the ERROR message.
+     *
+     * @return The extra information, may be null.
+     * @throws MALException If an error occurs
+     */
+    Object getExtraInformation() throws MALException;
 }

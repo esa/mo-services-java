@@ -39,6 +39,8 @@ import java.util.StringTokenizer;
 import java.util.concurrent.CountDownLatch;
 
 import org.ccsds.moims.mo.com.COMHelper;
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
 import org.ccsds.moims.mo.com.archive.ArchiveServiceInfo;
 import org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter;
 import org.ccsds.moims.mo.com.archive.structures.ArchiveDetails;
@@ -67,9 +69,9 @@ import org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload;
 import org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayloadList;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.BlobList;
@@ -654,8 +656,8 @@ public class ArchiveScenario {
         try {
             returnedInstanceIds = LocalMALInstance.instance().archiveStub().store(
                     returnInstanceIds, objectType, domain, archiveDetailsList, objs);
-        } catch (MALInteractionException exc) {
-            onStoreError(exc.getStandardError());
+        } catch (MOErrorException exc) {
+            onStoreError(exc);
         }
 
         LoggingBase.logMessage("returnedInstanceIds=" + returnedInstanceIds);
@@ -665,12 +667,12 @@ public class ArchiveScenario {
 
     private void onStoreError(MOErrorException error) {
         returnedError = error;
-        if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        if (returnedError instanceof InvalidException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 invalidStoreIndexes = (UIntegerList) extraInfo;
             }
-        } else if (COMHelper.DUPLICATE_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        } else if (returnedError instanceof DuplicateException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 duplicateStoreIndexes = (UIntegerList) extraInfo;
@@ -698,8 +700,8 @@ public class ArchiveScenario {
         try {
             LocalMALInstance.instance().archiveStub().update(
                     objectType, domain, archiveDetailsList, objs);
-        } catch (MALInteractionException exc) {
-            onUpdateError(exc.getStandardError());
+        } catch (MOErrorException exc) {
+            onUpdateError(exc);
         }
 
         LoggingBase.logMessage("returnedError=" + returnedError);
@@ -708,12 +710,12 @@ public class ArchiveScenario {
 
     private void onUpdateError(MOErrorException error) {
         returnedError = error;
-        if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        if (returnedError instanceof InvalidException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 invalidUpdateIndexes = (UIntegerList) extraInfo;
             }
-        } else if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        } else if (returnedError instanceof UnknownException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 unknownUpdateIndexes = (UIntegerList) extraInfo;
@@ -738,8 +740,8 @@ public class ArchiveScenario {
         try {
             deletedInstanceIds = LocalMALInstance.instance().archiveStub().delete(
                     objectType, domain, instanceIdsToDelete);
-        } catch (MALInteractionException exc) {
-            onDeleteError(exc.getStandardError());
+        } catch (MOErrorException exc) {
+            onDeleteError(exc);
         }
 
         LoggingBase.logMessage("deletedInstanceIds=" + deletedInstanceIds);
@@ -749,7 +751,7 @@ public class ArchiveScenario {
 
     private void onDeleteError(MOErrorException error) {
         returnedError = error;
-        if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        if (returnedError instanceof UnknownException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 unknownDeleteIndexes = (UIntegerList) extraInfo;
@@ -782,15 +784,15 @@ public class ArchiveScenario {
     }
 
     public boolean returnedErrorIsInvalid() {
-        return returnedError.getErrorNumber().getValue() == COMHelper._INVALID_ERROR_NUMBER;
+        return returnedError instanceof InvalidException;
     }
 
     public boolean returnedErrorIsUnknown() {
-        return returnedError.getErrorNumber().getValue() == MALHelper._UNKNOWN_ERROR_NUMBER;
+        return returnedError instanceof UnknownException;
     }
 
     public boolean returnedErrorIsDuplicate() {
-        return returnedError.getErrorNumber().getValue() == COMHelper._DUPLICATE_ERROR_NUMBER;
+        return returnedError instanceof DuplicateException;
     }
 
     public boolean noReturnedError() {
@@ -816,8 +818,8 @@ public class ArchiveScenario {
         try {
             LocalMALInstance.instance().archiveStub().retrieve(objectType, domain, instanceIdsToRetrieve, archiveAdapter);
             archiveAdapter.waitResponse();
-        } catch (MALInteractionException exc) {
-            onRetrieveError(exc.getStandardError());
+        } catch (MOErrorException exc) {
+            onRetrieveError(exc);
         }
 
         LoggingBase.logMessage("retrievedArchiveDetailsList=" + retrievedArchiveDetailsList + ")");
@@ -830,7 +832,7 @@ public class ArchiveScenario {
 
     private void onRetrieveError(MOErrorException error) {
         returnedError = error;
-        if (MALHelper.UNKNOWN_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        if (returnedError instanceof UnknownException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 LoggingBase.logMessage("set unknownRetrieveIndexes");
@@ -875,7 +877,7 @@ public class ArchiveScenario {
                     .monitorEventRegister(subscription, new ArchiveEventListener());
             LoggingBase.logMessage("subscribeToArchiveEvents calling monitorEventRegister RET");
             return true;
-        } catch (MALInteractionException exc) {
+        } catch (MOErrorException exc) {
             LoggingBase.logMessage("subscribeToArchiveEvents MALInteractionException " + exc);
             exc.printStackTrace();
             return false;
@@ -893,7 +895,7 @@ public class ArchiveScenario {
             LocalMALInstance.instance().archiveEventStub()
                     .monitorEventDeregister(ids);
             return true;
-        } catch (MALInteractionException exc) {
+        } catch (MOErrorException exc) {
             return false;
         } catch (MALException exc) {
             return false;
@@ -1142,8 +1144,8 @@ public class ArchiveScenario {
                     archiveAdapter);
 
             archiveAdapter.waitResponse();
-        } catch (MALInteractionException exc) {
-            onQueryError(exc.getStandardError());
+        } catch (MOErrorException exc) {
+            onQueryError(exc);
         }
 
         LoggingBase.logMessage("queriedArchiveDetailsList=" + queriedArchiveDetailsList + ")");
@@ -1158,7 +1160,7 @@ public class ArchiveScenario {
 
     private void onQueryError(MOErrorException error) {
         returnedError = error;
-        if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        if (returnedError instanceof InvalidException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 invalidQueryIndexes = (UIntegerList) extraInfo;
@@ -1182,8 +1184,8 @@ public class ArchiveScenario {
                     archiveAdapter);
 
             archiveAdapter.waitResponse();
-        } catch (MALInteractionException exc) {
-            onCountError(exc.getStandardError());
+        } catch (MOErrorException exc) {
+            onCountError(exc);
         }
 
         LoggingBase.logMessage("countArchiveDetailsList=" + countLongList + ")");
@@ -1195,7 +1197,7 @@ public class ArchiveScenario {
 
     private void onCountError(MOErrorException error) {
         returnedError = error;
-        if (COMHelper.INVALID_ERROR_NUMBER.equals(returnedError.getErrorNumber())) {
+        if (returnedError instanceof InvalidException) {
             Object extraInfo = returnedError.getExtraInformation();
             if (extraInfo instanceof UIntegerList) {
                 invalidQueryIndexes = (UIntegerList) extraInfo;

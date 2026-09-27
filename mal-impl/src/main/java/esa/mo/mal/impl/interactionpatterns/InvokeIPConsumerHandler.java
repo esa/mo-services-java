@@ -21,6 +21,7 @@
 package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
+import esa.mo.mal.impl.ResolvedErrorBody;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.IncorrectStateException;
@@ -71,7 +72,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
 
                     if (isError) {
                         finished = true;
-                        listener.invokeAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                        listener.invokeAckErrorReceived(header, new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), qos);
                     } else {
                         listener.invokeAckReceived(header, msg.getBody(), qos);
                     }
@@ -89,7 +90,7 @@ public final class InvokeIPConsumerHandler extends IPConsumerHandler {
 
             if (interactionStage == MALInvokeOperation._INVOKE_RESPONSE_STAGE) {
                 if (isError) {
-                    listener.invokeResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                    listener.invokeResponseErrorReceived(header, new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), qos);
                 } else {
                     listener.invokeResponseReceived(header, msg.getBody(), qos);
                 }

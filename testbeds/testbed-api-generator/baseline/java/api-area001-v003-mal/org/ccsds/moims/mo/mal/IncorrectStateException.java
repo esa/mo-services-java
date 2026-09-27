@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The IncorrectStateException exception. The destination was not in the correct
  * state for the received message.
  */
-public final class IncorrectStateException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class IncorrectStateException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Incorrect State";
 

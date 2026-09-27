@@ -170,6 +170,44 @@ public class MPSHelper {
      */
     public static final org.ccsds.moims.mo.mal.structures.UInteger DEACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DEACTIVATE_SUBPLAN_FAILED_ERROR_NUMBER);
 
+    /**
+     * Returns the exception of the error of this area with the given number.
+     * 
+     * @param errorNumber The number of the error.
+     * @param extraInfo The extra information of the error.
+     * @return the exception, or null if the area declares no error with that number
+     */
+    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+            Object extraInfo) {
+        switch (errorNumber) {
+            case 1:
+                return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+            case 2:
+                return new org.ccsds.moims.mo.mps.CancelFailedException(extraInfo);
+            case 3:
+                return new org.ccsds.moims.mo.mps.UpdateFailedException(extraInfo);
+            case 4:
+                return new org.ccsds.moims.mo.mps.RevokeFailedException(extraInfo);
+            case 5:
+                return new org.ccsds.moims.mo.mps.InsertFailedException(extraInfo);
+            case 6:
+                return new org.ccsds.moims.mo.mps.DeleteFailedException(extraInfo);
+            case 7:
+                return new org.ccsds.moims.mo.mps.ActivateFailedException(extraInfo);
+            case 8:
+                return new org.ccsds.moims.mo.mps.DeactivateFailedException(extraInfo);
+            case 9:
+                return new org.ccsds.moims.mo.mps.SubmitFailedException(extraInfo);
+            case 10:
+                return new org.ccsds.moims.mo.mps.UnsupportedException(extraInfo);
+            case 11:
+                return new org.ccsds.moims.mo.mps.ActivateSubplanFailedException(extraInfo);
+            case 12:
+                return new org.ccsds.moims.mo.mps.DeactivateSubplanFailedException(extraInfo);
+        }
+        return null;
+    }
+
     private MPSHelper() {
         // Utility class; not meant to be instantiated.
     }

@@ -21,6 +21,7 @@
 package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
+import esa.mo.mal.impl.ResolvedErrorBody;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.IncorrectStateException;
@@ -158,7 +159,7 @@ public class SubmitIPConsumerHandler extends IPConsumerHandler {
     protected void informListener(final MALMessage msg) throws MALException {
         if (msg.getHeader().getIsErrorMessage()) {
             responseHolder.getListener().submitErrorReceived(msg.getHeader(),
-                    (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+                    new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), msg.getQoSProperties());
         } else {
             responseHolder.getListener().submitAckReceived(msg.getHeader(),
                     msg.getQoSProperties());

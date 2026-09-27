@@ -326,13 +326,13 @@ public class DemoProviderServiceImpl extends BasicMonitorInheritanceSkeleton {
     public ReturnMultipleResponse returnMultiple(final ComplexComposite lComplexComposite0,
             final ComplexComposite lComplexComposite1,
             final ComplexComposite lComplexComposite2,
-            final MALInteraction interaction) throws MALInteractionException, MALException {
+            final MALInteraction interaction) throws MALException {
         return new ReturnMultipleResponse(lComplexComposite0, lComplexComposite1, lComplexComposite2);
     }
 
     @Override
     public void testSubmit(final ComplexComposite lComplexComposite, final MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         // Do nothing
     }
 

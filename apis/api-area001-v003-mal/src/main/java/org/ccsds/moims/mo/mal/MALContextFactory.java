@@ -79,43 +79,6 @@ public abstract class MALContextFactory {
     }
 
     /**
-     * Registers an Error number to an Error name. This method will be removed
-     * in the future as it is not used anywhere other than in the init methods.
-     * This slows down start-up and does not add value.
-     *
-     * @param areaNumber The Area number.
-     * @param areaVersion The Area version.
-     * @param errorNumber The number to use.
-     * @param errorName The matching name to the number.
-     * @throws java.lang.IllegalArgumentException if either is null.
-     * @throws MALException If already registered the number.
-     */
-    @Deprecated
-    private static void registerError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber,
-            Identifier errorName) throws java.lang.IllegalArgumentException, MALException {
-        if (areaNumber == null || areaVersion == null || errorNumber == null || errorName == null) {
-            throw new IllegalArgumentException("NULL argument");
-        }
-
-        synchronized (ERRORS) {
-            final Long key = generateKey(areaNumber, areaVersion, errorNumber);
-            final Identifier name = ERRORS.get(key);
-
-            if ((name != null) && !(name.equals(errorName))) {
-                throw new MALException("Error already registered with a different name!");
-            }
-
-            ERRORS.put(key, errorName);
-        }
-    }
-
-    private static long generateKey(UShort areaNumber, UOctet areaVersion, UInteger errorNumber) {
-        return ((long) areaNumber.getValue()) << 48
-                | ((long) areaVersion.getValue()) << 32
-                | ((long) errorNumber.getValue());
-    }
-
-    /**
      * Look up a MALArea from an area name.
      *
      * @param areaName The area name to search for.
@@ -161,22 +124,6 @@ public abstract class MALContextFactory {
 
         return (MALArea) VERSIONIZED_AREA_NUMBER_MAP.get(
                 new VersionizedAreaNumber(areaNumber.getValue(), version.getValue()));
-    }
-
-    /**
-     * Look up an error name from its number. This method will be removed in the
-     * future because it is not being used anywhere and having a HashMap costs
-     * memory and time during start-up.
-     *
-     * @param areaNumber The Area number.
-     * @param areaVersion The Area version.
-     * @param errorNumber The error name.
-     * @return The error number or null if not found.
-     */
-    @Deprecated
-    public static Identifier lookupError(UShort areaNumber, UOctet areaVersion, UInteger errorNumber) {
-        Long key = generateKey(areaNumber, areaVersion, errorNumber);
-        return ERRORS.get(key);
     }
 
     /**

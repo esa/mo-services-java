@@ -22,24 +22,42 @@ package org.ccsds.moims.mo.mal.test.regression.fastprovider.fasttransport;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.NotFoundException;
+import org.ccsds.moims.mo.mal.UndefinedError;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 
 /**
  *
  */
 public class FastErrorBody extends FastBody implements MALErrorBody {
 
-    public FastErrorBody(Object[] body) {
+
+    private final MALMessageHeader header;
+
+    public FastErrorBody(MALMessageHeader header, Object[] body) {
         super(body);
+        this.header = header;
     }
 
     @Override
     public MOErrorException getError() throws MALException {
-        if (body.length > 1) {
-            return new MOErrorException((UInteger) body[0], body[1]);
-        } else {
-            return new MOErrorException((UInteger) body[0], null);
+        try {
+            return header.getServiceInfo().errorOf(header.getOperation().getValue(),
+                    getErrorNumber(), getExtraInformation());
+        } catch (NotFoundException ex) {
+            return new UndefinedError(getErrorNumber(), getExtraInformation());
         }
+    }
+
+    @Override
+    public UInteger getErrorNumber() throws MALException {
+        return (UInteger) body[0];
+    }
+
+    @Override
+    public Object getExtraInformation() throws MALException {
+        return (body.length > 1) ? body[1] : null;
     }
 }

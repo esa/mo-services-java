@@ -245,6 +245,60 @@ public class MALHelper {
      */
     public static final org.ccsds.moims.mo.mal.structures.UInteger TRANSACTION_TIMEOUT_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_TRANSACTION_TIMEOUT_ERROR_NUMBER);
 
+    /**
+     * Returns the exception of the error of this area with the given number.
+     * 
+     * @param errorNumber The number of the error.
+     * @param extraInfo The extra information of the error.
+     * @return the exception, or null if the area declares no error with that number
+     */
+    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+            Object extraInfo) {
+        switch (errorNumber) {
+            case 65536:
+                return new org.ccsds.moims.mo.mal.DeliveryFailedException(extraInfo);
+            case 65537:
+                return new org.ccsds.moims.mo.mal.DeliveryTimedoutException(extraInfo);
+            case 65538:
+                return new org.ccsds.moims.mo.mal.DeliveryDelayedException(extraInfo);
+            case 65539:
+                return new org.ccsds.moims.mo.mal.DestinationUnknownException(extraInfo);
+            case 65540:
+                return new org.ccsds.moims.mo.mal.DestinationTransientException(extraInfo);
+            case 65541:
+                return new org.ccsds.moims.mo.mal.DestinationLostException(extraInfo);
+            case 65542:
+                return new org.ccsds.moims.mo.mal.AuthenticationFailedException(extraInfo);
+            case 65543:
+                return new org.ccsds.moims.mo.mal.AuthorisationFailException(extraInfo);
+            case 65544:
+                return new org.ccsds.moims.mo.mal.EncryptionFailException(extraInfo);
+            case 65545:
+                return new org.ccsds.moims.mo.mal.UnsupportedAreaException(extraInfo);
+            case 65546:
+                return new org.ccsds.moims.mo.mal.UnsupportedAreaVersionException(extraInfo);
+            case 65547:
+                return new org.ccsds.moims.mo.mal.UnsupportedServiceException(extraInfo);
+            case 65548:
+                return new org.ccsds.moims.mo.mal.UnsupportedOperationException(extraInfo);
+            case 65549:
+                return new org.ccsds.moims.mo.mal.BadEncodingException(extraInfo);
+            case 65550:
+                return new org.ccsds.moims.mo.mal.InternalException(extraInfo);
+            case 65551:
+                return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+            case 65552:
+                return new org.ccsds.moims.mo.mal.IncorrectStateException(extraInfo);
+            case 65553:
+                return new org.ccsds.moims.mo.mal.TooManyException(extraInfo);
+            case 65554:
+                return new org.ccsds.moims.mo.mal.ShutdownException(extraInfo);
+            case 65555:
+                return new org.ccsds.moims.mo.mal.TransactionTimeoutException(extraInfo);
+        }
+        return null;
+    }
+
     private MALHelper() {
         // Utility class; not meant to be instantiated.
     }

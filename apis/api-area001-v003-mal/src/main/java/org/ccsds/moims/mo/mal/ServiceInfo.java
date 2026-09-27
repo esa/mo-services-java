@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.ccsds.moims.mo.mal.structures.Element;
 import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.UOctet;
 import org.ccsds.moims.mo.mal.structures.UShort;
 
@@ -155,11 +156,31 @@ public abstract class ServiceInfo {
     public abstract MALArea getArea();
 
     /**
-     * Generates a specific MO Error for this service based on the error number.
+     * Generates the specific MO Error an operation of this service returned, based on the
+     * error number. The number is resolved against the errors the operation declares, then
+     * the errors of the service's area, then the MAL standard errors.
      *
+     * @param operationNumber The number of the operation that returned the error.
      * @param errorNumber The error number.
      * @param extraInfo The extra information.
-     * @return The specific MO Error.
+     * @return The specific MO Error, or null if the number resolves to no error.
      */
-    public abstract MOErrorException generateMOError(int errorNumber, Object extraInfo);
+    public abstract MOErrorException generateMOError(int operationNumber, int errorNumber,
+            Object extraInfo);
+
+    /**
+     * Returns the error an operation of this service returned, as its own class: the
+     * one generateMOError resolves the number to, or an UndefinedError where it resolves
+     * to none.
+     *
+     * @param operationNumber The number of the operation that returned the error.
+     * @param errorNumber The error number.
+     * @param extraInfo The extra information.
+     * @return The error.
+     */
+    public MOErrorException errorOf(int operationNumber, UInteger errorNumber, Object extraInfo) {
+        MOErrorException error = generateMOError(operationNumber,
+                (int) errorNumber.getValue(), extraInfo);
+        return (error != null) ? error : new UndefinedError(errorNumber, extraInfo);
+    }
 }

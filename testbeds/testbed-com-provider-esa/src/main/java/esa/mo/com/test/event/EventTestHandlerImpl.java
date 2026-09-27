@@ -20,6 +20,8 @@
  */
 package esa.mo.com.test.event;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
 import org.ccsds.moims.mo.com.test.util.ComStructureHelper;
 import java.util.Hashtable;
 import org.ccsds.moims.mo.com.archive.ArchiveHelper;
@@ -49,6 +51,8 @@ import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdateList;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.UpdateComposite;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -111,60 +115,78 @@ public class EventTestHandlerImpl implements EventTestHandler {
      *
      * @param interaction The MAL object representing the interaction in the
      * provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a
-     * problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation
      * exception.
      */
     @Override
     public void resetTest(String eventDomain, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         LoggingBase.logMessage(CLS + ":resetTest " + eventDomain);
         eventDomainId = new IdentifierList();
         eventDomainId.add(new Identifier(eventDomain));
         // if (monitorEventPublisher == null) 
         {
-            createMonitorEventPublisher(eventDomainId);
+            try {
+                createMonitorEventPublisher(eventDomainId);
+            } catch (MALInteractionException ex) {
+                throw new MALException(ex.getMessage(), ex);
+            }
 
         }
     }
 
     @Override
     public Long createinstance(Short objectNumber, String domain, String desc,
-            Long parentInstId, MALInteraction inter) throws MALInteractionException, MALException {
+            Long parentInstId, MALInteraction inter) throws MALException {
         LoggingBase.logMessage(CLS + ":createInstance domain = "
                 + domain + " desc = " + desc);
         testObjectDetailsList.add(new TestObjectDetails(domain, objectNumber, parentInstId, desc));
-        publishTestObjectCreation(desc, domain, true,
-                instCount, objectNumber, parentInstId, inter);
+        try {
+            publishTestObjectCreation(desc, domain, true,
+                    instCount, objectNumber, parentInstId, inter);
+        } catch (MALInteractionException | MOErrorException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
         return new Long(instCount++);
     }
 
     @Override
     public void deleteInstance(Short objectNumber, String domain, Long instId, MALInteraction inter)
-            throws MALInteractionException, MALException {
+            throws MALException {
         LoggingBase.logMessage(CLS + ":deleteInstance domain = "
                 + domain + " instId = " + instId);
-        publishTestObjectDeletion(domain, instId, objectNumber, inter);
+        try {
+            publishTestObjectDeletion(domain, instId, objectNumber, inter);
+        } catch (MALInteractionException | MOErrorException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     @Override
     public void updateInstance(Long instId, BasicEnum enumField, Duration durationField,
             ShortList shortListField, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         LoggingBase.logMessage(CLS + ":updateInstance instId = "
                 + instId + " enumField = " + enumField + " durationField = " + durationField);
-        publishTestObjectUpdate(instId,
-                enumField, durationField, shortListField, null, null, null, interaction);
+        try {
+            publishTestObjectUpdate(instId,
+                    enumField, durationField, shortListField, null, null, null, interaction);
+        } catch (MALInteractionException | MOErrorException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     @Override
     public void updateInstanceComposite(Long instId, UOctet uOctetField, Byte octetField, Double doubleField,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         LoggingBase.logMessage(CLS + ":updateInstance instId = "
                 + instId + " uOctetField = " + uOctetField + " octetField = " + octetField);
-        publishTestObjectUpdate(instId,
-                null, null, null, uOctetField, octetField, doubleField, interaction);
+        try {
+            publishTestObjectUpdate(instId,
+                    null, null, null, uOctetField, octetField, doubleField, interaction);
+        } catch (MALInteractionException | MOErrorException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -241,7 +263,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
     protected void publishTestObjectCreation(String description, String sourceDomain,
             boolean success, long sourceInstId, short sourceObjectNumber,
             Long relatedInstId,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALStandardError, InvalidException, DuplicateException, MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + "publishTestObjectCreation malInter = " + interaction);
 
         // Produce ObjectCreationList
@@ -264,7 +286,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
 
     protected void publishTestObjectDeletion(String sourceDomain,
             long sourceInstId, short sourceObjectNumber,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALStandardError, InvalidException, DuplicateException, MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + "publishTestObjectCreation malInter = " + interaction);
 
         // Produce ObjectDeletionList
@@ -295,7 +317,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
     }
 
     protected void storeInArchive(ObjectDetails objDetails, UpdateHeader updateHeader,
-            ElementList elementList, String objectNumber) throws MALInteractionException, MALException {
+            ElementList elementList, String objectNumber) throws MALStandardError, InvalidException, DuplicateException, MALInteractionException, MALException {
         ArchiveDetailsList archiveDetailsList = new ArchiveDetailsList();
         Attribute attVal = updateHeader.getKeyValues().get(2).getValue();
         Long instanceId = (Long) Attribute.attribute2JavaType(attVal);
@@ -324,7 +346,7 @@ public class EventTestHandlerImpl implements EventTestHandler {
     protected void publishTestObjectUpdate(long sourceInstId,
             BasicEnum enumField, Duration durationField, ShortList numericListField,
             UOctet uOctetField, Byte octetField, Double doubleField,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALStandardError, InvalidException, DuplicateException, MALInteractionException, MALException {
         LoggingBase.logMessage(CLS + "publishTestObjectUpdate malInter = " + interaction);
 
         UpdateComposite uComposite = null;

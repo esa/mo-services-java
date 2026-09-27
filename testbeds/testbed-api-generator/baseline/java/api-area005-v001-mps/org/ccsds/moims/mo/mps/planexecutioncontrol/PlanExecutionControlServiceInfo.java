@@ -427,35 +427,93 @@ public class PlanExecutionControlServiceInfo extends org.ccsds.moims.mo.mal.Serv
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
+        switch (operationNumber) {
             case 1:
-                return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                    case 9:
+                        return new org.ccsds.moims.mo.mps.SubmitFailedException(extraInfo);
+                    case 10:
+                        return new org.ccsds.moims.mo.mps.UnsupportedException(extraInfo);
+                }
+                break;
             case 2:
-                return new org.ccsds.moims.mo.mps.CancelFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                    case 4:
+                        return new org.ccsds.moims.mo.mps.RevokeFailedException(extraInfo);
+                }
+                break;
             case 3:
-                return new org.ccsds.moims.mo.mps.UpdateFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                }
+                break;
             case 4:
-                return new org.ccsds.moims.mo.mps.RevokeFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                    case 7:
+                        return new org.ccsds.moims.mo.mps.ActivateFailedException(extraInfo);
+                }
+                break;
             case 5:
-                return new org.ccsds.moims.mo.mps.InsertFailedException(extraInfo);
-            case 6:
-                return new org.ccsds.moims.mo.mps.DeleteFailedException(extraInfo);
-            case 7:
-                return new org.ccsds.moims.mo.mps.ActivateFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                    case 8:
+                        return new org.ccsds.moims.mo.mps.DeactivateFailedException(extraInfo);
+                }
+                break;
             case 8:
-                return new org.ccsds.moims.mo.mps.DeactivateFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                    case 11:
+                        return new org.ccsds.moims.mo.mps.ActivateSubplanFailedException(extraInfo);
+                }
+                break;
             case 9:
-                return new org.ccsds.moims.mo.mps.SubmitFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                    case 12:
+                        return new org.ccsds.moims.mo.mps.DeactivateSubplanFailedException(extraInfo);
+                }
+                break;
             case 10:
-                return new org.ccsds.moims.mo.mps.UnsupportedException(extraInfo);
-            case 11:
-                return new org.ccsds.moims.mo.mps.ActivateSubplanFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                }
+                break;
             case 12:
-                return new org.ccsds.moims.mo.mps.DeactivateSubplanFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                }
+                break;
+            case 13:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                }
+                break;
+            case 14:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mps.InvalidException(extraInfo);
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mps.MPSHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

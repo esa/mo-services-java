@@ -29,11 +29,10 @@ To report all checks, the wildcard values may be used in the CheckResultFilter.
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.com.InvalidException One of the referenced groups does not contain the correct type of object.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the checks, parameters, or groups specified in the list do not exist.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void getCurrentTransitionList(org.ccsds.moims.mo.mc.check.structures.CheckResultFilter filter,
-            org.ccsds.moims.mo.mc.check.provider.GetCurrentTransitionListInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mc.check.provider.GetCurrentTransitionListInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation getSummaryReport.
      * 
@@ -43,11 +42,10 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a requested check is unknown then an UNKNOWN error shall be returned in the ACKNOWLEDGE message and the operation shall end.
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the checks specified in the list do not exist.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void getSummaryReport(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mc.check.provider.GetSummaryReportInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mc.check.provider.GetSummaryReportInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation enableService.
      * 
@@ -55,20 +53,18 @@ If a requested check is unknown then an UNKNOWN error shall be returned in the A
 If enableService is set to FALSE then all evaluation of checks shall be suspended and no check transitions will be reported.
 If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void enableService(Boolean enableService,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation getServiceStatus.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
-    Boolean getServiceStatus(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+    Boolean getServiceStatus(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation enableCheck.
      * 
@@ -86,12 +82,11 @@ The provider shall create and store a new CheckLinkDefinition object in the COM 
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested groups or CheckLink objects is unknown.
      * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of either other group objects or CheckLink objects.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void enableCheck(Boolean isGroupIds,
             org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation triggerCheck.
      * 
@@ -107,12 +102,11 @@ Triggering a check shall ignore the nominalTime, nominalCount, violationTime and
 Triggering a check during a periodic check shall not influence the periodic check (e.g. it does not reset the checkInterval timer, the successive valid samples that passed/violated the check or the maxReportingInterval timer).
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested CheckIdentity or CheckLink objects is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void triggerCheck(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds,
             org.ccsds.moims.mo.mal.structures.LongList linkObjInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation listDefinition.
      * 
@@ -123,11 +117,10 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList names,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation listCheckLinks.
      * 
@@ -138,11 +131,10 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList listCheckLinks(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation addCheck.
      * 
@@ -162,12 +154,11 @@ The provider shall create a new actual check definition object and store it, and
      * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied CheckIdentity objects contains an invalid name or the two lists are not the same size or there is an inconsistency in the time and count fields.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
      * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the CheckIdentity objects being added has supplied a check name that is already in use in the domain.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addCheck(org.ccsds.moims.mo.mal.structures.StringList checkNames,
             org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation updateDefinition.
      * 
@@ -189,12 +180,11 @@ The new definition object shall be the current definition used for the specific 
      * @throws org.ccsds.moims.mo.com.InvalidException The supplied object instance identifiers list contains either a NULL or '0', or the two lists do not contain the same number of entries or there is an inconsistency in the time and count fields.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
      * @throws org.ccsds.moims.mo.mc.ReferencedException One of the check objects is currently being used by a CheckLink object.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mal.structures.LongList updateDefinition(org.ccsds.moims.mo.mal.structures.LongList checkInstIds,
             org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mc.ReferencedException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mc.ReferencedException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation removeCheck.
      * 
@@ -209,11 +199,10 @@ If the operation succeeds then the provider shall not allow new CheckLink object
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mc.ReferencedException One of the check objects is currently being used by a CheckLink object.
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied CheckIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void removeCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mc.ReferencedException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mc.ReferencedException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation addParameterCheck.
      * 
@@ -232,12 +221,11 @@ The provider shall create new CheckLink and CheckLinkDefinition objects for each
      * @throws org.ccsds.moims.mo.com.InvalidException The supplied lists do not contain the same number of entries, the supplied interval is not supported by the provider, or a period check with changed based checking has been requested.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameterCheck(org.ccsds.moims.mo.mc.check.structures.CheckLinkDetailsList linkDetails,
             org.ccsds.moims.mo.com.structures.ObjectDetailsList linkRefs,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation removeParameterCheck.
      * 
@@ -250,11 +238,10 @@ If an error is raised then no CheckLink objects shall be removed as a result of 
 If the operation succeeds then the provider shall not evaluate those parameter/check definition combinations for the deleted CheckLink objects anymore.
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied CheckLink object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void removeParameterCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -37,6 +38,7 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.malprototype.TestErrorException;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestAdapter;
 import org.ccsds.moims.mo.malprototype.iptest.consumer.IPTestStub;
 import org.ccsds.moims.mo.testbed.suite.BooleanCondition;
@@ -85,28 +87,28 @@ public class AccessControlScenario extends LoggingBase {
         TestAccessControlFactory.managerInstance().resetMessageCount();
     }
 
-    public boolean aSendInteractionCompletes() throws MALInteractionException, MALException {
+    public boolean aSendInteractionCompletes() throws MALStandardError, MALInteractionException, MALException {
         TransportInterceptor.instance().resetTransmitCount(InteractionType.SEND);
         TransportInterceptor.instance().resetReceiveCount(InteractionType.SEND);
         ipTestStub.send(null);
         return true;
     }
 
-    public boolean aSubmitInteractionCompletes() throws MALInteractionException, MALException {
+    public boolean aSubmitInteractionCompletes() throws MALStandardError, TestErrorException, MALInteractionException, MALException {
         TransportInterceptor.instance().resetTransmitCount(InteractionType.SUBMIT);
         TransportInterceptor.instance().resetReceiveCount(InteractionType.SUBMIT);
         ipTestStub.testSubmit(null);
         return true;
     }
 
-    public boolean aRequestInteractionCompletes() throws MALInteractionException, MALException {
+    public boolean aRequestInteractionCompletes() throws MALStandardError, TestErrorException, MALInteractionException, MALException {
         TransportInterceptor.instance().resetTransmitCount(InteractionType.REQUEST);
         TransportInterceptor.instance().resetReceiveCount(InteractionType.REQUEST);
         ipTestStub.request(null);
         return true;
     }
 
-    public boolean anInvokeInteractionCompletes() throws MALInteractionException, MALException {
+    public boolean anInvokeInteractionCompletes() throws MALStandardError, TestErrorException, MALInteractionException, MALException {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -133,7 +135,7 @@ public class AccessControlScenario extends LoggingBase {
         return retVal && result;
     }
 
-    public boolean aProgressInteractionCompletes() throws MALInteractionException, MALException {
+    public boolean aProgressInteractionCompletes() throws MALStandardError, TestErrorException, MALInteractionException, MALException {
         MonitorListener monitor = new MonitorListener();
 
         TransportInterceptor.instance().resetTransmitCount(InteractionType.PROGRESS);

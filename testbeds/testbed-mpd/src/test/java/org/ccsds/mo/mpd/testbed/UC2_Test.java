@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.TMPacketsDataset;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -155,7 +154,7 @@ public class UC2_Test extends MPDTest {
             assertNotNull(list);
             int size = list.size();
             System.out.println("Number of listed products returned: " + size);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
@@ -306,7 +305,7 @@ public class UC2_Test extends MPDTest {
             }
             System.out.flush();
             return true;
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {

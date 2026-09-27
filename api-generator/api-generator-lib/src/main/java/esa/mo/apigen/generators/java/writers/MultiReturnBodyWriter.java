@@ -27,7 +27,6 @@ import esa.mo.apigen.generators.java.JavaNaming;
 import esa.mo.apigen.generators.java.JavaSource;
 import esa.mo.apigen.generators.java.JavaTypeName;
 import esa.mo.apigen.model.Field;
-import esa.mo.apigen.model.InteractionPattern;
 import esa.mo.apigen.model.InteractionStage;
 import esa.mo.apigen.model.MOModel;
 import esa.mo.apigen.model.MessageBody;
@@ -39,6 +38,9 @@ import java.util.List;
 /**
  * Writes the class that holds the answer of an operation that answers with more than one
  * field, since a Java method can only return one thing.
+ * <p>
+ * The answer is the response of a REQUEST, and the acknowledgement of an INVOKE or a
+ * PROGRESS: those are what the consumer's call returns.
  */
 public final class MultiReturnBodyWriter {
 
@@ -58,8 +60,8 @@ public final class MultiReturnBodyWriter {
     public static List<Operation> operationsOf(Service service) {
         List<Operation> found = new ArrayList<Operation>();
         for (Operation operation : service.getOperations()) {
-            if (operation.getPattern() == InteractionPattern.REQUEST
-                    && fieldsOf(operation.getMessage(InteractionStage.RESPONSE)).size() > 1) {
+            InteractionStage stage = answerOf(operation);
+            if (stage != null && fieldsOf(operation.getMessage(stage)).size() > 1) {
                 found.add(operation);
             }
         }
@@ -71,7 +73,24 @@ public final class MultiReturnBodyWriter {
      */
     public static String classNameOf(Operation operation) {
         String name = operation.getName();
-        return Character.toUpperCase(name.charAt(0)) + name.substring(1) + "Response";
+        String suffix = answerOf(operation) == InteractionStage.ACK ? "Ack" : "Response";
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1) + suffix;
+    }
+
+    /**
+     * @return the stage whose fields the consumer's call returns, or null if the call
+     * returns nothing.
+     */
+    private static InteractionStage answerOf(Operation operation) {
+        switch (operation.getPattern()) {
+            case REQUEST:
+                return InteractionStage.RESPONSE;
+            case INVOKE:
+            case PROGRESS:
+                return InteractionStage.ACK;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -79,7 +98,7 @@ public final class MultiReturnBodyWriter {
      */
     public static String write(MOModel model, Service service, Operation operation) {
         String className = classNameOf(operation);
-        List<Field> fields = fieldsOf(operation.getMessage(InteractionStage.RESPONSE));
+        List<Field> fields = fieldsOf(operation.getMessage(answerOf(operation)));
 
         JavaClassBuilder clazz = JavaClassBuilder.named(className).asFinal()
                 .inPackage(JavaNaming.packageOf(service, BODY))

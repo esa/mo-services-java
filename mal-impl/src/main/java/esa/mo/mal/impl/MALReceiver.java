@@ -499,7 +499,7 @@ public class MALReceiver implements MALMessageListener {
                             = pubSubMap.getPublishListener(msg.getHeader().getTo());
 
                     if (listener != null) {
-                        listener.publishErrorReceived(msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+                        listener.publishErrorReceived(msg.getHeader(), new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), msg.getQoSProperties());
                     } else {
                         MALContextFactoryImpl.LOGGER.log(Level.WARNING,
                                 "Unknown publisher for PUBLISH error: {0}",
@@ -556,7 +556,7 @@ public class MALReceiver implements MALMessageListener {
             final Map<String, MALInteractionListener> listeners = pubSubMap.getNotifyListenersAndRemove(hdr.getTo().getValue());
 
             if (listeners != null) {
-                final MALErrorBody err = (MALErrorBody) msg.getBody();
+                final MALErrorBody err = new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody());
                 for (Map.Entry<String, MALInteractionListener> e : listeners.entrySet()) {
                     try {
                         e.getValue().notifyErrorReceived(hdr, err, msg.getQoSProperties());

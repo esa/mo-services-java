@@ -168,11 +168,6 @@ public class SplitBinaryEncoder extends esa.mo.mal.encoder.binary.variable.Varia
             os.write(value & 0x7F);
         }
 
-        @Deprecated
-        private void writeFixedUnsignedLong(long value) throws IOException {
-            write(java.nio.ByteBuffer.allocate(8).putLong(value).array());
-        }
-
         private void setBit(int bitIndex) {
             int byteIndex = bitIndex / 8;
 

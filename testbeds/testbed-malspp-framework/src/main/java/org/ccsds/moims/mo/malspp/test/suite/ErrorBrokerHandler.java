@@ -34,10 +34,9 @@ package org.ccsds.moims.mo.malspp.test.suite;
 
 import java.util.HashMap;
 
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.broker.MALBrokerBinding;
 import org.ccsds.moims.mo.mal.broker.MALBrokerHandler;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -95,7 +94,7 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
                 null,
                 new HashMap(0),
                 null,
-                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null),
+                new InternalException(),
                 new NamedValueList()
         );
     }
@@ -110,7 +109,7 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
     @Override
     public void handlePublishRegister(MALInteraction interaction,
             MALPublishRegisterBody body) throws MALInteractionException, MALException {
-        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
+        throw new MALInteractionException(new InternalException());
     }
 
     @Override
@@ -118,7 +117,7 @@ public class ErrorBrokerHandler implements MALBrokerHandler {
             throws MALInteractionException, MALException {
         LoggingBase.logMessage("ErrorBrokerHandler.handleRegister(" + interaction.getMessageHeader() + ')');
         if (body.getSubscription().getSubscriptionId().getValue().equals(SUBSCRIPTION_RAISING_ERROR)) {
-            throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null));
+            throw new MALInteractionException(new InternalException());
         } else {
             subscriberUri = interaction.getMessageHeader().getFromURI();
             transactionId = interaction.getMessageHeader().getTransactionId();

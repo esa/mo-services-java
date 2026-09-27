@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
@@ -108,7 +107,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
     @Override
     public ProductMetadataList listProducts(ProductFilter productFilter, TimeWindow creationDate,
-            TimeWindow contentDate, MALInteraction interaction) throws InvalidException, TooManyException, MALInteractionException, MALException {
+            TimeWindow contentDate, MALInteraction interaction) throws InvalidException, TooManyException, MALException {
         // Validate the inputs
         if (productFilter == null) {
             throw new MALException("The productFilter cannot be null!");
@@ -176,7 +175,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
     @Override
     public void getProducts(ObjectRefList productRefs, GetProductsInteraction interaction)
-            throws UnknownException, MALInteractionException, MALException {
+            throws UnknownException, MALException {
         if (productRefs == null) {
             throw new MALException("The productRefs cannot be null!");
         }
@@ -221,7 +220,7 @@ public class ProductRetrievalProviderServiceImpl extends ProductRetrievalInherit
 
     @Override
     public void deliverProductFiles(ObjectRefList productRefs, URI deliverTo,
-            DeliverProductFilesInteraction interaction) throws UnknownException, DeliveryFailedException, MALInteractionException, MALException {
+            DeliverProductFilesInteraction interaction) throws UnknownException, DeliveryFailedException, MALException {
         if (productRefs == null) {
             throw new MALException("The productRefs cannot be null!");
         }

@@ -34,6 +34,7 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.activitytest.consumer.ActivityTestAdapter;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessage;
@@ -211,10 +212,11 @@ public class MonitorActivityScenario extends BaseActivityScenario {
      * @param exeactivity the execution phases
      * @return monitorkey to be used to check result of the pattern.
      * @throws org.ccsds.moims.mo.mal.MALException
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException
+     * @throws org.ccsds.moims.mo.mal.MALStandardError
      */
     public String patternInitiationForViaWithTransportActivityAndExecutionActivity(String pattern,
-            String relay, String[] transactivity, String[] exeactivity) throws MALException, MALInteractionException {
+            String relay, String[] transactivity, String[] exeactivity)
+            throws MALException, MALInteractionException, MALStandardError {
         logMessage(loggingClassName + ":patternInitiationForViaWithTransportActivityAndExecutionActivity["
                 + pattern + "," + relay + "," + toString(transactivity) + "," + toString(exeactivity) + "]");
 
@@ -253,7 +255,12 @@ public class MonitorActivityScenario extends BaseActivityScenario {
                     publishReleaseEvent(true, relay, hdr);
                 }
             }
-        } catch (MALTransmitErrorException ex) {
+        } catch (MALStandardError error) {
+            // A message that could not be transmitted carries the transmit error as its cause
+            if (!(error.getCause() instanceof MALTransmitErrorException)) {
+                throw error;
+            }
+            MALTransmitErrorException ex = (MALTransmitErrorException) error.getCause();
             // Exception expected in case of RELEASE_ERROR 
             if (lst.contains("RELEASE_ERROR")) {
                 // release error is expected failure

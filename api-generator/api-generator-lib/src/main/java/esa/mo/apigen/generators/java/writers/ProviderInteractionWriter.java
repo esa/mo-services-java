@@ -34,6 +34,7 @@ import esa.mo.apigen.model.MessageBody;
 import esa.mo.apigen.model.Operation;
 import esa.mo.apigen.model.Service;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,6 +44,10 @@ import java.util.List;
  * MAL interaction, so that the messages it can send back are named and typed: it sends an
  * acknowledgement, then updates, then a response, and the fields of each are the ones the
  * operation declared.
+ * <p>
+ * The MAL interaction declares a MALInteractionException on every send. The handler that
+ * sends through this class raises only the errors its operation declares, so the exception
+ * is carried as the cause of a MALException instead.
  */
 public final class ProviderInteractionWriter {
 
@@ -52,10 +57,8 @@ public final class ProviderInteractionWriter {
 
     private static final String MAL_EXCEPTION = JavaNaming.MAL + "MALException";
 
-    private static final String INTERACTION_THROWN =
-            "if there is a problem during the interaction as defined by the MAL specification.";
-
-    private static final String EXCEPTION_THROWN = "if there is an implementation exception";
+    private static final String EXCEPTION_THROWN =
+            "if the message could not be sent, including a MAL standard error raised by the MAL";
 
     private ProviderInteractionWriter() {
     }
@@ -142,9 +145,8 @@ public final class ProviderInteractionWriter {
             method.argument(JavaTypeName.of(model, field.getType()), field.getName(), fieldComment);
         }
 
-        method.throwing(INTERACTION_EXCEPTION, INTERACTION_THROWN)
-                .throwing(MAL_EXCEPTION, EXCEPTION_THROWN)
-                .line("return interaction." + name + "(" + arguments(model, fields) + ");")
+        method.throwing(MAL_EXCEPTION, EXCEPTION_THROWN)
+                .lines(rethrown("return interaction." + name + "(" + arguments(model, fields) + ");"))
                 .write(out);
     }
 
@@ -157,10 +159,22 @@ public final class ProviderInteractionWriter {
                 .returns(MESSAGE, "Returns the MAL message created by the error")
                 .comment(comment)
                 .argument(JavaNaming.MAL + "MOErrorException", "error", errorComment)
-                .throwing(INTERACTION_EXCEPTION, INTERACTION_THROWN)
                 .throwing(MAL_EXCEPTION, EXCEPTION_THROWN)
-                .line("return interaction." + name + "(error);")
+                .lines(rethrown("return interaction." + name + "(error);"))
                 .write(out);
+    }
+
+    /**
+     * @return the statement, with a MALInteractionException it raises rethrown as the cause
+     * of a MALException.
+     */
+    private static List<String> rethrown(String statement) {
+        return Arrays.asList(
+                "try {",
+                "    " + statement,
+                "} catch (" + INTERACTION_EXCEPTION + " ex) {",
+                "    throw new " + MAL_EXCEPTION + "(ex.getMessage(), ex);",
+                "}");
     }
 
     /**

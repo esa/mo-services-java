@@ -37,7 +37,7 @@ import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.com.test.util.COMTestHelper;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.InternalException;
 import org.ccsds.moims.mo.com.COMHelper;
 import org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo;
 import org.ccsds.moims.mo.comprototype.activitytest.provider.ActivityTestInheritanceSkeleton;
@@ -62,7 +62,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         this.testService = testService;
     }
 
-    public void resetTest(MALInteraction interaction) throws MALInteractionException, MALException {
+    public void resetTest(MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:resetTest");
 
         if (monitorEventPublisher == null) {
@@ -96,50 +96,54 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             keyTypes.add(AttributeType.IDENTIFIER);
             keyTypes.add(AttributeType.IDENTIFIER);
 
-            monitorEventPublisher.register(keys, keyTypes, new ActivityTestPublisher());
+            try {
+                monitorEventPublisher.register(keys, keyTypes, new ActivityTestPublisher());
+            } catch (MALInteractionException ex) {
+                throw new MALException(ex.getMessage(), ex);
+            }
         }
     }
 
-    public void send(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void send(StringList _String, MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:send " + _String);
 
         publishAcceptance(!_String.contains(ACCEPTANCE_ERROR), interaction);
     }
 
-    public StringList request(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
+    public StringList request(StringList _String, MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:request " + _String);
         if (!_String.contains(ACCEPTANCE_ERROR)) {
             publishAcceptance(true, interaction);
             if ((_String.contains(ACK_ERROR))) {
                 publishExecution(false, interaction, 1, 1);
-                throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+                throw new MALException("Error triggered by the test procedure");
             } else {
                 publishExecution(!_String.contains(RESPONSE_ERROR), interaction, 1, 1);
             }
         } else {
             publishAcceptance(false, interaction);
-            throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+            throw new MALException("Error triggered by the test procedure");
         }
         return _String;
     }
 
-    public void testSubmit(StringList _String, MALInteraction interaction) throws MALInteractionException, MALException {
+    public void testSubmit(StringList _String, MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:testSubmit " + _String);
         if (!_String.contains(ACCEPTANCE_ERROR)) {
             publishAcceptance(true, interaction);
             if ((_String.contains(ACK_ERROR))) {
                 publishExecution(false, interaction, 1, 1);
-                throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+                throw new MALException("Error triggered by the test procedure");
             } else {
                 publishExecution(true, interaction, 1, 1);
             }
         } else {
             publishAcceptance(false, interaction);
-            throw new MALInteractionException(new MOErrorException(new UInteger(0), null));
+            throw new MALException("Error triggered by the test procedure");
         }
     }
 
-    public void invoke(StringList _String, InvokeInteraction interaction) throws MALInteractionException, MALException {
+    public void invoke(StringList _String, InvokeInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:invoke " + _String);
         if (_String.contains(ACCEPTANCE_ERROR)) {
             publishAcceptance(false, interaction.getInteraction());
@@ -147,12 +151,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 publishExecution(false, interaction.getInteraction(), 1, 2);
             }
             // TBD error number to be specified
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else if ((_String.contains(ACK_ERROR))) {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(false, interaction.getInteraction(), 1, 2);
             // TBD error number to be specified
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(true, interaction.getInteraction(), 1, 2);
@@ -167,12 +171,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             } else {
                 // TBD error number to be specified
                 publishExecution(false, interaction.getInteraction(), 2, 2);
-                interaction.sendError(new MOErrorException(new UInteger(0), null));
+                interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
             }
         }
     }
 
-    public void progress(StringList _String, ProgressInteraction interaction) throws MALInteractionException, MALException {
+    public void progress(StringList _String, ProgressInteraction interaction) throws MALException {
         boolean bUpdateErr = false;
         LoggingBase.logMessage("ActivityTestHandlerImpl:progress " + _String);
         int totalStageCount = noUpdates(_String) + 2; // 2 = 1 for ACK, 1 for RSP
@@ -183,12 +187,12 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
             if (_String.contains(ACK_ERROR)) {
                 publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
             }
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else if ((_String.contains(ACK_ERROR))) {
             publishAcceptance(true, interaction.getInteraction());
             publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
             // TBD error number to be specified
-            interaction.sendError(new MOErrorException(new UInteger(0), null));
+            interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
         } else {
             publishExecution(true, interaction.getInteraction(), currentStage++, totalStageCount);
             publishAcceptance(true, interaction.getInteraction());
@@ -202,7 +206,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                 if (_String.get(i).contains(UPDATE_ERROR)) {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send update ERR");
                     publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
-                    interaction.sendUpdateError(new MOErrorException(new UInteger(0), null));
+                    interaction.sendUpdateError(new InternalException(new Union("Error triggered by the test procedure")));
                     bUpdateErr = true;
                 } else if (_String.get(i).contains(UPDATE)) {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send UPDATE");
@@ -223,13 +227,13 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
                     LoggingBase.logMessage("ActivityTestHandlerImpl:progress - send response ERR");
                     publishExecution(false, interaction.getInteraction(), currentStage++, totalStageCount);
                     // TBD error number to be specified
-                    interaction.sendError(new MOErrorException(new UInteger(0), null));
+                    interaction.sendError(new InternalException(new Union("Error triggered by the test procedure")));
                 }
             }
         }
     }
 
-    public void close(MALInteraction interaction) throws MALInteractionException, MALException {
+    public void close(MALInteraction interaction) throws MALException {
         // No actions required at the moment
     }
 
@@ -255,7 +259,7 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         return noUpdates;
     }
 
-    private void publishAcceptance(boolean success, MALInteraction interaction) throws MALInteractionException, MALException {
+    private void publishAcceptance(boolean success, MALInteraction interaction) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishAcceptance malInter = " + interaction);
 
         // Produce ActivityTransfer
@@ -309,12 +313,16 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         UpdateHeader uh = new UpdateHeader(uri, domain, keyValues.getAsNullableAttributeList());
 
         // We can now publish the event
-        monitorEventPublisher.publish(uh, objDetails, aa);
+        try {
+            monitorEventPublisher.publish(uh, objDetails, aa);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
 
     }
 
     private void publishExecution(boolean success, MALInteraction interaction,
-            int currentStageCount, int totalStageCount) throws MALInteractionException, MALException {
+            int currentStageCount, int totalStageCount) throws MALException {
         LoggingBase.logMessage("ActivityTestHandlerImpl:publishexecution malInter = " + interaction);
         /*
     final EntityKey ekey = new EntityKey(
@@ -362,7 +370,11 @@ public class ActivityTestHandlerImpl extends ActivityTestInheritanceSkeleton {
         ObjectDetails objDetails = new ObjectDetails(null, source);
 
         // We can now publish the event
-        monitorEventPublisher.publish(uh, objDetails, activityExecutionInstance);
+        try {
+            monitorEventPublisher.publish(uh, objDetails, activityExecutionInstance);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     public static class ActivityTestPublisher implements MALPublishInteractionListener {

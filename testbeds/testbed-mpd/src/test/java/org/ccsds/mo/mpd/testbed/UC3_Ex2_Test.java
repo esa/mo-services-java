@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mpd.productorderdelivery.consumer.NotifyProductDeliverySubscriptionKeys;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerOM;
 import static org.ccsds.mo.mpd.testbed.MPDTest.consumerPOD;
 import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -538,7 +538,7 @@ public class UC3_Ex2_Test extends MPDTest {
             int size = standingOrders.size();
             System.out.println("Standing Orders returned size: " + size);
             assertEquals(0, size);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
@@ -556,7 +556,7 @@ public class UC3_Ex2_Test extends MPDTest {
             orderID = consumerOM.submitStandingOrder(orderDetails);
             System.out.println("The returned orderID is: " + orderID);
             assertNotNull(orderID);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             if (DeliveryMethodEnum.FILETRANSFER.equals(deliveryMethod) && deliverTo == null) {
                 Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.INFO,
                         "The provider returned an MO Error correctly!");
@@ -587,7 +587,7 @@ public class UC3_Ex2_Test extends MPDTest {
                 assertEquals(orderUser.getValue(), receivedOrder.getUser().getValue());
                 assertEquals(deliveryMethod.getValue(), receivedOrder.getDeliveryMethod().getValue());
             }
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
@@ -756,7 +756,7 @@ public class UC3_Ex2_Test extends MPDTest {
 
             try {
                 consumerOM.cancelStandingOrder(orderID);
-            } catch (MALInteractionException ex) {
+            } catch (MOErrorException ex) {
                 Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE, null, ex);
                 fail(ex.toString());
             } catch (MALException ex) {
@@ -768,7 +768,7 @@ public class UC3_Ex2_Test extends MPDTest {
             subscriptions.add(subscription.getSubscriptionId());
             consumerPOD.notifyProductDeliveryDeregister(subscriptions);
             System.out.flush();
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC3_Ex2_Test.class.getName()).log(Level.SEVERE,
                     "Something went wrong with the interaction!", ex);
         } catch (MALException ex) {

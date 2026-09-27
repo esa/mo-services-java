@@ -29,7 +29,9 @@ import esa.mo.apigen.model.Area;
 import esa.mo.apigen.model.ErrorDefinition;
 import esa.mo.apigen.model.Service;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Writes the helper classes: one for an area, holding its identity and the numbers of the
@@ -89,10 +91,39 @@ public final class HelperWriter {
                     .comment("Error instance for error " + constant + ".").write(out);
         }
 
+        writeGenerateMOError(out, area);
+
         JavaMethodBuilder.constructor(name + "Helper").scope("private")
                 .line("// Utility class; not meant to be instantiated.")
                 .write(out);
         return clazz.close();
+    }
+
+    /**
+     * Writes the method that turns the number of an error of the area, its own or one of
+     * its services', back into the exception it stands for. A number declared twice is
+     * answered with the first error declared under it.
+     */
+    private static void writeGenerateMOError(JavaSource out, Area area) {
+        JavaMethodBuilder method = JavaMethodBuilder.named("generateMOError").asStatic()
+                .returns(JavaNaming.MAL + "MOErrorException",
+                        "the exception, or null if the area declares no error with that number")
+                .comment("Returns the exception of the error of this area with the given number.")
+                .argument("int", "errorNumber", "The number of the error.")
+                .argument("Object", "extraInfo", "The extra information of the error.");
+
+        method.line("switch (errorNumber) {");
+        Set<Long> seen = new HashSet<Long>();
+        for (ErrorDefinition error : errorsOf(area)) {
+            if (seen.add(error.getNumber())) {
+                method.line("    case " + error.getNumber() + ":");
+                method.line("        return new " + JavaNaming.packageOf(area) + "."
+                        + ExceptionWriter.classNameOf(error.getName()) + "(extraInfo);");
+            }
+        }
+        method.line("}");
+        method.line("return null;");
+        method.write(out);
     }
 
     /**

@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperDomain;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -105,7 +104,7 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
 
     @Override
     public StandingOrderList listStandingOrders(Identifier user, IdentifierList domain,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
         StandingOrderList matchedStandingOrders = new StandingOrderList();
 
         for (StandingOrder order : standingOrders.values()) {
@@ -137,7 +136,7 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
     @Override
     public Long submitStandingOrder(StandingOrder orderDetails,
             MALInteraction interaction) throws InvalidException, OrderFailedException,
-            MALInteractionException, MALException {
+            MALException {
         // Validate the validity
         TimeWindow validity = orderDetails.getValidityPeriod();
 
@@ -171,7 +170,7 @@ public class OrderManagementProviderServiceImpl extends OrderManagementInheritan
 
     @Override
     public void cancelStandingOrder(Long orderID,
-            MALInteraction interaction) throws UnknownException, MALInteractionException, MALException {
+            MALInteraction interaction) throws UnknownException, MALException {
         if (orderID == null) {
             throw new MALException("The orderRef cannot be null!");
         }

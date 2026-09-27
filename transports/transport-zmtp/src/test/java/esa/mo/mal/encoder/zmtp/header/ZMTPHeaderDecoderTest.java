@@ -28,7 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import org.ccsds.moims.mo.mal.encoding.Encoder;
-import org.ccsds.moims.mo.mal.helpertools.helpers.HelperTime;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.FineTime;
@@ -90,8 +89,8 @@ public class ZMTPHeaderDecoderTest {
 
         Time crazyTime = new Time(5283532800000L);
         FineTime crazyFineTime = new FineTime(5283532800000000000L);
-        String strTime = HelperTime.time2readableString(crazyTime);
-        String strFineTime = HelperTime.time2readableString(crazyFineTime);
+        String strTime = crazyTime.toReadableString();
+        String strFineTime = crazyFineTime.toReadableString();
         System.out.print("\n  -  The Time is: " + strTime);
         System.out.print("\n  -  The FineTime is: " + strFineTime);
 

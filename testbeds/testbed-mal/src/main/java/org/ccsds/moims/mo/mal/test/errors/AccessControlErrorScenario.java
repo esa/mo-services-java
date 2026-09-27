@@ -20,9 +20,11 @@
  */
 package org.ccsds.moims.mo.mal.test.errors;
 
+import org.ccsds.moims.mo.mal.AuthenticationFailedException;
+import org.ccsds.moims.mo.mal.AuthorisationFailException;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.test.accesscontrol.TestAccessControlFactory;
 import org.ccsds.moims.mo.mal.test.suite.LocalMALInstance;
@@ -35,7 +37,7 @@ import org.ccsds.moims.mo.testbed.util.StopTest;
  */
 public class AccessControlErrorScenario extends LoggingBase {
 
-    private MALInteractionException lastError = null;
+    private MOErrorException lastError = null;
 
     public boolean securityManagerHasBeenCreated() throws StopTest {
         if (!TestAccessControlFactory.securityManagerHasBeenCreated()) {
@@ -54,40 +56,36 @@ public class AccessControlErrorScenario extends LoggingBase {
         TestAccessControlFactory.managerInstance().switchOnACFailures(false);
     }
 
-    public boolean aTestAuthenticationFailureInteractionFails() throws MALInteractionException, MALException {
+    public boolean aTestAuthenticationFailureInteractionFails() throws MALStandardError, MALException {
         logMessage("Sending TestAuthenticationFailure");
 
         lastError = null;
 
         try {
             LocalMALInstance.instance().errorTestStub().testAuthenticationFailure(null);
-        } catch (MALInteractionException ex) {
+        } catch (AuthenticationFailedException ex) {
             lastError = ex;
-
-            if (ex.getStandardError().getErrorNumber().getValue() == MALHelper._AUTHENTICATION_FAILED_ERROR_NUMBER) {
-                return true;
-            }
-
+            return true;
+        } catch (MALStandardError ex) {
+            lastError = ex;
             throw ex;
         }
 
         return false;
     }
 
-    public boolean aTestAuthorisationFailInteractionFails() throws MALInteractionException, MALException {
+    public boolean aTestAuthorisationFailInteractionFails() throws MALStandardError, MALException {
         logMessage("Sending TestAuthorisationFailure");
 
         lastError = null;
 
         try {
             LocalMALInstance.instance().errorTestStub().testAuthorizationFailure(null);
-        } catch (MALInteractionException ex) {
+        } catch (AuthorisationFailException ex) {
             lastError = ex;
-
-            if (ex.getStandardError().getErrorNumber().getValue() == MALHelper._AUTHORISATION_FAIL_ERROR_NUMBER) {
-                return true;
-            }
-
+            return true;
+        } catch (MALStandardError ex) {
+            lastError = ex;
             throw ex;
         }
 
@@ -96,18 +94,18 @@ public class AccessControlErrorScenario extends LoggingBase {
 
     public boolean errorTypeIs(String requiredType) throws Exception {
         logMessage("checking errorTypeIs " + requiredType);
-        return (null != lastError) && lastError.getStandardError().getErrorNumber().equals(ParseHelper.parseErrorCode(requiredType));
+        return (null != lastError) && lastError.getErrorNumber().equals(ParseHelper.parseErrorCode(requiredType));
     }
 
     public boolean errorSourceIs(String requiredSource) throws Exception {
         logMessage("checking errorSourceIs " + requiredSource);
         if (null != lastError) {
             if ("local".equals(requiredSource)) {
-                if (((Union) lastError.getStandardError().getExtraInformation()).getStringValue().startsWith("local")) {
+                if (((Union) lastError.getExtraInformation()).getStringValue().startsWith("local")) {
                     return true;
                 }
             } else if ("remote".equals(requiredSource)) {
-                if (((Union) lastError.getStandardError().getExtraInformation()).getStringValue().startsWith("remote")) {
+                if (((Union) lastError.getExtraInformation()).getStringValue().startsWith("remote")) {
                     return true;
                 }
             }

@@ -34,11 +34,14 @@ public class ActivateInteraction {
      * Sends a INVOKE acknowledge to the consumer.
      * 
      * @return Returns the MAL message created by the acknowledge
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return interaction.sendAcknowledgement((Object[]) null);
+    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALException {
+        try {
+            return interaction.sendAcknowledgement((Object[]) null);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -54,12 +57,15 @@ If the activation was successful then the activationResult field shall be set to
 If a service configuration was requested, configObjId field shall referenced a ServiceConfiguration, the response shall contain a list of a single item of the previous ServiceConfiguration COM object.
 If a provider configuration was requested, configObjId field shall referenced a ProviderConfiguration, the response shall contain a list of the previous ProviderConfiguration COM object followed by the list of previous ServiceConfiguration objects active for that provider.
      * @return Returns the MAL message created by the response
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(Boolean activationResult,
-            org.ccsds.moims.mo.com.structures.ObjectIdList previousConfig) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return interaction.sendResponse((activationResult == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(activationResult), previousConfig);
+            org.ccsds.moims.mo.com.structures.ObjectIdList previousConfig) throws org.ccsds.moims.mo.mal.MALException {
+        try {
+            return interaction.sendResponse((activationResult == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(activationResult), previousConfig);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -67,11 +73,14 @@ If a provider configuration was requested, configObjId field shall referenced a 
      * 
      * @param error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return interaction.sendError(error);
+    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+        try {
+            return interaction.sendError(error);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        }
     }
 
 }

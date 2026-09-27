@@ -27,8 +27,11 @@ import org.ccsds.moims.mo.mal.transport.MALErrorBody;
 
 /**
  * Represents a MAL error.
+ * <p>
+ * Every error is an instance of its own class: the class generated for each error a
+ * specification defines, or UndefinedError for a number that none of them defines.
  */
-public class MOErrorException extends Exception implements Serializable, MALErrorBody {
+public abstract class MOErrorException extends Exception implements Serializable, MALErrorBody {
 
     private static final long serialVersionUID = Attribute.ABSOLUTE_AREA_SERVICE_NUMBER + 100;
 
@@ -46,7 +49,7 @@ public class MOErrorException extends Exception implements Serializable, MALErro
      * @throws java.lang.IllegalArgumentException Thrown if supplied error
      * number is null.
      */
-    public MOErrorException(final String errorName, final UInteger errorNumber,
+    protected MOErrorException(final String errorName, final UInteger errorNumber,
             final Object extraInformation) throws IllegalArgumentException {
         super();
 
@@ -61,22 +64,6 @@ public class MOErrorException extends Exception implements Serializable, MALErro
         this.errorNumber = errorNumber;
         this.errorName = errorName;
         this.extraInformation = extraInformation;
-    }
-
-    /**
-     * Creates a standard error object with the supplied error number and extra
-     * information. Deprecated because the constructor with the errorName field
-     * shall be used in the future.
-     *
-     * @param errorNumber The MAL error number, must not be null.
-     * @param extraInformation Any associated extra information, may be null.
-     * @throws java.lang.IllegalArgumentException Thrown if supplied error
-     * number is null.
-     */
-    @Deprecated
-    public MOErrorException(final UInteger errorNumber,
-            final Object extraInformation) throws IllegalArgumentException {
-        this("????", errorNumber, extraInformation);
     }
 
     /**

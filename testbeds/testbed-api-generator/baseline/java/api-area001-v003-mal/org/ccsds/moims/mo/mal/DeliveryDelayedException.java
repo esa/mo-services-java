@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The DeliveryDelayedException exception. Message queued somewhere awaiting
  * contact.
  */
-public final class DeliveryDelayedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DeliveryDelayedException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Delivery Delayed";
 

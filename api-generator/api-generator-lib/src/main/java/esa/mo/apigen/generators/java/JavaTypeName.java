@@ -132,7 +132,7 @@ public final class JavaTypeName {
      * encoder has to record which concrete type it is writing.
      */
     public static boolean isAbstractElement(MOModel model, TypeRef ref) {
-        if (ref == null || ref.isList()) {
+        if (ref == null || ref.isList() || isSpelledObjectRef(ref)) {
             return false;
         }
         // A reference to an abstract type is itself abstract: ObjectRef<Element> can hold
@@ -158,7 +158,7 @@ public final class JavaTypeName {
         // What is on the wire is decided per message, whether the field holds one of them
         // or a list of them.
         TypeDefinition definition = model.resolve(ref);
-        if (definition != null && definition.isAbstract()) {
+        if (!isSpelledObjectRef(reference) && definition != null && definition.isAbstract()) {
             return "null";
         }
         // An attribute carries the short form of the attribute type, not of a class: the
@@ -195,12 +195,26 @@ public final class JavaTypeName {
             return "null";
         }
         TypeDefinition definition = model.resolve(ref);
-        boolean isAbstract = definition != null && definition.isAbstract();
+        boolean isAbstract = !isSpelledObjectRef(reference)
+                && definition != null && definition.isAbstract();
         if (isAbstract) {
             return raw.contains("List") && !raw.contains(".Element")
                     ? "new " + of(model, reference) + "()" : "null";
         }
         return newInstance(model, reference);
+    }
+
+    /**
+     * Returns true if the reference is an object reference written into the name, as
+     * {@code ObjectRef(Auto)}, rather than marked with {@code objectRef="true"}.
+     * <p>
+     * The two spellings name the same type but are encoded differently, and the reference
+     * output keeps the difference: the marked form is encoded as the type it refers to, so
+     * a reference to an abstract type is itself abstract, while the spelled-out form is
+     * always encoded as a concrete ObjectRef.
+     */
+    private static boolean isSpelledObjectRef(TypeRef reference) {
+        return !reference.isObjectRef() && reference.unwrapped().isObjectRef();
     }
 
     private static boolean isAttribute(MOModel model, TypeRef ref) {

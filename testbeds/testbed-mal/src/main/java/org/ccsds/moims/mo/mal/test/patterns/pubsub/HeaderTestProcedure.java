@@ -34,6 +34,7 @@ package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -77,7 +78,7 @@ public class HeaderTestProcedure extends LoggingBase {
         return realInstance.initiatePublishRegisterWithQosAndSessionAndSharedBrokerAndDomain(qosLevel, sessionType, sharedBroker, domain);
     }
 
-    public boolean CallTheOperationGetResult() throws MALInteractionException, MALException {
+    public boolean CallTheOperationGetResult() throws MALStandardError, MALInteractionException, MALException {
         return realInstance.CallTheOperationGetResult();
     }
 

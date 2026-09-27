@@ -42,37 +42,49 @@ public class ActivityRelayInterceptor extends ActivityTestHandlerImpl {
     }
 
     @Override
-    public void send(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
-        relayManager.passToRelay(null, _StringList0, interaction);
+    public void send(StringList _StringList0, MALInteraction interaction) throws MALException {
+        relay(_StringList0, interaction);
 
         super.send(_StringList0, interaction);
     }
 
     @Override
-    public void testSubmit(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
-        relayManager.passToRelay(null, _StringList0, interaction);
+    public void testSubmit(StringList _StringList0, MALInteraction interaction) throws MALException {
+        relay(_StringList0, interaction);
 
         super.testSubmit(_StringList0, interaction);
     }
 
     @Override
-    public StringList request(StringList _StringList0, MALInteraction interaction) throws MALInteractionException, MALException {
-        relayManager.passToRelay(null, _StringList0, interaction);
+    public StringList request(StringList _StringList0, MALInteraction interaction) throws MALException {
+        relay(_StringList0, interaction);
 
         return super.request(_StringList0, interaction);
     }
 
     @Override
-    public void invoke(StringList _StringList0, InvokeInteraction interaction) throws MALInteractionException, MALException {
-        relayManager.passToRelay(null, _StringList0, interaction.getInteraction());
+    public void invoke(StringList _StringList0, InvokeInteraction interaction) throws MALException {
+        relay(_StringList0, interaction.getInteraction());
 
         super.invoke(_StringList0, interaction);
     }
 
     @Override
-    public void progress(StringList _StringList0, ProgressInteraction interaction) throws MALInteractionException, MALException {
-        relayManager.passToRelay(null, _StringList0, interaction.getInteraction());
+    public void progress(StringList _StringList0, ProgressInteraction interaction) throws MALException {
+        relay(_StringList0, interaction.getInteraction());
 
         super.progress(_StringList0, interaction);
+    }
+
+    /**
+     * Passes the call to the relay, reporting a failure of the relay as a failure of this
+     * provider.
+     */
+    private void relay(StringList _StringList0, MALInteraction interaction) throws MALException {
+        try {
+            relayManager.passToRelay(null, _StringList0, interaction);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 }

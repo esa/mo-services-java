@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The TooManyException exception. Maximum number of subscriptions or providers
  * of a broker has been exceeded.
  */
-public final class TooManyException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class TooManyException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Too Many";
 

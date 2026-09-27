@@ -15,12 +15,11 @@ public interface ParameterHandler {
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
      * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ParameterValueList getValue(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation setValue.
      * 
@@ -32,13 +31,12 @@ public interface ParameterHandler {
      * @throws org.ccsds.moims.mo.mc.InvalidException The input data or operation format is invalid and does not meet required criteria.
      * @throws org.ccsds.moims.mo.mc.ReadOnlyException The operation attempted to modify read-only data, which cannot be changed.
      * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void setValue(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.IdentifierList keys,
             org.ccsds.moims.mo.mal.structures.NullableAttributeList newRawValues,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.InvalidException, org.ccsds.moims.mo.mc.ReadOnlyException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.InvalidException, org.ccsds.moims.mo.mc.ReadOnlyException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation getReportingConfiguration.
      * 
@@ -48,12 +46,11 @@ public interface ParameterHandler {
      * @return The return value of the operation
      * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
      * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     org.ccsds.moims.mo.mc.structures.ReportConfigurationList getReportingConfiguration(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation enableReporting.
      * 
@@ -62,12 +59,11 @@ public interface ParameterHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
      * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void enableReporting(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation disableReporting.
      * 
@@ -76,12 +72,11 @@ public interface ParameterHandler {
      * @param interaction The MAL object representing the interaction in the provider.
      * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
      * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void disableReporting(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.IdentifierList keys,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Implements the operation setReportingPeriod.
      * 
@@ -92,13 +87,12 @@ public interface ParameterHandler {
      * @throws org.ccsds.moims.mo.mal.UnknownException Operation specific.
      * @throws org.ccsds.moims.mo.mc.InvalidException The input data or operation format is invalid and does not meet required criteria.
      * @throws org.ccsds.moims.mo.mc.AmbiguousException The data or operation is ambiguous, requiring clarification to proceed.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
      * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
      */
     void setReportingPeriod(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.IdentifierList keys,
             org.ccsds.moims.mo.mal.structures.Duration reportInterval,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.InvalidException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException;
+            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.InvalidException, org.ccsds.moims.mo.mc.AmbiguousException, org.ccsds.moims.mo.mal.MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 

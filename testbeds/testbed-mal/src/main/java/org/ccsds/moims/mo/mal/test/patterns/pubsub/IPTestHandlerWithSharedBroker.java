@@ -317,9 +317,9 @@ public class IPTestHandlerWithSharedBroker extends IPTestHandlerImpl {
     }
 
     @Override
-    public void testMultipleNotify(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction) throws MALInteractionException {
-        throw new MALInteractionException(new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER,
-                new Union("The transmit multiple is not supported with a shared broker")));
+    public void testMultipleNotify(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
+            throws MALException {
+        throw new MALException("The transmit multiple is not supported with a shared broker");
     }
 
     @Override

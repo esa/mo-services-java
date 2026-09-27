@@ -48,6 +48,20 @@ public class CommonHelper {
      */
     public static final org.ccsds.moims.mo.mal.MALArea COMMON_AREA = new org.ccsds.moims.mo.mal.MALArea(COMMON_AREA_NUMBER, COMMON_AREA_NAME, COMMON_AREA_VERSION, COMMON_AREA_ELEMENTS, COMMON_AREA_SERVICES, new CommonElementFactory());
 
+    /**
+     * Returns the exception of the error of this area with the given number.
+     * 
+     * @param errorNumber The number of the error.
+     * @param extraInfo The extra information of the error.
+     * @return the exception, or null if the area declares no error with that number
+     */
+    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+            Object extraInfo) {
+        switch (errorNumber) {
+        }
+        return null;
+    }
+
     private CommonHelper() {
         // Utility class; not meant to be instantiated.
     }

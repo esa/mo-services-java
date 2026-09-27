@@ -23,7 +23,6 @@ package esa.mo.com.test.archive;
 import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.archivetest.provider.ArchiveTestInheritanceSkeleton;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 
 /**
@@ -39,7 +38,7 @@ public class ArchiveTestHandlerImpl extends ArchiveTestInheritanceSkeleton {
         this.archiveHandler = archiveHandler;
     }
 
-    public void reset(MALInteraction interaction) throws MALInteractionException, MALException {
+    public void reset(MALInteraction interaction) throws MALException {
         archiveHandler.reset();
     }
 }

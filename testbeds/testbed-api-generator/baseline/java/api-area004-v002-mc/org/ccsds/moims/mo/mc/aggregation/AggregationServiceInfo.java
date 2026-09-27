@@ -273,21 +273,79 @@ public class AggregationServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 1:
-                return new org.ccsds.moims.mo.mc.ReadOnlyException(extraInfo);
+        switch (operationNumber) {
             case 2:
-                return new org.ccsds.moims.mo.mc.DuplicateException(extraInfo);
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                }
+                break;
             case 3:
-                return new org.ccsds.moims.mo.mc.InvalidException(extraInfo);
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                }
+                break;
             case 4:
-                return new org.ccsds.moims.mo.mc.RejectedException(extraInfo);
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                }
+                break;
             case 5:
-                return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                }
+                break;
+            case 6:
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                    case 3:
+                        return new org.ccsds.moims.mo.mc.InvalidException(extraInfo);
+                }
+                break;
+            case 7:
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                }
+                break;
+            case 8:
+                switch (errorNumber) {
+                    case 2:
+                        return new org.ccsds.moims.mo.mc.DuplicateException(extraInfo);
+                    case 3:
+                        return new org.ccsds.moims.mo.mc.InvalidException(extraInfo);
+                }
+                break;
+            case 9:
+                switch (errorNumber) {
+                    case 65551:
+                        return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                    case 5:
+                        return new org.ccsds.moims.mo.mc.AmbiguousException(extraInfo);
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mc.MCHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

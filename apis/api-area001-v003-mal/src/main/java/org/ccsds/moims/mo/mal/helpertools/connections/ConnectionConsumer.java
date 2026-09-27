@@ -333,43 +333,6 @@ public class ConnectionConsumer {
     }
 
     /**
-     *
-     * Returns a subscription object with the entity keys field set as the
-     * provided keys. The method is deprecated because this was for the old COM
-     * model with 4 fixed subkeys.
-     *
-     * @param subId Identifier of the subscription
-     * @param key1 First key
-     * @param key2 Second key
-     * @param key3 Third key
-     * @param key4 Fourth key
-     * @return The subscription object
-     */
-    @Deprecated
-    public static Subscription subscriptionKeys(Identifier subId, Identifier key1, Long key2, Long key3, Long key4) {
-        if (key1 == null || key2 == null || key3 == null || key4 == null) {
-            Logger.getLogger(ConnectionConsumer.class.getName()).log(
-                    Level.WARNING, "One of the keys is null!", new IOException());
-        }
-
-        SubscriptionFilterList filters = new SubscriptionFilterList();
-        AttributeList list1 = new AttributeList();
-        list1.add(key1);
-        AttributeList list2 = new AttributeList();
-        list2.addAsJavaType(key2);
-        AttributeList list3 = new AttributeList();
-        list3.addAsJavaType(key3);
-        AttributeList list4 = new AttributeList();
-        list4.addAsJavaType(key4);
-        filters.add(new SubscriptionFilter(new Identifier("K1"), list1));
-        filters.add(new SubscriptionFilter(new Identifier("K2"), list2));
-        filters.add(new SubscriptionFilter(new Identifier("K3"), list3));
-        filters.add(new SubscriptionFilter(new Identifier("K4"), list4));
-
-        return new Subscription(subId, null, null, filters);
-    }
-
-    /**
      * Returns the authenticationId.
      *
      * @return The authenticationId.

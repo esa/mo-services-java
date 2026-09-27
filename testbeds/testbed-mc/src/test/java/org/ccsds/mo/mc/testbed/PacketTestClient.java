@@ -34,7 +34,7 @@ import java.util.Random;
 import org.ccsds.mo.mc.testbed.PacketListener.DeliverPacketUpdate;
 import org.ccsds.mo.mc.testbed.ParameterListener.MonitorValueUpdate;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -103,7 +103,7 @@ public class PacketTestClient extends MCTest {
 				if (!listener.registerAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -138,7 +138,7 @@ public class PacketTestClient extends MCTest {
 				if (!listener.deregisterAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);

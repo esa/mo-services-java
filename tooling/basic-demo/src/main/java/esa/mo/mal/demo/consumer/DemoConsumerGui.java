@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.mal.MALContext;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.consumer.MALConsumerManager;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
@@ -536,7 +536,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
                 demoService.monitorDeregister(subLst);
             } catch (MALException ex) {
                 Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (MALInteractionException ex) {
+            } catch (MOErrorException ex) {
                 Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -556,7 +556,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             registered = true;
         } catch (MALException ex) {
             Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_regWildcardRadioButtonMenuItemActionPerformed
@@ -568,7 +568,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             registered = true;
         } catch (MALException ex) {
             Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_regHalfRadioButtonMenuItemActionPerformed
@@ -580,7 +580,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
             registered = true;
         } catch (MALException ex) {
             Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_regAllRadioButtonMenuItemActionPerformed
@@ -604,7 +604,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
           LOGGER.log(Level.INFO, "returnBooleanActionPerformed: {0}", demoService.returnBoolean(Boolean.TRUE));
       } catch (MALException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (MALInteractionException ex) {
+      } catch (MOErrorException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
       }
   }//GEN-LAST:event_returnBooleanActionPerformed
@@ -617,7 +617,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
                   demoService.returnComposite(new BasicComposite(Short.MIN_VALUE, "String", Boolean.FALSE)));
       } catch (MALException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (MALInteractionException ex) {
+      } catch (MOErrorException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
       }
   }//GEN-LAST:event_returnCompositeActionPerformed
@@ -628,7 +628,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
           LOGGER.log(Level.INFO, "returnEnumActionPerformed: {0}", demoService.returnEnumeration(BasicEnum.SECOND));
       } catch (MALException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (MALInteractionException ex) {
+      } catch (MOErrorException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
       }
   }//GEN-LAST:event_returnEnumActionPerformed
@@ -641,7 +641,7 @@ public class DemoConsumerGui extends javax.swing.JFrame {
           LOGGER.info("testSubmitActionPerformed returned");
       } catch (MALException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (MALInteractionException ex) {
+      } catch (MOErrorException ex) {
           Logger.getLogger(DemoConsumerGui.class.getName()).log(Level.SEVERE, null, ex);
       }
   }//GEN-LAST:event_testSubmitActionPerformed

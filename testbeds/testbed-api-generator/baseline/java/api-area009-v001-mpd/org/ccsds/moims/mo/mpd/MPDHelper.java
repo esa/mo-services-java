@@ -98,6 +98,30 @@ public class MPDHelper {
      */
     public static final org.ccsds.moims.mo.mal.structures.UInteger TOO_MANY_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_TOO_MANY_ERROR_NUMBER);
 
+    /**
+     * Returns the exception of the error of this area with the given number.
+     * 
+     * @param errorNumber The number of the error.
+     * @param extraInfo The extra information of the error.
+     * @return the exception, or null if the area declares no error with that number
+     */
+    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+            Object extraInfo) {
+        switch (errorNumber) {
+            case 1:
+                return new org.ccsds.moims.mo.mpd.InvalidException(extraInfo);
+            case 2:
+                return new org.ccsds.moims.mo.mpd.DeliveryFailedException(extraInfo);
+            case 3:
+                return new org.ccsds.moims.mo.mpd.OrderFailedException(extraInfo);
+            case 4:
+                return new org.ccsds.moims.mo.mpd.UnknownException(extraInfo);
+            case 5:
+                return new org.ccsds.moims.mo.mpd.TooManyException(extraInfo);
+        }
+        return null;
+    }
+
     private MPDHelper() {
         // Utility class; not meant to be instantiated.
     }

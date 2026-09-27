@@ -21,6 +21,8 @@ MVN="${MVN:-mvn}"
 MVN_FLAGS="${MVN_FLAGS:---batch-mode -DskipTests}"
 
 API_MODULES=$(cd "$REPO" && ls -d apis/api-*/ 2>/dev/null | sed 's#/$##' | sort)
+# The test APIs the testbeds build; test-api-mc is left out of their reactor.
+TEST_API_MODULES="testbeds/test-apis/test-api-com testbeds/test-apis/test-api-mal"
 
 log()  { printf '\033[1m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m !!\033[0m %s\n' "$*"; }
@@ -33,6 +35,9 @@ build_java() {
     local list; list=$(echo "$API_MODULES" | paste -sd,)
     (cd "$REPO" && $MVN $MVN_FLAGS install -pl "$list" --also-make) \
         || die "Maven build failed"
+    local tests; tests=$(echo "$TEST_API_MODULES" | tr ' ' '\n' | sed 's#^testbeds/##' | paste -sd,)
+    (cd "$REPO/testbeds" && $MVN $MVN_FLAGS clean install -pl "$tests" --also-make) \
+        || die "Maven build of the test APIs failed"
 }
 
 build_navigator() {
@@ -47,7 +52,7 @@ build_navigator() {
 snapshot_java() {
     local dest="$1"; mkdir -p "$dest"
     local n=0
-    for m in $API_MODULES; do
+    for m in $API_MODULES $TEST_API_MODULES; do
         local src="$REPO/$m/target/generated-sources/stub"
         [ -d "$src" ] || { warn "no generated sources in $m — was it built?"; continue; }
         mkdir -p "$dest/$(basename "$m")"

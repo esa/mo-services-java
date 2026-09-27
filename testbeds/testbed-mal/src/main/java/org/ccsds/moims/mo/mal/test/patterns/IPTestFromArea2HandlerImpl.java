@@ -57,7 +57,7 @@ import org.ccsds.moims.mo.malprototype2.iptest.provider.MonitorPublisher;
 public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
 
     public void publishDeregister(TestPublishDeregister _TestPublishRegister, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         MonitorPublisher publisher = createMonitorPublisher(
                 _TestPublishRegister.getDomain(),
                 _TestPublishRegister.getNetworkZone(),
@@ -66,7 +66,11 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher.deregister();
+        try {
+            publisher.deregister();
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
 
         Monitor2Publisher publisher2 = createMonitor2Publisher(
                 _TestPublishRegister.getDomain(),
@@ -76,11 +80,15 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher2.deregister();
+        try {
+            publisher2.deregister();
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     public void publishRegister(TestPublishRegister _TestPublishRegister, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         MonitorPublisher publisher = createMonitorPublisher(
                 _TestPublishRegister.getDomain(),
                 _TestPublishRegister.getNetworkZone(),
@@ -89,7 +97,11 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
+        try {
+            publisher.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
 
         Monitor2Publisher publisher2 = createMonitor2Publisher(
                 _TestPublishRegister.getDomain(),
@@ -99,11 +111,15 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
                 _TestPublishRegister.getQos(),
                 new Hashtable(),
                 _TestPublishRegister.getPriority());
-        publisher2.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
+        try {
+            publisher2.register(_TestPublishRegister.getKeyNames(), _TestPublishRegister.getKeyTypes(), new PublisherListener());
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     public void publishUpdates(TestPublishUpdate _TestPublishUpdate, MALInteraction interaction)
-            throws MALInteractionException, MALException {
+            throws MALException {
         MonitorPublisher publisher = createMonitorPublisher(
                 _TestPublishUpdate.getDomain(),
                 _TestPublishUpdate.getNetworkZone(),
@@ -127,8 +143,12 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
 
         UpdateHeader publishHeader = new UpdateHeader(new Identifier(""),
                 _TestPublishUpdate.getDomain(), updateHeader.getKeyValues());
-        publisher.publish(publishHeader, testUpdate);
-        publisher2.publish(publishHeader, testUpdate);
+        try {
+            publisher.publish(publishHeader, testUpdate);
+            publisher2.publish(publishHeader, testUpdate);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
+        }
     }
 
     public void testMultipleNotify(TestPublishUpdate _TestPublishRegister,
@@ -138,13 +158,13 @@ public class IPTestFromArea2HandlerImpl extends IPTestInheritanceSkeleton {
 
     @Override
     public void testObjectRefSubmit(ObjectRef<Auto> _ObjectRef_TestPublishUpdate_0,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
 
     }
 
     @Override
     public void testObjectRefSend(ObjectRef<Auto> _ObjectRef_IPTestDefinition_0,
-            MALInteraction interaction) throws MALInteractionException, MALException {
+            MALInteraction interaction) throws MALException {
 
     }
 

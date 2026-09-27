@@ -21,11 +21,10 @@
 package org.ccsds.moims.mo.mal.test.regression.fastprovider;
 
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALInteractionException;
-import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.malprototype.TestErrorException;
 import org.ccsds.moims.mo.malprototype.iptest.body.RequestMultiResponse;
 import org.ccsds.moims.mo.malprototype.iptest.provider.IPTestInheritanceSkeleton;
 import org.ccsds.moims.mo.malprototype.iptest.provider.InvokeInteraction;
@@ -46,27 +45,27 @@ import org.ccsds.moims.mo.testbed.util.LoggingBase;
  */
 public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
 
-    public void testSubmit(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
+    public void testSubmit(IPTestDefinition iptd, MALInteraction mali) throws TestErrorException, MALException {
         if (iptd == null) {
-            throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+            throw new TestErrorException("No test definition");
         }
     }
 
-    public String request(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
+    public String request(IPTestDefinition iptd, MALInteraction mali) throws TestErrorException, MALException {
         if (iptd == null) {
-            throw new MALInteractionException(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+            throw new TestErrorException("No test definition");
         }
 
         return "";
     }
 
-    public void invoke(IPTestDefinition iptd, InvokeInteraction ri) throws MALInteractionException, MALException {
+    public void invoke(IPTestDefinition iptd, InvokeInteraction ri) throws MALException {
         try {
             LoggingBase.logMessage("invoke called");
             Thread.sleep(1000);
 
             if (iptd == null) {
-                ri.sendError(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+                ri.sendError(new UnknownException());
                 return;
             }
 
@@ -84,13 +83,13 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
     }
 
-    public void progress(IPTestDefinition iptd, ProgressInteraction qi) throws MALInteractionException, MALException {
+    public void progress(IPTestDefinition iptd, ProgressInteraction qi) throws MALException {
         try {
             LoggingBase.logMessage("progress called");
             Thread.sleep(1000);
 
             if (iptd == null) {
-                qi.sendError(new MOErrorException(MALHelper.UNKNOWN_ERROR_NUMBER, null));
+                qi.sendError(new UnknownException());
                 return;
             }
 
@@ -116,59 +115,59 @@ public class FastIpTestHandlerImpl extends IPTestInheritanceSkeleton {
         }
     }
 
-    public void send(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
+    public void send(IPTestDefinition iptd, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public IPTestResult getResult(Element elmnt, MALInteraction mali) throws MALInteractionException, MALException {
+    public IPTestResult getResult(Element elmnt, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void publishUpdates(TestPublishUpdate tpu, MALInteraction mali) throws MALInteractionException, MALException {
+    public void publishUpdates(TestPublishUpdate tpu, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void publishRegister(TestPublishRegister tpr, MALInteraction mali) throws MALInteractionException, MALException {
+    public void publishRegister(TestPublishRegister tpr, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void publishDeregister(TestPublishDeregister tpd, MALInteraction mali) throws MALInteractionException, MALException {
+    public void publishDeregister(TestPublishDeregister tpd, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void testMultipleNotify(TestPublishUpdate tpu, MALInteraction mali) throws MALInteractionException, MALException {
+    public void testMultipleNotify(TestPublishUpdate tpu, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void sendMulti(IPTestDefinition iptd, Element elmnt, MALInteraction mali) throws MALInteractionException, MALException {
+    public void sendMulti(IPTestDefinition iptd, Element elmnt, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void submitMulti(IPTestDefinition iptd, Element elmnt, MALInteraction mali) throws MALInteractionException, MALException {
+    public void submitMulti(IPTestDefinition iptd, Element elmnt, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public RequestMultiResponse requestMulti(IPTestDefinition iptd, Element elmnt, MALInteraction mali) throws MALInteractionException, MALException {
+    public RequestMultiResponse requestMulti(IPTestDefinition iptd, Element elmnt, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void invokeMulti(IPTestDefinition iptd, Element elmnt, InvokeMultiInteraction imi) throws MALInteractionException, MALException {
+    public void invokeMulti(IPTestDefinition iptd, Element elmnt, InvokeMultiInteraction imi) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void progressMulti(IPTestDefinition iptd, Element elmnt, ProgressMultiInteraction pmi) throws MALInteractionException, MALException {
+    public void progressMulti(IPTestDefinition iptd, Element elmnt, ProgressMultiInteraction pmi) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void testRequestEmptyBody(IPTestDefinition iptd, MALInteraction mali) throws MALInteractionException, MALException {
+    public void testRequestEmptyBody(IPTestDefinition iptd, MALInteraction mali) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void testInvokeEmptyBody(IPTestDefinition iptd, TestInvokeEmptyBodyInteraction tiebi) throws MALInteractionException, MALException {
+    public void testInvokeEmptyBody(IPTestDefinition iptd, TestInvokeEmptyBodyInteraction tiebi) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void testProgressEmptyBody(IPTestDefinition iptd, TestProgressEmptyBodyInteraction tpebi) throws MALInteractionException, MALException {
+    public void testProgressEmptyBody(IPTestDefinition iptd, TestProgressEmptyBodyInteraction tpebi) throws MALException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

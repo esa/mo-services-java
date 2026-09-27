@@ -35,7 +35,6 @@ import org.ccsds.moims.mo.mal.helpertools.connections.ConfigurationProviderSingl
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
-import org.ccsds.moims.mo.mal.provider.MALSubmit;
 import org.ccsds.moims.mo.mal.structures.AttributeType;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -179,7 +178,7 @@ public class ActionProviderServiceImpl extends ActionInheritanceSkeleton {
 
     @Override
     public void execute(ActionExecutionRequest executionRequest, MALInteraction interaction)
-            throws DuplicateException, InvalidException, RejectedException, UnknownException, MALInteractionException, MALException {
+            throws DuplicateException, InvalidException, RejectedException, UnknownException, MALException {
 
         java.lang.Long requestId = executionRequest.getRequestId();
         if (knownRequestIds.putIfAbsent(requestId, Boolean.TRUE) != null) {
@@ -203,9 +202,10 @@ public class ActionProviderServiceImpl extends ActionInheritanceSkeleton {
             knownRequestIds.remove(requestId);
             throw new RejectedException(rejectReason);
         }
-        
-        ((MALSubmit) interaction).sendAcknowledgement();
 
+        // Returning accepts the request: the skeleton sends the acknowledgement. The
+        // execution events are published on another interaction, which the MAL does not
+        // order against it.
         runExecutionAsync(executionRequest, definition);
     }
 

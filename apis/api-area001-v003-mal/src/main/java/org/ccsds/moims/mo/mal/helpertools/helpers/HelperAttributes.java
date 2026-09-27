@@ -43,30 +43,6 @@ public class HelperAttributes {
     public static String SERIAL_OBJECT_STRING = "SerializedObject";
 
     /**
-     * Converts an {@link Attribute} into a Java Double.
-     *
-     * @param in the Attribute to convert
-     * @return the converted Double value
-     * @deprecated Use {@link Attribute#attribute2double(Attribute)} directly.
-     */
-    @Deprecated
-    public static Double attribute2double(Attribute in) {
-        return Attribute.attribute2double(in);
-    }
-
-    /**
-     * Converts a value into its String representation.
-     *
-     * @param in the value to convert
-     * @return the String representation
-     * @deprecated Use {@link Attribute#attribute2string(Object)} directly.
-     */
-    @Deprecated
-    public static String attribute2string(Object in) {
-        return Attribute.attribute2string(in);
-    }
-
-    /**
      * Creates an instance of a MAL attribute from attribute name
      *
      * @param attributeName The Attribute name
@@ -264,30 +240,6 @@ public class HelperAttributes {
         }
 
         return null;
-    }
-
-    /**
-     * Converts a Java type into an MO {@link Attribute}.
-     *
-     * @param obj the Java object to convert
-     * @return the resulting Attribute
-     * @deprecated Use {@link Attribute#javaType2Attribute(Object)} directly.
-     */
-    @Deprecated
-    public static Object javaType2Attribute(Object obj) {
-        return Attribute.javaType2Attribute(obj);
-    }
-
-    /**
-     * Converts a MAL data type into a Java data type
-     *
-     * @param obj The object in the MAL data type
-     * @return The object in the Java data type
-     * @deprecated Use {@link Attribute#attribute2JavaType(Object)} directly.
-     */
-    @Deprecated
-    public static Object attribute2JavaType(Object obj) {
-        return Attribute.attribute2JavaType(obj);
     }
 
     /**

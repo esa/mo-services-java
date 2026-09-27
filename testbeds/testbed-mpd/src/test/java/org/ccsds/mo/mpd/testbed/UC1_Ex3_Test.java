@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.ImagesDataset;
 import org.ccsds.mo.mpd.testbed.backends.MixedProductDataset;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.*;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
@@ -234,7 +233,7 @@ public class UC1_Ex3_Test extends MPDTest {
             int size = list.size();
             System.out.println("Number of listed products returned: " + size);
             assertEquals(expectedNumberOfResults, size);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {
@@ -367,7 +366,7 @@ public class UC1_Ex3_Test extends MPDTest {
                 isValidAttribute.accept(attributes);
             }
             System.out.flush();
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(UC1_Ex1_Test.class.getName()).log(Level.SEVERE, null, ex);
             fail(ex.toString());
         } catch (MALException ex) {

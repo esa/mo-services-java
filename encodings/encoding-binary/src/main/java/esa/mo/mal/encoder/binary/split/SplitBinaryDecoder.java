@@ -105,14 +105,6 @@ public class SplitBinaryDecoder extends esa.mo.mal.encoder.binary.variable.Varia
 
             return getSplitInputReader().bitStore.pop();
         }
-
-        @Deprecated
-        private long readFixedUnsignedLong() throws MALException {
-            buf.checkBuffer(8);
-
-            final int i = buf.shiftOffsetAndReturnPrevious(8);
-            return java.nio.ByteBuffer.wrap(buf.getBuf(), i, 8).getLong();
-        }
     }
 
     protected static class SplitBinaryInputReader extends VariableBinaryInputReader {

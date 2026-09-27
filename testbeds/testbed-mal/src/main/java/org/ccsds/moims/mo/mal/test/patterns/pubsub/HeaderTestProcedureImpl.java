@@ -32,13 +32,14 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.patterns.pubsub;
 
+import org.ccsds.moims.mo.mal.InternalException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.test.util.Helper;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.AttributeList;
@@ -172,7 +173,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         return true;
     }
 
-    public boolean CallTheOperationGetResult() throws MALInteractionException, MALException {
+    public boolean CallTheOperationGetResult() throws MALStandardError, MALException {
         LoggingBase.logMessage("HeaderTestProcedure.CallTheOperationGetResult()");
         result = ipTest.getResult(null);
         return true;
@@ -463,7 +464,7 @@ public class HeaderTestProcedureImpl extends LoggingBase {
         TestEndPoint ep = TransportInterceptor.instance().getEndPoint(ipTestConsumer.getConsumer().getURI());
 
         MALMessage notifyMessage = ep.createTestMessage(expectedMonitorNotifyErrorHeader,
-                new MOErrorException(MALHelper.INTERNAL_ERROR_NUMBER, null), new Hashtable());
+                new InternalException(), new Hashtable());
 
         // Inject the Notify error message
         ep.receive(notifyMessage);

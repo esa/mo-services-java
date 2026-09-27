@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * The InternalException exception. An internal error has occurred.
  */
-public final class InternalException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class InternalException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Internal";
 

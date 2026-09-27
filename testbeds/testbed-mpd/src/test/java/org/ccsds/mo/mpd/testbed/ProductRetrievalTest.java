@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.mo.mpd.testbed.backends.FifteenProductsDataset;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
@@ -40,7 +40,10 @@ import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mal.structures.URI;
 import org.ccsds.moims.mo.mal.structures.Union;
 import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
-import org.ccsds.moims.mo.mpd.MPDHelper;
+import org.ccsds.moims.mo.mpd.DeliveryFailedException;
+import org.ccsds.moims.mo.mpd.InvalidException;
+import org.ccsds.moims.mo.mpd.TooManyException;
+import org.ccsds.moims.mo.mpd.UnknownException;
 import org.ccsds.moims.mo.mpd.productretrieval.consumer.ProductRetrievalAdapter;
 import org.ccsds.moims.mo.mpd.structures.Product;
 import org.ccsds.moims.mo.mpd.structures.ProductFilter;
@@ -50,6 +53,7 @@ import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
 import org.ccsds.moims.mo.mpd.structures.TimeWindow;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import static org.junit.Assert.*;
 
 /**
@@ -74,23 +78,12 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_01() {
         System.out.println("Running: testCase_01()");
 
-        try {
-            ProductFilter productFilter = new ProductFilter();
-            Time now = Time.now();
-            TimeWindow creationDate = new TimeWindow(now, new Time(now.getValue() - 100));
-            TimeWindow contentDate = null;
-            testMOErrorListProducts(productFilter, creationDate, contentDate);
-            fail("The operation was expected to throw an 'Invalid' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Invalid' exception!");
-            }
-        }
+        ProductFilter productFilter = new ProductFilter();
+        Time now = Time.now();
+        TimeWindow creationDate = new TimeWindow(now, new Time(now.getValue() - 100));
+        TimeWindow contentDate = null;
+        assertThrows(InvalidException.class, () -> testMOErrorListProducts(productFilter, creationDate, contentDate));
+        Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
     /**
@@ -100,23 +93,12 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_02() {
         System.out.println("Running: testCase_02()");
 
-        try {
-            ProductFilter productFilter = new ProductFilter();
-            Time now = Time.now();
-            TimeWindow creationDate = null;
-            TimeWindow contentDate = new TimeWindow(now, new Time(now.getValue() - 100));
-            testMOErrorListProducts(productFilter, creationDate, contentDate);
-            fail("The operation was expected to throw an 'Invalid' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.INVALID_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Invalid' exception!");
-            }
-        }
+        ProductFilter productFilter = new ProductFilter();
+        Time now = Time.now();
+        TimeWindow creationDate = null;
+        TimeWindow contentDate = new TimeWindow(now, new Time(now.getValue() - 100));
+        assertThrows(InvalidException.class, () -> testMOErrorListProducts(productFilter, creationDate, contentDate));
+        Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
     /**
@@ -129,7 +111,7 @@ public class ProductRetrievalTest extends MPDTest {
         try {
             ObjectRefList productRefs = new ObjectRefList();
             this.testGetProducts(productRefs);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
             fail("The operation is not expected to throw an exception!");
         }
@@ -142,36 +124,14 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_04() {
         System.out.println("Running: testCase_04()");
 
-        try {
-            IdentifierList domain = new IdentifierList();
-            Long typeId = Product.TYPE_ID.getTypeId();
-            Identifier key = new Identifier("Non_Existing_Key");
-            UInteger objectVersion = new UInteger(1);
+        IdentifierList domain = new IdentifierList();
+        Long typeId = Product.TYPE_ID.getTypeId();
+        Identifier key = new Identifier("Non_Existing_Key");
+        UInteger objectVersion = new UInteger(1);
 
-            ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
-            this.testGetProducts(productRefs);
-            fail("The operation was expected to throw an 'Unknown' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.UNKNOWN_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-                // Check if the error includes in the index list a zero!
-                IntegerList indexes = (IntegerList) moError.getExtraInformation();
-                int size = indexes.size();
-
-                if (size != 1) {
-                    fail("The 'Unknown' exception does not have 1 entry!");
-                } else {
-                    Integer indexError = indexes.get(0);
-                    assertEquals(0, indexError.intValue()); // The wrong index
-                }
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Unknown' exception!");
-            }
-        }
+        ObjectRefList productRefs = new ObjectRefList();
+        productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
+        assertUnknownAt(0, () -> this.testGetProducts(productRefs));
     }
 
     /**
@@ -181,37 +141,15 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_05() {
         System.out.println("Running: testCase_05()");
 
-        try {
-            IdentifierList domain = new IdentifierList();
-            Long typeId = Product.TYPE_ID.getTypeId();
-            Identifier key = new Identifier("Non_Existing_Key");
-            UInteger objectVersion = new UInteger(1);
+        IdentifierList domain = new IdentifierList();
+        Long typeId = Product.TYPE_ID.getTypeId();
+        Identifier key = new Identifier("Non_Existing_Key");
+        UInteger objectVersion = new UInteger(1);
 
-            ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(dataset.ref);
-            productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
-            this.testGetProducts(productRefs);
-            fail("The operation was expected to throw an 'Unknown' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.UNKNOWN_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-                // Check if the error includes in the index list a zero!
-                IntegerList indexes = (IntegerList) moError.getExtraInformation();
-                int size = indexes.size();
-
-                if (size != 1) {
-                    fail("The 'Unknown' exception does not have 1 entry!");
-                } else {
-                    Integer indexError = indexes.get(0);
-                    assertEquals(1, indexError.intValue()); // The wrong index
-                }
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Unknown' exception!");
-            }
-        }
+        ObjectRefList productRefs = new ObjectRefList();
+        productRefs.add(dataset.ref);
+        productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
+        assertUnknownAt(1, () -> this.testGetProducts(productRefs));
     }
 
     /**
@@ -226,7 +164,7 @@ public class ProductRetrievalTest extends MPDTest {
             productRefs.add(dataset.ref);
             URI deliverTo = TMP_DIR;
             this.testDeliverProductFiles(productRefs, deliverTo);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
             fail("The operation was not expected to throw an exception!");
         }
@@ -239,26 +177,16 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_07() {
         System.out.println("Running: testCase_07()");
 
-        try {
-            ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(dataset.ref);
-            String path = TMP_DIR.getValue().replace("file://", "");
-            File targetDir = new File(path, "wrong_directory");
-            URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
-            this.testDeliverProductFiles(productRefs, deliverTo);
-            fail("The operation was expected to throw an 'Delivery Failed' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.DELIVERY_FAILED_ERROR_NUMBER.getValue()) {
-                String extraInformation = ((Union) moError.getExtraInformation()).getStringValue();
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO,
-                        "Error returned successfully! With extraInformation message: {0}", extraInformation);
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Delivery Failed' exception!");
-            }
-        }
+        ObjectRefList productRefs = new ObjectRefList();
+        productRefs.add(dataset.ref);
+        String path = TMP_DIR.getValue().replace("file://", "");
+        File targetDir = new File(path, "wrong_directory");
+        URI deliverTo = new URI("file://" + targetDir.getAbsolutePath());
+        DeliveryFailedException ex = assertThrows(DeliveryFailedException.class,
+                () -> this.testDeliverProductFiles(productRefs, deliverTo));
+        String extraInformation = ((Union) ex.getExtraInformation()).getStringValue();
+        Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO,
+                "Error returned successfully! With extraInformation message: {0}", extraInformation);
     }
 
     /**
@@ -268,37 +196,15 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_08() {
         System.out.println("Running: testCase_08()");
 
-        try {
-            IdentifierList domain = new IdentifierList();
-            Long typeId = Product.TYPE_ID.getTypeId();
-            Identifier key = new Identifier("Non_Existing_Key");
-            UInteger objectVersion = new UInteger(1);
+        IdentifierList domain = new IdentifierList();
+        Long typeId = Product.TYPE_ID.getTypeId();
+        Identifier key = new Identifier("Non_Existing_Key");
+        UInteger objectVersion = new UInteger(1);
 
-            ObjectRefList productRefs = new ObjectRefList();
-            productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
-            URI deliverTo = TMP_DIR;
-            this.testDeliverProductFiles(productRefs, deliverTo);
-            fail("The operation was expected to throw an 'Unknown' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.UNKNOWN_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-                // Check if the error includes in the index list a zero!
-                IntegerList indexes = (IntegerList) moError.getExtraInformation();
-                int size = indexes.size();
-
-                if (size != 1) {
-                    fail("The 'Unknown' exception does not have 1 entry!");
-                } else {
-                    Integer indexError = indexes.get(0);
-                    assertEquals(0, indexError.intValue()); // The wrong index
-                }
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Unknown' exception!");
-            }
-        }
+        ObjectRefList productRefs = new ObjectRefList();
+        productRefs.add(new ObjectRef(domain, typeId, key, objectVersion));
+        URI deliverTo = TMP_DIR;
+        assertUnknownAt(0, () -> this.testDeliverProductFiles(productRefs, deliverTo));
     }
 
     /**
@@ -308,25 +214,28 @@ public class ProductRetrievalTest extends MPDTest {
     public void testCase_09() {
         System.out.println("Running: testCase_09()");
 
-        try {
-            ProductFilter productFilter = new ProductFilter();
-            TimeWindow creationDate = null;
-            TimeWindow contentDate = null;
-            testMOErrorListProducts(productFilter, creationDate, contentDate);
-            fail("The operation was expected to throw a 'Too Many' exception!");
-        } catch (MALInteractionException ex) {
-            MOErrorException moError = ex.getStandardError();
-            long errorNumber = moError.getErrorNumber().getValue();
-            if (errorNumber == MPDHelper.TOO_MANY_ERROR_NUMBER.getValue()) {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
-            } else {
-                Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Failed!", ex);
-                fail("The operation was expected to throw an 'Too Many' exception!");
-            }
-        }
+        ProductFilter productFilter = new ProductFilter();
+        TimeWindow creationDate = null;
+        TimeWindow contentDate = null;
+        assertThrows(TooManyException.class, () -> testMOErrorListProducts(productFilter, creationDate, contentDate));
+        Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
     }
 
-    private void testDeliverProductFiles(ObjectRefList productRefs, URI deliverTo) throws MALInteractionException {
+    /**
+     * Asserts that the call raises the MPD Unknown error for exactly one product, the one at
+     * the given index of the list it was given.
+     */
+    private static void assertUnknownAt(int expectedIndex, ThrowingRunnable call) {
+        UnknownException ex = assertThrows(UnknownException.class, call);
+        Logger.getLogger(ProductRetrievalTest.class.getName()).log(Level.INFO, "Error returned successfully!");
+        // The error lists the index of each product that was not found
+        IntegerList indexes = (IntegerList) ex.getExtraInformation();
+        assertEquals("The 'Unknown' exception does not have 1 entry!", 1, indexes.size());
+        assertEquals(expectedIndex, indexes.get(0).intValue());
+    }
+
+    private void testDeliverProductFiles(ObjectRefList productRefs, URI deliverTo)
+            throws UnknownException, DeliveryFailedException, MALStandardError {
         try {
             ProductMetadataList returnedMetadatas = new ProductMetadataList();
             long startTime = System.currentTimeMillis();
@@ -437,7 +346,7 @@ public class ProductRetrievalTest extends MPDTest {
         }
     }
 
-    private void testGetProducts(ObjectRefList productRefs) throws MALInteractionException {
+    private void testGetProducts(ObjectRefList productRefs) throws UnknownException, MALStandardError {
         try {
             ProductList returnedProducts = new ProductList();
             long startTime = System.currentTimeMillis();
@@ -498,7 +407,8 @@ public class ProductRetrievalTest extends MPDTest {
     }
 
     private void testMOErrorListProducts(ProductFilter productFilter,
-            TimeWindow creationDate, TimeWindow contentDate) throws MALInteractionException {
+            TimeWindow creationDate, TimeWindow contentDate)
+            throws InvalidException, TooManyException, MALStandardError {
         try {
             consumerPR.listProducts(productFilter, creationDate, contentDate);
         } catch (MALException ex) {

@@ -35,498 +35,498 @@ public class TestHelperAttributes {
     @Test
     public void testAttribute2Double1() {
         Union attribute = new Union(false);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double2() {
         Union attribute = new Union(true);
-        assertEquals(1.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(1.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double3() {
         Union attribute = new Union(0f);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double4() {
         Union attribute = new Union(42.0f);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double5() {
         Union attribute = new Union(Float.MAX_VALUE);
-        assertEquals((double) Float.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Float.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double6() {
         Union attribute = new Union(Float.MIN_VALUE);
-        assertEquals((double) Float.MIN_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Float.MIN_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double7() {
         Union attribute = new Union(0);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double8() {
         Union attribute = new Union(42);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double9() {
         Union attribute = new Union(Integer.MAX_VALUE);
-        assertEquals((double) Integer.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Integer.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double10() {
         Union attribute = new Union(Integer.MIN_VALUE);
-        assertEquals((double) Integer.MIN_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Integer.MIN_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double11() {
         Union attribute = new Union(0.0);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double12() {
         Union attribute = new Union(42.0);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double13() {
         Union attribute = new Union(Double.MAX_VALUE);
-        assertEquals(Double.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(Double.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double14() {
         Union attribute = new Union(Double.MIN_VALUE);
-        assertEquals(Double.MIN_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(Double.MIN_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double15() {
         Union attribute = new Union(0L);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double16() {
         Union attribute = new Union(42L);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double17() {
         Union attribute = new Union(Long.MAX_VALUE);
-        assertEquals((double) Long.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Long.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double18() {
         Union attribute = new Union(Long.MIN_VALUE);
-        assertEquals((double) Long.MIN_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Long.MIN_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double19() {
         Union attribute = new Union((short) 0);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double20() {
         Union attribute = new Union((short) 42);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double21() {
         Union attribute = new Union(Short.MAX_VALUE);
-        assertEquals((double) Short.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Short.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double22() {
         Union attribute = new Union(Short.MIN_VALUE);
-        assertEquals((double) Short.MIN_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Short.MIN_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double23() {
         Union attribute = new Union((byte) 0);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double24() {
         Union attribute = new Union((byte) 42.0);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double25() {
         Union attribute = new Union(Byte.MAX_VALUE);
-        assertEquals((double) Byte.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Byte.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double26() {
         Union attribute = new Union(Byte.MIN_VALUE);
-        assertEquals((double) Byte.MIN_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Byte.MIN_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double27() {
         Union attribute = new Union("ABCD");
-        assertEquals(null, HelperAttributes.attribute2double(attribute));
+        assertEquals(null, Attribute.attribute2double(attribute));
     }
 
     @Test
     public void testAttribute2Double28() {
         Union attribute = new Union("123456789.01234567");
-        assertEquals(123456789.01234567, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(123456789.01234567, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double29() {
         Union attribute = new Union("42.0");
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double31() {
         Duration attribute = new Duration(0);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double32() {
         Duration attribute = new Duration(42.0);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double33() {
         Identifier attribute = new Identifier("0");
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double34() {
         Identifier attribute = new Identifier("ABCDEFG");
-        assertEquals(null, HelperAttributes.attribute2double(attribute));
+        assertEquals(null, Attribute.attribute2double(attribute));
     }
 
     @Test
     public void testAttribute2Double35() {
         Identifier attribute = new Identifier("1337");
-        assertEquals(1337.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(1337.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double36() {
         Identifier attribute = new Identifier("1337.42");
-        assertEquals(1337.42, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(1337.42, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double37() {
         UOctet attribute = new UOctet((short) 0);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double38() {
         UOctet attribute = new UOctet((short) 255);
-        assertEquals(255.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(255.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double39() {
         UOctet attribute = new UOctet((short) 42);
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double41() {
         UShort attribute = new UShort(0);
-        assertEquals(0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double42() {
         UShort attribute = new UShort(UShort.MAX_VALUE);
-        assertEquals(65535.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(65535.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double43() {
         UShort attribute = new UShort(12345);
-        assertEquals(12345.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(12345.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double44() {
         UInteger attribute = new UInteger(0);
-        assertEquals(0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double45() {
         UInteger attribute = new UInteger(UInteger.MAX_VALUE);
-        assertEquals(4294967295.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(4294967295.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double46() {
         UInteger attribute = new UInteger(4563183);
-        assertEquals(4563183.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(4563183.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double47() {
         ULong attribute = new ULong(new BigInteger("0"));
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double49() {
         ULong attribute = new ULong(new BigInteger("42"));
-        assertEquals(42.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(42.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double50() {
         Time attribute = new Time(0L);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double51() {
         Time attribute = new Time(Long.MAX_VALUE);
-        assertEquals((double) Long.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Long.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double52() {
         FineTime attribute = new FineTime(0L);
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double53() {
         FineTime attribute = new FineTime(Long.MAX_VALUE);
-        assertEquals((double) Long.MAX_VALUE, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals((double) Long.MAX_VALUE, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double54() {
         URI attribute = new URI("0");
-        assertEquals(0.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(0.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double55() {
         URI attribute = new URI("1234567893548");
-        assertEquals(1234567893548.0, (double) HelperAttributes.attribute2double(attribute), 0.0000001);
+        assertEquals(1234567893548.0, (double) Attribute.attribute2double(attribute), 0.0000001);
     }
 
     @Test
     public void testAttribute2Double56() {
         URI attribute = new URI("XZYWERFD");
-        assertEquals(null, HelperAttributes.attribute2double(attribute));
+        assertEquals(null, Attribute.attribute2double(attribute));
     }
 
     /* Tests for attribute2string */
     @Test
     public void testAttribute2String1() {
-        assertEquals("null", HelperAttributes.attribute2string(null));
+        assertEquals("null", Attribute.attribute2string(null));
     }
 
     @Test
     public void testAttribute2String2() {
-        assertEquals("", HelperAttributes.attribute2string(new Object()));
+        assertEquals("", Attribute.attribute2string(new Object()));
     }
 
     @Test
     public void testAttribute2String3() {
         Union attribute = new Union(42.0);
-        assertEquals("42.0", HelperAttributes.attribute2string(attribute));
+        assertEquals("42.0", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String4() {
         Union attribute = new Union((Double) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String5() {
         Union attribute = new Union(true);
-        assertEquals("true", HelperAttributes.attribute2string(attribute));
+        assertEquals("true", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String6() {
         Union attribute = new Union((Boolean) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String7() {
         Union attribute = new Union(false);
-        assertEquals("false", HelperAttributes.attribute2string(attribute));
+        assertEquals("false", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String8() {
         Union attribute = new Union(42.0f);
-        assertEquals("42.0", HelperAttributes.attribute2string(attribute));
+        assertEquals("42.0", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String9() {
         Union attribute = new Union((Float) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String10() {
         Union attribute = new Union(42);
-        assertEquals("42", HelperAttributes.attribute2string(attribute));
+        assertEquals("42", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String11() {
         Union attribute = new Union((Integer) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String12() {
         Union attribute = new Union(Long.MAX_VALUE);
-        assertEquals("9223372036854775807", HelperAttributes.attribute2string(attribute));
+        assertEquals("9223372036854775807", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String13() {
         Union attribute = new Union((Long) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String14() {
         Union attribute = new Union((short) 1337);
-        assertEquals("1337", HelperAttributes.attribute2string(attribute));
+        assertEquals("1337", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String15() {
         Union attribute = new Union((Short) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String16() {
         Union attribute = new Union((byte) 123);
-        assertEquals("123", HelperAttributes.attribute2string(attribute));
+        assertEquals("123", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String17() {
         Union attribute = new Union((Byte) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String18() {
         Union attribute = new Union("I am a string!");
-        assertEquals("I am a string!", HelperAttributes.attribute2string(attribute));
+        assertEquals("I am a string!", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String19() {
         Union attribute = new Union((String) null);
-        assertEquals("", HelperAttributes.attribute2string(attribute));
+        assertEquals("", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String20() {
         Duration attribute = new Duration(0.0);
-        assertEquals("0.0", HelperAttributes.attribute2string(attribute));
+        assertEquals("0.0", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String21() {
         UOctet attribute = new UOctet((short) 123);
-        assertEquals("123", HelperAttributes.attribute2string(attribute));
+        assertEquals("123", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String22() {
         UShort attribute = new UShort(12345);
-        assertEquals("12345", HelperAttributes.attribute2string(attribute));
+        assertEquals("12345", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String23() {
         UInteger attribute = new UInteger(1234567890);
-        assertEquals("1234567890", HelperAttributes.attribute2string(attribute));
+        assertEquals("1234567890", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String24() {
         Blob attribute = new Blob();
-        assertEquals("null", HelperAttributes.attribute2string(attribute));
+        assertEquals("null", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String25() {
         Blob attribute = new Blob("Teststring".getBytes());
-        assertEquals("[84, 101, 115, 116, 115, 116, 114, 105, 110, 103]", HelperAttributes.attribute2string(attribute));
+        assertEquals("[84, 101, 115, 116, 115, 116, 114, 105, 110, 103]", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String26() {
         ULong attribute = new ULong(new BigInteger("12345678909876"));
-        assertEquals("12345678909876", HelperAttributes.attribute2string(attribute));
+        assertEquals("12345678909876", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String27() {
         Time attribute = new Time(12345678L);
-        assertEquals("12345678", HelperAttributes.attribute2string(attribute));
+        assertEquals("12345678", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String28() {
         Identifier attribute = new Identifier("TheName");
-        assertEquals("TheName", HelperAttributes.attribute2string(attribute));
+        assertEquals("TheName", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String29() {
         FineTime attribute = new FineTime(1234567890876543223L);
-        assertEquals("1234567890876543223", HelperAttributes.attribute2string(attribute));
+        assertEquals("1234567890876543223", Attribute.attribute2string(attribute));
     }
 
     @Test
     public void testAttribute2String30() {
         URI attribute = new URI("http://www.esa.int/");
-        assertEquals("http://www.esa.int/", HelperAttributes.attribute2string(attribute));
+        assertEquals("http://www.esa.int/", Attribute.attribute2string(attribute));
     }
 
     /* Tests for attributeName2object */
@@ -840,12 +840,12 @@ public class TestHelperAttributes {
     /* Tests for javaType2Attribute */
     @Test
     public void testJavaType2Attribute1() {
-        assertEquals(null, HelperAttributes.javaType2Attribute(null));
+        assertEquals(null, Attribute.javaType2Attribute(null));
     }
 
     @Test
     public void testJavaType2Attribute2() {
-        Object res = HelperAttributes.javaType2Attribute(true);
+        Object res = Attribute.javaType2Attribute(true);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._BOOLEAN_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -854,7 +854,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute3() {
-        Object res = HelperAttributes.javaType2Attribute(false);
+        Object res = Attribute.javaType2Attribute(false);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._BOOLEAN_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -863,7 +863,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute4() {
-        Object res = HelperAttributes.javaType2Attribute(42);
+        Object res = Attribute.javaType2Attribute(42);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._INTEGER_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -872,7 +872,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute5() {
-        Object res = HelperAttributes.javaType2Attribute(1337429874L);
+        Object res = Attribute.javaType2Attribute(1337429874L);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._LONG_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -881,7 +881,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute6() {
-        Object res = HelperAttributes.javaType2Attribute("I am a test.");
+        Object res = Attribute.javaType2Attribute("I am a test.");
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._STRING_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -890,7 +890,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute7() {
-        Object res = HelperAttributes.javaType2Attribute(42.1337);
+        Object res = Attribute.javaType2Attribute(42.1337);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._DOUBLE_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -899,7 +899,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute8() {
-        Object res = HelperAttributes.javaType2Attribute(1337.42f);
+        Object res = Attribute.javaType2Attribute(1337.42f);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._FLOAT_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -908,7 +908,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute9() {
-        Object res = HelperAttributes.javaType2Attribute((byte) 123);
+        Object res = Attribute.javaType2Attribute((byte) 123);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._OCTET_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());
@@ -917,7 +917,7 @@ public class TestHelperAttributes {
 
     @Test
     public void testJavaType2Attribute10() {
-        Object res = HelperAttributes.javaType2Attribute((short) 12345);
+        Object res = Attribute.javaType2Attribute((short) 12345);
         assertTrue(res instanceof Union);
         Union result = (Union) res;
         assertEquals(Union._SHORT_TYPE_SHORT_FORM, (int) result.getTypeId().getSFP());

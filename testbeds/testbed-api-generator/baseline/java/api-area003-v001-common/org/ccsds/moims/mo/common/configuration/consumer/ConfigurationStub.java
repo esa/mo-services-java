@@ -48,13 +48,26 @@ An UNKNOWN error shall be returned if the object instance identifier held in the
 An INVALID error shall be returned if the object instance identifier held in the configObjId field does not reference either a ProviderConfiguration or ServiceConfiguration object.
 If the object instance identifier held in the configObjId field does not reference a valid configuration for the service provider an INVALID error shall be returned. A valid configuration is one that is returned from the list operation for the matched service provider.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException Requested configuration is unknown.
+     * @throws org.ccsds.moims.mo.com.InvalidException Requested configuration is invalid.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void activate(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.com.structures.ObjectId configObjId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.invoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ACTIVATE_OP, adapter, serviceProvider, configObjId);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.invoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ACTIVATE_OP, adapter, serviceProvider, configObjId);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -69,13 +82,17 @@ An INVALID error shall be returned if the object instance identifier held in the
 If the object instance identifier held in the configObjId field does not reference a valid configuration for the service provider an INVALID error shall be returned. A valid configuration is one that is returned from the list operation for the matched service provider.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncActivate(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.com.structures.ObjectId configObjId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncInvoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ACTIVATE_OP, adapter, serviceProvider, configObjId);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncInvoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ACTIVATE_OP, adapter, serviceProvider, configObjId);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -85,14 +102,18 @@ If the object instance identifier held in the configObjId field does not referen
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueActivate(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ACTIVATE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ACTIVATE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -111,15 +132,24 @@ The filter shall be applied with a logical AND for each field of the service key
 Wildcard values of '0' are not accepted in the serviceKey fields, an INVALID error shall be returned in this case.
 For other types of configuration the serviceKey field shall be ignored and may be set to NULL in the request.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException Requested configuration is not a valid configuration object type or wildcard values were specified in the service key filter.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.com.structures.ObjectIdList list(org.ccsds.moims.mo.common.configuration.structures.ConfigurationType configurationType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.LIST_OP, configurationType, domain, serviceKey);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.com.structures.ObjectIdList());
-        return (org.ccsds.moims.mo.com.structures.ObjectIdList) body0;
+            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.LIST_OP, configurationType, domain, serviceKey);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.com.structures.ObjectIdList());
+            return (org.ccsds.moims.mo.com.structures.ObjectIdList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -134,14 +164,18 @@ Wildcard values of '0' are not accepted in the serviceKey fields, an INVALID err
 For other types of configuration the serviceKey field shall be ignored and may be set to NULL in the request.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncList(org.ccsds.moims.mo.common.configuration.structures.ConfigurationType configurationType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.LIST_OP, adapter, configurationType, domain, serviceKey);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.LIST_OP, adapter, configurationType, domain, serviceKey);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -151,14 +185,18 @@ For other types of configuration the serviceKey field shall be ignored and may b
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueList(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.LIST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.LIST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -190,14 +228,27 @@ For retrieval of the provider level configuration the serviceKey field shall be 
 An UNKNOWN error shall be returned if the combination of service provider and service filter fields don't match an existing service provider, service key or configuration.
 No wildcards are supported, an INVALID error must be returned in this case.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException The request contained one or more wildcards.
+     * @throws org.ccsds.moims.mo.mal.UnknownException Requested service provider and service key combination is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.com.structures.ObjectIdList getCurrent(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.GETCURRENT_OP, serviceProvider, serviceKey);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.com.structures.ObjectIdList());
-        return (org.ccsds.moims.mo.com.structures.ObjectIdList) body0;
+            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.GETCURRENT_OP, serviceProvider, serviceKey);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.com.structures.ObjectIdList());
+            return (org.ccsds.moims.mo.com.structures.ObjectIdList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -210,13 +261,17 @@ An UNKNOWN error shall be returned if the combination of service provider and se
 No wildcards are supported, an INVALID error must be returned in this case.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetCurrent(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.GETCURRENT_OP, adapter, serviceProvider, serviceKey);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.GETCURRENT_OP, adapter, serviceProvider, serviceKey);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -226,14 +281,18 @@ No wildcards are supported, an INVALID error must be returned in this case.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetCurrent(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.GETCURRENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.GETCURRENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -258,14 +317,31 @@ An INVALID error shall be returned if the confObjId does not refer to either a P
 An INVALID error shall be returned if the confObjId refers to either a hard-coded or a non-COM configuration.
      * @param returnComplete The returnComplete Boolean shall be set to True if the returned XML is to be in the complete standardised format, otherwise it will be in the compact standardised format.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException Requested configuration is not a valid configuration object type.
+     * @throws org.ccsds.moims.mo.mal.UnknownException Requested object is unknown.
+     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.structures.File exportXML(org.ccsds.moims.mo.com.structures.ObjectId confObjId,
-            Boolean returnComplete) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.EXPORTXML_OP, confObjId, (returnComplete == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnComplete));
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.File());
-        return (org.ccsds.moims.mo.mal.structures.File) body0;
+            Boolean returnComplete) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.EXPORTXML_OP, confObjId, (returnComplete == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnComplete));
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.File());
+            return (org.ccsds.moims.mo.mal.structures.File) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnsupportedOperationException) {
+                throw (org.ccsds.moims.mo.mal.UnsupportedOperationException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -279,13 +355,17 @@ An INVALID error shall be returned if the confObjId refers to either a hard-code
      * @param returnComplete The returnComplete Boolean shall be set to True if the returned XML is to be in the complete standardised format, otherwise it will be in the compact standardised format.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncExportXML(org.ccsds.moims.mo.com.structures.ObjectId confObjId,
             Boolean returnComplete,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.EXPORTXML_OP, adapter, confObjId, (returnComplete == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnComplete));
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.EXPORTXML_OP, adapter, confObjId, (returnComplete == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnComplete));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -295,14 +375,18 @@ An INVALID error shall be returned if the confObjId refers to either a hard-code
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueExportXML(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.EXPORTXML_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.EXPORTXML_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -319,12 +403,29 @@ The first argument shall contain the domain and object identifier of the Service
 If either the service provider or the configuration objects are unknown then an UNKNOWN error shall be returned.
 If any of the supplied configuration objects are not provider or service configuration objects then an INVALID error shall be returned.
 If an error is raised then no new configurations shall be added as a result of this operation call.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied configuration object instance identifiers is either not a Service or a Provider configuration object.
+     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied service or configuration object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void add(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ADD_OP, serviceProvider, configObjIds);
+            org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ADD_OP, serviceProvider, configObjIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnsupportedOperationException) {
+                throw (org.ccsds.moims.mo.mal.UnsupportedOperationException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -338,13 +439,17 @@ If any of the supplied configuration objects are not provider or service configu
 If an error is raised then no new configurations shall be added as a result of this operation call.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncAdd(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ADD_OP, adapter, serviceProvider, configObjIds);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ADD_OP, adapter, serviceProvider, configObjIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -354,14 +459,18 @@ If an error is raised then no new configurations shall be added as a result of t
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueAdd(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ADD_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.ADD_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -381,12 +490,29 @@ If either the service provider or a provided object identifier does not match an
 If any of the supplied configuration objects are not provider or service configuration objects then an INVALID error shall be returned.
 If an error is raised then no configurations shall be removed as a result of this operation call.
 Matched configuration objects shall not be removed from the COM archive only the list of configuration objects in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException Either the service provider or one of the supplied configuration object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied configuration object instance identifiers is either not a Service or a Provider configuration object.
+     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void remove(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
-            org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.REMOVE_OP, serviceProvider, configObjIds);
+            org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.REMOVE_OP, serviceProvider, configObjIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnsupportedOperationException) {
+                throw (org.ccsds.moims.mo.mal.UnsupportedOperationException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -401,13 +527,17 @@ If an error is raised then no configurations shall be removed as a result of thi
 Matched configuration objects shall not be removed from the COM archive only the list of configuration objects in the provider.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncRemove(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.com.structures.ObjectIdList configObjIds,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.REMOVE_OP, adapter, serviceProvider, configObjIds);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.REMOVE_OP, adapter, serviceProvider, configObjIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -417,14 +547,18 @@ Matched configuration objects shall not be removed from the COM archive only the
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueRemove(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.REMOVE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.REMOVE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -461,14 +595,31 @@ Once the relevant service provider has finished storing its configuration it sha
 If the request is for a hard-coded configuration then the relevant service provider must fail the store request by returning a NULL as a response.
      * @param autoAdd If the autoAdd field is set to TRUE then, once the stored event has been published, and if it indicates success, the configuration service provider shall add the new configuration to the list of available configurations for the selected service provider. In effect call the add operation.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException Not a valid Service or Provider object
+     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws org.ccsds.moims.mo.mal.UnknownException The service provider referenced is not known or the referenced service is not known by the provider.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void storeCurrent(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
             Boolean autoAdd,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.invoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.STORECURRENT_OP, adapter, serviceProvider, serviceKey, (autoAdd == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(autoAdd));
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.invoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.STORECURRENT_OP, adapter, serviceProvider, serviceKey, (autoAdd == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(autoAdd));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnsupportedOperationException) {
+                throw (org.ccsds.moims.mo.mal.UnsupportedOperationException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -487,14 +638,18 @@ If the request is for a hard-coded configuration then the relevant service provi
      * @param autoAdd If the autoAdd field is set to TRUE then, once the stored event has been published, and if it indicates success, the configuration service provider shall add the new configuration to the list of available configurations for the selected service provider. In effect call the add operation.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncStoreCurrent(org.ccsds.moims.mo.com.structures.ObjectKey serviceProvider,
             org.ccsds.moims.mo.common.structures.ServiceKey serviceKey,
             Boolean autoAdd,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncInvoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.STORECURRENT_OP, adapter, serviceProvider, serviceKey, (autoAdd == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(autoAdd));
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncInvoke(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.STORECURRENT_OP, adapter, serviceProvider, serviceKey, (autoAdd == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(autoAdd));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -504,14 +659,18 @@ If the request is for a hard-coded configuration then the relevant service provi
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueStoreCurrent(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.STORECURRENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.STORECURRENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -534,13 +693,30 @@ The newly generated Configuration object shall always reference existing objects
 The newly generated Configuration object should be checked for consistency. An INVALID error shall be raised if the configuration is not valid.
 If an error is raised then no objects shall be stored in the COM archive and operation shall end.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnsupportedOperationException The operation requires the use of a COM archive
+     * @throws org.ccsds.moims.mo.com.DuplicateException The supplied XML contains a duplicate object definition that is different to the one held in the COM Archive.
+     * @throws org.ccsds.moims.mo.com.InvalidException The supplied XML was not valid.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.com.structures.ObjectId importXML(org.ccsds.moims.mo.mal.structures.File xmlFile) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.IMPORTXML_OP, xmlFile);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.com.structures.ObjectId());
-        return (org.ccsds.moims.mo.com.structures.ObjectId) body0;
+    public org.ccsds.moims.mo.com.structures.ObjectId importXML(org.ccsds.moims.mo.mal.structures.File xmlFile) throws org.ccsds.moims.mo.mal.UnsupportedOperationException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.IMPORTXML_OP, xmlFile);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.com.structures.ObjectId());
+            return (org.ccsds.moims.mo.com.structures.ObjectId) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnsupportedOperationException) {
+                throw (org.ccsds.moims.mo.mal.UnsupportedOperationException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.DuplicateException) {
+                throw (org.ccsds.moims.mo.com.DuplicateException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -557,12 +733,16 @@ The newly generated Configuration object should be checked for consistency. An I
 If an error is raised then no objects shall be stored in the COM archive and operation shall end.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncImportXML(org.ccsds.moims.mo.mal.structures.File xmlFile,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.IMPORTXML_OP, adapter, xmlFile);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.IMPORTXML_OP, adapter, xmlFile);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -572,14 +752,18 @@ If an error is raised then no objects shall be stored in the COM archive and ope
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueImportXML(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.IMPORTXML_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.common.configuration.consumer.ConfigurationAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo.IMPORTXML_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

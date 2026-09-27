@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>int.esa.ccsds.mo</groupId>
     <artifactId>parent</artifactId>
-    <version>14.2</version>
+    <version>15.0</version>
     <packaging>pom</packaging>
   
     <name>ESA MO POM</name>
@@ -73,7 +73,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <esa.mo.version>14.2</esa.mo.version>
+        <esa.mo.version>15.0</esa.mo.version>
         <ccsds.specification.version>${esa.mo.version}</ccsds.specification.version>
         <extra.specification.version>${esa.mo.version}</extra.specification.version>
     
@@ -91,15 +91,6 @@
         <ccsds.specification.download.ref-filter>**/area001-v003-MAL.xml</ccsds.specification.download.ref-filter>
         <esa.stubgen.xmlDirectory>${project.build.directory}/xml</esa.stubgen.xmlDirectory>
         <esa.stubgen.xmlRefDirectory>${project.build.directory}/xml-ref/xml</esa.stubgen.xmlRefDirectory>
-        <!--
-            Which generator builds the APIs. "Java" is the existing one and is what every
-            build uses; "Java2" is api-generator-lib, reached through the adapter in the
-            plugin. Selecting it for the whole build is what -Pnew-generator does, and
-            overriding this property in one module is how a single module is tried.
-            Flipping the default is the v15.0 cut-over - see
-            api-generator/api-generator-lib/DESIGN.md, section 10.9.
-        -->
-        <esa.stubgen.generator>Java</esa.stubgen.generator>
     </properties>
   
     <dependencyManagement>
@@ -110,21 +101,6 @@
                 <version>${esa.mo.version}</version>
             </dependency>
             <!-- MO API Generator -->
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>generator-interfaces</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>generator-docs</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>int.esa.ccsds.mo</groupId>
-                <artifactId>generator-java</artifactId>
-                <version>${esa.mo.version}</version>
-            </dependency>
             <dependency>
                 <groupId>int.esa.ccsds.mo</groupId>
                 <artifactId>api-generator-lib</artifactId>
@@ -239,11 +215,6 @@
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
                 <version>2.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-runtime</artifactId>
-                <version>2.4.0-b180830.0438</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -368,20 +339,13 @@
                             </goals>
                             <configuration>
                                 <targetLanguages>
-                                    <targetLanguage>${esa.stubgen.generator}</targetLanguage>
+                                    <targetLanguage>Java</targetLanguage>
                                 </targetLanguages>
                                 <xmlDirectory>${esa.stubgen.xmlDirectory}</xmlDirectory>
                                 <xmlRefDirectory>${esa.stubgen.xmlRefDirectory}</xmlRefDirectory>
                             </configuration>
                         </execution>
                     </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>int.esa.ccsds.mo</groupId>
-                            <artifactId>generator-java</artifactId>
-                            <version>${esa.mo.version}</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -445,11 +409,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.12.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jaxb2-maven-plugin</artifactId>
-                    <version>2.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -552,14 +511,6 @@
         </plugins>
     </reporting>
     <profiles>
-        <profile>
-            <!-- Builds every API with api-generator-lib instead of the existing
-                 generator. Nothing else changes; see DESIGN.md section 3. -->
-            <id>new-generator</id>
-            <properties>
-                <esa.stubgen.generator>Java2</esa.stubgen.generator>
-            </properties>
-        </profile>
         <profile>
             <id>release</id>
             <build>

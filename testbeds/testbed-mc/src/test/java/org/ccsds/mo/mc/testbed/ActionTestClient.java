@@ -30,7 +30,7 @@ import java.util.Iterator;
 
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.NullableAttribute;
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
@@ -99,7 +99,7 @@ public class ActionTestClient extends MCTest {
 				if (!listener.registerAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -134,7 +134,7 @@ public class ActionTestClient extends MCTest {
 				if (!listener.deregisterAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -203,7 +203,7 @@ public class ActionTestClient extends MCTest {
 				if (!listener.executeAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -256,7 +256,7 @@ public class ActionTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);

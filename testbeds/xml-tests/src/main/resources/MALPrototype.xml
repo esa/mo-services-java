@@ -1354,6 +1354,10 @@ It provides an operation 'testData' that enables to transmit any Element to the 
                             <mal:type area="MALPrototype"
                                       name="TEST_OBJECT_EXISTS" />
                         </mal:errorRef>
+                        <mal:errorRef comment="Data interoperability error">
+                            <mal:type area="MALPrototype"
+                                      name="DATA_ERROR" />
+                        </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
                 <mal:requestIP name="createObjectFromFields" number="202"
@@ -1390,6 +1394,10 @@ It provides an operation 'testData' that enables to transmit any Element to the 
                         <mal:errorRef comment="Data interoperability error">
                             <mal:type area="MALPrototype"
                                       name="TEST_OBJECT_EXISTS" />
+                        </mal:errorRef>
+                        <mal:errorRef comment="Data interoperability error">
+                            <mal:type area="MALPrototype"
+                                      name="DATA_ERROR" />
                         </mal:errorRef>
                     </mal:errors>
                 </mal:requestIP>
