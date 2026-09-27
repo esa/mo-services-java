@@ -553,17 +553,69 @@ public class IPTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 1:
-                return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
-            case 2:
-                return new org.ccsds.moims.mo.malprototype.TestObjectExistsException(extraInfo);
-            case 3:
-                return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+        switch (operationNumber) {
+            case 101:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 102:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 103:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 104:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 105:
+                switch (errorNumber) {
+                }
+                break;
+            case 114:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 115:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 116:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 117:
+                switch (errorNumber) {
+                    case 3:
+                        return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                }
+                break;
+            case 118:
+                switch (errorNumber) {
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.malprototype.MALPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

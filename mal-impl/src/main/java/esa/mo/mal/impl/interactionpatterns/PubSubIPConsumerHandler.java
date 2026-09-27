@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.impl.interactionpatterns;
 
+import esa.mo.mal.impl.ResolvedErrorBody;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALPubSubOperation;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -71,7 +72,7 @@ public final class PubSubIPConsumerHandler extends SubmitIPConsumerHandler {
 
         if (header.getIsErrorMessage()) {
             responseHolder.getListener().registerErrorReceived(
-                    header, (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+                    header, new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), msg.getQoSProperties());
         } else if ((header.getInteractionStage().getValue() == MALPubSubOperation._PUBLISH_REGISTER_ACK_STAGE)
                 || (header.getInteractionStage().getValue() == MALPubSubOperation._REGISTER_ACK_STAGE)) {
             responseHolder.getListener().registerAckReceived(header, msg.getQoSProperties());

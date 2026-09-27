@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The UnsupportedOperationException exception. The destination does not support
  * the selected operation.
  */
-public final class UnsupportedOperationException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class UnsupportedOperationException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Unsupported Operation";
 

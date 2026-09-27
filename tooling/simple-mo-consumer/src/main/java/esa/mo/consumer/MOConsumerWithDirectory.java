@@ -33,7 +33,7 @@ import org.ccsds.moims.mo.common.directory.structures.ServiceFilter;
 import org.ccsds.moims.mo.common.structures.ServiceKey;
 import org.ccsds.moims.mo.mal.MALContextFactory;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.helpertools.helpers.HelperMisc;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -101,7 +101,7 @@ public class MOConsumerWithDirectory {
                 Logger.getLogger(MOConsumerWithDirectory.class.getName()).log(Level.INFO,
                         "The size of the list is not 1! It is: {0}", summaryList.size());
             }
-        } catch (MALException | MALInteractionException e) {
+        } catch (MALException | MOErrorException e) {
             Logger.getLogger(MOConsumerWithDirectory.class.getName()).log(
                     Level.WARNING, "Could not connect to the Directory service!");
         } finally {

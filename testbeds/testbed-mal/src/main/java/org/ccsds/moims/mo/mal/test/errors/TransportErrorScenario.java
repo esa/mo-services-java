@@ -33,7 +33,8 @@
 package org.ccsds.moims.mo.mal.test.errors;
 
 import org.ccsds.moims.mo.mal.MALHelper;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Identifier;
 import org.ccsds.moims.mo.mal.structures.QoSLevel;
 import org.ccsds.moims.mo.mal.structures.SessionType;
@@ -63,7 +64,7 @@ public class TransportErrorScenario {
     public boolean raiseError(String errorName) throws Exception {
         LoggingBase.logMessage("TransportErrorScenario.raiseError(" + errorName + ')');
         UInteger errorCode = ParseHelper.parseErrorCode(errorName);
-        MALInteractionException exception = null;
+        MOErrorException exception = null;
         Union body = new Union("");
         try {
             switch ((int) errorCode.getValue()) {
@@ -109,9 +110,9 @@ public class TransportErrorScenario {
                 default:
                     throw new Exception("Unknown error code: " + errorCode);
             }
-        } catch (MALInteractionException exc) {
+        } catch (MALStandardError exc) {
             exception = exc;
         }
-        return (exception != null && exception.getStandardError().getErrorNumber().equals(errorCode));
+        return (exception != null && exception.getErrorNumber().equals(errorCode));
     }
 }

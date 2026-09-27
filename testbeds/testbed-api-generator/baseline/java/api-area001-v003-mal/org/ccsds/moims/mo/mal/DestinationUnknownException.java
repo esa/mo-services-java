@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * The DestinationUnknownException exception. Destination cannot be contacted.
  */
-public final class DestinationUnknownException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DestinationUnknownException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Destination Unknown";
 

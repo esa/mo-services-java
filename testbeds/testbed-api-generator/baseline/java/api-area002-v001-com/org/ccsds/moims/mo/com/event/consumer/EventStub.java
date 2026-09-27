@@ -35,12 +35,16 @@ public class EventStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void monitorEventRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.com.event.consumer.EventAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.register(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, subscription, adapter);
+            org.ccsds.moims.mo.com.event.consumer.EventAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.register(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -49,23 +53,31 @@ public class EventStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorEventRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.com.event.consumer.EventAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRegister(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, subscription, adapter);
+            org.ccsds.moims.mo.com.event.consumer.EventAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRegister(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
      * Deregister method for the monitorEvent PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorEventDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.deregister(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, identifierList);
+    public void monitorEventDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.deregister(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, identifierList);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -74,12 +86,16 @@ public class EventStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorEventDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.com.event.consumer.EventAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncDeregister(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, identifierList, adapter);
+            org.ccsds.moims.mo.com.event.consumer.EventAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncDeregister(org.ccsds.moims.mo.com.event.EventServiceInfo.MONITOREVENT_OP, identifierList, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

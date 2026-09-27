@@ -41,6 +41,7 @@ import org.ccsds.moims.mo.mal.DestinationUnknownException;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALHelper;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
@@ -111,7 +112,7 @@ public class ActivityRelayNode {
     }
 
     // Removes listeners such that relay no longer partcipates in test
-    public void close() throws MALInteractionException, MALException {
+    public void close() throws MALStandardError, MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityRelayNode:close " + relayName);
         removeMonitorEventListener();
     }
@@ -210,14 +211,14 @@ public class ActivityRelayNode {
         Subscription sub = new Subscription(new Identifier("Sub-" + relayName), domain, null, filters);
         try {
             evStub.monitorEventRegister(sub, new MonitorEventAdapter());
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             // todo
             ex.printStackTrace();
         }
         LoggingBase.logMessage("ActivityRelayNode:createMonitorEventListener complete " + relayName);
     }
 
-    private void removeMonitorEventListener() throws MALInteractionException, MALException {
+    private void removeMonitorEventListener() throws MALStandardError, MALInteractionException, MALException {
         LoggingBase.logMessage("ActivityRelayNode:removeMonitorEventListener " + relayName);
         IdentifierList idl = new IdentifierList();
         idl.add(new Identifier("Sub-" + relayName));

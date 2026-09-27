@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.ccsds.mo.mc.testbed.AggregationListener.MonitorValueUpdate;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Duration;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
@@ -125,7 +125,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.registerAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -160,7 +160,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.deregisterAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -345,7 +345,7 @@ public class AggregationTestClient extends MCTest {
 				
 				assertEquals("error in getValue RESPONSE", expected, listener.getValueResponse);
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -400,7 +400,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -444,7 +444,7 @@ public class AggregationTestClient extends MCTest {
 						expected,
 						listener.getReportConfigResponse);
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -482,7 +482,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.enableReportingAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -537,7 +537,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -575,7 +575,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.disableReportingAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -630,7 +630,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -670,7 +670,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.setReportingPeriodAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -727,7 +727,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -778,7 +778,7 @@ public class AggregationTestClient extends MCTest {
 							listener.listDefinitionResponse);
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -833,7 +833,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -869,7 +869,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.addAggregationAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -922,7 +922,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -960,7 +960,7 @@ public class AggregationTestClient extends MCTest {
 				if (!listener.removeAggregationAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -1015,7 +1015,7 @@ public class AggregationTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);

@@ -241,15 +241,11 @@ public class ActivityTrackingServiceInfo extends org.ccsds.moims.mo.com.COMServi
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 70000:
-                return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
-            case 70001:
-                return new org.ccsds.moims.mo.com.DuplicateException(extraInfo);
-        }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.com.COMHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

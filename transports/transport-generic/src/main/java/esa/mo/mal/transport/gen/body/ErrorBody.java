@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.NotFoundException;
-import org.ccsds.moims.mo.mal.ServiceInfo;
 import org.ccsds.moims.mo.mal.encoding.MALElementInputStream;
 import org.ccsds.moims.mo.mal.encoding.MALElementStreamFactory;
 import org.ccsds.moims.mo.mal.encoding.MALEncodingContext;
@@ -40,8 +39,9 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
     private static final long serialVersionUID = 222222222222225L;
 
     /**
-     * The name given to an error whose number is not declared by the service of
-     * the message that carried it, so that the name cannot be resolved.
+     * The name given to an error whose number is not declared by the operation of
+     * the message that carried it, its area or the MAL, so that the name cannot be
+     * resolved.
      */
     private static final String UNRESOLVED_ERROR_NAME = "UNRESOLVED";
 
@@ -77,20 +77,19 @@ public class ErrorBody extends LazyMessageBody implements MALErrorBody {
         decodeMessageBody();
         UInteger errorNumber = (UInteger) messageParts[0];
         Object extraInfo = (messageParts.length > 1) ? messageParts[1] : null;
+        MOErrorException error = new MOErrorException(UNRESOLVED_ERROR_NAME, errorNumber, extraInfo);
         try {
-            ServiceInfo serviceInfo = ctx.getHeader().getServiceInfo();
-            MOErrorException newMOError = serviceInfo.generateMOError((int) errorNumber.getValue(), extraInfo);
-
-            if(newMOError != null) {
-                return newMOError;
-            }
+            error = ctx.getHeader().getServiceInfo().resolveError(
+                    ctx.getHeader().getOperation().getValue(), error);
         } catch (NotFoundException ex) {
             Logger.getLogger(ErrorBody.class.getName()).log(Level.SEVERE,
                     "The serviceInfo for this message was not found!", ex);
         }
-        Logger.getLogger(ErrorBody.class.getName()).log(Level.WARNING,
-                "The error number {0} is not declared by the service of this message, "
-                + "so its name could not be resolved.", errorNumber);
-        return new MOErrorException(UNRESOLVED_ERROR_NAME, errorNumber, extraInfo);
+        if (error.getClass() == MOErrorException.class) {
+            Logger.getLogger(ErrorBody.class.getName()).log(Level.FINE,
+                    "The error number {0} is not declared by the operation of this message, "
+                    + "its area or the MAL, so its name could not be resolved.", errorNumber);
+        }
+        return error;
     }
 }

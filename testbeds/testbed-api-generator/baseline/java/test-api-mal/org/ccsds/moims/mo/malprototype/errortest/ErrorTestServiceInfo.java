@@ -409,17 +409,11 @@ public class ErrorTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 1:
-                return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
-            case 2:
-                return new org.ccsds.moims.mo.malprototype.TestObjectExistsException(extraInfo);
-            case 3:
-                return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
-        }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.malprototype.MALPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

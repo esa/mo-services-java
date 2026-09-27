@@ -27,7 +27,7 @@ package org.ccsds.mo.mc.testbed;
 import java.util.Iterator;
 import org.ccsds.mo.mc.testbed.AlertListener.MonitorAlertUpdate;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.IdentifierList;
 import org.ccsds.moims.mo.mal.structures.Subscription;
 import org.ccsds.moims.mo.mal.structures.UInteger;
@@ -68,7 +68,7 @@ public class AlertTestClient extends MCTest {
 				if (!listener.registerAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -103,7 +103,7 @@ public class AlertTestClient extends MCTest {
 				if (!listener.deregisterAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -213,7 +213,7 @@ public class AlertTestClient extends MCTest {
 						expected,
 						listener.getAlertConfigurationResponse);
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -268,7 +268,7 @@ public class AlertTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -306,7 +306,7 @@ public class AlertTestClient extends MCTest {
 				if (!listener.enableGenerationAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -361,7 +361,7 @@ public class AlertTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -399,7 +399,7 @@ public class AlertTestClient extends MCTest {
 				if (!listener.disableGenerationAckReceived)
 					unitTestFail("The ACK was not received!");
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);
@@ -454,7 +454,7 @@ public class AlertTestClient extends MCTest {
 					}
 				}
 			}
-		} catch (MALInteractionException exc) {
+		} catch (MOErrorException exc) {
 			unitTestFail(exc);
 		} catch (MALException exc) {
 			unitTestFail(exc);

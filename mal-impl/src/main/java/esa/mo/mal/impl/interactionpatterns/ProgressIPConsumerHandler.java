@@ -21,6 +21,7 @@
 package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
+import esa.mo.mal.impl.ResolvedErrorBody;
 import java.util.Map;
 import java.util.logging.Level;
 import org.ccsds.moims.mo.mal.IncorrectStateException;
@@ -71,7 +72,7 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
 
                     if (isError) {
                         finished = true;
-                        listener.progressAckErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                        listener.progressAckErrorReceived(header, new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), qos);
                     } else {
                         listener.progressAckReceived(header, msg.getBody(), qos);
                     }
@@ -87,7 +88,7 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
             if (interactionStage == MALProgressOperation._PROGRESS_UPDATE_STAGE) {
                 if (isError) {
                     finished = true;
-                    listener.progressUpdateErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                    listener.progressUpdateErrorReceived(header, new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), qos);
                 } else {
                     listener.progressUpdateReceived(header, msg.getBody(), qos);
                 }
@@ -99,7 +100,7 @@ public final class ProgressIPConsumerHandler extends IPConsumerHandler {
 
             if (interactionStage == MALProgressOperation._PROGRESS_RESPONSE_STAGE) {
                 if (isError) {
-                    listener.progressResponseErrorReceived(header, (MALErrorBody) msg.getBody(), qos);
+                    listener.progressResponseErrorReceived(header, new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), qos);
                 } else {
                     listener.progressResponseReceived(header, msg.getBody(), qos);
                 }

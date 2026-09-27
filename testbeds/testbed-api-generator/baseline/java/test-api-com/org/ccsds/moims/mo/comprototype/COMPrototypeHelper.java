@@ -49,6 +49,20 @@ public class COMPrototypeHelper {
      */
     public static final org.ccsds.moims.mo.mal.MALArea COMPROTOTYPE_AREA = new org.ccsds.moims.mo.mal.MALArea(COMPROTOTYPE_AREA_NUMBER, COMPROTOTYPE_AREA_NAME, COMPROTOTYPE_AREA_VERSION, COMPROTOTYPE_AREA_ELEMENTS, COMPROTOTYPE_AREA_SERVICES, new COMPrototypeElementFactory());
 
+    /**
+     * Returns the exception of the error of this area with the given number.
+     * 
+     * @param errorNumber The number of the error.
+     * @param extraInfo The extra information of the error.
+     * @return the exception, or null if the area declares no error with that number
+     */
+    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+            Object extraInfo) {
+        switch (errorNumber) {
+        }
+        return null;
+    }
+
     private COMPrototypeHelper() {
         // Utility class; not meant to be instantiated.
     }

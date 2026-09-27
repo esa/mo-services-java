@@ -28,6 +28,7 @@ import esa.mo.apigen.generators.java.JavaSource;
 import esa.mo.apigen.generators.java.JavaTypeName;
 import esa.mo.apigen.model.Area;
 import esa.mo.apigen.model.ErrorDefinition;
+import esa.mo.apigen.model.ErrorReference;
 import esa.mo.apigen.model.Field;
 import esa.mo.apigen.model.InteractionStage;
 import esa.mo.apigen.model.MOModel;
@@ -38,7 +39,9 @@ import esa.mo.apigen.model.com.COMObject;
 import esa.mo.apigen.model.com.ObjectLink;
 import esa.mo.apigen.model.com.ObjectReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Writes the ServiceInfo class of a service: what the service is called and numbered, one
@@ -130,7 +133,7 @@ public final class ServiceInfoWriter {
                         + area.getName().toUpperCase() + "_AREA;")
                 .write(out);
 
-        writeGenerateMOError(out, area);
+        writeGenerateMOError(out, model, area, service);
         return clazz.close();
     }
 
@@ -361,23 +364,57 @@ public final class ServiceInfoWriter {
 
     /**
      * Writes the method that turns an error number back into the exception it stands for.
-     * Only the errors of the area are answered for: a service's own errors are not reached
-     * this way.
+     * <p>
+     * A number means something only within an area, and the areas number their errors
+     * independently, so the number is resolved against the errors the operation declares
+     * first. What is left is looked up among the errors of the service's area, and then
+     * among the MAL standard errors, which any interaction can return.
      */
-    private static void writeGenerateMOError(JavaSource out, Area area) {
+    private static void writeGenerateMOError(JavaSource out, MOModel model, Area area,
+            Service service) {
+        String error = JavaNaming.MAL + "MOErrorException";
         JavaMethodBuilder method = JavaMethodBuilder.named("generateMOError").asOverride()
-                .returns(JavaNaming.MAL + "MOErrorException", null)
+                .returns(error, null)
+                .argument("int", "operationNumber", null)
                 .argument("int", "errorNumber", null)
                 .argument("Object", "extraInfo", null);
 
-        method.line("switch (errorNumber) {");
-        for (ErrorDefinition error : area.getErrors()) {
-            method.line("    case " + error.getNumber() + ":");
-            method.line("        return new " + JavaNaming.packageOf(area) + "."
-                    + ExceptionWriter.classNameOf(error.getName()) + "(extraInfo);");
+        boolean any = false;
+        for (Operation operation : service.getOperations()) {
+            any |= !operation.getErrors().isEmpty();
         }
-        method.line("}");
-        method.line("return null;");
+        if (any) {
+            method.line("switch (operationNumber) {");
+            for (Operation operation : service.getOperations()) {
+                if (operation.getErrors().isEmpty()) {
+                    continue;
+                }
+                method.line("    case " + operation.getNumber() + ":");
+                method.line("        switch (errorNumber) {");
+                Set<Long> seen = new HashSet<Long>();
+                for (ErrorReference reference : operation.getErrors()) {
+                    ErrorDefinition definition = model.resolveError(reference.getError());
+                    if (definition == null || !seen.add(definition.getNumber())) {
+                        continue;
+                    }
+                    method.line("            case " + definition.getNumber() + ":");
+                    method.line("                return new " + ExceptionWriter.qualifiedNameOf(reference.getError())
+                            + "(extraInfo);");
+                }
+                method.line("        }");
+                method.line("        break;");
+            }
+            method.line("}");
+        }
+        String own = JavaNaming.packageOf(area) + "." + area.getName() + "Helper";
+        String mal = JavaNaming.MAL + "MALHelper";
+        if (own.equals(mal)) {
+            method.line("return " + mal + ".generateMOError(errorNumber, extraInfo);");
+        } else {
+            method.line(error + " areaError = " + own + ".generateMOError(errorNumber, extraInfo);");
+            method.line("return (areaError != null) ? areaError : " + mal
+                    + ".generateMOError(errorNumber, extraInfo);");
+        }
         method.write(out);
     }
 

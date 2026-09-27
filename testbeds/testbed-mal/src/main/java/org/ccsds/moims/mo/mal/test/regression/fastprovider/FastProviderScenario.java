@@ -20,7 +20,7 @@
  */
 package org.ccsds.moims.mo.mal.test.regression.fastprovider;
 
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.consumer.MALConsumer;
 import org.ccsds.moims.mo.mal.provider.MALProvider;
 import org.ccsds.moims.mo.mal.structures.Blob;
@@ -97,7 +97,7 @@ public class FastProviderScenario {
             testService.testSubmit(null);
             LoggingBase.logMessage("ERROR: Calling SUBMIT incorrectly did not raise an error");
             return false;
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             LoggingBase.logMessage("Received ACK ERROR correctly");
         }
 
@@ -117,7 +117,7 @@ public class FastProviderScenario {
             testService.request(null);
             LoggingBase.logMessage("ERROR: Calling REQUEST incorrectly did not raise an error");
             return false;
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             LoggingBase.logMessage("Received ACK ERROR correctly");
         }
 
@@ -161,7 +161,7 @@ public class FastProviderScenario {
             LoggingBase.logMessage("Calling INVOKE incorrectly");
             testService.invoke(null, monitor);
             LoggingBase.logMessage("ERROR: Calling INVOKE incorrectly did not raise an error");
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             LoggingBase.logMessage("Received ACK ERROR correctly");
             retVal = true;
         }
@@ -233,7 +233,7 @@ public class FastProviderScenario {
             LoggingBase.logMessage("Calling PROGRESS incorrectly");
             testService.progress(null, monitor);
             LoggingBase.logMessage("ERROR: Calling PROGRESS incorrectly did not raise an error");
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             LoggingBase.logMessage("Received ACK ERROR correctly");
             retVal = true;
         }

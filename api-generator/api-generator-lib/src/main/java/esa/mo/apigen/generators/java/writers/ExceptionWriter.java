@@ -27,6 +27,7 @@ import esa.mo.apigen.generators.java.JavaNaming;
 import esa.mo.apigen.generators.java.JavaSource;
 import esa.mo.apigen.model.Area;
 import esa.mo.apigen.model.ErrorDefinition;
+import esa.mo.apigen.model.types.TypeRef;
 
 /**
  * Writes the Java exception class for an error an area declares.
@@ -35,8 +36,12 @@ import esa.mo.apigen.model.ErrorDefinition;
  * its services declared it. The name it was declared under is kept verbatim in the class,
  * and the number is read from the area's helper, so an error renamed between MAL
  * generations still says which name it was raised under.
+ * <p>
+ * An error of the MAL area extends MALStandardError; any other extends MOErrorException.
  */
 public final class ExceptionWriter {
+
+    private static final String MAL_AREA = "MAL";
 
     private ExceptionWriter() {
     }
@@ -48,8 +53,11 @@ public final class ExceptionWriter {
         String className = classNameOf(error.getName());
         String pkg = JavaNaming.packageOf(area);
 
+        // The errors of the MAL are the ones any interaction can return, and share a parent
+        // so that a consumer can catch them together.
+        String parent = MAL_AREA.equals(area.getName()) ? "MALStandardError" : "MOErrorException";
         JavaClassBuilder clazz = JavaClassBuilder.named(className).inPackage(pkg).asFinal()
-                .extending(JavaNaming.MAL + "MOErrorException")
+                .extending(JavaNaming.MAL + parent)
                 .comment("The " + className + " exception."
                         + (error.getComment() == null || error.getComment().isEmpty()
                                 ? "" : " " + error.getComment()));
@@ -91,6 +99,17 @@ public final class ExceptionWriter {
             }
         }
         return buf + "Exception";
+    }
+
+    /**
+     * Returns the fully qualified name of the exception class of a referenced error, which
+     * lives in the package of the area that declares it.
+     *
+     * @param error The reference to the error.
+     * @return the qualified class name.
+     */
+    public static String qualifiedNameOf(TypeRef error) {
+        return JavaNaming.ROOT + error.getArea().toLowerCase() + "." + classNameOf(error.getName());
     }
 
     /**

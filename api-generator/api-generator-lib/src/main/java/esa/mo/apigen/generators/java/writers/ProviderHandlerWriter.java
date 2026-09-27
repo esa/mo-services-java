@@ -127,8 +127,7 @@ public final class ProviderHandlerWriter {
                         && !definition.getComment().isEmpty()
                         ? definition.getComment() : "if the corresponding MO error occurs";
             }
-            method.throwing(JavaNaming.ROOT + reference.getError().getArea().toLowerCase() + "."
-                    + ExceptionWriter.classNameOf(reference.getError().getName()), comment);
+            method.throwing(ExceptionWriter.qualifiedNameOf(reference.getError()), comment);
         }
     }
 

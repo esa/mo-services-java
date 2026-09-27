@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The BadEncodingException exception. The destination was unable to decode
  * the message.
  */
-public final class BadEncodingException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class BadEncodingException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Bad Encoding";
 

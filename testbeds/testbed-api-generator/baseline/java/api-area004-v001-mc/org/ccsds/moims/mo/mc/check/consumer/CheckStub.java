@@ -52,12 +52,25 @@ The supplied lists shall be AND'd together to form the complete filter.
 If a CheckLink object matches the CheckIdentity filter, and the ParameterIdentity filter, and its state matches any of the supplied CheckState enumerations, then its latest CheckResult value shall be returned.
 To report all checks, the wildcard values may be used in the CheckResultFilter.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the referenced groups does not contain the correct type of object.
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the checks, parameters, or groups specified in the list do not exist.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void getCurrentTransitionList(org.ccsds.moims.mo.mc.check.structures.CheckResultFilter filter,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.progress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETCURRENTTRANSITIONLIST_OP, adapter, filter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.progress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETCURRENTTRANSITIONLIST_OP, adapter, filter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -82,12 +95,16 @@ If a CheckLink object matches the CheckIdentity filter, and the ParameterIdentit
 To report all checks, the wildcard values may be used in the CheckResultFilter.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetCurrentTransitionList(org.ccsds.moims.mo.mc.check.structures.CheckResultFilter filter,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncProgress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETCURRENTTRANSITIONLIST_OP, adapter, filter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncProgress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETCURRENTTRANSITIONLIST_OP, adapter, filter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -97,14 +114,18 @@ To report all checks, the wildcard values may be used in the CheckResultFilter.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetCurrentTransitionList(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETCURRENTTRANSITIONLIST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETCURRENTTRANSITIONLIST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -116,12 +137,21 @@ A wildcard value of '0' shall report on all checks.
 The wildcard value should be checked for first, if found no other checks of supplied object instance identifiers shall be made.
 If a requested check is unknown then an UNKNOWN error shall be returned in the ACKNOWLEDGE message and the operation shall end.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the checks specified in the list do not exist.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void getSummaryReport(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.progress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSUMMARYREPORT_OP, adapter, objInstIds);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.progress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSUMMARYREPORT_OP, adapter, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -133,12 +163,16 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a requested check is unknown then an UNKNOWN error shall be returned in the ACKNOWLEDGE message and the operation shall end.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetSummaryReport(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncProgress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSUMMARYREPORT_OP, adapter, objInstIds);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncProgress(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSUMMARYREPORT_OP, adapter, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -148,14 +182,18 @@ If a requested check is unknown then an UNKNOWN error shall be returned in the A
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetSummaryReport(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSUMMARYREPORT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSUMMARYREPORT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -167,11 +205,15 @@ If a requested check is unknown then an UNKNOWN error shall be returned in the A
      * @param enableService If enableService is set to TRUE the service shall be enabled and evaluation and reporting of check will commence.
 If enableService is set to FALSE then all evaluation of checks shall be suspended and no check transitions will be reported.
 If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void enableService(Boolean enableService) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLESERVICE_OP, (enableService == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(enableService));
+    public void enableService(Boolean enableService) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLESERVICE_OP, (enableService == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(enableService));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -182,12 +224,16 @@ If enableService is set to FALSE then all evaluation of checks shall be suspende
 If the enableService value matches the current enabled state of the service then no change shall be made and no error reported. Enabling an already enabled service has no effect.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncEnableService(Boolean enableService,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLESERVICE_OP, adapter, (enableService == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(enableService));
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLESERVICE_OP, adapter, (enableService == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(enableService));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -197,14 +243,18 @@ If the enableService value matches the current enabled state of the service then
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueEnableService(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLESERVICE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLESERVICE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -212,13 +262,17 @@ If the enableService value matches the current enabled state of the service then
      * check service enabled status.
      * 
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public Boolean getServiceStatus() throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSERVICESTATUS_OP, (Object[]) null);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE));
-        return (body0 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body0).getBooleanValue();
+    public Boolean getServiceStatus() throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSERVICESTATUS_OP, (Object[]) null);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE));
+            return (body0 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body0).getBooleanValue();
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -226,11 +280,15 @@ If the enableService value matches the current enabled state of the service then
      * 
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetServiceStatus(org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSERVICESTATUS_OP, adapter, (Object[]) null);
+    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetServiceStatus(org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSERVICESTATUS_OP, adapter, (Object[]) null);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -240,14 +298,18 @@ If the enableService value matches the current enabled state of the service then
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetServiceStatus(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSERVICESTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.GETSERVICESTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -266,12 +328,25 @@ If a requested Group, or the Group objects referenced by that Group, does not co
 If an error is raised then no modifications shall be made as a result of this operation call.
 The provider shall create and store a new CheckLinkDefinition object in the COM archive if the checkEnabled field is changed.
      * @param enableInstances If the check is being enabled, and the check is defined as being periodic in the check link definition, then the provider shall generate a check result immediately and start the checking interval from that check.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested groups or CheckLink objects is unknown.
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is not a group of either other group objects or CheckLink objects.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void enableCheck(Boolean isGroupIds,
-            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLECHECK_OP, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLECHECK_OP, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -290,13 +365,17 @@ The provider shall create and store a new CheckLinkDefinition object in the COM 
      * @param enableInstances If the check is being enabled, and the check is defined as being periodic in the check link definition, then the provider shall generate a check result immediately and start the checking interval from that check.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncEnableCheck(Boolean isGroupIds,
             org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLECHECK_OP, adapter, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLECHECK_OP, adapter, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -306,14 +385,18 @@ The provider shall create and store a new CheckLinkDefinition object in the COM 
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueEnableCheck(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLECHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ENABLECHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -333,12 +416,21 @@ Either list may be empty in which case filtering on that aspect, check identity 
 The two lists shall be combined using 'OR' logic, where a CheckLink is evaluated if the identity of a check is in the first list or if the link is directly listed in the second list.
 Triggering a check shall ignore the nominalTime, nominalCount, violationTime and violationCount fields and requests an immediate evaluation of the checks.
 Triggering a check during a periodic check shall not influence the periodic check (e.g. it does not reset the checkInterval timer, the successive valid samples that passed/violated the check or the maxReportingInterval timer).
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested CheckIdentity or CheckLink objects is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void triggerCheck(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds,
-            org.ccsds.moims.mo.mal.structures.LongList linkObjInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.TRIGGERCHECK_OP, checkObjInstIds, linkObjInstIds);
+            org.ccsds.moims.mo.mal.structures.LongList linkObjInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.TRIGGERCHECK_OP, checkObjInstIds, linkObjInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -356,13 +448,17 @@ Triggering a check shall ignore the nominalTime, nominalCount, violationTime and
 Triggering a check during a periodic check shall not influence the periodic check (e.g. it does not reset the checkInterval timer, the successive valid samples that passed/violated the check or the maxReportingInterval timer).
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncTriggerCheck(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds,
             org.ccsds.moims.mo.mal.structures.LongList linkObjInstIds,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.TRIGGERCHECK_OP, adapter, checkObjInstIds, linkObjInstIds);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.TRIGGERCHECK_OP, adapter, checkObjInstIds, linkObjInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -372,14 +468,18 @@ Triggering a check during a periodic check shall not influence the periodic chec
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueTriggerCheck(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.TRIGGERCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.TRIGGERCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -392,13 +492,22 @@ The request may contain the wildcard value of '*' to return all supported check 
 The wildcard value should be checked for first, if found no other checks of supplied identifiers shall be made.
 If a provided identifier does not include a wildcard and does not match an existing CheckIdentity object then this operation shall fail with an UNKNOWN error.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList names) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTDEFINITION_OP, names);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList());
-        return (org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList) body0;
+    public org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList names) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTDEFINITION_OP, names);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList());
+            return (org.ccsds.moims.mo.mc.check.structures.CheckTypedInstanceList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -410,12 +519,16 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a provided identifier does not include a wildcard and does not match an existing CheckIdentity object then this operation shall fail with an UNKNOWN error.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncListDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList names,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTDEFINITION_OP, adapter, names);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTDEFINITION_OP, adapter, names);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -425,14 +538,18 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueListDefinition(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -444,13 +561,22 @@ The request may contain the wildcard value of '0' to return all supported check 
 The wildcard value should be checked for first, if found no other checks of supplied identifiers shall be made.
 If a provided identifier does not include a wildcard and does not match an existing CheckIdentity object then this operation shall fail with an UNKNOWN error.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList listCheckLinks(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTCHECKLINKS_OP, checkObjInstIds);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList());
-        return (org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList) body0;
+    public org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList listCheckLinks(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTCHECKLINKS_OP, checkObjInstIds);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList());
+            return (org.ccsds.moims.mo.mc.check.structures.CheckLinkSummaryList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -462,12 +588,16 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a provided identifier does not include a wildcard and does not match an existing CheckIdentity object then this operation shall fail with an UNKNOWN error.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncListCheckLinks(org.ccsds.moims.mo.mal.structures.LongList checkObjInstIds,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTCHECKLINKS_OP, adapter, checkObjInstIds);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTCHECKLINKS_OP, adapter, checkObjInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -477,14 +607,18 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueListCheckLinks(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTCHECKLINKS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.LISTCHECKLINKS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -505,14 +639,28 @@ If an error is raised then no new identities and definitions shall be added as a
 If the supplied name matches an existing, but removed, CheckIdentity then that CheckIdentity shall be reused otherwise a new CheckIdentity shall be created.
 The provider shall create a new actual check definition object and store it, and any new CheckIdentity objects, in the COM archive.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied CheckIdentity objects contains an invalid name or the two lists are not the same size or there is an inconsistency in the time and count fields.
+If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
+     * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the CheckIdentity objects being added has supplied a check name that is already in use in the domain.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addCheck(org.ccsds.moims.mo.mal.structures.StringList checkNames,
-            org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDCHECK_OP, checkNames, checkDefDetails);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
-        return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+            org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDCHECK_OP, checkNames, checkDefDetails);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
+            return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.DuplicateException) {
+                throw (org.ccsds.moims.mo.com.DuplicateException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -531,13 +679,17 @@ If the supplied name matches an existing, but removed, CheckIdentity then that C
 The provider shall create a new actual check definition object and store it, and any new CheckIdentity objects, in the COM archive.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncAddCheck(org.ccsds.moims.mo.mal.structures.StringList checkNames,
             org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDCHECK_OP, adapter, checkNames, checkDefDetails);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDCHECK_OP, adapter, checkNames, checkDefDetails);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -547,14 +699,18 @@ The provider shall create a new actual check definition object and store it, and
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueAddCheck(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -584,14 +740,32 @@ If an error is raised then no definitions shall be updated as a result of this o
 The provider shall create new actual check definition objects and store them in the COM archive.
 The new definition object shall be the current definition used for the specific CheckIdentity.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied CheckIdentity object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.com.InvalidException The supplied object instance identifiers list contains either a NULL or '0', or the two lists do not contain the same number of entries or there is an inconsistency in the time and count fields.
+If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
+     * @throws org.ccsds.moims.mo.mc.ReferencedException One of the check objects is currently being used by a CheckLink object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.structures.LongList updateDefinition(org.ccsds.moims.mo.mal.structures.LongList checkInstIds,
-            org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.UPDATEDEFINITION_OP, checkInstIds, checkDefDetails);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-        return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+            org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mc.ReferencedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.UPDATEDEFINITION_OP, checkInstIds, checkDefDetails);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
+            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mc.ReferencedException) {
+                throw (org.ccsds.moims.mo.mc.ReferencedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -611,13 +785,17 @@ The provider shall create new actual check definition objects and store them in 
 The new definition object shall be the current definition used for the specific CheckIdentity.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateDefinition(org.ccsds.moims.mo.mal.structures.LongList checkInstIds,
             org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetailsList checkDefDetails,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.UPDATEDEFINITION_OP, adapter, checkInstIds, checkDefDetails);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.UPDATEDEFINITION_OP, adapter, checkInstIds, checkDefDetails);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -627,14 +805,18 @@ The new definition object shall be the current definition used for the specific 
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdateDefinition(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.UPDATEDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.UPDATEDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -653,11 +835,24 @@ If any of the matched CheckIdentity objects are being referenced by a CheckLink 
 Matched CheckIdentity objects shall not be removed from the COM archive only the list of available CheckIdentity objects in the provider.
 If an error is raised then no CheckIdentity objects shall be removed as a result of this operation call.
 If the operation succeeds then the provider shall not allow new CheckLink objects to be created for the matched CheckIdentity anymore, existing CheckLink objects are not affected.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mc.ReferencedException One of the check objects is currently being used by a CheckLink object.
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied CheckIdentity object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void removeCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVECHECK_OP, objInstIds);
+    public void removeCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mc.ReferencedException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVECHECK_OP, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mc.ReferencedException) {
+                throw (org.ccsds.moims.mo.mc.ReferencedException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -673,12 +868,16 @@ If an error is raised then no CheckIdentity objects shall be removed as a result
 If the operation succeeds then the provider shall not allow new CheckLink objects to be created for the matched CheckIdentity anymore, existing CheckLink objects are not affected.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncRemoveCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVECHECK_OP, adapter, objInstIds);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVECHECK_OP, adapter, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -688,14 +887,18 @@ If the operation succeeds then the provider shall not allow new CheckLink object
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueRemoveCheck(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVECHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVECHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -716,14 +919,28 @@ If an interval that is not supported by the provider is requested then an INVALI
 If the checkInterval is not '0' and the checkOnChange Value is TRUE, then an INVALID error shall be returned.
 The provider shall create new CheckLink and CheckLinkDefinition objects for each pair and store them in the COM archive.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException The supplied lists do not contain the same number of entries, the supplied interval is not supported by the provider, or a period check with changed based checking has been requested.
+If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameterCheck(org.ccsds.moims.mo.mc.check.structures.CheckLinkDetailsList linkDetails,
-            org.ccsds.moims.mo.com.structures.ObjectDetailsList linkRefs) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDPARAMETERCHECK_OP, linkDetails, linkRefs);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
-        return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+            org.ccsds.moims.mo.com.structures.ObjectDetailsList linkRefs) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDPARAMETERCHECK_OP, linkDetails, linkRefs);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
+            return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -741,13 +958,17 @@ If the checkInterval is not '0' and the checkOnChange Value is TRUE, then an INV
 The provider shall create new CheckLink and CheckLinkDefinition objects for each pair and store them in the COM archive.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncAddParameterCheck(org.ccsds.moims.mo.mc.check.structures.CheckLinkDetailsList linkDetails,
             org.ccsds.moims.mo.com.structures.ObjectDetailsList linkRefs,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDPARAMETERCHECK_OP, adapter, linkDetails, linkRefs);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDPARAMETERCHECK_OP, adapter, linkDetails, linkRefs);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -757,14 +978,18 @@ The provider shall create new CheckLink and CheckLinkDefinition objects for each
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueAddParameterCheck(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDPARAMETERCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.ADDPARAMETERCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -782,11 +1007,20 @@ If a provided CheckLink instance identifier does not include a wildcard and does
 Matched CheckLink objects shall not be removed from the COM archive only the list of available CheckLink objects in the provider.
 If an error is raised then no CheckLink objects shall be removed as a result of this operation call.
 If the operation succeeds then the provider shall not evaluate those parameter/check definition combinations for the deleted CheckLink objects anymore.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied CheckLink object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void removeParameterCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVEPARAMETERCHECK_OP, objInstIds);
+    public void removeParameterCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVEPARAMETERCHECK_OP, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -801,12 +1035,16 @@ If an error is raised then no CheckLink objects shall be removed as a result of 
 If the operation succeeds then the provider shall not evaluate those parameter/check definition combinations for the deleted CheckLink objects anymore.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncRemoveParameterCheck(org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVEPARAMETERCHECK_OP, adapter, objInstIds);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVEPARAMETERCHECK_OP, adapter, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -816,14 +1054,18 @@ If the operation succeeds then the provider shall not evaluate those parameter/c
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueRemoveParameterCheck(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVEPARAMETERCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.check.consumer.CheckAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.check.CheckServiceInfo.REMOVEPARAMETERCHECK_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

@@ -27,6 +27,8 @@ import esa.mo.apigen.generators.java.JavaNaming;
 import esa.mo.apigen.generators.java.JavaSource;
 import esa.mo.apigen.generators.java.JavaTypeName;
 import esa.mo.apigen.generators.java.JavaTypes;
+import esa.mo.apigen.model.ErrorDefinition;
+import esa.mo.apigen.model.ErrorReference;
 import esa.mo.apigen.model.Field;
 import esa.mo.apigen.model.InteractionStage;
 import esa.mo.apigen.model.MOModel;
@@ -34,6 +36,7 @@ import esa.mo.apigen.model.MessageBody;
 import esa.mo.apigen.model.Operation;
 import esa.mo.apigen.model.Service;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,10 +59,16 @@ public final class ConsumerStubWriter {
 
     private static final String MAL_EXCEPTION = JavaNaming.MAL + "MALException";
 
-    private static final String INTERACTION_THROWN =
-            "if there is a problem during the interaction as defined by the MAL specification.";
+    private static final String MO_ERROR = JavaNaming.MAL + "MOErrorException";
 
-    private static final String EXCEPTION_THROWN = "if there is an implementation exception";
+    private static final String STANDARD_ERROR = JavaNaming.MAL + "MALStandardError";
+
+    private static final String STANDARD_ERROR_THROWN =
+            "if the MAL, the transport or the provider returned a MAL standard error";
+
+    private static final String EXCEPTION_THROWN =
+            "if there is an implementation exception, or the provider returned an error the"
+            + " operation does not declare";
 
     private static final String SENT = "the MAL message sent to initiate the interaction";
 
@@ -112,7 +121,7 @@ public final class ConsumerStubWriter {
                     writeInvoke(out, model, service, operation, adapterType);
                     break;
                 case PUBSUB:
-                    writePubSub(out, service, operation, adapterType);
+                    writePubSub(out, model, service, operation, adapterType);
                     break;
                 default:
                     break;
@@ -130,9 +139,10 @@ public final class ConsumerStubWriter {
         JavaMethodBuilder method = JavaMethodBuilder.named(operation.getName())
                 .returns(MESSAGE, SENT).comment(operation.getComment());
         addArguments(method, model, requestBodyOf(operation));
-        addThrows(method);
-        method.line("return consumer.send(" + operationOf(service, operation) + ", "
+        List<String> body = new ArrayList<String>();
+        body.add("return consumer.send(" + operationOf(service, operation) + ", "
                 + arguments(model, requestBodyOf(operation)) + ");");
+        addBody(method, model, null, body);
         method.write(out);
     }
 
@@ -153,11 +163,12 @@ public final class ConsumerStubWriter {
             method.returns(returnType, "The return value of the interaction");
         }
         addArguments(method, model, sent);
-        addThrows(method);
-        method.line((returnType == null ? "" : MESSAGE_BODY + " body = ") + "consumer."
+        List<String> body = new ArrayList<String>();
+        body.add((returnType == null ? "" : MESSAGE_BODY + " body = ") + "consumer."
                 + patternCallOf(operation) + "(" + operationOf(service, operation) + ", "
                 + arguments(model, sent) + ");");
-        addReturn(method, model, service, operation, received, returnType);
+        addReturn(body, model, service, operation, received, returnType);
+        addBody(method, model, operation, body);
         method.write(out);
 
         JavaMethodBuilder async = JavaMethodBuilder.named("async" + capitalise(operation.getName()))
@@ -166,12 +177,12 @@ public final class ConsumerStubWriter {
         addArguments(async, model, sent);
         async.argument(adapterType, "adapter",
                 "adapter Listener in charge of receiving the messages from the service provider");
-        addThrows(async);
-        async.line("return consumer.async" + capitalise(patternCallOf(operation)) + "("
-                + operationOf(service, operation) + ", adapter, " + arguments(model, sent) + ");");
+        addBody(async, model, null, Collections.singletonList("return consumer.async"
+                + capitalise(patternCallOf(operation)) + "(" + operationOf(service, operation)
+                + ", adapter, " + arguments(model, sent) + ");"));
         async.write(out);
 
-        writeContinue(out, service, operation, adapterType);
+        writeContinue(out, model, service, operation, adapterType);
     }
 
     /**
@@ -192,11 +203,12 @@ public final class ConsumerStubWriter {
         addArguments(method, model, sent);
         method.argument(adapterType, "adapter",
                 "adapter Listener in charge of receiving the messages from the service provider");
-        addThrows(method);
-        method.line((returnType == null ? "" : MESSAGE_BODY + " body = ") + "consumer."
+        List<String> body = new ArrayList<String>();
+        body.add((returnType == null ? "" : MESSAGE_BODY + " body = ") + "consumer."
                 + patternCallOf(operation) + "(" + operationOf(service, operation)
                 + ", adapter, " + arguments(model, sent) + ");");
-        addReturn(method, model, service, operation, acknowledged, returnType);
+        addReturn(body, model, service, operation, acknowledged, returnType);
+        addBody(method, model, operation, body);
         method.write(out);
 
         JavaMethodBuilder async = JavaMethodBuilder.named("async" + capitalise(operation.getName()))
@@ -205,19 +217,19 @@ public final class ConsumerStubWriter {
         addArguments(async, model, sent);
         async.argument(adapterType, "adapter",
                 "adapter Listener in charge of receiving the messages from the service provider");
-        addThrows(async);
-        async.line("return consumer.async" + capitalise(patternCallOf(operation)) + "("
-                + operationOf(service, operation) + ", adapter, " + arguments(model, sent) + ");");
+        addBody(async, model, null, Collections.singletonList("return consumer.async"
+                + capitalise(patternCallOf(operation)) + "(" + operationOf(service, operation)
+                + ", adapter, " + arguments(model, sent) + ");"));
         async.write(out);
 
-        writeContinue(out, service, operation, adapterType);
+        writeContinue(out, model, service, operation, adapterType);
     }
 
     /**
      * Registering says what to listen for; deregistering says to stop.
      */
-    private static void writePubSub(JavaSource out, Service service, Operation operation,
-            String adapterType) {
+    private static void writePubSub(JavaSource out, MOModel model, Service service,
+            Operation operation, String adapterType) {
         String name = operation.getName();
         String subscription = JavaNaming.MAL_STRUCTURES + "Subscription";
         String identifiers = JavaNaming.MAL_STRUCTURES + "IdentifierList";
@@ -228,9 +240,8 @@ public final class ConsumerStubWriter {
                 .comment("Register method for the " + name + " PubSub interaction")
                 .argument(subscription, "subscription", "subscription the subscription to register for")
                 .argument(adapterType, "adapter", adapterComment);
-        addThrows(register);
-        register.line("consumer.register(" + operationOf(service, operation)
-                + ", subscription, adapter);");
+        addBody(register, model, operation, Collections.singletonList("consumer.register("
+                + operationOf(service, operation) + ", subscription, adapter);"));
         register.write(out);
 
         JavaMethodBuilder asyncRegister = JavaMethodBuilder.named("async" + capitalise(name) + "Register")
@@ -238,18 +249,16 @@ public final class ConsumerStubWriter {
                 .comment("Asynchronous version of method " + name + "Register")
                 .argument(subscription, "subscription", "subscription the subscription to register for")
                 .argument(adapterType, "adapter", adapterComment);
-        addThrows(asyncRegister);
-        asyncRegister.line("return consumer.asyncRegister(" + operationOf(service, operation)
-                + ", subscription, adapter);");
+        addBody(asyncRegister, model, null, Collections.singletonList("return consumer.asyncRegister("
+                + operationOf(service, operation) + ", subscription, adapter);"));
         asyncRegister.write(out);
 
         JavaMethodBuilder deregister = JavaMethodBuilder.named(name + "Deregister")
                 .comment("Deregister method for the " + name + " PubSub interaction")
                 .argument(identifiers, "identifierList",
                         "identifierList the subscription identifiers to deregister");
-        addThrows(deregister);
-        deregister.line("consumer.deregister(" + operationOf(service, operation)
-                + ", identifierList);");
+        addBody(deregister, model, operation, Collections.singletonList("consumer.deregister("
+                + operationOf(service, operation) + ", identifierList);"));
         deregister.write(out);
 
         JavaMethodBuilder asyncDeregister = JavaMethodBuilder.named("async" + capitalise(name) + "Deregister")
@@ -258,9 +267,8 @@ public final class ConsumerStubWriter {
                 .argument(identifiers, "identifierList",
                         "identifierList the subscription identifiers to deregister")
                 .argument(adapterType, "adapter", adapterComment);
-        addThrows(asyncDeregister);
-        asyncDeregister.line("return consumer.asyncDeregister(" + operationOf(service, operation)
-                + ", identifierList, adapter);");
+        addBody(asyncDeregister, model, null, Collections.singletonList("return consumer.asyncDeregister("
+                + operationOf(service, operation) + ", identifierList, adapter);"));
         asyncDeregister.write(out);
     }
 
@@ -268,8 +276,8 @@ public final class ConsumerStubWriter {
      * Picks an interaction back up where it was left, which is how a consumer that was
      * restarted carries on.
      */
-    private static void writeContinue(JavaSource out, Service service, Operation operation,
-            String adapterType) {
+    private static void writeContinue(JavaSource out, MOModel model, Service service,
+            Operation operation, String adapterType) {
         JavaMethodBuilder method = JavaMethodBuilder.named("continue" + capitalise(operation.getName()))
                 .comment("Continues a previously started interaction")
                 .argument(JavaNaming.MAL_STRUCTURES + "UOctet", "lastInteractionStage",
@@ -280,9 +288,9 @@ public final class ConsumerStubWriter {
                         "transactionId Transaction identifier of the interaction to continue")
                 .argument(adapterType, "adapter",
                         "adapter Listener in charge of receiving the messages from the service provider");
-        addThrows(method);
-        method.line("consumer.continueInteraction(" + operationOf(service, operation)
-                + ", lastInteractionStage, initiationTimestamp, transactionId, adapter);");
+        addBody(method, model, null, Collections.singletonList("consumer.continueInteraction("
+                + operationOf(service, operation)
+                + ", lastInteractionStage, initiationTimestamp, transactionId, adapter);"));
         method.write(out);
     }
 
@@ -290,7 +298,7 @@ public final class ConsumerStubWriter {
      * Unpacks what came back. Each field is taken out of the body under its own name before
      * it is answered with, so that the cast reads next to the type it is casting to.
      */
-    private static void addReturn(JavaMethodBuilder method, MOModel model, Service service,
+    private static void addReturn(List<String> method, MOModel model, Service service,
             Operation operation, List<Field> fields, String returnType) {
         if (returnType == null || fields.isEmpty()) {
             return;
@@ -300,25 +308,25 @@ public final class ConsumerStubWriter {
             Field field = fields.get(i);
             if (JavaTypeName.isNativeAttribute(model, field.getType())) {
                 String union = JavaNaming.MAL_STRUCTURES + "Union";
-                method.line("Object body" + i + " = (Object) body.getBodyElement(" + i + ", new "
+                method.add("Object body" + i + " = (Object) body.getBodyElement(" + i + ", new "
                         + union + "(" + JavaTypes.nativeDefault(field.getType().getName()) + "));");
                 answers.add("(body" + i + " == null) ? null : ((" + union + ") body" + i + ").get"
                         + field.getType().getName() + "Value()");
             } else {
-                method.line("Object body" + i + " = (Object) body.getBodyElement(" + i + ", "
+                method.add("Object body" + i + " = (Object) body.getBodyElement(" + i + ", "
                         + JavaTypeName.expectedTypeOf(model, field.getType()) + ");");
                 answers.add("(" + JavaTypeName.of(model, field.getType()) + ") body" + i);
             }
         }
         if (answers.size() == 1) {
-            method.line("return " + answers.get(0) + ";");
+            method.add("return " + answers.get(0) + ";");
             return;
         }
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < answers.size(); i++) {
             buf.append(i == 0 ? "" : ", ").append(answers.get(i));
         }
-        method.line("return new " + returnType + "(" + buf + ");");
+        method.add("return new " + returnType + "(" + buf + ");");
     }
 
 
@@ -375,9 +383,66 @@ public final class ConsumerStubWriter {
         return buf.toString();
     }
 
-    private static void addThrows(JavaMethodBuilder method) {
-        method.throwing(INTERACTION_EXCEPTION, INTERACTION_THROWN)
+    /**
+     * Writes the body of a method, and what it throws.
+     * <p>
+     * The MAL reports an error as a MALInteractionException carrying it. The stub throws the
+     * error itself instead: as its own class where the operation declares it, and otherwise
+     * through MALStandardError.relayOrWrap, which throws a MAL standard error as its own
+     * class and wraps any other, which the provider had no right to return, in a
+     * MALException.
+     *
+     * @param method The method being written.
+     * @param model The model the errors are resolved against.
+     * @param operation The operation whose errors the call can return, or null where the
+     * call returns before the provider answers, so that only the MAL can raise an error.
+     * @param body The statements of the method.
+     */
+    private static void addBody(JavaMethodBuilder method, MOModel model, Operation operation,
+            List<String> body) {
+        List<String> declared = new ArrayList<String>();
+        if (operation != null) {
+            for (ErrorReference reference : operation.getErrors()) {
+                String type = ExceptionWriter.qualifiedNameOf(reference.getError());
+                if (!declared.contains(type)) {
+                    declared.add(type);
+                    method.throwing(type, commentOf(model, reference));
+                }
+            }
+        }
+        method.throwing(STANDARD_ERROR, STANDARD_ERROR_THROWN)
                 .throwing(MAL_EXCEPTION, EXCEPTION_THROWN);
+
+        method.line("try {");
+        for (String line : body) {
+            method.line("    " + line);
+        }
+        method.line("} catch (" + INTERACTION_EXCEPTION + " ex) {");
+        if (!declared.isEmpty()) {
+            method.line("    " + MO_ERROR + " error = ex.getStandardError();");
+        }
+        for (String type : declared) {
+            method.line("    if (error instanceof " + type + ") {");
+            method.line("        throw (" + type + ") error;");
+            method.line("    }");
+        }
+        method.line("    throw " + STANDARD_ERROR + ".relayOrWrap(ex);");
+        method.line("}");
+    }
+
+    /**
+     * @return the description of when an error is raised: the reference's own, else the
+     * definition's.
+     */
+    private static String commentOf(MOModel model, ErrorReference reference) {
+        String comment = reference.getComment();
+        if (comment == null || comment.isEmpty()) {
+            ErrorDefinition definition = model.resolveError(reference.getError());
+            comment = definition != null && definition.getComment() != null
+                    && !definition.getComment().isEmpty()
+                    ? definition.getComment() : "if the corresponding MO error occurs";
+        }
+        return comment;
     }
 
     /**

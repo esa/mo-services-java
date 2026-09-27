@@ -86,11 +86,11 @@ public class Test2ServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-        }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.comprototype2.COMPrototype2Helper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

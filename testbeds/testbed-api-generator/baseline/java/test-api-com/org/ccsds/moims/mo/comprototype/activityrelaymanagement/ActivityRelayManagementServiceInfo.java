@@ -93,11 +93,11 @@ public class ActivityRelayManagementServiceInfo extends org.ccsds.moims.mo.mal.S
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-        }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.comprototype.COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

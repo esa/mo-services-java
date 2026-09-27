@@ -120,21 +120,27 @@ public class OrderManagementServiceInfo extends org.ccsds.moims.mo.mal.ServiceIn
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 1:
-                return new org.ccsds.moims.mo.mpd.InvalidException(extraInfo);
+        switch (operationNumber) {
             case 2:
-                return new org.ccsds.moims.mo.mpd.DeliveryFailedException(extraInfo);
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.mpd.InvalidException(extraInfo);
+                    case 3:
+                        return new org.ccsds.moims.mo.mpd.OrderFailedException(extraInfo);
+                }
+                break;
             case 3:
-                return new org.ccsds.moims.mo.mpd.OrderFailedException(extraInfo);
-            case 4:
-                return new org.ccsds.moims.mo.mpd.UnknownException(extraInfo);
-            case 5:
-                return new org.ccsds.moims.mo.mpd.TooManyException(extraInfo);
+                switch (errorNumber) {
+                    case 4:
+                        return new org.ccsds.moims.mo.mpd.UnknownException(extraInfo);
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mpd.MPDHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

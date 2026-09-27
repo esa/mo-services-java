@@ -1104,17 +1104,269 @@ public class DataTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 1:
-                return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
-            case 2:
-                return new org.ccsds.moims.mo.malprototype.TestObjectExistsException(extraInfo);
-            case 3:
-                return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+        switch (operationNumber) {
+            case 100:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 101:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 102:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 103:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 104:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 105:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 106:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 107:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 108:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 109:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 110:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 111:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 112:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 113:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 114:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 115:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 116:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 117:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 118:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 119:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 120:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 121:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 122:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 123:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 124:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 125:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 126:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 127:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 128:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 129:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 130:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 131:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 132:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 133:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 134:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 135:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 136:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 137:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 201:
+                switch (errorNumber) {
+                    case 2:
+                        return new org.ccsds.moims.mo.malprototype.TestObjectExistsException(extraInfo);
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 202:
+                switch (errorNumber) {
+                    case 2:
+                        return new org.ccsds.moims.mo.malprototype.TestObjectExistsException(extraInfo);
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 203:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
+            case 204:
+                switch (errorNumber) {
+                    case 1:
+                        return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.malprototype.MALPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

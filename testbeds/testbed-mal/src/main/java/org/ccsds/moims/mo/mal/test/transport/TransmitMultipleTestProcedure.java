@@ -32,6 +32,7 @@
  ****************************************************************************** */
 package org.ccsds.moims.mo.mal.test.transport;
 
+import org.ccsds.moims.mo.mal.MALStandardError;
 import org.ccsds.moims.mo.mal.test.util.Helper;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
@@ -135,7 +136,7 @@ public class TransmitMultipleTestProcedure {
         return true;
     }
 
-    public boolean CallTheOperationGetResult() throws MALInteractionException, MALException {
+    public boolean CallTheOperationGetResult() throws MALStandardError, MALInteractionException, MALException {
         LoggingBase.logMessage("HeaderTestProcedure.CallTheOperationGetResult()");
         result = ipTest1.getResult(null);
         return true;

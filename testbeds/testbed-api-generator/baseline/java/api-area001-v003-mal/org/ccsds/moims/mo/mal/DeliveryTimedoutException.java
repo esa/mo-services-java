@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * The DeliveryTimedoutException exception. Unconfirmed communication error.
  */
-public final class DeliveryTimedoutException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DeliveryTimedoutException extends org.ccsds.moims.mo.mal.MALStandardError {
 
     private static final String MO_ERROR_NAME = "Delivery Timedout";
 

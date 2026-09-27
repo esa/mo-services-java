@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ccsds.moims.mo.mal.MALException;
-import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionConsumer;
 import org.ccsds.moims.mo.mal.structures.Blob;
 import org.ccsds.moims.mo.mal.structures.Identifier;
@@ -73,7 +73,7 @@ public class AppCLI {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MALInteractionException ex) {
+        } catch (MOErrorException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (java.io.FileNotFoundException ex) {
             Logger.getLogger(AppCLI.class.getName()).log(Level.SEVERE, null, ex);

@@ -42,13 +42,22 @@ public class PlanDistributionStub {
      * 
      * @param planFilter The planFilter field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mps.structures.PlanSummaryStatusList getPlanSummaries(org.ccsds.moims.mo.mps.structures.PlanFilter planFilter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSUMMARIES_OP, planFilter);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.PlanSummaryStatusList());
-        return (org.ccsds.moims.mo.mps.structures.PlanSummaryStatusList) body0;
+    public org.ccsds.moims.mo.mps.structures.PlanSummaryStatusList getPlanSummaries(org.ccsds.moims.mo.mps.structures.PlanFilter planFilter) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSUMMARIES_OP, planFilter);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.PlanSummaryStatusList());
+            return (org.ccsds.moims.mo.mps.structures.PlanSummaryStatusList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -57,12 +66,16 @@ public class PlanDistributionStub {
      * @param planFilter The planFilter field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetPlanSummaries(org.ccsds.moims.mo.mps.structures.PlanFilter planFilter,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSUMMARIES_OP, adapter, planFilter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSUMMARIES_OP, adapter, planFilter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -72,14 +85,18 @@ public class PlanDistributionStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetPlanSummaries(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSUMMARIES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSUMMARIES_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -89,12 +106,21 @@ public class PlanDistributionStub {
      * 
      * @param planRefs The planRefs field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void getPlan(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.progress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLAN_OP, adapter, planRefs);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.progress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLAN_OP, adapter, planRefs);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -103,12 +129,16 @@ public class PlanDistributionStub {
      * @param planRefs The planRefs field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetPlan(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncProgress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLAN_OP, adapter, planRefs);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncProgress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLAN_OP, adapter, planRefs);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -118,14 +148,18 @@ public class PlanDistributionStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetPlan(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLAN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLAN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -134,13 +168,22 @@ public class PlanDistributionStub {
      * 
      * @param planRefs The planRefs field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mps.structures.PlanUpdateList getPlanStatus(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSTATUS_OP, planRefs);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.PlanUpdateList());
-        return (org.ccsds.moims.mo.mps.structures.PlanUpdateList) body0;
+    public org.ccsds.moims.mo.mps.structures.PlanUpdateList getPlanStatus(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSTATUS_OP, planRefs);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.PlanUpdateList());
+            return (org.ccsds.moims.mo.mps.structures.PlanUpdateList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -149,12 +192,16 @@ public class PlanDistributionStub {
      * @param planRefs The planRefs field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetPlanStatus(org.ccsds.moims.mo.mal.structures.ObjectRefList planRefs,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSTATUS_OP, adapter, planRefs);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSTATUS_OP, adapter, planRefs);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -164,14 +211,18 @@ public class PlanDistributionStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetPlanStatus(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPLANSTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -179,12 +230,16 @@ public class PlanDistributionStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void monitorPlanStatusRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.register(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, subscription, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.register(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -193,23 +248,31 @@ public class PlanDistributionStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorPlanStatusRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRegister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, subscription, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRegister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
      * Deregister method for the monitorPlanStatus PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorPlanStatusDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.deregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, identifierList);
+    public void monitorPlanStatusDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.deregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, identifierList);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -218,12 +281,16 @@ public class PlanDistributionStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorPlanStatusDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncDeregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, identifierList, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncDeregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLANSTATUS_OP, identifierList, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -231,12 +298,16 @@ public class PlanDistributionStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void monitorPlanRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.register(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, subscription, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.register(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -245,23 +316,31 @@ public class PlanDistributionStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorPlanRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRegister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, subscription, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRegister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
      * Deregister method for the monitorPlan PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorPlanDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.deregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, identifierList);
+    public void monitorPlanDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.deregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, identifierList);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -270,12 +349,16 @@ public class PlanDistributionStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorPlanDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncDeregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, identifierList, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncDeregister(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.MONITORPLAN_OP, identifierList, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -286,12 +369,21 @@ public class PlanDistributionStub {
      * 
      * @param query The query field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void queryPlan(org.ccsds.moims.mo.mps.structures.PlanQuery query,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.progress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.QUERYPLAN_OP, adapter, query);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.progress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.QUERYPLAN_OP, adapter, query);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -300,12 +392,16 @@ public class PlanDistributionStub {
      * @param query The query field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncQueryPlan(org.ccsds.moims.mo.mps.structures.PlanQuery query,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncProgress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.QUERYPLAN_OP, adapter, query);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncProgress(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.QUERYPLAN_OP, adapter, query);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -315,14 +411,18 @@ public class PlanDistributionStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueQueryPlan(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.QUERYPLAN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.QUERYPLAN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -339,13 +439,22 @@ public class PlanDistributionStub {
      * 
      * @param partialPlanFilter The partialPlanFilter field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mps.structures.PartialPlan getPartialPlan(org.ccsds.moims.mo.mps.structures.PartialPlanFilter partialPlanFilter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPARTIALPLAN_OP, partialPlanFilter);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.PartialPlan());
-        return (org.ccsds.moims.mo.mps.structures.PartialPlan) body0;
+    public org.ccsds.moims.mo.mps.structures.PartialPlan getPartialPlan(org.ccsds.moims.mo.mps.structures.PartialPlanFilter partialPlanFilter) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPARTIALPLAN_OP, partialPlanFilter);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.PartialPlan());
+            return (org.ccsds.moims.mo.mps.structures.PartialPlan) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -354,12 +463,16 @@ public class PlanDistributionStub {
      * @param partialPlanFilter The partialPlanFilter field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetPartialPlan(org.ccsds.moims.mo.mps.structures.PartialPlanFilter partialPlanFilter,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPARTIALPLAN_OP, adapter, partialPlanFilter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPARTIALPLAN_OP, adapter, partialPlanFilter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -369,14 +482,18 @@ public class PlanDistributionStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetPartialPlan(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPARTIALPLAN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.plandistribution.consumer.PlanDistributionAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.plandistribution.PlanDistributionServiceInfo.GETPARTIALPLAN_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

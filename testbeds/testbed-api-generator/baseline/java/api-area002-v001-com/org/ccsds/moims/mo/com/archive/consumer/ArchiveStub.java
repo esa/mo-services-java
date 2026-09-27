@@ -43,14 +43,27 @@ If any explicitly requested object cannot be matched then an UNKNOWN error shall
      * @param domain domain Argument number 1 as defined by the service operation
      * @param objInstIds objInstIds Argument number 2 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException The request contains a wildcard value in either the object type field or the domain.
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void retrieve(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.invoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.RETRIEVE_OP, adapter, objType, domain, objInstIds);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.invoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.RETRIEVE_OP, adapter, objType, domain, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -67,14 +80,18 @@ If any explicitly requested object cannot be matched then an UNKNOWN error shall
      * @param objInstIds objInstIds Argument number 2 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncRetrieve(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncInvoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.RETRIEVE_OP, adapter, objType, domain, objInstIds);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncInvoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.RETRIEVE_OP, adapter, objType, domain, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -84,14 +101,18 @@ If any explicitly requested object cannot be matched then an UNKNOWN error shall
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueRetrieve(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.RETRIEVE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.RETRIEVE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -120,15 +141,24 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param archiveQuery archiveQuery Argument number 2 as defined by the service operation
      * @param queryFilter queryFilter Argument number 3 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the query filters supplied contains an invalid value.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void query(Boolean returnBody,
             org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList archiveQuery,
             org.ccsds.moims.mo.com.archive.structures.QueryFilterList queryFilter,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.progress(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.QUERY_OP, adapter, (returnBody == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnBody), objType, archiveQuery, queryFilter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.progress(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.QUERY_OP, adapter, (returnBody == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnBody), objType, archiveQuery, queryFilter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -155,15 +185,19 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param queryFilter queryFilter Argument number 3 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncQuery(Boolean returnBody,
             org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList archiveQuery,
             org.ccsds.moims.mo.com.archive.structures.QueryFilterList queryFilter,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncProgress(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.QUERY_OP, adapter, (returnBody == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnBody), objType, archiveQuery, queryFilter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncProgress(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.QUERY_OP, adapter, (returnBody == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnBody), objType, archiveQuery, queryFilter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -173,14 +207,18 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueQuery(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.QUERY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.QUERY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -190,14 +228,23 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param archiveQuery archiveQuery Argument number 1 as defined by the service operation
      * @param queryFilter queryFilter Argument number 2 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the query filters supplied contains an invalid value.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void count(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList archiveQuery,
             org.ccsds.moims.mo.com.archive.structures.QueryFilterList queryFilter,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.invoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.COUNT_OP, adapter, objType, archiveQuery, queryFilter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.invoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.COUNT_OP, adapter, objType, archiveQuery, queryFilter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -208,14 +255,18 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param queryFilter queryFilter Argument number 2 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncCount(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList archiveQuery,
             org.ccsds.moims.mo.com.archive.structures.QueryFilterList queryFilter,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncInvoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.COUNT_OP, adapter, objType, archiveQuery, queryFilter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncInvoke(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.COUNT_OP, adapter, objType, archiveQuery, queryFilter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -225,14 +276,18 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueCount(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.COUNT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.COUNT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -263,17 +318,30 @@ If any error is returned then the store operation shall be rolled back and nothi
      * @param objDetails objDetails Argument number 3 as defined by the service operation
      * @param objBodies objBodies Argument number 4 as defined by the service operation
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the objects being stored has supplied an object instance identifier that is already in use in the archive.
+     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the objects being stored contains an invalid value.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.structures.LongList store(Boolean returnObjInstIds,
             org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.STORE_OP, (returnObjInstIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnObjInstIds), objType, domain, objDetails, objBodies);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-        return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.STORE_OP, (returnObjInstIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnObjInstIds), objType, domain, objDetails, objBodies);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
+            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.DuplicateException) {
+                throw (org.ccsds.moims.mo.com.DuplicateException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -298,16 +366,20 @@ If any error is returned then the store operation shall be rolled back and nothi
      * @param objBodies objBodies Argument number 4 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncStore(Boolean returnObjInstIds,
             org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
             org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.STORE_OP, adapter, (returnObjInstIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnObjInstIds), objType, domain, objDetails, objBodies);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.STORE_OP, adapter, (returnObjInstIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(returnObjInstIds), objType, domain, objDetails, objBodies);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -317,14 +389,18 @@ If any error is returned then the store operation shall be rolled back and nothi
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueStore(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.STORE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.STORE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -342,14 +418,27 @@ No wildcard values shall be accepted in the object type, the domain, and the obj
      * @param domain domain Argument number 1 as defined by the service operation
      * @param objDetails objDetails Argument number 2 as defined by the service operation
      * @param objBodies objBodies Argument number 3 as defined by the service operation
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the objects being updated contains a wildcard value in the object identifier fields.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void update(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.UPDATE_OP, objType, domain, objDetails, objBodies);
+            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.UPDATE_OP, objType, domain, objDetails, objBodies);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -368,15 +457,19 @@ No wildcard values shall be accepted in the object type, the domain, and the obj
      * @param objBodies objBodies Argument number 3 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdate(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
             org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.UPDATE_OP, adapter, objType, domain, objDetails, objBodies);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.UPDATE_OP, adapter, objType, domain, objDetails, objBodies);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -386,14 +479,18 @@ No wildcard values shall be accepted in the object type, the domain, and the obj
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdate(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.UPDATE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.UPDATE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -410,15 +507,28 @@ The matched objects shall be deleted from the archive.
      * @param domain domain Argument number 1 as defined by the service operation
      * @param objInstIds objInstIds Argument number 2 as defined by the service operation
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+     * @throws org.ccsds.moims.mo.com.InvalidException The supplied object type or domain contains a wildcard value.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.structures.LongList delete(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.DELETE_OP, objType, domain, objInstIds);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-        return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+            org.ccsds.moims.mo.mal.structures.LongList objInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.DELETE_OP, objType, domain, objInstIds);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
+            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -435,14 +545,18 @@ The matched objects shall be deleted from the archive.
      * @param objInstIds objInstIds Argument number 2 as defined by the service operation
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncDelete(org.ccsds.moims.mo.com.structures.ObjectType objType,
             org.ccsds.moims.mo.mal.structures.IdentifierList domain,
             org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.DELETE_OP, adapter, objType, domain, objInstIds);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.DELETE_OP, adapter, objType, domain, objInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -452,14 +566,18 @@ The matched objects shall be deleted from the archive.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueDelete(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.DELETE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.com.archive.consumer.ArchiveAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.com.archive.ArchiveServiceInfo.DELETE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

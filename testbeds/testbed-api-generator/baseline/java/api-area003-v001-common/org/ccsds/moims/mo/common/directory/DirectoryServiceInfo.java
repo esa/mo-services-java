@@ -211,11 +211,37 @@ public class DirectoryServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
+        switch (operationNumber) {
+            case 1:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
+            case 2:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
+            case 3:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
+            case 4:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.common.CommonHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

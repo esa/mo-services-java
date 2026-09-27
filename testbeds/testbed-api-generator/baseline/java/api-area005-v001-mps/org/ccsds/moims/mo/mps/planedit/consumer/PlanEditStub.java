@@ -53,13 +53,26 @@ public class PlanEditStub {
      * @param planRef The planRef field.
      * @param status The status field.
      * @param isAlternate The isAlternate field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UpdateFailedException The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updatePlanStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mps.structures.PlanStatusEnum status,
-            Boolean isAlternate) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEPLANSTATUS_OP, planRef, status, (isAlternate == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isAlternate));
+            Boolean isAlternate) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UpdateFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEPLANSTATUS_OP, planRef, status, (isAlternate == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isAlternate));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UpdateFailedException) {
+                throw (org.ccsds.moims.mo.mps.UpdateFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -70,14 +83,18 @@ public class PlanEditStub {
      * @param isAlternate The isAlternate field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdatePlanStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mps.structures.PlanStatusEnum status,
             Boolean isAlternate,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEPLANSTATUS_OP, adapter, planRef, status, (isAlternate == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isAlternate));
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEPLANSTATUS_OP, adapter, planRef, status, (isAlternate == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isAlternate));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -87,14 +104,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdatePlanStatus(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEPLANSTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEPLANSTATUS_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -108,13 +129,30 @@ public class PlanEditStub {
      * 
      * @param activityDetails The activityDetails field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UnsupportedException An optional data structure used in the message is not supported by the service provider.
+     * @throws org.ccsds.moims.mo.mps.InsertFailedException The insertActivity or insertEvent operation failed to insert the requested object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> insertActivity(org.ccsds.moims.mo.mps.structures.InsertedActivityDetails activityDetails) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTACTIVITY_OP, activityDetails);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>());
-        return (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>) body0;
+    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> insertActivity(org.ccsds.moims.mo.mps.structures.InsertedActivityDetails activityDetails) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UnsupportedException, org.ccsds.moims.mo.mps.InsertFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTACTIVITY_OP, activityDetails);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>());
+            return (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance>) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UnsupportedException) {
+                throw (org.ccsds.moims.mo.mps.UnsupportedException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.InsertFailedException) {
+                throw (org.ccsds.moims.mo.mps.InsertFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -123,12 +161,16 @@ public class PlanEditStub {
      * @param activityDetails The activityDetails field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncInsertActivity(org.ccsds.moims.mo.mps.structures.InsertedActivityDetails activityDetails,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTACTIVITY_OP, adapter, activityDetails);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTACTIVITY_OP, adapter, activityDetails);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -138,14 +180,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueInsertActivity(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTACTIVITY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTACTIVITY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -158,13 +204,26 @@ public class PlanEditStub {
      * 
      * @param eventDetails The eventDetails field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.InsertFailedException The insertActivity or insertEvent operation failed to insert the requested object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> insertEvent(org.ccsds.moims.mo.mps.structures.InsertedEventDetails eventDetails) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTEVENT_OP, eventDetails);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>());
-        return (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>) body0;
+    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> insertEvent(org.ccsds.moims.mo.mps.structures.InsertedEventDetails eventDetails) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.InsertFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTEVENT_OP, eventDetails);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>());
+            return (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.InsertFailedException) {
+                throw (org.ccsds.moims.mo.mps.InsertFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -173,12 +232,16 @@ public class PlanEditStub {
      * @param eventDetails The eventDetails field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncInsertEvent(org.ccsds.moims.mo.mps.structures.InsertedEventDetails eventDetails,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTEVENT_OP, adapter, eventDetails);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTEVENT_OP, adapter, eventDetails);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -188,14 +251,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueInsertEvent(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTEVENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.INSERTEVENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -212,12 +279,25 @@ public class PlanEditStub {
      * 
      * @param planRef The planRef field.
      * @param activityRef The activityRef field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.DeleteFailedException The deleteActivity or deleteEvent operation failed to delete the requested object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void deleteActivity(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityRef) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEACTIVITY_OP, planRef, activityRef);
+            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityRef) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.DeleteFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEACTIVITY_OP, planRef, activityRef);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.DeleteFailedException) {
+                throw (org.ccsds.moims.mo.mps.DeleteFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -227,13 +307,17 @@ public class PlanEditStub {
      * @param activityRef The activityRef field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeleteActivity(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityInstance> activityRef,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEACTIVITY_OP, adapter, planRef, activityRef);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEACTIVITY_OP, adapter, planRef, activityRef);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -243,14 +327,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueDeleteActivity(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEACTIVITY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEACTIVITY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -265,12 +353,25 @@ public class PlanEditStub {
      * 
      * @param planRef The planRef field.
      * @param eventRef The eventRef field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.DeleteFailedException The deleteActivity or deleteEvent operation failed to delete the requested object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void deleteEvent(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> eventRef) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEEVENT_OP, planRef, eventRef);
+            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> eventRef) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.DeleteFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEEVENT_OP, planRef, eventRef);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.DeleteFailedException) {
+                throw (org.ccsds.moims.mo.mps.DeleteFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -280,13 +381,17 @@ public class PlanEditStub {
      * @param eventRef The eventRef field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeleteEvent(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> eventRef,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEEVENT_OP, adapter, planRef, eventRef);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEEVENT_OP, adapter, planRef, eventRef);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -296,14 +401,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueDeleteEvent(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEEVENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.DELETEEVENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -317,12 +426,25 @@ public class PlanEditStub {
      * 
      * @param planRef The planRef field.
      * @param activityUpdate The activityUpdate field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UpdateFailedException The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updateActivity(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mps.structures.ActivityUpdate activityUpdate) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEACTIVITY_OP, planRef, activityUpdate);
+            org.ccsds.moims.mo.mps.structures.ActivityUpdate activityUpdate) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UpdateFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEACTIVITY_OP, planRef, activityUpdate);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UpdateFailedException) {
+                throw (org.ccsds.moims.mo.mps.UpdateFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -332,13 +454,17 @@ public class PlanEditStub {
      * @param activityUpdate The activityUpdate field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateActivity(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mps.structures.ActivityUpdate activityUpdate,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEACTIVITY_OP, adapter, planRef, activityUpdate);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEACTIVITY_OP, adapter, planRef, activityUpdate);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -348,14 +474,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdateActivity(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEACTIVITY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEACTIVITY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -369,12 +499,25 @@ public class PlanEditStub {
      * 
      * @param planRef The planRef field.
      * @param eventUpdate The eventUpdate field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UpdateFailedException The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updateEvent(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mps.structures.EventUpdate eventUpdate) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEEVENT_OP, planRef, eventUpdate);
+            org.ccsds.moims.mo.mps.structures.EventUpdate eventUpdate) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UpdateFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEEVENT_OP, planRef, eventUpdate);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UpdateFailedException) {
+                throw (org.ccsds.moims.mo.mps.UpdateFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -384,13 +527,17 @@ public class PlanEditStub {
      * @param eventUpdate The eventUpdate field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateEvent(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mps.structures.EventUpdate eventUpdate,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEEVENT_OP, adapter, planRef, eventUpdate);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEEVENT_OP, adapter, planRef, eventUpdate);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -400,14 +547,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdateEvent(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEEVENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATEEVENT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -421,12 +572,29 @@ public class PlanEditStub {
      * 
      * @param planRef The planRef field.
      * @param resourceUpdate The resourceUpdate field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UnsupportedException An optional data structure used in the message is not supported by the service provider.
+     * @throws org.ccsds.moims.mo.mps.UpdateFailedException The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updateResourceValue(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mps.structures.ResourceUpdate resourceUpdate) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEVALUE_OP, planRef, resourceUpdate);
+            org.ccsds.moims.mo.mps.structures.ResourceUpdate resourceUpdate) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UnsupportedException, org.ccsds.moims.mo.mps.UpdateFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEVALUE_OP, planRef, resourceUpdate);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UnsupportedException) {
+                throw (org.ccsds.moims.mo.mps.UnsupportedException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UpdateFailedException) {
+                throw (org.ccsds.moims.mo.mps.UpdateFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -436,13 +604,17 @@ public class PlanEditStub {
      * @param resourceUpdate The resourceUpdate field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateResourceValue(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mps.structures.ResourceUpdate resourceUpdate,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEVALUE_OP, adapter, planRef, resourceUpdate);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEVALUE_OP, adapter, planRef, resourceUpdate);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -452,14 +624,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdateResourceValue(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEVALUE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEVALUE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -473,12 +649,29 @@ public class PlanEditStub {
      * 
      * @param planRef The planRef field.
      * @param resourceProfile The resourceProfile field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UnsupportedException An optional data structure used in the message is not supported by the service provider.
+     * @throws org.ccsds.moims.mo.mps.UpdateFailedException The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updateResourceProfile(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
-            org.ccsds.moims.mo.mps.structures.ResourceProfile resourceProfile) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEPROFILE_OP, planRef, resourceProfile);
+            org.ccsds.moims.mo.mps.structures.ResourceProfile resourceProfile) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UnsupportedException, org.ccsds.moims.mo.mps.UpdateFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEPROFILE_OP, planRef, resourceProfile);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UnsupportedException) {
+                throw (org.ccsds.moims.mo.mps.UnsupportedException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UpdateFailedException) {
+                throw (org.ccsds.moims.mo.mps.UpdateFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -488,13 +681,17 @@ public class PlanEditStub {
      * @param resourceProfile The resourceProfile field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateResourceProfile(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mps.structures.ResourceProfile resourceProfile,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEPROFILE_OP, adapter, planRef, resourceProfile);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEPROFILE_OP, adapter, planRef, resourceProfile);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -504,14 +701,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdateResourceProfile(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEPROFILE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.UPDATERESOURCEPROFILE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -546,14 +747,27 @@ public class PlanEditStub {
      * @param subPlans The subPlans field.
      * @param timePeriod The timePeriod field.
      * @param offset The offset field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mps.InvalidException One or more fields in the message contain invalid values.
+     * @throws org.ccsds.moims.mo.mps.UpdateFailedException The update operation (to Request, PlanStatus, Activity, Event or Resource) failed to update the referenced object.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void applyTimeShift(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mal.structures.IdentifierList subPlans,
             org.ccsds.moims.mo.mps.structures.TimeWindow timePeriod,
-            org.ccsds.moims.mo.mal.structures.Duration offset) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.APPLYTIMESHIFT_OP, planRef, subPlans, timePeriod, offset);
+            org.ccsds.moims.mo.mal.structures.Duration offset) throws org.ccsds.moims.mo.mps.InvalidException, org.ccsds.moims.mo.mps.UpdateFailedException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.APPLYTIMESHIFT_OP, planRef, subPlans, timePeriod, offset);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mps.InvalidException) {
+                throw (org.ccsds.moims.mo.mps.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mps.UpdateFailedException) {
+                throw (org.ccsds.moims.mo.mps.UpdateFailedException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -565,15 +779,19 @@ public class PlanEditStub {
      * @param offset The offset field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncApplyTimeShift(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planRef,
             org.ccsds.moims.mo.mal.structures.IdentifierList subPlans,
             org.ccsds.moims.mo.mps.structures.TimeWindow timePeriod,
             org.ccsds.moims.mo.mal.structures.Duration offset,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.APPLYTIMESHIFT_OP, adapter, planRef, subPlans, timePeriod, offset);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.APPLYTIMESHIFT_OP, adapter, planRef, subPlans, timePeriod, offset);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -583,14 +801,18 @@ public class PlanEditStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueApplyTimeShift(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.APPLYTIMESHIFT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mps.planedit.consumer.PlanEditAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mps.planedit.PlanEditServiceInfo.APPLYTIMESHIFT_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

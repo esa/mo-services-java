@@ -21,6 +21,7 @@
 package esa.mo.mal.impl.interactionpatterns;
 
 import esa.mo.mal.impl.MALContextFactoryImpl;
+import esa.mo.mal.impl.ResolvedErrorBody;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -101,7 +102,8 @@ public class OperationResponseHolder {
     public void signalResponse(final boolean isError, final MALMessage msg) {
         if (isError) {
             try {
-                signalError(((MALErrorBody) msg.getBody()).getError());
+                signalError(ResolvedErrorBody.resolve(msg.getHeader(),
+                        ((MALErrorBody) msg.getBody()).getError()));
             } catch (MALException ex) {
                 Logger.getLogger(OperationResponseHolder.class.getName()).log(
                         Level.SEVERE, "Something went wrong!", ex);

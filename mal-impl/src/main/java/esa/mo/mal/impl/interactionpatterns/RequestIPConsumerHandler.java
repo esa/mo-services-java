@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.impl.interactionpatterns;
 
+import esa.mo.mal.impl.ResolvedErrorBody;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALRequestOperation;
 import org.ccsds.moims.mo.mal.structures.InteractionType;
@@ -61,7 +62,7 @@ public final class RequestIPConsumerHandler extends SubmitIPConsumerHandler {
     protected void informListener(final MALMessage msg) throws MALException {
         if (msg.getHeader().getIsErrorMessage()) {
             responseHolder.getListener().requestErrorReceived(
-                    msg.getHeader(), (MALErrorBody) msg.getBody(), msg.getQoSProperties());
+                    msg.getHeader(), new ResolvedErrorBody(msg.getHeader(), (MALErrorBody) msg.getBody()), msg.getQoSProperties());
         } else {
             responseHolder.getListener().requestResponseReceived(
                     msg.getHeader(), msg.getBody(), msg.getQoSProperties());

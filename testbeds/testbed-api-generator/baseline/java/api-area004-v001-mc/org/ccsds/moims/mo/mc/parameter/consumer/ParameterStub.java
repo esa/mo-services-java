@@ -35,12 +35,16 @@ public class ParameterStub {
      * 
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void monitorValueRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.register(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, subscription, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.register(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -49,23 +53,31 @@ public class ParameterStub {
      * @param subscription subscription the subscription to register for
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorValueRegister(org.ccsds.moims.mo.mal.structures.Subscription subscription,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRegister(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, subscription, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRegister(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, subscription, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
      * Deregister method for the monitorValue PubSub interaction.
      * 
      * @param identifierList identifierList the subscription identifiers to deregister
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void monitorValueDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.deregister(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, identifierList);
+    public void monitorValueDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.deregister(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, identifierList);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -74,12 +86,16 @@ public class ParameterStub {
      * @param identifierList identifierList the subscription identifiers to deregister
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncMonitorValueDeregister(org.ccsds.moims.mo.mal.structures.IdentifierList identifierList,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncDeregister(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, identifierList, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncDeregister(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.MONITORVALUE_OP, identifierList, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -92,13 +108,22 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a requested parameter is unknown then an UNKNOWN error shall be returned.
 If a parameter is being reported periodically, using the operation shall not reset the reportInterval timer.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested parameters is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList getValue(org.ccsds.moims.mo.mal.structures.LongList paramInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.GETVALUE_OP, paramInstIds);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList());
-        return (org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList) body0;
+    public org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList getValue(org.ccsds.moims.mo.mal.structures.LongList paramInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.GETVALUE_OP, paramInstIds);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList());
+            return (org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -111,12 +136,16 @@ If a requested parameter is unknown then an UNKNOWN error shall be returned.
 If a parameter is being reported periodically, using the operation shall not reset the reportInterval timer.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetValue(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.GETVALUE_OP, adapter, paramInstIds);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.GETVALUE_OP, adapter, paramInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -126,14 +155,18 @@ If a parameter is being reported periodically, using the operation shall not res
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueGetValue(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.GETVALUE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.GETVALUE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -149,11 +182,28 @@ If the supplied new parameter raw value does not match the defined type for the 
 If an error is raised then no modifications shall be made as a result of this operation call.
 The parameter values shall be set concurrently, by this it is meant that all values are set at the same time without interleaving of other values being (ATOMIC behaviour). How this is implemented is an implementation detail.
 The service provider shall create new ParameterValueInstance objects for the updated parameter values, store these in the COM Archive, and publish these new values.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the referenced parameters is unknown.
+     * @throws org.ccsds.moims.mo.mc.ReadonlyException One or more of the parameters being set is read only.
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied parameter values contains an invalid value.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void setValue(org.ccsds.moims.mo.mc.parameter.structures.ParameterRawValueList newRawValues) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.SETVALUE_OP, newRawValues);
+    public void setValue(org.ccsds.moims.mo.mc.parameter.structures.ParameterRawValueList newRawValues) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.ReadonlyException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.SETVALUE_OP, newRawValues);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mc.ReadonlyException) {
+                throw (org.ccsds.moims.mo.mc.ReadonlyException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -170,12 +220,16 @@ The parameter values shall be set concurrently, by this it is meant that all val
 The service provider shall create new ParameterValueInstance objects for the updated parameter values, store these in the COM Archive, and publish these new values.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncSetValue(org.ccsds.moims.mo.mc.parameter.structures.ParameterRawValueList newRawValues,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.SETVALUE_OP, adapter, newRawValues);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.SETVALUE_OP, adapter, newRawValues);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -185,14 +239,18 @@ The service provider shall create new ParameterValueInstance objects for the upd
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueSetValue(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.SETVALUE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.SETVALUE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -213,14 +271,27 @@ The provider shall create and store a new ParameterDefinition object in the COM 
 If a new ParameterDefinition object is created then that new object shall be the current ParameterDefinition used for the specific ParameterIdentity.
      * @param enableInstances If the generation of reports is being enabled, and the parameter is defined as being periodic, then the provider shall generate a report immediately and start the report interval from that report.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested parameters or groups is unknown.
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is either not a group of groups or a group of ParameterIdentity objects.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.structures.LongList enableGeneration(Boolean isGroupIds,
-            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ENABLEGENERATION_OP, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-        return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ENABLEGENERATION_OP, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
+            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -240,13 +311,17 @@ If a new ParameterDefinition object is created then that new object shall be the
      * @param enableInstances If the generation of reports is being enabled, and the parameter is defined as being periodic, then the provider shall generate a report immediately and start the report interval from that report.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncEnableGeneration(Boolean isGroupIds,
             org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ENABLEGENERATION_OP, adapter, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ENABLEGENERATION_OP, adapter, (isGroupIds == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(isGroupIds), enableInstances);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -256,14 +331,18 @@ If a new ParameterDefinition object is created then that new object shall be the
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueEnableGeneration(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ENABLEGENERATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ENABLEGENERATION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -276,13 +355,22 @@ The paramNames field may contain the wildcard value of '*' to return all support
 The wildcard value should be checked for first, if found no other checks of supplied identifiers shall be made.
 If a provided identifier does not include a wildcard and does not match an existing ParameterIdentity object then this operation shall fail with an UNKNOWN error.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList paramNames) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.LISTDEFINITION_OP, paramNames);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
-        return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+    public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList paramNames) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.LISTDEFINITION_OP, paramNames);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
+            return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -294,12 +382,16 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a provided identifier does not include a wildcard and does not match an existing ParameterIdentity object then this operation shall fail with an UNKNOWN error.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncListDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList paramNames,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.LISTDEFINITION_OP, adapter, paramNames);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.LISTDEFINITION_OP, adapter, paramNames);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -309,14 +401,18 @@ If a provided identifier does not include a wildcard and does not match an exist
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueListDefinition(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.LISTDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.LISTDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -333,13 +429,26 @@ If an error is raised then no new identities and definitions shall be added as a
 If the supplied name matches an existing, but removed, ParameterIdentity then that ParameterIdentity shall be reused otherwise a new ParameterIdentity shall be created.
 The provider shall create a new ParameterDefinition object and store it, and any new ParameterIdentity objects, in the COM archive.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied ParameterIdentity objects contains an invalid name or a supplied interval is not supported by the provider.
+     * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the ParameterIdentity objects being added has supplied a parameter name that is already in use in the domain.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameter(org.ccsds.moims.mo.mc.parameter.structures.ParameterCreationRequestList paramDefDetails) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ADDPARAMETER_OP, paramDefDetails);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
-        return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+    public org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameter(org.ccsds.moims.mo.mc.parameter.structures.ParameterCreationRequestList paramDefDetails) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ADDPARAMETER_OP, paramDefDetails);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList());
+            return (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.com.DuplicateException) {
+                throw (org.ccsds.moims.mo.com.DuplicateException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -354,12 +463,16 @@ If the supplied name matches an existing, but removed, ParameterIdentity then th
 The provider shall create a new ParameterDefinition object and store it, and any new ParameterIdentity objects, in the COM archive.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncAddParameter(org.ccsds.moims.mo.mc.parameter.structures.ParameterCreationRequestList paramDefDetails,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ADDPARAMETER_OP, adapter, paramDefDetails);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ADDPARAMETER_OP, adapter, paramDefDetails);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -369,14 +482,18 @@ The provider shall create a new ParameterDefinition object and store it, and any
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueAddParameter(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ADDPARAMETER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.ADDPARAMETER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -400,14 +517,28 @@ If an error is raised then no definitions shall be updated as a result of this o
 The provider shall create a new ParameterDefinition object and store it in the COM archive.
 The new ParameterDefinition object shall be the current ParameterDefinition used for the specific ParameterIdentity.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.com.InvalidException The supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or a supplied interval is not supported by the provider.
+If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied ParameterIdentity object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.structures.LongList updateDefinition(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
-            org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetailsList paramDefDetails) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.UPDATEDEFINITION_OP, paramInstIds, paramDefDetails);
-        Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
-        return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+            org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetailsList paramDefDetails) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.UPDATEDEFINITION_OP, paramInstIds, paramDefDetails);
+            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList());
+            return (org.ccsds.moims.mo.mal.structures.LongList) body0;
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
+                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            }
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -425,13 +556,17 @@ The provider shall create a new ParameterDefinition object and store it in the C
 The new ParameterDefinition object shall be the current ParameterDefinition used for the specific ParameterIdentity.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateDefinition(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
             org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetailsList paramDefDetails,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.UPDATEDEFINITION_OP, adapter, paramInstIds, paramDefDetails);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncRequest(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.UPDATEDEFINITION_OP, adapter, paramInstIds, paramDefDetails);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -441,14 +576,18 @@ The new ParameterDefinition object shall be the current ParameterDefinition used
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueUpdateDefinition(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.UPDATEDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.UPDATEDEFINITION_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -466,11 +605,20 @@ If a provided ParameterIdentity object instance identifier does not include a wi
 Matched ParameterIdentity and ParameterDefinition objects shall not be removed from the COM archive only the list of ParameterIdentity and ParameterDefinition objects from the provider.
 If an error is raised then no parameters shall be removed as a result of this operation call.
 If the operation succeeds then the provider shall not publish parameter values for the deleted ParameterIdentity objects anymore.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied ParameterIdentity object instance identifiers is unknown.
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void removeParameter(org.ccsds.moims.mo.mal.structures.LongList paramInstIds) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.REMOVEPARAMETER_OP, paramInstIds);
+    public void removeParameter(org.ccsds.moims.mo.mal.structures.LongList paramInstIds) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.REMOVEPARAMETER_OP, paramInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
+            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
+                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            }
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -485,12 +633,16 @@ If an error is raised then no parameters shall be removed as a result of this op
 If the operation succeeds then the provider shall not publish parameter values for the deleted ParameterIdentity objects anymore.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncRemoveParameter(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.REMOVEPARAMETER_OP, adapter, paramInstIds);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.REMOVEPARAMETER_OP, adapter, paramInstIds);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -500,14 +652,18 @@ If the operation succeeds then the provider shall not publish parameter values f
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueRemoveParameter(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.REMOVEPARAMETER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.mc.parameter.consumer.ParameterAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo.REMOVEPARAMETER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

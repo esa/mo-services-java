@@ -33,11 +33,15 @@ public class ActivityRelayManagementStub {
     /**
      * Resets all values back to their default value.
      * 
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void resetTest() throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.RESETTEST_OP, (Object[]) null);
+    public void resetTest() throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.RESETTEST_OP, (Object[]) null);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -45,11 +49,15 @@ public class ActivityRelayManagementStub {
      * 
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncResetTest(org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.RESETTEST_OP, adapter, (Object[]) null);
+    public org.ccsds.moims.mo.mal.transport.MALMessage asyncResetTest(org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.RESETTEST_OP, adapter, (Object[]) null);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -59,14 +67,18 @@ public class ActivityRelayManagementStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueResetTest(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.RESETTEST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.RESETTEST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -74,12 +86,16 @@ public class ActivityRelayManagementStub {
      * 
      * @param in1 The in1 field.
      * @param in2 The in2 field.
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void createRelay(String in1,
-            String in2) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.submit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.CREATERELAY_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2));
+            String in2) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.submit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.CREATERELAY_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -89,13 +105,17 @@ public class ActivityRelayManagementStub {
      * @param in2 The in2 field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public org.ccsds.moims.mo.mal.transport.MALMessage asyncCreateRelay(String in1,
             String in2,
-            org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.CREATERELAY_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2));
+            org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.CREATERELAY_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2));
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
     /**
@@ -105,14 +125,18 @@ public class ActivityRelayManagementStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALInteractionException if there is a problem during the interaction as defined by the MAL specification.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void continueCreateRelay(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
             org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALInteractionException, org.ccsds.moims.mo.mal.MALException {
-        consumer.continueInteraction(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.CREATERELAY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+            org.ccsds.moims.mo.comprototype.activityrelaymanagement.consumer.ActivityRelayManagementAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+        try {
+            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo.CREATERELAY_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
+            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+        }
     }
 
 }

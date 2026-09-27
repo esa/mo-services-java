@@ -346,15 +346,53 @@ public class ParameterServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+            int errorNumber,
             Object extraInfo) {
-        switch (errorNumber) {
-            case 70020:
-                return new org.ccsds.moims.mo.mc.ReadonlyException(extraInfo);
-            case 70021:
-                return new org.ccsds.moims.mo.mc.ReferencedException(extraInfo);
+        switch (operationNumber) {
+            case 2:
+                switch (errorNumber) {
+                }
+                break;
+            case 3:
+                switch (errorNumber) {
+                    case 70020:
+                        return new org.ccsds.moims.mo.mc.ReadonlyException(extraInfo);
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
+            case 4:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
+            case 5:
+                switch (errorNumber) {
+                }
+                break;
+            case 6:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                    case 70001:
+                        return new org.ccsds.moims.mo.com.DuplicateException(extraInfo);
+                }
+                break;
+            case 7:
+                switch (errorNumber) {
+                    case 70000:
+                        return new org.ccsds.moims.mo.com.InvalidException(extraInfo);
+                }
+                break;
+            case 8:
+                switch (errorNumber) {
+                }
+                break;
         }
-        return null;
+        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mc.MCHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

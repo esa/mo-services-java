@@ -32,7 +32,6 @@ import org.ccsds.moims.mo.com.test.util.COMTestHelper;
 import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
 import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
 import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
-import org.ccsds.moims.mo.mal.MALInteractionException;
 import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.structures.Attribute;
 import org.ccsds.moims.mo.mal.structures.Duration;
@@ -620,7 +619,7 @@ public class EventTestScenario extends LoggingBase {
             if (retrievedArchiveDetailsList.size() == 1 && retrievedObjectList.size() == 1) {
                 bRetrieveValid = true;
             }
-        } catch (MALInteractionException exc) {
+        } catch (MOErrorException exc) {
             LoggingBase.logMessage("retrieve Error: " + exc);
             throw (exc);
         }

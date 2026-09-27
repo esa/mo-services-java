@@ -26,6 +26,7 @@ import org.ccsds.moims.mo.com.test.provider.TestServiceProvider;
 import org.ccsds.moims.mo.comprototype.activityrelaymanagement.provider.ActivityRelayManagementInheritanceSkeleton;
 import org.ccsds.moims.mo.mal.MALException;
 import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
 import org.ccsds.moims.mo.mal.provider.MALInteraction;
 import org.ccsds.moims.mo.mal.structures.StringList;
 import org.ccsds.moims.mo.testbed.util.LoggingBase;
@@ -50,7 +51,7 @@ public class ActivityRelayManagementHandlerImpl extends ActivityRelayManagementI
             ActivityRelayNode activityRelayNode = entry.getValue();
             try {
                 activityRelayNode.close();
-            } catch (MALInteractionException ex) {
+            } catch (MALInteractionException | MOErrorException ex) {
                 throw new MALException(ex.getMessage(), ex);
             }
         }
