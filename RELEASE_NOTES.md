@@ -4,6 +4,15 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 15.0 (unreleased)
+* Replaces the three old API generators (generator-interfaces, generator-java and generator-docs) with the api-generator-lib, which the Maven plugin now calls directly
+* Removes the api-generator-maven-plugin options packageBindings, generateStructures, generateCOM, extraProperties and xsdRefDirectory
+* Consumer stubs throw the errors declared by the operation as their own exception classes, plus MALStandardError and MALException, instead of MALInteractionException with an error code
+* Provider handlers throw only the errors declared by the operation, or MALException, instead of MALInteractionException
+* Makes MOErrorException abstract, and adds MALStandardError (parent of the MAL standard errors) and UndefinedError (for an error number that no specification defines)
+* Removes deprecated methods
+* Fixes the Action service sending the SUBMIT acknowledgement twice
+
 ### Version 14.2 (28 August 2026)
 * Adds the api-generator-lib, which will replace the three existing generators at v15.0
 * Fixes the TCP/IP transport handing back closed sockets from the client pool
