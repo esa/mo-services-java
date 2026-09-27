@@ -4,7 +4,7 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
-### Version 15.0 (unreleased)
+### Version 15.0 (27 September 2026)
 * Replaces the three old API generators (generator-interfaces, generator-java and generator-docs) with the api-generator-lib, which the Maven plugin now calls directly
 * Removes the api-generator-maven-plugin options packageBindings, generateStructures, generateCOM, extraProperties and xsdRefDirectory
 * Consumer stubs throw the errors declared by the operation as their own exception classes, plus MALStandardError and MALException, instead of MALInteractionException with an error code
