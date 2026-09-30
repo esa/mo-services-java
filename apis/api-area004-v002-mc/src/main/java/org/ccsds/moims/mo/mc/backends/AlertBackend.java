@@ -24,7 +24,6 @@
 package org.ccsds.moims.mo.mc.backends;
 
 import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
-import org.ccsds.moims.mo.mc.backends.ParameterBackend.DefaultReportConfiguration;
 import org.ccsds.moims.mo.mc.structures.AlertDefinitionList;
 
 /**
