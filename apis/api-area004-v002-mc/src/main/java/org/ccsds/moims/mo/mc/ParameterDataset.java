@@ -89,16 +89,16 @@ public abstract class ParameterDataset implements ParameterBackend {
 	}
 
 	/**
-	 * Adds a ParameterDefinition object to the list handled by the provider.
+	 * Adds a <code>ParameterDefinition</code> object to the list handled by the provider.
 	 * This function is expected to be called by the specific test backend, at initialization time.
 	 * 
-	 * @param identity  field of the ParameterDefinition to create
-	 * @param description  field of the ParameterDefinition to create
-	 * @param rawType  field of the ParameterDefinition to create
-	 * @param rawUnit  field of the ParameterDefinition to create
-	 * @param convertedType  field of the ParameterDefinition to create
-	 * @param convertedUnit  field of the ParameterDefinition to create
-	 * @param config  default configuration of the ParameterDefinition to create
+	 * @param identity  field of the <code>ParameterDefinition</code> to create
+	 * @param description  field of the <code>ParameterDefinition</code> to create
+	 * @param rawType  field of the <code>ParameterDefinition</code> to create
+	 * @param rawUnit  field of the <code>ParameterDefinition</code> to create
+	 * @param convertedType  field of the <code>ParameterDefinition</code> to create
+	 * @param convertedUnit  field of the <code>ParameterDefinition</code> to create
+	 * @param config  default configuration of the <code>ParameterDefinition</code> to create
 	 * @param conversionFunction	conversion function, may be null
 	 * @param readOnly	read-only property of the Parameter
 	 * @return  identifier of the object
