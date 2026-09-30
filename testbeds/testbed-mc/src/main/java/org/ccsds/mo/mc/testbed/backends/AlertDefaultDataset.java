@@ -29,6 +29,7 @@ import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
 import org.ccsds.moims.mo.mal.structures.ObjectRef;
 import org.ccsds.moims.mo.mal.structures.UInteger;
 import org.ccsds.moims.mo.mc.AlertDataset;
+import org.ccsds.moims.mo.mc.backends.AlertBackend.DefaultConfiguration;
 import org.ccsds.moims.mo.mc.structures.AlertDefinition;
 import org.ccsds.moims.mo.mc.structures.ArgumentDefinition;
 import org.ccsds.moims.mo.mc.structures.ArgumentDefinitionList;
@@ -88,7 +89,8 @@ public class AlertDefaultDataset extends AlertDataset {
 								new UInteger(1)),
 						new String(""),
 						Severity.SEVERE,
-						new ArgumentDefinitionList(new ArrayList<> (Arrays.asList(argDefVoltageHighVal))));
+						new ArgumentDefinitionList(new ArrayList<> (Arrays.asList(argDefVoltageHighVal))),
+						new DefaultConfiguration(false));
 
 		// AlertDefinition
 		// - identity: ("fr.cnes.mission.sat1", "MTQ1VOLTAGE_LOW", version=1)
@@ -103,7 +105,8 @@ public class AlertDefaultDataset extends AlertDataset {
 								new UInteger(1)),
 						new String(""),
 						Severity.SEVERE,
-						new ArgumentDefinitionList(new ArrayList<> (Arrays.asList(argDefVoltageHighVal))));
+						new ArgumentDefinitionList(new ArrayList<> (Arrays.asList(argDefVoltageHighVal))),
+						new DefaultConfiguration(false));
 	}
 
 }
