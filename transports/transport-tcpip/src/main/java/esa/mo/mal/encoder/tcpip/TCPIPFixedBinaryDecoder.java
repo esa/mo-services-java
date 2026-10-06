@@ -43,11 +43,11 @@ public class TCPIPFixedBinaryDecoder extends FixedBinaryDecoder {
     }
 
     public TCPIPFixedBinaryDecoder(byte[] buf, int offset, final BinaryTimeHandler timeHandler) {
-        super(new TCPIPBufferHolder(null, buf, offset, 0), timeHandler);
+        super(new TCPIPBufferHolder(null, buf, offset, buf.length), timeHandler);
     }
 
     public TCPIPFixedBinaryDecoder(byte[] buf, int offset) {
-        super(new TCPIPBufferHolder(null, buf, offset, 0), tHandler);
+        super(new TCPIPBufferHolder(null, buf, offset, buf.length), tHandler);
     }
 
     public TCPIPFixedBinaryDecoder(final BufferHolder srcBuffer, final BinaryTimeHandler timeHandler) {

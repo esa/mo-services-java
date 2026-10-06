@@ -92,6 +92,11 @@
             <groupId>int.esa.ccsds.mo</groupId>
             <artifactId>encoding-binary</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
  
     <build>
