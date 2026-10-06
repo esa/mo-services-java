@@ -49,34 +49,32 @@ public interface AlertBackend {
 	 */
 	public AlertDefinitionList getAllAlertDefinitions();
 
-  /**
-   * The DefaultConfiguration class is used to provide the default configuration of an
-   * Alert, in the {@link getDefaultConfig} method.
-   */
-  public class DefaultConfiguration {
-    public boolean generationEnabled;
-    public long reportInterval; // ms
-    public long minimalReportInterval;  // ms
-    public DefaultConfiguration(
-        boolean generationEnabled) {
-      this.generationEnabled = generationEnabled;
-    }
-    public String toString() {
-      StringBuilder result = new StringBuilder();
-      result.append("DefaultConfiguration{");
-      result.append("generationEnabled=").append(generationEnabled);
-      result.append("}");
-      return result.toString();
-    }
-  }
+	/**
+	 * The DefaultConfiguration class is used to provide the default configuration of an
+	 * Alert, in the {@link getDefaultConfig} method.
+	 */
+	public class DefaultConfiguration {
+		public boolean generationEnabled;
+		public DefaultConfiguration(
+				boolean generationEnabled) {
+			this.generationEnabled = generationEnabled;
+		}
+		public String toString() {
+			StringBuilder result = new StringBuilder();
+			result.append("DefaultConfiguration{");
+			result.append("generationEnabled=").append(generationEnabled);
+			result.append("}");
+			return result.toString();
+		}
+	}
 
-  /**
-   * retrieves the default configuration for the requested Alert.
-   * 
-   * @param alertID index of the requested alert configuration
-   * @return  the default configuration of the alert
-   */
-  public DefaultConfiguration getDefaultConfig(int alertID);
+	/**
+	 * Retrieves the default configuration for the requested Alert.
+	 * 
+	 * @param alertID index of the requested alert configuration
+	 * @return  the default configuration of the alert
+	 */
+	public DefaultConfiguration getDefaultConfig(int alertID);
 
 	/**
 	 * Listener interface used in calling {@link register}.
