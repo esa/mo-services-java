@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * Enumeration class for AttributeType.
  */
-public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class AttributeType extends Enumeration {
 
     private static final long serialVersionUID = 281475027042408L;
     /**
@@ -13,7 +15,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for BLOB.
@@ -23,7 +25,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value BLOB.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType BLOB = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.BLOB_VALUE);
+    public static final AttributeType BLOB = new AttributeType(AttributeType.BLOB_VALUE);
 
     /**
      * Enumeration value for BOOLEAN.
@@ -33,7 +35,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value BOOLEAN.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType BOOLEAN = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.BOOLEAN_VALUE);
+    public static final AttributeType BOOLEAN = new AttributeType(AttributeType.BOOLEAN_VALUE);
 
     /**
      * Enumeration value for DURATION.
@@ -43,7 +45,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value DURATION.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType DURATION = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.DURATION_VALUE);
+    public static final AttributeType DURATION = new AttributeType(AttributeType.DURATION_VALUE);
 
     /**
      * Enumeration value for FLOAT.
@@ -53,7 +55,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value FLOAT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType FLOAT = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.FLOAT_VALUE);
+    public static final AttributeType FLOAT = new AttributeType(AttributeType.FLOAT_VALUE);
 
     /**
      * Enumeration value for DOUBLE.
@@ -63,7 +65,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value DOUBLE.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType DOUBLE = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.DOUBLE_VALUE);
+    public static final AttributeType DOUBLE = new AttributeType(AttributeType.DOUBLE_VALUE);
 
     /**
      * Enumeration value for IDENTIFIER.
@@ -73,7 +75,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value IDENTIFIER.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType IDENTIFIER = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.IDENTIFIER_VALUE);
+    public static final AttributeType IDENTIFIER = new AttributeType(AttributeType.IDENTIFIER_VALUE);
 
     /**
      * Enumeration value for OCTET.
@@ -83,7 +85,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value OCTET.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType OCTET = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.OCTET_VALUE);
+    public static final AttributeType OCTET = new AttributeType(AttributeType.OCTET_VALUE);
 
     /**
      * Enumeration value for UOCTET.
@@ -93,7 +95,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value UOCTET.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType UOCTET = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.UOCTET_VALUE);
+    public static final AttributeType UOCTET = new AttributeType(AttributeType.UOCTET_VALUE);
 
     /**
      * Enumeration value for SHORT.
@@ -103,7 +105,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value SHORT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType SHORT = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.SHORT_VALUE);
+    public static final AttributeType SHORT = new AttributeType(AttributeType.SHORT_VALUE);
 
     /**
      * Enumeration value for USHORT.
@@ -113,7 +115,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value USHORT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType USHORT = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.USHORT_VALUE);
+    public static final AttributeType USHORT = new AttributeType(AttributeType.USHORT_VALUE);
 
     /**
      * Enumeration value for INTEGER.
@@ -123,7 +125,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value INTEGER.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType INTEGER = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.INTEGER_VALUE);
+    public static final AttributeType INTEGER = new AttributeType(AttributeType.INTEGER_VALUE);
 
     /**
      * Enumeration value for UINTEGER.
@@ -133,7 +135,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value UINTEGER.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType UINTEGER = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.UINTEGER_VALUE);
+    public static final AttributeType UINTEGER = new AttributeType(AttributeType.UINTEGER_VALUE);
 
     /**
      * Enumeration value for LONG.
@@ -143,7 +145,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value LONG.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType LONG = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.LONG_VALUE);
+    public static final AttributeType LONG = new AttributeType(AttributeType.LONG_VALUE);
 
     /**
      * Enumeration value for ULONG.
@@ -153,7 +155,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value ULONG.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType ULONG = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.ULONG_VALUE);
+    public static final AttributeType ULONG = new AttributeType(AttributeType.ULONG_VALUE);
 
     /**
      * Enumeration value for STRING.
@@ -163,7 +165,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value STRING.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType STRING = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.STRING_VALUE);
+    public static final AttributeType STRING = new AttributeType(AttributeType.STRING_VALUE);
 
     /**
      * Enumeration value for TIME.
@@ -173,7 +175,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value TIME.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType TIME = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.TIME_VALUE);
+    public static final AttributeType TIME = new AttributeType(AttributeType.TIME_VALUE);
 
     /**
      * Enumeration value for FINETIME.
@@ -183,7 +185,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value FINETIME.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType FINETIME = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.FINETIME_VALUE);
+    public static final AttributeType FINETIME = new AttributeType(AttributeType.FINETIME_VALUE);
 
     /**
      * Enumeration value for URI.
@@ -193,7 +195,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value URI.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType URI = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.URI_VALUE);
+    public static final AttributeType URI = new AttributeType(AttributeType.URI_VALUE);
 
     /**
      * Enumeration value for OBJECTREF.
@@ -203,12 +205,12 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value OBJECTREF.
      */
-    public static final org.ccsds.moims.mo.mal.structures.AttributeType OBJECTREF = new org.ccsds.moims.mo.mal.structures.AttributeType(org.ccsds.moims.mo.mal.structures.AttributeType.OBJECTREF_VALUE);
+    public static final AttributeType OBJECTREF = new AttributeType(AttributeType.OBJECTREF_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mal.structures.AttributeType[] _ENUMERATIONS = {
+    private static final AttributeType[] _ENUMERATIONS = {
         BLOB, BOOLEAN, DURATION, FLOAT, DOUBLE, IDENTIFIER, OCTET, UOCTET, SHORT,
         USHORT, INTEGER, UINTEGER, LONG, ULONG, STRING, TIME, FINETIME, URI, OBJECTREF};
 
@@ -282,7 +284,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mal.structures.AttributeType fromString(String s) {
+    public static AttributeType fromString(String s) {
         switch (s) {
             case "BLOB":
                 return AttributeType.BLOB;
@@ -328,7 +330,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case BLOB_VALUE:
                 return AttributeType.BLOB;
@@ -374,7 +376,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -384,7 +386,7 @@ public final class AttributeType extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

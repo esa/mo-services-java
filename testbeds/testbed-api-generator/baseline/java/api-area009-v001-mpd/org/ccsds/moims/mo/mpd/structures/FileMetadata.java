@@ -1,9 +1,18 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * The FileMetadata contains specific metadata for files.
  */
-public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class FileMetadata implements Composite {
 
     private static final long serialVersionUID = 2533274807173125L;
     /**
@@ -13,17 +22,17 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The latest update date.
      */
-    private org.ccsds.moims.mo.mal.structures.Time updateDate;
+    private Time updateDate;
 
     /**
      * The MIME type.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier mime;
+    private Identifier mime;
 
     /**
      * The size of the file in bytes.
@@ -44,8 +53,8 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
      * @param mime The MIME type.
      * @param fileSize The size of the file in bytes.
      */
-    public FileMetadata(org.ccsds.moims.mo.mal.structures.Time updateDate,
-            org.ccsds.moims.mo.mal.structures.Identifier mime,
+    public FileMetadata(Time updateDate,
+            Identifier mime,
             Long fileSize) {
         this.updateDate = updateDate;
         this.mime = mime;
@@ -53,8 +62,8 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.FileMetadata();
+    public Element createElement() {
+        return new FileMetadata();
     }
 
     /**
@@ -62,7 +71,7 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field updateDate
      */
-    public org.ccsds.moims.mo.mal.structures.Time getUpdateDate() {
+    public Time getUpdateDate() {
         return updateDate;
     }
 
@@ -71,7 +80,7 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field mime
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getMime() {
+    public Identifier getMime() {
         return mime;
     }
 
@@ -141,15 +150,15 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (updateDate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'updateDate' cannot be null!");
+            throw new MALException("The field 'updateDate' cannot be null!");
         }
         if (mime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'mime' cannot be null!");
+            throw new MALException("The field 'mime' cannot be null!");
         }
         if (fileSize == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'fileSize' cannot be null!");
+            throw new MALException("The field 'fileSize' cannot be null!");
         }
         encoder.encodeTime(updateDate);
         encoder.encodeIdentifier(mime);
@@ -157,7 +166,7 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         updateDate = decoder.decodeTime();
         mime = decoder.decodeIdentifier();
         fileSize = decoder.decodeLong();
@@ -165,7 +174,7 @@ public final class FileMetadata implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

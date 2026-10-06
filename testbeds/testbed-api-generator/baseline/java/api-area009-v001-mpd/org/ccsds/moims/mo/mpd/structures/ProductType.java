@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * A ProductType contains the product type definition of a mission data product.
  * The ProductType defines the metadata attributes associated with the product
  * and implies (but does not specify) the structure of the product body. The
  * ProductType is part of the Product Metadata.
  */
-public final class ProductType implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ProductType implements Composite {
 
     private static final long serialVersionUID = 2533274807173122L;
     /**
@@ -16,12 +24,12 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the Product Type.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The description of the Product Type.
@@ -31,7 +39,7 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The list of metadata Attribute Definitions.
      */
-    private org.ccsds.moims.mo.mpd.structures.AttributeDefList attributeDefs;
+    private AttributeDefList attributeDefs;
 
     /**
      * Default constructor for ProductType.
@@ -47,9 +55,9 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
      * @param description The description of the Product Type.
      * @param attributeDefs The list of metadata Attribute Definitions.
      */
-    public ProductType(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public ProductType(Identifier name,
             String description,
-            org.ccsds.moims.mo.mpd.structures.AttributeDefList attributeDefs) {
+            AttributeDefList attributeDefs) {
         this.name = name;
         this.description = description;
         this.attributeDefs = attributeDefs;
@@ -60,15 +68,15 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @param name The name of the Product Type.
      */
-    public ProductType(org.ccsds.moims.mo.mal.structures.Identifier name) {
+    public ProductType(Identifier name) {
         this.name = name;
         this.description = null;
         this.attributeDefs = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.ProductType();
+    public Element createElement() {
+        return new ProductType();
     }
 
     /**
@@ -76,7 +84,7 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -94,7 +102,7 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field attributeDefs
      */
-    public org.ccsds.moims.mo.mpd.structures.AttributeDefList getAttributeDefs() {
+    public AttributeDefList getAttributeDefs() {
         return attributeDefs;
     }
 
@@ -155,9 +163,9 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeNullableString(description);
@@ -165,15 +173,15 @@ public final class ProductType implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
         description = decoder.decodeNullableString();
-        attributeDefs = (org.ccsds.moims.mo.mpd.structures.AttributeDefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mpd.structures.AttributeDefList());
+        attributeDefs = (AttributeDefList) decoder.decodeNullableElement(new AttributeDefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,12 +1,21 @@
 package org.ccsds.moims.mo.mc.parameter.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mc.structures.ParameterExpression;
+
 /**
  * The ParameterDefinitionDetails structure holds a parameter definition.
  * The conversion field defines the conditions where the relevant conversion
  * is applied. For onboard parameters, the report interval should be a multiple
  * of the minimum sampling interval of that parameter.
  */
-public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterDefinitionDetails implements Composite {
 
     private static final long serialVersionUID = 1125908513554433L;
     /**
@@ -16,7 +25,7 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description of the parameter. May be empty.
@@ -43,19 +52,19 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
      * Periodic report interval. No periodic reports to be generated if this is
      * set to &quot;0&quot;.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration reportInterval;
+    private Duration reportInterval;
 
     /**
      * Expression that determines this parameter&quot;s validity state. Can be
      * NULL if no validity check is required or validity is calculated by implementation-specific
      * mechanisms.
      */
-    private org.ccsds.moims.mo.mc.structures.ParameterExpression validityExpression;
+    private ParameterExpression validityExpression;
 
     /**
      * If present then parameter has a converted type.
      */
-    private org.ccsds.moims.mo.mc.parameter.structures.ParameterConversion conversion;
+    private ParameterConversion conversion;
 
     /**
      * Default constructor for ParameterDefinitionDetails.
@@ -79,9 +88,9 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
             Byte rawType,
             String rawUnit,
             Boolean generationEnabled,
-            org.ccsds.moims.mo.mal.structures.Duration reportInterval,
-            org.ccsds.moims.mo.mc.structures.ParameterExpression validityExpression,
-            org.ccsds.moims.mo.mc.parameter.structures.ParameterConversion conversion) {
+            Duration reportInterval,
+            ParameterExpression validityExpression,
+            ParameterConversion conversion) {
         this.description = description;
         this.rawType = rawType;
         this.rawUnit = rawUnit;
@@ -102,7 +111,7 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
     public ParameterDefinitionDetails(String description,
             Byte rawType,
             Boolean generationEnabled,
-            org.ccsds.moims.mo.mal.structures.Duration reportInterval) {
+            Duration reportInterval) {
         this.description = description;
         this.rawType = rawType;
         this.rawUnit = null;
@@ -113,8 +122,8 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetails();
+    public Element createElement() {
+        return new ParameterDefinitionDetails();
     }
 
     /**
@@ -158,7 +167,7 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
      * 
      * @return The field reportInterval
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getReportInterval() {
+    public Duration getReportInterval() {
         return reportInterval;
     }
 
@@ -167,7 +176,7 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
      * 
      * @return The field validityExpression
      */
-    public org.ccsds.moims.mo.mc.structures.ParameterExpression getValidityExpression() {
+    public ParameterExpression getValidityExpression() {
         return validityExpression;
     }
 
@@ -176,7 +185,7 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
      * 
      * @return The field conversion
      */
-    public org.ccsds.moims.mo.mc.parameter.structures.ParameterConversion getConversion() {
+    public ParameterConversion getConversion() {
         return conversion;
     }
 
@@ -281,18 +290,18 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (rawType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'rawType' cannot be null!");
+            throw new MALException("The field 'rawType' cannot be null!");
         }
         if (generationEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'generationEnabled' cannot be null!");
+            throw new MALException("The field 'generationEnabled' cannot be null!");
         }
         if (reportInterval == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reportInterval' cannot be null!");
+            throw new MALException("The field 'reportInterval' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeOctet(rawType);
@@ -304,19 +313,19 @@ public final class ParameterDefinitionDetails implements org.ccsds.moims.mo.mal.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         description = decoder.decodeString();
         rawType = decoder.decodeOctet();
         rawUnit = decoder.decodeNullableString();
         generationEnabled = decoder.decodeBoolean();
         reportInterval = decoder.decodeDuration();
-        validityExpression = (org.ccsds.moims.mo.mc.structures.ParameterExpression) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ParameterExpression());
-        conversion = (org.ccsds.moims.mo.mc.parameter.structures.ParameterConversion) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.parameter.structures.ParameterConversion());
+        validityExpression = (ParameterExpression) decoder.decodeNullableElement(new ParameterExpression());
+        conversion = (ParameterConversion) decoder.decodeNullableElement(new ParameterConversion());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

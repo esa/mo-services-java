@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: Used in the context of the MPS Plan Information Management service,
  * this holds a list of definitions for a specified type of MPS service object,
  * together with their definitions.
  */
-public final class DefListEntry implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class DefListEntry implements Composite {
 
     private static final long serialVersionUID = 1407374900330503L;
     /**
@@ -15,13 +23,13 @@ public final class DefListEntry implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Object Type: ActivityDefinition | EventDefinition | Resource | RequestDefinition.
      * Reference to an Item.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> definitionID;
+    private ObjectRef<Element> definitionID;
 
     /**
      * Description of the item.
@@ -41,15 +49,15 @@ public final class DefListEntry implements org.ccsds.moims.mo.mal.structures.Com
      * @param definitionID Object Type: ActivityDefinition | EventDefinition | Resource | RequestDefinition. Reference to an Item.
      * @param description Description of the item.
      */
-    public DefListEntry(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> definitionID,
+    public DefListEntry(ObjectRef<Element> definitionID,
             String description) {
         this.definitionID = definitionID;
         this.description = description;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.DefListEntry();
+    public Element createElement() {
+        return new DefListEntry();
     }
 
     /**
@@ -57,7 +65,7 @@ public final class DefListEntry implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field definitionID
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> getDefinitionID() {
+    public ObjectRef<Element> getDefinitionID() {
         return definitionID;
     }
 
@@ -116,26 +124,26 @@ public final class DefListEntry implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (definitionID == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'definitionID' cannot be null!");
+            throw new MALException("The field 'definitionID' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         encoder.encodeAbstractElement(definitionID);
         encoder.encodeString(description);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        definitionID = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element>) decoder.decodeAbstractElement();
+    public Element decode(MALDecoder decoder) throws MALException {
+        definitionID = (ObjectRef<Element>) decoder.decodeAbstractElement();
         description = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

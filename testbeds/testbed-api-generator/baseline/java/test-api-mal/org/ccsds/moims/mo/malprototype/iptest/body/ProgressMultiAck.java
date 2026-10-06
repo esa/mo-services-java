@@ -1,5 +1,7 @@
 package org.ccsds.moims.mo.malprototype.iptest.body;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * Multi body return class for ProgressMultiAck.
  */
@@ -13,7 +15,7 @@ public final class ProgressMultiAck {
     /**
      * ack2: .
      */
-    private org.ccsds.moims.mo.mal.structures.Element ack2;
+    private Element ack2;
 
     /**
      * Default constructor for ProgressMultiAck.
@@ -29,7 +31,7 @@ public final class ProgressMultiAck {
      * @param ack2 The ack2 field.
      */
     public ProgressMultiAck(String ack1,
-            org.ccsds.moims.mo.mal.structures.Element ack2) {
+            Element ack2) {
         this.ack1 = ack1;
         this.ack2 = ack2;
     }
@@ -48,7 +50,7 @@ public final class ProgressMultiAck {
      * 
      * @return The field ack2
      */
-    public org.ccsds.moims.mo.mal.structures.Element getAck2() {
+    public Element getAck2() {
         return ack2;
     }
 

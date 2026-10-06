@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.mc.statistic.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
+
 /**
  * List class for StatisticCreationRequest.
  */
-public final class StatisticCreationRequestList extends java.util.ArrayList<org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest> {
+public final class StatisticCreationRequestList extends ArrayList<StatisticCreationRequest> implements HomogeneousList<StatisticCreationRequest> {
 
     private static final long serialVersionUID = 1125921415233532L;
     /**
@@ -13,7 +21,7 @@ public final class StatisticCreationRequestList extends java.util.ArrayList<org.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for StatisticCreationRequestList.
@@ -36,14 +44,14 @@ public final class StatisticCreationRequestList extends java.util.ArrayList<org.
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public StatisticCreationRequestList(java.util.ArrayList<org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest> elementList) {
-        for(org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest element : elementList) {
+    public StatisticCreationRequestList(ArrayList<StatisticCreationRequest> elementList) {
+        for(StatisticCreationRequest element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest element) {
+    public boolean add(StatisticCreationRequest element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +59,28 @@ public final class StatisticCreationRequestList extends java.util.ArrayList<org.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new StatisticCreationRequestList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mc.statistic.structures.StatisticCreationRequest();
+    public Element createTypedElement() {
+        return new StatisticCreationRequest();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

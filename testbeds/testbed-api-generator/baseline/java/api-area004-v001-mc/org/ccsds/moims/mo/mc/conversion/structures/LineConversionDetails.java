@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mc.conversion.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.PairList;
+
 /**
  * The LineConversionDetails structure is a bi-directional conversion between
  * raw and converted values. It is defined by a series of points between which
  * values are to be interpolated. The extrapolate attribute indicates if values
  * can also be linearly extrapolated beyond the initial and final points.
  */
-public final class LineConversionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class LineConversionDetails implements Composite {
 
     private static final long serialVersionUID = 1125929988390914L;
     /**
@@ -16,7 +24,7 @@ public final class LineConversionDetails implements org.ccsds.moims.mo.mal.struc
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Indicates whether or not values can be extrapolated beyond the start and
@@ -28,7 +36,7 @@ public final class LineConversionDetails implements org.ccsds.moims.mo.mal.struc
      * Defines the bi-directional conversion. The first attribute of the point
      * is a raw value, and the second attribute is the converted value.
      */
-    private org.ccsds.moims.mo.mal.structures.PairList points;
+    private PairList points;
 
     /**
      * Default constructor for LineConversionDetails.
@@ -44,14 +52,14 @@ public final class LineConversionDetails implements org.ccsds.moims.mo.mal.struc
      * @param points Defines the bi-directional conversion. The first attribute of the point is a raw value, and the second attribute is the converted value.
      */
     public LineConversionDetails(Boolean extrapolate,
-            org.ccsds.moims.mo.mal.structures.PairList points) {
+            PairList points) {
         this.extrapolate = extrapolate;
         this.points = points;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.conversion.structures.LineConversionDetails();
+    public Element createElement() {
+        return new LineConversionDetails();
     }
 
     /**
@@ -68,7 +76,7 @@ public final class LineConversionDetails implements org.ccsds.moims.mo.mal.struc
      * 
      * @return The field points
      */
-    public org.ccsds.moims.mo.mal.structures.PairList getPoints() {
+    public PairList getPoints() {
         return points;
     }
 
@@ -118,26 +126,26 @@ public final class LineConversionDetails implements org.ccsds.moims.mo.mal.struc
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (extrapolate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'extrapolate' cannot be null!");
+            throw new MALException("The field 'extrapolate' cannot be null!");
         }
         if (points == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'points' cannot be null!");
+            throw new MALException("The field 'points' cannot be null!");
         }
         encoder.encodeBoolean(extrapolate);
         encoder.encodeElement(points);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         extrapolate = decoder.decodeBoolean();
-        points = (org.ccsds.moims.mo.mal.structures.PairList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.PairList());
+        points = (PairList) decoder.decodeElement(new PairList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

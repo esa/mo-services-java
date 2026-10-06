@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E1: The instance of an argument is an Argument, a set of which may be contained
  * within the instance MO object of a planning event or planning activity
@@ -7,7 +16,7 @@ package org.ccsds.moims.mo.mps.structures;
  * argument, corresponding to the set of arguments defined in the ArgDef.
  * Argument values are represented as a MAL Element of appropriate data type.
  */
-public final class Argument implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class Argument implements Composite {
 
     private static final long serialVersionUID = 1407374900330520L;
     /**
@@ -17,18 +26,18 @@ public final class Argument implements org.ccsds.moims.mo.mal.structures.Composi
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name of the argument.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier argName;
+    private Identifier argName;
 
     /**
      * Argument value (or values if it is an array).  The MAL Element subtype(s)
      * must match the argument type supplied in the corresponding ArgDef.
      */
-    private org.ccsds.moims.mo.mal.structures.HeterogeneousList argValues;
+    private HeterogeneousList argValues;
 
     /**
      * Default constructor for Argument.
@@ -43,15 +52,15 @@ public final class Argument implements org.ccsds.moims.mo.mal.structures.Composi
      * @param argName Name of the argument.
      * @param argValues Argument value (or values if it is an array).  The MAL Element subtype(s) must match the argument type supplied in the corresponding ArgDef.
      */
-    public Argument(org.ccsds.moims.mo.mal.structures.Identifier argName,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList argValues) {
+    public Argument(Identifier argName,
+            HeterogeneousList argValues) {
         this.argName = argName;
         this.argValues = argValues;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.Argument();
+    public Element createElement() {
+        return new Argument();
     }
 
     /**
@@ -59,7 +68,7 @@ public final class Argument implements org.ccsds.moims.mo.mal.structures.Composi
      * 
      * @return The field argName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getArgName() {
+    public Identifier getArgName() {
         return argName;
     }
 
@@ -68,7 +77,7 @@ public final class Argument implements org.ccsds.moims.mo.mal.structures.Composi
      * 
      * @return The field argValues
      */
-    public org.ccsds.moims.mo.mal.structures.HeterogeneousList getArgValues() {
+    public HeterogeneousList getArgValues() {
         return argValues;
     }
 
@@ -118,26 +127,26 @@ public final class Argument implements org.ccsds.moims.mo.mal.structures.Composi
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (argName == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'argName' cannot be null!");
+            throw new MALException("The field 'argName' cannot be null!");
         }
         if (argValues == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'argValues' cannot be null!");
+            throw new MALException("The field 'argValues' cannot be null!");
         }
         encoder.encodeIdentifier(argName);
         encoder.encodeElement(argValues);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         argName = decoder.decodeIdentifier();
-        argValues = (org.ccsds.moims.mo.mal.structures.HeterogeneousList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.HeterogeneousList());
+        argValues = (HeterogeneousList) decoder.decodeElement(new HeterogeneousList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

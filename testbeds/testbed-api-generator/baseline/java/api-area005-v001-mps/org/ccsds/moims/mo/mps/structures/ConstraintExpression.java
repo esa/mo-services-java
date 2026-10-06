@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: All types of constraint can be considered conditions that are either
  * met or not met when a planning activity is placed in a Plan.  They can
@@ -15,7 +21,7 @@ package org.ccsds.moims.mo.mps.structures;
  * communicating entities all have the capability to evaluate that expression
  * language.
  */
-public final class ConstraintExpression extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class ConstraintExpression extends Constraint {
 
     private static final long serialVersionUID = 1407374900330527L;
     /**
@@ -25,13 +31,13 @@ public final class ConstraintExpression extends org.ccsds.moims.mo.mps.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Potentially complex conditional expression that must evaluate to True for
      * the constraint to be met.
      */
-    private org.ccsds.moims.mo.mal.structures.Element constraint;
+    private Element constraint;
 
     /**
      * Default constructor for ConstraintExpression.
@@ -47,7 +53,7 @@ public final class ConstraintExpression extends org.ccsds.moims.mo.mps.structure
      * @param constraint Potentially complex conditional expression that must evaluate to True for the constraint to be met.
      */
     public ConstraintExpression(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.Element constraint) {
+            Element constraint) {
         super(negate);
         this.constraint = constraint;
     }
@@ -57,13 +63,13 @@ public final class ConstraintExpression extends org.ccsds.moims.mo.mps.structure
      * 
      * @param constraint Potentially complex conditional expression that must evaluate to True for the constraint to be met.
      */
-    public ConstraintExpression(org.ccsds.moims.mo.mal.structures.Element constraint) {
+    public ConstraintExpression(Element constraint) {
         this.constraint = constraint;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ConstraintExpression();
+    public Element createElement() {
+        return new ConstraintExpression();
     }
 
     /**
@@ -71,7 +77,7 @@ public final class ConstraintExpression extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field constraint
      */
-    public org.ccsds.moims.mo.mal.structures.Element getConstraint() {
+    public Element getConstraint() {
         return constraint;
     }
 
@@ -114,23 +120,23 @@ public final class ConstraintExpression extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (constraint == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'constraint' cannot be null!");
+            throw new MALException("The field 'constraint' cannot be null!");
         }
         encoder.encodeAbstractElement(constraint);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        constraint = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        constraint = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

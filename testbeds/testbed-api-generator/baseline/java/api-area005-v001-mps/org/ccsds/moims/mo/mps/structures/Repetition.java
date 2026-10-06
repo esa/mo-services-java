@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: A repetition is used to specify the repeated instantiation of a [set
  * of] planning activities.  Multiple subtypes of Repetition are defined to
@@ -10,7 +16,7 @@ package org.ccsds.moims.mo.mps.structures;
  * it is possible to nest one Repetition inside another, enabling the specification
  * of complex repetitive sequences of activities.
  */
-public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class Repetition implements Composite {
 
     /**
      * Maximum number of repeat cycles/instances. If not specified there is no
@@ -22,13 +28,13 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
      * Time period over which the repetition is applicable. If not specified repetition
      * continues indefinitely.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow;
+    private TimeWindow timeWindow;
 
     /**
      * Specifies whether the repetition interval is Relative to the previous occurrence,
      * or Absolute for all occurrences.
      */
-    private org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType;
+    private SeparationTypeEnum separationType;
 
     /**
      * Default constructor for Repetition.
@@ -45,8 +51,8 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
      * @param separationType Specifies whether the repetition interval is Relative to the previous occurrence, or Absolute for all occurrences.
      */
     public Repetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType) {
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType) {
         this.count = count;
         this.timeWindow = timeWindow;
         this.separationType = separationType;
@@ -57,7 +63,7 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @param separationType Specifies whether the repetition interval is Relative to the previous occurrence, or Absolute for all occurrences.
      */
-    public Repetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType) {
+    public Repetition(SeparationTypeEnum separationType) {
         this.count = null;
         this.timeWindow = null;
         this.separationType = separationType;
@@ -77,7 +83,7 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field timeWindow
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindow getTimeWindow() {
+    public TimeWindow getTimeWindow() {
         return timeWindow;
     }
 
@@ -86,7 +92,7 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field separationType
      */
-    public org.ccsds.moims.mo.mps.structures.SeparationTypeEnum getSeparationType() {
+    public SeparationTypeEnum getSeparationType() {
         return separationType;
     }
 
@@ -147,9 +153,9 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (separationType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'separationType' cannot be null!");
+            throw new MALException("The field 'separationType' cannot be null!");
         }
         encoder.encodeNullableInteger(count);
         encoder.encodeNullableElement(timeWindow);
@@ -157,10 +163,10 @@ public abstract class Repetition implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         count = decoder.decodeNullableInteger();
-        timeWindow = (org.ccsds.moims.mo.mps.structures.TimeWindow) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindow());
-        separationType = (org.ccsds.moims.mo.mps.structures.SeparationTypeEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum.RELATIVE);
+        timeWindow = (TimeWindow) decoder.decodeNullableElement(new TimeWindow());
+        separationType = (SeparationTypeEnum) decoder.decodeElement(SeparationTypeEnum.RELATIVE);
         return this;
     }
 

@@ -8,7 +8,7 @@ public class ParameterHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo PARAMETER_SERVICE = new org.ccsds.moims.mo.mc.parameter.ParameterServiceInfo();
+    public static final ParameterServiceInfo PARAMETER_SERVICE = new ParameterServiceInfo();
 
     private ParameterHelper() {
         // Utility class; not meant to be instantiated.

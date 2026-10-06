@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mpd;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The UnknownException exception. The referenced item does not exist.
  */
-public final class UnknownException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class UnknownException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Unknown";
 

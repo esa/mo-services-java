@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.malprototype;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The TestObjectExistsException exception. MO Object already exists.
  */
-public final class TestObjectExistsException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class TestObjectExistsException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "TEST_OBJECT_EXISTS";
 

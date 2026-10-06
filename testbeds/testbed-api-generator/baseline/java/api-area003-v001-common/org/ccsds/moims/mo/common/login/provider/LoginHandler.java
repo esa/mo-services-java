@@ -1,5 +1,17 @@
 package org.ccsds.moims.mo.common.login.provider;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.common.login.body.HandoverResponse;
+import org.ccsds.moims.mo.common.login.body.LoginResponse;
+import org.ccsds.moims.mo.common.login.structures.Profile;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TooManyException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.LongList;
+
 /**
  * Interface that providers of the Login service must implement to handle
  * the operations of that service.
@@ -24,22 +36,22 @@ A LoginEvent COM event shall be generated at this point.
      * @param password password Argument number 1 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.DuplicateException Username/role combination currently in use.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values. No further information is provided as it may compromise security.
-     * @throws org.ccsds.moims.mo.mal.TooManyException Role concurrent session limit count exceeded.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/role/password combination.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws DuplicateException Username/role combination currently in use.
+     * @throws InvalidException Submitted profile contains invalid values. No further information is provided as it may compromise security.
+     * @throws TooManyException Role concurrent session limit count exceeded.
+     * @throws UnknownException Unknown username/role/password combination.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.common.login.body.LoginResponse login(org.ccsds.moims.mo.common.login.structures.Profile userDetails,
+    LoginResponse login(Profile userDetails,
             String password,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws DuplicateException, InvalidException, TooManyException, UnknownException, MALException;
     /**
      * Implements the operation logout.
      * 
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws MALException if there is an implementation exception
      */
-    void logout(org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.MALException;
+    void logout(MALInteraction interaction) throws MALException;
     /**
      * Implements the operation listRoles.
      * 
@@ -48,13 +60,13 @@ If the username field is either the wildcard '*', NULL or empty an INVALID error
      * @param password An UNKNOWN error shall be returned if the username and password combination are not correct for the system i.e. unknown user or incorrect password.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/password combination.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Unknown username/password combination.
+     * @throws InvalidException Submitted profile contains invalid values.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList listRoles(org.ccsds.moims.mo.mal.structures.Identifier username,
+    LongList listRoles(Identifier username,
             String password,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws UnknownException, InvalidException, MALException;
     /**
      * Implements the operation handover.
      * 
@@ -74,19 +86,19 @@ If the handover operation is successful a LogoutEvent COM event shall be generat
      * @param newUserPassword newUserPassword Argument number 1 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException Unknown username/role/password combination.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted profile contains invalid values.
-     * @throws org.ccsds.moims.mo.mal.TooManyException Role concurrent session limit count exceeded.
-     * @throws org.ccsds.moims.mo.com.DuplicateException Username/role combination currently in use.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException Unknown username/role/password combination.
+     * @throws InvalidException Submitted profile contains invalid values.
+     * @throws TooManyException Role concurrent session limit count exceeded.
+     * @throws DuplicateException Username/role combination currently in use.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.common.login.body.HandoverResponse handover(org.ccsds.moims.mo.common.login.structures.Profile newUserDetails,
+    HandoverResponse handover(Profile newUserDetails,
             String newUserPassword,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.TooManyException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALException;
+            MALInteraction interaction) throws UnknownException, InvalidException, TooManyException, DuplicateException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.common.login.provider.LoginSkeleton skeleton);
+    void setSkeleton(LoginSkeleton skeleton);
 }

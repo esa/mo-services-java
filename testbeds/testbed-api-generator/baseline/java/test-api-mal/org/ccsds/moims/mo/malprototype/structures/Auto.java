@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * An abstract object type for cars. This type and all derived types are notably
  * used in the Polymorphic types test procedure related to ObjectRef.
  */
-public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
+public abstract class Auto extends MOObject {
 
     /**
      * The engine of the car.
@@ -19,7 +27,7 @@ public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
     /**
      * The windows of the car.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList windows;
+    private StringList windows;
 
     /**
      * Default constructor for Auto.
@@ -36,10 +44,10 @@ public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
      * @param chassis The chassis of the car.
      * @param windows The windows of the car.
      */
-    public Auto(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public Auto(ObjectIdentity objectIdentity,
             String engine,
             String chassis,
-            org.ccsds.moims.mo.mal.structures.StringList windows) {
+            StringList windows) {
         super(objectIdentity);
         this.engine = engine;
         this.chassis = chassis;
@@ -51,7 +59,7 @@ public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @param objectIdentity The identity of the MO Object.
      */
-    public Auto(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity) {
+    public Auto(ObjectIdentity objectIdentity) {
         super(objectIdentity);
         this.engine = null;
         this.chassis = null;
@@ -81,7 +89,7 @@ public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field windows
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getWindows() {
+    public StringList getWindows() {
         return windows;
     }
 
@@ -146,7 +154,7 @@ public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableString(engine);
         encoder.encodeNullableString(chassis);
@@ -154,11 +162,11 @@ public abstract class Auto extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         engine = decoder.decodeNullableString();
         chassis = decoder.decodeNullableString();
-        windows = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
+        windows = (StringList) decoder.decodeNullableElement(new StringList());
         return this;
     }
 

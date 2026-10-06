@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Status values may be represented as enumerated Integers, but the enumeration
  * is not defined by the Recommended Standard, but in the context of planning
  * configuration data.  StateDefs hold the definitions of the text labels
  * associated with specific status values.
  */
-public final class StateDef implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class StateDef implements Composite {
 
     private static final long serialVersionUID = 1407374900330500L;
     /**
@@ -16,7 +23,7 @@ public final class StateDef implements org.ccsds.moims.mo.mal.structures.Composi
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumerated value of the Status.
@@ -48,8 +55,8 @@ public final class StateDef implements org.ccsds.moims.mo.mal.structures.Composi
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.StateDef();
+    public Element createElement() {
+        return new StateDef();
     }
 
     /**
@@ -116,26 +123,26 @@ public final class StateDef implements org.ccsds.moims.mo.mal.structures.Composi
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         if (state == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'state' cannot be null!");
+            throw new MALException("The field 'state' cannot be null!");
         }
         encoder.encodeInteger(value);
         encoder.encodeString(state);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         value = decoder.decodeInteger();
         state = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

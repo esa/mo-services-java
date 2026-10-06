@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Abstract type representing a planning constraint, a Boolean condition
  * which restricts the planning of planning activities.
  */
-public abstract class Constraint implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class Constraint implements Composite {
 
     /**
      * Specifies whether the result of combining the Constraints is to be inverted
@@ -72,12 +78,12 @@ public abstract class Constraint implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableBoolean(negate);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         negate = decoder.decodeNullableBoolean();
         return this;
     }

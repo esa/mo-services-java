@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * The UnknownException exception. Operation specific.
  */
-public final class UnknownException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class UnknownException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Unknown";
 

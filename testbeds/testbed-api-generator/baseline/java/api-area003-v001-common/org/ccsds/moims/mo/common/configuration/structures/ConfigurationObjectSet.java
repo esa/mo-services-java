@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.common.configuration.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+
 /**
  * The configuration object set holds a set of object identifiers for a single
  * COM object type in a single domain.
  */
-public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ConfigurationObjectSet implements Composite {
 
     private static final long serialVersionUID = 844446421745665L;
     /**
@@ -14,22 +24,22 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The COM object type of the configuration objects.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectType objType;
+    private ObjectType objType;
 
     /**
      * The domain of the configuration objects.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The set of COM object identifiers that form this configuration set.
      */
-    private org.ccsds.moims.mo.mal.structures.LongList objInstIds;
+    private LongList objInstIds;
 
     /**
      * Default constructor for ConfigurationObjectSet.
@@ -45,17 +55,17 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
      * @param domain The domain of the configuration objects.
      * @param objInstIds The set of COM object identifiers that form this configuration set.
      */
-    public ConfigurationObjectSet(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.LongList objInstIds) {
+    public ConfigurationObjectSet(ObjectType objType,
+            IdentifierList domain,
+            LongList objInstIds) {
         this.objType = objType;
         this.domain = domain;
         this.objInstIds = objInstIds;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.configuration.structures.ConfigurationObjectSet();
+    public Element createElement() {
+        return new ConfigurationObjectSet();
     }
 
     /**
@@ -63,7 +73,7 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field objType
      */
-    public org.ccsds.moims.mo.com.structures.ObjectType getObjType() {
+    public ObjectType getObjType() {
         return objType;
     }
 
@@ -72,7 +82,7 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -81,7 +91,7 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field objInstIds
      */
-    public org.ccsds.moims.mo.mal.structures.LongList getObjInstIds() {
+    public LongList getObjInstIds() {
         return objInstIds;
     }
 
@@ -142,15 +152,15 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (objType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'objType' cannot be null!");
+            throw new MALException("The field 'objType' cannot be null!");
         }
         if (domain == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'domain' cannot be null!");
+            throw new MALException("The field 'domain' cannot be null!");
         }
         if (objInstIds == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'objInstIds' cannot be null!");
+            throw new MALException("The field 'objInstIds' cannot be null!");
         }
         encoder.encodeElement(objType);
         encoder.encodeElement(domain);
@@ -158,15 +168,15 @@ public final class ConfigurationObjectSet implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        objType = (org.ccsds.moims.mo.com.structures.ObjectType) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectType());
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        objInstIds = (org.ccsds.moims.mo.mal.structures.LongList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.LongList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        objType = (ObjectType) decoder.decodeElement(new ObjectType());
+        domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
+        objInstIds = (LongList) decoder.decodeElement(new LongList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,12 +1,17 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The SubscriptionFilter structure shall be used when subscribing for updates
  * using the PUBSUB Interaction Pattern. It shall contain a single identifier
  * that identifies the Subscription Key name and the set of values to be registered
  * for the defined key name.
  */
-public final class SubscriptionFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class SubscriptionFilter implements Composite {
 
     private static final long serialVersionUID = 281475027043306L;
     /**
@@ -16,18 +21,18 @@ public final class SubscriptionFilter implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The identifier name of the key.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The list of values that are being subscribed for this key. These shall
      * be ORed together.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeList values;
+    private AttributeList values;
 
     /**
      * Default constructor for SubscriptionFilter.
@@ -42,15 +47,15 @@ public final class SubscriptionFilter implements org.ccsds.moims.mo.mal.structur
      * @param name The identifier name of the key.
      * @param values The list of values that are being subscribed for this key. These shall be ORed together.
      */
-    public SubscriptionFilter(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mal.structures.AttributeList values) {
+    public SubscriptionFilter(Identifier name,
+            AttributeList values) {
         this.name = name;
         this.values = values;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.SubscriptionFilter();
+    public Element createElement() {
+        return new SubscriptionFilter();
     }
 
     /**
@@ -58,7 +63,7 @@ public final class SubscriptionFilter implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -67,7 +72,7 @@ public final class SubscriptionFilter implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field values
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeList getValues() {
+    public AttributeList getValues() {
         return values;
     }
 
@@ -117,26 +122,26 @@ public final class SubscriptionFilter implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (values == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'values' cannot be null!");
+            throw new MALException("The field 'values' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeElement(values);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
-        values = (org.ccsds.moims.mo.mal.structures.AttributeList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.AttributeList());
+        values = (AttributeList) decoder.decodeElement(new AttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

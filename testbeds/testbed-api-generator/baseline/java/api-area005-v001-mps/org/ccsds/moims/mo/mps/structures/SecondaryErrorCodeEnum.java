@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for SecondaryErrorCodeEnum.
  */
-public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class SecondaryErrorCodeEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330560L;
     /**
@@ -13,7 +17,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for UNKNOWN.
@@ -23,7 +27,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value UNKNOWN.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum UNKNOWN = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.UNKNOWN_VALUE);
+    public static final SecondaryErrorCodeEnum UNKNOWN = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.UNKNOWN_VALUE);
 
     /**
      * Enumeration value for UNDEFINED.
@@ -33,7 +37,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value UNDEFINED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum UNDEFINED = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.UNDEFINED_VALUE);
+    public static final SecondaryErrorCodeEnum UNDEFINED = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.UNDEFINED_VALUE);
 
     /**
      * Enumeration value for OUT_OF_RANGE.
@@ -43,7 +47,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value OUT_OF_RANGE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum OUT_OF_RANGE = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.OUT_OF_RANGE_VALUE);
+    public static final SecondaryErrorCodeEnum OUT_OF_RANGE = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.OUT_OF_RANGE_VALUE);
 
     /**
      * Enumeration value for UNRECOGNIZED.
@@ -53,7 +57,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value UNRECOGNIZED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum UNRECOGNIZED = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.UNRECOGNIZED_VALUE);
+    public static final SecondaryErrorCodeEnum UNRECOGNIZED = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.UNRECOGNIZED_VALUE);
 
     /**
      * Enumeration value for BAD_TIME.
@@ -63,7 +67,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value BAD_TIME.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum BAD_TIME = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.BAD_TIME_VALUE);
+    public static final SecondaryErrorCodeEnum BAD_TIME = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.BAD_TIME_VALUE);
 
     /**
      * Enumeration value for BAD_POSITION.
@@ -73,7 +77,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value BAD_POSITION.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum BAD_POSITION = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.BAD_POSITION_VALUE);
+    public static final SecondaryErrorCodeEnum BAD_POSITION = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.BAD_POSITION_VALUE);
 
     /**
      * Enumeration value for BAD_DIRECTION.
@@ -83,7 +87,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value BAD_DIRECTION.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum BAD_DIRECTION = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.BAD_DIRECTION_VALUE);
+    public static final SecondaryErrorCodeEnum BAD_DIRECTION = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.BAD_DIRECTION_VALUE);
 
     /**
      * Enumeration value for INCONSISTENT.
@@ -93,12 +97,12 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     /**
      * Enumeration singleton for value INCONSISTENT.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum INCONSISTENT = new org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum(org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum.INCONSISTENT_VALUE);
+    public static final SecondaryErrorCodeEnum INCONSISTENT = new SecondaryErrorCodeEnum(SecondaryErrorCodeEnum.INCONSISTENT_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum[] _ENUMERATIONS = {
+    private static final SecondaryErrorCodeEnum[] _ENUMERATIONS = {
         UNKNOWN, UNDEFINED, OUT_OF_RANGE, UNRECOGNIZED, BAD_TIME, BAD_POSITION,
         BAD_DIRECTION, INCONSISTENT};
 
@@ -150,7 +154,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.SecondaryErrorCodeEnum fromString(String s) {
+    public static SecondaryErrorCodeEnum fromString(String s) {
         switch (s) {
             case "UNKNOWN":
                 return SecondaryErrorCodeEnum.UNKNOWN;
@@ -174,7 +178,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case UNKNOWN_VALUE:
                 return SecondaryErrorCodeEnum.UNKNOWN;
@@ -198,7 +202,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -208,7 +212,7 @@ public final class SecondaryErrorCodeEnum extends org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

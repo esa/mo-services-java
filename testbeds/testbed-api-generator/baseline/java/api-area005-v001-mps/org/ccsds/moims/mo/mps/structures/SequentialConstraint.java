@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E2: Sequential constraints impose a restriction on the order of planning
  * activities in a Plan with respect to other planning activities and planning
@@ -8,7 +14,7 @@ package org.ccsds.moims.mo.mps.structures;
  * The opponent may be either a planning activity or a planning event and
  * must be placed in the Plan relative to the parent activity.
  */
-public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class SequentialConstraint extends Constraint {
 
     private static final long serialVersionUID = 1407374900330541L;
     /**
@@ -18,37 +24,37 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Object Type: ActivityDefinition | EventDefinition Specifies the definition
      * (class) of the opponent planning activity or planning event.
      */
-    private org.ccsds.moims.mo.mal.structures.Element opponent;
+    private Element opponent;
 
     /**
      * Point on the parent activity that must be followed by the opponent. Default
      * = 1.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider parentRef;
+    private Slider parentRef;
 
     /**
      * Point on the opponent that must follow the parent activity.  This field
      * will be ignored in case the opponent is a planning event. Default = 0.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider opponentRef;
+    private Slider opponentRef;
 
     /**
      * Minimum offset between the specified points on the parent activity and
      * the opponent. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element minOffset;
+    private Element minOffset;
 
     /**
      * Maximum offset between the specified points on the parent activity and
      * the opponent. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element maxOffset;
+    private Element maxOffset;
 
     /**
      * Default constructor for SequentialConstraint.
@@ -68,11 +74,11 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * @param maxOffset Maximum offset between the specified points on the parent activity and the opponent. Default is no offset.
      */
     public SequentialConstraint(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.Element opponent,
-            org.ccsds.moims.mo.mps.structures.Slider parentRef,
-            org.ccsds.moims.mo.mps.structures.Slider opponentRef,
-            org.ccsds.moims.mo.mal.structures.Element minOffset,
-            org.ccsds.moims.mo.mal.structures.Element maxOffset) {
+            Element opponent,
+            Slider parentRef,
+            Slider opponentRef,
+            Element minOffset,
+            Element maxOffset) {
         super(negate);
         this.opponent = opponent;
         this.parentRef = parentRef;
@@ -86,7 +92,7 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @param opponent Object Type: ActivityDefinition | EventDefinition Specifies the definition (class) of the opponent planning activity or planning event.
      */
-    public SequentialConstraint(org.ccsds.moims.mo.mal.structures.Element opponent) {
+    public SequentialConstraint(Element opponent) {
         this.opponent = opponent;
         this.parentRef = null;
         this.opponentRef = null;
@@ -95,8 +101,8 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.SequentialConstraint();
+    public Element createElement() {
+        return new SequentialConstraint();
     }
 
     /**
@@ -104,7 +110,7 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponent
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOpponent() {
+    public Element getOpponent() {
         return opponent;
     }
 
@@ -113,7 +119,7 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field parentRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getParentRef() {
+    public Slider getParentRef() {
         return parentRef;
     }
 
@@ -122,7 +128,7 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponentRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getOpponentRef() {
+    public Slider getOpponentRef() {
         return opponentRef;
     }
 
@@ -131,7 +137,7 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field minOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMinOffset() {
+    public Element getMinOffset() {
         return minOffset;
     }
 
@@ -140,7 +146,7 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field maxOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMaxOffset() {
+    public Element getMaxOffset() {
         return maxOffset;
     }
 
@@ -227,10 +233,10 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (opponent == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'opponent' cannot be null!");
+            throw new MALException("The field 'opponent' cannot be null!");
         }
         encoder.encodeAbstractElement(opponent);
         encoder.encodeNullableElement(parentRef);
@@ -240,18 +246,18 @@ public final class SequentialConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        opponent = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        parentRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        opponentRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        minOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        maxOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+        opponent = (Element) decoder.decodeAbstractElement();
+        parentRef = (Slider) decoder.decodeNullableElement(new Slider());
+        opponentRef = (Slider) decoder.decodeNullableElement(new Slider());
+        minOffset = (Element) decoder.decodeNullableAbstractElement();
+        maxOffset = (Element) decoder.decodeNullableAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

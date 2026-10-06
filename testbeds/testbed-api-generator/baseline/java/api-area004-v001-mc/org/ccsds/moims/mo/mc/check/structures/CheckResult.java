@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The CheckResult structure holds basic information about the check state
  * and the value of the parameter at the time of the check. The timestamp
  * of the event is the transition time of the check.
  */
-public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CheckResult implements Composite {
 
     private static final long serialVersionUID = 1125917103489026L;
     /**
@@ -15,19 +23,19 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The previous evaluation state of the check. Initially UNCHECKED for the
      * first transition of a check. For check evaluations that do not detect a
      * check transition, this value will be the same as the currentCheckState.
      */
-    private org.ccsds.moims.mo.mc.check.structures.CheckState previousCheckState;
+    private CheckState previousCheckState;
 
     /**
      * The current evaluation state of the check.
      */
-    private org.ccsds.moims.mo.mc.check.structures.CheckState currentCheckState;
+    private CheckState currentCheckState;
 
     /**
      * The object instance identifier of the ParameterDefinition used for the
@@ -41,7 +49,7 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
      * a report due to the CheckDefinitionDetails maxReportingInterval expiring,
      * then it is the value or the number when the interval expired.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute checkedValue;
+    private Attribute checkedValue;
 
     /**
      * Default constructor for CheckResult.
@@ -58,10 +66,10 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
      * @param paramDefInstId The object instance identifier of the ParameterDefinition used for the check evaluation. NULL if compound check.
      * @param checkedValue This is the value of the parameter or for a compound check the number of checks in violation at the time of a check state transition, or if it is a report due to the CheckDefinitionDetails maxReportingInterval expiring, then it is the value or the number when the interval expired.
      */
-    public CheckResult(org.ccsds.moims.mo.mc.check.structures.CheckState previousCheckState,
-            org.ccsds.moims.mo.mc.check.structures.CheckState currentCheckState,
+    public CheckResult(CheckState previousCheckState,
+            CheckState currentCheckState,
             Long paramDefInstId,
-            org.ccsds.moims.mo.mal.structures.Attribute checkedValue) {
+            Attribute checkedValue) {
         this.previousCheckState = previousCheckState;
         this.currentCheckState = currentCheckState;
         this.paramDefInstId = paramDefInstId;
@@ -74,8 +82,8 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
      * @param previousCheckState The previous evaluation state of the check. Initially UNCHECKED for the first transition of a check. For check evaluations that do not detect a check transition, this value will be the same as the currentCheckState.
      * @param currentCheckState The current evaluation state of the check
      */
-    public CheckResult(org.ccsds.moims.mo.mc.check.structures.CheckState previousCheckState,
-            org.ccsds.moims.mo.mc.check.structures.CheckState currentCheckState) {
+    public CheckResult(CheckState previousCheckState,
+            CheckState currentCheckState) {
         this.previousCheckState = previousCheckState;
         this.currentCheckState = currentCheckState;
         this.paramDefInstId = null;
@@ -83,8 +91,8 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CheckResult();
+    public Element createElement() {
+        return new CheckResult();
     }
 
     /**
@@ -92,7 +100,7 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field previousCheckState
      */
-    public org.ccsds.moims.mo.mc.check.structures.CheckState getPreviousCheckState() {
+    public CheckState getPreviousCheckState() {
         return previousCheckState;
     }
 
@@ -101,7 +109,7 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field currentCheckState
      */
-    public org.ccsds.moims.mo.mc.check.structures.CheckState getCurrentCheckState() {
+    public CheckState getCurrentCheckState() {
         return currentCheckState;
     }
 
@@ -119,7 +127,7 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field checkedValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getCheckedValue() {
+    public Attribute getCheckedValue() {
         return checkedValue;
     }
 
@@ -191,12 +199,12 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (previousCheckState == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'previousCheckState' cannot be null!");
+            throw new MALException("The field 'previousCheckState' cannot be null!");
         }
         if (currentCheckState == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'currentCheckState' cannot be null!");
+            throw new MALException("The field 'currentCheckState' cannot be null!");
         }
         encoder.encodeElement(previousCheckState);
         encoder.encodeElement(currentCheckState);
@@ -205,16 +213,16 @@ public final class CheckResult implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        previousCheckState = (org.ccsds.moims.mo.mc.check.structures.CheckState) decoder.decodeElement(org.ccsds.moims.mo.mc.check.structures.CheckState.DISABLED);
-        currentCheckState = (org.ccsds.moims.mo.mc.check.structures.CheckState) decoder.decodeElement(org.ccsds.moims.mo.mc.check.structures.CheckState.DISABLED);
+    public Element decode(MALDecoder decoder) throws MALException {
+        previousCheckState = (CheckState) decoder.decodeElement(CheckState.DISABLED);
+        currentCheckState = (CheckState) decoder.decodeElement(CheckState.DISABLED);
         paramDefInstId = decoder.decodeNullableLong();
-        checkedValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        checkedValue = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

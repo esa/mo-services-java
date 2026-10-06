@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.com.archive.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The CompositeFilter allows an archive query to specify a filter based on
  * the content of the body of an object if that body is specified using the
  * MAL data type specification.
  */
-public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CompositeFilter implements Composite {
 
     private static final long serialVersionUID = 562958560133123L;
     /**
@@ -15,7 +23,7 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the field in the object body (MAL::Composite) to match against.
@@ -33,7 +41,7 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
     /**
      * The type of the filter to apply.
      */
-    private org.ccsds.moims.mo.com.archive.structures.ExpressionOperator type;
+    private ExpressionOperator type;
 
     /**
      * The value to compare with. The type of the suppied value and the matched
@@ -44,7 +52,7 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
      * with EQUAL/DIFFER. Must contain a String value if operator is CONTAINS
      * or ICONTAINS otherwise an INVALID error should be returned.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute fieldValue;
+    private Attribute fieldValue;
 
     /**
      * Default constructor for CompositeFilter.
@@ -61,8 +69,8 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
      * @param fieldValue The value to compare with. The type of the suppied value and the matched field mst be the same. Must not contain NULL for expression operators CONTAINS, ICONTAINS, GREATER, GREATER_OR_EQUAL, LESS, or LESS_OR_EQUAL otherwise an INVALID error should be returned. Must contain a UInteger ordinal value if the field being matched is an Enumeration. Blob fields can only be used with EQUAL/DIFFER. Must contain a String value if operator is CONTAINS or ICONTAINS otherwise an INVALID error should be returned.
      */
     public CompositeFilter(String fieldName,
-            org.ccsds.moims.mo.com.archive.structures.ExpressionOperator type,
-            org.ccsds.moims.mo.mal.structures.Attribute fieldValue) {
+            ExpressionOperator type,
+            Attribute fieldValue) {
         this.fieldName = fieldName;
         this.type = type;
         this.fieldValue = fieldValue;
@@ -75,15 +83,15 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
      * @param type The type of the filter to apply.
      */
     public CompositeFilter(String fieldName,
-            org.ccsds.moims.mo.com.archive.structures.ExpressionOperator type) {
+            ExpressionOperator type) {
         this.fieldName = fieldName;
         this.type = type;
         this.fieldValue = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.archive.structures.CompositeFilter();
+    public Element createElement() {
+        return new CompositeFilter();
     }
 
     /**
@@ -100,7 +108,7 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field type
      */
-    public org.ccsds.moims.mo.com.archive.structures.ExpressionOperator getType() {
+    public ExpressionOperator getType() {
         return type;
     }
 
@@ -109,7 +117,7 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field fieldValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getFieldValue() {
+    public Attribute getFieldValue() {
         return fieldValue;
     }
 
@@ -170,12 +178,12 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (fieldName == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'fieldName' cannot be null!");
+            throw new MALException("The field 'fieldName' cannot be null!");
         }
         if (type == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'type' cannot be null!");
+            throw new MALException("The field 'type' cannot be null!");
         }
         encoder.encodeString(fieldName);
         encoder.encodeElement(type);
@@ -183,15 +191,15 @@ public final class CompositeFilter implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         fieldName = decoder.decodeString();
-        type = (org.ccsds.moims.mo.com.archive.structures.ExpressionOperator) decoder.decodeElement(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.EQUAL);
-        fieldValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        type = (ExpressionOperator) decoder.decodeElement(ExpressionOperator.EQUAL);
+        fieldValue = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

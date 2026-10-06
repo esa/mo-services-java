@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.com.archive.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * Contains a list of CompositeFilters that are AND&quot;d together to form
  * a more complex filter.
  */
-public final class CompositeFilterSet extends org.ccsds.moims.mo.com.archive.structures.QueryFilter {
+public final class CompositeFilterSet extends QueryFilter {
 
     private static final long serialVersionUID = 562958560133124L;
     /**
@@ -14,12 +20,12 @@ public final class CompositeFilterSet extends org.ccsds.moims.mo.com.archive.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The list of filters to apply.
      */
-    private org.ccsds.moims.mo.com.archive.structures.CompositeFilterList filters;
+    private CompositeFilterList filters;
 
     /**
      * Default constructor for CompositeFilterSet.
@@ -33,13 +39,13 @@ public final class CompositeFilterSet extends org.ccsds.moims.mo.com.archive.str
      * 
      * @param filters The list of filters to apply.
      */
-    public CompositeFilterSet(org.ccsds.moims.mo.com.archive.structures.CompositeFilterList filters) {
+    public CompositeFilterSet(CompositeFilterList filters) {
         this.filters = filters;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.archive.structures.CompositeFilterSet();
+    public Element createElement() {
+        return new CompositeFilterSet();
     }
 
     /**
@@ -47,7 +53,7 @@ public final class CompositeFilterSet extends org.ccsds.moims.mo.com.archive.str
      * 
      * @return The field filters
      */
-    public org.ccsds.moims.mo.com.archive.structures.CompositeFilterList getFilters() {
+    public CompositeFilterList getFilters() {
         return filters;
     }
 
@@ -90,23 +96,23 @@ public final class CompositeFilterSet extends org.ccsds.moims.mo.com.archive.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (filters == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'filters' cannot be null!");
+            throw new MALException("The field 'filters' cannot be null!");
         }
         encoder.encodeElement(filters);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        filters = (org.ccsds.moims.mo.com.archive.structures.CompositeFilterList) decoder.decodeElement(new org.ccsds.moims.mo.com.archive.structures.CompositeFilterList());
+        filters = (CompositeFilterList) decoder.decodeElement(new CompositeFilterList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

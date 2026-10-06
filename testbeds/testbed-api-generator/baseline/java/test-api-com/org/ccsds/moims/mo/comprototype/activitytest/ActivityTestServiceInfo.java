@@ -1,9 +1,27 @@
 package org.ccsds.moims.mo.comprototype.activitytest;
 
+import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALInvokeOperation;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALProgressOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALSendOperation;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * Helper class for ActivityTest service.
  */
-public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
+public class ActivityTestServiceInfo extends ServiceInfo {
 
     /**
      * Service number literal.
@@ -13,17 +31,17 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort ACTIVITYTEST_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_ACTIVITYTEST_SERVICE_NUMBER);
+    public static final UShort ACTIVITYTEST_SERVICE_NUMBER = new UShort(_ACTIVITYTEST_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier ACTIVITYTEST_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("ActivityTest");
+    public static final Identifier ACTIVITYTEST_SERVICE_NAME = new Identifier("ActivityTest");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             200, 1, ACTIVITYTEST_SERVICE_NUMBER);
 
     /**
@@ -34,16 +52,16 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation RESETTEST.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort RESETTEST_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_RESETTEST_OP_NUMBER);
+    private static final UShort RESETTEST_OP_NUMBER = new UShort(_RESETTEST_OP_NUMBER);
 
     /**
      * Operation instance for operation RESETTEST.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation RESETTEST_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation RESETTEST_OP = new MALSubmitOperation(SERVICE_KEY, 
             RESETTEST_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("resetTest"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {}, 
+            new Identifier("resetTest"), 
+            new UShort(100), 
+            new OperationField[] {}, 
             "Resets all values back to their default value.");
 
     /**
@@ -54,16 +72,16 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation CLOSE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort CLOSE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_CLOSE_OP_NUMBER);
+    private static final UShort CLOSE_OP_NUMBER = new UShort(_CLOSE_OP_NUMBER);
 
     /**
      * Operation instance for operation CLOSE.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation CLOSE_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation CLOSE_OP = new MALSubmitOperation(SERVICE_KEY, 
             CLOSE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("close"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {}, 
+            new Identifier("close"), 
+            new UShort(100), 
+            new OperationField[] {}, 
             "Closes the service provider");
 
     /**
@@ -74,17 +92,17 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation SEND.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort SEND_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_SEND_OP_NUMBER);
+    private static final UShort SEND_OP_NUMBER = new UShort(_SEND_OP_NUMBER);
 
     /**
      * Operation instance for operation SEND.
      */
-    public static final org.ccsds.moims.mo.mal.MALSendOperation SEND_OP = new org.ccsds.moims.mo.mal.MALSendOperation(SERVICE_KEY, 
+    public static final MALSendOperation SEND_OP = new MALSendOperation(SERVICE_KEY, 
             SEND_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("send"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(101), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
+            new Identifier("send"), 
+            new UShort(101), 
+            new OperationField[] {
+                new OperationField("in1", true, StringList.SHORT_FORM, "")}, 
             "");
 
     /**
@@ -95,17 +113,17 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation TESTSUBMIT.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort TESTSUBMIT_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTSUBMIT_OP_NUMBER);
+    private static final UShort TESTSUBMIT_OP_NUMBER = new UShort(_TESTSUBMIT_OP_NUMBER);
 
     /**
      * Operation instance for operation TESTSUBMIT.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation TESTSUBMIT_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation TESTSUBMIT_OP = new MALSubmitOperation(SERVICE_KEY, 
             TESTSUBMIT_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("testSubmit"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(101), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
+            new Identifier("testSubmit"), 
+            new UShort(101), 
+            new OperationField[] {
+                new OperationField("in1", true, StringList.SHORT_FORM, "")}, 
             "");
 
     /**
@@ -116,19 +134,19 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation REQUEST.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort REQUEST_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_REQUEST_OP_NUMBER);
+    private static final UShort REQUEST_OP_NUMBER = new UShort(_REQUEST_OP_NUMBER);
 
     /**
      * Operation instance for operation REQUEST.
      */
-    public static final org.ccsds.moims.mo.mal.MALRequestOperation REQUEST_OP = new org.ccsds.moims.mo.mal.MALRequestOperation(SERVICE_KEY, 
+    public static final MALRequestOperation REQUEST_OP = new MALRequestOperation(SERVICE_KEY, 
             REQUEST_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("request"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(101), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("out1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
+            new Identifier("request"), 
+            new UShort(101), 
+            new OperationField[] {
+                new OperationField("in1", true, StringList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("out1", true, StringList.SHORT_FORM, "")}, 
             "");
 
     /**
@@ -139,21 +157,21 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation INVOKE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort INVOKE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_INVOKE_OP_NUMBER);
+    private static final UShort INVOKE_OP_NUMBER = new UShort(_INVOKE_OP_NUMBER);
 
     /**
      * Operation instance for operation INVOKE.
      */
-    public static final org.ccsds.moims.mo.mal.MALInvokeOperation INVOKE_OP = new org.ccsds.moims.mo.mal.MALInvokeOperation(SERVICE_KEY, 
+    public static final MALInvokeOperation INVOKE_OP = new MALInvokeOperation(SERVICE_KEY, 
             INVOKE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("invoke"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(101), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("ack1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("out1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
+            new Identifier("invoke"), 
+            new UShort(101), 
+            new OperationField[] {
+                new OperationField("in1", true, StringList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("ack1", true, StringList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("out1", true, StringList.SHORT_FORM, "")}, 
             "");
 
     /**
@@ -164,34 +182,34 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     /**
      * Operation number instance for operation PROGRESS.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort PROGRESS_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_PROGRESS_OP_NUMBER);
+    private static final UShort PROGRESS_OP_NUMBER = new UShort(_PROGRESS_OP_NUMBER);
 
     /**
      * Operation instance for operation PROGRESS.
      */
-    public static final org.ccsds.moims.mo.mal.MALProgressOperation PROGRESS_OP = new org.ccsds.moims.mo.mal.MALProgressOperation(SERVICE_KEY, 
+    public static final MALProgressOperation PROGRESS_OP = new MALProgressOperation(SERVICE_KEY, 
             PROGRESS_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("progress"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(101), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("ack1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("out1", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("out2", true, org.ccsds.moims.mo.mal.structures.StringList.SHORT_FORM, "")}, 
+            new Identifier("progress"), 
+            new UShort(101), 
+            new OperationField[] {
+                new OperationField("in1", true, StringList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("ack1", true, StringList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("out1", true, StringList.SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("out2", true, StringList.SHORT_FORM, "")}, 
             "");
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] ACTIVITYTEST_SERVICE_ELEMENTS = {};
+    public static final Element[] ACTIVITYTEST_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{RESETTEST_OP,
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{RESETTEST_OP,
         CLOSE_OP,
         SEND_OP,
         TESTSUBMIT_OP,
@@ -208,12 +226,12 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.comprototype.COMPrototypeHelper.COMPROTOTYPE_AREA;
+    public MALArea getArea() {
+        return COMPrototypeHelper.COMPROTOTYPE_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
         switch (operationNumber) {
@@ -234,8 +252,8 @@ public class ActivityTestServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo 
                 }
                 break;
         }
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.comprototype.COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

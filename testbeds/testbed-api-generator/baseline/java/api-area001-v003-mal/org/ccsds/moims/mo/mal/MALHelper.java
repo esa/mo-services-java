@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mal;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * Helper class for MAL area.
  */
@@ -13,12 +19,12 @@ public class MALHelper {
     /**
      * Area number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort MAL_AREA_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MAL_AREA_NUMBER);
+    public static final UShort MAL_AREA_NUMBER = new UShort(_MAL_AREA_NUMBER);
 
     /**
      * Area name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier MAL_AREA_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("MAL");
+    public static final Identifier MAL_AREA_NAME = new Identifier("MAL");
 
     /**
      * Area version literal.
@@ -28,22 +34,22 @@ public class MALHelper {
     /**
      * Area version instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UOctet MAL_AREA_VERSION = new org.ccsds.moims.mo.mal.structures.UOctet(_MAL_AREA_VERSION);
+    public static final UOctet MAL_AREA_VERSION = new UOctet(_MAL_AREA_VERSION);
 
     /**
      * Area Elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] MAL_AREA_ELEMENTS = {};
+    public static final Element[] MAL_AREA_ELEMENTS = {};
 
     /**
      * Services in this Area.
      */
-    public static final org.ccsds.moims.mo.mal.ServiceInfo[] MAL_AREA_SERVICES = {};
+    public static final ServiceInfo[] MAL_AREA_SERVICES = {};
 
     /**
      * Area singleton instance.
      */
-    public static final org.ccsds.moims.mo.mal.MALArea MAL_AREA = new org.ccsds.moims.mo.mal.MALArea(MAL_AREA_NUMBER, MAL_AREA_NAME, MAL_AREA_VERSION, MAL_AREA_ELEMENTS, MAL_AREA_SERVICES, new MALElementFactory());
+    public static final MALArea MAL_AREA = new MALArea(MAL_AREA_NUMBER, MAL_AREA_NAME, MAL_AREA_VERSION, MAL_AREA_ELEMENTS, MAL_AREA_SERVICES, new MALElementFactory());
 
     /**
      * Error literal for error DELIVERY_FAILED.
@@ -53,7 +59,7 @@ public class MALHelper {
     /**
      * Error instance for error DELIVERY_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DELIVERY_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DELIVERY_FAILED_ERROR_NUMBER);
+    public static final UInteger DELIVERY_FAILED_ERROR_NUMBER = new UInteger(_DELIVERY_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error DELIVERY_TIMEDOUT.
@@ -63,7 +69,7 @@ public class MALHelper {
     /**
      * Error instance for error DELIVERY_TIMEDOUT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DELIVERY_TIMEDOUT_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DELIVERY_TIMEDOUT_ERROR_NUMBER);
+    public static final UInteger DELIVERY_TIMEDOUT_ERROR_NUMBER = new UInteger(_DELIVERY_TIMEDOUT_ERROR_NUMBER);
 
     /**
      * Error literal for error DELIVERY_DELAYED.
@@ -73,7 +79,7 @@ public class MALHelper {
     /**
      * Error instance for error DELIVERY_DELAYED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DELIVERY_DELAYED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DELIVERY_DELAYED_ERROR_NUMBER);
+    public static final UInteger DELIVERY_DELAYED_ERROR_NUMBER = new UInteger(_DELIVERY_DELAYED_ERROR_NUMBER);
 
     /**
      * Error literal for error DESTINATION_UNKNOWN.
@@ -83,7 +89,7 @@ public class MALHelper {
     /**
      * Error instance for error DESTINATION_UNKNOWN.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DESTINATION_UNKNOWN_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DESTINATION_UNKNOWN_ERROR_NUMBER);
+    public static final UInteger DESTINATION_UNKNOWN_ERROR_NUMBER = new UInteger(_DESTINATION_UNKNOWN_ERROR_NUMBER);
 
     /**
      * Error literal for error DESTINATION_TRANSIENT.
@@ -93,7 +99,7 @@ public class MALHelper {
     /**
      * Error instance for error DESTINATION_TRANSIENT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DESTINATION_TRANSIENT_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DESTINATION_TRANSIENT_ERROR_NUMBER);
+    public static final UInteger DESTINATION_TRANSIENT_ERROR_NUMBER = new UInteger(_DESTINATION_TRANSIENT_ERROR_NUMBER);
 
     /**
      * Error literal for error DESTINATION_LOST.
@@ -103,7 +109,7 @@ public class MALHelper {
     /**
      * Error instance for error DESTINATION_LOST.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DESTINATION_LOST_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DESTINATION_LOST_ERROR_NUMBER);
+    public static final UInteger DESTINATION_LOST_ERROR_NUMBER = new UInteger(_DESTINATION_LOST_ERROR_NUMBER);
 
     /**
      * Error literal for error AUTHENTICATION_FAILED.
@@ -113,7 +119,7 @@ public class MALHelper {
     /**
      * Error instance for error AUTHENTICATION_FAILED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger AUTHENTICATION_FAILED_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_AUTHENTICATION_FAILED_ERROR_NUMBER);
+    public static final UInteger AUTHENTICATION_FAILED_ERROR_NUMBER = new UInteger(_AUTHENTICATION_FAILED_ERROR_NUMBER);
 
     /**
      * Error literal for error AUTHORISATION_FAIL.
@@ -123,7 +129,7 @@ public class MALHelper {
     /**
      * Error instance for error AUTHORISATION_FAIL.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger AUTHORISATION_FAIL_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_AUTHORISATION_FAIL_ERROR_NUMBER);
+    public static final UInteger AUTHORISATION_FAIL_ERROR_NUMBER = new UInteger(_AUTHORISATION_FAIL_ERROR_NUMBER);
 
     /**
      * Error literal for error ENCRYPTION_FAIL.
@@ -133,7 +139,7 @@ public class MALHelper {
     /**
      * Error instance for error ENCRYPTION_FAIL.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger ENCRYPTION_FAIL_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_ENCRYPTION_FAIL_ERROR_NUMBER);
+    public static final UInteger ENCRYPTION_FAIL_ERROR_NUMBER = new UInteger(_ENCRYPTION_FAIL_ERROR_NUMBER);
 
     /**
      * Error literal for error UNSUPPORTED_AREA.
@@ -143,7 +149,7 @@ public class MALHelper {
     /**
      * Error instance for error UNSUPPORTED_AREA.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UNSUPPORTED_AREA_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UNSUPPORTED_AREA_ERROR_NUMBER);
+    public static final UInteger UNSUPPORTED_AREA_ERROR_NUMBER = new UInteger(_UNSUPPORTED_AREA_ERROR_NUMBER);
 
     /**
      * Error literal for error UNSUPPORTED_AREA_VERSION.
@@ -153,7 +159,7 @@ public class MALHelper {
     /**
      * Error instance for error UNSUPPORTED_AREA_VERSION.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UNSUPPORTED_AREA_VERSION_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UNSUPPORTED_AREA_VERSION_ERROR_NUMBER);
+    public static final UInteger UNSUPPORTED_AREA_VERSION_ERROR_NUMBER = new UInteger(_UNSUPPORTED_AREA_VERSION_ERROR_NUMBER);
 
     /**
      * Error literal for error UNSUPPORTED_SERVICE.
@@ -163,7 +169,7 @@ public class MALHelper {
     /**
      * Error instance for error UNSUPPORTED_SERVICE.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UNSUPPORTED_SERVICE_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UNSUPPORTED_SERVICE_ERROR_NUMBER);
+    public static final UInteger UNSUPPORTED_SERVICE_ERROR_NUMBER = new UInteger(_UNSUPPORTED_SERVICE_ERROR_NUMBER);
 
     /**
      * Error literal for error UNSUPPORTED_OPERATION.
@@ -173,7 +179,7 @@ public class MALHelper {
     /**
      * Error instance for error UNSUPPORTED_OPERATION.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UNSUPPORTED_OPERATION_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UNSUPPORTED_OPERATION_ERROR_NUMBER);
+    public static final UInteger UNSUPPORTED_OPERATION_ERROR_NUMBER = new UInteger(_UNSUPPORTED_OPERATION_ERROR_NUMBER);
 
     /**
      * Error literal for error BAD_ENCODING.
@@ -183,7 +189,7 @@ public class MALHelper {
     /**
      * Error instance for error BAD_ENCODING.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger BAD_ENCODING_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_BAD_ENCODING_ERROR_NUMBER);
+    public static final UInteger BAD_ENCODING_ERROR_NUMBER = new UInteger(_BAD_ENCODING_ERROR_NUMBER);
 
     /**
      * Error literal for error INTERNAL.
@@ -193,7 +199,7 @@ public class MALHelper {
     /**
      * Error instance for error INTERNAL.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger INTERNAL_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_INTERNAL_ERROR_NUMBER);
+    public static final UInteger INTERNAL_ERROR_NUMBER = new UInteger(_INTERNAL_ERROR_NUMBER);
 
     /**
      * Error literal for error UNKNOWN.
@@ -203,7 +209,7 @@ public class MALHelper {
     /**
      * Error instance for error UNKNOWN.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger UNKNOWN_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_UNKNOWN_ERROR_NUMBER);
+    public static final UInteger UNKNOWN_ERROR_NUMBER = new UInteger(_UNKNOWN_ERROR_NUMBER);
 
     /**
      * Error literal for error INCORRECT_STATE.
@@ -213,7 +219,7 @@ public class MALHelper {
     /**
      * Error instance for error INCORRECT_STATE.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger INCORRECT_STATE_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_INCORRECT_STATE_ERROR_NUMBER);
+    public static final UInteger INCORRECT_STATE_ERROR_NUMBER = new UInteger(_INCORRECT_STATE_ERROR_NUMBER);
 
     /**
      * Error literal for error TOO_MANY.
@@ -223,7 +229,7 @@ public class MALHelper {
     /**
      * Error instance for error TOO_MANY.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger TOO_MANY_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_TOO_MANY_ERROR_NUMBER);
+    public static final UInteger TOO_MANY_ERROR_NUMBER = new UInteger(_TOO_MANY_ERROR_NUMBER);
 
     /**
      * Error literal for error SHUTDOWN.
@@ -233,7 +239,7 @@ public class MALHelper {
     /**
      * Error instance for error SHUTDOWN.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger SHUTDOWN_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_SHUTDOWN_ERROR_NUMBER);
+    public static final UInteger SHUTDOWN_ERROR_NUMBER = new UInteger(_SHUTDOWN_ERROR_NUMBER);
 
     /**
      * Error literal for error TRANSACTION_TIMEOUT.
@@ -243,7 +249,7 @@ public class MALHelper {
     /**
      * Error instance for error TRANSACTION_TIMEOUT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger TRANSACTION_TIMEOUT_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_TRANSACTION_TIMEOUT_ERROR_NUMBER);
+    public static final UInteger TRANSACTION_TIMEOUT_ERROR_NUMBER = new UInteger(_TRANSACTION_TIMEOUT_ERROR_NUMBER);
 
     /**
      * Returns the exception of the error of this area with the given number.
@@ -252,49 +258,49 @@ public class MALHelper {
      * @param extraInfo The extra information of the error.
      * @return the exception, or null if the area declares no error with that number
      */
-    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public static MOErrorException generateMOError(int errorNumber,
             Object extraInfo) {
         switch (errorNumber) {
             case 65536:
-                return new org.ccsds.moims.mo.mal.DeliveryFailedException(extraInfo);
+                return new DeliveryFailedException(extraInfo);
             case 65537:
-                return new org.ccsds.moims.mo.mal.DeliveryTimedoutException(extraInfo);
+                return new DeliveryTimedoutException(extraInfo);
             case 65538:
-                return new org.ccsds.moims.mo.mal.DeliveryDelayedException(extraInfo);
+                return new DeliveryDelayedException(extraInfo);
             case 65539:
-                return new org.ccsds.moims.mo.mal.DestinationUnknownException(extraInfo);
+                return new DestinationUnknownException(extraInfo);
             case 65540:
-                return new org.ccsds.moims.mo.mal.DestinationTransientException(extraInfo);
+                return new DestinationTransientException(extraInfo);
             case 65541:
-                return new org.ccsds.moims.mo.mal.DestinationLostException(extraInfo);
+                return new DestinationLostException(extraInfo);
             case 65542:
-                return new org.ccsds.moims.mo.mal.AuthenticationFailedException(extraInfo);
+                return new AuthenticationFailedException(extraInfo);
             case 65543:
-                return new org.ccsds.moims.mo.mal.AuthorisationFailException(extraInfo);
+                return new AuthorisationFailException(extraInfo);
             case 65544:
-                return new org.ccsds.moims.mo.mal.EncryptionFailException(extraInfo);
+                return new EncryptionFailException(extraInfo);
             case 65545:
-                return new org.ccsds.moims.mo.mal.UnsupportedAreaException(extraInfo);
+                return new UnsupportedAreaException(extraInfo);
             case 65546:
-                return new org.ccsds.moims.mo.mal.UnsupportedAreaVersionException(extraInfo);
+                return new UnsupportedAreaVersionException(extraInfo);
             case 65547:
-                return new org.ccsds.moims.mo.mal.UnsupportedServiceException(extraInfo);
+                return new UnsupportedServiceException(extraInfo);
             case 65548:
-                return new org.ccsds.moims.mo.mal.UnsupportedOperationException(extraInfo);
+                return new UnsupportedOperationException(extraInfo);
             case 65549:
-                return new org.ccsds.moims.mo.mal.BadEncodingException(extraInfo);
+                return new BadEncodingException(extraInfo);
             case 65550:
-                return new org.ccsds.moims.mo.mal.InternalException(extraInfo);
+                return new InternalException(extraInfo);
             case 65551:
-                return new org.ccsds.moims.mo.mal.UnknownException(extraInfo);
+                return new UnknownException(extraInfo);
             case 65552:
-                return new org.ccsds.moims.mo.mal.IncorrectStateException(extraInfo);
+                return new IncorrectStateException(extraInfo);
             case 65553:
-                return new org.ccsds.moims.mo.mal.TooManyException(extraInfo);
+                return new TooManyException(extraInfo);
             case 65554:
-                return new org.ccsds.moims.mo.mal.ShutdownException(extraInfo);
+                return new ShutdownException(extraInfo);
             case 65555:
-                return new org.ccsds.moims.mo.mal.TransactionTimeoutException(extraInfo);
+                return new TransactionTimeoutException(extraInfo);
         }
         return null;
     }

@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: PlanUpdate is a data structure that is used to report changes in status
  * of the Plan as it proceeds through both planning and plan execution functions.
@@ -10,7 +19,7 @@ package org.ccsds.moims.mo.mps.structures;
  * to inform them of the latest status of a Plan.  PlanUpdates may be stored
  * in plan history to provide a complete record of evolving status over time.
  */
-public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanUpdate implements Composite {
 
     private static final long serialVersionUID = 1407374900331004L;
     /**
@@ -20,17 +29,17 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan to which the status update relates.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan;
+    private ObjectRef<Plan> plan;
 
     /**
      * Time of status update.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * Flag indicating if the Plan has currently been released as an Operational
@@ -41,7 +50,7 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * Current status of the Plan.
      */
-    private org.ccsds.moims.mo.mps.structures.PlanStatusEnum status;
+    private PlanStatusEnum status;
 
     /**
      * Supplementary information for a Plan in the Terminated state.  This is
@@ -68,10 +77,10 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
      * @param status Current status of the Plan.
      * @param statusInfo Supplementary information for a Plan in the Terminated state.  This is customizable, but if the following conditions exist then the specified text shall be used: - Completed (nominal); - Superseded by a successor Plan; - Revoked by a User; - Cancelled (deactivated after start of execution); - Expired (reached the end of its validity period without being activated).
      */
-    public PlanUpdate(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
+    public PlanUpdate(ObjectRef<Plan> plan,
+            Time timestamp,
             Boolean isAlternate,
-            org.ccsds.moims.mo.mps.structures.PlanStatusEnum status,
+            PlanStatusEnum status,
             String statusInfo) {
         this.plan = plan;
         this.timestamp = timestamp;
@@ -88,10 +97,10 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
      * @param isAlternate Flag indicating if the Plan has currently been released as an Operational or Alternate plan.
      * @param status Current status of the Plan.
      */
-    public PlanUpdate(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
+    public PlanUpdate(ObjectRef<Plan> plan,
+            Time timestamp,
             Boolean isAlternate,
-            org.ccsds.moims.mo.mps.structures.PlanStatusEnum status) {
+            PlanStatusEnum status) {
         this.plan = plan;
         this.timestamp = timestamp;
         this.isAlternate = isAlternate;
@@ -100,8 +109,8 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanUpdate();
+    public Element createElement() {
+        return new PlanUpdate();
     }
 
     /**
@@ -109,7 +118,7 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlan() {
+    public ObjectRef<Plan> getPlan() {
         return plan;
     }
 
@@ -118,7 +127,7 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -136,7 +145,7 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.PlanStatusEnum getStatus() {
+    public PlanStatusEnum getStatus() {
         return status;
     }
 
@@ -228,18 +237,18 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (plan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'plan' cannot be null!");
+            throw new MALException("The field 'plan' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (isAlternate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'isAlternate' cannot be null!");
+            throw new MALException("The field 'isAlternate' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(plan);
         encoder.encodeTime(timestamp);
@@ -249,17 +258,17 @@ public final class PlanUpdate implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        plan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        plan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
         timestamp = decoder.decodeTime();
         isAlternate = decoder.decodeBoolean();
-        status = (org.ccsds.moims.mo.mps.structures.PlanStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.DRAFT);
+        status = (PlanStatusEnum) decoder.decodeElement(PlanStatusEnum.DRAFT);
         statusInfo = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

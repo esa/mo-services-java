@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E2: The time at which a planning activity must be planned.
  */
-public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class TimeConstraint extends Constraint {
 
     private static final long serialVersionUID = 1407374900330528L;
     /**
@@ -13,18 +19,18 @@ public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Cons
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The time at which the planning activity must be planned.
      */
-    private org.ccsds.moims.mo.mal.structures.Element time;
+    private Element time;
 
     /**
      * The point in the duration of the planning activity that is time constrained.
      * 0:  the start of the planning activity. 1:  the end of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider timeRef;
+    private Slider timeRef;
 
     /**
      * Default constructor for TimeConstraint.
@@ -41,8 +47,8 @@ public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Cons
      * @param timeRef The point in the duration of the planning activity that is time constrained. 0:  the start of the planning activity. 1:  the end of the planning activity.
      */
     public TimeConstraint(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.Element time,
-            org.ccsds.moims.mo.mps.structures.Slider timeRef) {
+            Element time,
+            Slider timeRef) {
         super(negate);
         this.time = time;
         this.timeRef = timeRef;
@@ -54,15 +60,15 @@ public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Cons
      * @param time The time at which the planning activity must be planned.
      * @param timeRef The point in the duration of the planning activity that is time constrained. 0:  the start of the planning activity. 1:  the end of the planning activity.
      */
-    public TimeConstraint(org.ccsds.moims.mo.mal.structures.Element time,
-            org.ccsds.moims.mo.mps.structures.Slider timeRef) {
+    public TimeConstraint(Element time,
+            Slider timeRef) {
         this.time = time;
         this.timeRef = timeRef;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.TimeConstraint();
+    public Element createElement() {
+        return new TimeConstraint();
     }
 
     /**
@@ -70,7 +76,7 @@ public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Cons
      * 
      * @return The field time
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTime() {
+    public Element getTime() {
         return time;
     }
 
@@ -79,7 +85,7 @@ public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Cons
      * 
      * @return The field timeRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getTimeRef() {
+    public Slider getTimeRef() {
         return timeRef;
     }
 
@@ -133,28 +139,28 @@ public final class TimeConstraint extends org.ccsds.moims.mo.mps.structures.Cons
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (time == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'time' cannot be null!");
+            throw new MALException("The field 'time' cannot be null!");
         }
         if (timeRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timeRef' cannot be null!");
+            throw new MALException("The field 'timeRef' cannot be null!");
         }
         encoder.encodeAbstractElement(time);
         encoder.encodeElement(timeRef);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        time = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        timeRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Slider());
+        time = (Element) decoder.decodeAbstractElement();
+        timeRef = (Slider) decoder.decodeElement(new Slider());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

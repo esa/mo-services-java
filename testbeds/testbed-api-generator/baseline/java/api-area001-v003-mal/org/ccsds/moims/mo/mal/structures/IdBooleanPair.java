@@ -1,10 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * IdBooleanPair shall be a simple pair type of an identifier and Boolean
  * value.
  */
-public final class IdBooleanPair implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class IdBooleanPair implements Composite {
 
     private static final long serialVersionUID = 281475027043308L;
     /**
@@ -14,12 +19,12 @@ public final class IdBooleanPair implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The Identifier value.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier id;
+    private Identifier id;
 
     /**
      * The Boolean value.
@@ -39,7 +44,7 @@ public final class IdBooleanPair implements org.ccsds.moims.mo.mal.structures.Co
      * @param id The Identifier value.
      * @param value The Boolean value.
      */
-    public IdBooleanPair(org.ccsds.moims.mo.mal.structures.Identifier id,
+    public IdBooleanPair(Identifier id,
             Boolean value) {
         this.id = id;
         this.value = value;
@@ -50,14 +55,14 @@ public final class IdBooleanPair implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @param id The Identifier value.
      */
-    public IdBooleanPair(org.ccsds.moims.mo.mal.structures.Identifier id) {
+    public IdBooleanPair(Identifier id) {
         this.id = id;
         this.value = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.IdBooleanPair();
+    public Element createElement() {
+        return new IdBooleanPair();
     }
 
     /**
@@ -65,7 +70,7 @@ public final class IdBooleanPair implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field id
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getId() {
+    public Identifier getId() {
         return id;
     }
 
@@ -124,23 +129,23 @@ public final class IdBooleanPair implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (id == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'id' cannot be null!");
+            throw new MALException("The field 'id' cannot be null!");
         }
         encoder.encodeIdentifier(id);
         encoder.encodeNullableBoolean(value);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         id = decoder.decodeIdentifier();
         value = decoder.decodeNullableBoolean();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

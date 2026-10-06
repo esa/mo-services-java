@@ -8,7 +8,7 @@ public class ActivityRelayManagementHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo ACTIVITYRELAYMANAGEMENT_SERVICE = new org.ccsds.moims.mo.comprototype.activityrelaymanagement.ActivityRelayManagementServiceInfo();
+    public static final ActivityRelayManagementServiceInfo ACTIVITYRELAYMANAGEMENT_SERVICE = new ActivityRelayManagementServiceInfo();
 
     private ActivityRelayManagementHelper() {
         // Utility class; not meant to be instantiated.

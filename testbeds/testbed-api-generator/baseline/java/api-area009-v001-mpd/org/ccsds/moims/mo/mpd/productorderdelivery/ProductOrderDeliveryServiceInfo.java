@@ -1,9 +1,28 @@
 package org.ccsds.moims.mo.mpd.productorderdelivery;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALPubSubOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mpd.MPDHelper;
+import org.ccsds.moims.mo.mpd.structures.Product;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+
 /**
  * Helper class for ProductOrderDelivery service.
  */
-public class ProductOrderDeliveryServiceInfo extends org.ccsds.moims.mo.mal.ServiceInfo {
+public class ProductOrderDeliveryServiceInfo extends ServiceInfo {
 
     /**
      * Service number literal.
@@ -13,17 +32,17 @@ public class ProductOrderDeliveryServiceInfo extends org.ccsds.moims.mo.mal.Serv
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort PRODUCTORDERDELIVERY_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_PRODUCTORDERDELIVERY_SERVICE_NUMBER);
+    public static final UShort PRODUCTORDERDELIVERY_SERVICE_NUMBER = new UShort(_PRODUCTORDERDELIVERY_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier PRODUCTORDERDELIVERY_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("ProductOrderDelivery");
+    public static final Identifier PRODUCTORDERDELIVERY_SERVICE_NAME = new Identifier("ProductOrderDelivery");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             9, 1, PRODUCTORDERDELIVERY_SERVICE_NUMBER);
 
     /**
@@ -34,34 +53,34 @@ public class ProductOrderDeliveryServiceInfo extends org.ccsds.moims.mo.mal.Serv
     /**
      * Operation number instance for operation NOTIFYPRODUCTDELIVERY.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort NOTIFYPRODUCTDELIVERY_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_NOTIFYPRODUCTDELIVERY_OP_NUMBER);
+    private static final UShort NOTIFYPRODUCTDELIVERY_OP_NUMBER = new UShort(_NOTIFYPRODUCTDELIVERY_OP_NUMBER);
 
     /**
      * Operation instance for operation NOTIFYPRODUCTDELIVERY.
      */
-    public static final org.ccsds.moims.mo.mal.MALPubSubOperation NOTIFYPRODUCTDELIVERY_OP = new org.ccsds.moims.mo.mal.MALPubSubOperation(SERVICE_KEY, 
+    public static final MALPubSubOperation NOTIFYPRODUCTDELIVERY_OP = new MALPubSubOperation(SERVICE_KEY, 
             NOTIFYPRODUCTDELIVERY_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("notifyProductDelivery"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(1), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("metadata", false, org.ccsds.moims.mo.mpd.structures.ProductMetadata.SHORT_FORM, "The metadata of the mission data product."),
-                new org.ccsds.moims.mo.mal.OperationField("filename", false, org.ccsds.moims.mo.mal.structures.Attribute.STRING_SHORT_FORM, "The filename of the mission data product."),
-                new org.ccsds.moims.mo.mal.OperationField("deliveredTo", false, org.ccsds.moims.mo.mal.structures.Attribute.URI_SHORT_FORM, "The location's URI where the mission data product was delivered."),
-                new org.ccsds.moims.mo.mal.OperationField("success", false, org.ccsds.moims.mo.mal.structures.Attribute.BOOLEAN_SHORT_FORM, "The status indicating the successful delivery of the mission data product.")}, 
+            new Identifier("notifyProductDelivery"), 
+            new UShort(1), 
+            new OperationField[] {
+                new OperationField("metadata", false, ProductMetadata.SHORT_FORM, "The metadata of the mission data product."),
+                new OperationField("filename", false, Attribute.STRING_SHORT_FORM, "The filename of the mission data product."),
+                new OperationField("deliveredTo", false, Attribute.URI_SHORT_FORM, "The location's URI where the mission data product was delivered."),
+                new OperationField("success", false, Attribute.BOOLEAN_SHORT_FORM, "The status indicating the successful delivery of the mission data product.")}, 
             "The notifyProductDelivery operation publishes a notification whenever a product has been delivered by file transfer in accordance with an existing standing order.");
 
     /**
      * Key names instance for NOTIFYPRODUCTDELIVERY operation of pubsub interaction
      * pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.Identifier [] _NOTIFYPRODUCTDELIVERY_OP_KEY_NAMES = {new org.ccsds.moims.mo.mal.structures.Identifier("user"),
-            new org.ccsds.moims.mo.mal.structures.Identifier("orderID")};
+    private static final Identifier [] _NOTIFYPRODUCTDELIVERY_OP_KEY_NAMES = {new Identifier("user"),
+            new Identifier("orderID")};
 
     /**
      * Key names instance for NOTIFYPRODUCTDELIVERY operation of pubsub interaction
      * pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList NOTIFYPRODUCTDELIVERY_OP_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_NOTIFYPRODUCTDELIVERY_OP_KEY_NAMES)));
+    private static final IdentifierList NOTIFYPRODUCTDELIVERY_OP_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(_NOTIFYPRODUCTDELIVERY_OP_KEY_NAMES)));
 
     /**
      * Operation number literal for operation DELIVERPRODUCTS.
@@ -71,41 +90,41 @@ public class ProductOrderDeliveryServiceInfo extends org.ccsds.moims.mo.mal.Serv
     /**
      * Operation number instance for operation DELIVERPRODUCTS.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort DELIVERPRODUCTS_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_DELIVERPRODUCTS_OP_NUMBER);
+    private static final UShort DELIVERPRODUCTS_OP_NUMBER = new UShort(_DELIVERPRODUCTS_OP_NUMBER);
 
     /**
      * Operation instance for operation DELIVERPRODUCTS.
      */
-    public static final org.ccsds.moims.mo.mal.MALPubSubOperation DELIVERPRODUCTS_OP = new org.ccsds.moims.mo.mal.MALPubSubOperation(SERVICE_KEY, 
+    public static final MALPubSubOperation DELIVERPRODUCTS_OP = new MALPubSubOperation(SERVICE_KEY, 
             DELIVERPRODUCTS_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("deliverProducts"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(2), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("product", false, org.ccsds.moims.mo.mpd.structures.Product.SHORT_FORM, "The mission data product.")}, 
+            new Identifier("deliverProducts"), 
+            new UShort(2), 
+            new OperationField[] {
+                new OperationField("product", false, Product.SHORT_FORM, "The mission data product.")}, 
             "The deliverProducts operation publishes mission data products directly via the service interface for an existing standing order.");
 
     /**
      * Key names instance for DELIVERPRODUCTS operation of pubsub interaction
      * pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.Identifier [] _DELIVERPRODUCTS_OP_KEY_NAMES = {new org.ccsds.moims.mo.mal.structures.Identifier("user"),
-            new org.ccsds.moims.mo.mal.structures.Identifier("orderID")};
+    private static final Identifier [] _DELIVERPRODUCTS_OP_KEY_NAMES = {new Identifier("user"),
+            new Identifier("orderID")};
 
     /**
      * Key names instance for DELIVERPRODUCTS operation of pubsub interaction
      * pattern.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList DELIVERPRODUCTS_OP_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(_DELIVERPRODUCTS_OP_KEY_NAMES)));
+    private static final IdentifierList DELIVERPRODUCTS_OP_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(_DELIVERPRODUCTS_OP_KEY_NAMES)));
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] PRODUCTORDERDELIVERY_SERVICE_ELEMENTS = {};
+    public static final Element[] PRODUCTORDERDELIVERY_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{NOTIFYPRODUCTDELIVERY_OP,
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{NOTIFYPRODUCTDELIVERY_OP,
         DELIVERPRODUCTS_OP};
 
     /**
@@ -117,16 +136,16 @@ public class ProductOrderDeliveryServiceInfo extends org.ccsds.moims.mo.mal.Serv
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.mpd.MPDHelper.MPD_AREA;
+    public MALArea getArea() {
+        return MPDHelper.MPD_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.mpd.MPDHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = MPDHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

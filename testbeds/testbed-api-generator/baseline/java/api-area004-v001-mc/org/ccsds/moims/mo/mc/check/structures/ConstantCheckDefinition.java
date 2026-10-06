@@ -1,10 +1,21 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.com.archive.structures.ExpressionOperator;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mc.structures.AttributeValueList;
+import org.ccsds.moims.mo.mc.structures.Severity;
+
 /**
  * The ConstantCheckDefinition structure holds the constant values to compare
  * against for a consistency check.
  */
-public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.structures.CheckDefinitionDetails {
+public final class ConstantCheckDefinition extends CheckDefinitionDetails {
 
     private static final long serialVersionUID = 1125917103489032L;
     /**
@@ -14,18 +25,18 @@ public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The operator to be used to perform the check.
      */
-    private org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator;
+    private ExpressionOperator operator;
 
     /**
      * The set of constant values to be checked against. An empty list means that
      * any value change triggers the check.
      */
-    private org.ccsds.moims.mo.mc.structures.AttributeValueList values;
+    private AttributeValueList values;
 
     /**
      * Default constructor for ConstantCheckDefinition.
@@ -48,14 +59,14 @@ public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.s
      * @param values The set of constant values to be checked against. An empty list means that any value change triggers the check.
      */
     public ConstantCheckDefinition(String description,
-            org.ccsds.moims.mo.mc.structures.Severity checkSeverity,
-            org.ccsds.moims.mo.mal.structures.Duration maxReportingInterval,
-            org.ccsds.moims.mo.mal.structures.UInteger nominalCount,
-            org.ccsds.moims.mo.mal.structures.Duration nominalTime,
-            org.ccsds.moims.mo.mal.structures.UInteger violationCount,
-            org.ccsds.moims.mo.mal.structures.Duration violationTime,
-            org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator,
-            org.ccsds.moims.mo.mc.structures.AttributeValueList values) {
+            Severity checkSeverity,
+            Duration maxReportingInterval,
+            UInteger nominalCount,
+            Duration nominalTime,
+            UInteger violationCount,
+            Duration violationTime,
+            ExpressionOperator operator,
+            AttributeValueList values) {
         super(description,
             checkSeverity,
             maxReportingInterval,
@@ -68,8 +79,8 @@ public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.ConstantCheckDefinition();
+    public Element createElement() {
+        return new ConstantCheckDefinition();
     }
 
     /**
@@ -77,7 +88,7 @@ public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.s
      * 
      * @return The field operator
      */
-    public org.ccsds.moims.mo.com.archive.structures.ExpressionOperator getOperator() {
+    public ExpressionOperator getOperator() {
         return operator;
     }
 
@@ -86,7 +97,7 @@ public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.s
      * 
      * @return The field values
      */
-    public org.ccsds.moims.mo.mc.structures.AttributeValueList getValues() {
+    public AttributeValueList getValues() {
         return values;
     }
 
@@ -140,28 +151,28 @@ public final class ConstantCheckDefinition extends org.ccsds.moims.mo.mc.check.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (operator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'operator' cannot be null!");
+            throw new MALException("The field 'operator' cannot be null!");
         }
         if (values == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'values' cannot be null!");
+            throw new MALException("The field 'values' cannot be null!");
         }
         encoder.encodeElement(operator);
         encoder.encodeElement(values);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        operator = (org.ccsds.moims.mo.com.archive.structures.ExpressionOperator) decoder.decodeElement(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.EQUAL);
-        values = (org.ccsds.moims.mo.mc.structures.AttributeValueList) decoder.decodeElement(new org.ccsds.moims.mo.mc.structures.AttributeValueList());
+        operator = (ExpressionOperator) decoder.decodeElement(ExpressionOperator.EQUAL);
+        values = (AttributeValueList) decoder.decodeElement(new AttributeValueList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

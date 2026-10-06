@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: A sub-type of Repetition that starts at a given Position and repeats
  * based on separation from each subsequent occurrence.
  */
-public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.Repetition {
+public final class PositionRepetition extends Repetition {
 
     private static final long serialVersionUID = 1407374900330553L;
     /**
@@ -14,28 +20,28 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Nominal position of first occurrence.
      */
-    private org.ccsds.moims.mo.mal.structures.Element initialPosition;
+    private Element initialPosition;
 
     /**
      * Direction of repetition.
      */
-    private org.ccsds.moims.mo.mal.structures.Element repetitionDirection;
+    private Element repetitionDirection;
 
     /**
      * The required Distance between occurrences.
      */
-    private org.ccsds.moims.mo.mal.structures.Element separation;
+    private Element separation;
 
     /**
      * The allowed tolerance (+/-) in the required distance between occurrences,
      * the interpretation of which is dependent on the separationType.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for PositionRepetition.
@@ -56,12 +62,12 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
      * @param tolerance The allowed tolerance (+/-) in the required distance between occurrences, the interpretation of which is dependent on the separationType.
      */
     public PositionRepetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element initialPosition,
-            org.ccsds.moims.mo.mal.structures.Element repetitionDirection,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType,
+            Element initialPosition,
+            Element repetitionDirection,
+            Element separation,
+            Element tolerance) {
         super(count,
             timeWindow,
             separationType);
@@ -80,11 +86,11 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
      * @param separation The required Distance between occurrences.
      * @param tolerance The allowed tolerance (+/-) in the required distance between occurrences, the interpretation of which is dependent on the separationType.
      */
-    public PositionRepetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element initialPosition,
-            org.ccsds.moims.mo.mal.structures.Element repetitionDirection,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public PositionRepetition(SeparationTypeEnum separationType,
+            Element initialPosition,
+            Element repetitionDirection,
+            Element separation,
+            Element tolerance) {
         super(separationType);
         this.initialPosition = initialPosition;
         this.repetitionDirection = repetitionDirection;
@@ -93,8 +99,8 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PositionRepetition();
+    public Element createElement() {
+        return new PositionRepetition();
     }
 
     /**
@@ -102,7 +108,7 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field initialPosition
      */
-    public org.ccsds.moims.mo.mal.structures.Element getInitialPosition() {
+    public Element getInitialPosition() {
         return initialPosition;
     }
 
@@ -111,7 +117,7 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field repetitionDirection
      */
-    public org.ccsds.moims.mo.mal.structures.Element getRepetitionDirection() {
+    public Element getRepetitionDirection() {
         return repetitionDirection;
     }
 
@@ -120,7 +126,7 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field separation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getSeparation() {
+    public Element getSeparation() {
         return separation;
     }
 
@@ -129,7 +135,7 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -205,19 +211,19 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (initialPosition == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'initialPosition' cannot be null!");
+            throw new MALException("The field 'initialPosition' cannot be null!");
         }
         if (repetitionDirection == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'repetitionDirection' cannot be null!");
+            throw new MALException("The field 'repetitionDirection' cannot be null!");
         }
         if (separation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'separation' cannot be null!");
+            throw new MALException("The field 'separation' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(initialPosition);
         encoder.encodeAbstractElement(repetitionDirection);
@@ -226,17 +232,17 @@ public final class PositionRepetition extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        initialPosition = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        repetitionDirection = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        separation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        initialPosition = (Element) decoder.decodeAbstractElement();
+        repetitionDirection = (Element) decoder.decodeAbstractElement();
+        separation = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

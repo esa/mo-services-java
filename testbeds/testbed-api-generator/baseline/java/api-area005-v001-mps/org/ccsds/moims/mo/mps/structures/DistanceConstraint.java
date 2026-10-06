@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E7: Specifies a range of distances between two physical objects (the observer
  * and the target).
  */
-public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.GeometricConstraint {
+public final class DistanceConstraint extends GeometricConstraint {
 
     private static final long serialVersionUID = 1407374900330539L;
     /**
@@ -14,27 +20,27 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Position of the observer [Object1].
      */
-    private org.ccsds.moims.mo.mal.structures.Element observer;
+    private Element observer;
 
     /**
      * Position of the target [Object2].
      */
-    private org.ccsds.moims.mo.mal.structures.Element target;
+    private Element target;
 
     /**
      * Minimum distance between observer and target.
      */
-    private org.ccsds.moims.mo.mal.structures.Element minDistance;
+    private Element minDistance;
 
     /**
      * Maximum distance between observer and target.
      */
-    private org.ccsds.moims.mo.mal.structures.Element maxDistance;
+    private Element maxDistance;
 
     /**
      * Default constructor for DistanceConstraint.
@@ -57,14 +63,14 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param maxDistance Maximum distance between observer and target.
      */
     public DistanceConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mal.structures.Element observer,
-            org.ccsds.moims.mo.mal.structures.Element target,
-            org.ccsds.moims.mo.mal.structures.Element minDistance,
-            org.ccsds.moims.mo.mal.structures.Element maxDistance) {
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            Element observer,
+            Element target,
+            Element minDistance,
+            Element maxDistance) {
         super(negate,
             startRef,
             endRef,
@@ -84,10 +90,10 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param minDistance Minimum distance between observer and target.
      * @param maxDistance Maximum distance between observer and target.
      */
-    public DistanceConstraint(org.ccsds.moims.mo.mal.structures.Element observer,
-            org.ccsds.moims.mo.mal.structures.Element target,
-            org.ccsds.moims.mo.mal.structures.Element minDistance,
-            org.ccsds.moims.mo.mal.structures.Element maxDistance) {
+    public DistanceConstraint(Element observer,
+            Element target,
+            Element minDistance,
+            Element maxDistance) {
         this.observer = observer;
         this.target = target;
         this.minDistance = minDistance;
@@ -95,8 +101,8 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.DistanceConstraint();
+    public Element createElement() {
+        return new DistanceConstraint();
     }
 
     /**
@@ -104,7 +110,7 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field observer
      */
-    public org.ccsds.moims.mo.mal.structures.Element getObserver() {
+    public Element getObserver() {
         return observer;
     }
 
@@ -113,7 +119,7 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field target
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTarget() {
+    public Element getTarget() {
         return target;
     }
 
@@ -122,7 +128,7 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field minDistance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMinDistance() {
+    public Element getMinDistance() {
         return minDistance;
     }
 
@@ -131,7 +137,7 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field maxDistance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMaxDistance() {
+    public Element getMaxDistance() {
         return maxDistance;
     }
 
@@ -207,19 +213,19 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (observer == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'observer' cannot be null!");
+            throw new MALException("The field 'observer' cannot be null!");
         }
         if (target == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'target' cannot be null!");
+            throw new MALException("The field 'target' cannot be null!");
         }
         if (minDistance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'minDistance' cannot be null!");
+            throw new MALException("The field 'minDistance' cannot be null!");
         }
         if (maxDistance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'maxDistance' cannot be null!");
+            throw new MALException("The field 'maxDistance' cannot be null!");
         }
         encoder.encodeAbstractElement(observer);
         encoder.encodeAbstractElement(target);
@@ -228,17 +234,17 @@ public final class DistanceConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        observer = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        target = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        minDistance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        maxDistance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        observer = (Element) decoder.decodeAbstractElement();
+        target = (Element) decoder.decodeAbstractElement();
+        minDistance = (Element) decoder.decodeAbstractElement();
+        maxDistance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

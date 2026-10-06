@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mc.conversion.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.PairList;
+
 /**
  * The DiscreteConversionDetails structure holds a bidirectional conversion
  * between raw and converted values. The first element of the pair is the
  * raw value and the second is the converted value. Both sets of values must
  * be unique.
  */
-public final class DiscreteConversionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class DiscreteConversionDetails implements Composite {
 
     private static final long serialVersionUID = 1125929988390913L;
     /**
@@ -16,14 +24,14 @@ public final class DiscreteConversionDetails implements org.ccsds.moims.mo.mal.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Defines a mapping between raw and converted values as a discrete set of
      * points. The first entry in the pair is the raw value, and the second entry
      * is the converted value.
      */
-    private org.ccsds.moims.mo.mal.structures.PairList mapping;
+    private PairList mapping;
 
     /**
      * Default constructor for DiscreteConversionDetails.
@@ -37,13 +45,13 @@ public final class DiscreteConversionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @param mapping Defines a mapping between raw and converted values as a discrete set of points. The first entry in the pair is the raw value, and the second entry is the converted value.
      */
-    public DiscreteConversionDetails(org.ccsds.moims.mo.mal.structures.PairList mapping) {
+    public DiscreteConversionDetails(PairList mapping) {
         this.mapping = mapping;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.conversion.structures.DiscreteConversionDetails();
+    public Element createElement() {
+        return new DiscreteConversionDetails();
     }
 
     /**
@@ -51,7 +59,7 @@ public final class DiscreteConversionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field mapping
      */
-    public org.ccsds.moims.mo.mal.structures.PairList getMapping() {
+    public PairList getMapping() {
         return mapping;
     }
 
@@ -90,21 +98,21 @@ public final class DiscreteConversionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (mapping == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'mapping' cannot be null!");
+            throw new MALException("The field 'mapping' cannot be null!");
         }
         encoder.encodeElement(mapping);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        mapping = (org.ccsds.moims.mo.mal.structures.PairList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.PairList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        mapping = (PairList) decoder.decodeElement(new PairList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

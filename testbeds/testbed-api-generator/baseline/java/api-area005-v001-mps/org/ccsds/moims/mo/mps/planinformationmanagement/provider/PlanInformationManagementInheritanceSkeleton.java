@@ -1,146 +1,168 @@
 package org.ccsds.moims.mo.mps.planinformationmanagement.provider;
 
+import java.io.IOException;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnsupportedOperationException;
+import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.provider.MALProviderSet;
+import org.ccsds.moims.mo.mal.provider.MALRequest;
+import org.ccsds.moims.mo.mal.provider.MALSubmit;
+import org.ccsds.moims.mo.mal.structures.AttributeTypeList;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+import org.ccsds.moims.mo.mal.structures.StringList;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementHelper;
+import org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo;
+
 /**
  * Provider Inheritance skeleton for PlanInformationManagementInheritanceSkeleton
  * service.
  */
-public abstract class PlanInformationManagementInheritanceSkeleton implements org.ccsds.moims.mo.mal.provider.MALInteractionHandler, org.ccsds.moims.mo.mps.planinformationmanagement.provider.PlanInformationManagementSkeleton, org.ccsds.moims.mo.mps.planinformationmanagement.provider.PlanInformationManagementHandler {
+public abstract class PlanInformationManagementInheritanceSkeleton implements MALInteractionHandler, PlanInformationManagementSkeleton, PlanInformationManagementHandler {
 
     /**
      * The providerSet field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALProviderSet providerSet = new org.ccsds.moims.mo.mal.provider.MALProviderSet(org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementHelper.PLANINFORMATIONMANAGEMENT_SERVICE);
+    private MALProviderSet providerSet = new MALProviderSet(PlanInformationManagementHelper.PLANINFORMATIONMANAGEMENT_SERVICE);
 
     /**
      * Returns the connection object for this provider.
      * 
      * @return the connection object for this provider
-     * @throws java.io.IOException if the method was not implemented yet.
+     * @throws IOException if the method was not implemented yet.
      */
-    public org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider getConnection() throws java.io.IOException {
-        throw new java.io.IOException("This method needs to be overridden!");
+    public ConnectionProvider getConnection() throws IOException {
+        throw new IOException("This method needs to be overridden!");
     }
 
     @Override
-    public void setSkeleton(org.ccsds.moims.mo.mps.planinformationmanagement.provider.PlanInformationManagementSkeleton skeleton) {
+    public void setSkeleton(PlanInformationManagementSkeleton skeleton) {
         // Not used in the inheritance pattern (the skeleton is 'this');
     }
 
     @Override
-    public void malInitialize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malInitialize(MALProvider provider) throws MALException {
         providerSet.addProvider(provider);
     }
 
     @Override
-    public void malFinalize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malFinalize(MALProvider provider) throws MALException {
         providerSet.removeProvider(provider);
     }
 
     @Override
-    public void handleSend(org.ccsds.moims.mo.mal.provider.MALInteraction interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSend(MALInteraction interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleSubmit(org.ccsds.moims.mo.mal.provider.MALSubmit interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSubmit(MALSubmit interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleRequest(org.ccsds.moims.mo.mal.provider.MALRequest interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleRequest(MALRequest interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETREQUESTDEFS_OP_NUMBER:
-            interaction.sendResponse(getRequestDefs((org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
+          case PlanInformationManagementServiceInfo._GETREQUESTDEFS_OP_NUMBER:
+            interaction.sendResponse(getRequestDefs((ObjectRefList) body.getBodyElement(0, new ObjectRefList()),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETEVENTDEFS_OP_NUMBER:
-            interaction.sendResponse(getEventDefs((org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
+          case PlanInformationManagementServiceInfo._GETEVENTDEFS_OP_NUMBER:
+            interaction.sendResponse(getEventDefs((ObjectRefList) body.getBodyElement(0, new ObjectRefList()),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETACTIVITYDEFS_OP_NUMBER:
-            interaction.sendResponse(getActivityDefs((org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
+          case PlanInformationManagementServiceInfo._GETACTIVITYDEFS_OP_NUMBER:
+            interaction.sendResponse(getActivityDefs((ObjectRefList) body.getBodyElement(0, new ObjectRefList()),
                 interaction));
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETRESOURCEDEFS_OP_NUMBER:
-            interaction.sendResponse(getResourceDefs((org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
+          case PlanInformationManagementServiceInfo._GETRESOURCEDEFS_OP_NUMBER:
+            interaction.sendResponse(getResourceDefs((ObjectRefList) body.getBodyElement(0, new ObjectRefList()),
                 interaction));
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleInvoke(org.ccsds.moims.mo.mal.provider.MALInvoke interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleInvoke(MALInvoke interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleProgress(org.ccsds.moims.mo.mal.provider.MALProgress interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleProgress(MALProgress interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
-            listRequestDefs((org.ccsds.moims.mo.mal.structures.IdentifierList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.IdentifierList()),
-                (org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+            listRequestDefs((IdentifierList) body.getBodyElement(0, new IdentifierList()),
+                (ObjectRefList) body.getBodyElement(1, new ObjectRefList()),
                 new ListRequestDefsInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
-            listEventDefs((org.ccsds.moims.mo.mal.structures.IdentifierList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.IdentifierList()),
-                (org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+            listEventDefs((IdentifierList) body.getBodyElement(0, new IdentifierList()),
+                (ObjectRefList) body.getBodyElement(1, new ObjectRefList()),
                 new ListEventDefsInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
-            listActivityDefs((org.ccsds.moims.mo.mal.structures.IdentifierList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.IdentifierList()),
-                (org.ccsds.moims.mo.mal.structures.ObjectRefList) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.ObjectRefList()),
-                (org.ccsds.moims.mo.mal.structures.StringList) body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.StringList()),
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+            listActivityDefs((IdentifierList) body.getBodyElement(0, new IdentifierList()),
+                (ObjectRefList) body.getBodyElement(1, new ObjectRefList()),
+                (StringList) body.getBodyElement(2, new StringList()),
                 new ListActivityDefsInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
-            listResourceDefs((org.ccsds.moims.mo.mal.structures.IdentifierList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.IdentifierList()),
-                (org.ccsds.moims.mo.mal.structures.AttributeTypeList) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.AttributeTypeList()),
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+            listResourceDefs((IdentifierList) body.getBodyElement(0, new IdentifierList()),
+                (AttributeTypeList) body.getBodyElement(1, new AttributeTypeList()),
                 new ListResourceDefsInteraction(interaction));
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 

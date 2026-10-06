@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * Enumeration class for QoSLevel.
  */
-public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class QoSLevel extends Enumeration {
 
     private static final long serialVersionUID = 281475027042407L;
     /**
@@ -13,7 +15,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for BESTEFFORT.
@@ -23,7 +25,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value BESTEFFORT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.QoSLevel BESTEFFORT = new org.ccsds.moims.mo.mal.structures.QoSLevel(org.ccsds.moims.mo.mal.structures.QoSLevel.BESTEFFORT_VALUE);
+    public static final QoSLevel BESTEFFORT = new QoSLevel(QoSLevel.BESTEFFORT_VALUE);
 
     /**
      * Enumeration value for ASSURED.
@@ -33,7 +35,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value ASSURED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.QoSLevel ASSURED = new org.ccsds.moims.mo.mal.structures.QoSLevel(org.ccsds.moims.mo.mal.structures.QoSLevel.ASSURED_VALUE);
+    public static final QoSLevel ASSURED = new QoSLevel(QoSLevel.ASSURED_VALUE);
 
     /**
      * Enumeration value for QUEUED.
@@ -43,7 +45,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value QUEUED.
      */
-    public static final org.ccsds.moims.mo.mal.structures.QoSLevel QUEUED = new org.ccsds.moims.mo.mal.structures.QoSLevel(org.ccsds.moims.mo.mal.structures.QoSLevel.QUEUED_VALUE);
+    public static final QoSLevel QUEUED = new QoSLevel(QoSLevel.QUEUED_VALUE);
 
     /**
      * Enumeration value for TIMELY.
@@ -53,12 +55,12 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     /**
      * Enumeration singleton for value TIMELY.
      */
-    public static final org.ccsds.moims.mo.mal.structures.QoSLevel TIMELY = new org.ccsds.moims.mo.mal.structures.QoSLevel(org.ccsds.moims.mo.mal.structures.QoSLevel.TIMELY_VALUE);
+    public static final QoSLevel TIMELY = new QoSLevel(QoSLevel.TIMELY_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mal.structures.QoSLevel[] _ENUMERATIONS = {
+    private static final QoSLevel[] _ENUMERATIONS = {
         BESTEFFORT, ASSURED, QUEUED, TIMELY};
 
     /**
@@ -101,7 +103,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mal.structures.QoSLevel fromString(String s) {
+    public static QoSLevel fromString(String s) {
         switch (s) {
             case "BESTEFFORT":
                 return QoSLevel.BESTEFFORT;
@@ -117,7 +119,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case BESTEFFORT_VALUE:
                 return QoSLevel.BESTEFFORT;
@@ -133,7 +135,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -143,7 +145,7 @@ public final class QoSLevel extends org.ccsds.moims.mo.mal.structures.Enumeratio
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

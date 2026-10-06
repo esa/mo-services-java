@@ -8,7 +8,7 @@ public class ConfigurationHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo CONFIGURATION_SERVICE = new org.ccsds.moims.mo.common.configuration.ConfigurationServiceInfo();
+    public static final ConfigurationServiceInfo CONFIGURATION_SERVICE = new ConfigurationServiceInfo();
 
     private ConfigurationHelper() {
         // Utility class; not meant to be instantiated.

@@ -1,9 +1,19 @@
 package org.ccsds.moims.mo.comprototype.eventtest.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+
 /**
  * Consumer adapter for EventTest service.
  */
-public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class EventTestAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a SUBMIT acknowledgement is received from a provider
@@ -12,8 +22,8 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetTestAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void resetTestAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -24,9 +34,9 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetTestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void resetTestErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -37,9 +47,9 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param output The output field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void createinstanceResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+    public void createinstanceResponseReceived(MALMessageHeader msgHeader,
             Long output,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -50,9 +60,9 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void createinstanceErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void createinstanceErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -62,8 +72,8 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deleteInstanceAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void deleteInstanceAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -74,9 +84,9 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deleteInstanceErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void deleteInstanceErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -86,8 +96,8 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void updateInstanceAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void updateInstanceAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -98,9 +108,9 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void updateInstanceErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void updateInstanceErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -110,8 +120,8 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void updateInstanceCompositeAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void updateInstanceCompositeAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -122,78 +132,78 @@ public abstract class EventTestAdapter extends org.ccsds.moims.mo.mal.consumer.M
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void updateInstanceCompositeErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void updateInstanceCompositeErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._RESETTEST_OP_NUMBER:
+          case EventTestServiceInfo._RESETTEST_OP_NUMBER:
             resetTestAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._DELETEINSTANCE_OP_NUMBER:
+          case EventTestServiceInfo._DELETEINSTANCE_OP_NUMBER:
             deleteInstanceAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._UPDATEINSTANCE_OP_NUMBER:
+          case EventTestServiceInfo._UPDATEINSTANCE_OP_NUMBER:
             updateInstanceAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._UPDATEINSTANCECOMPOSITE_OP_NUMBER:
+          case EventTestServiceInfo._UPDATEINSTANCECOMPOSITE_OP_NUMBER:
             updateInstanceCompositeAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._RESETTEST_OP_NUMBER:
+          case EventTestServiceInfo._RESETTEST_OP_NUMBER:
             resetTestErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._DELETEINSTANCE_OP_NUMBER:
+          case EventTestServiceInfo._DELETEINSTANCE_OP_NUMBER:
             deleteInstanceErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._UPDATEINSTANCE_OP_NUMBER:
+          case EventTestServiceInfo._UPDATEINSTANCE_OP_NUMBER:
             updateInstanceErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._UPDATEINSTANCECOMPOSITE_OP_NUMBER:
+          case EventTestServiceInfo._UPDATEINSTANCECOMPOSITE_OP_NUMBER:
             updateInstanceCompositeErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._CREATEINSTANCE_OP_NUMBER:
+          case EventTestServiceInfo._CREATEINSTANCE_OP_NUMBER:
             createinstanceResponseReceived(msgHeader,
-                (body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
+                (body.getBodyElement(0, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo._CREATEINSTANCE_OP_NUMBER:
+          case EventTestServiceInfo._CREATEINSTANCE_OP_NUMBER:
             createinstanceErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

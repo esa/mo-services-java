@@ -8,7 +8,7 @@ public class StatisticHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo STATISTIC_SERVICE = new org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo();
+    public static final StatisticServiceInfo STATISTIC_SERVICE = new StatisticServiceInfo();
 
     private StatisticHelper() {
         // Utility class; not meant to be instantiated.

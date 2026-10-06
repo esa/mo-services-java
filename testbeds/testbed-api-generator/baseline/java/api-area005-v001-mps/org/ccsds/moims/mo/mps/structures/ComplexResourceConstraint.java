@@ -1,5 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E5: In the [simple] resource constraint, the value of the referenced planning
  * resource is constrained against a single value for the entire duration
@@ -11,7 +18,7 @@ package org.ccsds.moims.mo.mps.structures;
  * The fields of the complex resource constraint extend or modify those of
  * the [simple] resource constraint as given below.
  */
-public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.structures.ResourceConstraint {
+public final class ComplexResourceConstraint extends ResourceConstraint {
 
     private static final long serialVersionUID = 1407374900330534L;
     /**
@@ -21,39 +28,39 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the start of the constraint period relates. Default is the start
      * of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider startRef;
+    private Slider startRef;
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the end of the constraint period relates. Default is the end of
      * the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider endRef;
+    private Slider endRef;
 
     /**
      * Offset from startRef that specifies the start of the constraint period.
      * A positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startOffset;
+    private Element startOffset;
 
     /**
      * Offset from endRef that specifies the end of the constraint period.  A
      * positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endOffset;
+    private Element endOffset;
 
     /**
      * ResourceProfile specifying an evolving value over time against which the
      * value of the planning resource is to be compared (see 4.5.4.4).
      */
-    private org.ccsds.moims.mo.mps.structures.RelativeResourceProfile valueProfile;
+    private RelativeResourceProfile valueProfile;
 
     /**
      * Default constructor for ComplexResourceConstraint.
@@ -75,13 +82,13 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * @param valueProfile ResourceProfile specifying an evolving value over time against which the value of the planning resource is to be compared (see 4.5.4.4).
      */
     public ComplexResourceConstraint(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum comparator,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mps.structures.RelativeResourceProfile valueProfile) {
+            ObjectRef<Resource> resourceRef,
+            ExpressionOperatorEnum comparator,
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            RelativeResourceProfile valueProfile) {
         super(negate,
             resourceRef,
             comparator);
@@ -99,9 +106,9 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * @param comparator Comparison operator, which may be one of: =, !=, _, _=, _, _=, contains, icontains. The contains operator only applies to strings and may be case sensitive or insensitive.
      * @param valueProfile ResourceProfile specifying an evolving value over time against which the value of the planning resource is to be compared (see 4.5.4.4).
      */
-    public ComplexResourceConstraint(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resourceRef,
-            org.ccsds.moims.mo.mps.structures.ExpressionOperatorEnum comparator,
-            org.ccsds.moims.mo.mps.structures.RelativeResourceProfile valueProfile) {
+    public ComplexResourceConstraint(ObjectRef<Resource> resourceRef,
+            ExpressionOperatorEnum comparator,
+            RelativeResourceProfile valueProfile) {
         super(resourceRef,
             comparator);
         this.startRef = null;
@@ -112,8 +119,8 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ComplexResourceConstraint();
+    public Element createElement() {
+        return new ComplexResourceConstraint();
     }
 
     /**
@@ -121,7 +128,7 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * 
      * @return The field startRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getStartRef() {
+    public Slider getStartRef() {
         return startRef;
     }
 
@@ -130,7 +137,7 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * 
      * @return The field endRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getEndRef() {
+    public Slider getEndRef() {
         return endRef;
     }
 
@@ -139,7 +146,7 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * 
      * @return The field startOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartOffset() {
+    public Element getStartOffset() {
         return startOffset;
     }
 
@@ -148,7 +155,7 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * 
      * @return The field endOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndOffset() {
+    public Element getEndOffset() {
         return endOffset;
     }
 
@@ -157,7 +164,7 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
      * 
      * @return The field valueProfile
      */
-    public org.ccsds.moims.mo.mps.structures.RelativeResourceProfile getValueProfile() {
+    public RelativeResourceProfile getValueProfile() {
         return valueProfile;
     }
 
@@ -244,10 +251,10 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (valueProfile == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'valueProfile' cannot be null!");
+            throw new MALException("The field 'valueProfile' cannot be null!");
         }
         encoder.encodeNullableElement(startRef);
         encoder.encodeNullableElement(endRef);
@@ -257,18 +264,18 @@ public final class ComplexResourceConstraint extends org.ccsds.moims.mo.mps.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        startRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        endRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        startOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        endOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        valueProfile = (org.ccsds.moims.mo.mps.structures.RelativeResourceProfile) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.RelativeResourceProfile());
+        startRef = (Slider) decoder.decodeNullableElement(new Slider());
+        endRef = (Slider) decoder.decodeNullableElement(new Slider());
+        startOffset = (Element) decoder.decodeNullableAbstractElement();
+        endOffset = (Element) decoder.decodeNullableAbstractElement();
+        valueProfile = (RelativeResourceProfile) decoder.decodeElement(new RelativeResourceProfile());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * List class for File.
  */
-public final class FileList extends java.util.ArrayList<org.ccsds.moims.mo.mal.structures.File> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mal.structures.File> {
+public final class FileList extends ArrayList<File> implements HomogeneousList<File> {
 
     private static final long serialVersionUID = 281475043818513L;
     /**
@@ -13,7 +19,7 @@ public final class FileList extends java.util.ArrayList<org.ccsds.moims.mo.mal.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for FileList.
@@ -36,14 +42,14 @@ public final class FileList extends java.util.ArrayList<org.ccsds.moims.mo.mal.s
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public FileList(java.util.ArrayList<org.ccsds.moims.mo.mal.structures.File> elementList) {
-        for(org.ccsds.moims.mo.mal.structures.File element : elementList) {
+    public FileList(ArrayList<File> elementList) {
+        for(File element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.File element) {
+    public boolean add(File element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +57,28 @@ public final class FileList extends java.util.ArrayList<org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new FileList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mal.structures.File();
+    public Element createTypedElement() {
+        return new File();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

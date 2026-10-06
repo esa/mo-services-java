@@ -11,5 +11,5 @@ public interface GroupHandler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mc.group.provider.GroupSkeleton skeleton);
+    void setSkeleton(GroupSkeleton skeleton);
 }

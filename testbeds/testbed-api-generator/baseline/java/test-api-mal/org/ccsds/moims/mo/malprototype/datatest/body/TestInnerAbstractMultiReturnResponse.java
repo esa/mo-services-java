@@ -1,5 +1,9 @@
 package org.ccsds.moims.mo.malprototype.datatest.body;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+
 /**
  * Multi body return class for TestInnerAbstractMultiReturnResponse.
  */
@@ -8,22 +12,22 @@ public final class TestInnerAbstractMultiReturnResponse {
     /**
      * out1: .
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet out1;
+    private UOctet out1;
 
     /**
      * out2: .
      */
-    private org.ccsds.moims.mo.mal.structures.Element out2;
+    private Element out2;
 
     /**
      * out3: .
      */
-    private org.ccsds.moims.mo.mal.structures.Element out3;
+    private Element out3;
 
     /**
      * out4: .
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger out4;
+    private UInteger out4;
 
     /**
      * Default constructor for TestInnerAbstractMultiReturnResponse.
@@ -40,10 +44,10 @@ public final class TestInnerAbstractMultiReturnResponse {
      * @param out3 The out3 field.
      * @param out4 The out4 field.
      */
-    public TestInnerAbstractMultiReturnResponse(org.ccsds.moims.mo.mal.structures.UOctet out1,
-            org.ccsds.moims.mo.mal.structures.Element out2,
-            org.ccsds.moims.mo.mal.structures.Element out3,
-            org.ccsds.moims.mo.mal.structures.UInteger out4) {
+    public TestInnerAbstractMultiReturnResponse(UOctet out1,
+            Element out2,
+            Element out3,
+            UInteger out4) {
         this.out1 = out1;
         this.out2 = out2;
         this.out3 = out3;
@@ -55,7 +59,7 @@ public final class TestInnerAbstractMultiReturnResponse {
      * 
      * @return The field out1
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getOut1() {
+    public UOctet getOut1() {
         return out1;
     }
 
@@ -64,7 +68,7 @@ public final class TestInnerAbstractMultiReturnResponse {
      * 
      * @return The field out2
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOut2() {
+    public Element getOut2() {
         return out2;
     }
 
@@ -73,7 +77,7 @@ public final class TestInnerAbstractMultiReturnResponse {
      * 
      * @return The field out3
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOut3() {
+    public Element getOut3() {
         return out3;
     }
 
@@ -82,7 +86,7 @@ public final class TestInnerAbstractMultiReturnResponse {
      * 
      * @return The field out4
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getOut4() {
+    public UInteger getOut4() {
         return out4;
     }
 

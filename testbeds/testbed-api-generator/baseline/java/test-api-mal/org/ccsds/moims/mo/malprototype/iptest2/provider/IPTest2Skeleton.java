@@ -1,5 +1,13 @@
 package org.ccsds.moims.mo.malprototype.iptest2.provider;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * The skeleton interface for the IPTest2 service.
  */
@@ -17,13 +25,13 @@ public interface IPTest2Skeleton {
      * @param qosProps The QoS properties used for publishing
      * @param priority The priority used for publishing
      * @return The new publisher object.
-     * @throws org.ccsds.moims.mo.mal.MALException if a problem is detected during creation of the publisher
+     * @throws MALException if a problem is detected during creation of the publisher
      */
-    org.ccsds.moims.mo.malprototype.iptest2.provider.MonitorPublisher createMonitorPublisher(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.QoSLevel qos,
-            java.util.Map qosProps,
-            org.ccsds.moims.mo.mal.structures.UInteger priority) throws org.ccsds.moims.mo.mal.MALException;
+    MonitorPublisher createMonitorPublisher(IdentifierList domain,
+            Identifier networkZone,
+            SessionType sessionType,
+            Identifier sessionName,
+            QoSLevel qos,
+            Map qosProps,
+            UInteger priority) throws MALException;
 }

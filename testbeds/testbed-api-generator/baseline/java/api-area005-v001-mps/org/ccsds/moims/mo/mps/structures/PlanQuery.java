@@ -1,11 +1,21 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+
 /**
  * E1: PlanQuery is a data structure used in the context of queryPlan operation
  * of the MPS Plan Distribution Service.  It is used to specify search criteria
  * for querying the available set of Plans. .
  */
-public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanQuery implements Composite {
 
     private static final long serialVersionUID = 1407374900331010L;
     /**
@@ -15,12 +25,12 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Query for Plans with the specified PlanID.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planID;
+    private ObjectRef<Plan> planID;
 
     /**
      * Query for Plans with or without a precursor.
@@ -35,29 +45,29 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
     /**
      * Query for Plans with the specified precursor Plan.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> precursorPlan;
+    private ObjectRef<Plan> precursorPlan;
 
     /**
      * Applicable only for patch plans.  Query for patch plans that have the specified
      * target Plan.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> targetPlan;
+    private ObjectRef<Plan> targetPlan;
 
     /**
      * Query for Plans with the specified originator.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier originator;
+    private Identifier originator;
 
     /**
      * Query for Plans with a production date in the specified range.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindow productionTime;
+    private TimeWindow productionTime;
 
     /**
      * Query for Plans with a validity period within (overlapping with) the specified
      * range.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindow validityPeriod;
+    private TimeWindow validityPeriod;
 
     /**
      * Query for Plans that are or are not Alternate plans.
@@ -68,19 +78,19 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * Query for Plans that have a current status matching one of the specified
      * Plan statuses.
      */
-    private org.ccsds.moims.mo.mps.structures.PlanStatusEnumList status;
+    private PlanStatusEnumList status;
 
     /**
      * Query for Plans that contain EventInstances inside plannedItems whose definition
      * matches one of the specified EventDefinitions.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList plannedEvents;
+    private ObjectRefList plannedEvents;
 
     /**
      * Query for Plans that contain ActivityInstances inside plannedItems whose
      * definition matches one of the specified ActivityDefinitions.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList plannedActivities;
+    private ObjectRefList plannedActivities;
 
     /**
      * Query for patch plans that contain EventInstances inside their revisions
@@ -91,7 +101,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * If the revised plan is not available anymore, then the result will depend
      * on the implementation.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList revisedEvents;
+    private ObjectRefList revisedEvents;
 
     /**
      * Query for patch plans that contain ActivityInstances inside their revisions
@@ -102,7 +112,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * If the revised plan is not available anymore, then the result will depend
      * on the implementation.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList revisedActivities;
+    private ObjectRefList revisedActivities;
 
     /**
      * Default constructor for PlanQuery.
@@ -129,20 +139,20 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * @param revisedEvents Query for patch plans that contain EventInstances inside their revisions whose definition matches one of the specified EventDefinitions. If the revisionStatus is either New or Modified, then the EventInstances in the current plan shall be checked.  If the revisionStatus is either Deleted or Undefined, then the EventInstances in the revised plan shall be checked.  If the revised plan is not available anymore, then the result will depend on the implementation.
      * @param revisedActivities Query for patch plans that contain ActivityInstances inside their revisions whose definition matches one of the specified ActivityDefinitions. If the revisionStatus is either New or Modified, then the ActivityInstances in the current plan shall be checked.  If the revisionStatus is either Deleted or Undefined, then the ActivityInstances in the revised plan shall be checked.  If the revised plan is not available anymore, then the result will depend on the implementation.
      */
-    public PlanQuery(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> planID,
+    public PlanQuery(ObjectRef<Plan> planID,
             Boolean hasPrecursor,
             Boolean isPatchPlan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> precursorPlan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> targetPlan,
-            org.ccsds.moims.mo.mal.structures.Identifier originator,
-            org.ccsds.moims.mo.mps.structures.TimeWindow productionTime,
-            org.ccsds.moims.mo.mps.structures.TimeWindow validityPeriod,
+            ObjectRef<Plan> precursorPlan,
+            ObjectRef<Plan> targetPlan,
+            Identifier originator,
+            TimeWindow productionTime,
+            TimeWindow validityPeriod,
             Boolean isAlternate,
-            org.ccsds.moims.mo.mps.structures.PlanStatusEnumList status,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList plannedEvents,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList plannedActivities,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList revisedEvents,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList revisedActivities) {
+            PlanStatusEnumList status,
+            ObjectRefList plannedEvents,
+            ObjectRefList plannedActivities,
+            ObjectRefList revisedEvents,
+            ObjectRefList revisedActivities) {
         this.planID = planID;
         this.hasPrecursor = hasPrecursor;
         this.isPatchPlan = isPatchPlan;
@@ -160,8 +170,8 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanQuery();
+    public Element createElement() {
+        return new PlanQuery();
     }
 
     /**
@@ -169,7 +179,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field planID
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlanID() {
+    public ObjectRef<Plan> getPlanID() {
         return planID;
     }
 
@@ -196,7 +206,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field precursorPlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPrecursorPlan() {
+    public ObjectRef<Plan> getPrecursorPlan() {
         return precursorPlan;
     }
 
@@ -205,7 +215,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field targetPlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getTargetPlan() {
+    public ObjectRef<Plan> getTargetPlan() {
         return targetPlan;
     }
 
@@ -214,7 +224,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field originator
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getOriginator() {
+    public Identifier getOriginator() {
         return originator;
     }
 
@@ -223,7 +233,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field productionTime
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindow getProductionTime() {
+    public TimeWindow getProductionTime() {
         return productionTime;
     }
 
@@ -232,7 +242,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field validityPeriod
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindow getValidityPeriod() {
+    public TimeWindow getValidityPeriod() {
         return validityPeriod;
     }
 
@@ -250,7 +260,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.PlanStatusEnumList getStatus() {
+    public PlanStatusEnumList getStatus() {
         return status;
     }
 
@@ -259,7 +269,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field plannedEvents
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getPlannedEvents() {
+    public ObjectRefList getPlannedEvents() {
         return plannedEvents;
     }
 
@@ -268,7 +278,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field plannedActivities
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getPlannedActivities() {
+    public ObjectRefList getPlannedActivities() {
         return plannedActivities;
     }
 
@@ -277,7 +287,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field revisedEvents
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getRevisedEvents() {
+    public ObjectRefList getRevisedEvents() {
         return revisedEvents;
     }
 
@@ -286,7 +296,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field revisedActivities
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getRevisedActivities() {
+    public ObjectRefList getRevisedActivities() {
         return revisedActivities;
     }
 
@@ -468,7 +478,7 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(planID);
         encoder.encodeNullableBoolean(hasPrecursor);
         encoder.encodeNullableBoolean(isPatchPlan);
@@ -486,26 +496,26 @@ public final class PlanQuery implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        planID = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        planID = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
         hasPrecursor = decoder.decodeNullableBoolean();
         isPatchPlan = decoder.decodeNullableBoolean();
-        precursorPlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        targetPlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
+        precursorPlan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        targetPlan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
         originator = decoder.decodeNullableIdentifier();
-        productionTime = (org.ccsds.moims.mo.mps.structures.TimeWindow) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindow());
-        validityPeriod = (org.ccsds.moims.mo.mps.structures.TimeWindow) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindow());
+        productionTime = (TimeWindow) decoder.decodeNullableElement(new TimeWindow());
+        validityPeriod = (TimeWindow) decoder.decodeNullableElement(new TimeWindow());
         isAlternate = decoder.decodeNullableBoolean();
-        status = (org.ccsds.moims.mo.mps.structures.PlanStatusEnumList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.PlanStatusEnumList());
-        plannedEvents = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
-        plannedActivities = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
-        revisedEvents = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
-        revisedActivities = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        status = (PlanStatusEnumList) decoder.decodeNullableElement(new PlanStatusEnumList());
+        plannedEvents = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
+        plannedActivities = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
+        revisedEvents = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
+        revisedActivities = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

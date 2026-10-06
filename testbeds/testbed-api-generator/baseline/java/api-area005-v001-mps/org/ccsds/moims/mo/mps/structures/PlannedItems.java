@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: The PlannedItems section of the Plan specifies the set of planning
  * activities and planning events contained within the Plan.  It comprises
  * two lists of contained MO objects:  one of EventInstances and one of ActivityInstances.
  * Both lists can be empty.
  */
-public final class PlannedItems implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlannedItems implements Composite {
 
     private static final long serialVersionUID = 1407374900331000L;
     /**
@@ -16,17 +23,17 @@ public final class PlannedItems implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * List of planned events contained within the Plan.
      */
-    private org.ccsds.moims.mo.mps.structures.EventInstanceList plannedEvents;
+    private EventInstanceList plannedEvents;
 
     /**
      * List of planned activities contained within the Plan.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityInstanceList plannedActivities;
+    private ActivityInstanceList plannedActivities;
 
     /**
      * Default constructor for PlannedItems.
@@ -41,15 +48,15 @@ public final class PlannedItems implements org.ccsds.moims.mo.mal.structures.Com
      * @param plannedEvents List of planned events contained within the Plan.
      * @param plannedActivities List of planned activities contained within the Plan.
      */
-    public PlannedItems(org.ccsds.moims.mo.mps.structures.EventInstanceList plannedEvents,
-            org.ccsds.moims.mo.mps.structures.ActivityInstanceList plannedActivities) {
+    public PlannedItems(EventInstanceList plannedEvents,
+            ActivityInstanceList plannedActivities) {
         this.plannedEvents = plannedEvents;
         this.plannedActivities = plannedActivities;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlannedItems();
+    public Element createElement() {
+        return new PlannedItems();
     }
 
     /**
@@ -57,7 +64,7 @@ public final class PlannedItems implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field plannedEvents
      */
-    public org.ccsds.moims.mo.mps.structures.EventInstanceList getPlannedEvents() {
+    public EventInstanceList getPlannedEvents() {
         return plannedEvents;
     }
 
@@ -66,7 +73,7 @@ public final class PlannedItems implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field plannedActivities
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityInstanceList getPlannedActivities() {
+    public ActivityInstanceList getPlannedActivities() {
         return plannedActivities;
     }
 
@@ -116,20 +123,20 @@ public final class PlannedItems implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(plannedEvents);
         encoder.encodeNullableElement(plannedActivities);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        plannedEvents = (org.ccsds.moims.mo.mps.structures.EventInstanceList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.EventInstanceList());
-        plannedActivities = (org.ccsds.moims.mo.mps.structures.ActivityInstanceList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ActivityInstanceList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        plannedEvents = (EventInstanceList) decoder.decodeNullableElement(new EventInstanceList());
+        plannedActivities = (ActivityInstanceList) decoder.decodeNullableElement(new ActivityInstanceList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

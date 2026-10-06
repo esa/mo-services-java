@@ -1,10 +1,21 @@
 package org.ccsds.moims.mo.common.directory.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.NamedValueList;
+import org.ccsds.moims.mo.mal.structures.QoSLevelList;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The AddressDetails structure holds all information required by the Directory
  * service about a service providers URI and attributes relating to QoS.
  */
-public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AddressDetails implements Composite {
 
     private static final long serialVersionUID = 844429241876484L;
     /**
@@ -14,35 +25,35 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The set of possible QoS levels this service can provide.
      */
-    private org.ccsds.moims.mo.mal.structures.QoSLevelList supportedLevels;
+    private QoSLevelList supportedLevels;
 
     /**
      * Any QoS properties relevant to this address URIs and the specified transport.
      */
-    private org.ccsds.moims.mo.mal.structures.NamedValueList QoSproperties;
+    private NamedValueList QoSproperties;
 
     /**
      * The number of QoS priority levels that this provider supports.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger priorityLevels;
+    private UInteger priorityLevels;
 
     /**
      * The Service URI that identifies the physical location of this service.
      * NULL if represents a shared data provider (Broker).
      */
-    private org.ccsds.moims.mo.mal.structures.URI serviceURI;
+    private URI serviceURI;
 
     /**
      * The broker URI that identifies the physical location of the publish and
      * subscribe interface. NULL if service does not use publish and subscribe
      * operations or if a shared broker is to be used.
      */
-    private org.ccsds.moims.mo.mal.structures.URI brokerURI;
+    private URI brokerURI;
 
     /**
      * The object instance identifier of a ServiceProvider COM object that is
@@ -67,11 +78,11 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * @param brokerURI The broker URI that identifies the physical location of the publish and subscribe interface. NULL if service does not use publish and subscribe operations or if a shared broker is to be used.
      * @param brokerProviderObjInstId The object instance identifier of a ServiceProvider COM object that is the shared broker used by this provider.
      */
-    public AddressDetails(org.ccsds.moims.mo.mal.structures.QoSLevelList supportedLevels,
-            org.ccsds.moims.mo.mal.structures.NamedValueList QoSproperties,
-            org.ccsds.moims.mo.mal.structures.UInteger priorityLevels,
-            org.ccsds.moims.mo.mal.structures.URI serviceURI,
-            org.ccsds.moims.mo.mal.structures.URI brokerURI,
+    public AddressDetails(QoSLevelList supportedLevels,
+            NamedValueList QoSproperties,
+            UInteger priorityLevels,
+            URI serviceURI,
+            URI brokerURI,
             Long brokerProviderObjInstId) {
         this.supportedLevels = supportedLevels;
         this.QoSproperties = QoSproperties;
@@ -88,9 +99,9 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * @param QoSproperties Any QoS properties relevant to this address URIs and the specified transport.
      * @param priorityLevels The number of QoS priority levels that this provider supports.
      */
-    public AddressDetails(org.ccsds.moims.mo.mal.structures.QoSLevelList supportedLevels,
-            org.ccsds.moims.mo.mal.structures.NamedValueList QoSproperties,
-            org.ccsds.moims.mo.mal.structures.UInteger priorityLevels) {
+    public AddressDetails(QoSLevelList supportedLevels,
+            NamedValueList QoSproperties,
+            UInteger priorityLevels) {
         this.supportedLevels = supportedLevels;
         this.QoSproperties = QoSproperties;
         this.priorityLevels = priorityLevels;
@@ -100,8 +111,8 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.directory.structures.AddressDetails();
+    public Element createElement() {
+        return new AddressDetails();
     }
 
     /**
@@ -109,7 +120,7 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field supportedLevels
      */
-    public org.ccsds.moims.mo.mal.structures.QoSLevelList getSupportedLevels() {
+    public QoSLevelList getSupportedLevels() {
         return supportedLevels;
     }
 
@@ -118,7 +129,7 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field QoSproperties
      */
-    public org.ccsds.moims.mo.mal.structures.NamedValueList getQoSproperties() {
+    public NamedValueList getQoSproperties() {
         return QoSproperties;
     }
 
@@ -127,7 +138,7 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field priorityLevels
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getPriorityLevels() {
+    public UInteger getPriorityLevels() {
         return priorityLevels;
     }
 
@@ -136,7 +147,7 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field serviceURI
      */
-    public org.ccsds.moims.mo.mal.structures.URI getServiceURI() {
+    public URI getServiceURI() {
         return serviceURI;
     }
 
@@ -145,7 +156,7 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field brokerURI
      */
-    public org.ccsds.moims.mo.mal.structures.URI getBrokerURI() {
+    public URI getBrokerURI() {
         return brokerURI;
     }
 
@@ -248,15 +259,15 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (supportedLevels == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'supportedLevels' cannot be null!");
+            throw new MALException("The field 'supportedLevels' cannot be null!");
         }
         if (QoSproperties == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'QoSproperties' cannot be null!");
+            throw new MALException("The field 'QoSproperties' cannot be null!");
         }
         if (priorityLevels == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'priorityLevels' cannot be null!");
+            throw new MALException("The field 'priorityLevels' cannot be null!");
         }
         encoder.encodeElement(supportedLevels);
         encoder.encodeElement(QoSproperties);
@@ -267,9 +278,9 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        supportedLevels = (org.ccsds.moims.mo.mal.structures.QoSLevelList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.QoSLevelList());
-        QoSproperties = (org.ccsds.moims.mo.mal.structures.NamedValueList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.NamedValueList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        supportedLevels = (QoSLevelList) decoder.decodeElement(new QoSLevelList());
+        QoSproperties = (NamedValueList) decoder.decodeElement(new NamedValueList());
         priorityLevels = decoder.decodeUInteger();
         serviceURI = decoder.decodeNullableURI();
         brokerURI = decoder.decodeNullableURI();
@@ -278,7 +289,7 @@ public final class AddressDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E7: Geometric constraint that specifies a Position with a tolerance given
  * in terms of a frame-aligned ellipsoid.  The frame within which this tolerance
  * ellipsoid is expressed may be different from the frame in which the required
  * position is expressed.  .
  */
-public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.structures.GeometricConstraint {
+public final class EllipsoidalPositionConstraint extends GeometricConstraint {
 
     private static final long serialVersionUID = 1407374900330536L;
     /**
@@ -16,36 +23,36 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Specifies the required position expressed using any concrete position type.
      */
-    private org.ccsds.moims.mo.mal.structures.Element position;
+    private Element position;
 
     /**
      * Length of the ellipsoid axis that is aligned with the x axis of the specified
      * frame.
      */
-    private org.ccsds.moims.mo.mal.structures.Element x;
+    private Element x;
 
     /**
      * Length of the ellipsoid axis that is aligned with the y axis of the specified
      * frame.
      */
-    private org.ccsds.moims.mo.mal.structures.Element y;
+    private Element y;
 
     /**
      * Length of the ellipsoid axis that is aligned with the z axis of the specified
      * frame.
      */
-    private org.ccsds.moims.mo.mal.structures.Element z;
+    private Element z;
 
     /**
      * Reference frame with which the axes of the tolerance ellipsoid are aligned
      * (see 4.4.2).
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier frame;
+    private Identifier frame;
 
     /**
      * Optional.  The tolerance units name, either for the quantity of distance
@@ -77,15 +84,15 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * @param units Optional.  The tolerance units name, either for the quantity of distance or the quantity of angle. Default = ‘km’, but ‘deg’ is more relevant for an OrbitalPosition.
      */
     public EllipsoidalPositionConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mal.structures.Element position,
-            org.ccsds.moims.mo.mal.structures.Element x,
-            org.ccsds.moims.mo.mal.structures.Element y,
-            org.ccsds.moims.mo.mal.structures.Element z,
-            org.ccsds.moims.mo.mal.structures.Identifier frame,
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            Element position,
+            Element x,
+            Element y,
+            Element z,
+            Identifier frame,
             String units) {
         super(negate,
             startRef,
@@ -109,11 +116,11 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * @param z Length of the ellipsoid axis that is aligned with the z axis of the specified frame.
      * @param frame Reference frame with which the axes of the tolerance ellipsoid are aligned (see 4.4.2).
      */
-    public EllipsoidalPositionConstraint(org.ccsds.moims.mo.mal.structures.Element position,
-            org.ccsds.moims.mo.mal.structures.Element x,
-            org.ccsds.moims.mo.mal.structures.Element y,
-            org.ccsds.moims.mo.mal.structures.Element z,
-            org.ccsds.moims.mo.mal.structures.Identifier frame) {
+    public EllipsoidalPositionConstraint(Element position,
+            Element x,
+            Element y,
+            Element z,
+            Identifier frame) {
         this.position = position;
         this.x = x;
         this.y = y;
@@ -123,8 +130,8 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EllipsoidalPositionConstraint();
+    public Element createElement() {
+        return new EllipsoidalPositionConstraint();
     }
 
     /**
@@ -132,7 +139,7 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * 
      * @return The field position
      */
-    public org.ccsds.moims.mo.mal.structures.Element getPosition() {
+    public Element getPosition() {
         return position;
     }
 
@@ -141,7 +148,7 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * 
      * @return The field x
      */
-    public org.ccsds.moims.mo.mal.structures.Element getX() {
+    public Element getX() {
         return x;
     }
 
@@ -150,7 +157,7 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * 
      * @return The field y
      */
-    public org.ccsds.moims.mo.mal.structures.Element getY() {
+    public Element getY() {
         return y;
     }
 
@@ -159,7 +166,7 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * 
      * @return The field z
      */
-    public org.ccsds.moims.mo.mal.structures.Element getZ() {
+    public Element getZ() {
         return z;
     }
 
@@ -168,7 +175,7 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
      * 
      * @return The field frame
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getFrame() {
+    public Identifier getFrame() {
         return frame;
     }
 
@@ -275,22 +282,22 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (position == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'position' cannot be null!");
+            throw new MALException("The field 'position' cannot be null!");
         }
         if (x == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'x' cannot be null!");
+            throw new MALException("The field 'x' cannot be null!");
         }
         if (y == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'y' cannot be null!");
+            throw new MALException("The field 'y' cannot be null!");
         }
         if (z == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'z' cannot be null!");
+            throw new MALException("The field 'z' cannot be null!");
         }
         if (frame == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'frame' cannot be null!");
+            throw new MALException("The field 'frame' cannot be null!");
         }
         encoder.encodeAbstractElement(position);
         encoder.encodeAbstractElement(x);
@@ -301,19 +308,19 @@ public final class EllipsoidalPositionConstraint extends org.ccsds.moims.mo.mps.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        position = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        x = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        y = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        z = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        position = (Element) decoder.decodeAbstractElement();
+        x = (Element) decoder.decodeAbstractElement();
+        y = (Element) decoder.decodeAbstractElement();
+        z = (Element) decoder.decodeAbstractElement();
         frame = decoder.decodeIdentifier();
         units = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

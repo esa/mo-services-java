@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * The TimeWindow represents a specific period, between the start and end
  * of a time window.
  */
-public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class TimeWindow implements Composite {
 
     private static final long serialVersionUID = 2533274807173127L;
     /**
@@ -14,17 +22,17 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The start time of the time window.
      */
-    private org.ccsds.moims.mo.mal.structures.Time start;
+    private Time start;
 
     /**
      * The end time of the time window.
      */
-    private org.ccsds.moims.mo.mal.structures.Time end;
+    private Time end;
 
     /**
      * Default constructor for TimeWindow.
@@ -39,15 +47,15 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
      * @param start The start time of the time window.
      * @param end The end time of the time window.
      */
-    public TimeWindow(org.ccsds.moims.mo.mal.structures.Time start,
-            org.ccsds.moims.mo.mal.structures.Time end) {
+    public TimeWindow(Time start,
+            Time end) {
         this.start = start;
         this.end = end;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.TimeWindow();
+    public Element createElement() {
+        return new TimeWindow();
     }
 
     /**
@@ -55,7 +63,7 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field start
      */
-    public org.ccsds.moims.mo.mal.structures.Time getStart() {
+    public Time getStart() {
         return start;
     }
 
@@ -64,7 +72,7 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field end
      */
-    public org.ccsds.moims.mo.mal.structures.Time getEnd() {
+    public Time getEnd() {
         return end;
     }
 
@@ -114,26 +122,26 @@ public final class TimeWindow implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (start == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'start' cannot be null!");
+            throw new MALException("The field 'start' cannot be null!");
         }
         if (end == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'end' cannot be null!");
+            throw new MALException("The field 'end' cannot be null!");
         }
         encoder.encodeTime(start);
         encoder.encodeTime(end);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         start = decoder.decodeTime();
         end = decoder.decodeTime();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

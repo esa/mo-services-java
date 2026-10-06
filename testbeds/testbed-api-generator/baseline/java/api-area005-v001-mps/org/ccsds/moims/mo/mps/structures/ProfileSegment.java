@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E4: A ProfileSegment defines the time range and interpolation method for
  * a set of ProfileEntries.
  */
-public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ProfileSegment implements Composite {
 
     private static final long serialVersionUID = 1407374900330800L;
     /**
@@ -14,23 +21,23 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Interpolation method to be applied for values lying between points defined
      * in the profile segment. Default = Step.
      */
-    private org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum interpolation;
+    private InterpolationTypeEnum interpolation;
 
     /**
      * Start of time range covered by the profile segment.
      */
-    private org.ccsds.moims.mo.mal.structures.Element start;
+    private Element start;
 
     /**
      * End of time range covered by the profile segment.
      */
-    private org.ccsds.moims.mo.mal.structures.Element end;
+    private Element end;
 
     /**
      * Indicates whether the start time is included in the profile segment. Default
@@ -48,7 +55,7 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
     /**
      * Set of profile entries (resource value points).
      */
-    private org.ccsds.moims.mo.mps.structures.ProfileEntryList profileEntries;
+    private ProfileEntryList profileEntries;
 
     /**
      * Default constructor for ProfileSegment.
@@ -67,12 +74,12 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
      * @param endIncluded Indicates whether the end time is included in the profile segment.  This allows the same time to be used as the end of one segment and the start of another. Default = False.
      * @param profileEntries Set of profile entries (resource value points).
      */
-    public ProfileSegment(org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum interpolation,
-            org.ccsds.moims.mo.mal.structures.Element start,
-            org.ccsds.moims.mo.mal.structures.Element end,
+    public ProfileSegment(InterpolationTypeEnum interpolation,
+            Element start,
+            Element end,
             Boolean startIncluded,
             Boolean endIncluded,
-            org.ccsds.moims.mo.mps.structures.ProfileEntryList profileEntries) {
+            ProfileEntryList profileEntries) {
         this.interpolation = interpolation;
         this.start = start;
         this.end = end;
@@ -88,9 +95,9 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
      * @param end End of time range covered by the profile segment.
      * @param profileEntries Set of profile entries (resource value points).
      */
-    public ProfileSegment(org.ccsds.moims.mo.mal.structures.Element start,
-            org.ccsds.moims.mo.mal.structures.Element end,
-            org.ccsds.moims.mo.mps.structures.ProfileEntryList profileEntries) {
+    public ProfileSegment(Element start,
+            Element end,
+            ProfileEntryList profileEntries) {
         this.interpolation = null;
         this.start = start;
         this.end = end;
@@ -100,8 +107,8 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ProfileSegment();
+    public Element createElement() {
+        return new ProfileSegment();
     }
 
     /**
@@ -109,7 +116,7 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field interpolation
      */
-    public org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum getInterpolation() {
+    public InterpolationTypeEnum getInterpolation() {
         return interpolation;
     }
 
@@ -118,7 +125,7 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field start
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStart() {
+    public Element getStart() {
         return start;
     }
 
@@ -127,7 +134,7 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field end
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEnd() {
+    public Element getEnd() {
         return end;
     }
 
@@ -154,7 +161,7 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field profileEntries
      */
-    public org.ccsds.moims.mo.mps.structures.ProfileEntryList getProfileEntries() {
+    public ProfileEntryList getProfileEntries() {
         return profileEntries;
     }
 
@@ -248,15 +255,15 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (start == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'start' cannot be null!");
+            throw new MALException("The field 'start' cannot be null!");
         }
         if (end == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'end' cannot be null!");
+            throw new MALException("The field 'end' cannot be null!");
         }
         if (profileEntries == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'profileEntries' cannot be null!");
+            throw new MALException("The field 'profileEntries' cannot be null!");
         }
         encoder.encodeNullableElement(interpolation);
         encoder.encodeAbstractElement(start);
@@ -267,18 +274,18 @@ public final class ProfileSegment implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        interpolation = (org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum) decoder.decodeNullableElement(org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum.STEP);
-        start = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        end = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+    public Element decode(MALDecoder decoder) throws MALException {
+        interpolation = (InterpolationTypeEnum) decoder.decodeNullableElement(InterpolationTypeEnum.STEP);
+        start = (Element) decoder.decodeAbstractElement();
+        end = (Element) decoder.decodeAbstractElement();
         startIncluded = decoder.decodeNullableBoolean();
         endIncluded = decoder.decodeNullableBoolean();
-        profileEntries = (org.ccsds.moims.mo.mps.structures.ProfileEntryList) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.ProfileEntryList());
+        profileEntries = (ProfileEntryList) decoder.decodeElement(new ProfileEntryList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

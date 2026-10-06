@@ -1400,6 +1400,26 @@ That is the case for the only two documents left with figures, and it is handled
   their figures is an editorial decision for the working group, not a consequence of this change —
   the XML stops carrying them either way.
 
+### 8.4 Imports
+
+The writers name every type in full, which is correct wherever the text lands. `JavaImports` then
+rewrites each finished class once, as it is written to disk: a qualified name becomes a simple name
+and an import, or just a simple name for a type of the same package. Doing it as one pass over the
+output keeps the writers unaware of it, and keeps the rules in one place:
+
+- a simple name the code already uses unqualified — a field, a parameter, a nested class — is left
+  qualified, since in an expression a variable obscures a type of the same name;
+- of two types sharing a simple name, only one is shortened: the one in the file's own package if
+  there is one, otherwise the one named most often;
+- a type is never imported under the name of the class being declared;
+- `java.lang` names stay qualified, because a hand-written class in the same package could take the
+  simple name and the generator cannot see it;
+- only code decides what is imported. A comment is shortened where the code imports the type
+  anyway, so there is no import for documentation alone.
+
+The pass is verified against the golden tree: applied to the baseline captured before it existed, it
+reproduces the regenerated tree byte for byte, in all 1198 files.
+
 ## 9. Validation
 
 `Validator` runs over an `MOModel` and reports `ValidationIssue(severity, message, SourceLocation)`.
@@ -2020,3 +2040,4 @@ the evidence that settled them, so that they are not silently reopened:
 | Parallel running through 14.x, cut-over at v15.0 | §3, §10.9 |
 | Inline SVG diagrams are not rendered; removed from prototype XML, recorded as a difference for published files | §8.3 |
 | The library compiles in the reactor; its corpus tests live in a testbed | §10.8 |
+| Generated classes import what they use; one pass over the output, `java.lang` left qualified | §8.4 |

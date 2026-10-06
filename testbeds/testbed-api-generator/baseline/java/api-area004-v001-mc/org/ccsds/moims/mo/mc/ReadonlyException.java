@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The ReadonlyException exception. Operation specific.
  */
-public final class ReadonlyException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class ReadonlyException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "READONLY";
 

@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: SubPlanUpdate is a data structure that is used to report changes in
  * status of a sub-plan during plan execution.  It is returned in the context
@@ -10,7 +19,7 @@ package org.ccsds.moims.mo.mps.structures;
  * and reporting sub-plan status associated with relevant Plan Execution Control
  * service operations, if supported.
  */
-public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class SubPlanUpdate implements Composite {
 
     private static final long serialVersionUID = 1407374900331007L;
     /**
@@ -20,22 +29,22 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Identifier of the sub-plan to which the update relates.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subPlan;
+    private Identifier subPlan;
 
     /**
      * Time of status update.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * Current status of the sub-plan, which may be Activated or Deactivated.
      */
-    private org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum status;
+    private SubPlanStatusEnum status;
 
     /**
      * Default constructor for SubPlanUpdate.
@@ -51,17 +60,17 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
      * @param timestamp Time of status update.
      * @param status Current status of the sub-plan, which may be Activated or Deactivated.
      */
-    public SubPlanUpdate(org.ccsds.moims.mo.mal.structures.Identifier subPlan,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum status) {
+    public SubPlanUpdate(Identifier subPlan,
+            Time timestamp,
+            SubPlanStatusEnum status) {
         this.subPlan = subPlan;
         this.timestamp = timestamp;
         this.status = status;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.SubPlanUpdate();
+    public Element createElement() {
+        return new SubPlanUpdate();
     }
 
     /**
@@ -69,7 +78,7 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field subPlan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubPlan() {
+    public Identifier getSubPlan() {
         return subPlan;
     }
 
@@ -78,7 +87,7 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -87,7 +96,7 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum getStatus() {
+    public SubPlanStatusEnum getStatus() {
         return status;
     }
 
@@ -148,15 +157,15 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (subPlan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'subPlan' cannot be null!");
+            throw new MALException("The field 'subPlan' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeIdentifier(subPlan);
         encoder.encodeTime(timestamp);
@@ -164,15 +173,15 @@ public final class SubPlanUpdate implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         subPlan = decoder.decodeIdentifier();
         timestamp = decoder.decodeTime();
-        status = (org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum.ACTIVATED);
+        status = (SubPlanStatusEnum) decoder.decodeElement(SubPlanStatusEnum.ACTIVATED);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

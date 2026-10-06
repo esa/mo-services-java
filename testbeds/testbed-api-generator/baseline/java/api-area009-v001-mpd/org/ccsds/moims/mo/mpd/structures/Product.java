@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * A Product is an MO object that corresponds to a specific occurrence of
  * a generated mission data product.
  */
-public final class Product extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class Product extends MOObject {
 
     private static final long serialVersionUID = 2533274807173121L;
     /**
@@ -14,18 +23,18 @@ public final class Product extends org.ccsds.moims.mo.mal.structures.MOObject {
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The product metadata of the mission data product. The productRef field
      * inside the productMetadata may be null when used in this context.
      */
-    private org.ccsds.moims.mo.mpd.structures.ProductMetadata productMetadata;
+    private ProductMetadata productMetadata;
 
     /**
      * The product body of the mission data product.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob productBody;
+    private Blob productBody;
 
     /**
      * Default constructor for Product.
@@ -41,17 +50,17 @@ public final class Product extends org.ccsds.moims.mo.mal.structures.MOObject {
      * @param productMetadata The product metadata of the mission data product. The productRef field inside the productMetadata may be null when used in this context.
      * @param productBody The product body of the mission data product.
      */
-    public Product(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
-            org.ccsds.moims.mo.mpd.structures.ProductMetadata productMetadata,
-            org.ccsds.moims.mo.mal.structures.Blob productBody) {
+    public Product(ObjectIdentity objectIdentity,
+            ProductMetadata productMetadata,
+            Blob productBody) {
         super(objectIdentity);
         this.productMetadata = productMetadata;
         this.productBody = productBody;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.Product();
+    public Element createElement() {
+        return new Product();
     }
 
     /**
@@ -59,7 +68,7 @@ public final class Product extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field productMetadata
      */
-    public org.ccsds.moims.mo.mpd.structures.ProductMetadata getProductMetadata() {
+    public ProductMetadata getProductMetadata() {
         return productMetadata;
     }
 
@@ -68,7 +77,7 @@ public final class Product extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field productBody
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getProductBody() {
+    public Blob getProductBody() {
         return productBody;
     }
 
@@ -122,28 +131,28 @@ public final class Product extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (productMetadata == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'productMetadata' cannot be null!");
+            throw new MALException("The field 'productMetadata' cannot be null!");
         }
         if (productBody == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'productBody' cannot be null!");
+            throw new MALException("The field 'productBody' cannot be null!");
         }
         encoder.encodeElement(productMetadata);
         encoder.encodeBlob(productBody);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        productMetadata = (org.ccsds.moims.mo.mpd.structures.ProductMetadata) decoder.decodeElement(new org.ccsds.moims.mo.mpd.structures.ProductMetadata());
+        productMetadata = (ProductMetadata) decoder.decodeElement(new ProductMetadata());
         productBody = decoder.decodeBlob();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

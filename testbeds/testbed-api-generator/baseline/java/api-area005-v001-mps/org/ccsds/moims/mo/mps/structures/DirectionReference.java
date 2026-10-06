@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E6: A DirectionReference is a Direction that may be computed following
  * some mission specific definition.
  */
-public final class DirectionReference extends org.ccsds.moims.mo.mps.structures.Direction {
+public final class DirectionReference extends Direction {
 
     private static final long serialVersionUID = 1407374900330514L;
     /**
@@ -14,12 +21,12 @@ public final class DirectionReference extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name of a mission specific direction definition.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier reference;
+    private Identifier reference;
 
     /**
      * Default constructor for DirectionReference.
@@ -33,13 +40,13 @@ public final class DirectionReference extends org.ccsds.moims.mo.mps.structures.
      * 
      * @param reference Name of a mission specific direction definition.
      */
-    public DirectionReference(org.ccsds.moims.mo.mal.structures.Identifier reference) {
+    public DirectionReference(Identifier reference) {
         this.reference = reference;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.DirectionReference();
+    public Element createElement() {
+        return new DirectionReference();
     }
 
     /**
@@ -47,7 +54,7 @@ public final class DirectionReference extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field reference
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getReference() {
+    public Identifier getReference() {
         return reference;
     }
 
@@ -90,23 +97,23 @@ public final class DirectionReference extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (reference == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reference' cannot be null!");
+            throw new MALException("The field 'reference' cannot be null!");
         }
         encoder.encodeIdentifier(reference);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         reference = decoder.decodeIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,19 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The InteractionKey structure.
  */
-public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class InteractionKey implements Composite {
 
     private static final long serialVersionUID = 28147497687842827L;
     /**
@@ -13,12 +23,12 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The consumer&quot;s URI.
      */
-    private org.ccsds.moims.mo.mal.structures.URI URIfrom;
+    private URI URIfrom;
 
     /**
      * The transaction identifier of the interaction.
@@ -28,17 +38,17 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The type of the interaction.
      */
-    private org.ccsds.moims.mo.mal.structures.InteractionType interactionType;
+    private InteractionType interactionType;
 
     /**
      * The name of the called service.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier Service;
+    private Identifier Service;
 
     /**
      * The name of the called operation.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier operation;
+    private Identifier operation;
 
     /**
      * Default constructor for InteractionKey.
@@ -56,11 +66,11 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
      * @param Service The name of the called service
      * @param operation The name of the called operation
      */
-    public InteractionKey(org.ccsds.moims.mo.mal.structures.URI URIfrom,
+    public InteractionKey(URI URIfrom,
             Integer transactionId,
-            org.ccsds.moims.mo.mal.structures.InteractionType interactionType,
-            org.ccsds.moims.mo.mal.structures.Identifier Service,
-            org.ccsds.moims.mo.mal.structures.Identifier operation) {
+            InteractionType interactionType,
+            Identifier Service,
+            Identifier operation) {
         this.URIfrom = URIfrom;
         this.transactionId = transactionId;
         this.interactionType = interactionType;
@@ -69,8 +79,8 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.InteractionKey();
+    public Element createElement() {
+        return new InteractionKey();
     }
 
     /**
@@ -78,7 +88,7 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field URIfrom
      */
-    public org.ccsds.moims.mo.mal.structures.URI getURIfrom() {
+    public URI getURIfrom() {
         return URIfrom;
     }
 
@@ -96,7 +106,7 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field interactionType
      */
-    public org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType() {
+    public InteractionType getInteractionType() {
         return interactionType;
     }
 
@@ -105,7 +115,7 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field Service
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getService() {
+    public Identifier getService() {
         return Service;
     }
 
@@ -114,7 +124,7 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field operation
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getOperation() {
+    public Identifier getOperation() {
         return operation;
     }
 
@@ -197,7 +207,7 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableURI(URIfrom);
         encoder.encodeNullableInteger(transactionId);
         encoder.encodeNullableElement(interactionType);
@@ -206,17 +216,17 @@ public final class InteractionKey implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         URIfrom = decoder.decodeNullableURI();
         transactionId = decoder.decodeNullableInteger();
-        interactionType = (org.ccsds.moims.mo.mal.structures.InteractionType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.InteractionType.SEND);
+        interactionType = (InteractionType) decoder.decodeNullableElement(InteractionType.SEND);
         Service = decoder.decodeNullableIdentifier();
         operation = decoder.decodeNullableIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

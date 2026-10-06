@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: Physical value with units of type Distance.
  */
-public final class Distance extends org.ccsds.moims.mo.mps.structures.PhysicalValue {
+public final class Distance extends PhysicalValue {
 
     private static final long serialVersionUID = 1407374900330517L;
     /**
@@ -13,7 +19,7 @@ public final class Distance extends org.ccsds.moims.mo.mps.structures.PhysicalVa
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for Distance.
@@ -44,8 +50,8 @@ public final class Distance extends org.ccsds.moims.mo.mps.structures.PhysicalVa
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.Distance();
+    public Element createElement() {
+        return new Distance();
     }
 
     @Override
@@ -75,18 +81,18 @@ public final class Distance extends org.ccsds.moims.mo.mps.structures.PhysicalVa
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

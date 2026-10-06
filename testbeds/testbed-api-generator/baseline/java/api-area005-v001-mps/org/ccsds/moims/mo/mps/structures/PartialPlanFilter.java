@@ -1,11 +1,22 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * E1: PartialPlanFilter is a data structure input to the getPartialPlan operation
  * of the Plan Distribution Service that contains a reference to the source
  * Plan, and specifies the criteria used to select the partial plan.
  */
-public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PartialPlanFilter implements Composite {
 
     private static final long serialVersionUID = 1407374900331013L;
     /**
@@ -15,29 +26,29 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan of which the partial plan is a selected subset.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> sourcePlan;
+    private ObjectRef<Plan> sourcePlan;
 
     /**
      * Selection criterion based on the domain of contained ActivityInstances.
      * An ordered list representing a domain hierarchy, ‘*’ can be used to represent
      * a wildcard at that level.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * Selection criterion based on the subPlan of contained ActivityInstances.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subPlan;
+    private Identifier subPlan;
 
     /**
      * Selection criterion based on tags associated with contained ActivityInstances.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList tags;
+    private StringList tags;
 
     /**
      * Selection criterion indicating the start of a range of time, position,
@@ -45,7 +56,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * is known for a Trigger, its predicted time may be used instead to derive
      * the relevant range. .
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger partialPlanStart;
+    private Trigger partialPlanStart;
 
     /**
      * Selection criterion indicating the end of a range of time, position, or
@@ -53,7 +64,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * is known for a Trigger, its predicted time may be used instead to derive
      * the relevant range.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger partialPlanEnd;
+    private Trigger partialPlanEnd;
 
     /**
      * Default constructor for PartialPlanFilter.
@@ -72,12 +83,12 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * @param partialPlanStart Selection criterion indicating the start of a range of time, position, or events associated with contained ActivityInstances.  If no actual time is known for a Trigger, its predicted time may be used instead to derive the relevant range. 
      * @param partialPlanEnd Selection criterion indicating the end of a range of time, position, or events associated with contained ActivityInstances.  If no actual time is known for a Trigger, its predicted time may be used instead to derive the relevant range.
      */
-    public PartialPlanFilter(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> sourcePlan,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier subPlan,
-            org.ccsds.moims.mo.mal.structures.StringList tags,
-            org.ccsds.moims.mo.mps.structures.Trigger partialPlanStart,
-            org.ccsds.moims.mo.mps.structures.Trigger partialPlanEnd) {
+    public PartialPlanFilter(ObjectRef<Plan> sourcePlan,
+            IdentifierList domain,
+            Identifier subPlan,
+            StringList tags,
+            Trigger partialPlanStart,
+            Trigger partialPlanEnd) {
         this.sourcePlan = sourcePlan;
         this.domain = domain;
         this.subPlan = subPlan;
@@ -91,7 +102,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @param sourcePlan Reference to the Plan of which the partial plan is a selected subset.
      */
-    public PartialPlanFilter(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> sourcePlan) {
+    public PartialPlanFilter(ObjectRef<Plan> sourcePlan) {
         this.sourcePlan = sourcePlan;
         this.domain = null;
         this.subPlan = null;
@@ -101,8 +112,8 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PartialPlanFilter();
+    public Element createElement() {
+        return new PartialPlanFilter();
     }
 
     /**
@@ -110,7 +121,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field sourcePlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getSourcePlan() {
+    public ObjectRef<Plan> getSourcePlan() {
         return sourcePlan;
     }
 
@@ -119,7 +130,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -128,7 +139,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field subPlan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubPlan() {
+    public Identifier getSubPlan() {
         return subPlan;
     }
 
@@ -137,7 +148,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field tags
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getTags() {
+    public StringList getTags() {
         return tags;
     }
 
@@ -146,7 +157,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field partialPlanStart
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getPartialPlanStart() {
+    public Trigger getPartialPlanStart() {
         return partialPlanStart;
     }
 
@@ -155,7 +166,7 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field partialPlanEnd
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getPartialPlanEnd() {
+    public Trigger getPartialPlanEnd() {
         return partialPlanEnd;
     }
 
@@ -249,9 +260,9 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (sourcePlan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'sourcePlan' cannot be null!");
+            throw new MALException("The field 'sourcePlan' cannot be null!");
         }
         encoder.encodeElement(sourcePlan);
         encoder.encodeNullableElement(domain);
@@ -262,18 +273,18 @@ public final class PartialPlanFilter implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        sourcePlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        sourcePlan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         subPlan = decoder.decodeNullableIdentifier();
-        tags = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
-        partialPlanStart = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        partialPlanEnd = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
+        tags = (StringList) decoder.decodeNullableElement(new StringList());
+        partialPlanStart = (Trigger) decoder.decodeNullableAbstractElement();
+        partialPlanEnd = (Trigger) decoder.decodeNullableAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,11 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: Concrete sub-type of ValidationDetails that provides additional fields
  * to support data validation and interpretation for integer type arguments
  * that are effectively enumerated Statuses.
  */
-public final class StatusValues extends org.ccsds.moims.mo.mps.structures.ValidationDetails {
+public final class StatusValues extends ValidationDetails {
 
     private static final long serialVersionUID = 1407374900330524L;
     /**
@@ -15,13 +21,13 @@ public final class StatusValues extends org.ccsds.moims.mo.mps.structures.Valida
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Set of allowed State definitions (see 4.6.2.4.2), comprising the enumerated
      * value and an associated text label.
      */
-    private org.ccsds.moims.mo.mps.structures.StateDefList allowedValues;
+    private StateDefList allowedValues;
 
     /**
      * Default constructor for StatusValues.
@@ -35,13 +41,13 @@ public final class StatusValues extends org.ccsds.moims.mo.mps.structures.Valida
      * 
      * @param allowedValues Set of allowed State definitions (see 4.6.2.4.2), comprising the enumerated value and an associated text label.
      */
-    public StatusValues(org.ccsds.moims.mo.mps.structures.StateDefList allowedValues) {
+    public StatusValues(StateDefList allowedValues) {
         this.allowedValues = allowedValues;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.StatusValues();
+    public Element createElement() {
+        return new StatusValues();
     }
 
     /**
@@ -49,7 +55,7 @@ public final class StatusValues extends org.ccsds.moims.mo.mps.structures.Valida
      * 
      * @return The field allowedValues
      */
-    public org.ccsds.moims.mo.mps.structures.StateDefList getAllowedValues() {
+    public StateDefList getAllowedValues() {
         return allowedValues;
     }
 
@@ -92,23 +98,23 @@ public final class StatusValues extends org.ccsds.moims.mo.mps.structures.Valida
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (allowedValues == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'allowedValues' cannot be null!");
+            throw new MALException("The field 'allowedValues' cannot be null!");
         }
         encoder.encodeElement(allowedValues);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        allowedValues = (org.ccsds.moims.mo.mps.structures.StateDefList) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.StateDefList());
+        allowedValues = (StateDefList) decoder.decodeElement(new StateDefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

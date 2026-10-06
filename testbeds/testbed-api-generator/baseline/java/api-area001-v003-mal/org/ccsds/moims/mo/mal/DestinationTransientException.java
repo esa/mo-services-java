@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The DestinationTransientException exception. Destination middleware reports
  * destination application does not exist.
  */
-public final class DestinationTransientException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class DestinationTransientException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Destination Transient";
 

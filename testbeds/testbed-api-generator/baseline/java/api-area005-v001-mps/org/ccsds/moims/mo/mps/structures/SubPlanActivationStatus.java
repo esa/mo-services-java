@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E1: SubPlanActivationStatus is a data structure that returns the activation
  * status of a sub-plan in the context of the MPS Plan Execution Control service
  * activateSubPlan and deactivateSubPlan operations.
  */
-public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class SubPlanActivationStatus implements Composite {
 
     private static final long serialVersionUID = 1407374900331009L;
     /**
@@ -15,17 +23,17 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Identifier of the sub-plan to which the status relates.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier plan;
+    private Identifier plan;
 
     /**
      * Current status of the sub-plan, which may be Activated or Deactivated.
      */
-    private org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum status;
+    private SubPlanStatusEnum status;
 
     /**
      * ActivationInfo provides customizable detailed information on the result
@@ -47,8 +55,8 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
      * @param status Current status of the sub-plan, which may be Activated or Deactivated.
      * @param activationInfo ActivationInfo provides customizable detailed information on the result of the activation/deactivation request for the referenced sub-plan. 
      */
-    public SubPlanActivationStatus(org.ccsds.moims.mo.mal.structures.Identifier plan,
-            org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum status,
+    public SubPlanActivationStatus(Identifier plan,
+            SubPlanStatusEnum status,
             String activationInfo) {
         this.plan = plan;
         this.status = status;
@@ -56,8 +64,8 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.SubPlanActivationStatus();
+    public Element createElement() {
+        return new SubPlanActivationStatus();
     }
 
     /**
@@ -65,7 +73,7 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getPlan() {
+    public Identifier getPlan() {
         return plan;
     }
 
@@ -74,7 +82,7 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum getStatus() {
+    public SubPlanStatusEnum getStatus() {
         return status;
     }
 
@@ -144,15 +152,15 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (plan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'plan' cannot be null!");
+            throw new MALException("The field 'plan' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         if (activationInfo == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'activationInfo' cannot be null!");
+            throw new MALException("The field 'activationInfo' cannot be null!");
         }
         encoder.encodeIdentifier(plan);
         encoder.encodeElement(status);
@@ -160,15 +168,15 @@ public final class SubPlanActivationStatus implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         plan = decoder.decodeIdentifier();
-        status = (org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.SubPlanStatusEnum.ACTIVATED);
+        status = (SubPlanStatusEnum) decoder.decodeElement(SubPlanStatusEnum.ACTIVATED);
         activationInfo = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

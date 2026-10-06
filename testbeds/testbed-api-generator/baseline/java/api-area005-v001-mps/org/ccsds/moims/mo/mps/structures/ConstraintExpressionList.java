@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
+
 /**
  * List class for ConstraintExpression.
  */
-public final class ConstraintExpressionList extends java.util.ArrayList<org.ccsds.moims.mo.mps.structures.ConstraintExpression> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mps.structures.ConstraintExpression> {
+public final class ConstraintExpressionList extends ArrayList<ConstraintExpression> implements HomogeneousList<ConstraintExpression> {
 
     private static final long serialVersionUID = 1407374917107681L;
     /**
@@ -13,7 +21,7 @@ public final class ConstraintExpressionList extends java.util.ArrayList<org.ccsd
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for ConstraintExpressionList.
@@ -36,14 +44,14 @@ public final class ConstraintExpressionList extends java.util.ArrayList<org.ccsd
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public ConstraintExpressionList(java.util.ArrayList<org.ccsds.moims.mo.mps.structures.ConstraintExpression> elementList) {
-        for(org.ccsds.moims.mo.mps.structures.ConstraintExpression element : elementList) {
+    public ConstraintExpressionList(ArrayList<ConstraintExpression> elementList) {
+        for(ConstraintExpression element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mps.structures.ConstraintExpression element) {
+    public boolean add(ConstraintExpression element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +59,28 @@ public final class ConstraintExpressionList extends java.util.ArrayList<org.ccsd
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new ConstraintExpressionList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mps.structures.ConstraintExpression();
+    public Element createTypedElement() {
+        return new ConstraintExpression();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

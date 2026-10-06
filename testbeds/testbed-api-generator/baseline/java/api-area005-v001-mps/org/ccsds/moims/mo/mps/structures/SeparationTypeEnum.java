@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for SeparationTypeEnum.
  */
-public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class SeparationTypeEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330552L;
     /**
@@ -13,7 +17,7 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for RELATIVE.
@@ -23,7 +27,7 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value RELATIVE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SeparationTypeEnum RELATIVE = new org.ccsds.moims.mo.mps.structures.SeparationTypeEnum(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum.RELATIVE_VALUE);
+    public static final SeparationTypeEnum RELATIVE = new SeparationTypeEnum(SeparationTypeEnum.RELATIVE_VALUE);
 
     /**
      * Enumeration value for ABSOLUTE.
@@ -33,12 +37,12 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value ABSOLUTE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.SeparationTypeEnum ABSOLUTE = new org.ccsds.moims.mo.mps.structures.SeparationTypeEnum(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum.ABSOLUTE_VALUE);
+    public static final SeparationTypeEnum ABSOLUTE = new SeparationTypeEnum(SeparationTypeEnum.ABSOLUTE_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.SeparationTypeEnum[] _ENUMERATIONS = {
+    private static final SeparationTypeEnum[] _ENUMERATIONS = {
         RELATIVE, ABSOLUTE};
 
     /**
@@ -77,7 +81,7 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.SeparationTypeEnum fromString(String s) {
+    public static SeparationTypeEnum fromString(String s) {
         switch (s) {
             case "RELATIVE":
                 return SeparationTypeEnum.RELATIVE;
@@ -89,7 +93,7 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case RELATIVE_VALUE:
                 return SeparationTypeEnum.RELATIVE;
@@ -101,7 +105,7 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -111,7 +115,7 @@ public final class SeparationTypeEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

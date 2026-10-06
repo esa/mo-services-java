@@ -1,11 +1,20 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.StringList;
+
 /**
  * E1: A concrete sub-type of ActivityDetails (4.5.2.3.1) that is a variation
  * of SimpleActivityDetails providing additional details for a single ActivityInstance
  * to be inserted into a Plan using the MPS Plan Edit service.
  */
-public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.structures.ActivityDetails {
+public final class InsertedActivityDetails extends ActivityDetails {
 
     private static final long serialVersionUID = 1407374900330603L;
     /**
@@ -15,64 +24,64 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan into which the ActivityInstance is to be inserted.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan;
+    private ObjectRef<Plan> plan;
 
     /**
      * Optionally specifies the trigger that initiates the ActivityInstance: may
      * be time, position, or event based.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger start;
+    private Trigger start;
 
     /**
      * Optionally specifies the trigger that ends the ActivityInstance.
      */
-    private org.ccsds.moims.mo.mps.structures.Trigger end;
+    private Trigger end;
 
     /**
      * Reference to the ActivityDefinition.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> activityDefinition;
+    private ObjectRef<ActivityDefinition> activityDefinition;
 
     /**
      * Set of argument specifications for each argument definition contained in
      * the referenced activity definition.  These supply a value for each argument,
      * or an expression to enable the value to be derived.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgSpecList argSpecs;
+    private ArgSpecList argSpecs;
 
     /**
      * The User ID for the person or organization inserting the activity into
      * the Plan.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user;
+    private ObjectRef<PlanningUser> user;
 
     /**
      * A single constraint or a constraint node that may contain multiple constraints,
      * specific to the ActivityInstance to be created.
      */
-    private org.ccsds.moims.mo.mps.structures.Constraint constraints;
+    private Constraint constraints;
 
     /**
      * Set of Effects specific to the ActivityInstance to be created.
      */
-    private org.ccsds.moims.mo.mps.structures.EffectList effects;
+    private EffectList effects;
 
     /**
      * Optional association of the ActivityInstance with a defined sub-plan.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier subPlan;
+    private Identifier subPlan;
 
     /**
      * Set of tags that may be used to associate the Activity with a subset of
      * the Plan, grouping activities by operational responsibility (controller/group/system)
      * or other criteria.
      */
-    private org.ccsds.moims.mo.mal.structures.StringList tags;
+    private StringList tags;
 
     /**
      * Default constructor for InsertedActivityDetails.
@@ -99,20 +108,20 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * @param subPlan Optional association of the ActivityInstance with a defined sub-plan.
      * @param tags Set of tags that may be used to associate the Activity with a subset of the Plan, grouping activities by operational responsibility (controller/group/system) or other criteria.
      */
-    public InsertedActivityDetails(org.ccsds.moims.mo.mps.structures.Slider activityRef,
-            org.ccsds.moims.mo.mal.structures.Element activityOffset,
-            org.ccsds.moims.mo.mal.structures.Element relatedEvent,
+    public InsertedActivityDetails(Slider activityRef,
+            Element activityOffset,
+            Element relatedEvent,
             String comments,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mps.structures.Trigger start,
-            org.ccsds.moims.mo.mps.structures.Trigger end,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> activityDefinition,
-            org.ccsds.moims.mo.mps.structures.ArgSpecList argSpecs,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user,
-            org.ccsds.moims.mo.mps.structures.Constraint constraints,
-            org.ccsds.moims.mo.mps.structures.EffectList effects,
-            org.ccsds.moims.mo.mal.structures.Identifier subPlan,
-            org.ccsds.moims.mo.mal.structures.StringList tags) {
+            ObjectRef<Plan> plan,
+            Trigger start,
+            Trigger end,
+            ObjectRef<ActivityDefinition> activityDefinition,
+            ArgSpecList argSpecs,
+            ObjectRef<PlanningUser> user,
+            Constraint constraints,
+            EffectList effects,
+            Identifier subPlan,
+            StringList tags) {
         super(activityRef,
             activityOffset,
             relatedEvent,
@@ -136,9 +145,9 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * @param activityDefinition Reference to the ActivityDefinition.
      * @param user The User ID for the person or organization inserting the activity into the Plan.
      */
-    public InsertedActivityDetails(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> activityDefinition,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user) {
+    public InsertedActivityDetails(ObjectRef<Plan> plan,
+            ObjectRef<ActivityDefinition> activityDefinition,
+            ObjectRef<PlanningUser> user) {
         this.plan = plan;
         this.start = null;
         this.end = null;
@@ -152,8 +161,8 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.InsertedActivityDetails();
+    public Element createElement() {
+        return new InsertedActivityDetails();
     }
 
     /**
@@ -161,7 +170,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlan() {
+    public ObjectRef<Plan> getPlan() {
         return plan;
     }
 
@@ -170,7 +179,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field start
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getStart() {
+    public Trigger getStart() {
         return start;
     }
 
@@ -179,7 +188,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field end
      */
-    public org.ccsds.moims.mo.mps.structures.Trigger getEnd() {
+    public Trigger getEnd() {
         return end;
     }
 
@@ -188,7 +197,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field activityDefinition
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition> getActivityDefinition() {
+    public ObjectRef<ActivityDefinition> getActivityDefinition() {
         return activityDefinition;
     }
 
@@ -197,7 +206,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field argSpecs
      */
-    public org.ccsds.moims.mo.mps.structures.ArgSpecList getArgSpecs() {
+    public ArgSpecList getArgSpecs() {
         return argSpecs;
     }
 
@@ -206,7 +215,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field user
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> getUser() {
+    public ObjectRef<PlanningUser> getUser() {
         return user;
     }
 
@@ -215,7 +224,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field constraints
      */
-    public org.ccsds.moims.mo.mps.structures.Constraint getConstraints() {
+    public Constraint getConstraints() {
         return constraints;
     }
 
@@ -224,7 +233,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field effects
      */
-    public org.ccsds.moims.mo.mps.structures.EffectList getEffects() {
+    public EffectList getEffects() {
         return effects;
     }
 
@@ -233,7 +242,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field subPlan
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSubPlan() {
+    public Identifier getSubPlan() {
         return subPlan;
     }
 
@@ -242,7 +251,7 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
      * 
      * @return The field tags
      */
-    public org.ccsds.moims.mo.mal.structures.StringList getTags() {
+    public StringList getTags() {
         return tags;
     }
 
@@ -384,16 +393,16 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (plan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'plan' cannot be null!");
+            throw new MALException("The field 'plan' cannot be null!");
         }
         if (activityDefinition == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'activityDefinition' cannot be null!");
+            throw new MALException("The field 'activityDefinition' cannot be null!");
         }
         if (user == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'user' cannot be null!");
+            throw new MALException("The field 'user' cannot be null!");
         }
         encoder.encodeElement(plan);
         encoder.encodeNullableAbstractElement(start);
@@ -408,23 +417,23 @@ public final class InsertedActivityDetails extends org.ccsds.moims.mo.mps.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        plan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        start = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        end = (org.ccsds.moims.mo.mps.structures.Trigger) decoder.decodeNullableAbstractElement();
-        activityDefinition = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.ActivityDefinition>());
-        argSpecs = (org.ccsds.moims.mo.mps.structures.ArgSpecList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgSpecList());
-        user = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>());
-        constraints = (org.ccsds.moims.mo.mps.structures.Constraint) decoder.decodeNullableAbstractElement();
-        effects = (org.ccsds.moims.mo.mps.structures.EffectList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.EffectList());
+        plan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
+        start = (Trigger) decoder.decodeNullableAbstractElement();
+        end = (Trigger) decoder.decodeNullableAbstractElement();
+        activityDefinition = (ObjectRef<ActivityDefinition>) decoder.decodeElement(new ObjectRef<ActivityDefinition>());
+        argSpecs = (ArgSpecList) decoder.decodeNullableElement(new ArgSpecList());
+        user = (ObjectRef<PlanningUser>) decoder.decodeElement(new ObjectRef<PlanningUser>());
+        constraints = (Constraint) decoder.decodeNullableAbstractElement();
+        effects = (EffectList) decoder.decodeNullableElement(new EffectList());
         subPlan = decoder.decodeNullableIdentifier();
-        tags = (org.ccsds.moims.mo.mal.structures.StringList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.StringList());
+        tags = (StringList) decoder.decodeNullableElement(new StringList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

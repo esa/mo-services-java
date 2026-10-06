@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * The ActionExecutionRequest structure holds the information required for
  * a specific execution of an action.
  */
-public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ActionExecutionRequest implements Composite {
 
     private static final long serialVersionUID = 1125899940397068L;
     /**
@@ -14,7 +23,7 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The requestId field.
@@ -24,12 +33,12 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
     /**
      * The actionRef field.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ActionDefinition> actionRef;
+    private ObjectRef<ActionDefinition> actionRef;
 
     /**
      * The source field.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> source;
+    private ObjectRef<Element> source;
 
     /**
      * The stageStartedRequired field.
@@ -49,7 +58,7 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
     /**
      * The argumentValues field.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList argumentValues;
+    private NullableAttributeList argumentValues;
 
     /**
      * Default constructor for ActionExecutionRequest.
@@ -70,12 +79,12 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
      * @param argumentValues The argumentValues field.
      */
     public ActionExecutionRequest(Long requestId,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ActionDefinition> actionRef,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> source,
+            ObjectRef<ActionDefinition> actionRef,
+            ObjectRef<Element> source,
             Boolean stageStartedRequired,
             Boolean stageProgressRequired,
             Boolean stageCompletedRequired,
-            org.ccsds.moims.mo.mal.structures.NullableAttributeList argumentValues) {
+            NullableAttributeList argumentValues) {
         this.requestId = requestId;
         this.actionRef = actionRef;
         this.source = source;
@@ -95,7 +104,7 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
      * @param stageCompletedRequired The stageCompletedRequired field.
      */
     public ActionExecutionRequest(Long requestId,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ActionDefinition> actionRef,
+            ObjectRef<ActionDefinition> actionRef,
             Boolean stageStartedRequired,
             Boolean stageProgressRequired,
             Boolean stageCompletedRequired) {
@@ -109,8 +118,8 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ActionExecutionRequest();
+    public Element createElement() {
+        return new ActionExecutionRequest();
     }
 
     /**
@@ -127,7 +136,7 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field actionRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ActionDefinition> getActionRef() {
+    public ObjectRef<ActionDefinition> getActionRef() {
         return actionRef;
     }
 
@@ -136,7 +145,7 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field source
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element> getSource() {
+    public ObjectRef<Element> getSource() {
         return source;
     }
 
@@ -172,7 +181,7 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field argumentValues
      */
-    public org.ccsds.moims.mo.mal.structures.NullableAttributeList getArgumentValues() {
+    public NullableAttributeList getArgumentValues() {
         return argumentValues;
     }
 
@@ -277,21 +286,21 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (requestId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'requestId' cannot be null!");
+            throw new MALException("The field 'requestId' cannot be null!");
         }
         if (actionRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'actionRef' cannot be null!");
+            throw new MALException("The field 'actionRef' cannot be null!");
         }
         if (stageStartedRequired == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageStartedRequired' cannot be null!");
+            throw new MALException("The field 'stageStartedRequired' cannot be null!");
         }
         if (stageProgressRequired == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageProgressRequired' cannot be null!");
+            throw new MALException("The field 'stageProgressRequired' cannot be null!");
         }
         if (stageCompletedRequired == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stageCompletedRequired' cannot be null!");
+            throw new MALException("The field 'stageCompletedRequired' cannot be null!");
         }
         encoder.encodeLong(requestId);
         encoder.encodeElement(actionRef);
@@ -303,19 +312,19 @@ public final class ActionExecutionRequest implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         requestId = decoder.decodeLong();
-        actionRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ActionDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ActionDefinition>());
-        source = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mal.structures.Element>) decoder.decodeNullableAbstractElement();
+        actionRef = (ObjectRef<ActionDefinition>) decoder.decodeElement(new ObjectRef<ActionDefinition>());
+        source = (ObjectRef<Element>) decoder.decodeNullableAbstractElement();
         stageStartedRequired = decoder.decodeBoolean();
         stageProgressRequired = decoder.decodeBoolean();
         stageCompletedRequired = decoder.decodeBoolean();
-        argumentValues = (org.ccsds.moims.mo.mal.structures.NullableAttributeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NullableAttributeList());
+        argumentValues = (NullableAttributeList) decoder.decodeNullableElement(new NullableAttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

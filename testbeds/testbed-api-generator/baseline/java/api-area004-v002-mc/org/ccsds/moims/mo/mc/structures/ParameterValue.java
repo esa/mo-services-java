@@ -1,11 +1,20 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * The ParameterValue structure is a contextual object associated to the ParameterDefinition.
  * It is uniquely identified by the timestamp field, relative to the ParameterDefinition
  * object. It represents a specific time stamped value of the parameter.
  */
-public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterValue implements Composite {
 
     private static final long serialVersionUID = 1125899940397079L;
     /**
@@ -15,27 +24,27 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The paramRef field.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ParameterDefinition> paramRef;
+    private ObjectRef<ParameterDefinition> paramRef;
 
     /**
      * The timestamp field.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The samplingTime field.
      */
-    private org.ccsds.moims.mo.mal.structures.Time samplingTime;
+    private Time samplingTime;
 
     /**
      * The value field.
      */
-    private org.ccsds.moims.mo.mc.structures.ParameterValueData value;
+    private ParameterValueData value;
 
     /**
      * Default constructor for ParameterValue.
@@ -52,10 +61,10 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * @param samplingTime The samplingTime field.
      * @param value The value field.
      */
-    public ParameterValue(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ParameterDefinition> paramRef,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.Time samplingTime,
-            org.ccsds.moims.mo.mc.structures.ParameterValueData value) {
+    public ParameterValue(ObjectRef<ParameterDefinition> paramRef,
+            Time timestamp,
+            Time samplingTime,
+            ParameterValueData value) {
         this.paramRef = paramRef;
         this.timestamp = timestamp;
         this.samplingTime = samplingTime;
@@ -69,9 +78,9 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * @param timestamp The timestamp field.
      * @param value The value field.
      */
-    public ParameterValue(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ParameterDefinition> paramRef,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mc.structures.ParameterValueData value) {
+    public ParameterValue(ObjectRef<ParameterDefinition> paramRef,
+            Time timestamp,
+            ParameterValueData value) {
         this.paramRef = paramRef;
         this.timestamp = timestamp;
         this.samplingTime = null;
@@ -79,8 +88,8 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ParameterValue();
+    public Element createElement() {
+        return new ParameterValue();
     }
 
     /**
@@ -88,7 +97,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field paramRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ParameterDefinition> getParamRef() {
+    public ObjectRef<ParameterDefinition> getParamRef() {
         return paramRef;
     }
 
@@ -97,7 +106,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -106,7 +115,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field samplingTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getSamplingTime() {
+    public Time getSamplingTime() {
         return samplingTime;
     }
 
@@ -115,7 +124,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mc.structures.ParameterValueData getValue() {
+    public ParameterValueData getValue() {
         return value;
     }
 
@@ -187,15 +196,15 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (paramRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'paramRef' cannot be null!");
+            throw new MALException("The field 'paramRef' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeElement(paramRef);
         encoder.encodeTime(timestamp);
@@ -204,16 +213,16 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        paramRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ParameterDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mc.structures.ParameterDefinition>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        paramRef = (ObjectRef<ParameterDefinition>) decoder.decodeElement(new ObjectRef<ParameterDefinition>());
         timestamp = decoder.decodeTime();
         samplingTime = decoder.decodeNullableTime();
-        value = (org.ccsds.moims.mo.mc.structures.ParameterValueData) decoder.decodeElement(new org.ccsds.moims.mo.mc.structures.ParameterValueData());
+        value = (ParameterValueData) decoder.decodeElement(new ParameterValueData());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for CheckState.
  */
-public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class CheckState extends Enumeration {
 
     private static final long serialVersionUID = 1125917103489030L;
     /**
@@ -13,7 +17,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for DISABLED.
@@ -23,7 +27,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     /**
      * Enumeration singleton for value DISABLED.
      */
-    public static final org.ccsds.moims.mo.mc.check.structures.CheckState DISABLED = new org.ccsds.moims.mo.mc.check.structures.CheckState(org.ccsds.moims.mo.mc.check.structures.CheckState.DISABLED_VALUE);
+    public static final CheckState DISABLED = new CheckState(CheckState.DISABLED_VALUE);
 
     /**
      * Enumeration value for UNCHECKED.
@@ -33,7 +37,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     /**
      * Enumeration singleton for value UNCHECKED.
      */
-    public static final org.ccsds.moims.mo.mc.check.structures.CheckState UNCHECKED = new org.ccsds.moims.mo.mc.check.structures.CheckState(org.ccsds.moims.mo.mc.check.structures.CheckState.UNCHECKED_VALUE);
+    public static final CheckState UNCHECKED = new CheckState(CheckState.UNCHECKED_VALUE);
 
     /**
      * Enumeration value for INVALID.
@@ -43,7 +47,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     /**
      * Enumeration singleton for value INVALID.
      */
-    public static final org.ccsds.moims.mo.mc.check.structures.CheckState INVALID = new org.ccsds.moims.mo.mc.check.structures.CheckState(org.ccsds.moims.mo.mc.check.structures.CheckState.INVALID_VALUE);
+    public static final CheckState INVALID = new CheckState(CheckState.INVALID_VALUE);
 
     /**
      * Enumeration value for OK.
@@ -53,7 +57,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     /**
      * Enumeration singleton for value OK.
      */
-    public static final org.ccsds.moims.mo.mc.check.structures.CheckState OK = new org.ccsds.moims.mo.mc.check.structures.CheckState(org.ccsds.moims.mo.mc.check.structures.CheckState.OK_VALUE);
+    public static final CheckState OK = new CheckState(CheckState.OK_VALUE);
 
     /**
      * Enumeration value for NOT_OK.
@@ -63,12 +67,12 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     /**
      * Enumeration singleton for value NOT_OK.
      */
-    public static final org.ccsds.moims.mo.mc.check.structures.CheckState NOT_OK = new org.ccsds.moims.mo.mc.check.structures.CheckState(org.ccsds.moims.mo.mc.check.structures.CheckState.NOT_OK_VALUE);
+    public static final CheckState NOT_OK = new CheckState(CheckState.NOT_OK_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.check.structures.CheckState[] _ENUMERATIONS = {
+    private static final CheckState[] _ENUMERATIONS = {
         DISABLED, UNCHECKED, INVALID, OK, NOT_OK};
 
     /**
@@ -114,7 +118,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.check.structures.CheckState fromString(String s) {
+    public static CheckState fromString(String s) {
         switch (s) {
             case "DISABLED":
                 return CheckState.DISABLED;
@@ -132,7 +136,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case DISABLED_VALUE:
                 return CheckState.DISABLED;
@@ -150,7 +154,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -160,7 +164,7 @@ public final class CheckState extends org.ccsds.moims.mo.mal.structures.Enumerat
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

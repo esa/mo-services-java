@@ -1,9 +1,21 @@
 package org.ccsds.moims.mo.common.directory.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.common.directory.DirectoryServiceInfo;
+import org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.FileList;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+
 /**
  * Consumer adapter for Directory service.
  */
-public abstract class DirectoryAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class DirectoryAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a REQUEST response is received from a provider for
@@ -14,9 +26,9 @@ public abstract class DirectoryAdapter extends org.ccsds.moims.mo.mal.consumer.M
 If no service providers match the supplied filter then an empty list shall be returned.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void lookupProviderResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList matchingProviders,
-            java.util.Map qosProperties) {
+    public void lookupProviderResponseReceived(MALMessageHeader msgHeader,
+            ProviderSummaryList matchingProviders,
+            Map qosProperties) {
     }
 
     /**
@@ -27,9 +39,9 @@ If no service providers match the supplied filter then an empty list shall be re
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void lookupProviderErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void lookupProviderErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -45,10 +57,10 @@ The operation shall return the COM object instance identifiers of the ServicePro
      * @param capabilitiesObjId capabilitiesObjId Argument number 1 as defined by the service operation
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishProviderResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+    public void publishProviderResponseReceived(MALMessageHeader msgHeader,
             Long providerObjId,
             Long capabilitiesObjId,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -59,9 +71,9 @@ The operation shall return the COM object instance identifiers of the ServicePro
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void publishProviderErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void publishProviderErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -71,8 +83,8 @@ The operation shall return the COM object instance identifiers of the ServicePro
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void withdrawProviderAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void withdrawProviderAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -83,9 +95,9 @@ The operation shall return the COM object instance identifiers of the ServicePro
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void withdrawProviderErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void withdrawProviderErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -97,9 +109,9 @@ The operation shall return the COM object instance identifiers of the ServicePro
 If no XML files were supplied by the provider then an empty list shall be returned.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getServiceXMLResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.FileList xmlFiles,
-            java.util.Map qosProperties) {
+    public void getServiceXMLResponseReceived(MALMessageHeader msgHeader,
+            FileList xmlFiles,
+            Map qosProperties) {
     }
 
     /**
@@ -110,75 +122,75 @@ If no XML files were supplied by the provider then an empty list shall be return
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getServiceXMLErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getServiceXMLErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._WITHDRAWPROVIDER_OP_NUMBER:
+          case DirectoryServiceInfo._WITHDRAWPROVIDER_OP_NUMBER:
             withdrawProviderAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._WITHDRAWPROVIDER_OP_NUMBER:
+          case DirectoryServiceInfo._WITHDRAWPROVIDER_OP_NUMBER:
             withdrawProviderErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._LOOKUPPROVIDER_OP_NUMBER:
+          case DirectoryServiceInfo._LOOKUPPROVIDER_OP_NUMBER:
             lookupProviderResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList) body.getBodyElement(0, new org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList()), qosProperties);
+                (ProviderSummaryList) body.getBodyElement(0, new ProviderSummaryList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._PUBLISHPROVIDER_OP_NUMBER:
+          case DirectoryServiceInfo._PUBLISHPROVIDER_OP_NUMBER:
             publishProviderResponseReceived(msgHeader,
-                (body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(),
-                (body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
+                (body.getBodyElement(0, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Long.MAX_VALUE))).getLongValue(),
+                (body.getBodyElement(1, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(1, new Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._GETSERVICEXML_OP_NUMBER:
+          case DirectoryServiceInfo._GETSERVICEXML_OP_NUMBER:
             getServiceXMLResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.FileList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.FileList()), qosProperties);
+                (FileList) body.getBodyElement(0, new FileList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._LOOKUPPROVIDER_OP_NUMBER:
+          case DirectoryServiceInfo._LOOKUPPROVIDER_OP_NUMBER:
             lookupProviderErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._PUBLISHPROVIDER_OP_NUMBER:
+          case DirectoryServiceInfo._PUBLISHPROVIDER_OP_NUMBER:
             publishProviderErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.directory.DirectoryServiceInfo._GETSERVICEXML_OP_NUMBER:
+          case DirectoryServiceInfo._GETSERVICEXML_OP_NUMBER:
             getServiceXMLErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

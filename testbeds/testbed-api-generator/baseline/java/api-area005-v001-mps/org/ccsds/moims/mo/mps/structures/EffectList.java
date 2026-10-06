@@ -1,9 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+
 /**
  * List class for Effect.
  */
-public final class EffectList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+public final class EffectList extends HeterogeneousList {
 
     /**
      * Default constructor for EffectList.
@@ -13,7 +16,7 @@ public final class EffectList extends org.ccsds.moims.mo.mal.structures.Heteroge
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+    public boolean add(Element element) {
         if (element != null && !(element instanceof Effect)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: Effect");
         }

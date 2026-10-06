@@ -1,5 +1,20 @@
 package org.ccsds.moims.mo.mc.parameter.provider;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.com.structures.InstanceBooleanPairList;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mc.ReadonlyException;
+import org.ccsds.moims.mo.mc.parameter.structures.ParameterCreationRequestList;
+import org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetailsList;
+import org.ccsds.moims.mo.mc.parameter.structures.ParameterRawValueList;
+import org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList;
+import org.ccsds.moims.mo.mc.structures.ObjectInstancePairList;
+
 /**
  * Interface that providers of the Parameter service must implement to handle
  * the operations of that service.
@@ -16,11 +31,11 @@ If a requested parameter is unknown then an UNKNOWN error shall be returned.
 If a parameter is being reported periodically, using the operation shall not reset the reportInterval timer.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested parameters is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One or more of the requested parameters is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetailsList getValue(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    ParameterValueDetailsList getValue(LongList paramInstIds,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Implements the operation setValue.
      * 
@@ -34,13 +49,13 @@ If an error is raised then no modifications shall be made as a result of this op
 The parameter values shall be set concurrently, by this it is meant that all values are set at the same time without interleaving of other values being (ATOMIC behaviour). How this is implemented is an implementation detail.
 The service provider shall create new ParameterValueInstance objects for the updated parameter values, store these in the COM Archive, and publish these new values.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the referenced parameters is unknown.
-     * @throws org.ccsds.moims.mo.mc.ReadonlyException One or more of the parameters being set is read only.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied parameter values contains an invalid value.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One or more of the referenced parameters is unknown.
+     * @throws ReadonlyException One or more of the parameters being set is read only.
+     * @throws InvalidException One of the supplied parameter values contains an invalid value.
+     * @throws MALException if there is an implementation exception
      */
-    void setValue(org.ccsds.moims.mo.mc.parameter.structures.ParameterRawValueList newRawValues,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mc.ReadonlyException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    void setValue(ParameterRawValueList newRawValues,
+            MALInteraction interaction) throws UnknownException, ReadonlyException, InvalidException, MALException;
     /**
      * Implements the operation enableGeneration.
      * 
@@ -58,13 +73,13 @@ If a new ParameterDefinition object is created then that new object shall be the
      * @param enableInstances If the generation of reports is being enabled, and the parameter is defined as being periodic, then the provider shall generate a report immediately and start the report interval from that report.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested parameters or groups is unknown.
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied groups is either not a group of groups or a group of ParameterIdentity objects.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One or more of the requested parameters or groups is unknown.
+     * @throws InvalidException One of the supplied groups is either not a group of groups or a group of ParameterIdentity objects.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList enableGeneration(Boolean isGroupIds,
-            org.ccsds.moims.mo.com.structures.InstanceBooleanPairList enableInstances,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    LongList enableGeneration(Boolean isGroupIds,
+            InstanceBooleanPairList enableInstances,
+            MALInteraction interaction) throws UnknownException, InvalidException, MALException;
     /**
      * Implements the operation listDefinition.
      * 
@@ -74,11 +89,11 @@ The wildcard value should be checked for first, if found no other checks of supp
 If a provided identifier does not include a wildcard and does not match an existing ParameterIdentity object then this operation shall fail with an UNKNOWN error.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One of the supplied identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mc.structures.ObjectInstancePairList listDefinition(org.ccsds.moims.mo.mal.structures.IdentifierList paramNames,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    ObjectInstancePairList listDefinition(IdentifierList paramNames,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Implements the operation addParameter.
      * 
@@ -91,12 +106,12 @@ If the supplied name matches an existing, but removed, ParameterIdentity then th
 The provider shall create a new ParameterDefinition object and store it, and any new ParameterIdentity objects, in the COM archive.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException One of the supplied ParameterIdentity objects contains an invalid name or a supplied interval is not supported by the provider.
-     * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the ParameterIdentity objects being added has supplied a parameter name that is already in use in the domain.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One of the supplied ParameterIdentity objects contains an invalid name or a supplied interval is not supported by the provider.
+     * @throws DuplicateException One or more of the ParameterIdentity objects being added has supplied a parameter name that is already in use in the domain.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mc.structures.ObjectInstancePairList addParameter(org.ccsds.moims.mo.mc.parameter.structures.ParameterCreationRequestList paramDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.mal.MALException;
+    ObjectInstancePairList addParameter(ParameterCreationRequestList paramDefDetails,
+            MALInteraction interaction) throws InvalidException, DuplicateException, MALException;
     /**
      * Implements the operation updateDefinition.
      * 
@@ -112,14 +127,14 @@ The provider shall create a new ParameterDefinition object and store it in the C
 The new ParameterDefinition object shall be the current ParameterDefinition used for the specific ParameterIdentity.
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.InvalidException The supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or a supplied interval is not supported by the provider.
+     * @throws InvalidException The supplied object instance identifiers list contains either a NULL or '0' or the two supplied lists are not the same length or a supplied interval is not supported by the provider.
 If the two lists are not the same length then the extra information field shall contain the first index of the element in the largest list which does not have corresponding element in the other list.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied ParameterIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One of the supplied ParameterIdentity object instance identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList updateDefinition(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
-            org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetailsList paramDefDetails,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    LongList updateDefinition(LongList paramInstIds,
+            ParameterDefinitionDetailsList paramDefDetails,
+            MALInteraction interaction) throws InvalidException, UnknownException, MALException;
     /**
      * Implements the operation removeParameter.
      * 
@@ -131,15 +146,15 @@ Matched ParameterIdentity and ParameterDefinition objects shall not be removed f
 If an error is raised then no parameters shall be removed as a result of this operation call.
 If the operation succeeds then the provider shall not publish parameter values for the deleted ParameterIdentity objects anymore.
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One of the supplied ParameterIdentity object instance identifiers is unknown.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One of the supplied ParameterIdentity object instance identifiers is unknown.
+     * @throws MALException if there is an implementation exception
      */
-    void removeParameter(org.ccsds.moims.mo.mal.structures.LongList paramInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void removeParameter(LongList paramInstIds,
+            MALInteraction interaction) throws UnknownException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.mc.parameter.provider.ParameterSkeleton skeleton);
+    void setSkeleton(ParameterSkeleton skeleton);
 }

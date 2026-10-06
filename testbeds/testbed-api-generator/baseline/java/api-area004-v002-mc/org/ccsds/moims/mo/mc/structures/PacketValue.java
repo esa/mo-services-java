@@ -1,10 +1,21 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * The PacketValue structure is used to represent each space packet published
  * by the provider.
  */
-public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PacketValue implements Composite {
 
     private static final long serialVersionUID = 1125899940397146L;
     /**
@@ -14,27 +25,27 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The payload field.
      */
-    private org.ccsds.moims.mo.mal.structures.Blob payload;
+    private Blob payload;
 
     /**
      * The timestamp field.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The apid field.
      */
-    private org.ccsds.moims.mo.mal.structures.UShort apid;
+    private UShort apid;
 
     /**
      * The keyValues field.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * Default constructor for PacketValue.
@@ -51,10 +62,10 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
      * @param apid The apid field.
      * @param keyValues The keyValues field.
      */
-    public PacketValue(org.ccsds.moims.mo.mal.structures.Blob payload,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.UShort apid,
-            org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues) {
+    public PacketValue(Blob payload,
+            Time timestamp,
+            UShort apid,
+            NullableAttributeList keyValues) {
         this.payload = payload;
         this.timestamp = timestamp;
         this.apid = apid;
@@ -68,9 +79,9 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
      * @param timestamp The timestamp field.
      * @param apid The apid field.
      */
-    public PacketValue(org.ccsds.moims.mo.mal.structures.Blob payload,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.UShort apid) {
+    public PacketValue(Blob payload,
+            Time timestamp,
+            UShort apid) {
         this.payload = payload;
         this.timestamp = timestamp;
         this.apid = apid;
@@ -78,8 +89,8 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.PacketValue();
+    public Element createElement() {
+        return new PacketValue();
     }
 
     /**
@@ -87,7 +98,7 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field payload
      */
-    public org.ccsds.moims.mo.mal.structures.Blob getPayload() {
+    public Blob getPayload() {
         return payload;
     }
 
@@ -96,7 +107,7 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -105,7 +116,7 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field apid
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getApid() {
+    public UShort getApid() {
         return apid;
     }
 
@@ -114,7 +125,7 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
      * 
      * @return The field keyValues
      */
-    public org.ccsds.moims.mo.mal.structures.NullableAttributeList getKeyValues() {
+    public NullableAttributeList getKeyValues() {
         return keyValues;
     }
 
@@ -186,15 +197,15 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (payload == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'payload' cannot be null!");
+            throw new MALException("The field 'payload' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (apid == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'apid' cannot be null!");
+            throw new MALException("The field 'apid' cannot be null!");
         }
         encoder.encodeBlob(payload);
         encoder.encodeTime(timestamp);
@@ -203,16 +214,16 @@ public final class PacketValue implements org.ccsds.moims.mo.mal.structures.Comp
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         payload = decoder.decodeBlob();
         timestamp = decoder.decodeTime();
         apid = decoder.decodeUShort();
-        keyValues = (org.ccsds.moims.mo.mal.structures.NullableAttributeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NullableAttributeList());
+        keyValues = (NullableAttributeList) decoder.decodeNullableElement(new NullableAttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

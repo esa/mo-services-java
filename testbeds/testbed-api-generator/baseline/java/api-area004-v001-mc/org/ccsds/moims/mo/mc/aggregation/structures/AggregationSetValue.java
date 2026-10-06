@@ -1,5 +1,13 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The AggregationSetValue structure holds the values for one set of parameter
  * values. If the definition sendUnchanged field is set to FALSE parameter
@@ -7,7 +15,7 @@ package org.ccsds.moims.mo.mc.aggregation.structures;
  * in this list. The parameter values must be held in the same order as that
  * defined in the matching AggregationDefinitionDetails.
  */
-public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationSetValue implements Composite {
 
     private static final long serialVersionUID = 1125925693423620L;
     /**
@@ -17,7 +25,7 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Optional delta time, from the timestamp of the aggregation for the first
@@ -27,14 +35,14 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * first parameter set of the aggregation or the last value of the previous
      * parameter set otherwise.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration deltaTime;
+    private Duration deltaTime;
 
     /**
      * Optional delta time between samples in this set. If NULL, then all samples
      * in this set are given the same time. This is usually driven by the sampleInterval
      * in the aggregation set definition.
      */
-    private org.ccsds.moims.mo.mal.structures.Duration intervalTime;
+    private Duration intervalTime;
 
     /**
      * List containing values of the parameters which are part of the aggregation.
@@ -42,7 +50,7 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * the aggregation. If there are more values than contained in the definition
      * then it is assumed that the parameters cycle as a complete parameter set.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValueList values;
+    private AggregationParameterValueList values;
 
     /**
      * Default constructor for AggregationSetValue.
@@ -58,9 +66,9 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * @param intervalTime Optional delta time between samples in this set. If NULL, then all samples in this set are given the same time. This is usually driven by the sampleInterval in the aggregation set definition.
      * @param values List containing values of the parameters which are part of the aggregation. The ordering of the list entries shall match that of the definition of the aggregation. If there are more values than contained in the definition then it is assumed that the parameters cycle as a complete parameter set.
      */
-    public AggregationSetValue(org.ccsds.moims.mo.mal.structures.Duration deltaTime,
-            org.ccsds.moims.mo.mal.structures.Duration intervalTime,
-            org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValueList values) {
+    public AggregationSetValue(Duration deltaTime,
+            Duration intervalTime,
+            AggregationParameterValueList values) {
         this.deltaTime = deltaTime;
         this.intervalTime = intervalTime;
         this.values = values;
@@ -71,15 +79,15 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * 
      * @param values List containing values of the parameters which are part of the aggregation. The ordering of the list entries shall match that of the definition of the aggregation. If there are more values than contained in the definition then it is assumed that the parameters cycle as a complete parameter set.
      */
-    public AggregationSetValue(org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValueList values) {
+    public AggregationSetValue(AggregationParameterValueList values) {
         this.deltaTime = null;
         this.intervalTime = null;
         this.values = values;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationSetValue();
+    public Element createElement() {
+        return new AggregationSetValue();
     }
 
     /**
@@ -87,7 +95,7 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field deltaTime
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getDeltaTime() {
+    public Duration getDeltaTime() {
         return deltaTime;
     }
 
@@ -96,7 +104,7 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field intervalTime
      */
-    public org.ccsds.moims.mo.mal.structures.Duration getIntervalTime() {
+    public Duration getIntervalTime() {
         return intervalTime;
     }
 
@@ -105,7 +113,7 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field values
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValueList getValues() {
+    public AggregationParameterValueList getValues() {
         return values;
     }
 
@@ -166,9 +174,9 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (values == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'values' cannot be null!");
+            throw new MALException("The field 'values' cannot be null!");
         }
         encoder.encodeNullableDuration(deltaTime);
         encoder.encodeNullableDuration(intervalTime);
@@ -176,15 +184,15 @@ public final class AggregationSetValue implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         deltaTime = decoder.decodeNullableDuration();
         intervalTime = decoder.decodeNullableDuration();
-        values = (org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValueList) decoder.decodeElement(new org.ccsds.moims.mo.mc.aggregation.structures.AggregationParameterValueList());
+        values = (AggregationParameterValueList) decoder.decodeElement(new AggregationParameterValueList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

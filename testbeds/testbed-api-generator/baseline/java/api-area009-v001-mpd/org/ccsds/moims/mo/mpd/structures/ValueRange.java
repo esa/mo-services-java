@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * A ValueRange is a concrete subtype of AttributeFilter that allows the specification
  * of an allowed (or disallowed) value range for a metadata attribute.
  */
-public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.AttributeFilter {
+public final class ValueRange extends AttributeFilter {
 
     private static final long serialVersionUID = 2533274807173129L;
     /**
@@ -14,17 +22,17 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The minimum value of the value range (greater than or equal to).
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute minimum;
+    private Attribute minimum;
 
     /**
      * The maximum value of the value range (less than or equal to).
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute maximum;
+    private Attribute maximum;
 
     /**
      * Default constructor for ValueRange.
@@ -41,10 +49,10 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
      * @param minimum The minimum value of the value range (greater than or equal to).
      * @param maximum The maximum value of the value range (less than or equal to).
      */
-    public ValueRange(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public ValueRange(Identifier name,
             Boolean include,
-            org.ccsds.moims.mo.mal.structures.Attribute minimum,
-            org.ccsds.moims.mo.mal.structures.Attribute maximum) {
+            Attribute minimum,
+            Attribute maximum) {
         super(name,
             include);
         this.minimum = minimum;
@@ -57,7 +65,7 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
      * @param name The name of the metadata attribute to filter. If the product metadata being evaluated does not contain an attribute with this name, then the evaluation of the filter shall be false.
      * @param include Indicates whether the filter is to include [TRUE] or exclude [FALSE] attribute values that match the filter.
      */
-    public ValueRange(org.ccsds.moims.mo.mal.structures.Identifier name,
+    public ValueRange(Identifier name,
             Boolean include) {
         super(name,
             include);
@@ -66,8 +74,8 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.ValueRange();
+    public Element createElement() {
+        return new ValueRange();
     }
 
     /**
@@ -75,7 +83,7 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
      * 
      * @return The field minimum
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getMinimum() {
+    public Attribute getMinimum() {
         return minimum;
     }
 
@@ -84,7 +92,7 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
      * 
      * @return The field maximum
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getMaximum() {
+    public Attribute getMaximum() {
         return maximum;
     }
 
@@ -138,22 +146,22 @@ public final class ValueRange extends org.ccsds.moims.mo.mpd.structures.Attribut
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableAttribute(minimum);
         encoder.encodeNullableAttribute(maximum);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        minimum = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
-        maximum = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        minimum = (Attribute) decoder.decodeNullableAttribute();
+        maximum = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

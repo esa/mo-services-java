@@ -1,5 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+
 /**
  * E1: RequestFilter is a data structure used in the context of MPS Planning
  * Request Service operations to specify a filtered set of planning requests.
@@ -7,7 +18,7 @@ package org.ccsds.moims.mo.mps.structures;
  * with no filter criteria; this corresponds to an open filter in which all
  * available planning requests are returned.
  */
-public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class RequestFilter implements Composite {
 
     private static final long serialVersionUID = 1407374900330904L;
     /**
@@ -17,49 +28,49 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Domain of the RequestInstance.  An ordered list representing a domain hierarchy,
      * ‘*’ can be used to represent a wildcard at that level.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * Reference to the RequestInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> instanceID;
+    private ObjectRef<RequestInstance> instanceID;
 
     /**
      * Query for request instances with a creation date and time in the specified
      * range.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindow creationTime;
+    private TimeWindow creationTime;
 
     /**
      * Reference to the RequestDefinition from which the RequestInstance was created.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> definitionID;
+    private ObjectRef<RequestDefinition> definitionID;
 
     /**
      * Reference of the User who initiated the RequestInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> userID;
+    private ObjectRef<PlanningUser> userID;
 
     /**
      * Reference supplied by User when submitting the RequestInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier userReference;
+    private Identifier userReference;
 
     /**
      * Current status (enum) of the RequestInstance.
      */
-    private org.ccsds.moims.mo.mps.structures.RequestStatusEnum status;
+    private RequestStatusEnum status;
 
     /**
      * Reference to the output Plan(s) generated in response to the RequestInstance.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList outputPlanRefs;
+    private ObjectRefList outputPlanRefs;
 
     /**
      * Default constructor for RequestFilter.
@@ -80,14 +91,14 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * @param status Current status (enum) of the RequestInstance.
      * @param outputPlanRefs Reference to the output Plan(s) generated in response to the RequestInstance.
      */
-    public RequestFilter(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> instanceID,
-            org.ccsds.moims.mo.mps.structures.TimeWindow creationTime,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> definitionID,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> userID,
-            org.ccsds.moims.mo.mal.structures.Identifier userReference,
-            org.ccsds.moims.mo.mps.structures.RequestStatusEnum status,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList outputPlanRefs) {
+    public RequestFilter(IdentifierList domain,
+            ObjectRef<RequestInstance> instanceID,
+            TimeWindow creationTime,
+            ObjectRef<RequestDefinition> definitionID,
+            ObjectRef<PlanningUser> userID,
+            Identifier userReference,
+            RequestStatusEnum status,
+            ObjectRefList outputPlanRefs) {
         this.domain = domain;
         this.instanceID = instanceID;
         this.creationTime = creationTime;
@@ -99,8 +110,8 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RequestFilter();
+    public Element createElement() {
+        return new RequestFilter();
     }
 
     /**
@@ -108,7 +119,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -117,7 +128,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field instanceID
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance> getInstanceID() {
+    public ObjectRef<RequestInstance> getInstanceID() {
         return instanceID;
     }
 
@@ -126,7 +137,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field creationTime
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindow getCreationTime() {
+    public TimeWindow getCreationTime() {
         return creationTime;
     }
 
@@ -135,7 +146,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field definitionID
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> getDefinitionID() {
+    public ObjectRef<RequestDefinition> getDefinitionID() {
         return definitionID;
     }
 
@@ -144,7 +155,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field userID
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> getUserID() {
+    public ObjectRef<PlanningUser> getUserID() {
         return userID;
     }
 
@@ -153,7 +164,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field userReference
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUserReference() {
+    public Identifier getUserReference() {
         return userReference;
     }
 
@@ -162,7 +173,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.RequestStatusEnum getStatus() {
+    public RequestStatusEnum getStatus() {
         return status;
     }
 
@@ -171,7 +182,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
      * 
      * @return The field outputPlanRefs
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getOutputPlanRefs() {
+    public ObjectRefList getOutputPlanRefs() {
         return outputPlanRefs;
     }
 
@@ -287,7 +298,7 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(domain);
         encoder.encodeNullableElement(instanceID);
         encoder.encodeNullableElement(creationTime);
@@ -299,20 +310,20 @@ public final class RequestFilter implements org.ccsds.moims.mo.mal.structures.Co
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        instanceID = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestInstance>());
-        creationTime = (org.ccsds.moims.mo.mps.structures.TimeWindow) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindow());
-        definitionID = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition>());
-        userID = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        instanceID = (ObjectRef<RequestInstance>) decoder.decodeNullableElement(new ObjectRef<RequestInstance>());
+        creationTime = (TimeWindow) decoder.decodeNullableElement(new TimeWindow());
+        definitionID = (ObjectRef<RequestDefinition>) decoder.decodeNullableElement(new ObjectRef<RequestDefinition>());
+        userID = (ObjectRef<PlanningUser>) decoder.decodeNullableElement(new ObjectRef<PlanningUser>());
         userReference = decoder.decodeNullableIdentifier();
-        status = (org.ccsds.moims.mo.mps.structures.RequestStatusEnum) decoder.decodeNullableElement(org.ccsds.moims.mo.mps.structures.RequestStatusEnum.REQUESTED);
-        outputPlanRefs = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        status = (RequestStatusEnum) decoder.decodeNullableElement(RequestStatusEnum.REQUESTED);
+        outputPlanRefs = (ObjectRefList) decoder.decodeNullableElement(new ObjectRefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

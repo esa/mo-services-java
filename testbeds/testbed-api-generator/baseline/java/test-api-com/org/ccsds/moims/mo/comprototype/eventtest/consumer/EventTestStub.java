@@ -1,5 +1,19 @@
 package org.ccsds.moims.mo.comprototype.eventtest.consumer;
 
+import org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.Duration;
+import org.ccsds.moims.mo.mal.structures.ShortList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+
 /**
  * Consumer stub for EventTest service.
  */
@@ -8,7 +22,7 @@ public class EventTestStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +30,7 @@ public class EventTestStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public EventTestStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public EventTestStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +40,7 @@ public class EventTestStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -34,14 +48,14 @@ public class EventTestStub {
      * Resets the EventTest service provider.
      * 
      * @param in1 The in1 field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void resetTest(String in1) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void resetTest(String in1) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.RESETTEST_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(EventTestServiceInfo.RESETTEST_OP, (in1 == null) ? null : new Union(in1));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -51,15 +65,15 @@ public class EventTestStub {
      * @param in1 The in1 field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncResetTest(String in1,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncResetTest(String in1,
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.RESETTEST_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(EventTestServiceInfo.RESETTEST_OP, adapter, (in1 == null) ? null : new Union(in1));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -70,17 +84,17 @@ public class EventTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueResetTest(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueResetTest(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.RESETTEST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(EventTestServiceInfo.RESETTEST_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -95,19 +109,19 @@ public class EventTestStub {
      * @param in3 The in3 field.
      * @param in4 The in4 field.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public Long createinstance(Short in1,
             String in2,
             String in3,
-            Long in4) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            Long in4) throws MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.CREATEINSTANCE_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2), (in3 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in3), (in4 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in4));
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE));
-            return (body0 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body0).getLongValue();
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            MALMessageBody body = consumer.request(EventTestServiceInfo.CREATEINSTANCE_OP, (in1 == null) ? null : new Union(in1), (in2 == null) ? null : new Union(in2), (in3 == null) ? null : new Union(in3), (in4 == null) ? null : new Union(in4));
+            Object body0 = (Object) body.getBodyElement(0, new Union(Long.MAX_VALUE));
+            return (body0 == null) ? null : ((Union) body0).getLongValue();
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -120,18 +134,18 @@ public class EventTestStub {
      * @param in4 The in4 field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncCreateinstance(Short in1,
+    public MALMessage asyncCreateinstance(Short in1,
             String in2,
             String in3,
             Long in4,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.CREATEINSTANCE_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2), (in3 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in3), (in4 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in4));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(EventTestServiceInfo.CREATEINSTANCE_OP, adapter, (in1 == null) ? null : new Union(in1), (in2 == null) ? null : new Union(in2), (in3 == null) ? null : new Union(in3), (in4 == null) ? null : new Union(in4));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -142,17 +156,17 @@ public class EventTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueCreateinstance(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueCreateinstance(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.CREATEINSTANCE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(EventTestServiceInfo.CREATEINSTANCE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -162,16 +176,16 @@ public class EventTestStub {
      * @param in1 The in1 field.
      * @param in2 The in2 field.
      * @param in3 The in3 field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void deleteInstance(Short in1,
             String in2,
-            Long in3) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            Long in3) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.DELETEINSTANCE_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2), (in3 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in3));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(EventTestServiceInfo.DELETEINSTANCE_OP, (in1 == null) ? null : new Union(in1), (in2 == null) ? null : new Union(in2), (in3 == null) ? null : new Union(in3));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -183,17 +197,17 @@ public class EventTestStub {
      * @param in3 The in3 field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncDeleteInstance(Short in1,
+    public MALMessage asyncDeleteInstance(Short in1,
             String in2,
             Long in3,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.DELETEINSTANCE_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), (in2 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in2), (in3 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in3));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(EventTestServiceInfo.DELETEINSTANCE_OP, adapter, (in1 == null) ? null : new Union(in1), (in2 == null) ? null : new Union(in2), (in3 == null) ? null : new Union(in3));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -204,17 +218,17 @@ public class EventTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueDeleteInstance(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueDeleteInstance(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.DELETEINSTANCE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(EventTestServiceInfo.DELETEINSTANCE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -227,17 +241,17 @@ public class EventTestStub {
      * @param in2 The in2 field.
      * @param in3 The in3 field.
      * @param in4 The in4 field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updateInstance(Long in1,
-            org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum in2,
-            org.ccsds.moims.mo.mal.structures.Duration in3,
-            org.ccsds.moims.mo.mal.structures.ShortList in4) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            BasicEnum in2,
+            Duration in3,
+            ShortList in4) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.UPDATEINSTANCE_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), in2, in3, in4);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(EventTestServiceInfo.UPDATEINSTANCE_OP, (in1 == null) ? null : new Union(in1), in2, in3, in4);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -250,18 +264,18 @@ public class EventTestStub {
      * @param in4 The in4 field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateInstance(Long in1,
-            org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum in2,
-            org.ccsds.moims.mo.mal.structures.Duration in3,
-            org.ccsds.moims.mo.mal.structures.ShortList in4,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncUpdateInstance(Long in1,
+            BasicEnum in2,
+            Duration in3,
+            ShortList in4,
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.UPDATEINSTANCE_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), in2, in3, in4);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(EventTestServiceInfo.UPDATEINSTANCE_OP, adapter, (in1 == null) ? null : new Union(in1), in2, in3, in4);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -272,17 +286,17 @@ public class EventTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueUpdateInstance(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueUpdateInstance(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.UPDATEINSTANCE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(EventTestServiceInfo.UPDATEINSTANCE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -295,17 +309,17 @@ public class EventTestStub {
      * @param in2 The in2 field.
      * @param in3 The in3 field.
      * @param in4 The in4 field.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
     public void updateInstanceComposite(Long in1,
-            org.ccsds.moims.mo.mal.structures.UOctet in2,
+            UOctet in2,
             Byte in3,
-            Double in4) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            Double in4) throws MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.UPDATEINSTANCECOMPOSITE_OP, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), in2, (in3 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in3), (in4 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in4));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.submit(EventTestServiceInfo.UPDATEINSTANCECOMPOSITE_OP, (in1 == null) ? null : new Union(in1), in2, (in3 == null) ? null : new Union(in3), (in4 == null) ? null : new Union(in4));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -318,18 +332,18 @@ public class EventTestStub {
      * @param in4 The in4 field.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncUpdateInstanceComposite(Long in1,
-            org.ccsds.moims.mo.mal.structures.UOctet in2,
+    public MALMessage asyncUpdateInstanceComposite(Long in1,
+            UOctet in2,
             Byte in3,
             Double in4,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.UPDATEINSTANCECOMPOSITE_OP, adapter, (in1 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in1), in2, (in3 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in3), (in4 == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(in4));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(EventTestServiceInfo.UPDATEINSTANCECOMPOSITE_OP, adapter, (in1 == null) ? null : new Union(in1), in2, (in3 == null) ? null : new Union(in3), (in4 == null) ? null : new Union(in4));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -340,17 +354,17 @@ public class EventTestStub {
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueUpdateInstanceComposite(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueUpdateInstanceComposite(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.comprototype.eventtest.consumer.EventTestAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            EventTestAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo.UPDATEINSTANCECOMPOSITE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(EventTestServiceInfo.UPDATEINSTANCECOMPOSITE_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The IPTestResult structure.
  */
-public final class IPTestResult implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class IPTestResult implements Composite {
 
     private static final long serialVersionUID = 28147497687842828L;
     /**
@@ -13,17 +21,17 @@ public final class IPTestResult implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The transaction identifier assigned to the last interaction.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier transactionId;
+    private Identifier transactionId;
 
     /**
      * The list of assertions checked by the provider.
      */
-    private org.ccsds.moims.mo.malprototype.structures.AssertionList assertions;
+    private AssertionList assertions;
 
     /**
      * Default constructor for IPTestResult.
@@ -38,15 +46,15 @@ public final class IPTestResult implements org.ccsds.moims.mo.mal.structures.Com
      * @param transactionId The transaction identifier assigned to the last interaction
      * @param assertions The list of assertions checked by the provider.
      */
-    public IPTestResult(org.ccsds.moims.mo.mal.structures.Identifier transactionId,
-            org.ccsds.moims.mo.malprototype.structures.AssertionList assertions) {
+    public IPTestResult(Identifier transactionId,
+            AssertionList assertions) {
         this.transactionId = transactionId;
         this.assertions = assertions;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.IPTestResult();
+    public Element createElement() {
+        return new IPTestResult();
     }
 
     /**
@@ -54,7 +62,7 @@ public final class IPTestResult implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field transactionId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getTransactionId() {
+    public Identifier getTransactionId() {
         return transactionId;
     }
 
@@ -63,7 +71,7 @@ public final class IPTestResult implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field assertions
      */
-    public org.ccsds.moims.mo.malprototype.structures.AssertionList getAssertions() {
+    public AssertionList getAssertions() {
         return assertions;
     }
 
@@ -113,20 +121,20 @@ public final class IPTestResult implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableIdentifier(transactionId);
         encoder.encodeNullableElement(assertions);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         transactionId = decoder.decodeNullableIdentifier();
-        assertions = (org.ccsds.moims.mo.malprototype.structures.AssertionList) decoder.decodeNullableElement(new org.ccsds.moims.mo.malprototype.structures.AssertionList());
+        assertions = (AssertionList) decoder.decodeNullableElement(new AssertionList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

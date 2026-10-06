@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.com.archive.structures.ExpressionOperator;
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ParameterExpression structure represents a simple expression between
  * a parameter and a value for that parameter.
  */
-public final class ParameterExpression implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterExpression implements Composite {
 
     private static final long serialVersionUID = 1125899923619844L;
     /**
@@ -14,18 +24,18 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Holds the object instance identifier of the ParameterIdentity object to
      * be used in the expression.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey parameterId;
+    private ObjectKey parameterId;
 
     /**
      * The expression operator.
      */
-    private org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator;
+    private ExpressionOperator operator;
 
     /**
      * If set to TRUE the converted value field of the parameter value should
@@ -36,7 +46,7 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
     /**
      * The value to be used in the expression.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute value;
+    private Attribute value;
 
     /**
      * Default constructor for ParameterExpression.
@@ -53,10 +63,10 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
      * @param useConverted If set to TRUE the converted value field of the parameter value should be used, otherwise the raw value field should be used.
      * @param value The value to be used in the expression.
      */
-    public ParameterExpression(org.ccsds.moims.mo.com.structures.ObjectKey parameterId,
-            org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator,
+    public ParameterExpression(ObjectKey parameterId,
+            ExpressionOperator operator,
             Boolean useConverted,
-            org.ccsds.moims.mo.mal.structures.Attribute value) {
+            Attribute value) {
         this.parameterId = parameterId;
         this.operator = operator;
         this.useConverted = useConverted;
@@ -70,8 +80,8 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
      * @param operator The expression operator.
      * @param useConverted If set to TRUE the converted value field of the parameter value should be used, otherwise the raw value field should be used.
      */
-    public ParameterExpression(org.ccsds.moims.mo.com.structures.ObjectKey parameterId,
-            org.ccsds.moims.mo.com.archive.structures.ExpressionOperator operator,
+    public ParameterExpression(ObjectKey parameterId,
+            ExpressionOperator operator,
             Boolean useConverted) {
         this.parameterId = parameterId;
         this.operator = operator;
@@ -80,8 +90,8 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ParameterExpression();
+    public Element createElement() {
+        return new ParameterExpression();
     }
 
     /**
@@ -89,7 +99,7 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field parameterId
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getParameterId() {
+    public ObjectKey getParameterId() {
         return parameterId;
     }
 
@@ -98,7 +108,7 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field operator
      */
-    public org.ccsds.moims.mo.com.archive.structures.ExpressionOperator getOperator() {
+    public ExpressionOperator getOperator() {
         return operator;
     }
 
@@ -116,7 +126,7 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getValue() {
+    public Attribute getValue() {
         return value;
     }
 
@@ -188,15 +198,15 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (parameterId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterId' cannot be null!");
+            throw new MALException("The field 'parameterId' cannot be null!");
         }
         if (operator == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'operator' cannot be null!");
+            throw new MALException("The field 'operator' cannot be null!");
         }
         if (useConverted == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'useConverted' cannot be null!");
+            throw new MALException("The field 'useConverted' cannot be null!");
         }
         encoder.encodeElement(parameterId);
         encoder.encodeElement(operator);
@@ -205,16 +215,16 @@ public final class ParameterExpression implements org.ccsds.moims.mo.mal.structu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        parameterId = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
-        operator = (org.ccsds.moims.mo.com.archive.structures.ExpressionOperator) decoder.decodeElement(org.ccsds.moims.mo.com.archive.structures.ExpressionOperator.EQUAL);
+    public Element decode(MALDecoder decoder) throws MALException {
+        parameterId = (ObjectKey) decoder.decodeElement(new ObjectKey());
+        operator = (ExpressionOperator) decoder.decodeElement(ExpressionOperator.EQUAL);
         useConverted = decoder.decodeBoolean();
-        value = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        value = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * The CheckResultSummary structure holds details about a specific check link
  * and its evaluated result.
  */
-public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CheckResultSummary implements Composite {
 
     private static final long serialVersionUID = 1125917103489028L;
     /**
@@ -14,7 +23,7 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier of the check link.
@@ -30,18 +39,18 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
      * The object instance key of the ParameterIdentity being checked. NULL only
      * for Compound checks.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey parameterId;
+    private ObjectKey parameterId;
 
     /**
      * The timestamp of the check result. If as a result of max reporting interval
      * expiring then it shall contain the expiration timestamp.
      */
-    private org.ccsds.moims.mo.mal.structures.Time evaluationTime;
+    private Time evaluationTime;
 
     /**
      * The check result value.
      */
-    private org.ccsds.moims.mo.mc.check.structures.CheckResult result;
+    private CheckResult result;
 
     /**
      * Default constructor for CheckResultSummary.
@@ -61,9 +70,9 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
      */
     public CheckResultSummary(Long linkId,
             Boolean checkEnabled,
-            org.ccsds.moims.mo.com.structures.ObjectKey parameterId,
-            org.ccsds.moims.mo.mal.structures.Time evaluationTime,
-            org.ccsds.moims.mo.mc.check.structures.CheckResult result) {
+            ObjectKey parameterId,
+            Time evaluationTime,
+            CheckResult result) {
         this.linkId = linkId;
         this.checkEnabled = checkEnabled;
         this.parameterId = parameterId;
@@ -81,8 +90,8 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
      */
     public CheckResultSummary(Long linkId,
             Boolean checkEnabled,
-            org.ccsds.moims.mo.mal.structures.Time evaluationTime,
-            org.ccsds.moims.mo.mc.check.structures.CheckResult result) {
+            Time evaluationTime,
+            CheckResult result) {
         this.linkId = linkId;
         this.checkEnabled = checkEnabled;
         this.parameterId = null;
@@ -91,8 +100,8 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CheckResultSummary();
+    public Element createElement() {
+        return new CheckResultSummary();
     }
 
     /**
@@ -118,7 +127,7 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field parameterId
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getParameterId() {
+    public ObjectKey getParameterId() {
         return parameterId;
     }
 
@@ -127,7 +136,7 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field evaluationTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getEvaluationTime() {
+    public Time getEvaluationTime() {
         return evaluationTime;
     }
 
@@ -136,7 +145,7 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field result
      */
-    public org.ccsds.moims.mo.mc.check.structures.CheckResult getResult() {
+    public CheckResult getResult() {
         return result;
     }
 
@@ -219,18 +228,18 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (linkId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'linkId' cannot be null!");
+            throw new MALException("The field 'linkId' cannot be null!");
         }
         if (checkEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkEnabled' cannot be null!");
+            throw new MALException("The field 'checkEnabled' cannot be null!");
         }
         if (evaluationTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'evaluationTime' cannot be null!");
+            throw new MALException("The field 'evaluationTime' cannot be null!");
         }
         if (result == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'result' cannot be null!");
+            throw new MALException("The field 'result' cannot be null!");
         }
         encoder.encodeLong(linkId);
         encoder.encodeBoolean(checkEnabled);
@@ -240,17 +249,17 @@ public final class CheckResultSummary implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         linkId = decoder.decodeLong();
         checkEnabled = decoder.decodeBoolean();
-        parameterId = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeNullableElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
+        parameterId = (ObjectKey) decoder.decodeNullableElement(new ObjectKey());
         evaluationTime = decoder.decodeTime();
-        result = (org.ccsds.moims.mo.mc.check.structures.CheckResult) decoder.decodeElement(new org.ccsds.moims.mo.mc.check.structures.CheckResult());
+        result = (CheckResult) decoder.decodeElement(new CheckResult());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

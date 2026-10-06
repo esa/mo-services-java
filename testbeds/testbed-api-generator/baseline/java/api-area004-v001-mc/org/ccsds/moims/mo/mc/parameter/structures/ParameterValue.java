@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.parameter.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+
 /**
  * This structure holds a specific value of the parameter. The type of the
  * value shall match that specified in the parameter definition.
  */
-public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterValue implements Composite {
 
     private static final long serialVersionUID = 1125908513554434L;
     /**
@@ -14,24 +23,24 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Holds the validity state for a parameter value. If the parameter is valid
      * then this should be set to &quot;0&quot;.
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet validityState;
+    private UOctet validityState;
 
     /**
      * The parameter raw value. The value of NULL is a valid value and carries
      * no special significance in the parameter service.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute rawValue;
+    private Attribute rawValue;
 
     /**
      * The parameter converted value.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute convertedValue;
+    private Attribute convertedValue;
 
     /**
      * Default constructor for ParameterValue.
@@ -47,9 +56,9 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * @param rawValue The parameter raw value. The value of NULL is a valid value and carries no special significance in the parameter service.
      * @param convertedValue The parameter converted value.
      */
-    public ParameterValue(org.ccsds.moims.mo.mal.structures.UOctet validityState,
-            org.ccsds.moims.mo.mal.structures.Attribute rawValue,
-            org.ccsds.moims.mo.mal.structures.Attribute convertedValue) {
+    public ParameterValue(UOctet validityState,
+            Attribute rawValue,
+            Attribute convertedValue) {
         this.validityState = validityState;
         this.rawValue = rawValue;
         this.convertedValue = convertedValue;
@@ -60,15 +69,15 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @param validityState Holds the validity state for a parameter value. If the parameter is valid then this should be set to '0'.
      */
-    public ParameterValue(org.ccsds.moims.mo.mal.structures.UOctet validityState) {
+    public ParameterValue(UOctet validityState) {
         this.validityState = validityState;
         this.rawValue = null;
         this.convertedValue = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.parameter.structures.ParameterValue();
+    public Element createElement() {
+        return new ParameterValue();
     }
 
     /**
@@ -76,7 +85,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field validityState
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getValidityState() {
+    public UOctet getValidityState() {
         return validityState;
     }
 
@@ -85,7 +94,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field rawValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getRawValue() {
+    public Attribute getRawValue() {
         return rawValue;
     }
 
@@ -94,7 +103,7 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field convertedValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getConvertedValue() {
+    public Attribute getConvertedValue() {
         return convertedValue;
     }
 
@@ -155,9 +164,9 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (validityState == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'validityState' cannot be null!");
+            throw new MALException("The field 'validityState' cannot be null!");
         }
         encoder.encodeUOctet(validityState);
         encoder.encodeNullableAttribute(rawValue);
@@ -165,15 +174,15 @@ public final class ParameterValue implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         validityState = decoder.decodeUOctet();
-        rawValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
-        convertedValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        rawValue = (Attribute) decoder.decodeNullableAttribute();
+        convertedValue = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

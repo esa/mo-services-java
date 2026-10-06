@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E4: A variation on ResourceProfile, the RelativeResourceProfile uses relative
  * timestamps of type Duration (indicating an offset from a reference time,
  * such as the start time of an Activity).  RelativeResourceProfiles are used
  * in the context of a complex resource constraint.
  */
-public final class RelativeResourceProfile implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class RelativeResourceProfile implements Composite {
 
     private static final long serialVersionUID = 1407374900330803L;
     /**
@@ -16,17 +24,17 @@ public final class RelativeResourceProfile implements org.ccsds.moims.mo.mal.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to a Resource.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resource;
+    private ObjectRef<Resource> resource;
 
     /**
      * Set of RelativeProfileSegments.
      */
-    private org.ccsds.moims.mo.mps.structures.RelativeProfileSegmentList profileSegments;
+    private RelativeProfileSegmentList profileSegments;
 
     /**
      * Default constructor for RelativeResourceProfile.
@@ -41,15 +49,15 @@ public final class RelativeResourceProfile implements org.ccsds.moims.mo.mal.str
      * @param resource Reference to a Resource.
      * @param profileSegments Set of RelativeProfileSegments.
      */
-    public RelativeResourceProfile(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> resource,
-            org.ccsds.moims.mo.mps.structures.RelativeProfileSegmentList profileSegments) {
+    public RelativeResourceProfile(ObjectRef<Resource> resource,
+            RelativeProfileSegmentList profileSegments) {
         this.resource = resource;
         this.profileSegments = profileSegments;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RelativeResourceProfile();
+    public Element createElement() {
+        return new RelativeResourceProfile();
     }
 
     /**
@@ -57,7 +65,7 @@ public final class RelativeResourceProfile implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field resource
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource> getResource() {
+    public ObjectRef<Resource> getResource() {
         return resource;
     }
 
@@ -66,7 +74,7 @@ public final class RelativeResourceProfile implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field profileSegments
      */
-    public org.ccsds.moims.mo.mps.structures.RelativeProfileSegmentList getProfileSegments() {
+    public RelativeProfileSegmentList getProfileSegments() {
         return profileSegments;
     }
 
@@ -116,26 +124,26 @@ public final class RelativeResourceProfile implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (resource == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'resource' cannot be null!");
+            throw new MALException("The field 'resource' cannot be null!");
         }
         if (profileSegments == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'profileSegments' cannot be null!");
+            throw new MALException("The field 'profileSegments' cannot be null!");
         }
         encoder.encodeElement(resource);
         encoder.encodeElement(profileSegments);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        resource = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Resource>());
-        profileSegments = (org.ccsds.moims.mo.mps.structures.RelativeProfileSegmentList) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.RelativeProfileSegmentList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        resource = (ObjectRef<Resource>) decoder.decodeElement(new ObjectRef<Resource>());
+        profileSegments = (RelativeProfileSegmentList) decoder.decodeElement(new RelativeProfileSegmentList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

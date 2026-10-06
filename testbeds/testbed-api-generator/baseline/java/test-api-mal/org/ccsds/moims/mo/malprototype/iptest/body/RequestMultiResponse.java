@@ -1,5 +1,7 @@
 package org.ccsds.moims.mo.malprototype.iptest.body;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * Multi body return class for RequestMultiResponse.
  */
@@ -13,7 +15,7 @@ public final class RequestMultiResponse {
     /**
      * output2: .
      */
-    private org.ccsds.moims.mo.mal.structures.Element output2;
+    private Element output2;
 
     /**
      * Default constructor for RequestMultiResponse.
@@ -29,7 +31,7 @@ public final class RequestMultiResponse {
      * @param output2 The output2 field.
      */
     public RequestMultiResponse(String output1,
-            org.ccsds.moims.mo.mal.structures.Element output2) {
+            Element output2) {
         this.output1 = output1;
         this.output2 = output2;
     }
@@ -48,7 +50,7 @@ public final class RequestMultiResponse {
      * 
      * @return The field output2
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOutput2() {
+    public Element getOutput2() {
         return output2;
     }
 

@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for AggregationCategory.
  */
-public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class AggregationCategory extends Enumeration {
 
     private static final long serialVersionUID = 1125925693423623L;
     /**
@@ -13,7 +17,7 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for GENERAL.
@@ -23,7 +27,7 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
     /**
      * Enumeration singleton for value GENERAL.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory GENERAL = new org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory(org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory.GENERAL_VALUE);
+    public static final AggregationCategory GENERAL = new AggregationCategory(AggregationCategory.GENERAL_VALUE);
 
     /**
      * Enumeration value for DIAGNOSTIC.
@@ -33,12 +37,12 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
     /**
      * Enumeration singleton for value DIAGNOSTIC.
      */
-    public static final org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory DIAGNOSTIC = new org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory(org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory.DIAGNOSTIC_VALUE);
+    public static final AggregationCategory DIAGNOSTIC = new AggregationCategory(AggregationCategory.DIAGNOSTIC_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory[] _ENUMERATIONS = {
+    private static final AggregationCategory[] _ENUMERATIONS = {
         GENERAL, DIAGNOSTIC};
 
     /**
@@ -77,7 +81,7 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.aggregation.structures.AggregationCategory fromString(String s) {
+    public static AggregationCategory fromString(String s) {
         switch (s) {
             case "GENERAL":
                 return AggregationCategory.GENERAL;
@@ -89,7 +93,7 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case GENERAL_VALUE:
                 return AggregationCategory.GENERAL;
@@ -101,7 +105,7 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -111,7 +115,7 @@ public final class AggregationCategory extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

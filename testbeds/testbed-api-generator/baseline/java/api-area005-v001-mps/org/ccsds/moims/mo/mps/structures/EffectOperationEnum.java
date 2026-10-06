@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for EffectOperationEnum.
  */
-public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class EffectOperationEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330545L;
     /**
@@ -13,7 +17,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for SET.
@@ -23,7 +27,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     /**
      * Enumeration singleton for value SET.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EffectOperationEnum SET = new org.ccsds.moims.mo.mps.structures.EffectOperationEnum(org.ccsds.moims.mo.mps.structures.EffectOperationEnum.SET_VALUE);
+    public static final EffectOperationEnum SET = new EffectOperationEnum(EffectOperationEnum.SET_VALUE);
 
     /**
      * Enumeration value for INCREASE.
@@ -33,7 +37,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     /**
      * Enumeration singleton for value INCREASE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EffectOperationEnum INCREASE = new org.ccsds.moims.mo.mps.structures.EffectOperationEnum(org.ccsds.moims.mo.mps.structures.EffectOperationEnum.INCREASE_VALUE);
+    public static final EffectOperationEnum INCREASE = new EffectOperationEnum(EffectOperationEnum.INCREASE_VALUE);
 
     /**
      * Enumeration value for DECREASE.
@@ -43,12 +47,12 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     /**
      * Enumeration singleton for value DECREASE.
      */
-    public static final org.ccsds.moims.mo.mps.structures.EffectOperationEnum DECREASE = new org.ccsds.moims.mo.mps.structures.EffectOperationEnum(org.ccsds.moims.mo.mps.structures.EffectOperationEnum.DECREASE_VALUE);
+    public static final EffectOperationEnum DECREASE = new EffectOperationEnum(EffectOperationEnum.DECREASE_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.EffectOperationEnum[] _ENUMERATIONS = {
+    private static final EffectOperationEnum[] _ENUMERATIONS = {
         SET, INCREASE, DECREASE};
 
     /**
@@ -89,7 +93,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.EffectOperationEnum fromString(String s) {
+    public static EffectOperationEnum fromString(String s) {
         switch (s) {
             case "SET":
                 return EffectOperationEnum.SET;
@@ -103,7 +107,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case SET_VALUE:
                 return EffectOperationEnum.SET;
@@ -117,7 +121,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -127,7 +131,7 @@ public final class EffectOperationEnum extends org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

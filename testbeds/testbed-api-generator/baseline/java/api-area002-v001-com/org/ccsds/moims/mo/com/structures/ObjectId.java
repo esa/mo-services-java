@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.com.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ObjectId structure combines an object type and an object key such that
  * it identifies the instance and type of an object for a specific domain.
  */
-public final class ObjectId implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ObjectId implements Composite {
 
     private static final long serialVersionUID = 562949970198531L;
     /**
@@ -14,17 +21,17 @@ public final class ObjectId implements org.ccsds.moims.mo.mal.structures.Composi
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The fully qualified unique identifier of the type.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectType type;
+    private ObjectType type;
 
     /**
      * The combination of the object domain and object instance identifier.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey key;
+    private ObjectKey key;
 
     /**
      * Default constructor for ObjectId.
@@ -39,15 +46,15 @@ public final class ObjectId implements org.ccsds.moims.mo.mal.structures.Composi
      * @param type The fully qualified unique identifier of the type.
      * @param key The combination of the object domain and object instance identifier.
      */
-    public ObjectId(org.ccsds.moims.mo.com.structures.ObjectType type,
-            org.ccsds.moims.mo.com.structures.ObjectKey key) {
+    public ObjectId(ObjectType type,
+            ObjectKey key) {
         this.type = type;
         this.key = key;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.structures.ObjectId();
+    public Element createElement() {
+        return new ObjectId();
     }
 
     /**
@@ -55,7 +62,7 @@ public final class ObjectId implements org.ccsds.moims.mo.mal.structures.Composi
      * 
      * @return The field type
      */
-    public org.ccsds.moims.mo.com.structures.ObjectType getType() {
+    public ObjectType getType() {
         return type;
     }
 
@@ -64,7 +71,7 @@ public final class ObjectId implements org.ccsds.moims.mo.mal.structures.Composi
      * 
      * @return The field key
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getKey() {
+    public ObjectKey getKey() {
         return key;
     }
 
@@ -114,26 +121,26 @@ public final class ObjectId implements org.ccsds.moims.mo.mal.structures.Composi
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (type == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'type' cannot be null!");
+            throw new MALException("The field 'type' cannot be null!");
         }
         if (key == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'key' cannot be null!");
+            throw new MALException("The field 'key' cannot be null!");
         }
         encoder.encodeElement(type);
         encoder.encodeElement(key);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        type = (org.ccsds.moims.mo.com.structures.ObjectType) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectType());
-        key = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
+    public Element decode(MALDecoder decoder) throws MALException {
+        type = (ObjectType) decoder.decodeElement(new ObjectType());
+        key = (ObjectKey) decoder.decodeElement(new ObjectKey());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

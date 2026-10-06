@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The DestinationLostException exception. Destination lost halfway through
  * conversation.
  */
-public final class DestinationLostException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class DestinationLostException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Destination Lost";
 

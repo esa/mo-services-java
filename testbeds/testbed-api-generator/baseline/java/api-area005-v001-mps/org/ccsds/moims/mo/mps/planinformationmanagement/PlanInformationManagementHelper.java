@@ -8,7 +8,7 @@ public class PlanInformationManagementHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo PLANINFORMATIONMANAGEMENT_SERVICE = new org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo();
+    public static final PlanInformationManagementServiceInfo PLANINFORMATIONMANAGEMENT_SERVICE = new PlanInformationManagementServiceInfo();
 
     private PlanInformationManagementHelper() {
         // Utility class; not meant to be instantiated.

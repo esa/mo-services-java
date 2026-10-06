@@ -1,5 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * E4: A resource is an MO object that contains both the static fields that
  * define a planning resource and a dynamic field that holds its current value.
@@ -14,7 +24,7 @@ package org.ccsds.moims.mo.mps.structures;
  * data validation is applicable.  The following fields are applicable to
  * the base type and all subtypes.
  */
-public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class Resource extends MOObject {
 
     private static final long serialVersionUID = 1407374900330797L;
     /**
@@ -24,7 +34,7 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Description of the Resource.
@@ -35,7 +45,7 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * Specifies the data type of the Resource, which must be a supported MAL
      * Attribute type.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeType dataType;
+    private AttributeType dataType;
 
     /**
      * Optional.  Specifies the units of a single quantity, in which the value
@@ -47,14 +57,14 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * Optional.  Specifies the allowed range of values for the Resource, with
      * concrete subtypes specific to the data type of the Resource.
      */
-    private org.ccsds.moims.mo.mps.structures.ValidationDetails validationData;
+    private ValidationDetails validationData;
 
     /**
      * Value of the resource.  MAL Attribute type must match the dataType of the
      * Resource definition. The value is only nullable in the context of a Resource
      * definition (planning configuration data).
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute value;
+    private Attribute value;
 
     /**
      * Default constructor for Resource.
@@ -73,12 +83,12 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * @param validationData Optional.  Specifies the allowed range of values for the Resource, with concrete subtypes specific to the data type of the Resource.
      * @param value Value of the resource.  MAL Attribute type must match the dataType of the Resource definition. The value is only nullable in the context of a Resource definition (planning configuration data).
      */
-    public Resource(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public Resource(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mal.structures.AttributeType dataType,
+            AttributeType dataType,
             String units,
-            org.ccsds.moims.mo.mps.structures.ValidationDetails validationData,
-            org.ccsds.moims.mo.mal.structures.Attribute value) {
+            ValidationDetails validationData,
+            Attribute value) {
         super(objectIdentity);
         this.description = description;
         this.dataType = dataType;
@@ -94,9 +104,9 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * @param description Description of the Resource.
      * @param dataType Specifies the data type of the Resource, which must be a supported MAL Attribute type.
      */
-    public Resource(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public Resource(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mal.structures.AttributeType dataType) {
+            AttributeType dataType) {
         super(objectIdentity);
         this.description = description;
         this.dataType = dataType;
@@ -106,8 +116,8 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.Resource();
+    public Element createElement() {
+        return new Resource();
     }
 
     /**
@@ -124,7 +134,7 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field dataType
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeType getDataType() {
+    public AttributeType getDataType() {
         return dataType;
     }
 
@@ -142,7 +152,7 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field validationData
      */
-    public org.ccsds.moims.mo.mps.structures.ValidationDetails getValidationData() {
+    public ValidationDetails getValidationData() {
         return validationData;
     }
 
@@ -151,7 +161,7 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getValue() {
+    public Attribute getValue() {
         return value;
     }
 
@@ -238,13 +248,13 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (dataType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'dataType' cannot be null!");
+            throw new MALException("The field 'dataType' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeElement(dataType);
@@ -254,18 +264,18 @@ public final class Resource extends org.ccsds.moims.mo.mal.structures.MOObject {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
-        dataType = (org.ccsds.moims.mo.mal.structures.AttributeType) decoder.decodeElement(org.ccsds.moims.mo.mal.structures.AttributeType.BLOB);
+        dataType = (AttributeType) decoder.decodeElement(AttributeType.BLOB);
         units = decoder.decodeNullableString();
-        validationData = (org.ccsds.moims.mo.mps.structures.ValidationDetails) decoder.decodeNullableAbstractElement();
-        value = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeNullableAttribute();
+        validationData = (ValidationDetails) decoder.decodeNullableAbstractElement();
+        value = (Attribute) decoder.decodeNullableAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

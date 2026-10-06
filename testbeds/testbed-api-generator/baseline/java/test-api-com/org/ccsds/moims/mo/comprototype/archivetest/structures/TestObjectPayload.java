@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.comprototype.archivetest.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IntegerList;
+
 /**
  * Object body to test the Archive service.
  */
-public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class TestObjectPayload implements Composite {
 
     private static final long serialVersionUID = 56295021128712193L;
     /**
@@ -13,7 +21,7 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The booleanField field.
@@ -33,17 +41,17 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
     /**
      * The compositeField field.
      */
-    private org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite compositeField;
+    private SubComposite compositeField;
 
     /**
      * The enumeratedField field.
      */
-    private org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject enumeratedField;
+    private EnumeratedObject enumeratedField;
 
     /**
      * The listField field.
      */
-    private org.ccsds.moims.mo.mal.structures.IntegerList listField;
+    private IntegerList listField;
 
     /**
      * Default constructor for TestObjectPayload.
@@ -65,9 +73,9 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
     public TestObjectPayload(Boolean booleanField,
             Integer integerField,
             String stringField,
-            org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite compositeField,
-            org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject enumeratedField,
-            org.ccsds.moims.mo.mal.structures.IntegerList listField) {
+            SubComposite compositeField,
+            EnumeratedObject enumeratedField,
+            IntegerList listField) {
         this.booleanField = booleanField;
         this.integerField = integerField;
         this.stringField = stringField;
@@ -77,8 +85,8 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.comprototype.archivetest.structures.TestObjectPayload();
+    public Element createElement() {
+        return new TestObjectPayload();
     }
 
     /**
@@ -113,7 +121,7 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field compositeField
      */
-    public org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite getCompositeField() {
+    public SubComposite getCompositeField() {
         return compositeField;
     }
 
@@ -122,7 +130,7 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field enumeratedField
      */
-    public org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject getEnumeratedField() {
+    public EnumeratedObject getEnumeratedField() {
         return enumeratedField;
     }
 
@@ -131,7 +139,7 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field listField
      */
-    public org.ccsds.moims.mo.mal.structures.IntegerList getListField() {
+    public IntegerList getListField() {
         return listField;
     }
 
@@ -225,7 +233,7 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableBoolean(booleanField);
         encoder.encodeNullableInteger(integerField);
         encoder.encodeNullableString(stringField);
@@ -235,18 +243,18 @@ public final class TestObjectPayload implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         booleanField = decoder.decodeNullableBoolean();
         integerField = decoder.decodeNullableInteger();
         stringField = decoder.decodeNullableString();
-        compositeField = (org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite) decoder.decodeNullableElement(new org.ccsds.moims.mo.comprototype.archivetest.structures.SubComposite());
-        enumeratedField = (org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject) decoder.decodeNullableElement(org.ccsds.moims.mo.comprototype.archivetest.structures.EnumeratedObject.OBJECT1);
-        listField = (org.ccsds.moims.mo.mal.structures.IntegerList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IntegerList());
+        compositeField = (SubComposite) decoder.decodeNullableElement(new SubComposite());
+        enumeratedField = (EnumeratedObject) decoder.decodeNullableElement(EnumeratedObject.OBJECT1);
+        listField = (IntegerList) decoder.decodeNullableElement(new IntegerList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E7: Specifies a range of revolution angles for a rotating spacecraft.
  */
-public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structures.GeometricConstraint {
+public final class RevolutionConstraint extends GeometricConstraint {
 
     private static final long serialVersionUID = 1407374900330538L;
     /**
@@ -13,17 +19,17 @@ public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Angle of revolution.
      */
-    private org.ccsds.moims.mo.mal.structures.Element revolutionAngle;
+    private Element revolutionAngle;
 
     /**
      * Tolerance in the angle of revolution.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for RevolutionConstraint.
@@ -44,12 +50,12 @@ public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structure
      * @param tolerance Tolerance in the angle of revolution.
      */
     public RevolutionConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mal.structures.Element revolutionAngle,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            Element revolutionAngle,
+            Element tolerance) {
         super(negate,
             startRef,
             endRef,
@@ -65,15 +71,15 @@ public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structure
      * @param revolutionAngle Angle of revolution.
      * @param tolerance Tolerance in the angle of revolution.
      */
-    public RevolutionConstraint(org.ccsds.moims.mo.mal.structures.Element revolutionAngle,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public RevolutionConstraint(Element revolutionAngle,
+            Element tolerance) {
         this.revolutionAngle = revolutionAngle;
         this.tolerance = tolerance;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RevolutionConstraint();
+    public Element createElement() {
+        return new RevolutionConstraint();
     }
 
     /**
@@ -81,7 +87,7 @@ public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field revolutionAngle
      */
-    public org.ccsds.moims.mo.mal.structures.Element getRevolutionAngle() {
+    public Element getRevolutionAngle() {
         return revolutionAngle;
     }
 
@@ -90,7 +96,7 @@ public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -144,28 +150,28 @@ public final class RevolutionConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (revolutionAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'revolutionAngle' cannot be null!");
+            throw new MALException("The field 'revolutionAngle' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(revolutionAngle);
         encoder.encodeAbstractElement(tolerance);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        revolutionAngle = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        revolutionAngle = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

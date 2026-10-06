@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E6: An ObjectPosition is a Position that coincides with the position of
  * an existing object.  The manner in which the planning system derives the
  * value of this Position from the name of the referenced object is implementation-defined.
  */
-public final class ObjectPosition extends org.ccsds.moims.mo.mps.structures.Position {
+public final class ObjectPosition extends Position {
 
     private static final long serialVersionUID = 1407374900330508L;
     /**
@@ -15,13 +22,13 @@ public final class ObjectPosition extends org.ccsds.moims.mo.mps.structures.Posi
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name or identifier of a catalogued celestial object or a mission specific
      * object.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier object;
+    private Identifier object;
 
     /**
      * Default constructor for ObjectPosition.
@@ -35,13 +42,13 @@ public final class ObjectPosition extends org.ccsds.moims.mo.mps.structures.Posi
      * 
      * @param object Name or identifier of a catalogued celestial object or a mission specific object.
      */
-    public ObjectPosition(org.ccsds.moims.mo.mal.structures.Identifier object) {
+    public ObjectPosition(Identifier object) {
         this.object = object;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ObjectPosition();
+    public Element createElement() {
+        return new ObjectPosition();
     }
 
     /**
@@ -49,7 +56,7 @@ public final class ObjectPosition extends org.ccsds.moims.mo.mps.structures.Posi
      * 
      * @return The field object
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getObject() {
+    public Identifier getObject() {
         return object;
     }
 
@@ -92,23 +99,23 @@ public final class ObjectPosition extends org.ccsds.moims.mo.mps.structures.Posi
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (object == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'object' cannot be null!");
+            throw new MALException("The field 'object' cannot be null!");
         }
         encoder.encodeIdentifier(object);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         object = decoder.decodeIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

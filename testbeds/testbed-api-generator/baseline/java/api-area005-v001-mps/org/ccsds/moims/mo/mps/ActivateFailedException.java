@@ -1,11 +1,13 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The ActivateFailedException exception. The activatePlan operation failed
  * as the activation was outside the validity period of the Plan, or the start
  * of the planPeriod had already passed.  .
  */
-public final class ActivateFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class ActivateFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "ACTIVATE_FAILED";
 

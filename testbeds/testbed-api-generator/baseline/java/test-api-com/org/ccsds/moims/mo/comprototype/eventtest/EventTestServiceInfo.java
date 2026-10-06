@@ -1,9 +1,34 @@
 package org.ccsds.moims.mo.comprototype.eventtest;
 
+import org.ccsds.moims.mo.com.COMObject;
+import org.ccsds.moims.mo.com.COMService;
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.comprototype.COMPrototypeHelper;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectCreation;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectDeletion;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.TestObjectA;
+import org.ccsds.moims.mo.comprototype.eventtest.structures.TestObjectB;
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MALHelper;
+import org.ccsds.moims.mo.mal.MALOperation;
+import org.ccsds.moims.mo.mal.MALRequestOperation;
+import org.ccsds.moims.mo.mal.MALSubmitOperation;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.OperationField;
+import org.ccsds.moims.mo.mal.ServiceKey;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ShortList;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+
 /**
  * Helper class for EventTest service.
  */
-public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
+public class EventTestServiceInfo extends COMService {
 
     /**
      * Service number literal.
@@ -13,17 +38,17 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Service number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort EVENTTEST_SERVICE_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_EVENTTEST_SERVICE_NUMBER);
+    public static final UShort EVENTTEST_SERVICE_NUMBER = new UShort(_EVENTTEST_SERVICE_NUMBER);
 
     /**
      * Service name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier EVENTTEST_SERVICE_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("EventTest");
+    public static final Identifier EVENTTEST_SERVICE_NAME = new Identifier("EventTest");
 
     /**
      * The service key of this service.
      */
-    private static final org.ccsds.moims.mo.mal.ServiceKey SERVICE_KEY = new org.ccsds.moims.mo.mal.ServiceKey(
+    private static final ServiceKey SERVICE_KEY = new ServiceKey(
             200, 1, EVENTTEST_SERVICE_NUMBER);
 
     /**
@@ -34,17 +59,17 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Operation number instance for operation RESETTEST.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort RESETTEST_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_RESETTEST_OP_NUMBER);
+    private static final UShort RESETTEST_OP_NUMBER = new UShort(_RESETTEST_OP_NUMBER);
 
     /**
      * Operation instance for operation RESETTEST.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation RESETTEST_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation RESETTEST_OP = new MALSubmitOperation(SERVICE_KEY, 
             RESETTEST_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("resetTest"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.Attribute.STRING_SHORT_FORM, "")}, 
+            new Identifier("resetTest"), 
+            new UShort(100), 
+            new OperationField[] {
+                new OperationField("in1", true, Attribute.STRING_SHORT_FORM, "")}, 
             "Resets the EventTest service provider.");
 
     /**
@@ -55,22 +80,22 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Operation number instance for operation CREATEINSTANCE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort CREATEINSTANCE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_CREATEINSTANCE_OP_NUMBER);
+    private static final UShort CREATEINSTANCE_OP_NUMBER = new UShort(_CREATEINSTANCE_OP_NUMBER);
 
     /**
      * Operation instance for operation CREATEINSTANCE.
      */
-    public static final org.ccsds.moims.mo.mal.MALRequestOperation CREATEINSTANCE_OP = new org.ccsds.moims.mo.mal.MALRequestOperation(SERVICE_KEY, 
+    public static final MALRequestOperation CREATEINSTANCE_OP = new MALRequestOperation(SERVICE_KEY, 
             CREATEINSTANCE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("createinstance"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.Attribute.SHORT_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in2", true, org.ccsds.moims.mo.mal.structures.Attribute.STRING_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in3", true, org.ccsds.moims.mo.mal.structures.Attribute.STRING_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in4", true, org.ccsds.moims.mo.mal.structures.Attribute.LONG_SHORT_FORM, "")}, 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("output", true, org.ccsds.moims.mo.mal.structures.Attribute.LONG_SHORT_FORM, "")}, 
+            new Identifier("createinstance"), 
+            new UShort(100), 
+            new OperationField[] {
+                new OperationField("in1", true, Attribute.SHORT_SHORT_FORM, ""),
+                new OperationField("in2", true, Attribute.STRING_SHORT_FORM, ""),
+                new OperationField("in3", true, Attribute.STRING_SHORT_FORM, ""),
+                new OperationField("in4", true, Attribute.LONG_SHORT_FORM, "")}, 
+            new OperationField[] {
+                new OperationField("output", true, Attribute.LONG_SHORT_FORM, "")}, 
             "Creates an instance of one of the test objects: TestObject A or Test Object B Arg 1 - ObjectNumber (identifies object to be created) Arg 2 Domain Arg 3 Description Arg 4 parent instanceIdentifier returns object instance identifier. The provider will publish a TestObjectCreation event reporting the deletion");
 
     /**
@@ -81,19 +106,19 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Operation number instance for operation DELETEINSTANCE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort DELETEINSTANCE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_DELETEINSTANCE_OP_NUMBER);
+    private static final UShort DELETEINSTANCE_OP_NUMBER = new UShort(_DELETEINSTANCE_OP_NUMBER);
 
     /**
      * Operation instance for operation DELETEINSTANCE.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation DELETEINSTANCE_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation DELETEINSTANCE_OP = new MALSubmitOperation(SERVICE_KEY, 
             DELETEINSTANCE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("deleteInstance"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.Attribute.SHORT_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in2", true, org.ccsds.moims.mo.mal.structures.Attribute.STRING_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in3", true, org.ccsds.moims.mo.mal.structures.Attribute.LONG_SHORT_FORM, "")}, 
+            new Identifier("deleteInstance"), 
+            new UShort(100), 
+            new OperationField[] {
+                new OperationField("in1", true, Attribute.SHORT_SHORT_FORM, ""),
+                new OperationField("in2", true, Attribute.STRING_SHORT_FORM, ""),
+                new OperationField("in3", true, Attribute.LONG_SHORT_FORM, "")}, 
             "deletes a test object instance.");
 
     /**
@@ -104,20 +129,20 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Operation number instance for operation UPDATEINSTANCE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort UPDATEINSTANCE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_UPDATEINSTANCE_OP_NUMBER);
+    private static final UShort UPDATEINSTANCE_OP_NUMBER = new UShort(_UPDATEINSTANCE_OP_NUMBER);
 
     /**
      * Operation instance for operation UPDATEINSTANCE.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation UPDATEINSTANCE_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation UPDATEINSTANCE_OP = new MALSubmitOperation(SERVICE_KEY, 
             UPDATEINSTANCE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("updateInstance"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.Attribute.LONG_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in2", true, org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum.SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in3", true, org.ccsds.moims.mo.mal.structures.Attribute.DURATION_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in4", true, org.ccsds.moims.mo.mal.structures.ShortList.SHORT_FORM, "")}, 
+            new Identifier("updateInstance"), 
+            new UShort(100), 
+            new OperationField[] {
+                new OperationField("in1", true, Attribute.LONG_SHORT_FORM, ""),
+                new OperationField("in2", true, BasicEnum.SHORT_FORM, ""),
+                new OperationField("in3", true, Attribute.DURATION_SHORT_FORM, ""),
+                new OperationField("in4", true, ShortList.SHORT_FORM, "")}, 
             "Updates a number of fields on an instance of a test object. The provider will publish a TestObjectUpdate event reporting the updated attributes ");
 
     /**
@@ -128,31 +153,31 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     /**
      * Operation number instance for operation UPDATEINSTANCECOMPOSITE.
      */
-    private static final org.ccsds.moims.mo.mal.structures.UShort UPDATEINSTANCECOMPOSITE_OP_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_UPDATEINSTANCECOMPOSITE_OP_NUMBER);
+    private static final UShort UPDATEINSTANCECOMPOSITE_OP_NUMBER = new UShort(_UPDATEINSTANCECOMPOSITE_OP_NUMBER);
 
     /**
      * Operation instance for operation UPDATEINSTANCECOMPOSITE.
      */
-    public static final org.ccsds.moims.mo.mal.MALSubmitOperation UPDATEINSTANCECOMPOSITE_OP = new org.ccsds.moims.mo.mal.MALSubmitOperation(SERVICE_KEY, 
+    public static final MALSubmitOperation UPDATEINSTANCECOMPOSITE_OP = new MALSubmitOperation(SERVICE_KEY, 
             UPDATEINSTANCECOMPOSITE_OP_NUMBER, 
-            new org.ccsds.moims.mo.mal.structures.Identifier("updateInstanceComposite"), 
-            new org.ccsds.moims.mo.mal.structures.UShort(100), 
-            new org.ccsds.moims.mo.mal.OperationField[] {
-                new org.ccsds.moims.mo.mal.OperationField("in1", true, org.ccsds.moims.mo.mal.structures.Attribute.LONG_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in2", true, org.ccsds.moims.mo.mal.structures.Attribute.UOCTET_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in3", true, org.ccsds.moims.mo.mal.structures.Attribute.OCTET_SHORT_FORM, ""),
-                new org.ccsds.moims.mo.mal.OperationField("in4", true, org.ccsds.moims.mo.mal.structures.Attribute.DOUBLE_SHORT_FORM, "")}, 
+            new Identifier("updateInstanceComposite"), 
+            new UShort(100), 
+            new OperationField[] {
+                new OperationField("in1", true, Attribute.LONG_SHORT_FORM, ""),
+                new OperationField("in2", true, Attribute.UOCTET_SHORT_FORM, ""),
+                new OperationField("in3", true, Attribute.OCTET_SHORT_FORM, ""),
+                new OperationField("in4", true, Attribute.DOUBLE_SHORT_FORM, "")}, 
             "Updates the composite field on a instance of a test object. The provider will publish a TestObjectUpdate event reporting the updated attributes ");
 
     /**
      * Area elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] EVENTTEST_SERVICE_ELEMENTS = {};
+    public static final Element[] EVENTTEST_SERVICE_ELEMENTS = {};
 
     /**
      * The set of operations for this service.
      */
-    public static final org.ccsds.moims.mo.mal.MALOperation[] OPERATIONS = new org.ccsds.moims.mo.mal.MALOperation[]{RESETTEST_OP,
+    public static final MALOperation[] OPERATIONS = new MALOperation[]{RESETTEST_OP,
         CREATEINSTANCE_OP,
         DELETEINSTANCE_OP,
         UPDATEINSTANCE_OP,
@@ -168,25 +193,25 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECTA.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECTA_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECTA_OBJECT_NUMBER);
+    public static final UShort TESTOBJECTA_OBJECT_NUMBER = new UShort(_TESTOBJECTA_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECTA_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObjectA");
+    public static final Identifier TESTOBJECTA_OBJECT_NAME = new Identifier("TestObjectA");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECTA_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), EVENTTEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECTA_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECTA_OBJECT_TYPE = new ObjectType(new UShort(200), EVENTTEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECTA_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECTA_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECTA_OBJECT_TYPE, TESTOBJECTA_OBJECT_NAME, org.ccsds.moims.mo.comprototype.eventtest.structures.TestObjectA.SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECTA_OBJECT = new COMObject(TESTOBJECTA_OBJECT_TYPE, TESTOBJECTA_OBJECT_NAME, TestObjectA.SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECTB.
@@ -198,25 +223,25 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECTB.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECTB_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECTB_OBJECT_NUMBER);
+    public static final UShort TESTOBJECTB_OBJECT_NUMBER = new UShort(_TESTOBJECTB_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECTB_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObjectB");
+    public static final Identifier TESTOBJECTB_OBJECT_NAME = new Identifier("TestObjectB");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECTB_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), EVENTTEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECTB_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECTB_OBJECT_TYPE = new ObjectType(new UShort(200), EVENTTEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECTB_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECTB_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECTB_OBJECT_TYPE, TESTOBJECTB_OBJECT_NAME, org.ccsds.moims.mo.comprototype.eventtest.structures.TestObjectB.SHORT_FORM, false, null, false, null, false);
+    public static COMObject TESTOBJECTB_OBJECT = new COMObject(TESTOBJECTB_OBJECT_TYPE, TESTOBJECTB_OBJECT_NAME, TestObjectB.SHORT_FORM, false, null, false, null, false);
 
     /**
      * Literal for object TESTOBJECTCREATION.
@@ -228,25 +253,25 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECTCREATION.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECTCREATION_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECTCREATION_OBJECT_NUMBER);
+    public static final UShort TESTOBJECTCREATION_OBJECT_NUMBER = new UShort(_TESTOBJECTCREATION_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECTCREATION_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObjectCreation");
+    public static final Identifier TESTOBJECTCREATION_OBJECT_NAME = new Identifier("TestObjectCreation");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECTCREATION_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), EVENTTEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECTCREATION_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECTCREATION_OBJECT_TYPE = new ObjectType(new UShort(200), EVENTTEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECTCREATION_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECTCREATION_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECTCREATION_OBJECT_TYPE, TESTOBJECTCREATION_OBJECT_NAME, org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectCreation.SHORT_FORM, false, null, true, null, true);
+    public static COMObject TESTOBJECTCREATION_OBJECT = new COMObject(TESTOBJECTCREATION_OBJECT_TYPE, TESTOBJECTCREATION_OBJECT_NAME, ObjectCreation.SHORT_FORM, false, null, true, null, true);
 
     /**
      * Literal for object TESTOBJECTDELETION.
@@ -258,25 +283,25 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECTDELETION.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECTDELETION_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECTDELETION_OBJECT_NUMBER);
+    public static final UShort TESTOBJECTDELETION_OBJECT_NUMBER = new UShort(_TESTOBJECTDELETION_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECTDELETION_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObjectDeletion");
+    public static final Identifier TESTOBJECTDELETION_OBJECT_NAME = new Identifier("TestObjectDeletion");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECTDELETION_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), EVENTTEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECTDELETION_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECTDELETION_OBJECT_TYPE = new ObjectType(new UShort(200), EVENTTEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECTDELETION_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECTDELETION_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECTDELETION_OBJECT_TYPE, TESTOBJECTDELETION_OBJECT_NAME, org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectDeletion.SHORT_FORM, false, null, true, null, true);
+    public static COMObject TESTOBJECTDELETION_OBJECT = new COMObject(TESTOBJECTDELETION_OBJECT_TYPE, TESTOBJECTDELETION_OBJECT_NAME, ObjectDeletion.SHORT_FORM, false, null, true, null, true);
 
     /**
      * Literal for object TESTOBJECTUPDATE.
@@ -288,30 +313,30 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
      * Instance for object TESTOBJECTUPDATE.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.UShort TESTOBJECTUPDATE_OBJECT_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_TESTOBJECTUPDATE_OBJECT_NUMBER);
+    public static final UShort TESTOBJECTUPDATE_OBJECT_NUMBER = new UShort(_TESTOBJECTUPDATE_OBJECT_NUMBER);
 
     /**
      * Object name constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.mal.structures.Identifier TESTOBJECTUPDATE_OBJECT_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("TestObjectUpdate");
+    public static final Identifier TESTOBJECTUPDATE_OBJECT_NAME = new Identifier("TestObjectUpdate");
 
     /**
      * Object type constant.
      */
     @Deprecated
-    public static final org.ccsds.moims.mo.com.structures.ObjectType TESTOBJECTUPDATE_OBJECT_TYPE = new org.ccsds.moims.mo.com.structures.ObjectType(new org.ccsds.moims.mo.mal.structures.UShort(200), EVENTTEST_SERVICE_NUMBER, new org.ccsds.moims.mo.mal.structures.UOctet(1), TESTOBJECTUPDATE_OBJECT_NUMBER);
+    public static final ObjectType TESTOBJECTUPDATE_OBJECT_TYPE = new ObjectType(new UShort(200), EVENTTEST_SERVICE_NUMBER, new UOctet(1), TESTOBJECTUPDATE_OBJECT_NUMBER);
 
     /**
      * Object instance.
      */
     @Deprecated
-    public static org.ccsds.moims.mo.com.COMObject TESTOBJECTUPDATE_OBJECT = new org.ccsds.moims.mo.com.COMObject(TESTOBJECTUPDATE_OBJECT_TYPE, TESTOBJECTUPDATE_OBJECT_NAME, org.ccsds.moims.mo.comprototype.eventtest.structures.ObjectUpdate.SHORT_FORM, false, null, true, null, true);
+    public static COMObject TESTOBJECTUPDATE_OBJECT = new COMObject(TESTOBJECTUPDATE_OBJECT_TYPE, TESTOBJECTUPDATE_OBJECT_NAME, ObjectUpdate.SHORT_FORM, false, null, true, null, true);
 
     /**
      * Object instance.
      */
-    public static final org.ccsds.moims.mo.com.COMObject[] COM_OBJECTS = {
+    public static final COMObject[] COM_OBJECTS = {
         TESTOBJECTA_OBJECT,
         TESTOBJECTB_OBJECT,
         TESTOBJECTCREATION_OBJECT,
@@ -327,16 +352,16 @@ public class EventTestServiceInfo extends org.ccsds.moims.mo.com.COMService {
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MALArea getArea() {
-        return org.ccsds.moims.mo.comprototype.COMPrototypeHelper.COMPROTOTYPE_AREA;
+    public MALArea getArea() {
+        return COMPrototypeHelper.COMPROTOTYPE_AREA;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.MOErrorException generateMOError(int operationNumber,
+    public MOErrorException generateMOError(int operationNumber,
             int errorNumber,
             Object extraInfo) {
-        org.ccsds.moims.mo.mal.MOErrorException areaError = org.ccsds.moims.mo.comprototype.COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
-        return (areaError != null) ? areaError : org.ccsds.moims.mo.mal.MALHelper.generateMOError(errorNumber, extraInfo);
+        MOErrorException areaError = COMPrototypeHelper.generateMOError(errorNumber, extraInfo);
+        return (areaError != null) ? areaError : MALHelper.generateMOError(errorNumber, extraInfo);
     }
 
 }

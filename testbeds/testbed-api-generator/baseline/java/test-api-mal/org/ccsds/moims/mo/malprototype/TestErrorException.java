@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.malprototype;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The TestErrorException exception. Fake error for testing.
  */
-public final class TestErrorException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class TestErrorException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "TEST_ERROR";
 

@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: A sub-type of Repetition based on direction, which supports the specification
  * of astronomical surveys.
  */
-public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures.Repetition {
+public final class DirectionRepetition extends Repetition {
 
     private static final long serialVersionUID = 1407374900330555L;
     /**
@@ -14,29 +20,29 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Nominal direction of first occurrence.
      */
-    private org.ccsds.moims.mo.mal.structures.Element initialDirection;
+    private Element initialDirection;
 
     /**
      * Specifies the direction of repetition as line connecting the initial and
      * target directions.
      */
-    private org.ccsds.moims.mo.mal.structures.Element targetDirection;
+    private Element targetDirection;
 
     /**
      * The required angle between occurrences.
      */
-    private org.ccsds.moims.mo.mal.structures.Element separation;
+    private Element separation;
 
     /**
      * The allowed tolerance (+/-) in the required angle between occurrences,
      * the interpretation of which is dependent on the separationType.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for DirectionRepetition.
@@ -57,12 +63,12 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
      * @param tolerance The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.
      */
     public DirectionRepetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element initialDirection,
-            org.ccsds.moims.mo.mal.structures.Element targetDirection,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType,
+            Element initialDirection,
+            Element targetDirection,
+            Element separation,
+            Element tolerance) {
         super(count,
             timeWindow,
             separationType);
@@ -81,11 +87,11 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
      * @param separation The required angle between occurrences.
      * @param tolerance The allowed tolerance (+/-) in the required angle between occurrences, the interpretation of which is dependent on the separationType.
      */
-    public DirectionRepetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element initialDirection,
-            org.ccsds.moims.mo.mal.structures.Element targetDirection,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public DirectionRepetition(SeparationTypeEnum separationType,
+            Element initialDirection,
+            Element targetDirection,
+            Element separation,
+            Element tolerance) {
         super(separationType);
         this.initialDirection = initialDirection;
         this.targetDirection = targetDirection;
@@ -94,8 +100,8 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.DirectionRepetition();
+    public Element createElement() {
+        return new DirectionRepetition();
     }
 
     /**
@@ -103,7 +109,7 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
      * 
      * @return The field initialDirection
      */
-    public org.ccsds.moims.mo.mal.structures.Element getInitialDirection() {
+    public Element getInitialDirection() {
         return initialDirection;
     }
 
@@ -112,7 +118,7 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
      * 
      * @return The field targetDirection
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTargetDirection() {
+    public Element getTargetDirection() {
         return targetDirection;
     }
 
@@ -121,7 +127,7 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
      * 
      * @return The field separation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getSeparation() {
+    public Element getSeparation() {
         return separation;
     }
 
@@ -130,7 +136,7 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -206,19 +212,19 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (initialDirection == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'initialDirection' cannot be null!");
+            throw new MALException("The field 'initialDirection' cannot be null!");
         }
         if (targetDirection == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetDirection' cannot be null!");
+            throw new MALException("The field 'targetDirection' cannot be null!");
         }
         if (separation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'separation' cannot be null!");
+            throw new MALException("The field 'separation' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(initialDirection);
         encoder.encodeAbstractElement(targetDirection);
@@ -227,17 +233,17 @@ public final class DirectionRepetition extends org.ccsds.moims.mo.mps.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        initialDirection = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        targetDirection = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        separation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        initialDirection = (Element) decoder.decodeAbstractElement();
+        targetDirection = (Element) decoder.decodeAbstractElement();
+        separation = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

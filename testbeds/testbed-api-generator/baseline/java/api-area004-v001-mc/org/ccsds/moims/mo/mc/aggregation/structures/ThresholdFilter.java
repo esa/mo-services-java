@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ThresholdFilter structure holds the filter for a parameter.
  */
-public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ThresholdFilter implements Composite {
 
     private static final long serialVersionUID = 1125925693423622L;
     /**
@@ -13,18 +21,18 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The type of filter to apply for filtered periodic reports when filters
      * are applied.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType thresholdType;
+    private ThresholdType thresholdType;
 
     /**
      * Threshold value to apply.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute thresholdValue;
+    private Attribute thresholdValue;
 
     /**
      * If true, and the relevant Parameter has a conversion, then use the converted
@@ -46,8 +54,8 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
      * @param thresholdValue Threshold value to apply.
      * @param useConverted If true, and the relevant Parameter has a conversion, then use the converted value for the threshold comparison, otherwise use the raw value.
      */
-    public ThresholdFilter(org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType thresholdType,
-            org.ccsds.moims.mo.mal.structures.Attribute thresholdValue,
+    public ThresholdFilter(ThresholdType thresholdType,
+            Attribute thresholdValue,
             Boolean useConverted) {
         this.thresholdType = thresholdType;
         this.thresholdValue = thresholdValue;
@@ -55,8 +63,8 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.ThresholdFilter();
+    public Element createElement() {
+        return new ThresholdFilter();
     }
 
     /**
@@ -64,7 +72,7 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field thresholdType
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType getThresholdType() {
+    public ThresholdType getThresholdType() {
         return thresholdType;
     }
 
@@ -73,7 +81,7 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field thresholdValue
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getThresholdValue() {
+    public Attribute getThresholdValue() {
         return thresholdValue;
     }
 
@@ -143,15 +151,15 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (thresholdType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'thresholdType' cannot be null!");
+            throw new MALException("The field 'thresholdType' cannot be null!");
         }
         if (thresholdValue == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'thresholdValue' cannot be null!");
+            throw new MALException("The field 'thresholdValue' cannot be null!");
         }
         if (useConverted == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'useConverted' cannot be null!");
+            throw new MALException("The field 'useConverted' cannot be null!");
         }
         encoder.encodeElement(thresholdType);
         encoder.encodeAttribute(thresholdValue);
@@ -159,15 +167,15 @@ public final class ThresholdFilter implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        thresholdType = (org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType) decoder.decodeElement(org.ccsds.moims.mo.mc.aggregation.structures.ThresholdType.PERCENTAGE);
-        thresholdValue = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeAttribute();
+    public Element decode(MALDecoder decoder) throws MALException {
+        thresholdType = (ThresholdType) decoder.decodeElement(ThresholdType.PERCENTAGE);
+        thresholdValue = (Attribute) decoder.decodeAttribute();
         useConverted = decoder.decodeBoolean();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

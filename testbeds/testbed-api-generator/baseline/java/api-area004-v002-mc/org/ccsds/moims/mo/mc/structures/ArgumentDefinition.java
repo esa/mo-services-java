@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The ArgumentDefinition structure shall be used to hold the details of an
  * argument definition.
  */
-public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ArgumentDefinition implements Composite {
 
     private static final long serialVersionUID = 1125899940397057L;
     /**
@@ -14,12 +23,12 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The argId field.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier argId;
+    private Identifier argId;
 
     /**
      * The description field.
@@ -29,7 +38,7 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
     /**
      * The type field.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeType type;
+    private AttributeType type;
 
     /**
      * The unit field.
@@ -51,9 +60,9 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
      * @param type The type field.
      * @param unit The unit field.
      */
-    public ArgumentDefinition(org.ccsds.moims.mo.mal.structures.Identifier argId,
+    public ArgumentDefinition(Identifier argId,
             String description,
-            org.ccsds.moims.mo.mal.structures.AttributeType type,
+            AttributeType type,
             String unit) {
         this.argId = argId;
         this.description = description;
@@ -67,8 +76,8 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
      * @param argId The argId field.
      * @param type The type field.
      */
-    public ArgumentDefinition(org.ccsds.moims.mo.mal.structures.Identifier argId,
-            org.ccsds.moims.mo.mal.structures.AttributeType type) {
+    public ArgumentDefinition(Identifier argId,
+            AttributeType type) {
         this.argId = argId;
         this.description = null;
         this.type = type;
@@ -76,8 +85,8 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ArgumentDefinition();
+    public Element createElement() {
+        return new ArgumentDefinition();
     }
 
     /**
@@ -85,7 +94,7 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field argId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getArgId() {
+    public Identifier getArgId() {
         return argId;
     }
 
@@ -103,7 +112,7 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field type
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeType getType() {
+    public AttributeType getType() {
         return type;
     }
 
@@ -184,12 +193,12 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (argId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'argId' cannot be null!");
+            throw new MALException("The field 'argId' cannot be null!");
         }
         if (type == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'type' cannot be null!");
+            throw new MALException("The field 'type' cannot be null!");
         }
         encoder.encodeIdentifier(argId);
         encoder.encodeNullableString(description);
@@ -198,16 +207,16 @@ public final class ArgumentDefinition implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         argId = decoder.decodeIdentifier();
         description = decoder.decodeNullableString();
-        type = (org.ccsds.moims.mo.mal.structures.AttributeType) decoder.decodeElement(org.ccsds.moims.mo.mal.structures.AttributeType.BLOB);
+        type = (AttributeType) decoder.decodeElement(AttributeType.BLOB);
         unit = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

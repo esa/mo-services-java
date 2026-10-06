@@ -1,5 +1,18 @@
 package org.ccsds.moims.mo.com.archive.provider;
 
+import org.ccsds.moims.mo.com.DuplicateException;
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList;
+import org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList;
+import org.ccsds.moims.mo.com.archive.structures.QueryFilterList;
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+
 /**
  * Interface that providers of the Archive service must implement to handle
  * the operations of that service.
@@ -19,14 +32,14 @@ If any explicitly requested object cannot be matched then an UNKNOWN error shall
      * @param domain domain Argument number 1 as defined by the service operation
      * @param objInstIds objInstIds Argument number 2 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.com.InvalidException The request contains a wildcard value in either the object type field or the domain.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException The request contains a wildcard value in either the object type field or the domain.
+     * @throws UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+     * @throws MALException if there is an implementation exception
      */
-    void retrieve(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.com.archive.provider.RetrieveInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALException;
+    void retrieve(ObjectType objType,
+            IdentifierList domain,
+            LongList objInstIds,
+            RetrieveInteraction interaction) throws InvalidException, UnknownException, MALException;
     /**
      * Implements the operation query.
      * 
@@ -50,14 +63,14 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param archiveQuery archiveQuery Argument number 2 as defined by the service operation
      * @param queryFilter queryFilter Argument number 3 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the query filters supplied contains an invalid value.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more of the query filters supplied contains an invalid value.
+     * @throws MALException if there is an implementation exception
      */
     void query(Boolean returnBody,
-            org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList archiveQuery,
-            org.ccsds.moims.mo.com.archive.structures.QueryFilterList queryFilter,
-            org.ccsds.moims.mo.com.archive.provider.QueryInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+            ObjectType objType,
+            ArchiveQueryList archiveQuery,
+            QueryFilterList queryFilter,
+            QueryInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation count.
      * 
@@ -65,13 +78,13 @@ If the QueryFilter contains an error then an INVALID error shall be returned. Th
      * @param archiveQuery archiveQuery Argument number 1 as defined by the service operation
      * @param queryFilter queryFilter Argument number 2 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the query filters supplied contains an invalid value.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws InvalidException One or more of the query filters supplied contains an invalid value.
+     * @throws MALException if there is an implementation exception
      */
-    void count(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.com.archive.structures.ArchiveQueryList archiveQuery,
-            org.ccsds.moims.mo.com.archive.structures.QueryFilterList queryFilter,
-            org.ccsds.moims.mo.com.archive.provider.CountInteraction interaction) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    void count(ObjectType objType,
+            ArchiveQueryList archiveQuery,
+            QueryFilterList queryFilter,
+            CountInteraction interaction) throws InvalidException, MALException;
     /**
      * Implements the operation store.
      * 
@@ -94,16 +107,16 @@ If any error is returned then the store operation shall be rolled back and nothi
      * @param objBodies objBodies Argument number 4 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.com.DuplicateException One or more of the objects being stored has supplied an object instance identifier that is already in use in the archive.
-     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the objects being stored contains an invalid value.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws DuplicateException One or more of the objects being stored has supplied an object instance identifier that is already in use in the archive.
+     * @throws InvalidException One or more of the objects being stored contains an invalid value.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList store(Boolean returnObjInstIds,
-            org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.com.DuplicateException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    LongList store(Boolean returnObjInstIds,
+            ObjectType objType,
+            IdentifierList domain,
+            ArchiveDetailsList objDetails,
+            HeterogeneousList objBodies,
+            MALInteraction interaction) throws DuplicateException, InvalidException, MALException;
     /**
      * Implements the operation update.
      * 
@@ -119,15 +132,15 @@ No wildcard values shall be accepted in the object type, the domain, and the obj
      * @param objDetails objDetails Argument number 2 as defined by the service operation
      * @param objBodies objBodies Argument number 3 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
-     * @throws org.ccsds.moims.mo.com.InvalidException One or more of the objects being updated contains a wildcard value in the object identifier fields.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+     * @throws InvalidException One or more of the objects being updated contains a wildcard value in the object identifier fields.
+     * @throws MALException if there is an implementation exception
      */
-    void update(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    void update(ObjectType objType,
+            IdentifierList domain,
+            ArchiveDetailsList objDetails,
+            HeterogeneousList objBodies,
+            MALInteraction interaction) throws UnknownException, InvalidException, MALException;
     /**
      * Implements the operation delete.
      * 
@@ -142,18 +155,18 @@ The matched objects shall be deleted from the archive.
      * @param objInstIds objInstIds Argument number 2 as defined by the service operation
      * @param interaction The MAL object representing the interaction in the provider.
      * @return The return value of the operation
-     * @throws org.ccsds.moims.mo.mal.UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
-     * @throws org.ccsds.moims.mo.com.InvalidException The supplied object type or domain contains a wildcard value.
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception
+     * @throws UnknownException One or more of the requested objects specified in the operation do not exist and therefore cannot be found.
+     * @throws InvalidException The supplied object type or domain contains a wildcard value.
+     * @throws MALException if there is an implementation exception
      */
-    org.ccsds.moims.mo.mal.structures.LongList delete(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.LongList objInstIds,
-            org.ccsds.moims.mo.mal.provider.MALInteraction interaction) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALException;
+    LongList delete(ObjectType objType,
+            IdentifierList domain,
+            LongList objInstIds,
+            MALInteraction interaction) throws UnknownException, InvalidException, MALException;
     /**
      * Sets the skeleton to be used for creation of publishers.
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.com.archive.provider.ArchiveSkeleton skeleton);
+    void setSkeleton(ArchiveSkeleton skeleton);
 }

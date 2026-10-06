@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E3: Each PlanRevision comprises an ordered set of ItemRevisions that document
  * the change to individual planned items (planning events and activities).
@@ -7,7 +16,7 @@ package org.ccsds.moims.mo.mps.structures;
  * and indicates whether the planned item is new, modified or deleted in the
  * current Plan.
  */
-public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanRevision implements Composite {
 
     private static final long serialVersionUID = 1407374900331001L;
     /**
@@ -17,29 +26,29 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan with respect to which the plan revisions are detailed.
      * Typically, this is the precursor Plan, but any other Plan can be used.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> revisedPlan;
+    private ObjectRef<Plan> revisedPlan;
 
     /**
      * Start time of the earliest revision.
      */
-    private org.ccsds.moims.mo.mal.structures.Time revisionStart;
+    private Time revisionStart;
 
     /**
      * End time of the latest revision.
      */
-    private org.ccsds.moims.mo.mal.structures.Time revisionEnd;
+    private Time revisionEnd;
 
     /**
      * Ordered list (earliest to latest) of revisions to planned items (activity
      * and event instances).
      */
-    private org.ccsds.moims.mo.mps.structures.ItemRevisionList itemRevisions;
+    private ItemRevisionList itemRevisions;
 
     /**
      * Default constructor for PlanRevision.
@@ -56,10 +65,10 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
      * @param revisionEnd End time of the latest revision.
      * @param itemRevisions Ordered list (earliest to latest) of revisions to planned items (activity and event instances).
      */
-    public PlanRevision(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> revisedPlan,
-            org.ccsds.moims.mo.mal.structures.Time revisionStart,
-            org.ccsds.moims.mo.mal.structures.Time revisionEnd,
-            org.ccsds.moims.mo.mps.structures.ItemRevisionList itemRevisions) {
+    public PlanRevision(ObjectRef<Plan> revisedPlan,
+            Time revisionStart,
+            Time revisionEnd,
+            ItemRevisionList itemRevisions) {
         this.revisedPlan = revisedPlan;
         this.revisionStart = revisionStart;
         this.revisionEnd = revisionEnd;
@@ -73,9 +82,9 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
      * @param revisionStart Start time of the earliest revision.
      * @param revisionEnd End time of the latest revision.
      */
-    public PlanRevision(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> revisedPlan,
-            org.ccsds.moims.mo.mal.structures.Time revisionStart,
-            org.ccsds.moims.mo.mal.structures.Time revisionEnd) {
+    public PlanRevision(ObjectRef<Plan> revisedPlan,
+            Time revisionStart,
+            Time revisionEnd) {
         this.revisedPlan = revisedPlan;
         this.revisionStart = revisionStart;
         this.revisionEnd = revisionEnd;
@@ -83,8 +92,8 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanRevision();
+    public Element createElement() {
+        return new PlanRevision();
     }
 
     /**
@@ -92,7 +101,7 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field revisedPlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getRevisedPlan() {
+    public ObjectRef<Plan> getRevisedPlan() {
         return revisedPlan;
     }
 
@@ -101,7 +110,7 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field revisionStart
      */
-    public org.ccsds.moims.mo.mal.structures.Time getRevisionStart() {
+    public Time getRevisionStart() {
         return revisionStart;
     }
 
@@ -110,7 +119,7 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field revisionEnd
      */
-    public org.ccsds.moims.mo.mal.structures.Time getRevisionEnd() {
+    public Time getRevisionEnd() {
         return revisionEnd;
     }
 
@@ -119,7 +128,7 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field itemRevisions
      */
-    public org.ccsds.moims.mo.mps.structures.ItemRevisionList getItemRevisions() {
+    public ItemRevisionList getItemRevisions() {
         return itemRevisions;
     }
 
@@ -191,15 +200,15 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (revisedPlan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'revisedPlan' cannot be null!");
+            throw new MALException("The field 'revisedPlan' cannot be null!");
         }
         if (revisionStart == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'revisionStart' cannot be null!");
+            throw new MALException("The field 'revisionStart' cannot be null!");
         }
         if (revisionEnd == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'revisionEnd' cannot be null!");
+            throw new MALException("The field 'revisionEnd' cannot be null!");
         }
         encoder.encodeElement(revisedPlan);
         encoder.encodeTime(revisionStart);
@@ -208,16 +217,16 @@ public final class PlanRevision implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        revisedPlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        revisedPlan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
         revisionStart = decoder.decodeTime();
         revisionEnd = decoder.decodeTime();
-        itemRevisions = (org.ccsds.moims.mo.mps.structures.ItemRevisionList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ItemRevisionList());
+        itemRevisions = (ItemRevisionList) decoder.decodeNullableElement(new ItemRevisionList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

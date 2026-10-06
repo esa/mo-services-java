@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for PlanStatusEnum.
  */
-public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class PlanStatusEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330998L;
     /**
@@ -13,7 +17,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for DRAFT.
@@ -23,7 +27,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value DRAFT.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PlanStatusEnum DRAFT = new org.ccsds.moims.mo.mps.structures.PlanStatusEnum(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.DRAFT_VALUE);
+    public static final PlanStatusEnum DRAFT = new PlanStatusEnum(PlanStatusEnum.DRAFT_VALUE);
 
     /**
      * Enumeration value for RELEASED.
@@ -33,7 +37,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value RELEASED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PlanStatusEnum RELEASED = new org.ccsds.moims.mo.mps.structures.PlanStatusEnum(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.RELEASED_VALUE);
+    public static final PlanStatusEnum RELEASED = new PlanStatusEnum(PlanStatusEnum.RELEASED_VALUE);
 
     /**
      * Enumeration value for SUBMITTED.
@@ -43,7 +47,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value SUBMITTED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PlanStatusEnum SUBMITTED = new org.ccsds.moims.mo.mps.structures.PlanStatusEnum(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.SUBMITTED_VALUE);
+    public static final PlanStatusEnum SUBMITTED = new PlanStatusEnum(PlanStatusEnum.SUBMITTED_VALUE);
 
     /**
      * Enumeration value for ACTIVATED.
@@ -53,7 +57,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value ACTIVATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PlanStatusEnum ACTIVATED = new org.ccsds.moims.mo.mps.structures.PlanStatusEnum(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.ACTIVATED_VALUE);
+    public static final PlanStatusEnum ACTIVATED = new PlanStatusEnum(PlanStatusEnum.ACTIVATED_VALUE);
 
     /**
      * Enumeration value for TERMINATED.
@@ -63,12 +67,12 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     /**
      * Enumeration singleton for value TERMINATED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PlanStatusEnum TERMINATED = new org.ccsds.moims.mo.mps.structures.PlanStatusEnum(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.TERMINATED_VALUE);
+    public static final PlanStatusEnum TERMINATED = new PlanStatusEnum(PlanStatusEnum.TERMINATED_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.PlanStatusEnum[] _ENUMERATIONS = {
+    private static final PlanStatusEnum[] _ENUMERATIONS = {
         DRAFT, RELEASED, SUBMITTED, ACTIVATED, TERMINATED};
 
     /**
@@ -112,7 +116,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.PlanStatusEnum fromString(String s) {
+    public static PlanStatusEnum fromString(String s) {
         switch (s) {
             case "DRAFT":
                 return PlanStatusEnum.DRAFT;
@@ -130,7 +134,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case DRAFT_VALUE:
                 return PlanStatusEnum.DRAFT;
@@ -148,7 +152,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -158,7 +162,7 @@ public final class PlanStatusEnum extends org.ccsds.moims.mo.mal.structures.Enum
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

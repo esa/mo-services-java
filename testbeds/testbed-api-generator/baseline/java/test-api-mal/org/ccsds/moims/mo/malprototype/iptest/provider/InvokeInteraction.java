@@ -1,5 +1,12 @@
 package org.ccsds.moims.mo.malprototype.iptest.provider;
 
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+
 /**
  * Provider INVOKE interaction class for IPTest::invoke operation.
  */
@@ -8,7 +15,7 @@ public class InvokeInteraction {
     /**
      * The interaction field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALInvoke interaction;
+    private MALInvoke interaction;
 
     /**
      * Wraps the provided MAL interaction object with methods for sending responses
@@ -16,7 +23,7 @@ public class InvokeInteraction {
      * 
      * @param interaction The MAL interaction action object to use.
      */
-    public InvokeInteraction(org.ccsds.moims.mo.mal.provider.MALInvoke interaction) {
+    public InvokeInteraction(MALInvoke interaction) {
         this.interaction = interaction;
     }
 
@@ -26,7 +33,7 @@ public class InvokeInteraction {
      * 
      * @return The MAL interaction object provided in the constructor
      */
-    public org.ccsds.moims.mo.mal.provider.MALInvoke getInteraction() {
+    public MALInvoke getInteraction() {
         return interaction;
     }
 
@@ -35,13 +42,13 @@ public class InvokeInteraction {
      * 
      * @param ack The ack field.
      * @return Returns the MAL message created by the acknowledge
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement(String ack) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendAcknowledgement(String ack) throws MALException {
         try {
-            return interaction.sendAcknowledgement((ack == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(ack));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+            return interaction.sendAcknowledgement((ack == null) ? null : new Union(ack));
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -50,13 +57,13 @@ public class InvokeInteraction {
      * 
      * @param output The output field.
      * @return Returns the MAL message created by the response
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(String output) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendResponse(String output) throws MALException {
         try {
-            return interaction.sendResponse((output == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(output));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+            return interaction.sendResponse((output == null) ? null : new Union(output));
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -65,13 +72,13 @@ public class InvokeInteraction {
      * 
      * @param error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendError(MOErrorException error) throws MALException {
         try {
             return interaction.sendError(error);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 

@@ -1,11 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: PhysicalValue is an abstract base type for the specific value types
  * defined below.  Only specific value types are used in the pointing constraint
  * definitions below.
  */
-public abstract class PhysicalValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class PhysicalValue implements Composite {
 
     /**
      * Physical value.
@@ -111,16 +117,16 @@ public abstract class PhysicalValue implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeDouble(value);
         encoder.encodeNullableString(units);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         value = decoder.decodeDouble();
         units = decoder.decodeNullableString();
         return this;

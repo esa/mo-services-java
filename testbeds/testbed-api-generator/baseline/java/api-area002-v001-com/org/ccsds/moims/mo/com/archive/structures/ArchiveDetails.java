@@ -1,10 +1,21 @@
 package org.ccsds.moims.mo.com.archive.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectDetails;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The ArchiveDetails structure is used to hold information about a single
  * entry in an Archive.
  */
-public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ArchiveDetails implements Composite {
 
     private static final long serialVersionUID = 562958560133121L;
     /**
@@ -14,7 +25,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier of the archived object.
@@ -24,23 +35,23 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
     /**
      * The details of the Object.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectDetails details;
+    private ObjectDetails details;
 
     /**
      * The network zone of the object.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier network;
+    private Identifier network;
 
     /**
      * The time the object was created.
      */
-    private org.ccsds.moims.mo.mal.structures.FineTime timestamp;
+    private FineTime timestamp;
 
     /**
      * The component that created the object (a component may be anything from
      * an onboard equipment to a software process on the ground).
      */
-    private org.ccsds.moims.mo.mal.structures.URI provider;
+    private URI provider;
 
     /**
      * Default constructor for ArchiveDetails.
@@ -59,10 +70,10 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
      * @param provider The component that created the object (a component may be anything from an onboard equipment to a software process on the ground).
      */
     public ArchiveDetails(Long instId,
-            org.ccsds.moims.mo.com.structures.ObjectDetails details,
-            org.ccsds.moims.mo.mal.structures.Identifier network,
-            org.ccsds.moims.mo.mal.structures.FineTime timestamp,
-            org.ccsds.moims.mo.mal.structures.URI provider) {
+            ObjectDetails details,
+            Identifier network,
+            FineTime timestamp,
+            URI provider) {
         this.instId = instId;
         this.details = details;
         this.network = network;
@@ -77,7 +88,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
      * @param details The details of the Object.
      */
     public ArchiveDetails(Long instId,
-            org.ccsds.moims.mo.com.structures.ObjectDetails details) {
+            ObjectDetails details) {
         this.instId = instId;
         this.details = details;
         this.network = null;
@@ -86,8 +97,8 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.archive.structures.ArchiveDetails();
+    public Element createElement() {
+        return new ArchiveDetails();
     }
 
     /**
@@ -104,7 +115,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field details
      */
-    public org.ccsds.moims.mo.com.structures.ObjectDetails getDetails() {
+    public ObjectDetails getDetails() {
         return details;
     }
 
@@ -113,7 +124,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field network
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetwork() {
+    public Identifier getNetwork() {
         return network;
     }
 
@@ -122,7 +133,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.FineTime getTimestamp() {
+    public FineTime getTimestamp() {
         return timestamp;
     }
 
@@ -131,7 +142,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field provider
      */
-    public org.ccsds.moims.mo.mal.structures.URI getProvider() {
+    public URI getProvider() {
         return provider;
     }
 
@@ -214,12 +225,12 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (instId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'instId' cannot be null!");
+            throw new MALException("The field 'instId' cannot be null!");
         }
         if (details == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'details' cannot be null!");
+            throw new MALException("The field 'details' cannot be null!");
         }
         encoder.encodeLong(instId);
         encoder.encodeElement(details);
@@ -229,9 +240,9 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         instId = decoder.decodeLong();
-        details = (org.ccsds.moims.mo.com.structures.ObjectDetails) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectDetails());
+        details = (ObjectDetails) decoder.decodeElement(new ObjectDetails());
         network = decoder.decodeNullableIdentifier();
         timestamp = decoder.decodeNullableFineTime();
         provider = decoder.decodeNullableURI();
@@ -239,7 +250,7 @@ public final class ArchiveDetails implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

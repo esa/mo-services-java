@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E6: Sub-type of Trigger based on pointing.  Depending on the coordinate
  * type of direction used, a margin may be specified in terms of angle from
  * the specified direction.
  */
-public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Trigger {
+public final class DirectionTrigger extends Trigger {
 
     private static final long serialVersionUID = 1407374900330549L;
     /**
@@ -15,18 +22,18 @@ public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Tr
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Planned direction of Trigger.
      */
-    private org.ccsds.moims.mo.mps.structures.Direction triggerDirection;
+    private Direction triggerDirection;
 
     /**
      * Defines a cone around the trigger direction within which a direction is
      * considered to meet the trigger condition.
      */
-    private org.ccsds.moims.mo.mps.structures.Angle angleMargin;
+    private Angle angleMargin;
 
     /**
      * Default constructor for DirectionTrigger.
@@ -42,9 +49,9 @@ public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Tr
      * @param triggerDirection Planned direction of Trigger.
      * @param angleMargin Defines a cone around the trigger direction within which a direction is considered to meet the trigger condition.
      */
-    public DirectionTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mps.structures.Direction triggerDirection,
-            org.ccsds.moims.mo.mps.structures.Angle angleMargin) {
+    public DirectionTrigger(Time time,
+            Direction triggerDirection,
+            Angle angleMargin) {
         super(time);
         this.triggerDirection = triggerDirection;
         this.angleMargin = angleMargin;
@@ -56,16 +63,16 @@ public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Tr
      * @param time Predicted or actual time of Trigger.  The predicted time may evolve during the planning process up to the time of execution.  The actual time is only available post execution, and hence can only be provided by a plan execution function.
      * @param triggerDirection Planned direction of Trigger.
      */
-    public DirectionTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mps.structures.Direction triggerDirection) {
+    public DirectionTrigger(Time time,
+            Direction triggerDirection) {
         super(time);
         this.triggerDirection = triggerDirection;
         this.angleMargin = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.DirectionTrigger();
+    public Element createElement() {
+        return new DirectionTrigger();
     }
 
     /**
@@ -73,7 +80,7 @@ public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Tr
      * 
      * @return The field triggerDirection
      */
-    public org.ccsds.moims.mo.mps.structures.Direction getTriggerDirection() {
+    public Direction getTriggerDirection() {
         return triggerDirection;
     }
 
@@ -82,7 +89,7 @@ public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Tr
      * 
      * @return The field angleMargin
      */
-    public org.ccsds.moims.mo.mps.structures.Angle getAngleMargin() {
+    public Angle getAngleMargin() {
         return angleMargin;
     }
 
@@ -136,25 +143,25 @@ public final class DirectionTrigger extends org.ccsds.moims.mo.mps.structures.Tr
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (triggerDirection == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'triggerDirection' cannot be null!");
+            throw new MALException("The field 'triggerDirection' cannot be null!");
         }
         encoder.encodeAbstractElement(triggerDirection);
         encoder.encodeNullableElement(angleMargin);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        triggerDirection = (org.ccsds.moims.mo.mps.structures.Direction) decoder.decodeAbstractElement();
-        angleMargin = (org.ccsds.moims.mo.mps.structures.Angle) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Angle());
+        triggerDirection = (Direction) decoder.decodeAbstractElement();
+        angleMargin = (Angle) decoder.decodeNullableElement(new Angle());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

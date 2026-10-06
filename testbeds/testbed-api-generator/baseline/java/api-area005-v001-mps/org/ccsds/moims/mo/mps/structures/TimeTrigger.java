@@ -1,12 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: Sub-type of Trigger based on time.  The trigger time is the specified
  * constraint, and will usually match the predicted time on the base class
  * during the planning process, but the actual time could still be slightly
  * different post-execution.
  */
-public final class TimeTrigger extends org.ccsds.moims.mo.mps.structures.Trigger {
+public final class TimeTrigger extends Trigger {
 
     private static final long serialVersionUID = 1407374900330547L;
     /**
@@ -16,12 +23,12 @@ public final class TimeTrigger extends org.ccsds.moims.mo.mps.structures.Trigger
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Planned time of Trigger.
      */
-    private org.ccsds.moims.mo.mal.structures.Time triggerTime;
+    private Time triggerTime;
 
     /**
      * Default constructor for TimeTrigger.
@@ -36,15 +43,15 @@ public final class TimeTrigger extends org.ccsds.moims.mo.mps.structures.Trigger
      * @param time Predicted or actual time of Trigger.  The predicted time may evolve during the planning process up to the time of execution.  The actual time is only available post execution, and hence can only be provided by a plan execution function.
      * @param triggerTime Planned time of Trigger.
      */
-    public TimeTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mal.structures.Time triggerTime) {
+    public TimeTrigger(Time time,
+            Time triggerTime) {
         super(time);
         this.triggerTime = triggerTime;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.TimeTrigger();
+    public Element createElement() {
+        return new TimeTrigger();
     }
 
     /**
@@ -52,7 +59,7 @@ public final class TimeTrigger extends org.ccsds.moims.mo.mps.structures.Trigger
      * 
      * @return The field triggerTime
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTriggerTime() {
+    public Time getTriggerTime() {
         return triggerTime;
     }
 
@@ -95,23 +102,23 @@ public final class TimeTrigger extends org.ccsds.moims.mo.mps.structures.Trigger
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (triggerTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'triggerTime' cannot be null!");
+            throw new MALException("The field 'triggerTime' cannot be null!");
         }
         encoder.encodeTime(triggerTime);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         triggerTime = decoder.decodeTime();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

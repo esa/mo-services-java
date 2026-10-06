@@ -8,7 +8,7 @@ public class PlanningRequestHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mps.planningrequest.PlanningRequestServiceInfo PLANNINGREQUEST_SERVICE = new org.ccsds.moims.mo.mps.planningrequest.PlanningRequestServiceInfo();
+    public static final PlanningRequestServiceInfo PLANNINGREQUEST_SERVICE = new PlanningRequestServiceInfo();
 
     private PlanningRequestHelper() {
         // Utility class; not meant to be instantiated.

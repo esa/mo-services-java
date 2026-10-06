@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * Enumeration class for InteractionType.
  */
-public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class InteractionType extends Enumeration {
 
     private static final long serialVersionUID = 281475027042405L;
     /**
@@ -13,7 +15,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for SEND.
@@ -23,7 +25,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value SEND.
      */
-    public static final org.ccsds.moims.mo.mal.structures.InteractionType SEND = new org.ccsds.moims.mo.mal.structures.InteractionType(org.ccsds.moims.mo.mal.structures.InteractionType.SEND_VALUE);
+    public static final InteractionType SEND = new InteractionType(InteractionType.SEND_VALUE);
 
     /**
      * Enumeration value for SUBMIT.
@@ -33,7 +35,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value SUBMIT.
      */
-    public static final org.ccsds.moims.mo.mal.structures.InteractionType SUBMIT = new org.ccsds.moims.mo.mal.structures.InteractionType(org.ccsds.moims.mo.mal.structures.InteractionType.SUBMIT_VALUE);
+    public static final InteractionType SUBMIT = new InteractionType(InteractionType.SUBMIT_VALUE);
 
     /**
      * Enumeration value for REQUEST.
@@ -43,7 +45,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value REQUEST.
      */
-    public static final org.ccsds.moims.mo.mal.structures.InteractionType REQUEST = new org.ccsds.moims.mo.mal.structures.InteractionType(org.ccsds.moims.mo.mal.structures.InteractionType.REQUEST_VALUE);
+    public static final InteractionType REQUEST = new InteractionType(InteractionType.REQUEST_VALUE);
 
     /**
      * Enumeration value for INVOKE.
@@ -53,7 +55,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value INVOKE.
      */
-    public static final org.ccsds.moims.mo.mal.structures.InteractionType INVOKE = new org.ccsds.moims.mo.mal.structures.InteractionType(org.ccsds.moims.mo.mal.structures.InteractionType.INVOKE_VALUE);
+    public static final InteractionType INVOKE = new InteractionType(InteractionType.INVOKE_VALUE);
 
     /**
      * Enumeration value for PROGRESS.
@@ -63,7 +65,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value PROGRESS.
      */
-    public static final org.ccsds.moims.mo.mal.structures.InteractionType PROGRESS = new org.ccsds.moims.mo.mal.structures.InteractionType(org.ccsds.moims.mo.mal.structures.InteractionType.PROGRESS_VALUE);
+    public static final InteractionType PROGRESS = new InteractionType(InteractionType.PROGRESS_VALUE);
 
     /**
      * Enumeration value for PUBSUB.
@@ -73,12 +75,12 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     /**
      * Enumeration singleton for value PUBSUB.
      */
-    public static final org.ccsds.moims.mo.mal.structures.InteractionType PUBSUB = new org.ccsds.moims.mo.mal.structures.InteractionType(org.ccsds.moims.mo.mal.structures.InteractionType.PUBSUB_VALUE);
+    public static final InteractionType PUBSUB = new InteractionType(InteractionType.PUBSUB_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mal.structures.InteractionType[] _ENUMERATIONS = {
+    private static final InteractionType[] _ENUMERATIONS = {
         SEND, SUBMIT, REQUEST, INVOKE, PROGRESS, PUBSUB};
 
     /**
@@ -125,7 +127,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mal.structures.InteractionType fromString(String s) {
+    public static InteractionType fromString(String s) {
         switch (s) {
             case "SEND":
                 return InteractionType.SEND;
@@ -145,7 +147,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case SEND_VALUE:
                 return InteractionType.SEND;
@@ -165,7 +167,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -175,7 +177,7 @@ public final class InteractionType extends org.ccsds.moims.mo.mal.structures.Enu
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

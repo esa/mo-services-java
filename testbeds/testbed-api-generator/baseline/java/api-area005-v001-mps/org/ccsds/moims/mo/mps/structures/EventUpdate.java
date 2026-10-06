@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: EventUpdate is a data structure that is used to report the dynamic
  * status of an EventInstance in the context of the MPS Plan Execution Control
@@ -9,7 +18,7 @@ package org.ccsds.moims.mo.mps.structures;
  * conjunction with a plan execution function.  EventUpdates may be stored
  * in event history to provide a complete record of evolving status over time.
  */
-public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDetailUpdate {
+public final class EventUpdate extends PlanDetailUpdate {
 
     private static final long serialVersionUID = 1407374900330701L;
     /**
@@ -19,33 +28,33 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the EventInstance to which the status update relates.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> eventInstance;
+    private ObjectRef<EventInstance> eventInstance;
 
     /**
      * Time of status update.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * Predicted or actual time of the event.  EventTime is nullable: it can be
      * predicted without an EventTime (e.g., if position based).
      */
-    private org.ccsds.moims.mo.mal.structures.FineTime eventTime;
+    private FineTime eventTime;
 
     /**
      * Argument values.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgumentList arguments;
+    private ArgumentList arguments;
 
     /**
      * Current status of the EventInstance.
      */
-    private org.ccsds.moims.mo.mps.structures.EventStatusEnum eventStatus;
+    private EventStatusEnum eventStatus;
 
     /**
      * StatusInfo provides the reason for entering the Terminated state and is
@@ -73,11 +82,11 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * @param eventStatus Current status of the EventInstance.
      * @param statusInfo StatusInfo provides the reason for entering the Terminated state and is customizable, but if the following conditions exist then the specified text shall be used: - Occurred (Event has been triggered); - Did Not Occur (Event expired or did not occur within validity period); - Deleted (Event was deleted).
      */
-    public EventUpdate(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> eventInstance,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.FineTime eventTime,
-            org.ccsds.moims.mo.mps.structures.ArgumentList arguments,
-            org.ccsds.moims.mo.mps.structures.EventStatusEnum eventStatus,
+    public EventUpdate(ObjectRef<EventInstance> eventInstance,
+            Time timestamp,
+            FineTime eventTime,
+            ArgumentList arguments,
+            EventStatusEnum eventStatus,
             String statusInfo) {
         this.eventInstance = eventInstance;
         this.timestamp = timestamp;
@@ -95,10 +104,10 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * @param eventTime Predicted or actual time of the event.  EventTime is nullable: it can be predicted without an EventTime (e.g., if position based).
      * @param eventStatus Current status of the EventInstance.
      */
-    public EventUpdate(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> eventInstance,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mal.structures.FineTime eventTime,
-            org.ccsds.moims.mo.mps.structures.EventStatusEnum eventStatus) {
+    public EventUpdate(ObjectRef<EventInstance> eventInstance,
+            Time timestamp,
+            FineTime eventTime,
+            EventStatusEnum eventStatus) {
         this.eventInstance = eventInstance;
         this.timestamp = timestamp;
         this.eventTime = eventTime;
@@ -108,8 +117,8 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EventUpdate();
+    public Element createElement() {
+        return new EventUpdate();
     }
 
     /**
@@ -117,7 +126,7 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * 
      * @return The field eventInstance
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance> getEventInstance() {
+    public ObjectRef<EventInstance> getEventInstance() {
         return eventInstance;
     }
 
@@ -126,7 +135,7 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -135,7 +144,7 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * 
      * @return The field eventTime
      */
-    public org.ccsds.moims.mo.mal.structures.FineTime getEventTime() {
+    public FineTime getEventTime() {
         return eventTime;
     }
 
@@ -144,7 +153,7 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mps.structures.ArgumentList getArguments() {
+    public ArgumentList getArguments() {
         return arguments;
     }
 
@@ -153,7 +162,7 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
      * 
      * @return The field eventStatus
      */
-    public org.ccsds.moims.mo.mps.structures.EventStatusEnum getEventStatus() {
+    public EventStatusEnum getEventStatus() {
         return eventStatus;
     }
 
@@ -260,19 +269,19 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (eventInstance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventInstance' cannot be null!");
+            throw new MALException("The field 'eventInstance' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (eventTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventTime' cannot be null!");
+            throw new MALException("The field 'eventTime' cannot be null!");
         }
         if (eventStatus == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventStatus' cannot be null!");
+            throw new MALException("The field 'eventStatus' cannot be null!");
         }
         encoder.encodeElement(eventInstance);
         encoder.encodeTime(timestamp);
@@ -283,19 +292,19 @@ public final class EventUpdate extends org.ccsds.moims.mo.mps.structures.PlanDet
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        eventInstance = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventInstance>());
+        eventInstance = (ObjectRef<EventInstance>) decoder.decodeElement(new ObjectRef<EventInstance>());
         timestamp = decoder.decodeTime();
         eventTime = decoder.decodeFineTime();
-        arguments = (org.ccsds.moims.mo.mps.structures.ArgumentList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgumentList());
-        eventStatus = (org.ccsds.moims.mo.mps.structures.EventStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.EventStatusEnum.GROUP);
+        arguments = (ArgumentList) decoder.decodeNullableElement(new ArgumentList());
+        eventStatus = (EventStatusEnum) decoder.decodeElement(EventStatusEnum.GROUP);
         statusInfo = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

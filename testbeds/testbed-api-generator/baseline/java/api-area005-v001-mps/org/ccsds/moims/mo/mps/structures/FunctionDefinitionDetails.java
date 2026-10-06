@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * E8: FunctionDefinitionDetails is a data structure that contains static
  * configuration data relating to custom functions: built-in Boolean functions
@@ -8,7 +17,7 @@ package org.ccsds.moims.mo.mps.structures;
  * a separate version of the definition.  FunctionDefinitions form part of
  * the planning configuration data.
  */
-public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class FunctionDefinitionDetails implements Composite {
 
     private static final long serialVersionUID = 1407374900331197L;
     /**
@@ -18,17 +27,17 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * ID of the custom function.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier functionID;
+    private Identifier functionID;
 
     /**
      * Version of the FunctionDefinition.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger version;
+    private UInteger version;
 
     /**
      * Description of the custom function.
@@ -38,7 +47,7 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
     /**
      * List of argument definitions.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgDefList argDefs;
+    private ArgDefList argDefs;
 
     /**
      * Default constructor for FunctionDefinitionDetails.
@@ -55,10 +64,10 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * @param description Description of the custom function.
      * @param argDefs List of argument definitions.
      */
-    public FunctionDefinitionDetails(org.ccsds.moims.mo.mal.structures.Identifier functionID,
-            org.ccsds.moims.mo.mal.structures.UInteger version,
+    public FunctionDefinitionDetails(Identifier functionID,
+            UInteger version,
             String description,
-            org.ccsds.moims.mo.mps.structures.ArgDefList argDefs) {
+            ArgDefList argDefs) {
         this.functionID = functionID;
         this.version = version;
         this.description = description;
@@ -72,8 +81,8 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * @param version Version of the FunctionDefinition.
      * @param description Description of the custom function.
      */
-    public FunctionDefinitionDetails(org.ccsds.moims.mo.mal.structures.Identifier functionID,
-            org.ccsds.moims.mo.mal.structures.UInteger version,
+    public FunctionDefinitionDetails(Identifier functionID,
+            UInteger version,
             String description) {
         this.functionID = functionID;
         this.version = version;
@@ -82,8 +91,8 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.FunctionDefinitionDetails();
+    public Element createElement() {
+        return new FunctionDefinitionDetails();
     }
 
     /**
@@ -91,7 +100,7 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field functionID
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getFunctionID() {
+    public Identifier getFunctionID() {
         return functionID;
     }
 
@@ -100,7 +109,7 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field version
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getVersion() {
+    public UInteger getVersion() {
         return version;
     }
 
@@ -118,7 +127,7 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field argDefs
      */
-    public org.ccsds.moims.mo.mps.structures.ArgDefList getArgDefs() {
+    public ArgDefList getArgDefs() {
         return argDefs;
     }
 
@@ -190,15 +199,15 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (functionID == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'functionID' cannot be null!");
+            throw new MALException("The field 'functionID' cannot be null!");
         }
         if (version == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'version' cannot be null!");
+            throw new MALException("The field 'version' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         encoder.encodeIdentifier(functionID);
         encoder.encodeUInteger(version);
@@ -207,16 +216,16 @@ public final class FunctionDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         functionID = decoder.decodeIdentifier();
         version = decoder.decodeUInteger();
         description = decoder.decodeString();
-        argDefs = (org.ccsds.moims.mo.mps.structures.ArgDefList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgDefList());
+        argDefs = (ArgDefList) decoder.decodeNullableElement(new ArgDefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

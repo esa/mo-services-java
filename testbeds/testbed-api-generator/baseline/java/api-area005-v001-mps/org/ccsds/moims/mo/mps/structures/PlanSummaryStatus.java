@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: PlanSummaryStatus is a data structure that provides a summary view
  * of a Plan that includes the PlanInformation section and current status,
  * but not the full details of the Plan.  It is returned in the context of
  * the MPS Plan Distribution service getPlanSummaries operation.
  */
-public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanSummaryStatus implements Composite {
 
     private static final long serialVersionUID = 1407374900331005L;
     /**
@@ -16,12 +24,12 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan to which the summary status relates.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan;
+    private ObjectRef<Plan> plan;
 
     /**
      * Flag indicating if the Plan is a patch plan that only contains details
@@ -38,7 +46,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * be a self-standing full plan. If the Plan is a Patch Plan, then a precursor
      * plan must be specified.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> precursorPlan;
+    private ObjectRef<Plan> precursorPlan;
 
     /**
      * Applicable only for patch plans, this is a reference to the target Plan.
@@ -46,13 +54,13 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * Plan and is distinct from the identity of the patch plan itself.  Patch
      * plans are not permitted in the context of a planning request.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> targetPlan;
+    private ObjectRef<Plan> targetPlan;
 
     /**
      * Contains header information relating to the Plan, including its originator
      * and validity period.
      */
-    private org.ccsds.moims.mo.mps.structures.PlanInformation information;
+    private PlanInformation information;
 
     /**
      * Flag indicating if the Plan has currently been released as an Operational
@@ -63,7 +71,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
     /**
      * Current status of the Plan.
      */
-    private org.ccsds.moims.mo.mps.structures.PlanStatusEnum status;
+    private PlanStatusEnum status;
 
     /**
      * Supplementary information for a Plan in the Terminated state.
@@ -89,13 +97,13 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * @param status Current status of the Plan.
      * @param statusInfo Supplementary information for a Plan in the Terminated state.
      */
-    public PlanSummaryStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
+    public PlanSummaryStatus(ObjectRef<Plan> plan,
             Boolean isPatchPlan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> precursorPlan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> targetPlan,
-            org.ccsds.moims.mo.mps.structures.PlanInformation information,
+            ObjectRef<Plan> precursorPlan,
+            ObjectRef<Plan> targetPlan,
+            PlanInformation information,
             Boolean isAlternate,
-            org.ccsds.moims.mo.mps.structures.PlanStatusEnum status,
+            PlanStatusEnum status,
             String statusInfo) {
         this.plan = plan;
         this.isPatchPlan = isPatchPlan;
@@ -116,11 +124,11 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * @param isAlternate Flag indicating if the Plan has currently been released as an Operational or Alternate plan.
      * @param status Current status of the Plan.
      */
-    public PlanSummaryStatus(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
+    public PlanSummaryStatus(ObjectRef<Plan> plan,
             Boolean isPatchPlan,
-            org.ccsds.moims.mo.mps.structures.PlanInformation information,
+            PlanInformation information,
             Boolean isAlternate,
-            org.ccsds.moims.mo.mps.structures.PlanStatusEnum status) {
+            PlanStatusEnum status) {
         this.plan = plan;
         this.isPatchPlan = isPatchPlan;
         this.precursorPlan = null;
@@ -132,8 +140,8 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanSummaryStatus();
+    public Element createElement() {
+        return new PlanSummaryStatus();
     }
 
     /**
@@ -141,7 +149,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlan() {
+    public ObjectRef<Plan> getPlan() {
         return plan;
     }
 
@@ -159,7 +167,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field precursorPlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPrecursorPlan() {
+    public ObjectRef<Plan> getPrecursorPlan() {
         return precursorPlan;
     }
 
@@ -168,7 +176,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field targetPlan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getTargetPlan() {
+    public ObjectRef<Plan> getTargetPlan() {
         return targetPlan;
     }
 
@@ -177,7 +185,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field information
      */
-    public org.ccsds.moims.mo.mps.structures.PlanInformation getInformation() {
+    public PlanInformation getInformation() {
         return information;
     }
 
@@ -195,7 +203,7 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field status
      */
-    public org.ccsds.moims.mo.mps.structures.PlanStatusEnum getStatus() {
+    public PlanStatusEnum getStatus() {
         return status;
     }
 
@@ -320,21 +328,21 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (plan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'plan' cannot be null!");
+            throw new MALException("The field 'plan' cannot be null!");
         }
         if (isPatchPlan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'isPatchPlan' cannot be null!");
+            throw new MALException("The field 'isPatchPlan' cannot be null!");
         }
         if (information == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'information' cannot be null!");
+            throw new MALException("The field 'information' cannot be null!");
         }
         if (isAlternate == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'isAlternate' cannot be null!");
+            throw new MALException("The field 'isAlternate' cannot be null!");
         }
         if (status == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'status' cannot be null!");
+            throw new MALException("The field 'status' cannot be null!");
         }
         encoder.encodeElement(plan);
         encoder.encodeBoolean(isPatchPlan);
@@ -347,20 +355,20 @@ public final class PlanSummaryStatus implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        plan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        plan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
         isPatchPlan = decoder.decodeBoolean();
-        precursorPlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        targetPlan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        information = (org.ccsds.moims.mo.mps.structures.PlanInformation) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.PlanInformation());
+        precursorPlan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        targetPlan = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        information = (PlanInformation) decoder.decodeElement(new PlanInformation());
         isAlternate = decoder.decodeBoolean();
-        status = (org.ccsds.moims.mo.mps.structures.PlanStatusEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.PlanStatusEnum.DRAFT);
+        status = (PlanStatusEnum) decoder.decodeElement(PlanStatusEnum.DRAFT);
         statusInfo = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

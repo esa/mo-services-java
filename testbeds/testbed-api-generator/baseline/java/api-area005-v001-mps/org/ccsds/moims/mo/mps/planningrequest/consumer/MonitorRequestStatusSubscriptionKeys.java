@@ -1,5 +1,15 @@
 package org.ccsds.moims.mo.mps.planningrequest.consumer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttribute;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+
 /**
  * Typed accessors for the Subscription Keys of the monitorRequestStatus PubSub
  * operation.
@@ -9,17 +19,17 @@ public final class MonitorRequestStatusSubscriptionKeys {
     /**
      * The key values as received in the UpdateHeader.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * The effective key names for the received key values.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList keyNames;
+    private IdentifierList keyNames;
 
     /**
      * The Subscription Key names defined by the operation, in order.
      */
-    private static final org.ccsds.moims.mo.mal.structures.IdentifierList CANONICAL_KEY_NAMES = new org.ccsds.moims.mo.mal.structures.IdentifierList(new java.util.ArrayList<>(java.util.Arrays.asList(new org.ccsds.moims.mo.mal.structures.Identifier("instanceID"), new org.ccsds.moims.mo.mal.structures.Identifier("definitionID"), new org.ccsds.moims.mo.mal.structures.Identifier("userID"), new org.ccsds.moims.mo.mal.structures.Identifier("userReference"), new org.ccsds.moims.mo.mal.structures.Identifier("status"), new org.ccsds.moims.mo.mal.structures.Identifier("outputPlanID"))));
+    private static final IdentifierList CANONICAL_KEY_NAMES = new IdentifierList(new ArrayList<>(Arrays.asList(new Identifier("instanceID"), new Identifier("definitionID"), new Identifier("userID"), new Identifier("userReference"), new Identifier("status"), new Identifier("outputPlanID"))));
 
     /**
      * Creates an instance from the received UpdateHeader and the subscription
@@ -28,8 +38,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * @param updateHeader The UpdateHeader received in the NOTIFY message
      * @param selectedKeys The selectedKeys of the subscription, or null if trimming was not enabled
      */
-    public MonitorRequestStatusSubscriptionKeys(org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys) {
+    public MonitorRequestStatusSubscriptionKeys(UpdateHeader updateHeader,
+            IdentifierList selectedKeys) {
         this.keyValues = (updateHeader == null) ? null : updateHeader.getKeyValues();
         this.keyNames = (selectedKeys != null) ? selectedKeys : CANONICAL_KEY_NAMES;
     }
@@ -40,8 +50,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getInstanceID() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("instanceID");
+    public Identifier getInstanceID() {
+        return (Identifier) valueByName("instanceID");
     }
 
     /**
@@ -50,8 +60,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getDefinitionID() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("definitionID");
+    public Identifier getDefinitionID() {
+        return (Identifier) valueByName("definitionID");
     }
 
     /**
@@ -59,8 +69,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUserID() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("userID");
+    public Identifier getUserID() {
+        return (Identifier) valueByName("userID");
     }
 
     /**
@@ -69,8 +79,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUserReference() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("userReference");
+    public Identifier getUserReference() {
+        return (Identifier) valueByName("userReference");
     }
 
     /**
@@ -78,8 +88,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getStatus() {
-        return (org.ccsds.moims.mo.mal.structures.UShort) valueByName("status");
+    public UShort getStatus() {
+        return (UShort) valueByName("status");
     }
 
     /**
@@ -88,8 +98,8 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getOutputPlanID() {
-        return (org.ccsds.moims.mo.mal.structures.Identifier) valueByName("outputPlanID");
+    public Identifier getOutputPlanID() {
+        return (Identifier) valueByName("outputPlanID");
     }
 
     /**
@@ -100,7 +110,7 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * @param name The Subscription Key name
      * @return The key value, or null if not present
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getByName(String name) {
+    public Attribute getByName(String name) {
         return valueByName(name);
     }
 
@@ -108,7 +118,7 @@ public final class MonitorRequestStatusSubscriptionKeys {
      * 
      * @param name The Subscription Key name
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute valueByName(String name) {
+    private Attribute valueByName(String name) {
         if (keyNames == null || keyValues == null) {
             return null;
         }
@@ -117,7 +127,7 @@ public final class MonitorRequestStatusSubscriptionKeys {
                 if (i >= keyValues.size()) {
                     return null;
                 }
-                org.ccsds.moims.mo.mal.structures.NullableAttribute na = keyValues.get(i);
+                NullableAttribute na = keyValues.get(i);
                 return (na == null) ? null : na.getValue();
             }
         }

@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E1: All sub-classes of Trigger include the time at which they are predicted
  * to occur (in advance of execution); and, where applicable, the time at
  * which they actually occurred (post execution).
  */
-public abstract class Trigger implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class Trigger implements Composite {
 
     /**
      * Predicted or actual time of Trigger.  The predicted time may evolve during
@@ -13,7 +20,7 @@ public abstract class Trigger implements org.ccsds.moims.mo.mal.structures.Compo
      * available post execution, and hence can only be provided by a plan execution
      * function.
      */
-    private org.ccsds.moims.mo.mal.structures.Time time;
+    private Time time;
 
     /**
      * Default constructor for Trigger.
@@ -27,7 +34,7 @@ public abstract class Trigger implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @param time Predicted or actual time of Trigger.  The predicted time may evolve during the planning process up to the time of execution.  The actual time is only available post execution, and hence can only be provided by a plan execution function.
      */
-    public Trigger(org.ccsds.moims.mo.mal.structures.Time time) {
+    public Trigger(Time time) {
         this.time = time;
     }
 
@@ -36,7 +43,7 @@ public abstract class Trigger implements org.ccsds.moims.mo.mal.structures.Compo
      * 
      * @return The field time
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTime() {
+    public Time getTime() {
         return time;
     }
 
@@ -75,15 +82,15 @@ public abstract class Trigger implements org.ccsds.moims.mo.mal.structures.Compo
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (time == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'time' cannot be null!");
+            throw new MALException("The field 'time' cannot be null!");
         }
         encoder.encodeTime(time);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         time = decoder.decodeTime();
         return this;
     }

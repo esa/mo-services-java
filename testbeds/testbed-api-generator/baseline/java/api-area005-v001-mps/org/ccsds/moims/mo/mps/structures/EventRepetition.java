@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: A sub-type of Repetition based on planning events.
  */
-public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Repetition {
+public final class EventRepetition extends Repetition {
 
     private static final long serialVersionUID = 1407374900330559L;
     /**
@@ -13,25 +19,25 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to an EventDefinition (type of event).
      */
-    private org.ccsds.moims.mo.mal.structures.Element eventRef;
+    private Element eventRef;
 
     /**
      * Number of occurrences of the planning event required between occurrences
      * of the planning activity.
      */
-    private org.ccsds.moims.mo.mal.structures.Element separation;
+    private Element separation;
 
     /**
      * The allowed tolerance (+/-) in the number of occurrences of the planning
      * event between occurrences of the planning activity, the interpretation
      * of which is dependent on the separationType.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for EventRepetition.
@@ -51,11 +57,11 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * @param tolerance The allowed tolerance (+/-) in the number of occurrences of the planning event between occurrences of the planning activity, the interpretation of which is dependent on the separationType.
      */
     public EventRepetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element eventRef,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType,
+            Element eventRef,
+            Element separation,
+            Element tolerance) {
         super(count,
             timeWindow,
             separationType);
@@ -72,10 +78,10 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * @param separation Number of occurrences of the planning event required between occurrences of the planning activity.
      * @param tolerance The allowed tolerance (+/-) in the number of occurrences of the planning event between occurrences of the planning activity, the interpretation of which is dependent on the separationType.
      */
-    public EventRepetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element eventRef,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public EventRepetition(SeparationTypeEnum separationType,
+            Element eventRef,
+            Element separation,
+            Element tolerance) {
         super(separationType);
         this.eventRef = eventRef;
         this.separation = separation;
@@ -83,8 +89,8 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.EventRepetition();
+    public Element createElement() {
+        return new EventRepetition();
     }
 
     /**
@@ -92,7 +98,7 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field eventRef
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEventRef() {
+    public Element getEventRef() {
         return eventRef;
     }
 
@@ -101,7 +107,7 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field separation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getSeparation() {
+    public Element getSeparation() {
         return separation;
     }
 
@@ -110,7 +116,7 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -175,16 +181,16 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (eventRef == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventRef' cannot be null!");
+            throw new MALException("The field 'eventRef' cannot be null!");
         }
         if (separation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'separation' cannot be null!");
+            throw new MALException("The field 'separation' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(eventRef);
         encoder.encodeAbstractElement(separation);
@@ -192,16 +198,16 @@ public final class EventRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        eventRef = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        separation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        eventRef = (Element) decoder.decodeAbstractElement();
+        separation = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

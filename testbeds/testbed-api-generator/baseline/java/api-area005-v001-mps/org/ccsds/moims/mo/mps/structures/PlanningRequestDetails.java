@@ -1,5 +1,14 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: PlanningRequestDetails is a data structure used in the context of the
  * MPS Planning Request service submitRequest and updateRequest operations,
@@ -7,7 +16,7 @@ package org.ccsds.moims.mo.mps.structures;
  * of the resulting RequestInstance is not yet known at the time of submitting
  * or updating the request.
  */
-public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class PlanningRequestDetails implements Composite {
 
     private static final long serialVersionUID = 1407374900330901L;
     /**
@@ -17,7 +26,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * User supplied reference for the planning request.  This is distinct from
@@ -25,20 +34,20 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * No guarantees are made by the planning system about the contents of this
      * identifier; that is entirely up to the user who supplies the reference.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier userReference;
+    private Identifier userReference;
 
     /**
      * Reference to the RequestDefinition from which the RequestInstance was created,
      * if a planning request template was used.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> definition;
+    private ObjectRef<RequestDefinition> definition;
 
     /**
      * Specifies which planning period the planning request applies to.  Planning
      * period IDs are mission specific, but can be used to indicate mission phase;
      * planning cycle; or ‘semester’ in observatory missions.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier planningPeriod;
+    private Identifier planningPeriod;
 
     /**
      * Validity period for the planning request, expressed as one or more time
@@ -47,7 +56,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * within any individual TimeWindow. If this field is null, no restriction
      * is placed on the times between which this request must be planned.
      */
-    private org.ccsds.moims.mo.mps.structures.TimeWindowList validityTimes;
+    private TimeWindowList validityTimes;
 
     /**
      * Validity period for the planning request, expressed as one or more event
@@ -56,18 +65,18 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * within any individual EventWindow. If this field is null, no restriction
      * is placed on any events between which this request must be planned.
      */
-    private org.ccsds.moims.mo.mps.structures.EventWindowList validityEvents;
+    private EventWindowList validityEvents;
 
     /**
      * Specifies the time system used for all time fields within the planning
      * request (see 4.4.1). If null, the default time system is used.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier timeSystem;
+    private Identifier timeSystem;
 
     /**
      * The User ID for the person or organization raising the planning request.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user;
+    private ObjectRef<PlanningUser> user;
 
     /**
      * Description of the request.
@@ -78,7 +87,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * List of named argument values.  If created from a template planning request,
      * this will include the arguments defined in the RequestDefinition.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgumentList arguments;
+    private ArgumentList arguments;
 
     /**
      * A flag that indicates whether the planning request is for a repetitive
@@ -92,7 +101,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
     /**
      * Set of activity details specifying requested activities.
      */
-    private org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities;
+    private ActivityDetailsList activities;
 
     /**
      * Reference to an existing Plan (output of one planning function) submitted
@@ -100,7 +109,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * distributed or hierarchical planning system. Only one of inputPlanRef and
      * inputPlan should be present within the planning request.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> inputPlanRef;
+    private ObjectRef<Plan> inputPlanRef;
 
     /**
      * An existing Plan  (output of one planning function) submitted as a planning
@@ -109,7 +118,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * request. Only one of inputPlanRef and inputPlan should be present within
      * the planning request.
      */
-    private org.ccsds.moims.mo.mps.structures.Plan inputPlan;
+    private Plan inputPlan;
 
     /**
      * Free text for any additional user comments about the request.
@@ -141,19 +150,19 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * @param inputPlan An existing Plan  (output of one planning function) submitted as a planning request to another planning function in the context of a distributed or hierarchical planning system.  The Plan is embedded within the planning request. Only one of inputPlanRef and inputPlan should be present within the planning request.
      * @param comments Free text for any additional user comments about the request.
      */
-    public PlanningRequestDetails(org.ccsds.moims.mo.mal.structures.Identifier userReference,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> definition,
-            org.ccsds.moims.mo.mal.structures.Identifier planningPeriod,
-            org.ccsds.moims.mo.mps.structures.TimeWindowList validityTimes,
-            org.ccsds.moims.mo.mps.structures.EventWindowList validityEvents,
-            org.ccsds.moims.mo.mal.structures.Identifier timeSystem,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user,
+    public PlanningRequestDetails(Identifier userReference,
+            ObjectRef<RequestDefinition> definition,
+            Identifier planningPeriod,
+            TimeWindowList validityTimes,
+            EventWindowList validityEvents,
+            Identifier timeSystem,
+            ObjectRef<PlanningUser> user,
             String description,
-            org.ccsds.moims.mo.mps.structures.ArgumentList arguments,
+            ArgumentList arguments,
             Boolean standingOrder,
-            org.ccsds.moims.mo.mps.structures.ActivityDetailsList activities,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> inputPlanRef,
-            org.ccsds.moims.mo.mps.structures.Plan inputPlan,
+            ActivityDetailsList activities,
+            ObjectRef<Plan> inputPlanRef,
+            Plan inputPlan,
             String comments) {
         this.userReference = userReference;
         this.definition = definition;
@@ -180,9 +189,9 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * @param description Description of the request.
      * @param standingOrder A flag that indicates whether the planning request is for a repetitive standing order (unbounded other than by the validity period), or is a one-off request.  If it is a standing order, then the supplied activity details must be an ActivityNode with specification of the repetition criteria.  It should be noted that a one-off request can still include repetition.
      */
-    public PlanningRequestDetails(org.ccsds.moims.mo.mal.structures.Identifier userReference,
-            org.ccsds.moims.mo.mal.structures.Identifier planningPeriod,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> user,
+    public PlanningRequestDetails(Identifier userReference,
+            Identifier planningPeriod,
+            ObjectRef<PlanningUser> user,
             String description,
             Boolean standingOrder) {
         this.userReference = userReference;
@@ -202,8 +211,8 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PlanningRequestDetails();
+    public Element createElement() {
+        return new PlanningRequestDetails();
     }
 
     /**
@@ -211,7 +220,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field userReference
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getUserReference() {
+    public Identifier getUserReference() {
         return userReference;
     }
 
@@ -220,7 +229,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field definition
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition> getDefinition() {
+    public ObjectRef<RequestDefinition> getDefinition() {
         return definition;
     }
 
@@ -229,7 +238,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field planningPeriod
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getPlanningPeriod() {
+    public Identifier getPlanningPeriod() {
         return planningPeriod;
     }
 
@@ -238,7 +247,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field validityTimes
      */
-    public org.ccsds.moims.mo.mps.structures.TimeWindowList getValidityTimes() {
+    public TimeWindowList getValidityTimes() {
         return validityTimes;
     }
 
@@ -247,7 +256,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field validityEvents
      */
-    public org.ccsds.moims.mo.mps.structures.EventWindowList getValidityEvents() {
+    public EventWindowList getValidityEvents() {
         return validityEvents;
     }
 
@@ -256,7 +265,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field timeSystem
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getTimeSystem() {
+    public Identifier getTimeSystem() {
         return timeSystem;
     }
 
@@ -265,7 +274,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field user
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser> getUser() {
+    public ObjectRef<PlanningUser> getUser() {
         return user;
     }
 
@@ -283,7 +292,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mps.structures.ArgumentList getArguments() {
+    public ArgumentList getArguments() {
         return arguments;
     }
 
@@ -301,7 +310,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field activities
      */
-    public org.ccsds.moims.mo.mps.structures.ActivityDetailsList getActivities() {
+    public ActivityDetailsList getActivities() {
         return activities;
     }
 
@@ -310,7 +319,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field inputPlanRef
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getInputPlanRef() {
+    public ObjectRef<Plan> getInputPlanRef() {
         return inputPlanRef;
     }
 
@@ -319,7 +328,7 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field inputPlan
      */
-    public org.ccsds.moims.mo.mps.structures.Plan getInputPlan() {
+    public Plan getInputPlan() {
         return inputPlan;
     }
 
@@ -510,21 +519,21 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (userReference == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'userReference' cannot be null!");
+            throw new MALException("The field 'userReference' cannot be null!");
         }
         if (planningPeriod == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'planningPeriod' cannot be null!");
+            throw new MALException("The field 'planningPeriod' cannot be null!");
         }
         if (user == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'user' cannot be null!");
+            throw new MALException("The field 'user' cannot be null!");
         }
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (standingOrder == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'standingOrder' cannot be null!");
+            throw new MALException("The field 'standingOrder' cannot be null!");
         }
         encoder.encodeIdentifier(userReference);
         encoder.encodeNullableElement(definition);
@@ -543,26 +552,26 @@ public final class PlanningRequestDetails implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         userReference = decoder.decodeIdentifier();
-        definition = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.RequestDefinition>());
+        definition = (ObjectRef<RequestDefinition>) decoder.decodeNullableElement(new ObjectRef<RequestDefinition>());
         planningPeriod = decoder.decodeIdentifier();
-        validityTimes = (org.ccsds.moims.mo.mps.structures.TimeWindowList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.TimeWindowList());
-        validityEvents = (org.ccsds.moims.mo.mps.structures.EventWindowList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.EventWindowList());
+        validityTimes = (TimeWindowList) decoder.decodeNullableElement(new TimeWindowList());
+        validityEvents = (EventWindowList) decoder.decodeNullableElement(new EventWindowList());
         timeSystem = decoder.decodeNullableIdentifier();
-        user = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.PlanningUser>());
+        user = (ObjectRef<PlanningUser>) decoder.decodeElement(new ObjectRef<PlanningUser>());
         description = decoder.decodeString();
-        arguments = (org.ccsds.moims.mo.mps.structures.ArgumentList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgumentList());
+        arguments = (ArgumentList) decoder.decodeNullableElement(new ArgumentList());
         standingOrder = decoder.decodeBoolean();
-        activities = (org.ccsds.moims.mo.mps.structures.ActivityDetailsList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ActivityDetailsList());
-        inputPlanRef = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        inputPlan = (org.ccsds.moims.mo.mps.structures.Plan) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Plan());
+        activities = (ActivityDetailsList) decoder.decodeNullableElement(new ActivityDetailsList());
+        inputPlanRef = (ObjectRef<Plan>) decoder.decodeNullableElement(new ObjectRef<Plan>());
+        inputPlan = (Plan) decoder.decodeNullableElement(new Plan());
         comments = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -11,5 +11,5 @@ public interface ActivityTrackingHandler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.com.activitytracking.provider.ActivityTrackingSkeleton skeleton);
+    void setSkeleton(ActivityTrackingSkeleton skeleton);
 }

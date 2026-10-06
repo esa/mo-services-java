@@ -1,9 +1,21 @@
 package org.ccsds.moims.mo.common.login.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.common.login.LoginServiceInfo;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Blob;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+
 /**
  * Consumer adapter for Login service.
  */
-public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class LoginAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a REQUEST response is received from a provider for
@@ -14,10 +26,10 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param objInstId The returned objInstId field shall contain the LoginInstance COM object instance identifier that was created by the login operation.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void loginResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.Blob authId,
+    public void loginResponseReceived(MALMessageHeader msgHeader,
+            Blob authId,
             Long objInstId,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -28,9 +40,9 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void loginErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void loginErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -40,8 +52,8 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void logoutAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void logoutAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -52,9 +64,9 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void logoutErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void logoutErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -65,9 +77,9 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param permittedRoles The operation shall return a list of LoginRole object instance identifiers that are permitted for the user or NULL if roles are not used by the system.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRolesResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.LongList permittedRoles,
-            java.util.Map qosProperties) {
+    public void listRolesResponseReceived(MALMessageHeader msgHeader,
+            LongList permittedRoles,
+            Map qosProperties) {
     }
 
     /**
@@ -78,9 +90,9 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRolesErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listRolesErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -92,10 +104,10 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param newLoginInstId The returned newLoginInstId field shall contain the new LoginInstance COM object instance identifier that was created by the operation.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void handoverResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.Blob newAuthId,
+    public void handoverResponseReceived(MALMessageHeader msgHeader,
+            Blob newAuthId,
             Long newLoginInstId,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -106,76 +118,76 @@ public abstract class LoginAdapter extends org.ccsds.moims.mo.mal.consumer.MALIn
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void handoverErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void handoverErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._LOGOUT_OP_NUMBER:
+          case LoginServiceInfo._LOGOUT_OP_NUMBER:
             logoutAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._LOGOUT_OP_NUMBER:
+          case LoginServiceInfo._LOGOUT_OP_NUMBER:
             logoutErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._LOGIN_OP_NUMBER:
+          case LoginServiceInfo._LOGIN_OP_NUMBER:
             loginResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.Blob) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Blob()),
-                (body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
+                (Blob) body.getBodyElement(0, new Blob()),
+                (body.getBodyElement(1, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(1, new Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._LISTROLES_OP_NUMBER:
+          case LoginServiceInfo._LISTROLES_OP_NUMBER:
             listRolesResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList()), qosProperties);
+                (LongList) body.getBodyElement(0, new LongList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._HANDOVER_OP_NUMBER:
+          case LoginServiceInfo._HANDOVER_OP_NUMBER:
             handoverResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.Blob) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Blob()),
-                (body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
+                (Blob) body.getBodyElement(0, new Blob()),
+                (body.getBodyElement(1, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(1, new Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._LOGIN_OP_NUMBER:
+          case LoginServiceInfo._LOGIN_OP_NUMBER:
             loginErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._LISTROLES_OP_NUMBER:
+          case LoginServiceInfo._LISTROLES_OP_NUMBER:
             listRolesErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.common.login.LoginServiceInfo._HANDOVER_OP_NUMBER:
+          case LoginServiceInfo._HANDOVER_OP_NUMBER:
             handoverErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

@@ -8,7 +8,7 @@ public class AlertHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mc.alert.AlertServiceInfo ALERT_SERVICE = new org.ccsds.moims.mo.mc.alert.AlertServiceInfo();
+    public static final AlertServiceInfo ALERT_SERVICE = new AlertServiceInfo();
 
     private AlertHelper() {
         // Utility class; not meant to be instantiated.

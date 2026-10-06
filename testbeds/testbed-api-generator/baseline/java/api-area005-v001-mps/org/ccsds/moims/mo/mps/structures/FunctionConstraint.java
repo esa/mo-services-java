@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E8: Function constraints make use of an external custom function to determine
  * whether or not a constraint is satisfied.  The function must return True
@@ -7,7 +13,7 @@ package org.ccsds.moims.mo.mps.structures;
  * period over which the function constraint applies is specified relative
  * to the planning activity to which the constraint applies.
  */
-public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class FunctionConstraint extends Constraint {
 
     private static final long serialVersionUID = 1407374900330543L;
     /**
@@ -17,38 +23,38 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the start of the constraint period relates. Default is the start
      * of the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider startRef;
+    private Slider startRef;
 
     /**
      * Identifies the point in the duration of the applicable planning activity
      * to which the end of the constraint period relates. Default is the end of
      * the planning activity.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider endRef;
+    private Slider endRef;
 
     /**
      * Offset from startRef that specifies the start of the constraint period.
      * A positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startOffset;
+    private Element startOffset;
 
     /**
      * Offset from endRef that specifies the end of the constraint period.  A
      * positive offset implies a shift later in time. Default is no offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endOffset;
+    private Element endOffset;
 
     /**
      * Specifies the Function to be applied and its set of input arguments.
      */
-    private org.ccsds.moims.mo.mps.structures.FunctionDetails function;
+    private FunctionDetails function;
 
     /**
      * Default constructor for FunctionConstraint.
@@ -68,11 +74,11 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param function Specifies the Function to be applied and its set of input arguments.
      */
     public FunctionConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mps.structures.FunctionDetails function) {
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            FunctionDetails function) {
         super(negate);
         this.startRef = startRef;
         this.endRef = endRef;
@@ -86,7 +92,7 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @param function Specifies the Function to be applied and its set of input arguments.
      */
-    public FunctionConstraint(org.ccsds.moims.mo.mps.structures.FunctionDetails function) {
+    public FunctionConstraint(FunctionDetails function) {
         this.startRef = null;
         this.endRef = null;
         this.startOffset = null;
@@ -95,8 +101,8 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.FunctionConstraint();
+    public Element createElement() {
+        return new FunctionConstraint();
     }
 
     /**
@@ -104,7 +110,7 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field startRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getStartRef() {
+    public Slider getStartRef() {
         return startRef;
     }
 
@@ -113,7 +119,7 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field endRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getEndRef() {
+    public Slider getEndRef() {
         return endRef;
     }
 
@@ -122,7 +128,7 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field startOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartOffset() {
+    public Element getStartOffset() {
         return startOffset;
     }
 
@@ -131,7 +137,7 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field endOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndOffset() {
+    public Element getEndOffset() {
         return endOffset;
     }
 
@@ -140,7 +146,7 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field function
      */
-    public org.ccsds.moims.mo.mps.structures.FunctionDetails getFunction() {
+    public FunctionDetails getFunction() {
         return function;
     }
 
@@ -227,10 +233,10 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (function == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'function' cannot be null!");
+            throw new MALException("The field 'function' cannot be null!");
         }
         encoder.encodeNullableElement(startRef);
         encoder.encodeNullableElement(endRef);
@@ -240,18 +246,18 @@ public final class FunctionConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        startRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        endRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        startOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        endOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        function = (org.ccsds.moims.mo.mps.structures.FunctionDetails) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.FunctionDetails());
+        startRef = (Slider) decoder.decodeNullableElement(new Slider());
+        endRef = (Slider) decoder.decodeNullableElement(new Slider());
+        startOffset = (Element) decoder.decodeNullableAbstractElement();
+        endOffset = (Element) decoder.decodeNullableAbstractElement();
+        function = (FunctionDetails) decoder.decodeElement(new FunctionDetails());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

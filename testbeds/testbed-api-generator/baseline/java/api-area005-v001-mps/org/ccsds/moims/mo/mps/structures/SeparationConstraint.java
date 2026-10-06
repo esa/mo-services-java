@@ -1,11 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E2: A separation constraint specifies that the parent planning activity
  * (the activity for which the constraint is defined) must be separate in
  * time from another planning activity or planning event, the opponent.
  */
-public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class SeparationConstraint extends Constraint {
 
     private static final long serialVersionUID = 1407374900330542L;
     /**
@@ -15,67 +21,67 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Object Type: ActivityDefinition | EventDefinition Specifies the definition
      * (class) of the opponent planning activity or planning event.
      */
-    private org.ccsds.moims.mo.mal.structures.Element opponent;
+    private Element opponent;
 
     /**
      * Identifies the point in the duration of the parent activity with respect
      * to which to place the start of its constraint window. Default = 0.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider startRef;
+    private Slider startRef;
 
     /**
      * Offset with respect to startRef of the start of the parent activity constraint
      * window.  A positive offset implies a shift later in time. Default is no
      * offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element startOffset;
+    private Element startOffset;
 
     /**
      * Identifies the point in the duration of the parent activity with respect
      * to which to place the end of its constraint window. Default = 1.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider endRef;
+    private Slider endRef;
 
     /**
      * Offset with respect to endRef of the end of the parent activity constraint
      * window.  A positive offset implies a shift later in time. Default is no
      * offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element endOffset;
+    private Element endOffset;
 
     /**
      * Identifies the point in the duration of the opponent with respect to which
      * to place the start of its constraint window.  This field will be ignored
      * in case the opponent is a planning event. Default = 0.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider opponentStartRef;
+    private Slider opponentStartRef;
 
     /**
      * Offset with respect to opponentStartRef of the start of the opponent constraint
      * window.  A positive offset implies a shift later in time. Default is no
      * offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element opponentStartOffset;
+    private Element opponentStartOffset;
 
     /**
      * Identifies the point in the duration of the opponent with respect to which
      * to place the end of its constraint window.  This field will be ignored
      * in case the opponent is a planning event. Default = 1.
      */
-    private org.ccsds.moims.mo.mps.structures.Slider opponentEndRef;
+    private Slider opponentEndRef;
 
     /**
      * Offset with respect to opponentEndRef of the end of the opponent constraint
      * window.  A positive offset implies a shift later in time. Default is no
      * offset.
      */
-    private org.ccsds.moims.mo.mal.structures.Element opponentEndOffset;
+    private Element opponentEndOffset;
 
     /**
      * Default constructor for SeparationConstraint.
@@ -99,15 +105,15 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * @param opponentEndOffset Offset with respect to opponentEndRef of the end of the opponent constraint window.  A positive offset implies a shift later in time. Default is no offset.
      */
     public SeparationConstraint(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.Element opponent,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mps.structures.Slider opponentStartRef,
-            org.ccsds.moims.mo.mal.structures.Element opponentStartOffset,
-            org.ccsds.moims.mo.mps.structures.Slider opponentEndRef,
-            org.ccsds.moims.mo.mal.structures.Element opponentEndOffset) {
+            Element opponent,
+            Slider startRef,
+            Element startOffset,
+            Slider endRef,
+            Element endOffset,
+            Slider opponentStartRef,
+            Element opponentStartOffset,
+            Slider opponentEndRef,
+            Element opponentEndOffset) {
         super(negate);
         this.opponent = opponent;
         this.startRef = startRef;
@@ -125,7 +131,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @param opponent Object Type: ActivityDefinition | EventDefinition Specifies the definition (class) of the opponent planning activity or planning event.
      */
-    public SeparationConstraint(org.ccsds.moims.mo.mal.structures.Element opponent) {
+    public SeparationConstraint(Element opponent) {
         this.opponent = opponent;
         this.startRef = null;
         this.startOffset = null;
@@ -138,8 +144,8 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.SeparationConstraint();
+    public Element createElement() {
+        return new SeparationConstraint();
     }
 
     /**
@@ -147,7 +153,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponent
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOpponent() {
+    public Element getOpponent() {
         return opponent;
     }
 
@@ -156,7 +162,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field startRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getStartRef() {
+    public Slider getStartRef() {
         return startRef;
     }
 
@@ -165,7 +171,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field startOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getStartOffset() {
+    public Element getStartOffset() {
         return startOffset;
     }
 
@@ -174,7 +180,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field endRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getEndRef() {
+    public Slider getEndRef() {
         return endRef;
     }
 
@@ -183,7 +189,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field endOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getEndOffset() {
+    public Element getEndOffset() {
         return endOffset;
     }
 
@@ -192,7 +198,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponentStartRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getOpponentStartRef() {
+    public Slider getOpponentStartRef() {
         return opponentStartRef;
     }
 
@@ -201,7 +207,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponentStartOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOpponentStartOffset() {
+    public Element getOpponentStartOffset() {
         return opponentStartOffset;
     }
 
@@ -210,7 +216,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponentEndRef
      */
-    public org.ccsds.moims.mo.mps.structures.Slider getOpponentEndRef() {
+    public Slider getOpponentEndRef() {
         return opponentEndRef;
     }
 
@@ -219,7 +225,7 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
      * 
      * @return The field opponentEndOffset
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOpponentEndOffset() {
+    public Element getOpponentEndOffset() {
         return opponentEndOffset;
     }
 
@@ -350,10 +356,10 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (opponent == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'opponent' cannot be null!");
+            throw new MALException("The field 'opponent' cannot be null!");
         }
         encoder.encodeAbstractElement(opponent);
         encoder.encodeNullableElement(startRef);
@@ -367,22 +373,22 @@ public final class SeparationConstraint extends org.ccsds.moims.mo.mps.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        opponent = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        startRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        startOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        endRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        endOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        opponentStartRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        opponentStartOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        opponentEndRef = (org.ccsds.moims.mo.mps.structures.Slider) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Slider());
-        opponentEndOffset = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+        opponent = (Element) decoder.decodeAbstractElement();
+        startRef = (Slider) decoder.decodeNullableElement(new Slider());
+        startOffset = (Element) decoder.decodeNullableAbstractElement();
+        endRef = (Slider) decoder.decodeNullableElement(new Slider());
+        endOffset = (Element) decoder.decodeNullableAbstractElement();
+        opponentStartRef = (Slider) decoder.decodeNullableElement(new Slider());
+        opponentStartOffset = (Element) decoder.decodeNullableAbstractElement();
+        opponentEndRef = (Slider) decoder.decodeNullableElement(new Slider());
+        opponentEndOffset = (Element) decoder.decodeNullableAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

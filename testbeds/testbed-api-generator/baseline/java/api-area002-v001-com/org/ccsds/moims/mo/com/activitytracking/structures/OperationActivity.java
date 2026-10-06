@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.com.activitytracking.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.InteractionType;
+
 /**
  * The OperationActivity structure contains the details of a MAL operation
  * activity.
  */
-public final class OperationActivity implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class OperationActivity implements Composite {
 
     private static final long serialVersionUID = 562962855100420L;
     /**
@@ -14,12 +22,12 @@ public final class OperationActivity implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The interaction type of the original operation message header.
      */
-    private org.ccsds.moims.mo.mal.structures.InteractionType interactionType;
+    private InteractionType interactionType;
 
     /**
      * Default constructor for OperationActivity.
@@ -33,13 +41,13 @@ public final class OperationActivity implements org.ccsds.moims.mo.mal.structure
      * 
      * @param interactionType The interaction type of the original operation message header.
      */
-    public OperationActivity(org.ccsds.moims.mo.mal.structures.InteractionType interactionType) {
+    public OperationActivity(InteractionType interactionType) {
         this.interactionType = interactionType;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.activitytracking.structures.OperationActivity();
+    public Element createElement() {
+        return new OperationActivity();
     }
 
     /**
@@ -47,7 +55,7 @@ public final class OperationActivity implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field interactionType
      */
-    public org.ccsds.moims.mo.mal.structures.InteractionType getInteractionType() {
+    public InteractionType getInteractionType() {
         return interactionType;
     }
 
@@ -86,21 +94,21 @@ public final class OperationActivity implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (interactionType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'interactionType' cannot be null!");
+            throw new MALException("The field 'interactionType' cannot be null!");
         }
         encoder.encodeElement(interactionType);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        interactionType = (org.ccsds.moims.mo.mal.structures.InteractionType) decoder.decodeElement(org.ccsds.moims.mo.mal.structures.InteractionType.SEND);
+    public Element decode(MALDecoder decoder) throws MALException {
+        interactionType = (InteractionType) decoder.decodeElement(InteractionType.SEND);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

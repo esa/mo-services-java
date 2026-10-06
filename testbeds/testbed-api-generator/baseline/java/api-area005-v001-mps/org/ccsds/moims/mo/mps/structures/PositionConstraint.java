@@ -1,5 +1,11 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E7: Sub-type of geometric constraint expressed in terms of a specified
  * Position and a tolerance.  The tolerance is defined as a sphere around
@@ -11,7 +17,7 @@ package org.ccsds.moims.mo.mps.structures;
  * position-based planning function.  The position can also be specified as
  * an expression.
  */
-public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.GeometricConstraint {
+public final class PositionConstraint extends GeometricConstraint {
 
     private static final long serialVersionUID = 1407374900330535L;
     /**
@@ -21,12 +27,12 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Specifies the required position expressed using any concrete position type.
      */
-    private org.ccsds.moims.mo.mal.structures.Element position;
+    private Element position;
 
     /**
      * Specifies the maximum distance or angle from the required position that
@@ -34,7 +40,7 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
      * position.  The PhysicalValue shall be of type Distance or Angle (in case
      * of an OrbitalPosition).
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for PositionConstraint.
@@ -55,12 +61,12 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param tolerance Specifies the maximum distance or angle from the required position that satisfies the constraint, effectively defining a sphere around the required position.  The PhysicalValue shall be of type Distance or Angle (in case of an OrbitalPosition).
      */
     public PositionConstraint(Boolean negate,
-            org.ccsds.moims.mo.mps.structures.Slider startRef,
-            org.ccsds.moims.mo.mps.structures.Slider endRef,
-            org.ccsds.moims.mo.mal.structures.Element startOffset,
-            org.ccsds.moims.mo.mal.structures.Element endOffset,
-            org.ccsds.moims.mo.mal.structures.Element position,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            Slider startRef,
+            Slider endRef,
+            Element startOffset,
+            Element endOffset,
+            Element position,
+            Element tolerance) {
         super(negate,
             startRef,
             endRef,
@@ -76,15 +82,15 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param position Specifies the required position expressed using any concrete position type.
      * @param tolerance Specifies the maximum distance or angle from the required position that satisfies the constraint, effectively defining a sphere around the required position.  The PhysicalValue shall be of type Distance or Angle (in case of an OrbitalPosition).
      */
-    public PositionConstraint(org.ccsds.moims.mo.mal.structures.Element position,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public PositionConstraint(Element position,
+            Element tolerance) {
         this.position = position;
         this.tolerance = tolerance;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PositionConstraint();
+    public Element createElement() {
+        return new PositionConstraint();
     }
 
     /**
@@ -92,7 +98,7 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field position
      */
-    public org.ccsds.moims.mo.mal.structures.Element getPosition() {
+    public Element getPosition() {
         return position;
     }
 
@@ -101,7 +107,7 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -155,28 +161,28 @@ public final class PositionConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (position == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'position' cannot be null!");
+            throw new MALException("The field 'position' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(position);
         encoder.encodeAbstractElement(tolerance);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        position = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        position = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

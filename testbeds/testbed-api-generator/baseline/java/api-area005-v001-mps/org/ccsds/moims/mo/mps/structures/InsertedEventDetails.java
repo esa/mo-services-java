@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.ObjectRef;
+
 /**
  * E1: A data structure that provides the information required to create the
  * EventInstance to be inserted into a Plan using the MPS Plan Edit service.
  */
-public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class InsertedEventDetails implements Composite {
 
     private static final long serialVersionUID = 1407374900330702L;
     /**
@@ -14,28 +23,28 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reference to the Plan into which the Event is to be inserted.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan;
+    private ObjectRef<Plan> plan;
 
     /**
      * Reference to the EventDefinition.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> eventDefinition;
+    private ObjectRef<EventDefinition> eventDefinition;
 
     /**
      * Specifies the predicted or actual time of the event.  For an inserted event
      * this must be present.
      */
-    private org.ccsds.moims.mo.mal.structures.FineTime eventTime;
+    private FineTime eventTime;
 
     /**
      * Argument values.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgumentList arguments;
+    private ArgumentList arguments;
 
     /**
      * Default constructor for InsertedEventDetails.
@@ -52,10 +61,10 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
      * @param eventTime Specifies the predicted or actual time of the event.  For an inserted event this must be present.
      * @param arguments Argument values.
      */
-    public InsertedEventDetails(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> eventDefinition,
-            org.ccsds.moims.mo.mal.structures.FineTime eventTime,
-            org.ccsds.moims.mo.mps.structures.ArgumentList arguments) {
+    public InsertedEventDetails(ObjectRef<Plan> plan,
+            ObjectRef<EventDefinition> eventDefinition,
+            FineTime eventTime,
+            ArgumentList arguments) {
         this.plan = plan;
         this.eventDefinition = eventDefinition;
         this.eventTime = eventTime;
@@ -69,9 +78,9 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
      * @param eventDefinition Reference to the EventDefinition.
      * @param eventTime Specifies the predicted or actual time of the event.  For an inserted event this must be present.
      */
-    public InsertedEventDetails(org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> plan,
-            org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> eventDefinition,
-            org.ccsds.moims.mo.mal.structures.FineTime eventTime) {
+    public InsertedEventDetails(ObjectRef<Plan> plan,
+            ObjectRef<EventDefinition> eventDefinition,
+            FineTime eventTime) {
         this.plan = plan;
         this.eventDefinition = eventDefinition;
         this.eventTime = eventTime;
@@ -79,8 +88,8 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.InsertedEventDetails();
+    public Element createElement() {
+        return new InsertedEventDetails();
     }
 
     /**
@@ -88,7 +97,7 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field plan
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan> getPlan() {
+    public ObjectRef<Plan> getPlan() {
         return plan;
     }
 
@@ -97,7 +106,7 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field eventDefinition
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition> getEventDefinition() {
+    public ObjectRef<EventDefinition> getEventDefinition() {
         return eventDefinition;
     }
 
@@ -106,7 +115,7 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field eventTime
      */
-    public org.ccsds.moims.mo.mal.structures.FineTime getEventTime() {
+    public FineTime getEventTime() {
         return eventTime;
     }
 
@@ -115,7 +124,7 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mps.structures.ArgumentList getArguments() {
+    public ArgumentList getArguments() {
         return arguments;
     }
 
@@ -187,15 +196,15 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (plan == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'plan' cannot be null!");
+            throw new MALException("The field 'plan' cannot be null!");
         }
         if (eventDefinition == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventDefinition' cannot be null!");
+            throw new MALException("The field 'eventDefinition' cannot be null!");
         }
         if (eventTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'eventTime' cannot be null!");
+            throw new MALException("The field 'eventTime' cannot be null!");
         }
         encoder.encodeElement(plan);
         encoder.encodeElement(eventDefinition);
@@ -204,16 +213,16 @@ public final class InsertedEventDetails implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        plan = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.Plan>());
-        eventDefinition = (org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition>) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRef<org.ccsds.moims.mo.mps.structures.EventDefinition>());
+    public Element decode(MALDecoder decoder) throws MALException {
+        plan = (ObjectRef<Plan>) decoder.decodeElement(new ObjectRef<Plan>());
+        eventDefinition = (ObjectRef<EventDefinition>) decoder.decodeElement(new ObjectRef<EventDefinition>());
         eventTime = decoder.decodeFineTime();
-        arguments = (org.ccsds.moims.mo.mps.structures.ArgumentList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.ArgumentList());
+        arguments = (ArgumentList) decoder.decodeNullableElement(new ArgumentList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

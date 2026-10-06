@@ -1,11 +1,20 @@
 package org.ccsds.moims.mo.mpd.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.AttributeType;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * An AttributeDef specifies a metadata attribute in terms of its name, attribute
  * type, optional units, and a free text description. Note that as AttributeDef
  * is only used in the context of ProductType.
  */
-public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AttributeDef implements Composite {
 
     private static final long serialVersionUID = 2533274807173128L;
     /**
@@ -15,17 +24,17 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name to the metadata attribute.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * Specifies the MAL attribute type of the metadata attribute.
      */
-    private org.ccsds.moims.mo.mal.structures.AttributeType attributeType;
+    private AttributeType attributeType;
 
     /**
      * The units associated with the metadata attribute (optional).
@@ -52,8 +61,8 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
      * @param units The units associated with the metadata attribute (optional).
      * @param description The description of the metadata attribute (optional).
      */
-    public AttributeDef(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mal.structures.AttributeType attributeType,
+    public AttributeDef(Identifier name,
+            AttributeType attributeType,
             String units,
             String description) {
         this.name = name;
@@ -68,8 +77,8 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
      * @param name The name to the metadata attribute.
      * @param attributeType Specifies the MAL attribute type of the metadata attribute.
      */
-    public AttributeDef(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mal.structures.AttributeType attributeType) {
+    public AttributeDef(Identifier name,
+            AttributeType attributeType) {
         this.name = name;
         this.attributeType = attributeType;
         this.units = null;
@@ -77,8 +86,8 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mpd.structures.AttributeDef();
+    public Element createElement() {
+        return new AttributeDef();
     }
 
     /**
@@ -86,7 +95,7 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -95,7 +104,7 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field attributeType
      */
-    public org.ccsds.moims.mo.mal.structures.AttributeType getAttributeType() {
+    public AttributeType getAttributeType() {
         return attributeType;
     }
 
@@ -185,12 +194,12 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (attributeType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'attributeType' cannot be null!");
+            throw new MALException("The field 'attributeType' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeElement(attributeType);
@@ -199,16 +208,16 @@ public final class AttributeDef implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
-        attributeType = (org.ccsds.moims.mo.mal.structures.AttributeType) decoder.decodeElement(org.ccsds.moims.mo.mal.structures.AttributeType.BLOB);
+        attributeType = (AttributeType) decoder.decodeElement(AttributeType.BLOB);
         units = decoder.decodeNullableString();
         description = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

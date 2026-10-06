@@ -1,39 +1,50 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+
 /**
  * This abstract structure is a publish context.
  */
-public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class TestPublish implements Composite {
 
     /**
      * The QoS level to be used by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.QoSLevel Qos;
+    private QoSLevel Qos;
 
     /**
      * The priority to be used by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger Priority;
+    private UInteger Priority;
 
     /**
      * The domain to be used by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The network zone to be used by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier networkZone;
+    private Identifier networkZone;
 
     /**
      * The session type to be used by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.SessionType Session;
+    private SessionType Session;
 
     /**
      * The session name to be used by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier sessionName;
+    private Identifier sessionName;
 
     /**
      * Whether to use the multi type version of the PubSub operation.
@@ -58,12 +69,12 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * @param sessionName The session name to be used by the provider.
      * @param testMultiType Whether to use the multi type version of the PubSub operation.
      */
-    public TestPublish(org.ccsds.moims.mo.mal.structures.QoSLevel Qos,
-            org.ccsds.moims.mo.mal.structures.UInteger Priority,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType Session,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
+    public TestPublish(QoSLevel Qos,
+            UInteger Priority,
+            IdentifierList domain,
+            Identifier networkZone,
+            SessionType Session,
+            Identifier sessionName,
             Boolean testMultiType) {
         this.Qos = Qos;
         this.Priority = Priority;
@@ -79,7 +90,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field Qos
      */
-    public org.ccsds.moims.mo.mal.structures.QoSLevel getQos() {
+    public QoSLevel getQos() {
         return Qos;
     }
 
@@ -88,7 +99,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field Priority
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getPriority() {
+    public UInteger getPriority() {
         return Priority;
     }
 
@@ -97,7 +108,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -106,7 +117,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field networkZone
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetworkZone() {
+    public Identifier getNetworkZone() {
         return networkZone;
     }
 
@@ -115,7 +126,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field Session
      */
-    public org.ccsds.moims.mo.mal.structures.SessionType getSession() {
+    public SessionType getSession() {
         return Session;
     }
 
@@ -124,7 +135,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
      * 
      * @return The field sessionName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSessionName() {
+    public Identifier getSessionName() {
         return sessionName;
     }
 
@@ -238,7 +249,7 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(Qos);
         encoder.encodeNullableUInteger(Priority);
         encoder.encodeNullableElement(domain);
@@ -249,12 +260,12 @@ public abstract class TestPublish implements org.ccsds.moims.mo.mal.structures.C
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        Qos = (org.ccsds.moims.mo.mal.structures.QoSLevel) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.QoSLevel.BESTEFFORT);
+    public Element decode(MALDecoder decoder) throws MALException {
+        Qos = (QoSLevel) decoder.decodeNullableElement(QoSLevel.BESTEFFORT);
         Priority = decoder.decodeNullableUInteger();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         networkZone = decoder.decodeNullableIdentifier();
-        Session = (org.ccsds.moims.mo.mal.structures.SessionType) decoder.decodeNullableElement(org.ccsds.moims.mo.mal.structures.SessionType.LIVE);
+        Session = (SessionType) decoder.decodeNullableElement(SessionType.LIVE);
         sessionName = decoder.decodeNullableIdentifier();
         testMultiType = decoder.decodeNullableBoolean();
         return this;

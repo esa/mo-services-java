@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E6: Sub-type of Trigger based on the angle subtended between three physical
  * objects.
  */
-public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigger {
+public final class AngleTrigger extends Trigger {
 
     private static final long serialVersionUID = 1407374900330550L;
     /**
@@ -14,33 +21,33 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Position of the center object.  The trigger angle is that subtended at
      * the center object by target objects 1 and 2.
      */
-    private org.ccsds.moims.mo.mps.structures.Position centerObject;
+    private Position centerObject;
 
     /**
      * Position of target object 1.
      */
-    private org.ccsds.moims.mo.mps.structures.Position targetObject1;
+    private Position targetObject1;
 
     /**
      * Position of target object 2.
      */
-    private org.ccsds.moims.mo.mps.structures.Position targetObject2;
+    private Position targetObject2;
 
     /**
      * Minimum angle subtended at the center object by target objects 1 and 2.
      */
-    private org.ccsds.moims.mo.mps.structures.Angle minAngle;
+    private Angle minAngle;
 
     /**
      * Maximum angle subtended at the center object by target objects 1 and 2.
      */
-    private org.ccsds.moims.mo.mps.structures.Angle maxAngle;
+    private Angle maxAngle;
 
     /**
      * Default constructor for AngleTrigger.
@@ -59,12 +66,12 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * @param minAngle Minimum angle subtended at the center object by target objects 1 and 2.
      * @param maxAngle Maximum angle subtended at the center object by target objects 1 and 2.
      */
-    public AngleTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mps.structures.Position centerObject,
-            org.ccsds.moims.mo.mps.structures.Position targetObject1,
-            org.ccsds.moims.mo.mps.structures.Position targetObject2,
-            org.ccsds.moims.mo.mps.structures.Angle minAngle,
-            org.ccsds.moims.mo.mps.structures.Angle maxAngle) {
+    public AngleTrigger(Time time,
+            Position centerObject,
+            Position targetObject1,
+            Position targetObject2,
+            Angle minAngle,
+            Angle maxAngle) {
         super(time);
         this.centerObject = centerObject;
         this.targetObject1 = targetObject1;
@@ -74,8 +81,8 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.AngleTrigger();
+    public Element createElement() {
+        return new AngleTrigger();
     }
 
     /**
@@ -83,7 +90,7 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field centerObject
      */
-    public org.ccsds.moims.mo.mps.structures.Position getCenterObject() {
+    public Position getCenterObject() {
         return centerObject;
     }
 
@@ -92,7 +99,7 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field targetObject1
      */
-    public org.ccsds.moims.mo.mps.structures.Position getTargetObject1() {
+    public Position getTargetObject1() {
         return targetObject1;
     }
 
@@ -101,7 +108,7 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field targetObject2
      */
-    public org.ccsds.moims.mo.mps.structures.Position getTargetObject2() {
+    public Position getTargetObject2() {
         return targetObject2;
     }
 
@@ -110,7 +117,7 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field minAngle
      */
-    public org.ccsds.moims.mo.mps.structures.Angle getMinAngle() {
+    public Angle getMinAngle() {
         return minAngle;
     }
 
@@ -119,7 +126,7 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
      * 
      * @return The field maxAngle
      */
-    public org.ccsds.moims.mo.mps.structures.Angle getMaxAngle() {
+    public Angle getMaxAngle() {
         return maxAngle;
     }
 
@@ -206,22 +213,22 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (centerObject == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'centerObject' cannot be null!");
+            throw new MALException("The field 'centerObject' cannot be null!");
         }
         if (targetObject1 == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetObject1' cannot be null!");
+            throw new MALException("The field 'targetObject1' cannot be null!");
         }
         if (targetObject2 == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'targetObject2' cannot be null!");
+            throw new MALException("The field 'targetObject2' cannot be null!");
         }
         if (minAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'minAngle' cannot be null!");
+            throw new MALException("The field 'minAngle' cannot be null!");
         }
         if (maxAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'maxAngle' cannot be null!");
+            throw new MALException("The field 'maxAngle' cannot be null!");
         }
         encoder.encodeAbstractElement(centerObject);
         encoder.encodeAbstractElement(targetObject1);
@@ -231,18 +238,18 @@ public final class AngleTrigger extends org.ccsds.moims.mo.mps.structures.Trigge
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        centerObject = (org.ccsds.moims.mo.mps.structures.Position) decoder.decodeAbstractElement();
-        targetObject1 = (org.ccsds.moims.mo.mps.structures.Position) decoder.decodeAbstractElement();
-        targetObject2 = (org.ccsds.moims.mo.mps.structures.Position) decoder.decodeAbstractElement();
-        minAngle = (org.ccsds.moims.mo.mps.structures.Angle) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Angle());
-        maxAngle = (org.ccsds.moims.mo.mps.structures.Angle) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Angle());
+        centerObject = (Position) decoder.decodeAbstractElement();
+        targetObject1 = (Position) decoder.decodeAbstractElement();
+        targetObject2 = (Position) decoder.decodeAbstractElement();
+        minAngle = (Angle) decoder.decodeElement(new Angle());
+        maxAngle = (Angle) decoder.decodeElement(new Angle());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

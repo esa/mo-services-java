@@ -1,10 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E6: Represents a Direction based on celestial angular coordinates of right
  * ascension and declination.
  */
-public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Direction {
+public final class RADecDirection extends Direction {
 
     private static final long serialVersionUID = 1407374900330512L;
     /**
@@ -14,25 +21,25 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Right Ascension: Celestial angular coordinate, measured eastward along
      * the celestial equator.
      */
-    private org.ccsds.moims.mo.mps.structures.Angle ra;
+    private Angle ra;
 
     /**
      * Declination: Celestial angular coordinate, north or south of the celestial
      * equator.
      */
-    private org.ccsds.moims.mo.mps.structures.Angle dec;
+    private Angle dec;
 
     /**
      * Reference frame within which the direction is expressed.  Must be a quasi-inertial
      * celestial body or orbit-related frame (see 4.4.2).
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier frame;
+    private Identifier frame;
 
     /**
      * Default constructor for RADecDirection.
@@ -48,17 +55,17 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
      * @param dec Declination: Celestial angular coordinate, north or south of the celestial equator.
      * @param frame Reference frame within which the direction is expressed.  Must be a quasi-inertial celestial body or orbit-related frame (see 4.4.2).
      */
-    public RADecDirection(org.ccsds.moims.mo.mps.structures.Angle ra,
-            org.ccsds.moims.mo.mps.structures.Angle dec,
-            org.ccsds.moims.mo.mal.structures.Identifier frame) {
+    public RADecDirection(Angle ra,
+            Angle dec,
+            Identifier frame) {
         this.ra = ra;
         this.dec = dec;
         this.frame = frame;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RADecDirection();
+    public Element createElement() {
+        return new RADecDirection();
     }
 
     /**
@@ -66,7 +73,7 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
      * 
      * @return The field ra
      */
-    public org.ccsds.moims.mo.mps.structures.Angle getRa() {
+    public Angle getRa() {
         return ra;
     }
 
@@ -75,7 +82,7 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
      * 
      * @return The field dec
      */
-    public org.ccsds.moims.mo.mps.structures.Angle getDec() {
+    public Angle getDec() {
         return dec;
     }
 
@@ -84,7 +91,7 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
      * 
      * @return The field frame
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getFrame() {
+    public Identifier getFrame() {
         return frame;
     }
 
@@ -149,16 +156,16 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (ra == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'ra' cannot be null!");
+            throw new MALException("The field 'ra' cannot be null!");
         }
         if (dec == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'dec' cannot be null!");
+            throw new MALException("The field 'dec' cannot be null!");
         }
         if (frame == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'frame' cannot be null!");
+            throw new MALException("The field 'frame' cannot be null!");
         }
         encoder.encodeElement(ra);
         encoder.encodeElement(dec);
@@ -166,16 +173,16 @@ public final class RADecDirection extends org.ccsds.moims.mo.mps.structures.Dire
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        ra = (org.ccsds.moims.mo.mps.structures.Angle) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Angle());
-        dec = (org.ccsds.moims.mo.mps.structures.Angle) decoder.decodeElement(new org.ccsds.moims.mo.mps.structures.Angle());
+        ra = (Angle) decoder.decodeElement(new Angle());
+        dec = (Angle) decoder.decodeElement(new Angle());
         frame = decoder.decodeIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

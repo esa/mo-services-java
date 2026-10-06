@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The InvalidException exception. The input data or operation format is invalid
  * and does not meet required criteria.
  */
-public final class InvalidException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class InvalidException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Invalid";
 

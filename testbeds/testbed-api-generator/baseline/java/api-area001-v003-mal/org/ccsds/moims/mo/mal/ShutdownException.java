@@ -3,7 +3,7 @@ package org.ccsds.moims.mo.mal;
 /**
  * The ShutdownException exception. The component is being shutdown.
  */
-public final class ShutdownException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class ShutdownException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Shutdown";
 

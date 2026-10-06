@@ -8,7 +8,7 @@ public class EventTestHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo EVENTTEST_SERVICE = new org.ccsds.moims.mo.comprototype.eventtest.EventTestServiceInfo();
+    public static final EventTestServiceInfo EVENTTEST_SERVICE = new EventTestServiceInfo();
 
     private EventTestHelper() {
         // Utility class; not meant to be instantiated.

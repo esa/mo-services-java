@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.com.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+
 /**
  * The ObjectKey structure combines a domain and an object instance identifier
  * such that it identifies the instance of an object for a specific domain.
  */
-public final class ObjectKey implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ObjectKey implements Composite {
 
     private static final long serialVersionUID = 562949970198530L;
     /**
@@ -14,12 +22,12 @@ public final class ObjectKey implements org.ccsds.moims.mo.mal.structures.Compos
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The domain of the object instance.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The unique identifier of the object instance. Must not be &quot;0&quot;
@@ -40,15 +48,15 @@ public final class ObjectKey implements org.ccsds.moims.mo.mal.structures.Compos
      * @param domain The domain of the object instance.
      * @param instId The unique identifier of the object instance. Must not be '0' for values as this is the wildcard.
      */
-    public ObjectKey(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
+    public ObjectKey(IdentifierList domain,
             Long instId) {
         this.domain = domain;
         this.instId = instId;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.structures.ObjectKey();
+    public Element createElement() {
+        return new ObjectKey();
     }
 
     /**
@@ -56,7 +64,7 @@ public final class ObjectKey implements org.ccsds.moims.mo.mal.structures.Compos
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -115,26 +123,26 @@ public final class ObjectKey implements org.ccsds.moims.mo.mal.structures.Compos
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (domain == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'domain' cannot be null!");
+            throw new MALException("The field 'domain' cannot be null!");
         }
         if (instId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'instId' cannot be null!");
+            throw new MALException("The field 'instId' cannot be null!");
         }
         encoder.encodeElement(domain);
         encoder.encodeLong(instId);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        domain = (IdentifierList) decoder.decodeElement(new IdentifierList());
         instId = decoder.decodeLong();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

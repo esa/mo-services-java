@@ -1,5 +1,18 @@
 package org.ccsds.moims.mo.malprototype;
 
+import org.ccsds.moims.mo.mal.MALArea;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.ServiceInfo;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.malprototype.datatest.DataTestHelper;
+import org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest2.IPTest2Helper;
+
 /**
  * Helper class for MALPrototype area.
  */
@@ -13,12 +26,12 @@ public class MALPrototypeHelper {
     /**
      * Area number instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UShort MALPROTOTYPE_AREA_NUMBER = new org.ccsds.moims.mo.mal.structures.UShort(_MALPROTOTYPE_AREA_NUMBER);
+    public static final UShort MALPROTOTYPE_AREA_NUMBER = new UShort(_MALPROTOTYPE_AREA_NUMBER);
 
     /**
      * Area name constant.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Identifier MALPROTOTYPE_AREA_NAME = new org.ccsds.moims.mo.mal.structures.Identifier("MALPrototype");
+    public static final Identifier MALPROTOTYPE_AREA_NAME = new Identifier("MALPrototype");
 
     /**
      * Area version literal.
@@ -28,26 +41,26 @@ public class MALPrototypeHelper {
     /**
      * Area version instance.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UOctet MALPROTOTYPE_AREA_VERSION = new org.ccsds.moims.mo.mal.structures.UOctet(_MALPROTOTYPE_AREA_VERSION);
+    public static final UOctet MALPROTOTYPE_AREA_VERSION = new UOctet(_MALPROTOTYPE_AREA_VERSION);
 
     /**
      * Area Elements.
      */
-    public static final org.ccsds.moims.mo.mal.structures.Element[] MALPROTOTYPE_AREA_ELEMENTS = {};
+    public static final Element[] MALPROTOTYPE_AREA_ELEMENTS = {};
 
     /**
      * Services in this Area.
      */
-    public static final org.ccsds.moims.mo.mal.ServiceInfo[] MALPROTOTYPE_AREA_SERVICES = {
-        org.ccsds.moims.mo.malprototype.iptest.IPTestHelper.IPTEST_SERVICE,
-        org.ccsds.moims.mo.malprototype.datatest.DataTestHelper.DATATEST_SERVICE,
-        org.ccsds.moims.mo.malprototype.errortest.ErrorTestHelper.ERRORTEST_SERVICE,
-        org.ccsds.moims.mo.malprototype.iptest2.IPTest2Helper.IPTEST2_SERVICE,};
+    public static final ServiceInfo[] MALPROTOTYPE_AREA_SERVICES = {
+        IPTestHelper.IPTEST_SERVICE,
+        DataTestHelper.DATATEST_SERVICE,
+        ErrorTestHelper.ERRORTEST_SERVICE,
+        IPTest2Helper.IPTEST2_SERVICE,};
 
     /**
      * Area singleton instance.
      */
-    public static final org.ccsds.moims.mo.mal.MALArea MALPROTOTYPE_AREA = new org.ccsds.moims.mo.mal.MALArea(MALPROTOTYPE_AREA_NUMBER, MALPROTOTYPE_AREA_NAME, MALPROTOTYPE_AREA_VERSION, MALPROTOTYPE_AREA_ELEMENTS, MALPROTOTYPE_AREA_SERVICES, new MALPrototypeElementFactory());
+    public static final MALArea MALPROTOTYPE_AREA = new MALArea(MALPROTOTYPE_AREA_NUMBER, MALPROTOTYPE_AREA_NAME, MALPROTOTYPE_AREA_VERSION, MALPROTOTYPE_AREA_ELEMENTS, MALPROTOTYPE_AREA_SERVICES, new MALPrototypeElementFactory());
 
     /**
      * Error literal for error DATA_ERROR.
@@ -57,7 +70,7 @@ public class MALPrototypeHelper {
     /**
      * Error instance for error DATA_ERROR.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger DATA_ERROR_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_DATA_ERROR_ERROR_NUMBER);
+    public static final UInteger DATA_ERROR_ERROR_NUMBER = new UInteger(_DATA_ERROR_ERROR_NUMBER);
 
     /**
      * Error literal for error TEST_OBJECT_EXISTS.
@@ -67,7 +80,7 @@ public class MALPrototypeHelper {
     /**
      * Error instance for error TEST_OBJECT_EXISTS.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger TEST_OBJECT_EXISTS_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_TEST_OBJECT_EXISTS_ERROR_NUMBER);
+    public static final UInteger TEST_OBJECT_EXISTS_ERROR_NUMBER = new UInteger(_TEST_OBJECT_EXISTS_ERROR_NUMBER);
 
     /**
      * Error literal for error TEST_ERROR.
@@ -77,7 +90,7 @@ public class MALPrototypeHelper {
     /**
      * Error instance for error TEST_ERROR.
      */
-    public static final org.ccsds.moims.mo.mal.structures.UInteger TEST_ERROR_ERROR_NUMBER = new org.ccsds.moims.mo.mal.structures.UInteger(_TEST_ERROR_ERROR_NUMBER);
+    public static final UInteger TEST_ERROR_ERROR_NUMBER = new UInteger(_TEST_ERROR_ERROR_NUMBER);
 
     /**
      * Returns the exception of the error of this area with the given number.
@@ -86,15 +99,15 @@ public class MALPrototypeHelper {
      * @param extraInfo The extra information of the error.
      * @return the exception, or null if the area declares no error with that number
      */
-    public static org.ccsds.moims.mo.mal.MOErrorException generateMOError(int errorNumber,
+    public static MOErrorException generateMOError(int errorNumber,
             Object extraInfo) {
         switch (errorNumber) {
             case 1:
-                return new org.ccsds.moims.mo.malprototype.DataErrorException(extraInfo);
+                return new DataErrorException(extraInfo);
             case 2:
-                return new org.ccsds.moims.mo.malprototype.TestObjectExistsException(extraInfo);
+                return new TestObjectExistsException(extraInfo);
             case 3:
-                return new org.ccsds.moims.mo.malprototype.TestErrorException(extraInfo);
+                return new TestErrorException(extraInfo);
         }
         return null;
     }

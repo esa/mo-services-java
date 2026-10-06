@@ -11,5 +11,5 @@ public interface EventHandler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.com.event.provider.EventSkeleton skeleton);
+    void setSkeleton(EventSkeleton skeleton);
 }

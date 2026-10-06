@@ -1,9 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+
 /**
  * List class for Repetition.
  */
-public final class RepetitionList extends org.ccsds.moims.mo.mal.structures.HeterogeneousList {
+public final class RepetitionList extends HeterogeneousList {
 
     /**
      * Default constructor for RepetitionList.
@@ -13,7 +16,7 @@ public final class RepetitionList extends org.ccsds.moims.mo.mal.structures.Hete
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.Element element) {
+    public boolean add(Element element) {
         if (element != null && !(element instanceof Repetition)) {
             throw new java.lang.ClassCastException("The added element does not extend the type: Repetition");
         }

@@ -8,7 +8,7 @@ public class CheckHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mc.check.CheckServiceInfo CHECK_SERVICE = new org.ccsds.moims.mo.mc.check.CheckServiceInfo();
+    public static final CheckServiceInfo CHECK_SERVICE = new CheckServiceInfo();
 
     private CheckHelper() {
         // Utility class; not meant to be instantiated.

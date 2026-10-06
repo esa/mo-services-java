@@ -11,5 +11,5 @@ public interface Test1Handler {
      * 
      * @param skeleton The skeleton to be used.
      */
-    void setSkeleton(org.ccsds.moims.mo.comprototype1.test1.provider.Test1Skeleton skeleton);
+    void setSkeleton(Test1Skeleton skeleton);
 }

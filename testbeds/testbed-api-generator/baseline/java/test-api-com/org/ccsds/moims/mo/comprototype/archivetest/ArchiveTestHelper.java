@@ -8,7 +8,7 @@ public class ArchiveTestHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo ARCHIVETEST_SERVICE = new org.ccsds.moims.mo.comprototype.archivetest.ArchiveTestServiceInfo();
+    public static final ArchiveTestServiceInfo ARCHIVETEST_SERVICE = new ArchiveTestServiceInfo();
 
     private ArchiveTestHelper() {
         // Utility class; not meant to be instantiated.

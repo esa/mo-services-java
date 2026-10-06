@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.com;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The InvalidException exception. Operation specific.
  */
-public final class InvalidException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class InvalidException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "INVALID";
 

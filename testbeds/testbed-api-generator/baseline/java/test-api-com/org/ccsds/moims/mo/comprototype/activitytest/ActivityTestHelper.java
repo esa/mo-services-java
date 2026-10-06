@@ -8,7 +8,7 @@ public class ActivityTestHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo ACTIVITYTEST_SERVICE = new org.ccsds.moims.mo.comprototype.activitytest.ActivityTestServiceInfo();
+    public static final ActivityTestServiceInfo ACTIVITYTEST_SERVICE = new ActivityTestServiceInfo();
 
     private ActivityTestHelper() {
         // Utility class; not meant to be instantiated.

@@ -1,9 +1,16 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+
 /**
  * An abstract MO Object structure.
  */
-public abstract class TestObjectBase extends org.ccsds.moims.mo.mal.structures.MOObject {
+public abstract class TestObjectBase extends MOObject {
 
     /**
      * Example String item.
@@ -29,7 +36,7 @@ public abstract class TestObjectBase extends org.ccsds.moims.mo.mal.structures.M
      * @param firstItem Example String item.
      * @param secondItem Example Integer item.
      */
-    public TestObjectBase(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public TestObjectBase(ObjectIdentity objectIdentity,
             String firstItem,
             Integer secondItem) {
         super(objectIdentity);
@@ -42,7 +49,7 @@ public abstract class TestObjectBase extends org.ccsds.moims.mo.mal.structures.M
      * 
      * @param objectIdentity The identity of the MO Object.
      */
-    public TestObjectBase(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity) {
+    public TestObjectBase(ObjectIdentity objectIdentity) {
         super(objectIdentity);
         this.firstItem = null;
         this.secondItem = null;
@@ -116,14 +123,14 @@ public abstract class TestObjectBase extends org.ccsds.moims.mo.mal.structures.M
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableString(firstItem);
         encoder.encodeNullableInteger(secondItem);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         firstItem = decoder.decodeNullableString();
         secondItem = decoder.decodeNullableInteger();

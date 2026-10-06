@@ -1,9 +1,23 @@
 package org.ccsds.moims.mo.mps.planinformationmanagement.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo;
+import org.ccsds.moims.mo.mps.structures.ActivityDefinitionList;
+import org.ccsds.moims.mo.mps.structures.DefListEntryList;
+import org.ccsds.moims.mo.mps.structures.EventDefinitionList;
+import org.ccsds.moims.mo.mps.structures.RequestDefinitionList;
+import org.ccsds.moims.mo.mps.structures.ResourceList;
+
 /**
  * Consumer adapter for PlanInformationManagement service.
  */
-public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class PlanInformationManagementAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a PROGRESS acknowledgement is received from a provider
@@ -12,8 +26,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRequestDefsAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listRequestDefsAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -24,9 +38,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param requestDefs The requestDefs field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRequestDefsUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.DefListEntryList requestDefs,
-            java.util.Map qosProperties) {
+    public void listRequestDefsUpdateReceived(MALMessageHeader msgHeader,
+            DefListEntryList requestDefs,
+            Map qosProperties) {
     }
 
     /**
@@ -36,8 +50,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRequestDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listRequestDefsResponseReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -48,9 +62,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRequestDefsAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listRequestDefsAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -61,9 +75,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRequestDefsUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listRequestDefsUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -74,9 +88,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listRequestDefsResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listRequestDefsResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -87,9 +101,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param definitions The definitions field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getRequestDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.RequestDefinitionList definitions,
-            java.util.Map qosProperties) {
+    public void getRequestDefsResponseReceived(MALMessageHeader msgHeader,
+            RequestDefinitionList definitions,
+            Map qosProperties) {
     }
 
     /**
@@ -100,9 +114,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getRequestDefsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getRequestDefsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -112,8 +126,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listEventDefsAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listEventDefsAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -124,9 +138,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param eventDefs The eventDefs field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listEventDefsUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.DefListEntryList eventDefs,
-            java.util.Map qosProperties) {
+    public void listEventDefsUpdateReceived(MALMessageHeader msgHeader,
+            DefListEntryList eventDefs,
+            Map qosProperties) {
     }
 
     /**
@@ -136,8 +150,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listEventDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listEventDefsResponseReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -148,9 +162,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listEventDefsAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listEventDefsAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -161,9 +175,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listEventDefsUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listEventDefsUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -174,9 +188,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listEventDefsResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listEventDefsResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -187,9 +201,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param definitions The definitions field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getEventDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.EventDefinitionList definitions,
-            java.util.Map qosProperties) {
+    public void getEventDefsResponseReceived(MALMessageHeader msgHeader,
+            EventDefinitionList definitions,
+            Map qosProperties) {
     }
 
     /**
@@ -200,9 +214,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getEventDefsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getEventDefsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -212,8 +226,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listActivityDefsAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listActivityDefsAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -224,9 +238,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param activitytDefs The activitytDefs field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listActivityDefsUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.DefListEntryList activitytDefs,
-            java.util.Map qosProperties) {
+    public void listActivityDefsUpdateReceived(MALMessageHeader msgHeader,
+            DefListEntryList activitytDefs,
+            Map qosProperties) {
     }
 
     /**
@@ -236,8 +250,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listActivityDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listActivityDefsResponseReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -248,9 +262,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listActivityDefsAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listActivityDefsAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -261,9 +275,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listActivityDefsUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listActivityDefsUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -274,9 +288,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listActivityDefsResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listActivityDefsResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -287,9 +301,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param definitions The definitions field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getActivityDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.ActivityDefinitionList definitions,
-            java.util.Map qosProperties) {
+    public void getActivityDefsResponseReceived(MALMessageHeader msgHeader,
+            ActivityDefinitionList definitions,
+            Map qosProperties) {
     }
 
     /**
@@ -300,9 +314,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getActivityDefsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getActivityDefsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -312,8 +326,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listResourceDefsAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listResourceDefsAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -324,9 +338,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param resourceDefs The resourceDefs field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listResourceDefsUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.DefListEntryList resourceDefs,
-            java.util.Map qosProperties) {
+    public void listResourceDefsUpdateReceived(MALMessageHeader msgHeader,
+            DefListEntryList resourceDefs,
+            Map qosProperties) {
     }
 
     /**
@@ -336,8 +350,8 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listResourceDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void listResourceDefsResponseReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -348,9 +362,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listResourceDefsAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listResourceDefsAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -361,9 +375,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listResourceDefsUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listResourceDefsUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -374,9 +388,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listResourceDefsResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listResourceDefsResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -387,9 +401,9 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param definitions The definitions field.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getResourceDefsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mps.structures.ResourceList definitions,
-            java.util.Map qosProperties) {
+    public void getResourceDefsResponseReceived(MALMessageHeader msgHeader,
+            ResourceList definitions,
+            Map qosProperties) {
     }
 
     /**
@@ -400,192 +414,192 @@ public abstract class PlanInformationManagementAdapter extends org.ccsds.moims.m
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getResourceDefsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getResourceDefsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETREQUESTDEFS_OP_NUMBER:
             getRequestDefsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.RequestDefinitionList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.RequestDefinitionList()), qosProperties);
+                (RequestDefinitionList) body.getBodyElement(0, new RequestDefinitionList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETEVENTDEFS_OP_NUMBER:
             getEventDefsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.EventDefinitionList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.EventDefinitionList()), qosProperties);
+                (EventDefinitionList) body.getBodyElement(0, new EventDefinitionList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETACTIVITYDEFS_OP_NUMBER:
             getActivityDefsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.ActivityDefinitionList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.ActivityDefinitionList()), qosProperties);
+                (ActivityDefinitionList) body.getBodyElement(0, new ActivityDefinitionList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETRESOURCEDEFS_OP_NUMBER:
             getResourceDefsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.ResourceList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.ResourceList()), qosProperties);
+                (ResourceList) body.getBodyElement(0, new ResourceList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETREQUESTDEFS_OP_NUMBER:
             getRequestDefsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETEVENTDEFS_OP_NUMBER:
             getEventDefsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETACTIVITYDEFS_OP_NUMBER:
             getActivityDefsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._GETRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._GETRESOURCEDEFS_OP_NUMBER:
             getResourceDefsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressAckReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
             listRequestDefsAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
             listEventDefsAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
             listActivityDefsAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
             listResourceDefsAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressAckErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
             listRequestDefsAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
             listEventDefsAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
             listActivityDefsAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
             listResourceDefsAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressUpdateReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
             listRequestDefsUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.DefListEntryList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.DefListEntryList()), qosProperties);
+                (DefListEntryList) body.getBodyElement(0, new DefListEntryList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
             listEventDefsUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.DefListEntryList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.DefListEntryList()), qosProperties);
+                (DefListEntryList) body.getBodyElement(0, new DefListEntryList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
             listActivityDefsUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.DefListEntryList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.DefListEntryList()), qosProperties);
+                (DefListEntryList) body.getBodyElement(0, new DefListEntryList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
             listResourceDefsUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mps.structures.DefListEntryList) body.getBodyElement(0, new org.ccsds.moims.mo.mps.structures.DefListEntryList()), qosProperties);
+                (DefListEntryList) body.getBodyElement(0, new DefListEntryList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressUpdateErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
             listRequestDefsUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
             listEventDefsUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
             listActivityDefsUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
             listResourceDefsUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
             listRequestDefsResponseReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
             listEventDefsResponseReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
             listActivityDefsResponseReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
             listResourceDefsResponseReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressResponseErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTREQUESTDEFS_OP_NUMBER:
             listRequestDefsResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTEVENTDEFS_OP_NUMBER:
             listEventDefsResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTACTIVITYDEFS_OP_NUMBER:
             listActivityDefsResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mps.planinformationmanagement.PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
+          case PlanInformationManagementServiceInfo._LISTRESOURCEDEFS_OP_NUMBER:
             listResourceDefsResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

@@ -8,7 +8,7 @@ public class ActivityTrackingHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo ACTIVITYTRACKING_SERVICE = new org.ccsds.moims.mo.com.activitytracking.ActivityTrackingServiceInfo();
+    public static final ActivityTrackingServiceInfo ACTIVITYTRACKING_SERVICE = new ActivityTrackingServiceInfo();
 
     private ActivityTrackingHelper() {
         // Utility class; not meant to be instantiated.

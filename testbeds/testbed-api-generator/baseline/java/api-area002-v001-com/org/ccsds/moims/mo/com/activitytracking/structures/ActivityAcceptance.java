@@ -1,9 +1,16 @@
 package org.ccsds.moims.mo.com.activitytracking.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The structure is used to hold details of an Acceptance event.
  */
-public final class ActivityAcceptance implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ActivityAcceptance implements Composite {
 
     private static final long serialVersionUID = 562962855100418L;
     /**
@@ -13,7 +20,7 @@ public final class ActivityAcceptance implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The success result of this stage, TRUE if successful, FALSE otherwise.
@@ -37,8 +44,8 @@ public final class ActivityAcceptance implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.activitytracking.structures.ActivityAcceptance();
+    public Element createElement() {
+        return new ActivityAcceptance();
     }
 
     /**
@@ -85,21 +92,21 @@ public final class ActivityAcceptance implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (success == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'success' cannot be null!");
+            throw new MALException("The field 'success' cannot be null!");
         }
         encoder.encodeBoolean(success);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         success = decoder.decodeBoolean();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

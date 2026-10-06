@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The ReadOnlyException exception. The operation attempted to modify read-only
  * data, which cannot be changed.
  */
-public final class ReadOnlyException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class ReadOnlyException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Read Only";
 

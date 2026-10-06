@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
+
 /**
  * List class for IPTestTransitionType.
  */
-public final class IPTestTransitionTypeList extends java.util.ArrayList<org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType> {
+public final class IPTestTransitionTypeList extends ArrayList<IPTestTransitionType> implements HomogeneousList<IPTestTransitionType> {
 
     private static final long serialVersionUID = 28147497704620029L;
     /**
@@ -13,7 +21,7 @@ public final class IPTestTransitionTypeList extends java.util.ArrayList<org.ccsd
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for IPTestTransitionTypeList.
@@ -36,14 +44,14 @@ public final class IPTestTransitionTypeList extends java.util.ArrayList<org.ccsd
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public IPTestTransitionTypeList(java.util.ArrayList<org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType> elementList) {
-        for(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType element : elementList) {
+    public IPTestTransitionTypeList(ArrayList<IPTestTransitionType> elementList) {
+        for(IPTestTransitionType element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType element) {
+    public boolean add(IPTestTransitionType element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +59,28 @@ public final class IPTestTransitionTypeList extends java.util.ArrayList<org.ccsd
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new IPTestTransitionTypeList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return org.ccsds.moims.mo.malprototype.structures.IPTestTransitionType.ACK;
+    public Element createTypedElement() {
+        return IPTestTransitionType.ACK;
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

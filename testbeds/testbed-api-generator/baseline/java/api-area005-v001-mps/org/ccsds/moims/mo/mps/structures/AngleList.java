@@ -1,9 +1,17 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.HomogeneousList;
+
 /**
  * List class for Angle.
  */
-public final class AngleList extends java.util.ArrayList<org.ccsds.moims.mo.mps.structures.Angle> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mps.structures.Angle> {
+public final class AngleList extends ArrayList<Angle> implements HomogeneousList<Angle> {
 
     private static final long serialVersionUID = 1407374917107693L;
     /**
@@ -13,7 +21,7 @@ public final class AngleList extends java.util.ArrayList<org.ccsds.moims.mo.mps.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for AngleList.
@@ -36,14 +44,14 @@ public final class AngleList extends java.util.ArrayList<org.ccsds.moims.mo.mps.
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public AngleList(java.util.ArrayList<org.ccsds.moims.mo.mps.structures.Angle> elementList) {
-        for(org.ccsds.moims.mo.mps.structures.Angle element : elementList) {
+    public AngleList(ArrayList<Angle> elementList) {
+        for(Angle element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mps.structures.Angle element) {
+    public boolean add(Angle element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +59,28 @@ public final class AngleList extends java.util.ArrayList<org.ccsds.moims.mo.mps.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new AngleList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mps.structures.Angle();
+    public Element createTypedElement() {
+        return new Angle();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

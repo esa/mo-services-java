@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for PredictabilityEnum.
  */
-public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class PredictabilityEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330700L;
     /**
@@ -13,7 +17,7 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for PREDICTED.
@@ -23,7 +27,7 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value PREDICTED.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PredictabilityEnum PREDICTED = new org.ccsds.moims.mo.mps.structures.PredictabilityEnum(org.ccsds.moims.mo.mps.structures.PredictabilityEnum.PREDICTED_VALUE);
+    public static final PredictabilityEnum PREDICTED = new PredictabilityEnum(PredictabilityEnum.PREDICTED_VALUE);
 
     /**
      * Enumeration value for POTENTIAL.
@@ -33,12 +37,12 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
     /**
      * Enumeration singleton for value POTENTIAL.
      */
-    public static final org.ccsds.moims.mo.mps.structures.PredictabilityEnum POTENTIAL = new org.ccsds.moims.mo.mps.structures.PredictabilityEnum(org.ccsds.moims.mo.mps.structures.PredictabilityEnum.POTENTIAL_VALUE);
+    public static final PredictabilityEnum POTENTIAL = new PredictabilityEnum(PredictabilityEnum.POTENTIAL_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.PredictabilityEnum[] _ENUMERATIONS = {
+    private static final PredictabilityEnum[] _ENUMERATIONS = {
         PREDICTED, POTENTIAL};
 
     /**
@@ -77,7 +81,7 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.PredictabilityEnum fromString(String s) {
+    public static PredictabilityEnum fromString(String s) {
         switch (s) {
             case "PREDICTED":
                 return PredictabilityEnum.PREDICTED;
@@ -89,7 +93,7 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case PREDICTED_VALUE:
                 return PredictabilityEnum.PREDICTED;
@@ -101,7 +105,7 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -111,7 +115,7 @@ public final class PredictabilityEnum extends org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

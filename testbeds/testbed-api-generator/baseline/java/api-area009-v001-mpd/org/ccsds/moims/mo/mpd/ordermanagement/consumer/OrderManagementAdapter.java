@@ -1,9 +1,20 @@
 package org.ccsds.moims.mo.mpd.ordermanagement.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo;
+import org.ccsds.moims.mo.mpd.structures.StandingOrderList;
+
 /**
  * Consumer adapter for OrderManagement service.
  */
-public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class OrderManagementAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a REQUEST response is received from a provider for
@@ -13,9 +24,9 @@ public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.cons
      * @param standingOrders The standing orders that match the selected criteria.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listStandingOrdersResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mpd.structures.StandingOrderList standingOrders,
-            java.util.Map qosProperties) {
+    public void listStandingOrdersResponseReceived(MALMessageHeader msgHeader,
+            StandingOrderList standingOrders,
+            Map qosProperties) {
     }
 
     /**
@@ -26,9 +37,9 @@ public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.cons
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listStandingOrdersErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listStandingOrdersErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -39,9 +50,9 @@ public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.cons
      * @param orderID The unique id of the standing order.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void submitStandingOrderResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+    public void submitStandingOrderResponseReceived(MALMessageHeader msgHeader,
             Long orderID,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -52,9 +63,9 @@ public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.cons
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void submitStandingOrderErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void submitStandingOrderErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -64,8 +75,8 @@ public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.cons
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void cancelStandingOrderAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void cancelStandingOrderAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -76,67 +87,67 @@ public abstract class OrderManagementAdapter extends org.ccsds.moims.mo.mal.cons
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void cancelStandingOrderErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void cancelStandingOrderErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo._CANCELSTANDINGORDER_OP_NUMBER:
+          case OrderManagementServiceInfo._CANCELSTANDINGORDER_OP_NUMBER:
             cancelStandingOrderAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo._CANCELSTANDINGORDER_OP_NUMBER:
+          case OrderManagementServiceInfo._CANCELSTANDINGORDER_OP_NUMBER:
             cancelStandingOrderErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo._LISTSTANDINGORDERS_OP_NUMBER:
+          case OrderManagementServiceInfo._LISTSTANDINGORDERS_OP_NUMBER:
             listStandingOrdersResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mpd.structures.StandingOrderList) body.getBodyElement(0, new org.ccsds.moims.mo.mpd.structures.StandingOrderList()), qosProperties);
+                (StandingOrderList) body.getBodyElement(0, new StandingOrderList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo._SUBMITSTANDINGORDER_OP_NUMBER:
+          case OrderManagementServiceInfo._SUBMITSTANDINGORDER_OP_NUMBER:
             submitStandingOrderResponseReceived(msgHeader,
-                (body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
+                (body.getBodyElement(0, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Long.MAX_VALUE))).getLongValue(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo._LISTSTANDINGORDERS_OP_NUMBER:
+          case OrderManagementServiceInfo._LISTSTANDINGORDERS_OP_NUMBER:
             listStandingOrdersErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.ordermanagement.OrderManagementServiceInfo._SUBMITSTANDINGORDER_OP_NUMBER:
+          case OrderManagementServiceInfo._SUBMITSTANDINGORDER_OP_NUMBER:
             submitStandingOrderErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

@@ -1,227 +1,258 @@
 package org.ccsds.moims.mo.malprototype.iptest.provider;
 
+import java.io.IOException;
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnsupportedOperationException;
+import org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider;
+import org.ccsds.moims.mo.mal.provider.MALInteraction;
+import org.ccsds.moims.mo.mal.provider.MALInteractionHandler;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.provider.MALProvider;
+import org.ccsds.moims.mo.mal.provider.MALProviderSet;
+import org.ccsds.moims.mo.mal.provider.MALRequest;
+import org.ccsds.moims.mo.mal.provider.MALSubmit;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestHelper;
+import org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo;
+import org.ccsds.moims.mo.malprototype.iptest.body.RequestMultiResponse;
+import org.ccsds.moims.mo.malprototype.structures.IPTestDefinition;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishRegister;
+import org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate;
+
 /**
  * Provider Inheritance skeleton for IPTestInheritanceSkeleton service.
  */
-public abstract class IPTestInheritanceSkeleton implements org.ccsds.moims.mo.mal.provider.MALInteractionHandler, org.ccsds.moims.mo.malprototype.iptest.provider.IPTestSkeleton, org.ccsds.moims.mo.malprototype.iptest.provider.IPTestHandler {
+public abstract class IPTestInheritanceSkeleton implements MALInteractionHandler, IPTestSkeleton, IPTestHandler {
 
     /**
      * The providerSet field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALProviderSet providerSet = new org.ccsds.moims.mo.mal.provider.MALProviderSet(org.ccsds.moims.mo.malprototype.iptest.IPTestHelper.IPTEST_SERVICE);
+    private MALProviderSet providerSet = new MALProviderSet(IPTestHelper.IPTEST_SERVICE);
 
     /**
      * Returns the connection object for this provider.
      * 
      * @return the connection object for this provider
-     * @throws java.io.IOException if the method was not implemented yet.
+     * @throws IOException if the method was not implemented yet.
      */
-    public org.ccsds.moims.mo.mal.helpertools.connections.ConnectionProvider getConnection() throws java.io.IOException {
-        throw new java.io.IOException("This method needs to be overridden!");
+    public ConnectionProvider getConnection() throws IOException {
+        throw new IOException("This method needs to be overridden!");
     }
 
     @Override
-    public void setSkeleton(org.ccsds.moims.mo.malprototype.iptest.provider.IPTestSkeleton skeleton) {
+    public void setSkeleton(IPTestSkeleton skeleton) {
         // Not used in the inheritance pattern (the skeleton is 'this');
     }
 
     @Override
-    public void malInitialize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malInitialize(MALProvider provider) throws MALException {
         providerSet.addProvider(provider);
     }
 
     @Override
-    public void malFinalize(org.ccsds.moims.mo.mal.provider.MALProvider provider) throws org.ccsds.moims.mo.mal.MALException {
+    public void malFinalize(MALProvider provider) throws MALException {
         providerSet.removeProvider(provider);
     }
 
     @Override
-    public org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher createMonitorPublisher(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.QoSLevel qos,
-            java.util.Map qosProps,
-            org.ccsds.moims.mo.mal.structures.UInteger priority) throws org.ccsds.moims.mo.mal.MALException {
-        return new org.ccsds.moims.mo.malprototype.iptest.provider.MonitorPublisher(providerSet.createPublisherSet(org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo.MONITOR_OP, domain, sessionType, sessionName, qos, qosProps, null));
+    public MonitorPublisher createMonitorPublisher(IdentifierList domain,
+            Identifier networkZone,
+            SessionType sessionType,
+            Identifier sessionName,
+            QoSLevel qos,
+            Map qosProps,
+            UInteger priority) throws MALException {
+        return new MonitorPublisher(providerSet.createPublisherSet(IPTestServiceInfo.MONITOR_OP, domain, sessionType, sessionName, qos, qosProps, null));
     }
 
     @Override
-    public org.ccsds.moims.mo.malprototype.iptest.provider.MonitorMultiPublisher createMonitorMultiPublisher(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType sessionType,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
-            org.ccsds.moims.mo.mal.structures.QoSLevel qos,
-            java.util.Map qosProps,
-            org.ccsds.moims.mo.mal.structures.UInteger priority) throws org.ccsds.moims.mo.mal.MALException {
-        return new org.ccsds.moims.mo.malprototype.iptest.provider.MonitorMultiPublisher(providerSet.createPublisherSet(org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo.MONITORMULTI_OP, domain, sessionType, sessionName, qos, qosProps, null));
+    public MonitorMultiPublisher createMonitorMultiPublisher(IdentifierList domain,
+            Identifier networkZone,
+            SessionType sessionType,
+            Identifier sessionName,
+            QoSLevel qos,
+            Map qosProps,
+            UInteger priority) throws MALException {
+        return new MonitorMultiPublisher(providerSet.createPublisherSet(IPTestServiceInfo.MONITORMULTI_OP, domain, sessionType, sessionName, qos, qosProps, null));
     }
 
     @Override
-    public void handleSend(org.ccsds.moims.mo.mal.provider.MALInteraction interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSend(MALInteraction interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         switch (opNumber) {
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._SEND_OP_NUMBER:
-            send((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._SEND_OP_NUMBER:
+            send((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 interaction);
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._SENDMULTI_OP_NUMBER:
-            sendMulti((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
-                (org.ccsds.moims.mo.mal.structures.Element) body.getBodyElement(1, null),
+          case IPTestServiceInfo._SENDMULTI_OP_NUMBER:
+            sendMulti((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
+                (Element) body.getBodyElement(1, null),
                 interaction);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
     }
 
     @Override
-    public void handleSubmit(org.ccsds.moims.mo.mal.provider.MALSubmit interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleSubmit(MALSubmit interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._TESTSUBMIT_OP_NUMBER:
-            testSubmit((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._TESTSUBMIT_OP_NUMBER:
+            testSubmit((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._PUBLISHUPDATES_OP_NUMBER:
-            publishUpdates((org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate()),
+          case IPTestServiceInfo._PUBLISHUPDATES_OP_NUMBER:
+            publishUpdates((TestPublishUpdate) body.getBodyElement(0, new TestPublishUpdate()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._PUBLISHREGISTER_OP_NUMBER:
-            publishRegister((org.ccsds.moims.mo.malprototype.structures.TestPublishRegister) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.TestPublishRegister()),
+          case IPTestServiceInfo._PUBLISHREGISTER_OP_NUMBER:
+            publishRegister((TestPublishRegister) body.getBodyElement(0, new TestPublishRegister()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._PUBLISHDEREGISTER_OP_NUMBER:
-            publishDeregister((org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.TestPublishDeregister()),
+          case IPTestServiceInfo._PUBLISHDEREGISTER_OP_NUMBER:
+            publishDeregister((TestPublishDeregister) body.getBodyElement(0, new TestPublishDeregister()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._TESTMULTIPLENOTIFY_OP_NUMBER:
-            testMultipleNotify((org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate()),
+          case IPTestServiceInfo._TESTMULTIPLENOTIFY_OP_NUMBER:
+            testMultipleNotify((TestPublishUpdate) body.getBodyElement(0, new TestPublishUpdate()),
                 interaction);
             interaction.sendAcknowledgement();
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._SUBMITMULTI_OP_NUMBER:
-            submitMulti((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
-                (org.ccsds.moims.mo.mal.structures.Element) body.getBodyElement(1, null),
+          case IPTestServiceInfo._SUBMITMULTI_OP_NUMBER:
+            submitMulti((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
+                (Element) body.getBodyElement(1, null),
                 interaction);
             interaction.sendAcknowledgement();
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleRequest(org.ccsds.moims.mo.mal.provider.MALRequest interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleRequest(MALRequest interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._REQUEST_OP_NUMBER:
-            String requestRt = request((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._REQUEST_OP_NUMBER:
+            String requestRt = request((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 interaction);
-            interaction.sendResponse((requestRt == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(requestRt));
+            interaction.sendResponse((requestRt == null) ? null : new Union(requestRt));
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._GETRESULT_OP_NUMBER:
-            interaction.sendResponse(getResult((org.ccsds.moims.mo.mal.structures.Element) body.getBodyElement(0, null),
+          case IPTestServiceInfo._GETRESULT_OP_NUMBER:
+            interaction.sendResponse(getResult((Element) body.getBodyElement(0, null),
                 interaction));
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._REQUESTMULTI_OP_NUMBER:
-            org.ccsds.moims.mo.malprototype.iptest.body.RequestMultiResponse requestMultiRt = requestMulti((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
-                (org.ccsds.moims.mo.mal.structures.Element) body.getBodyElement(1, null),
+          case IPTestServiceInfo._REQUESTMULTI_OP_NUMBER:
+            RequestMultiResponse requestMultiRt = requestMulti((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
+                (Element) body.getBodyElement(1, null),
                 interaction);
             interaction.sendResponse(
-                    (requestMultiRt.getOutput1() == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(requestMultiRt.getOutput1()),
+                    (requestMultiRt.getOutput1() == null) ? null : new Union(requestMultiRt.getOutput1()),
                     requestMultiRt.getOutput2()
             );
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._TESTREQUESTEMPTYBODY_OP_NUMBER:
-            testRequestEmptyBody((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._TESTREQUESTEMPTYBODY_OP_NUMBER:
+            testRequestEmptyBody((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 interaction);
             interaction.sendResponse();
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleInvoke(org.ccsds.moims.mo.mal.provider.MALInvoke interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleInvoke(MALInvoke interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._INVOKE_OP_NUMBER:
-            invoke((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._INVOKE_OP_NUMBER:
+            invoke((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 new InvokeInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._INVOKEMULTI_OP_NUMBER:
-            invokeMulti((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
-                (org.ccsds.moims.mo.mal.structures.Element) body.getBodyElement(1, null),
+          case IPTestServiceInfo._INVOKEMULTI_OP_NUMBER:
+            invokeMulti((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
+                (Element) body.getBodyElement(1, null),
                 new InvokeMultiInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._TESTINVOKEEMPTYBODY_OP_NUMBER:
-            testInvokeEmptyBody((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._TESTINVOKEEMPTYBODY_OP_NUMBER:
+            testInvokeEmptyBody((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 new TestInvokeEmptyBodyInteraction(interaction));
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 
     @Override
-    public void handleProgress(org.ccsds.moims.mo.mal.provider.MALProgress interaction,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body) throws org.ccsds.moims.mo.mal.MALException, org.ccsds.moims.mo.mal.MALInteractionException {
+    public void handleProgress(MALProgress interaction,
+            MALMessageBody body) throws MALException, MALInteractionException {
         int opNumber = interaction.getOperation().getNumber().getValue();
         try {
         switch (opNumber) {
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._PROGRESS_OP_NUMBER:
-            progress((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._PROGRESS_OP_NUMBER:
+            progress((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 new ProgressInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._PROGRESSMULTI_OP_NUMBER:
-            progressMulti((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
-                (org.ccsds.moims.mo.mal.structures.Element) body.getBodyElement(1, null),
+          case IPTestServiceInfo._PROGRESSMULTI_OP_NUMBER:
+            progressMulti((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
+                (Element) body.getBodyElement(1, null),
                 new ProgressMultiInteraction(interaction));
             break;
-          case org.ccsds.moims.mo.malprototype.iptest.IPTestServiceInfo._TESTPROGRESSEMPTYBODY_OP_NUMBER:
-            testProgressEmptyBody((org.ccsds.moims.mo.malprototype.structures.IPTestDefinition) body.getBodyElement(0, new org.ccsds.moims.mo.malprototype.structures.IPTestDefinition()),
+          case IPTestServiceInfo._TESTPROGRESSEMPTYBODY_OP_NUMBER:
+            testProgressEmptyBody((IPTestDefinition) body.getBodyElement(0, new IPTestDefinition()),
                 new TestProgressEmptyBodyInteraction(interaction));
             break;
           default:
-            interaction.sendError(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
-            throw new org.ccsds.moims.mo.mal.MALInteractionException(new org.ccsds.moims.mo.mal.UnsupportedOperationException(
-                    org.ccsds.moims.mo.mal.provider.MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            interaction.sendError(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
+            throw new MALInteractionException(new UnsupportedOperationException(
+                    MALInteractionHandler.ERROR_MSG_UNSUPPORTED + opNumber));
         }
-        } catch (org.ccsds.moims.mo.mal.MOErrorException error) {
-          throw new org.ccsds.moims.mo.mal.MALInteractionException(error);
+        } catch (MOErrorException error) {
+          throw new MALInteractionException(error);
         }
     }
 

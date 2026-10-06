@@ -1,5 +1,12 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: When the MPS data types are not sufficiently expressive, it is possible
  * to provide an external expression that evaluates into a given data type,
@@ -7,7 +14,7 @@ package org.ccsds.moims.mo.mps.structures;
  * themselves text strings in some external language. The manner in which
  * this expression is evaluated is implementation specific.
  */
-public final class ExternalExpression implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ExternalExpression implements Composite {
 
     private static final long serialVersionUID = 1407374900330518L;
     /**
@@ -17,12 +24,12 @@ public final class ExternalExpression implements org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration specifying the data type of the result of the expression.
      */
-    private org.ccsds.moims.mo.mps.structures.ArgTypeEnum type;
+    private ArgTypeEnum type;
 
     /**
      * Defines the expression language used to specify the expression.
@@ -48,7 +55,7 @@ public final class ExternalExpression implements org.ccsds.moims.mo.mal.structur
      * @param expressionLanguage Defines the expression language used to specify the expression.
      * @param expression The text of the expression.
      */
-    public ExternalExpression(org.ccsds.moims.mo.mps.structures.ArgTypeEnum type,
+    public ExternalExpression(ArgTypeEnum type,
             String expressionLanguage,
             String expression) {
         this.type = type;
@@ -57,8 +64,8 @@ public final class ExternalExpression implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.ExternalExpression();
+    public Element createElement() {
+        return new ExternalExpression();
     }
 
     /**
@@ -66,7 +73,7 @@ public final class ExternalExpression implements org.ccsds.moims.mo.mal.structur
      * 
      * @return The field type
      */
-    public org.ccsds.moims.mo.mps.structures.ArgTypeEnum getType() {
+    public ArgTypeEnum getType() {
         return type;
     }
 
@@ -145,15 +152,15 @@ public final class ExternalExpression implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (type == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'type' cannot be null!");
+            throw new MALException("The field 'type' cannot be null!");
         }
         if (expressionLanguage == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'expressionLanguage' cannot be null!");
+            throw new MALException("The field 'expressionLanguage' cannot be null!");
         }
         if (expression == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'expression' cannot be null!");
+            throw new MALException("The field 'expression' cannot be null!");
         }
         encoder.encodeElement(type);
         encoder.encodeString(expressionLanguage);
@@ -161,15 +168,15 @@ public final class ExternalExpression implements org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        type = (org.ccsds.moims.mo.mps.structures.ArgTypeEnum) decoder.decodeElement(org.ccsds.moims.mo.mps.structures.ArgTypeEnum.BLOB);
+    public Element decode(MALDecoder decoder) throws MALException {
+        type = (ArgTypeEnum) decoder.decodeElement(ArgTypeEnum.BLOB);
         expressionLanguage = decoder.decodeString();
         expression = decoder.decodeString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

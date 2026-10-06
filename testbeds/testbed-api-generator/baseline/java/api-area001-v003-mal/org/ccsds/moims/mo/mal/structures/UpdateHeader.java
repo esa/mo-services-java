@@ -1,10 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * The UpdateHeader structure shall be used by updates using the PUBSUB Interaction
  * Pattern. It shall hold information that identifies a single update.
  */
-public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class UpdateHeader implements Composite {
 
     private static final long serialVersionUID = 281475027043307L;
     /**
@@ -14,24 +19,24 @@ public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The source of the update, usually a PUBSUB provider.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier source;
+    private Identifier source;
 
     /**
      * The domain of this update. The individual domain identifier parts shall
      * not be set as the wildcard character ‘*’.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * The values for the PUBSUB keys. The values shall be ordered according to
      * the defined keys if the consumer subscription did not enable trimming.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * Default constructor for UpdateHeader.
@@ -47,17 +52,17 @@ public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Com
      * @param domain The domain of this update. The individual domain identifier parts shall not be set as the wildcard character ‘*’.
      * @param keyValues The values for the PUBSUB keys. The values shall be ordered according to the defined keys if the consumer subscription did not enable trimming.
      */
-    public UpdateHeader(org.ccsds.moims.mo.mal.structures.Identifier source,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues) {
+    public UpdateHeader(Identifier source,
+            IdentifierList domain,
+            NullableAttributeList keyValues) {
         this.source = source;
         this.domain = domain;
         this.keyValues = keyValues;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mal.structures.UpdateHeader();
+    public Element createElement() {
+        return new UpdateHeader();
     }
 
     /**
@@ -65,7 +70,7 @@ public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field source
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getSource() {
+    public Identifier getSource() {
         return source;
     }
 
@@ -74,7 +79,7 @@ public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -83,7 +88,7 @@ public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field keyValues
      */
-    public org.ccsds.moims.mo.mal.structures.NullableAttributeList getKeyValues() {
+    public NullableAttributeList getKeyValues() {
         return keyValues;
     }
 
@@ -144,22 +149,22 @@ public final class UpdateHeader implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableIdentifier(source);
         encoder.encodeNullableElement(domain);
         encoder.encodeNullableElement(keyValues);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         source = decoder.decodeNullableIdentifier();
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
-        keyValues = (org.ccsds.moims.mo.mal.structures.NullableAttributeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NullableAttributeList());
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
+        keyValues = (NullableAttributeList) decoder.decodeNullableElement(new NullableAttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

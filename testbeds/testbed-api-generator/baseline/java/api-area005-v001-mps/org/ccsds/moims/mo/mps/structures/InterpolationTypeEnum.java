@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for InterpolationTypeEnum.
  */
-public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class InterpolationTypeEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330801L;
     /**
@@ -13,7 +17,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for STEP.
@@ -23,7 +27,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     /**
      * Enumeration singleton for value STEP.
      */
-    public static final org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum STEP = new org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum(org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum.STEP_VALUE);
+    public static final InterpolationTypeEnum STEP = new InterpolationTypeEnum(InterpolationTypeEnum.STEP_VALUE);
 
     /**
      * Enumeration value for LINEAR.
@@ -33,7 +37,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     /**
      * Enumeration singleton for value LINEAR.
      */
-    public static final org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum LINEAR = new org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum(org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum.LINEAR_VALUE);
+    public static final InterpolationTypeEnum LINEAR = new InterpolationTypeEnum(InterpolationTypeEnum.LINEAR_VALUE);
 
     /**
      * Enumeration value for POLYNOMIAL.
@@ -43,12 +47,12 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     /**
      * Enumeration singleton for value POLYNOMIAL.
      */
-    public static final org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum POLYNOMIAL = new org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum(org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum.POLYNOMIAL_VALUE);
+    public static final InterpolationTypeEnum POLYNOMIAL = new InterpolationTypeEnum(InterpolationTypeEnum.POLYNOMIAL_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum[] _ENUMERATIONS = {
+    private static final InterpolationTypeEnum[] _ENUMERATIONS = {
         STEP, LINEAR, POLYNOMIAL};
 
     /**
@@ -89,7 +93,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.InterpolationTypeEnum fromString(String s) {
+    public static InterpolationTypeEnum fromString(String s) {
         switch (s) {
             case "STEP":
                 return InterpolationTypeEnum.STEP;
@@ -103,7 +107,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case STEP_VALUE:
                 return InterpolationTypeEnum.STEP;
@@ -117,7 +121,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -127,7 +131,7 @@ public final class InterpolationTypeEnum extends org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

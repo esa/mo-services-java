@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.mc.alert.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mc.structures.AttributeValueList;
+
 /**
  * The AlertEventDetails structure holds the details of an instance of an
  * alert.
  */
-public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AlertEventDetails implements Composite {
 
     private static final long serialVersionUID = 1125912808521730L;
     /**
@@ -14,7 +23,7 @@ public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * List containing the values of the arguments. The ordering of the list matches
@@ -22,14 +31,14 @@ public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structure
      * supplied, then its position is filled with a NULL value. If no arguments
      * are defined, then the complete list is replaced with a NULL.
      */
-    private org.ccsds.moims.mo.mc.structures.AttributeValueList argumentValues;
+    private AttributeValueList argumentValues;
 
     /**
      * Optional list of argument definition identifiers. Allows the consumer to
      * verify that the correct arguments are being supplied. The ordering of the
      * list matches that of the argument list of the alert definition.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList argumentIds;
+    private IdentifierList argumentIds;
 
     /**
      * Default constructor for AlertEventDetails.
@@ -44,15 +53,15 @@ public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structure
      * @param argumentValues List containing the values of the arguments. The ordering of the list matches that of the definition. If a value for a particular entry is not being supplied, then its position is filled with a NULL value. If no arguments are defined, then the complete list is replaced with a NULL.
      * @param argumentIds Optional list of argument definition identifiers. Allows the consumer to verify that the correct arguments are being supplied. The ordering of the list matches that of the argument list of the alert definition.
      */
-    public AlertEventDetails(org.ccsds.moims.mo.mc.structures.AttributeValueList argumentValues,
-            org.ccsds.moims.mo.mal.structures.IdentifierList argumentIds) {
+    public AlertEventDetails(AttributeValueList argumentValues,
+            IdentifierList argumentIds) {
         this.argumentValues = argumentValues;
         this.argumentIds = argumentIds;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.alert.structures.AlertEventDetails();
+    public Element createElement() {
+        return new AlertEventDetails();
     }
 
     /**
@@ -60,7 +69,7 @@ public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field argumentValues
      */
-    public org.ccsds.moims.mo.mc.structures.AttributeValueList getArgumentValues() {
+    public AttributeValueList getArgumentValues() {
         return argumentValues;
     }
 
@@ -69,7 +78,7 @@ public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field argumentIds
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getArgumentIds() {
+    public IdentifierList getArgumentIds() {
         return argumentIds;
     }
 
@@ -119,20 +128,20 @@ public final class AlertEventDetails implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableElement(argumentValues);
         encoder.encodeNullableElement(argumentIds);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        argumentValues = (org.ccsds.moims.mo.mc.structures.AttributeValueList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.AttributeValueList());
-        argumentIds = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        argumentValues = (AttributeValueList) decoder.decodeNullableElement(new AttributeValueList());
+        argumentIds = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

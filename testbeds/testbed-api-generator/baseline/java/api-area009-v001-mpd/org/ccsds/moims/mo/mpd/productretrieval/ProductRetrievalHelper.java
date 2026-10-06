@@ -8,7 +8,7 @@ public class ProductRetrievalHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo PRODUCTRETRIEVAL_SERVICE = new org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo();
+    public static final ProductRetrievalServiceInfo PRODUCTRETRIEVAL_SERVICE = new ProductRetrievalServiceInfo();
 
     private ProductRetrievalHelper() {
         // Utility class; not meant to be instantiated.

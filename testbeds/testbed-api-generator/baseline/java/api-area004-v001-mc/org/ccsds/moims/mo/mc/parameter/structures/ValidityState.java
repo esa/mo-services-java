@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mc.parameter.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for ValidityState.
  */
-public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class ValidityState extends Enumeration {
 
     private static final long serialVersionUID = 1125908513554436L;
     /**
@@ -13,7 +17,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for VALID.
@@ -23,7 +27,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value VALID.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState VALID = new org.ccsds.moims.mo.mc.parameter.structures.ValidityState(org.ccsds.moims.mo.mc.parameter.structures.ValidityState.VALID_VALUE);
+    public static final ValidityState VALID = new ValidityState(ValidityState.VALID_VALUE);
 
     /**
      * Enumeration value for EXPIRED.
@@ -33,7 +37,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value EXPIRED.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState EXPIRED = new org.ccsds.moims.mo.mc.parameter.structures.ValidityState(org.ccsds.moims.mo.mc.parameter.structures.ValidityState.EXPIRED_VALUE);
+    public static final ValidityState EXPIRED = new ValidityState(ValidityState.EXPIRED_VALUE);
 
     /**
      * Enumeration value for INVALID_RAW.
@@ -43,7 +47,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value INVALID_RAW.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState INVALID_RAW = new org.ccsds.moims.mo.mc.parameter.structures.ValidityState(org.ccsds.moims.mo.mc.parameter.structures.ValidityState.INVALID_RAW_VALUE);
+    public static final ValidityState INVALID_RAW = new ValidityState(ValidityState.INVALID_RAW_VALUE);
 
     /**
      * Enumeration value for INVALID_CONVERSION.
@@ -53,7 +57,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value INVALID_CONVERSION.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState INVALID_CONVERSION = new org.ccsds.moims.mo.mc.parameter.structures.ValidityState(org.ccsds.moims.mo.mc.parameter.structures.ValidityState.INVALID_CONVERSION_VALUE);
+    public static final ValidityState INVALID_CONVERSION = new ValidityState(ValidityState.INVALID_CONVERSION_VALUE);
 
     /**
      * Enumeration value for UNVERIFIED.
@@ -63,7 +67,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value UNVERIFIED.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState UNVERIFIED = new org.ccsds.moims.mo.mc.parameter.structures.ValidityState(org.ccsds.moims.mo.mc.parameter.structures.ValidityState.UNVERIFIED_VALUE);
+    public static final ValidityState UNVERIFIED = new ValidityState(ValidityState.UNVERIFIED_VALUE);
 
     /**
      * Enumeration value for INVALID.
@@ -73,12 +77,12 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     /**
      * Enumeration singleton for value INVALID.
      */
-    public static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState INVALID = new org.ccsds.moims.mo.mc.parameter.structures.ValidityState(org.ccsds.moims.mo.mc.parameter.structures.ValidityState.INVALID_VALUE);
+    public static final ValidityState INVALID = new ValidityState(ValidityState.INVALID_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mc.parameter.structures.ValidityState[] _ENUMERATIONS = {
+    private static final ValidityState[] _ENUMERATIONS = {
         VALID, EXPIRED, INVALID_RAW, INVALID_CONVERSION, UNVERIFIED, INVALID};
 
     /**
@@ -125,7 +129,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mc.parameter.structures.ValidityState fromString(String s) {
+    public static ValidityState fromString(String s) {
         switch (s) {
             case "VALID":
                 return ValidityState.VALID;
@@ -145,7 +149,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case VALID_VALUE:
                 return ValidityState.VALID;
@@ -165,7 +169,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -175,7 +179,7 @@ public final class ValidityState extends org.ccsds.moims.mo.mal.structures.Enume
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

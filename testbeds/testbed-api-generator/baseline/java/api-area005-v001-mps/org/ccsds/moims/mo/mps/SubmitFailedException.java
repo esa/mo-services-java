@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The SubmitFailedException exception. The submitPlan operation failed as
  * the submitted plan was already terminated.
  */
-public final class SubmitFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class SubmitFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "SUBMIT_FAILED";
 

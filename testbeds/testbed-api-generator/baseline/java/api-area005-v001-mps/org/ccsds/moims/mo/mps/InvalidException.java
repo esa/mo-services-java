@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The InvalidException exception. One or more fields in the message contain
  * invalid values.
  */
-public final class InvalidException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class InvalidException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "INVALID";
 

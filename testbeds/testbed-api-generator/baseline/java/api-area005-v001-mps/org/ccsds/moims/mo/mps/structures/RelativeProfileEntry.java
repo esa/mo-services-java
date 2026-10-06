@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Attribute;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E4: Defines the value (or minimum/maximum value) of a resource at a relative
  * point in time. Specific subtypes exist for each allowed data type for a
  * Resource.  These replace the variant type value field with one of concrete
  * data type.
  */
-public final class RelativeProfileEntry implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class RelativeProfileEntry implements Composite {
 
     private static final long serialVersionUID = 1407374900330805L;
     /**
@@ -16,18 +24,18 @@ public final class RelativeProfileEntry implements org.ccsds.moims.mo.mal.struct
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Relative time of resource data point.
      */
-    private org.ccsds.moims.mo.mal.structures.Element time;
+    private Element time;
 
     /**
      * Value of resource data point.  MAL Attribute type must match the dataType
      * of the Resource definition.
      */
-    private org.ccsds.moims.mo.mal.structures.Attribute value;
+    private Attribute value;
 
     /**
      * Default constructor for RelativeProfileEntry.
@@ -42,15 +50,15 @@ public final class RelativeProfileEntry implements org.ccsds.moims.mo.mal.struct
      * @param time Relative time of resource data point.
      * @param value Value of resource data point.  MAL Attribute type must match the dataType of the Resource definition.
      */
-    public RelativeProfileEntry(org.ccsds.moims.mo.mal.structures.Element time,
-            org.ccsds.moims.mo.mal.structures.Attribute value) {
+    public RelativeProfileEntry(Element time,
+            Attribute value) {
         this.time = time;
         this.value = value;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.RelativeProfileEntry();
+    public Element createElement() {
+        return new RelativeProfileEntry();
     }
 
     /**
@@ -58,7 +66,7 @@ public final class RelativeProfileEntry implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field time
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTime() {
+    public Element getTime() {
         return time;
     }
 
@@ -67,7 +75,7 @@ public final class RelativeProfileEntry implements org.ccsds.moims.mo.mal.struct
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mal.structures.Attribute getValue() {
+    public Attribute getValue() {
         return value;
     }
 
@@ -117,26 +125,26 @@ public final class RelativeProfileEntry implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (time == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'time' cannot be null!");
+            throw new MALException("The field 'time' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeAbstractElement(time);
         encoder.encodeAttribute(value);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        time = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        value = (org.ccsds.moims.mo.mal.structures.Attribute) decoder.decodeAttribute();
+    public Element decode(MALDecoder decoder) throws MALException {
+        time = (Element) decoder.decodeAbstractElement();
+        value = (Attribute) decoder.decodeAttribute();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

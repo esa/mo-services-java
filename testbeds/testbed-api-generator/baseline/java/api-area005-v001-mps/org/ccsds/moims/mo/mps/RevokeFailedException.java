@@ -1,11 +1,13 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The RevokeFailedException exception. The revokePlan operation failed to
  * revoke the referenced Plan, for example because it has already started
  * executing.
  */
-public final class RevokeFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class RevokeFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "REVOKE_FAILED";
 

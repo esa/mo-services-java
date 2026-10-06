@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.common.configuration.structures;
 
+import org.ccsds.moims.mo.common.structures.ServiceKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The ServiceConfigurationIdentifier structure holds the name and service
  * key of a service configuration object.
  */
-public final class ServiceConfigurationIdentifier implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ServiceConfigurationIdentifier implements Composite {
 
     private static final long serialVersionUID = 844446421745667L;
     /**
@@ -14,17 +23,17 @@ public final class ServiceConfigurationIdentifier implements org.ccsds.moims.mo.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The configName field.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier configName;
+    private Identifier configName;
 
     /**
      * The serviceKey field.
      */
-    private org.ccsds.moims.mo.common.structures.ServiceKey serviceKey;
+    private ServiceKey serviceKey;
 
     /**
      * Default constructor for ServiceConfigurationIdentifier.
@@ -39,15 +48,15 @@ public final class ServiceConfigurationIdentifier implements org.ccsds.moims.mo.
      * @param configName The configName field.
      * @param serviceKey The serviceKey field.
      */
-    public ServiceConfigurationIdentifier(org.ccsds.moims.mo.mal.structures.Identifier configName,
-            org.ccsds.moims.mo.common.structures.ServiceKey serviceKey) {
+    public ServiceConfigurationIdentifier(Identifier configName,
+            ServiceKey serviceKey) {
         this.configName = configName;
         this.serviceKey = serviceKey;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.configuration.structures.ServiceConfigurationIdentifier();
+    public Element createElement() {
+        return new ServiceConfigurationIdentifier();
     }
 
     /**
@@ -55,7 +64,7 @@ public final class ServiceConfigurationIdentifier implements org.ccsds.moims.mo.
      * 
      * @return The field configName
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getConfigName() {
+    public Identifier getConfigName() {
         return configName;
     }
 
@@ -64,7 +73,7 @@ public final class ServiceConfigurationIdentifier implements org.ccsds.moims.mo.
      * 
      * @return The field serviceKey
      */
-    public org.ccsds.moims.mo.common.structures.ServiceKey getServiceKey() {
+    public ServiceKey getServiceKey() {
         return serviceKey;
     }
 
@@ -114,26 +123,26 @@ public final class ServiceConfigurationIdentifier implements org.ccsds.moims.mo.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (configName == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'configName' cannot be null!");
+            throw new MALException("The field 'configName' cannot be null!");
         }
         if (serviceKey == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'serviceKey' cannot be null!");
+            throw new MALException("The field 'serviceKey' cannot be null!");
         }
         encoder.encodeIdentifier(configName);
         encoder.encodeElement(serviceKey);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         configName = decoder.decodeIdentifier();
-        serviceKey = (org.ccsds.moims.mo.common.structures.ServiceKey) decoder.decodeElement(new org.ccsds.moims.mo.common.structures.ServiceKey());
+        serviceKey = (ServiceKey) decoder.decodeElement(new ServiceKey());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

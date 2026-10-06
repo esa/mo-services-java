@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.parameter.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The ParameterCreationRequest contains all the fields required when creating
  * a new parameter in a provider.
  */
-public final class ParameterCreationRequest implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterCreationRequest implements Composite {
 
     private static final long serialVersionUID = 1125908513554437L;
     /**
@@ -14,17 +22,17 @@ public final class ParameterCreationRequest implements org.ccsds.moims.mo.mal.st
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The name of the parameter. Must not be empty or the wildcard value.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier name;
+    private Identifier name;
 
     /**
      * The parameter definition details.
      */
-    private org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetails paramDefDetails;
+    private ParameterDefinitionDetails paramDefDetails;
 
     /**
      * Default constructor for ParameterCreationRequest.
@@ -39,15 +47,15 @@ public final class ParameterCreationRequest implements org.ccsds.moims.mo.mal.st
      * @param name The name of the parameter. Must not be empty or the wildcard value.
      * @param paramDefDetails The parameter definition details.
      */
-    public ParameterCreationRequest(org.ccsds.moims.mo.mal.structures.Identifier name,
-            org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetails paramDefDetails) {
+    public ParameterCreationRequest(Identifier name,
+            ParameterDefinitionDetails paramDefDetails) {
         this.name = name;
         this.paramDefDetails = paramDefDetails;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.parameter.structures.ParameterCreationRequest();
+    public Element createElement() {
+        return new ParameterCreationRequest();
     }
 
     /**
@@ -55,7 +63,7 @@ public final class ParameterCreationRequest implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field name
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -64,7 +72,7 @@ public final class ParameterCreationRequest implements org.ccsds.moims.mo.mal.st
      * 
      * @return The field paramDefDetails
      */
-    public org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetails getParamDefDetails() {
+    public ParameterDefinitionDetails getParamDefDetails() {
         return paramDefDetails;
     }
 
@@ -114,26 +122,26 @@ public final class ParameterCreationRequest implements org.ccsds.moims.mo.mal.st
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (name == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'name' cannot be null!");
+            throw new MALException("The field 'name' cannot be null!");
         }
         if (paramDefDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'paramDefDetails' cannot be null!");
+            throw new MALException("The field 'paramDefDetails' cannot be null!");
         }
         encoder.encodeIdentifier(name);
         encoder.encodeElement(paramDefDetails);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         name = decoder.decodeIdentifier();
-        paramDefDetails = (org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetails) decoder.decodeElement(new org.ccsds.moims.mo.mc.parameter.structures.ParameterDefinitionDetails());
+        paramDefDetails = (ParameterDefinitionDetails) decoder.decodeElement(new ParameterDefinitionDetails());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

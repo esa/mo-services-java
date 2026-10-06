@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The DuplicateException exception. The entry or operation is a duplicate
  * of an existing record, violating uniqueness.
  */
-public final class DuplicateException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class DuplicateException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Duplicate";
 

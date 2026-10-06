@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The ArgumentDefinitionDetails structure holds the details of an argument
  * definition with a set of associated attributes, such as conversion used.
  * The conditionalConversions define the conditions where a referenced conversion
  * is applied. Only the first TRUE conversion should be applied.
  */
-public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ArgumentDefinitionDetails implements Composite {
 
     private static final long serialVersionUID = 1125899923619841L;
     /**
@@ -16,12 +24,12 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Holds the argument definition identifier.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier argId;
+    private Identifier argId;
 
     /**
      * Optional argument description.
@@ -43,7 +51,7 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * The conditional conversions to apply to the argument. Only the first TRUE
      * conversion should be applied.
      */
-    private org.ccsds.moims.mo.mc.structures.ConditionalConversionList conditionalConversions;
+    private ConditionalConversionList conditionalConversions;
 
     /**
      * Holds the attribute short form part of the converted type of the argument,
@@ -75,11 +83,11 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * @param convertedType Holds the attribute short form part of the converted type of the argument, e.g., for a MAL::String argument it shall hold 15. Must not be NULL if a conversion condition is supplied.
      * @param convertedUnit The converted argument units.
      */
-    public ArgumentDefinitionDetails(org.ccsds.moims.mo.mal.structures.Identifier argId,
+    public ArgumentDefinitionDetails(Identifier argId,
             String description,
             Byte rawType,
             String rawUnit,
-            org.ccsds.moims.mo.mc.structures.ConditionalConversionList conditionalConversions,
+            ConditionalConversionList conditionalConversions,
             Byte convertedType,
             String convertedUnit) {
         this.argId = argId;
@@ -97,7 +105,7 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * @param argId Holds the argument definition identifier.
      * @param rawType Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.
      */
-    public ArgumentDefinitionDetails(org.ccsds.moims.mo.mal.structures.Identifier argId,
+    public ArgumentDefinitionDetails(Identifier argId,
             Byte rawType) {
         this.argId = argId;
         this.description = null;
@@ -109,8 +117,8 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetails();
+    public Element createElement() {
+        return new ArgumentDefinitionDetails();
     }
 
     /**
@@ -118,7 +126,7 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field argId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getArgId() {
+    public Identifier getArgId() {
         return argId;
     }
 
@@ -154,7 +162,7 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
      * 
      * @return The field conditionalConversions
      */
-    public org.ccsds.moims.mo.mc.structures.ConditionalConversionList getConditionalConversions() {
+    public ConditionalConversionList getConditionalConversions() {
         return conditionalConversions;
     }
 
@@ -277,12 +285,12 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (argId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'argId' cannot be null!");
+            throw new MALException("The field 'argId' cannot be null!");
         }
         if (rawType == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'rawType' cannot be null!");
+            throw new MALException("The field 'rawType' cannot be null!");
         }
         encoder.encodeIdentifier(argId);
         encoder.encodeNullableString(description);
@@ -294,19 +302,19 @@ public final class ArgumentDefinitionDetails implements org.ccsds.moims.mo.mal.s
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         argId = decoder.decodeIdentifier();
         description = decoder.decodeNullableString();
         rawType = decoder.decodeOctet();
         rawUnit = decoder.decodeNullableString();
-        conditionalConversions = (org.ccsds.moims.mo.mc.structures.ConditionalConversionList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ConditionalConversionList());
+        conditionalConversions = (ConditionalConversionList) decoder.decodeNullableElement(new ConditionalConversionList());
         convertedType = decoder.decodeNullableOctet();
         convertedUnit = decoder.decodeNullableString();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

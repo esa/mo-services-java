@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.parameter.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * This structure holds a specific time stamped value of the parameter. The
  * type of the value shall match that specified in the parameter definition.
  */
-public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ParameterValueDetails implements Composite {
 
     private static final long serialVersionUID = 1125908513554439L;
     /**
@@ -14,7 +22,7 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The ParameterIdentity object instance identifier.
@@ -29,12 +37,12 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
     /**
      * The timestamp of the value.
      */
-    private org.ccsds.moims.mo.mal.structures.Time timestamp;
+    private Time timestamp;
 
     /**
      * The parameter value.
      */
-    private org.ccsds.moims.mo.mc.parameter.structures.ParameterValue value;
+    private ParameterValue value;
 
     /**
      * Default constructor for ParameterValueDetails.
@@ -53,8 +61,8 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
      */
     public ParameterValueDetails(Long paramId,
             Long defId,
-            org.ccsds.moims.mo.mal.structures.Time timestamp,
-            org.ccsds.moims.mo.mc.parameter.structures.ParameterValue value) {
+            Time timestamp,
+            ParameterValue value) {
         this.paramId = paramId;
         this.defId = defId;
         this.timestamp = timestamp;
@@ -62,8 +70,8 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.parameter.structures.ParameterValueDetails();
+    public Element createElement() {
+        return new ParameterValueDetails();
     }
 
     /**
@@ -89,7 +97,7 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
      * 
      * @return The field timestamp
      */
-    public org.ccsds.moims.mo.mal.structures.Time getTimestamp() {
+    public Time getTimestamp() {
         return timestamp;
     }
 
@@ -98,7 +106,7 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
      * 
      * @return The field value
      */
-    public org.ccsds.moims.mo.mc.parameter.structures.ParameterValue getValue() {
+    public ParameterValue getValue() {
         return value;
     }
 
@@ -170,18 +178,18 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (paramId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'paramId' cannot be null!");
+            throw new MALException("The field 'paramId' cannot be null!");
         }
         if (defId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'defId' cannot be null!");
+            throw new MALException("The field 'defId' cannot be null!");
         }
         if (timestamp == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'timestamp' cannot be null!");
+            throw new MALException("The field 'timestamp' cannot be null!");
         }
         if (value == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'value' cannot be null!");
+            throw new MALException("The field 'value' cannot be null!");
         }
         encoder.encodeLong(paramId);
         encoder.encodeLong(defId);
@@ -190,16 +198,16 @@ public final class ParameterValueDetails implements org.ccsds.moims.mo.mal.struc
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         paramId = decoder.decodeLong();
         defId = decoder.decodeLong();
         timestamp = decoder.decodeTime();
-        value = (org.ccsds.moims.mo.mc.parameter.structures.ParameterValue) decoder.decodeElement(new org.ccsds.moims.mo.mc.parameter.structures.ParameterValue());
+        value = (ParameterValue) decoder.decodeElement(new ParameterValue());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

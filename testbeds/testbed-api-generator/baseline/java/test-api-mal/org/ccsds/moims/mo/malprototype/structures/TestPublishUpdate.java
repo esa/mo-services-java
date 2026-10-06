@@ -1,10 +1,23 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.NullableAttributeList;
+import org.ccsds.moims.mo.mal.structures.QoSLevel;
+import org.ccsds.moims.mo.mal.structures.SessionType;
+import org.ccsds.moims.mo.mal.structures.UInteger;
+import org.ccsds.moims.mo.mal.structures.UpdateHeaderList;
+
 /**
  * This data structure specifies how the IPTest provider shall publish an
  * update.
  */
-public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.structures.TestPublish {
+public final class TestPublishUpdate extends TestPublish {
 
     private static final long serialVersionUID = 28147497687842825L;
     /**
@@ -14,28 +27,28 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The headers of the updates to be published by the provider.
      */
-    private org.ccsds.moims.mo.mal.structures.UpdateHeaderList updateHeaders;
+    private UpdateHeaderList updateHeaders;
 
     /**
      * The updates to be published by the provider.
      */
-    private org.ccsds.moims.mo.malprototype.structures.TestUpdateList updates;
+    private TestUpdateList updates;
 
     /**
      * The list of key values.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues;
+    private NullableAttributeList keyValues;
 
     /**
      * The code of the Publish error expected to be received.-1 if no Publish
      * error is expected.
      */
-    private org.ccsds.moims.mo.mal.structures.UInteger errorCode;
+    private UInteger errorCode;
 
     /**
      * Indicates whether the error is returned as an Exception or a Publish Error
@@ -46,7 +59,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
     /**
      * The list of failed keys values.
      */
-    private org.ccsds.moims.mo.mal.structures.NullableAttributeList failedKeyValues;
+    private NullableAttributeList failedKeyValues;
 
     /**
      * Default constructor for TestPublishUpdate.
@@ -72,19 +85,19 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
      * @param isException Indicates whether the error is returned as an Exception or a Publish Error message
      * @param failedKeyValues The list of failed keys values.
      */
-    public TestPublishUpdate(org.ccsds.moims.mo.mal.structures.QoSLevel Qos,
-            org.ccsds.moims.mo.mal.structures.UInteger Priority,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier networkZone,
-            org.ccsds.moims.mo.mal.structures.SessionType Session,
-            org.ccsds.moims.mo.mal.structures.Identifier sessionName,
+    public TestPublishUpdate(QoSLevel Qos,
+            UInteger Priority,
+            IdentifierList domain,
+            Identifier networkZone,
+            SessionType Session,
+            Identifier sessionName,
             Boolean testMultiType,
-            org.ccsds.moims.mo.mal.structures.UpdateHeaderList updateHeaders,
-            org.ccsds.moims.mo.malprototype.structures.TestUpdateList updates,
-            org.ccsds.moims.mo.mal.structures.NullableAttributeList keyValues,
-            org.ccsds.moims.mo.mal.structures.UInteger errorCode,
+            UpdateHeaderList updateHeaders,
+            TestUpdateList updates,
+            NullableAttributeList keyValues,
+            UInteger errorCode,
             Boolean isException,
-            org.ccsds.moims.mo.mal.structures.NullableAttributeList failedKeyValues) {
+            NullableAttributeList failedKeyValues) {
         super(Qos,
             Priority,
             domain,
@@ -101,8 +114,8 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.malprototype.structures.TestPublishUpdate();
+    public Element createElement() {
+        return new TestPublishUpdate();
     }
 
     /**
@@ -110,7 +123,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
      * 
      * @return The field updateHeaders
      */
-    public org.ccsds.moims.mo.mal.structures.UpdateHeaderList getUpdateHeaders() {
+    public UpdateHeaderList getUpdateHeaders() {
         return updateHeaders;
     }
 
@@ -119,7 +132,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
      * 
      * @return The field updates
      */
-    public org.ccsds.moims.mo.malprototype.structures.TestUpdateList getUpdates() {
+    public TestUpdateList getUpdates() {
         return updates;
     }
 
@@ -128,7 +141,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
      * 
      * @return The field keyValues
      */
-    public org.ccsds.moims.mo.mal.structures.NullableAttributeList getKeyValues() {
+    public NullableAttributeList getKeyValues() {
         return keyValues;
     }
 
@@ -137,7 +150,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
      * 
      * @return The field errorCode
      */
-    public org.ccsds.moims.mo.mal.structures.UInteger getErrorCode() {
+    public UInteger getErrorCode() {
         return errorCode;
     }
 
@@ -155,7 +168,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
      * 
      * @return The field failedKeyValues
      */
-    public org.ccsds.moims.mo.mal.structures.NullableAttributeList getFailedKeyValues() {
+    public NullableAttributeList getFailedKeyValues() {
         return failedKeyValues;
     }
 
@@ -253,7 +266,7 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableElement(updateHeaders);
         encoder.encodeNullableElement(updates);
@@ -264,19 +277,19 @@ public final class TestPublishUpdate extends org.ccsds.moims.mo.malprototype.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        updateHeaders = (org.ccsds.moims.mo.mal.structures.UpdateHeaderList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.UpdateHeaderList());
-        updates = (org.ccsds.moims.mo.malprototype.structures.TestUpdateList) decoder.decodeNullableElement(new org.ccsds.moims.mo.malprototype.structures.TestUpdateList());
-        keyValues = (org.ccsds.moims.mo.mal.structures.NullableAttributeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NullableAttributeList());
+        updateHeaders = (UpdateHeaderList) decoder.decodeNullableElement(new UpdateHeaderList());
+        updates = (TestUpdateList) decoder.decodeNullableElement(new TestUpdateList());
+        keyValues = (NullableAttributeList) decoder.decodeNullableElement(new NullableAttributeList());
         errorCode = decoder.decodeNullableUInteger();
         isException = decoder.decodeNullableBoolean();
-        failedKeyValues = (org.ccsds.moims.mo.mal.structures.NullableAttributeList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.NullableAttributeList());
+        failedKeyValues = (NullableAttributeList) decoder.decodeNullableElement(new NullableAttributeList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -4,7 +4,7 @@ package org.ccsds.moims.mo.mal;
  * The UnsupportedAreaException exception. The destination does not support
  * the selected area.
  */
-public final class UnsupportedAreaException extends org.ccsds.moims.mo.mal.MALStandardError {
+public final class UnsupportedAreaException extends MALStandardError {
 
     private static final String MO_ERROR_NAME = "Unsupported Area";
 

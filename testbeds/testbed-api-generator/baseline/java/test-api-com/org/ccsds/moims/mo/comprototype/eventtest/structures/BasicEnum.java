@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.comprototype.eventtest.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for BasicEnum.
  */
-public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class BasicEnum extends Enumeration {
 
     private static final long serialVersionUID = 56295003948843021L;
     /**
@@ -13,7 +17,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for FIRST.
@@ -23,7 +27,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     /**
      * Enumeration singleton for value FIRST.
      */
-    public static final org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum FIRST = new org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum(org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum.FIRST_VALUE);
+    public static final BasicEnum FIRST = new BasicEnum(BasicEnum.FIRST_VALUE);
 
     /**
      * Enumeration value for SECOND.
@@ -33,7 +37,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     /**
      * Enumeration singleton for value SECOND.
      */
-    public static final org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum SECOND = new org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum(org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum.SECOND_VALUE);
+    public static final BasicEnum SECOND = new BasicEnum(BasicEnum.SECOND_VALUE);
 
     /**
      * Enumeration value for THIRD.
@@ -43,7 +47,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     /**
      * Enumeration singleton for value THIRD.
      */
-    public static final org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum THIRD = new org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum(org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum.THIRD_VALUE);
+    public static final BasicEnum THIRD = new BasicEnum(BasicEnum.THIRD_VALUE);
 
     /**
      * Enumeration value for FOURTH.
@@ -53,12 +57,12 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     /**
      * Enumeration singleton for value FOURTH.
      */
-    public static final org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum FOURTH = new org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum(org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum.FOURTH_VALUE);
+    public static final BasicEnum FOURTH = new BasicEnum(BasicEnum.FOURTH_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum[] _ENUMERATIONS = {
+    private static final BasicEnum[] _ENUMERATIONS = {
         FIRST, SECOND, THIRD, FOURTH};
 
     /**
@@ -100,7 +104,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.comprototype.eventtest.structures.BasicEnum fromString(String s) {
+    public static BasicEnum fromString(String s) {
         switch (s) {
             case "FIRST":
                 return BasicEnum.FIRST;
@@ -116,7 +120,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case FIRST_VALUE:
                 return BasicEnum.FIRST;
@@ -132,7 +136,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -142,7 +146,7 @@ public final class BasicEnum extends org.ccsds.moims.mo.mal.structures.Enumerati
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

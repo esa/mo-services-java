@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mal.structures;
 
+import java.util.ArrayList;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+
 /**
  * List class for NullableAttribute.
  */
-public final class NullableAttributeList extends java.util.ArrayList<org.ccsds.moims.mo.mal.structures.NullableAttribute> implements org.ccsds.moims.mo.mal.structures.HomogeneousList<org.ccsds.moims.mo.mal.structures.NullableAttribute> {
+public final class NullableAttributeList extends ArrayList<NullableAttribute> implements HomogeneousList<NullableAttribute> {
 
     private static final long serialVersionUID = 281475043818510L;
     /**
@@ -13,7 +19,7 @@ public final class NullableAttributeList extends java.util.ArrayList<org.ccsds.m
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Default constructor for NullableAttributeList.
@@ -36,14 +42,14 @@ public final class NullableAttributeList extends java.util.ArrayList<org.ccsds.m
      * 
      * @param elementList The ArrayList that is used for initialization.
      */
-    public NullableAttributeList(java.util.ArrayList<org.ccsds.moims.mo.mal.structures.NullableAttribute> elementList) {
-        for(org.ccsds.moims.mo.mal.structures.NullableAttribute element : elementList) {
+    public NullableAttributeList(ArrayList<NullableAttribute> elementList) {
+        for(NullableAttribute element : elementList) {
             this.add(element);
         }
     }
 
     @Override
-    public boolean add(org.ccsds.moims.mo.mal.structures.NullableAttribute element) {
+    public boolean add(NullableAttribute element) {
         if (element == null) {
             throw new IllegalArgumentException("The added argument cannot be null!");
         }
@@ -51,28 +57,28 @@ public final class NullableAttributeList extends java.util.ArrayList<org.ccsds.m
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return new NullableAttributeList();
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createTypedElement() {
-        return new org.ccsds.moims.mo.mal.structures.NullableAttribute();
+    public Element createTypedElement() {
+        return new NullableAttribute();
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeHomogeneousList(this);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         decoder.decodeHomogeneousList(this);
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

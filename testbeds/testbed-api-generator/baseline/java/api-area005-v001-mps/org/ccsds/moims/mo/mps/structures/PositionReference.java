@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * E6: A PositionReference is a Position that is evaluated based on a given
  * reference position.  The manner in which the Position is computed by the
  * planning system based on this reference may be mission specific.
  */
-public final class PositionReference extends org.ccsds.moims.mo.mps.structures.Position {
+public final class PositionReference extends Position {
 
     private static final long serialVersionUID = 1407374900330509L;
     /**
@@ -15,12 +22,12 @@ public final class PositionReference extends org.ccsds.moims.mo.mps.structures.P
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Name of a mission specific position definition.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier reference;
+    private Identifier reference;
 
     /**
      * Default constructor for PositionReference.
@@ -34,13 +41,13 @@ public final class PositionReference extends org.ccsds.moims.mo.mps.structures.P
      * 
      * @param reference Name of a mission specific position definition.
      */
-    public PositionReference(org.ccsds.moims.mo.mal.structures.Identifier reference) {
+    public PositionReference(Identifier reference) {
         this.reference = reference;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PositionReference();
+    public Element createElement() {
+        return new PositionReference();
     }
 
     /**
@@ -48,7 +55,7 @@ public final class PositionReference extends org.ccsds.moims.mo.mps.structures.P
      * 
      * @return The field reference
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getReference() {
+    public Identifier getReference() {
         return reference;
     }
 
@@ -91,23 +98,23 @@ public final class PositionReference extends org.ccsds.moims.mo.mps.structures.P
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (reference == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'reference' cannot be null!");
+            throw new MALException("The field 'reference' cannot be null!");
         }
         encoder.encodeIdentifier(reference);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         reference = decoder.decodeIdentifier();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

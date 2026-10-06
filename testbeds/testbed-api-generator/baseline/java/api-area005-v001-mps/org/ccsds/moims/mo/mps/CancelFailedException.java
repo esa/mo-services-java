@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The CancelFailedException exception. The cancelRequest operation failed
  * to cancel the referenced RequestInstance.
  */
-public final class CancelFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class CancelFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "CANCEL_FAILED";
 

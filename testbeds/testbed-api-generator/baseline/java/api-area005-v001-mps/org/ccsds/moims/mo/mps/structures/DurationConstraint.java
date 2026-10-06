@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E2: A DurationConstraint restricts the duration of a planning activity
  * within the plan.
  */
-public final class DurationConstraint extends org.ccsds.moims.mo.mps.structures.Constraint {
+public final class DurationConstraint extends Constraint {
 
     private static final long serialVersionUID = 1407374900330530L;
     /**
@@ -14,19 +20,19 @@ public final class DurationConstraint extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Specifies the minimum duration of the planning activity. If omitted, a
      * value of 0 is used.
      */
-    private org.ccsds.moims.mo.mal.structures.Element minDuration;
+    private Element minDuration;
 
     /**
      * Specifies the maximum duration of the planning activity. If omitted, the
      * maximum representable MAL::Duration value is assumed.
      */
-    private org.ccsds.moims.mo.mal.structures.Element maxDuration;
+    private Element maxDuration;
 
     /**
      * Default constructor for DurationConstraint.
@@ -43,16 +49,16 @@ public final class DurationConstraint extends org.ccsds.moims.mo.mps.structures.
      * @param maxDuration Specifies the maximum duration of the planning activity. If omitted, the maximum representable MAL::Duration value is assumed.
      */
     public DurationConstraint(Boolean negate,
-            org.ccsds.moims.mo.mal.structures.Element minDuration,
-            org.ccsds.moims.mo.mal.structures.Element maxDuration) {
+            Element minDuration,
+            Element maxDuration) {
         super(negate);
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.DurationConstraint();
+    public Element createElement() {
+        return new DurationConstraint();
     }
 
     /**
@@ -60,7 +66,7 @@ public final class DurationConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field minDuration
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMinDuration() {
+    public Element getMinDuration() {
         return minDuration;
     }
 
@@ -69,7 +75,7 @@ public final class DurationConstraint extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field maxDuration
      */
-    public org.ccsds.moims.mo.mal.structures.Element getMaxDuration() {
+    public Element getMaxDuration() {
         return maxDuration;
     }
 
@@ -123,22 +129,22 @@ public final class DurationConstraint extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         encoder.encodeNullableAbstractElement(minDuration);
         encoder.encodeNullableAbstractElement(maxDuration);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        minDuration = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
-        maxDuration = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeNullableAbstractElement();
+        minDuration = (Element) decoder.decodeNullableAbstractElement();
+        maxDuration = (Element) decoder.decodeNullableAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

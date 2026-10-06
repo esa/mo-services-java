@@ -1,9 +1,11 @@
 package org.ccsds.moims.mo.mpd;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The TooManyException exception. Too many entries were found.
  */
-public final class TooManyException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class TooManyException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Too Many";
 

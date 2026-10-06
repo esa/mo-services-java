@@ -1,10 +1,22 @@
 package org.ccsds.moims.mo.com.archive.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectId;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.FineTime;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.URI;
+
 /**
  * The ArchiveQuery structure is used to specify filters on the common parts
  * of an object in an archive.
  */
-public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ArchiveQuery implements Composite {
 
     private static final long serialVersionUID = 562958560133122L;
     /**
@@ -14,26 +26,26 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Only the objects whose domain matches the provided domain will be returned.
      * The domain field supports the wildcard value of &quot;*&quot; only in the
      * last part of the domain. If NULL then all domains shall be matched.
      */
-    private org.ccsds.moims.mo.mal.structures.IdentifierList domain;
+    private IdentifierList domain;
 
     /**
      * Optional network zone. Only the objects whose network zone matches the
      * provided value will be returned. If NULL then all values will be matched.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier network;
+    private Identifier network;
 
     /**
      * Optional provider. Only the objects whose provider URI matches the provided
      * provider URI will be returned. If NULL then all values will be matched.
      */
-    private org.ccsds.moims.mo.mal.structures.URI provider;
+    private URI provider;
 
     /**
      * Object instance identifier of the related Object. Only the objects whose
@@ -48,21 +60,21 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * (&quot;0&quot; for numeric fields, &quot;*&quot; for Identifier fields).
      * If NULL then all values will be matched. .
      */
-    private org.ccsds.moims.mo.com.structures.ObjectId source;
+    private ObjectId source;
 
     /**
      * Optional start time. Only the objects whose timestamp is equal or greater
      * than the provided start time will be returned. If NULL then no start time
      * shall be applied.
      */
-    private org.ccsds.moims.mo.mal.structures.FineTime startTime;
+    private FineTime startTime;
 
     /**
      * Optional end time. Only the objects whose timestamp is equal or less than
      * the provided end time will be returned. If NULL then no end time will be
      * applied.
      */
-    private org.ccsds.moims.mo.mal.structures.FineTime endTime;
+    private FineTime endTime;
 
     /**
      * If set to TRUE then returned values shall be sorted in ascending order,
@@ -103,13 +115,13 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * @param sortOrder If set to TRUE then returned values shall be sorted in ascending order, if FALSE then in descending order. If NULL then no sorting shall be applied.
      * @param sortFieldName If the returned values are to be sorted because the sortOrder field is not NULL then this field may contain the name of the field in the object body (MAL::Composite) to sort against. If the object body is not a composite but an Attribute or Enumeration then to sort on the values an empty string of "" should be used. Enumerations are sorted on their ordinal. If this field is NULL then the objects shall be sorted on the COM object timestamp. The field follows the naming convention of CompositeFilter::fieldName. If the field points to a composite, list, abstract type (including Attribute) or Blob then no sorting shall be applied.
      */
-    public ArchiveQuery(org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.mal.structures.Identifier network,
-            org.ccsds.moims.mo.mal.structures.URI provider,
+    public ArchiveQuery(IdentifierList domain,
+            Identifier network,
+            URI provider,
             Long related,
-            org.ccsds.moims.mo.com.structures.ObjectId source,
-            org.ccsds.moims.mo.mal.structures.FineTime startTime,
-            org.ccsds.moims.mo.mal.structures.FineTime endTime,
+            ObjectId source,
+            FineTime startTime,
+            FineTime endTime,
             Boolean sortOrder,
             String sortFieldName) {
         this.domain = domain;
@@ -141,8 +153,8 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.com.archive.structures.ArchiveQuery();
+    public Element createElement() {
+        return new ArchiveQuery();
     }
 
     /**
@@ -150,7 +162,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field domain
      */
-    public org.ccsds.moims.mo.mal.structures.IdentifierList getDomain() {
+    public IdentifierList getDomain() {
         return domain;
     }
 
@@ -159,7 +171,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field network
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getNetwork() {
+    public Identifier getNetwork() {
         return network;
     }
 
@@ -168,7 +180,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field provider
      */
-    public org.ccsds.moims.mo.mal.structures.URI getProvider() {
+    public URI getProvider() {
         return provider;
     }
 
@@ -186,7 +198,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field source
      */
-    public org.ccsds.moims.mo.com.structures.ObjectId getSource() {
+    public ObjectId getSource() {
         return source;
     }
 
@@ -195,7 +207,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field startTime
      */
-    public org.ccsds.moims.mo.mal.structures.FineTime getStartTime() {
+    public FineTime getStartTime() {
         return startTime;
     }
 
@@ -204,7 +216,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
      * 
      * @return The field endTime
      */
-    public org.ccsds.moims.mo.mal.structures.FineTime getEndTime() {
+    public FineTime getEndTime() {
         return endTime;
     }
 
@@ -349,9 +361,9 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (related == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'related' cannot be null!");
+            throw new MALException("The field 'related' cannot be null!");
         }
         encoder.encodeNullableElement(domain);
         encoder.encodeNullableIdentifier(network);
@@ -365,12 +377,12 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        domain = (org.ccsds.moims.mo.mal.structures.IdentifierList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mal.structures.IdentifierList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        domain = (IdentifierList) decoder.decodeNullableElement(new IdentifierList());
         network = decoder.decodeNullableIdentifier();
         provider = decoder.decodeNullableURI();
         related = decoder.decodeLong();
-        source = (org.ccsds.moims.mo.com.structures.ObjectId) decoder.decodeNullableElement(new org.ccsds.moims.mo.com.structures.ObjectId());
+        source = (ObjectId) decoder.decodeNullableElement(new ObjectId());
         startTime = decoder.decodeNullableFineTime();
         endTime = decoder.decodeNullableFineTime();
         sortOrder = decoder.decodeNullableBoolean();
@@ -379,7 +391,7 @@ public final class ArchiveQuery implements org.ccsds.moims.mo.mal.structures.Com
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

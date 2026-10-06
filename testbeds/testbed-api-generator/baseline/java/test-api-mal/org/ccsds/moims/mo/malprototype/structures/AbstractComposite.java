@@ -1,10 +1,16 @@
 package org.ccsds.moims.mo.malprototype.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * An abstract composite example. This type and all derived types are notably
  * used in the Polymorphic types test procedure.
  */
-public abstract class AbstractComposite implements org.ccsds.moims.mo.mal.structures.Composite {
+public abstract class AbstractComposite implements Composite {
 
     /**
      * Example String item.
@@ -99,13 +105,13 @@ public abstract class AbstractComposite implements org.ccsds.moims.mo.mal.struct
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         encoder.encodeNullableString(firstItem);
         encoder.encodeNullableInteger(secondItem);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         firstItem = decoder.decodeNullableString();
         secondItem = decoder.decodeNullableInteger();
         return this;

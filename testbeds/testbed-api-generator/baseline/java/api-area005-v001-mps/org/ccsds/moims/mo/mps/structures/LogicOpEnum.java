@@ -1,9 +1,13 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Enumeration;
+
 /**
  * Enumeration class for LogicOpEnum.
  */
-public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumeration {
+public final class LogicOpEnum extends Enumeration {
 
     private static final long serialVersionUID = 1407374900330526L;
     /**
@@ -13,7 +17,7 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Enumeration value for AND.
@@ -23,7 +27,7 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value AND.
      */
-    public static final org.ccsds.moims.mo.mps.structures.LogicOpEnum AND = new org.ccsds.moims.mo.mps.structures.LogicOpEnum(org.ccsds.moims.mo.mps.structures.LogicOpEnum.AND_VALUE);
+    public static final LogicOpEnum AND = new LogicOpEnum(LogicOpEnum.AND_VALUE);
 
     /**
      * Enumeration value for OR.
@@ -33,12 +37,12 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     /**
      * Enumeration singleton for value OR.
      */
-    public static final org.ccsds.moims.mo.mps.structures.LogicOpEnum OR = new org.ccsds.moims.mo.mps.structures.LogicOpEnum(org.ccsds.moims.mo.mps.structures.LogicOpEnum.OR_VALUE);
+    public static final LogicOpEnum OR = new LogicOpEnum(LogicOpEnum.OR_VALUE);
 
     /**
      * Set of enumeration instances.
      */
-    private static final org.ccsds.moims.mo.mps.structures.LogicOpEnum[] _ENUMERATIONS = {
+    private static final LogicOpEnum[] _ENUMERATIONS = {
         AND, OR};
 
     /**
@@ -77,7 +81,7 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
      * @param s s The string to search for.
      * @return The matched enumeration element, or null if not matched.
      */
-    public static org.ccsds.moims.mo.mps.structures.LogicOpEnum fromString(String s) {
+    public static LogicOpEnum fromString(String s) {
         switch (s) {
             case "AND":
                 return LogicOpEnum.AND;
@@ -89,7 +93,7 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Enumeration fromValue(Integer value) {
+    public Enumeration fromValue(Integer value) {
         switch (value) {
             case AND_VALUE:
                 return LogicOpEnum.AND;
@@ -101,7 +105,7 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
+    public Element createElement() {
         return _ENUMERATIONS[0];
     }
 
@@ -111,7 +115,7 @@ public final class LogicOpEnum extends org.ccsds.moims.mo.mal.structures.Enumera
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

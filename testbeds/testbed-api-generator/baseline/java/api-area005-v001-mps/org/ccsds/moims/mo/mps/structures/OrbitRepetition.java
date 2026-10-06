@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E6: A sub-type of Repetition based on the orbital cycle.
  */
-public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Repetition {
+public final class OrbitRepetition extends Repetition {
 
     private static final long serialVersionUID = 1407374900330554L;
     /**
@@ -13,7 +19,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Orbit number for the first occurrence.  Depending on the relativeOrbit
@@ -21,7 +27,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * (to the orbital repeat cycle). The datum with respect to which the orbit
      * number is counted is mission specific.
      */
-    private org.ccsds.moims.mo.mal.structures.Element orbitNumber;
+    private Element orbitNumber;
 
     /**
      * Flag indicating if the orbit number is absolute or relative to the orbital
@@ -35,25 +41,25 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * is the number of orbits in the repeat cycle, but the value 0 may also be
      * used.
      */
-    private org.ccsds.moims.mo.mal.structures.Element orbitSeparation;
+    private Element orbitSeparation;
 
     /**
      * The required angular separation between occurrences.  This allows for multiple
      * repetitions within an orbit.  The value 0 indicates only one occurrence
      * within the orbit.
      */
-    private org.ccsds.moims.mo.mal.structures.Element angularSeparation;
+    private Element angularSeparation;
 
     /**
      * The required position of the first occurrence within the orbit expressed
      * as an angle.
      */
-    private org.ccsds.moims.mo.mal.structures.Element orbitAngle;
+    private Element orbitAngle;
 
     /**
      * The allowed tolerance (+/-) in the required orbital angle.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for OrbitRepetition.
@@ -76,14 +82,14 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * @param tolerance The allowed tolerance (+/-) in the required orbital angle.
      */
     public OrbitRepetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element orbitNumber,
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType,
+            Element orbitNumber,
             Boolean relativeOrbit,
-            org.ccsds.moims.mo.mal.structures.Element orbitSeparation,
-            org.ccsds.moims.mo.mal.structures.Element angularSeparation,
-            org.ccsds.moims.mo.mal.structures.Element orbitAngle,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            Element orbitSeparation,
+            Element angularSeparation,
+            Element orbitAngle,
+            Element tolerance) {
         super(count,
             timeWindow,
             separationType);
@@ -106,13 +112,13 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * @param orbitAngle The required position of the first occurrence within the orbit expressed as an angle.
      * @param tolerance The allowed tolerance (+/-) in the required orbital angle.
      */
-    public OrbitRepetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element orbitNumber,
+    public OrbitRepetition(SeparationTypeEnum separationType,
+            Element orbitNumber,
             Boolean relativeOrbit,
-            org.ccsds.moims.mo.mal.structures.Element orbitSeparation,
-            org.ccsds.moims.mo.mal.structures.Element angularSeparation,
-            org.ccsds.moims.mo.mal.structures.Element orbitAngle,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            Element orbitSeparation,
+            Element angularSeparation,
+            Element orbitAngle,
+            Element tolerance) {
         super(separationType);
         this.orbitNumber = orbitNumber;
         this.relativeOrbit = relativeOrbit;
@@ -123,8 +129,8 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.OrbitRepetition();
+    public Element createElement() {
+        return new OrbitRepetition();
     }
 
     /**
@@ -132,7 +138,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field orbitNumber
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOrbitNumber() {
+    public Element getOrbitNumber() {
         return orbitNumber;
     }
 
@@ -150,7 +156,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field orbitSeparation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOrbitSeparation() {
+    public Element getOrbitSeparation() {
         return orbitSeparation;
     }
 
@@ -159,7 +165,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field angularSeparation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getAngularSeparation() {
+    public Element getAngularSeparation() {
         return angularSeparation;
     }
 
@@ -168,7 +174,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field orbitAngle
      */
-    public org.ccsds.moims.mo.mal.structures.Element getOrbitAngle() {
+    public Element getOrbitAngle() {
         return orbitAngle;
     }
 
@@ -177,7 +183,7 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -275,25 +281,25 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (orbitNumber == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'orbitNumber' cannot be null!");
+            throw new MALException("The field 'orbitNumber' cannot be null!");
         }
         if (relativeOrbit == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'relativeOrbit' cannot be null!");
+            throw new MALException("The field 'relativeOrbit' cannot be null!");
         }
         if (orbitSeparation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'orbitSeparation' cannot be null!");
+            throw new MALException("The field 'orbitSeparation' cannot be null!");
         }
         if (angularSeparation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'angularSeparation' cannot be null!");
+            throw new MALException("The field 'angularSeparation' cannot be null!");
         }
         if (orbitAngle == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'orbitAngle' cannot be null!");
+            throw new MALException("The field 'orbitAngle' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(orbitNumber);
         encoder.encodeBoolean(relativeOrbit);
@@ -304,19 +310,19 @@ public final class OrbitRepetition extends org.ccsds.moims.mo.mps.structures.Rep
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        orbitNumber = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        orbitNumber = (Element) decoder.decodeAbstractElement();
         relativeOrbit = decoder.decodeBoolean();
-        orbitSeparation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        angularSeparation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        orbitAngle = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        orbitSeparation = (Element) decoder.decodeAbstractElement();
+        angularSeparation = (Element) decoder.decodeAbstractElement();
+        orbitAngle = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

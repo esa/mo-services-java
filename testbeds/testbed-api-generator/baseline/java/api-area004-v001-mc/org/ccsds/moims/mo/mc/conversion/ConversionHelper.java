@@ -8,7 +8,7 @@ public class ConversionHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.mc.conversion.ConversionServiceInfo CONVERSION_SERVICE = new org.ccsds.moims.mo.mc.conversion.ConversionServiceInfo();
+    public static final ConversionServiceInfo CONVERSION_SERVICE = new ConversionServiceInfo();
 
     private ConversionHelper() {
         // Utility class; not meant to be instantiated.

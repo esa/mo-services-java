@@ -1,11 +1,13 @@
 package org.ccsds.moims.mo.mps;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The UpdateFailedException exception. The update operation (to Request,
  * PlanStatus, Activity, Event or Resource) failed to update the referenced
  * object.
  */
-public final class UpdateFailedException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class UpdateFailedException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "UPDATE_FAILED";
 

@@ -8,7 +8,7 @@ public class ArchiveHelper {
     /**
      * Service singleton instance.
      */
-    public static final org.ccsds.moims.mo.com.archive.ArchiveServiceInfo ARCHIVE_SERVICE = new org.ccsds.moims.mo.com.archive.ArchiveServiceInfo();
+    public static final ArchiveServiceInfo ARCHIVE_SERVICE = new ArchiveServiceInfo();
 
     private ArchiveHelper() {
         // Utility class; not meant to be instantiated.

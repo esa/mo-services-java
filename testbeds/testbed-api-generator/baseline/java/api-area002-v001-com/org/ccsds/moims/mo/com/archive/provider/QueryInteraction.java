@@ -1,5 +1,15 @@
 package org.ccsds.moims.mo.com.archive.provider;
 
+import org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList;
+import org.ccsds.moims.mo.com.structures.ObjectType;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.provider.MALProgress;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+
 /**
  * Provider PROGRESS interaction class for Archive::query operation.
  */
@@ -8,7 +18,7 @@ public class QueryInteraction {
     /**
      * The interaction field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALProgress interaction;
+    private MALProgress interaction;
 
     /**
      * Wraps the provided MAL interaction object with methods for sending responses
@@ -16,7 +26,7 @@ public class QueryInteraction {
      * 
      * @param interaction The MAL interaction action object to use.
      */
-    public QueryInteraction(org.ccsds.moims.mo.mal.provider.MALProgress interaction) {
+    public QueryInteraction(MALProgress interaction) {
         this.interaction = interaction;
     }
 
@@ -26,7 +36,7 @@ public class QueryInteraction {
      * 
      * @return The MAL interaction object provided in the constructor
      */
-    public org.ccsds.moims.mo.mal.provider.MALProgress getInteraction() {
+    public MALProgress getInteraction() {
         return interaction;
     }
 
@@ -34,13 +44,13 @@ public class QueryInteraction {
      * Sends a PROGRESS acknowledge to the consumer.
      * 
      * @return Returns the MAL message created by the acknowledge
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendAcknowledgement() throws MALException {
         try {
             return interaction.sendAcknowledgement((Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -52,16 +62,16 @@ public class QueryInteraction {
      * @param objDetails objDetails Argument number 2 as defined by the service operation
      * @param objBodies objBodies Argument number 3 as defined by the service operation
      * @return Returns the MAL message created by the update
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdate(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendUpdate(ObjectType objType,
+            IdentifierList domain,
+            ArchiveDetailsList objDetails,
+            HeterogeneousList objBodies) throws MALException {
         try {
             return interaction.sendUpdate(objType, domain, objDetails, objBodies);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -85,16 +95,16 @@ When no objects have been matched only a response with NULL for each part of the
      * @param objDetails objDetails Argument number 2 as defined by the service operation
      * @param objBodies objBodies Argument number 3 as defined by the service operation
      * @return Returns the MAL message created by the response
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(org.ccsds.moims.mo.com.structures.ObjectType objType,
-            org.ccsds.moims.mo.mal.structures.IdentifierList domain,
-            org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendResponse(ObjectType objType,
+            IdentifierList domain,
+            ArchiveDetailsList objDetails,
+            HeterogeneousList objBodies) throws MALException {
         try {
             return interaction.sendResponse(objType, domain, objDetails, objBodies);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -103,13 +113,13 @@ When no objects have been matched only a response with NULL for each part of the
      * 
      * @param error error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendError(MOErrorException error) throws MALException {
         try {
             return interaction.sendError(error);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -118,13 +128,13 @@ When no objects have been matched only a response with NULL for each part of the
      * 
      * @param error error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendUpdateError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendUpdateError(MOErrorException error) throws MALException {
         try {
             return interaction.sendUpdateError(error);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 

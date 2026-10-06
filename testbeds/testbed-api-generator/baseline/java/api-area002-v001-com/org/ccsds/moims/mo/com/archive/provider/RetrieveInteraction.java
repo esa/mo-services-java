@@ -1,5 +1,13 @@
 package org.ccsds.moims.mo.com.archive.provider;
 
+import org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.provider.MALInvoke;
+import org.ccsds.moims.mo.mal.structures.HeterogeneousList;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+
 /**
  * Provider INVOKE interaction class for Archive::retrieve operation.
  */
@@ -8,7 +16,7 @@ public class RetrieveInteraction {
     /**
      * The interaction field.
      */
-    private org.ccsds.moims.mo.mal.provider.MALInvoke interaction;
+    private MALInvoke interaction;
 
     /**
      * Wraps the provided MAL interaction object with methods for sending responses
@@ -16,7 +24,7 @@ public class RetrieveInteraction {
      * 
      * @param interaction The MAL interaction action object to use.
      */
-    public RetrieveInteraction(org.ccsds.moims.mo.mal.provider.MALInvoke interaction) {
+    public RetrieveInteraction(MALInvoke interaction) {
         this.interaction = interaction;
     }
 
@@ -26,7 +34,7 @@ public class RetrieveInteraction {
      * 
      * @return The MAL interaction object provided in the constructor
      */
-    public org.ccsds.moims.mo.mal.provider.MALInvoke getInteraction() {
+    public MALInvoke getInteraction() {
         return interaction;
     }
 
@@ -34,13 +42,13 @@ public class RetrieveInteraction {
      * Sends a INVOKE acknowledge to the consumer.
      * 
      * @return Returns the MAL message created by the acknowledge
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendAcknowledgement() throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendAcknowledgement() throws MALException {
         try {
             return interaction.sendAcknowledgement((Object[]) null);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -56,14 +64,14 @@ The ordering of the returned objects is not specified and implementation specifi
 If ordering of the returned objects is required then the query operation should be used instead.
      * @param objBodies objBodies Argument number 1 as defined by the service operation
      * @return Returns the MAL message created by the response
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendResponse(org.ccsds.moims.mo.com.archive.structures.ArchiveDetailsList objDetails,
-            org.ccsds.moims.mo.mal.structures.HeterogeneousList objBodies) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendResponse(ArchiveDetailsList objDetails,
+            HeterogeneousList objBodies) throws MALException {
         try {
             return interaction.sendResponse(objDetails, objBodies);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 
@@ -72,13 +80,13 @@ If ordering of the returned objects is required then the query operation should 
      * 
      * @param error The MAL error to send to the consumer.
      * @return Returns the MAL message created by the error
-     * @throws org.ccsds.moims.mo.mal.MALException if the message could not be sent, including a MAL standard error raised by the MAL
+     * @throws MALException if the message could not be sent, including a MAL standard error raised by the MAL
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage sendError(org.ccsds.moims.mo.mal.MOErrorException error) throws org.ccsds.moims.mo.mal.MALException {
+    public MALMessage sendError(MOErrorException error) throws MALException {
         try {
             return interaction.sendError(error);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw new org.ccsds.moims.mo.mal.MALException(ex.getMessage(), ex);
+        } catch (MALInteractionException ex) {
+            throw new MALException(ex.getMessage(), ex);
         }
     }
 

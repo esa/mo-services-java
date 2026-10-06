@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mc.aggregation.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The AggregationValue structure holds the values for one or more sets of
  * parameter values. The value sets must be held in the same order as that
  * defined in the matching AggregationDefinitionDetails.
  */
-public final class AggregationValue implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class AggregationValue implements Composite {
 
     private static final long serialVersionUID = 1125925693423619L;
     /**
@@ -15,12 +22,12 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Reason for the aggregation being generated.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode generationMode;
+    private GenerationMode generationMode;
 
     /**
      * If a filter is enabled when the aggregation value is generated then this
@@ -33,7 +40,7 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * The sets must be held in the same order as that defined in the aggregation
      * definition.
      */
-    private org.ccsds.moims.mo.mc.aggregation.structures.AggregationSetValueList parameterSetValues;
+    private AggregationSetValueList parameterSetValues;
 
     /**
      * Default constructor for AggregationValue.
@@ -49,17 +56,17 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * @param filtered If a filter is enabled when the aggregation value is generated then this value shall be set to TRUE, else FALSE.
      * @param parameterSetValues The parameterSetValues list holds the sets of values of the aggregation. The sets must be held in the same order as that defined in the aggregation definition.
      */
-    public AggregationValue(org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode generationMode,
+    public AggregationValue(GenerationMode generationMode,
             Boolean filtered,
-            org.ccsds.moims.mo.mc.aggregation.structures.AggregationSetValueList parameterSetValues) {
+            AggregationSetValueList parameterSetValues) {
         this.generationMode = generationMode;
         this.filtered = filtered;
         this.parameterSetValues = parameterSetValues;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.aggregation.structures.AggregationValue();
+    public Element createElement() {
+        return new AggregationValue();
     }
 
     /**
@@ -67,7 +74,7 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field generationMode
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode getGenerationMode() {
+    public GenerationMode getGenerationMode() {
         return generationMode;
     }
 
@@ -85,7 +92,7 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field parameterSetValues
      */
-    public org.ccsds.moims.mo.mc.aggregation.structures.AggregationSetValueList getParameterSetValues() {
+    public AggregationSetValueList getParameterSetValues() {
         return parameterSetValues;
     }
 
@@ -146,15 +153,15 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (generationMode == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'generationMode' cannot be null!");
+            throw new MALException("The field 'generationMode' cannot be null!");
         }
         if (filtered == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'filtered' cannot be null!");
+            throw new MALException("The field 'filtered' cannot be null!");
         }
         if (parameterSetValues == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterSetValues' cannot be null!");
+            throw new MALException("The field 'parameterSetValues' cannot be null!");
         }
         encoder.encodeElement(generationMode);
         encoder.encodeBoolean(filtered);
@@ -162,15 +169,15 @@ public final class AggregationValue implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        generationMode = (org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode) decoder.decodeElement(org.ccsds.moims.mo.mc.aggregation.structures.GenerationMode.ADHOC);
+    public Element decode(MALDecoder decoder) throws MALException {
+        generationMode = (GenerationMode) decoder.decodeElement(GenerationMode.ADHOC);
         filtered = decoder.decodeBoolean();
-        parameterSetValues = (org.ccsds.moims.mo.mc.aggregation.structures.AggregationSetValueList) decoder.decodeElement(new org.ccsds.moims.mo.mc.aggregation.structures.AggregationSetValueList());
+        parameterSetValues = (AggregationSetValueList) decoder.decodeElement(new AggregationSetValueList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,19 @@
 package org.ccsds.moims.mo.common.directory.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+
 /**
  * The ProviderSummary structure holds information about a provider of a service
  * and its capabilities.
  */
-public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ProviderSummary implements Composite {
 
     private static final long serialVersionUID = 844429241876485L;
     /**
@@ -14,22 +23,22 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The COM object key of this service provider.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey providerKey;
+    private ObjectKey providerKey;
 
     /**
      * The id of this service provider.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier providerId;
+    private Identifier providerId;
 
     /**
      * The service capabilities supported by this provider.
      */
-    private org.ccsds.moims.mo.common.directory.structures.ProviderDetails providerDetails;
+    private ProviderDetails providerDetails;
 
     /**
      * Default constructor for ProviderSummary.
@@ -45,17 +54,17 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
      * @param providerId The id of this service provider.
      * @param providerDetails The service capabilities supported by this provider
      */
-    public ProviderSummary(org.ccsds.moims.mo.com.structures.ObjectKey providerKey,
-            org.ccsds.moims.mo.mal.structures.Identifier providerId,
-            org.ccsds.moims.mo.common.directory.structures.ProviderDetails providerDetails) {
+    public ProviderSummary(ObjectKey providerKey,
+            Identifier providerId,
+            ProviderDetails providerDetails) {
         this.providerKey = providerKey;
         this.providerId = providerId;
         this.providerDetails = providerDetails;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.common.directory.structures.ProviderSummary();
+    public Element createElement() {
+        return new ProviderSummary();
     }
 
     /**
@@ -63,7 +72,7 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field providerKey
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getProviderKey() {
+    public ObjectKey getProviderKey() {
         return providerKey;
     }
 
@@ -72,7 +81,7 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field providerId
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getProviderId() {
+    public Identifier getProviderId() {
         return providerId;
     }
 
@@ -81,7 +90,7 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
      * 
      * @return The field providerDetails
      */
-    public org.ccsds.moims.mo.common.directory.structures.ProviderDetails getProviderDetails() {
+    public ProviderDetails getProviderDetails() {
         return providerDetails;
     }
 
@@ -142,15 +151,15 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (providerKey == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'providerKey' cannot be null!");
+            throw new MALException("The field 'providerKey' cannot be null!");
         }
         if (providerId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'providerId' cannot be null!");
+            throw new MALException("The field 'providerId' cannot be null!");
         }
         if (providerDetails == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'providerDetails' cannot be null!");
+            throw new MALException("The field 'providerDetails' cannot be null!");
         }
         encoder.encodeElement(providerKey);
         encoder.encodeIdentifier(providerId);
@@ -158,15 +167,15 @@ public final class ProviderSummary implements org.ccsds.moims.mo.mal.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        providerKey = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
+    public Element decode(MALDecoder decoder) throws MALException {
+        providerKey = (ObjectKey) decoder.decodeElement(new ObjectKey());
         providerId = decoder.decodeIdentifier();
-        providerDetails = (org.ccsds.moims.mo.common.directory.structures.ProviderDetails) decoder.decodeElement(new org.ccsds.moims.mo.common.directory.structures.ProviderDetails());
+        providerDetails = (ProviderDetails) decoder.decodeElement(new ProviderDetails());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

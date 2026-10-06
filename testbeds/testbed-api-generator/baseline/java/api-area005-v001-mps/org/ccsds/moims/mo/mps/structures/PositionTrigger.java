@@ -1,11 +1,18 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Time;
+
 /**
  * E6: Sub-type of Trigger based on position.  Depending on the coordinate
  * type of position used, a margin may be specified in terms of distance from
  * the specified position.
  */
-public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Trigger {
+public final class PositionTrigger extends Trigger {
 
     private static final long serialVersionUID = 1407374900330548L;
     /**
@@ -15,18 +22,18 @@ public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Tri
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Planned position of Trigger.
      */
-    private org.ccsds.moims.mo.mps.structures.Position triggerPosition;
+    private Position triggerPosition;
 
     /**
      * Defines a sphere around the trigger position within which a position is
      * considered to meet the trigger condition.
      */
-    private org.ccsds.moims.mo.mps.structures.Distance distanceMargin;
+    private Distance distanceMargin;
 
     /**
      * Default constructor for PositionTrigger.
@@ -42,9 +49,9 @@ public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Tri
      * @param triggerPosition Planned position of Trigger.
      * @param distanceMargin Defines a sphere around the trigger position within which a position is considered to meet the trigger condition.
      */
-    public PositionTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mps.structures.Position triggerPosition,
-            org.ccsds.moims.mo.mps.structures.Distance distanceMargin) {
+    public PositionTrigger(Time time,
+            Position triggerPosition,
+            Distance distanceMargin) {
         super(time);
         this.triggerPosition = triggerPosition;
         this.distanceMargin = distanceMargin;
@@ -56,16 +63,16 @@ public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Tri
      * @param time Predicted or actual time of Trigger.  The predicted time may evolve during the planning process up to the time of execution.  The actual time is only available post execution, and hence can only be provided by a plan execution function.
      * @param triggerPosition Planned position of Trigger.
      */
-    public PositionTrigger(org.ccsds.moims.mo.mal.structures.Time time,
-            org.ccsds.moims.mo.mps.structures.Position triggerPosition) {
+    public PositionTrigger(Time time,
+            Position triggerPosition) {
         super(time);
         this.triggerPosition = triggerPosition;
         this.distanceMargin = null;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.PositionTrigger();
+    public Element createElement() {
+        return new PositionTrigger();
     }
 
     /**
@@ -73,7 +80,7 @@ public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Tri
      * 
      * @return The field triggerPosition
      */
-    public org.ccsds.moims.mo.mps.structures.Position getTriggerPosition() {
+    public Position getTriggerPosition() {
         return triggerPosition;
     }
 
@@ -82,7 +89,7 @@ public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Tri
      * 
      * @return The field distanceMargin
      */
-    public org.ccsds.moims.mo.mps.structures.Distance getDistanceMargin() {
+    public Distance getDistanceMargin() {
         return distanceMargin;
     }
 
@@ -136,25 +143,25 @@ public final class PositionTrigger extends org.ccsds.moims.mo.mps.structures.Tri
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (triggerPosition == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'triggerPosition' cannot be null!");
+            throw new MALException("The field 'triggerPosition' cannot be null!");
         }
         encoder.encodeAbstractElement(triggerPosition);
         encoder.encodeNullableElement(distanceMargin);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        triggerPosition = (org.ccsds.moims.mo.mps.structures.Position) decoder.decodeAbstractElement();
-        distanceMargin = (org.ccsds.moims.mo.mps.structures.Distance) decoder.decodeNullableElement(new org.ccsds.moims.mo.mps.structures.Distance());
+        triggerPosition = (Position) decoder.decodeAbstractElement();
+        distanceMargin = (Distance) decoder.decodeNullableElement(new Distance());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,5 +1,24 @@
 package org.ccsds.moims.mo.common.directory.consumer;
 
+import org.ccsds.moims.mo.com.InvalidException;
+import org.ccsds.moims.mo.common.directory.DirectoryServiceInfo;
+import org.ccsds.moims.mo.common.directory.body.PublishProviderResponse;
+import org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList;
+import org.ccsds.moims.mo.common.directory.structures.PublishDetails;
+import org.ccsds.moims.mo.common.directory.structures.ServiceFilter;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MALInteractionException;
+import org.ccsds.moims.mo.mal.MALStandardError;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.UnknownException;
+import org.ccsds.moims.mo.mal.consumer.MALConsumer;
+import org.ccsds.moims.mo.mal.structures.FileList;
+import org.ccsds.moims.mo.mal.structures.Time;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALMessage;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+
 /**
  * Consumer stub for Directory service.
  */
@@ -8,7 +27,7 @@ public class DirectoryStub {
     /**
      * The consumer field.
      */
-    private final org.ccsds.moims.mo.mal.consumer.MALConsumer consumer;
+    private final MALConsumer consumer;
 
     /**
      * Wraps a MALconsumer connection with service specific methods that map from
@@ -16,7 +35,7 @@ public class DirectoryStub {
      * 
      * @param consumer consumer The MALConsumer to use in this stub.
      */
-    public DirectoryStub(org.ccsds.moims.mo.mal.consumer.MALConsumer consumer) {
+    public DirectoryStub(MALConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -26,7 +45,7 @@ public class DirectoryStub {
      * 
      * @return The MAL consumer object.
      */
-    public org.ccsds.moims.mo.mal.consumer.MALConsumer getConsumer() {
+    public MALConsumer getConsumer() {
         return consumer;
     }
 
@@ -53,21 +72,21 @@ If the service field is the wildcard '0' then all services shall be matched.
 If the version field is the wildcard '0' then all area versions shall be matched.
 If the requiredCapabilitySets field is NULL or an empty list then all service capability sets shall be matched.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.com.InvalidException Invalid domain filter value.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws InvalidException Invalid domain filter value.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList lookupProvider(org.ccsds.moims.mo.common.directory.structures.ServiceFilter filter) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public ProviderSummaryList lookupProvider(ServiceFilter filter) throws InvalidException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.LOOKUPPROVIDER_OP, filter);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList());
-            return (org.ccsds.moims.mo.common.directory.structures.ProviderSummaryList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            MALMessageBody body = consumer.request(DirectoryServiceInfo.LOOKUPPROVIDER_OP, filter);
+            Object body0 = (Object) body.getBodyElement(0, new ProviderSummaryList());
+            return (ProviderSummaryList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -90,15 +109,15 @@ If the version field is the wildcard '0' then all area versions shall be matched
 If the requiredCapabilitySets field is NULL or an empty list then all service capability sets shall be matched.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncLookupProvider(org.ccsds.moims.mo.common.directory.structures.ServiceFilter filter,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncLookupProvider(ServiceFilter filter,
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.LOOKUPPROVIDER_OP, adapter, filter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(DirectoryServiceInfo.LOOKUPPROVIDER_OP, adapter, filter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -109,17 +128,17 @@ If the requiredCapabilitySets field is NULL or an empty list then all service ca
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueLookupProvider(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueLookupProvider(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.LOOKUPPROVIDER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(DirectoryServiceInfo.LOOKUPPROVIDER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -135,22 +154,22 @@ For each contained supportedCapabilitySets list if the list is empty or contains
 If the supportedLevels list is empty or the priorityLevels field is '0' for each contained AddressDetails structure found either within the ProviderDetails or the inner ServiceCapability structures then an INVALID error shall be returned.
 If an error is being returned then no changes shall be made.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted values are invalid.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws InvalidException Submitted values are invalid.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.common.directory.body.PublishProviderResponse publishProvider(org.ccsds.moims.mo.common.directory.structures.PublishDetails newProviderDetails) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public PublishProviderResponse publishProvider(PublishDetails newProviderDetails) throws InvalidException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.PUBLISHPROVIDER_OP, newProviderDetails);
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE));
-            Object body1 = (Object) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE));
-            return new org.ccsds.moims.mo.common.directory.body.PublishProviderResponse((body0 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body0).getLongValue(), (body1 == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body1).getLongValue());
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            MALMessageBody body = consumer.request(DirectoryServiceInfo.PUBLISHPROVIDER_OP, newProviderDetails);
+            Object body0 = (Object) body.getBodyElement(0, new Union(Long.MAX_VALUE));
+            Object body1 = (Object) body.getBodyElement(1, new Union(Long.MAX_VALUE));
+            return new PublishProviderResponse((body0 == null) ? null : ((Union) body0).getLongValue(), (body1 == null) ? null : ((Union) body1).getLongValue());
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -166,15 +185,15 @@ If the supportedLevels list is empty or the priorityLevels field is '0' for each
 If an error is being returned then no changes shall be made.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncPublishProvider(org.ccsds.moims.mo.common.directory.structures.PublishDetails newProviderDetails,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncPublishProvider(PublishDetails newProviderDetails,
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.PUBLISHPROVIDER_OP, adapter, newProviderDetails);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(DirectoryServiceInfo.PUBLISHPROVIDER_OP, adapter, newProviderDetails);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -185,17 +204,17 @@ If an error is being returned then no changes shall be made.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continuePublishProvider(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continuePublishProvider(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.PUBLISHPROVIDER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(DirectoryServiceInfo.PUBLISHPROVIDER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -209,23 +228,23 @@ If the supplied identifier is '0' an INVALID error shall be returned.
 If the supplied identifier does not match an existing ServiceProvider COM object then an UNKNOWN error shall be returned.
 If an error is being returned then no changes shall be made.
 The matched provider shall be removed from the directory service.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Provider to withdraw was not found.
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted values are invalid.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws UnknownException Provider to withdraw was not found.
+     * @throws InvalidException Submitted values are invalid.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void withdrawProvider(Long providerObjId) throws org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public void withdrawProvider(Long providerObjId) throws UnknownException, InvalidException, MALStandardError, MALException {
         try {
-            consumer.submit(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.WITHDRAWPROVIDER_OP, (providerObjId == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(providerObjId));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            consumer.submit(DirectoryServiceInfo.WITHDRAWPROVIDER_OP, (providerObjId == null) ? null : new Union(providerObjId));
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -239,15 +258,15 @@ If an error is being returned then no changes shall be made.
 The matched provider shall be removed from the directory service.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncWithdrawProvider(Long providerObjId,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncWithdrawProvider(Long providerObjId,
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncSubmit(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.WITHDRAWPROVIDER_OP, adapter, (providerObjId == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(providerObjId));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncSubmit(DirectoryServiceInfo.WITHDRAWPROVIDER_OP, adapter, (providerObjId == null) ? null : new Union(providerObjId));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -258,17 +277,17 @@ The matched provider shall be removed from the directory service.
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueWithdrawProvider(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueWithdrawProvider(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.WITHDRAWPROVIDER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(DirectoryServiceInfo.WITHDRAWPROVIDER_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -281,25 +300,25 @@ The matched provider shall be removed from the directory service.
 If the supplied instance identifier is '0' an INVALID error shall be returned.
 If the supplied identifier does not match an existing ServiceProvider COM object then an UNKNOWN error shall be returned.
      * @return The return value of the interaction
-     * @throws org.ccsds.moims.mo.com.InvalidException Submitted values are invalid.
-     * @throws org.ccsds.moims.mo.mal.UnknownException Provider was not found.
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws InvalidException Submitted values are invalid.
+     * @throws UnknownException Provider was not found.
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.structures.FileList getServiceXML(Long providerObjId) throws org.ccsds.moims.mo.com.InvalidException, org.ccsds.moims.mo.mal.UnknownException, org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public FileList getServiceXML(Long providerObjId) throws InvalidException, UnknownException, MALStandardError, MALException {
         try {
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body = consumer.request(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.GETSERVICEXML_OP, (providerObjId == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(providerObjId));
-            Object body0 = (Object) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.FileList());
-            return (org.ccsds.moims.mo.mal.structures.FileList) body0;
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            org.ccsds.moims.mo.mal.MOErrorException error = ex.getStandardError();
-            if (error instanceof org.ccsds.moims.mo.com.InvalidException) {
-                throw (org.ccsds.moims.mo.com.InvalidException) error;
+            MALMessageBody body = consumer.request(DirectoryServiceInfo.GETSERVICEXML_OP, (providerObjId == null) ? null : new Union(providerObjId));
+            Object body0 = (Object) body.getBodyElement(0, new FileList());
+            return (FileList) body0;
+        } catch (MALInteractionException ex) {
+            MOErrorException error = ex.getStandardError();
+            if (error instanceof InvalidException) {
+                throw (InvalidException) error;
             }
-            if (error instanceof org.ccsds.moims.mo.mal.UnknownException) {
-                throw (org.ccsds.moims.mo.mal.UnknownException) error;
+            if (error instanceof UnknownException) {
+                throw (UnknownException) error;
             }
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -311,15 +330,15 @@ If the supplied instance identifier is '0' an INVALID error shall be returned.
 If the supplied identifier does not match an existing ServiceProvider COM object then an UNKNOWN error shall be returned.
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
      * @return the MAL message sent to initiate the interaction
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public org.ccsds.moims.mo.mal.transport.MALMessage asyncGetServiceXML(Long providerObjId,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+    public MALMessage asyncGetServiceXML(Long providerObjId,
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            return consumer.asyncRequest(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.GETSERVICEXML_OP, adapter, (providerObjId == null) ? null : new org.ccsds.moims.mo.mal.structures.Union(providerObjId));
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            return consumer.asyncRequest(DirectoryServiceInfo.GETSERVICEXML_OP, adapter, (providerObjId == null) ? null : new Union(providerObjId));
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 
@@ -330,17 +349,17 @@ If the supplied identifier does not match an existing ServiceProvider COM object
      * @param initiationTimestamp initiationTimestamp Timestamp of the interaction initiation message
      * @param transactionId transactionId Transaction identifier of the interaction to continue
      * @param adapter adapter Listener in charge of receiving the messages from the service provider
-     * @throws org.ccsds.moims.mo.mal.MALStandardError if the MAL, the transport or the provider returned a MAL standard error
-     * @throws org.ccsds.moims.mo.mal.MALException if there is an implementation exception, or the provider returned an error the operation does not declare
+     * @throws MALStandardError if the MAL, the transport or the provider returned a MAL standard error
+     * @throws MALException if there is an implementation exception, or the provider returned an error the operation does not declare
      */
-    public void continueGetServiceXML(org.ccsds.moims.mo.mal.structures.UOctet lastInteractionStage,
-            org.ccsds.moims.mo.mal.structures.Time initiationTimestamp,
+    public void continueGetServiceXML(UOctet lastInteractionStage,
+            Time initiationTimestamp,
             Long transactionId,
-            org.ccsds.moims.mo.common.directory.consumer.DirectoryAdapter adapter) throws org.ccsds.moims.mo.mal.MALStandardError, org.ccsds.moims.mo.mal.MALException {
+            DirectoryAdapter adapter) throws MALStandardError, MALException {
         try {
-            consumer.continueInteraction(org.ccsds.moims.mo.common.directory.DirectoryServiceInfo.GETSERVICEXML_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
-        } catch (org.ccsds.moims.mo.mal.MALInteractionException ex) {
-            throw org.ccsds.moims.mo.mal.MALStandardError.relayOrWrap(ex);
+            consumer.continueInteraction(DirectoryServiceInfo.GETSERVICEXML_OP, lastInteractionStage, initiationTimestamp, transactionId, adapter);
+        } catch (MALInteractionException ex) {
+            throw MALStandardError.relayOrWrap(ex);
         }
     }
 

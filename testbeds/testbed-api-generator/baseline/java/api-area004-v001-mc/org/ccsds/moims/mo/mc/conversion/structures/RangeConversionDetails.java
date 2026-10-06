@@ -1,11 +1,19 @@
 package org.ccsds.moims.mo.mc.conversion.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.PairList;
+
 /**
  * The RangeConversionDetails structure holds a range for a one-way conversion
  * to convert between a continuous range to a discrete value. A range is defined
  * as from this point up to, but not including, the next point.
  */
-public final class RangeConversionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class RangeConversionDetails implements Composite {
 
     private static final long serialVersionUID = 1125929988390916L;
     /**
@@ -15,13 +23,13 @@ public final class RangeConversionDetails implements org.ccsds.moims.mo.mal.stru
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The first attribute in each pair is the raw range, and the second attribute
      * is the converted value.
      */
-    private org.ccsds.moims.mo.mal.structures.PairList points;
+    private PairList points;
 
     /**
      * Default constructor for RangeConversionDetails.
@@ -35,13 +43,13 @@ public final class RangeConversionDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @param points The first attribute in each pair is the raw range, and the second attribute is the converted value.
      */
-    public RangeConversionDetails(org.ccsds.moims.mo.mal.structures.PairList points) {
+    public RangeConversionDetails(PairList points) {
         this.points = points;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.conversion.structures.RangeConversionDetails();
+    public Element createElement() {
+        return new RangeConversionDetails();
     }
 
     /**
@@ -49,7 +57,7 @@ public final class RangeConversionDetails implements org.ccsds.moims.mo.mal.stru
      * 
      * @return The field points
      */
-    public org.ccsds.moims.mo.mal.structures.PairList getPoints() {
+    public PairList getPoints() {
         return points;
     }
 
@@ -88,21 +96,21 @@ public final class RangeConversionDetails implements org.ccsds.moims.mo.mal.stru
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (points == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'points' cannot be null!");
+            throw new MALException("The field 'points' cannot be null!");
         }
         encoder.encodeElement(points);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        points = (org.ccsds.moims.mo.mal.structures.PairList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.PairList());
+    public Element decode(MALDecoder decoder) throws MALException {
+        points = (PairList) decoder.decodeElement(new PairList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

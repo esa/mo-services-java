@@ -1,9 +1,30 @@
 package org.ccsds.moims.mo.mc.statistic.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.com.structures.ObjectId;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.IdentifierList;
+import org.ccsds.moims.mo.mal.structures.LongList;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.structures.UpdateHeader;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mal.transport.MALNotifyBody;
+import org.ccsds.moims.mo.mc.MCHelper;
+import org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList;
+import org.ccsds.moims.mo.mc.statistic.structures.StatisticValue;
+import org.ccsds.moims.mo.mc.structures.ObjectInstancePairList;
+
 /**
  * Consumer adapter for Statistic service.
  */
-public abstract class StatisticAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class StatisticAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a REQUEST response is received from a provider for
@@ -18,9 +39,9 @@ Requesting an evaluation shall ignore the samplingInterval, reportingInterval, a
 Requesting an evaluation during a periodic evaluation shall not influence the periodic evaluation (e.g. it does not reset the samplingInterval, reportingInterval, and collectionInterval timers or the current periodic collection value).
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getStatisticsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList evaluations,
-            java.util.Map qosProperties) {
+    public void getStatisticsResponseReceived(MALMessageHeader msgHeader,
+            StatisticEvaluationReportList evaluations,
+            Map qosProperties) {
     }
 
     /**
@@ -31,9 +52,9 @@ Requesting an evaluation during a periodic evaluation shall not influence the pe
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getStatisticsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getStatisticsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -44,9 +65,9 @@ Requesting an evaluation during a periodic evaluation shall not influence the pe
      * @param evaluations evaluations Argument number 0 as defined by the service operation
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetEvaluationResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList evaluations,
-            java.util.Map qosProperties) {
+    public void resetEvaluationResponseReceived(MALMessageHeader msgHeader,
+            StatisticEvaluationReportList evaluations,
+            Map qosProperties) {
     }
 
     /**
@@ -57,9 +78,9 @@ Requesting an evaluation during a periodic evaluation shall not influence the pe
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void resetEvaluationErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void resetEvaluationErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -69,8 +90,8 @@ Requesting an evaluation during a periodic evaluation shall not influence the pe
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorStatisticsRegisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitorStatisticsRegisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -81,9 +102,9 @@ Requesting an evaluation during a periodic evaluation shall not influence the pe
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorStatisticsRegisterErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitorStatisticsRegisterErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -93,8 +114,8 @@ Requesting an evaluation during a periodic evaluation shall not influence the pe
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorStatisticsDeregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void monitorStatisticsDeregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -116,14 +137,14 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param statisticValue The second part of the publish message shall be the StatisticValueInstance object value.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorStatisticsNotifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.Identifier subscriptionId,
-            org.ccsds.moims.mo.mal.structures.UpdateHeader updateHeader,
+    public void monitorStatisticsNotifyReceived(MALMessageHeader msgHeader,
+            Identifier subscriptionId,
+            UpdateHeader updateHeader,
             MonitorStatisticsSubscriptionKeys keys,
             Long relatedId,
-            org.ccsds.moims.mo.com.structures.ObjectId sourceId,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticValue statisticValue,
-            java.util.Map qosProperties) {
+            ObjectId sourceId,
+            StatisticValue statisticValue,
+            Map qosProperties) {
     }
 
     /**
@@ -134,9 +155,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void monitorStatisticsNotifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void monitorStatisticsNotifyErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -146,8 +167,8 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void enableServiceAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void enableServiceAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -158,9 +179,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void enableServiceErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void enableServiceErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -171,9 +192,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param serviceEnabled The operation shall return TRUE if the service is currently enabled or FALSE if the service is currently disabled.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getServiceStatusResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
+    public void getServiceStatusResponseReceived(MALMessageHeader msgHeader,
             Boolean serviceEnabled,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -184,9 +205,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getServiceStatusErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getServiceStatusErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -196,8 +217,8 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void enableReportingAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void enableReportingAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -208,9 +229,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void enableReportingErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void enableReportingErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -221,9 +242,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param statLinkObjInstIds The response shall contain a list of StatisticLinkSummary that contain the object instance identifiers of the StatisticLink, StatisticFunction, and ParameterIdentity for the matched StatisticFunction objects.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listParameterEvaluationsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList statLinkObjInstIds,
-            java.util.Map qosProperties) {
+    public void listParameterEvaluationsResponseReceived(MALMessageHeader msgHeader,
+            StatisticLinkSummaryList statLinkObjInstIds,
+            Map qosProperties) {
     }
 
     /**
@@ -234,9 +255,9 @@ If no source link is needed then the sourceId shall be set to NULL.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listParameterEvaluationsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listParameterEvaluationsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -249,9 +270,9 @@ The object instance identifiers of the StatisticLink and StatisticLinkDefinition
 The returned list shall maintain the same order as the submitted links.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void addParameterEvaluationResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mc.structures.ObjectInstancePairList newObjInstIds,
-            java.util.Map qosProperties) {
+    public void addParameterEvaluationResponseReceived(MALMessageHeader msgHeader,
+            ObjectInstancePairList newObjInstIds,
+            Map qosProperties) {
     }
 
     /**
@@ -262,9 +283,9 @@ The returned list shall maintain the same order as the submitted links.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void addParameterEvaluationErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void addParameterEvaluationErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -276,9 +297,9 @@ The returned list shall maintain the same order as the submitted links.
 The returned list shall maintain the same order as the submitted links.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void updateParameterEvaluationResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.structures.LongList newLinkDefIds,
-            java.util.Map qosProperties) {
+    public void updateParameterEvaluationResponseReceived(MALMessageHeader msgHeader,
+            LongList newLinkDefIds,
+            Map qosProperties) {
     }
 
     /**
@@ -289,9 +310,9 @@ The returned list shall maintain the same order as the submitted links.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void updateParameterEvaluationErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void updateParameterEvaluationErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -301,8 +322,8 @@ The returned list shall maintain the same order as the submitted links.
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void removeParameterEvaluationAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void removeParameterEvaluationAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -313,153 +334,153 @@ The returned list shall maintain the same order as the submitted links.
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void removeParameterEvaluationErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void removeParameterEvaluationErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void submitAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ENABLESERVICE_OP_NUMBER:
+          case StatisticServiceInfo._ENABLESERVICE_OP_NUMBER:
             enableServiceAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ENABLEREPORTING_OP_NUMBER:
+          case StatisticServiceInfo._ENABLEREPORTING_OP_NUMBER:
             enableReportingAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._REMOVEPARAMETEREVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._REMOVEPARAMETEREVALUATION_OP_NUMBER:
             removeParameterEvaluationAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void submitErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void submitErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ENABLESERVICE_OP_NUMBER:
+          case StatisticServiceInfo._ENABLESERVICE_OP_NUMBER:
             enableServiceErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ENABLEREPORTING_OP_NUMBER:
+          case StatisticServiceInfo._ENABLEREPORTING_OP_NUMBER:
             enableReportingErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._REMOVEPARAMETEREVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._REMOVEPARAMETEREVALUATION_OP_NUMBER:
             removeParameterEvaluationErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._GETSTATISTICS_OP_NUMBER:
+          case StatisticServiceInfo._GETSTATISTICS_OP_NUMBER:
             getStatisticsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList()), qosProperties);
+                (StatisticEvaluationReportList) body.getBodyElement(0, new StatisticEvaluationReportList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._RESETEVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._RESETEVALUATION_OP_NUMBER:
             resetEvaluationResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticEvaluationReportList()), qosProperties);
+                (StatisticEvaluationReportList) body.getBodyElement(0, new StatisticEvaluationReportList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._GETSERVICESTATUS_OP_NUMBER:
+          case StatisticServiceInfo._GETSERVICESTATUS_OP_NUMBER:
             getServiceStatusResponseReceived(msgHeader,
-                (body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(), qosProperties);
+                (body.getBodyElement(0, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(0, new Union(Boolean.FALSE))).getBooleanValue(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._LISTPARAMETEREVALUATIONS_OP_NUMBER:
+          case StatisticServiceInfo._LISTPARAMETEREVALUATIONS_OP_NUMBER:
             listParameterEvaluationsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList) body.getBodyElement(0, new org.ccsds.moims.mo.mc.statistic.structures.StatisticLinkSummaryList()), qosProperties);
+                (StatisticLinkSummaryList) body.getBodyElement(0, new StatisticLinkSummaryList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ADDPARAMETEREVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._ADDPARAMETEREVALUATION_OP_NUMBER:
             addParameterEvaluationResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mc.structures.ObjectInstancePairList) body.getBodyElement(0, new org.ccsds.moims.mo.mc.structures.ObjectInstancePairList()), qosProperties);
+                (ObjectInstancePairList) body.getBodyElement(0, new ObjectInstancePairList()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._UPDATEPARAMETEREVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._UPDATEPARAMETEREVALUATION_OP_NUMBER:
             updateParameterEvaluationResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.LongList) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.LongList()), qosProperties);
+                (LongList) body.getBodyElement(0, new LongList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._GETSTATISTICS_OP_NUMBER:
+          case StatisticServiceInfo._GETSTATISTICS_OP_NUMBER:
             getStatisticsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._RESETEVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._RESETEVALUATION_OP_NUMBER:
             resetEvaluationErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._GETSERVICESTATUS_OP_NUMBER:
+          case StatisticServiceInfo._GETSERVICESTATUS_OP_NUMBER:
             getServiceStatusErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._LISTPARAMETEREVALUATIONS_OP_NUMBER:
+          case StatisticServiceInfo._LISTPARAMETEREVALUATIONS_OP_NUMBER:
             listParameterEvaluationsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._ADDPARAMETEREVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._ADDPARAMETEREVALUATION_OP_NUMBER:
             addParameterEvaluationErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._UPDATEPARAMETEREVALUATION_OP_NUMBER:
+          case StatisticServiceInfo._UPDATEPARAMETEREVALUATION_OP_NUMBER:
             updateParameterEvaluationErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void registerAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void registerAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
+          case StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
             monitorStatisticsRegisterAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void registerErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void registerErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
+          case StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
             monitorStatisticsRegisterErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void notifyReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALNotifyBody body,
-            org.ccsds.moims.mo.mal.structures.IdentifierList selectedKeys,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
-        if ((org.ccsds.moims.mo.mc.MCHelper.MC_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo.STATISTIC_SERVICE_NUMBER.equals(msgHeader.getService()))) {
+    public final void notifyReceived(MALMessageHeader msgHeader,
+            MALNotifyBody body,
+            IdentifierList selectedKeys,
+            Map qosProperties) throws MALException {
+        if ((MCHelper.MC_AREA_NUMBER.equals(msgHeader.getServiceArea())) && (StatisticServiceInfo.STATISTIC_SERVICE_NUMBER.equals(msgHeader.getService()))) {
           switch (msgHeader.getOperation().getValue()) {
-            case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
+            case StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
               monitorStatisticsNotifyReceived(msgHeader,
-                (org.ccsds.moims.mo.mal.structures.Identifier) body.getBodyElement(0, new org.ccsds.moims.mo.mal.structures.Identifier()),
-                (org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()),
-                new MonitorStatisticsSubscriptionKeys((org.ccsds.moims.mo.mal.structures.UpdateHeader) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.UpdateHeader()), selectedKeys),
-                (body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.Union(Long.MAX_VALUE))).getLongValue(),
-                (org.ccsds.moims.mo.com.structures.ObjectId) body.getBodyElement(3, new org.ccsds.moims.mo.com.structures.ObjectId()),
-                (org.ccsds.moims.mo.mc.statistic.structures.StatisticValue) body.getBodyElement(4, new org.ccsds.moims.mo.mc.statistic.structures.StatisticValue()), qosProperties);
+                (Identifier) body.getBodyElement(0, new Identifier()),
+                (UpdateHeader) body.getBodyElement(1, new UpdateHeader()),
+                new MonitorStatisticsSubscriptionKeys((UpdateHeader) body.getBodyElement(1, new UpdateHeader()), selectedKeys),
+                (body.getBodyElement(2, new Union(Long.MAX_VALUE)) == null) ? null : ((Union) body.getBodyElement(2, new Union(Long.MAX_VALUE))).getLongValue(),
+                (ObjectId) body.getBodyElement(3, new ObjectId()),
+                (StatisticValue) body.getBodyElement(4, new StatisticValue()), qosProperties);
               break;
             default:
-              throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+              throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
           }
         }
         else {
@@ -468,27 +489,27 @@ The returned list shall maintain the same order as the submitted links.
     }
 
     @Override
-    public final void notifyErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void notifyErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
+          case StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
             monitorStatisticsNotifyErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void deregisterAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void deregisterAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mc.statistic.StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
+          case StatisticServiceInfo._MONITORSTATISTICS_OP_NUMBER:
             monitorStatisticsDeregisterAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
@@ -499,11 +520,11 @@ The returned list shall maintain the same order as the submitted links.
      * @param msgHeader msgHeader The header of the received message
      * @param body body The body of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
-     * @throws org.ccsds.moims.mo.mal.MALException if an error is detected processing the message.
+     * @throws MALException if an error is detected processing the message.
      */
-    public void notifyReceivedFromOtherService(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALNotifyBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public void notifyReceivedFromOtherService(MALMessageHeader msgHeader,
+            MALNotifyBody body,
+            Map qosProperties) throws MALException {
     }
 
 }

@@ -1,9 +1,22 @@
 package org.ccsds.moims.mo.mpd.productretrieval.consumer;
 
+import java.util.Map;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.MOErrorException;
+import org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter;
+import org.ccsds.moims.mo.mal.structures.Union;
+import org.ccsds.moims.mo.mal.transport.MALErrorBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageBody;
+import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
+import org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo;
+import org.ccsds.moims.mo.mpd.structures.Product;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadata;
+import org.ccsds.moims.mo.mpd.structures.ProductMetadataList;
+
 /**
  * Consumer adapter for ProductRetrieval service.
  */
-public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.consumer.MALInteractionAdapter {
+public abstract class ProductRetrievalAdapter extends MALInteractionAdapter {
 
     /**
      * Called by the MAL when a REQUEST response is received from a provider for
@@ -13,9 +26,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param metadatas The list of metadata entries that match the selected filters.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listProductsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mpd.structures.ProductMetadataList metadatas,
-            java.util.Map qosProperties) {
+    public void listProductsResponseReceived(MALMessageHeader msgHeader,
+            ProductMetadataList metadatas,
+            Map qosProperties) {
     }
 
     /**
@@ -26,9 +39,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void listProductsErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void listProductsErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -38,8 +51,8 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getProductsAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void getProductsAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -50,9 +63,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param product The selected mission data product(s).
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getProductsUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mpd.structures.Product product,
-            java.util.Map qosProperties) {
+    public void getProductsUpdateReceived(MALMessageHeader msgHeader,
+            Product product,
+            Map qosProperties) {
     }
 
     /**
@@ -62,8 +75,8 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getProductsResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void getProductsResponseReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -74,9 +87,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getProductsAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getProductsAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -87,9 +100,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getProductsUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getProductsUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -100,9 +113,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void getProductsResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void getProductsResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -112,8 +125,8 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deliverProductFilesAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void deliverProductFilesAckReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -126,11 +139,11 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param success The completion status of the remote file transfer.
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deliverProductFilesUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mpd.structures.ProductMetadata metadata,
+    public void deliverProductFilesUpdateReceived(MALMessageHeader msgHeader,
+            ProductMetadata metadata,
             String filename,
             Boolean success,
-            java.util.Map qosProperties) {
+            Map qosProperties) {
     }
 
     /**
@@ -140,8 +153,8 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param msgHeader msgHeader The header of the received message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deliverProductFilesResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            java.util.Map qosProperties) {
+    public void deliverProductFilesResponseReceived(MALMessageHeader msgHeader,
+            Map qosProperties) {
     }
 
     /**
@@ -152,9 +165,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deliverProductFilesAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void deliverProductFilesAckErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -165,9 +178,9 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deliverProductFilesUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void deliverProductFilesUpdateErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     /**
@@ -178,135 +191,135 @@ public abstract class ProductRetrievalAdapter extends org.ccsds.moims.mo.mal.con
      * @param error error The received error message
      * @param qosProperties qosProperties The QoS properties associated with the message
      */
-    public void deliverProductFilesResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.MOErrorException error,
-            java.util.Map qosProperties) {
+    public void deliverProductFilesResponseErrorReceived(MALMessageHeader msgHeader,
+            MOErrorException error,
+            Map qosProperties) {
     }
 
     @Override
-    public final void requestResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._LISTPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._LISTPRODUCTS_OP_NUMBER:
             listProductsResponseReceived(msgHeader,
-                (org.ccsds.moims.mo.mpd.structures.ProductMetadataList) body.getBodyElement(0, new org.ccsds.moims.mo.mpd.structures.ProductMetadataList()), qosProperties);
+                (ProductMetadataList) body.getBodyElement(0, new ProductMetadataList()), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void requestErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void requestErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._LISTPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._LISTPRODUCTS_OP_NUMBER:
             listProductsErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressAckReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressAckReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
             getProductsAckReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
+          case ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
             deliverProductFilesAckReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressAckErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressAckErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
             getProductsAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
+          case ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
             deliverProductFilesAckErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressUpdateReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressUpdateReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
             getProductsUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mpd.structures.Product) body.getBodyElement(0, new org.ccsds.moims.mo.mpd.structures.Product()), qosProperties);
+                (Product) body.getBodyElement(0, new Product()), qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
+          case ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
             deliverProductFilesUpdateReceived(msgHeader,
-                (org.ccsds.moims.mo.mpd.structures.ProductMetadata) body.getBodyElement(0, new org.ccsds.moims.mo.mpd.structures.ProductMetadata()),
-                (body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union("")) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(1, new org.ccsds.moims.mo.mal.structures.Union(""))).getStringValue(),
-                (body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE)) == null) ? null : ((org.ccsds.moims.mo.mal.structures.Union) body.getBodyElement(2, new org.ccsds.moims.mo.mal.structures.Union(Boolean.FALSE))).getBooleanValue(), qosProperties);
+                (ProductMetadata) body.getBodyElement(0, new ProductMetadata()),
+                (body.getBodyElement(1, new Union("")) == null) ? null : ((Union) body.getBodyElement(1, new Union(""))).getStringValue(),
+                (body.getBodyElement(2, new Union(Boolean.FALSE)) == null) ? null : ((Union) body.getBodyElement(2, new Union(Boolean.FALSE))).getBooleanValue(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressUpdateErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressUpdateErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
             getProductsUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
+          case ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
             deliverProductFilesUpdateErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressResponseReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALMessageBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressResponseReceived(MALMessageHeader msgHeader,
+            MALMessageBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
             getProductsResponseReceived(msgHeader, qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
+          case ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
             deliverProductFilesResponseReceived(msgHeader, qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 
     @Override
-    public final void progressResponseErrorReceived(org.ccsds.moims.mo.mal.transport.MALMessageHeader msgHeader,
-            org.ccsds.moims.mo.mal.transport.MALErrorBody body,
-            java.util.Map qosProperties) throws org.ccsds.moims.mo.mal.MALException {
+    public final void progressResponseErrorReceived(MALMessageHeader msgHeader,
+            MALErrorBody body,
+            Map qosProperties) throws MALException {
         switch (msgHeader.getOperation().getValue()) {
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
+          case ProductRetrievalServiceInfo._GETPRODUCTS_OP_NUMBER:
             getProductsResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
-          case org.ccsds.moims.mo.mpd.productretrieval.ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
+          case ProductRetrievalServiceInfo._DELIVERPRODUCTFILES_OP_NUMBER:
             deliverProductFilesResponseErrorReceived(msgHeader, body.getError(), qosProperties);
             break;
           default:
-            throw new org.ccsds.moims.mo.mal.MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
+            throw new MALException("Consumer adapter was not expecting operation number " + msgHeader.getOperation().getValue());
         }
     }
 

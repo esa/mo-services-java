@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The CheckLinkSummary structure holds the ids of a specific check link and
  * the check and parameter it links to.
  */
-public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CheckLinkSummary implements Composite {
 
     private static final long serialVersionUID = 1125917103489027L;
     /**
@@ -14,7 +22,7 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The object instance identifier of the CheckIdentity object.
@@ -40,7 +48,7 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
      * The object instance identifier of the ParameterIdentity object for the
      * check link. NULL for Compound checks.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey parameterId;
+    private ObjectKey parameterId;
 
     /**
      * Default constructor for CheckLinkSummary.
@@ -62,7 +70,7 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
             Long linkId,
             Long linkDefinitionId,
             Boolean checkEnabled,
-            org.ccsds.moims.mo.com.structures.ObjectKey parameterId) {
+            ObjectKey parameterId) {
         this.checkId = checkId;
         this.linkId = linkId;
         this.linkDefinitionId = linkDefinitionId;
@@ -90,8 +98,8 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CheckLinkSummary();
+    public Element createElement() {
+        return new CheckLinkSummary();
     }
 
     /**
@@ -135,7 +143,7 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
      * 
      * @return The field parameterId
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getParameterId() {
+    public ObjectKey getParameterId() {
         return parameterId;
     }
 
@@ -218,18 +226,18 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (checkId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkId' cannot be null!");
+            throw new MALException("The field 'checkId' cannot be null!");
         }
         if (linkId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'linkId' cannot be null!");
+            throw new MALException("The field 'linkId' cannot be null!");
         }
         if (linkDefinitionId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'linkDefinitionId' cannot be null!");
+            throw new MALException("The field 'linkDefinitionId' cannot be null!");
         }
         if (checkEnabled == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkEnabled' cannot be null!");
+            throw new MALException("The field 'checkEnabled' cannot be null!");
         }
         encoder.encodeLong(checkId);
         encoder.encodeLong(linkId);
@@ -239,17 +247,17 @@ public final class CheckLinkSummary implements org.ccsds.moims.mo.mal.structures
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         checkId = decoder.decodeLong();
         linkId = decoder.decodeLong();
         linkDefinitionId = decoder.decodeLong();
         checkEnabled = decoder.decodeBoolean();
-        parameterId = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeNullableElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
+        parameterId = (ObjectKey) decoder.decodeNullableElement(new ObjectKey());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

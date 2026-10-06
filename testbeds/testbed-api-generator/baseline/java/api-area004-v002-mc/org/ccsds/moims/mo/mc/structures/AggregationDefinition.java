@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.Identifier;
+import org.ccsds.moims.mo.mal.structures.MOObject;
+import org.ccsds.moims.mo.mal.structures.ObjectIdentity;
+import org.ccsds.moims.mo.mal.structures.ObjectRefList;
+
 /**
  * The AggregationDefinition structure shall be used to hold definition details
  * of an aggregation.
  */
-public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structures.MOObject {
+public final class AggregationDefinition extends MOObject {
 
     private static final long serialVersionUID = 1125899940397116L;
     /**
@@ -14,7 +24,7 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description field.
@@ -24,12 +34,12 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
     /**
      * The category field.
      */
-    private org.ccsds.moims.mo.mal.structures.Identifier category;
+    private Identifier category;
 
     /**
      * The parameters field.
      */
-    private org.ccsds.moims.mo.mal.structures.ObjectRefList parameters;
+    private ObjectRefList parameters;
 
     /**
      * Default constructor for AggregationDefinition.
@@ -46,10 +56,10 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
      * @param category The category field.
      * @param parameters The parameters field.
      */
-    public AggregationDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public AggregationDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mal.structures.Identifier category,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList parameters) {
+            Identifier category,
+            ObjectRefList parameters) {
         super(objectIdentity);
         this.description = description;
         this.category = category;
@@ -63,9 +73,9 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
      * @param description The description field.
      * @param parameters The parameters field.
      */
-    public AggregationDefinition(org.ccsds.moims.mo.mal.structures.ObjectIdentity objectIdentity,
+    public AggregationDefinition(ObjectIdentity objectIdentity,
             String description,
-            org.ccsds.moims.mo.mal.structures.ObjectRefList parameters) {
+            ObjectRefList parameters) {
         super(objectIdentity);
         this.description = description;
         this.category = null;
@@ -73,8 +83,8 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.AggregationDefinition();
+    public Element createElement() {
+        return new AggregationDefinition();
     }
 
     /**
@@ -91,7 +101,7 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
      * 
      * @return The field category
      */
-    public org.ccsds.moims.mo.mal.structures.Identifier getCategory() {
+    public Identifier getCategory() {
         return category;
     }
 
@@ -100,7 +110,7 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
      * 
      * @return The field parameters
      */
-    public org.ccsds.moims.mo.mal.structures.ObjectRefList getParameters() {
+    public ObjectRefList getParameters() {
         return parameters;
     }
 
@@ -165,13 +175,13 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (parameters == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameters' cannot be null!");
+            throw new MALException("The field 'parameters' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeNullableIdentifier(category);
@@ -179,16 +189,16 @@ public final class AggregationDefinition extends org.ccsds.moims.mo.mal.structur
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
         description = decoder.decodeString();
         category = decoder.decodeNullableIdentifier();
-        parameters = (org.ccsds.moims.mo.mal.structures.ObjectRefList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.ObjectRefList());
+        parameters = (ObjectRefList) decoder.decodeElement(new ObjectRefList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

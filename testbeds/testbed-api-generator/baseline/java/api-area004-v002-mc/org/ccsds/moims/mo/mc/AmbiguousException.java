@@ -1,10 +1,12 @@
 package org.ccsds.moims.mo.mc;
 
+import org.ccsds.moims.mo.mal.MOErrorException;
+
 /**
  * The AmbiguousException exception. The data or operation is ambiguous, requiring
  * clarification to proceed.
  */
-public final class AmbiguousException extends org.ccsds.moims.mo.mal.MOErrorException {
+public final class AmbiguousException extends MOErrorException {
 
     private static final String MO_ERROR_NAME = "Ambiguous";
 

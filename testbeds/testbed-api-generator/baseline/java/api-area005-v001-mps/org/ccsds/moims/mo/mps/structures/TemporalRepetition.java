@@ -1,9 +1,15 @@
 package org.ccsds.moims.mo.mps.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * E1: A sub-type of Repetition based on time.
  */
-public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.Repetition {
+public final class TemporalRepetition extends Repetition {
 
     private static final long serialVersionUID = 1407374900330557L;
     /**
@@ -13,23 +19,23 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * Nominal time of first occurrence.
      */
-    private org.ccsds.moims.mo.mal.structures.Element initialTime;
+    private Element initialTime;
 
     /**
      * The required time interval between occurrences.
      */
-    private org.ccsds.moims.mo.mal.structures.Element separation;
+    private Element separation;
 
     /**
      * The allowed tolerance (+/-) in the required time between occurrences, the
      * interpretation of which is dependent on the separationType.
      */
-    private org.ccsds.moims.mo.mal.structures.Element tolerance;
+    private Element tolerance;
 
     /**
      * Default constructor for TemporalRepetition.
@@ -49,11 +55,11 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
      * @param tolerance The allowed tolerance (+/-) in the required time between occurrences, the interpretation of which is dependent on the separationType.
      */
     public TemporalRepetition(Integer count,
-            org.ccsds.moims.mo.mps.structures.TimeWindow timeWindow,
-            org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element initialTime,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+            TimeWindow timeWindow,
+            SeparationTypeEnum separationType,
+            Element initialTime,
+            Element separation,
+            Element tolerance) {
         super(count,
             timeWindow,
             separationType);
@@ -70,10 +76,10 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
      * @param separation The required time interval between occurrences.
      * @param tolerance The allowed tolerance (+/-) in the required time between occurrences, the interpretation of which is dependent on the separationType.
      */
-    public TemporalRepetition(org.ccsds.moims.mo.mps.structures.SeparationTypeEnum separationType,
-            org.ccsds.moims.mo.mal.structures.Element initialTime,
-            org.ccsds.moims.mo.mal.structures.Element separation,
-            org.ccsds.moims.mo.mal.structures.Element tolerance) {
+    public TemporalRepetition(SeparationTypeEnum separationType,
+            Element initialTime,
+            Element separation,
+            Element tolerance) {
         super(separationType);
         this.initialTime = initialTime;
         this.separation = separation;
@@ -81,8 +87,8 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mps.structures.TemporalRepetition();
+    public Element createElement() {
+        return new TemporalRepetition();
     }
 
     /**
@@ -90,7 +96,7 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field initialTime
      */
-    public org.ccsds.moims.mo.mal.structures.Element getInitialTime() {
+    public Element getInitialTime() {
         return initialTime;
     }
 
@@ -99,7 +105,7 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field separation
      */
-    public org.ccsds.moims.mo.mal.structures.Element getSeparation() {
+    public Element getSeparation() {
         return separation;
     }
 
@@ -108,7 +114,7 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
      * 
      * @return The field tolerance
      */
-    public org.ccsds.moims.mo.mal.structures.Element getTolerance() {
+    public Element getTolerance() {
         return tolerance;
     }
 
@@ -173,16 +179,16 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         super.encode(encoder);
         if (initialTime == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'initialTime' cannot be null!");
+            throw new MALException("The field 'initialTime' cannot be null!");
         }
         if (separation == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'separation' cannot be null!");
+            throw new MALException("The field 'separation' cannot be null!");
         }
         if (tolerance == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'tolerance' cannot be null!");
+            throw new MALException("The field 'tolerance' cannot be null!");
         }
         encoder.encodeAbstractElement(initialTime);
         encoder.encodeAbstractElement(separation);
@@ -190,16 +196,16 @@ public final class TemporalRepetition extends org.ccsds.moims.mo.mps.structures.
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         super.decode(decoder);
-        initialTime = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        separation = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
-        tolerance = (org.ccsds.moims.mo.mal.structures.Element) decoder.decodeAbstractElement();
+        initialTime = (Element) decoder.decodeAbstractElement();
+        separation = (Element) decoder.decodeAbstractElement();
+        tolerance = (Element) decoder.decodeAbstractElement();
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

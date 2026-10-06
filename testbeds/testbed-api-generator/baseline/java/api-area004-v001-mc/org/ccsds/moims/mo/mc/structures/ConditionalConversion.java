@@ -1,12 +1,20 @@
 package org.ccsds.moims.mo.mc.structures;
 
+import org.ccsds.moims.mo.com.structures.ObjectKey;
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+
 /**
  * The ConditionalConversion structure holds a condition expression to be
  * evaluated to determine if a specific Conversion should be used. In the
  * case that no test is required, i.e., the conversion should always be used,
  * then the condition field should be set to NULL.
  */
-public final class ConditionalConversion implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ConditionalConversion implements Composite {
 
     private static final long serialVersionUID = 1125899923619843L;
     /**
@@ -16,19 +24,19 @@ public final class ConditionalConversion implements org.ccsds.moims.mo.mal.struc
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The expression indicates which entities are applicable for this check.
      * If NULL, then the condition shall evaluate to TRUE.
      */
-    private org.ccsds.moims.mo.mc.structures.ParameterExpression condition;
+    private ParameterExpression condition;
 
     /**
      * The object instance identifier of the ConversionIdentity object to be used
      * if the condition evaluates to TRUE or is NULL.
      */
-    private org.ccsds.moims.mo.com.structures.ObjectKey conversionId;
+    private ObjectKey conversionId;
 
     /**
      * Default constructor for ConditionalConversion.
@@ -43,8 +51,8 @@ public final class ConditionalConversion implements org.ccsds.moims.mo.mal.struc
      * @param condition The expression indicates which entities are applicable for this check. If NULL, then the condition shall evaluate to TRUE.
      * @param conversionId The object instance identifier of the ConversionIdentity object to be used if the condition evaluates to TRUE or is NULL.
      */
-    public ConditionalConversion(org.ccsds.moims.mo.mc.structures.ParameterExpression condition,
-            org.ccsds.moims.mo.com.structures.ObjectKey conversionId) {
+    public ConditionalConversion(ParameterExpression condition,
+            ObjectKey conversionId) {
         this.condition = condition;
         this.conversionId = conversionId;
     }
@@ -54,14 +62,14 @@ public final class ConditionalConversion implements org.ccsds.moims.mo.mal.struc
      * 
      * @param conversionId The object instance identifier of the ConversionIdentity object to be used if the condition evaluates to TRUE or is NULL.
      */
-    public ConditionalConversion(org.ccsds.moims.mo.com.structures.ObjectKey conversionId) {
+    public ConditionalConversion(ObjectKey conversionId) {
         this.condition = null;
         this.conversionId = conversionId;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.structures.ConditionalConversion();
+    public Element createElement() {
+        return new ConditionalConversion();
     }
 
     /**
@@ -69,7 +77,7 @@ public final class ConditionalConversion implements org.ccsds.moims.mo.mal.struc
      * 
      * @return The field condition
      */
-    public org.ccsds.moims.mo.mc.structures.ParameterExpression getCondition() {
+    public ParameterExpression getCondition() {
         return condition;
     }
 
@@ -78,7 +86,7 @@ public final class ConditionalConversion implements org.ccsds.moims.mo.mal.struc
      * 
      * @return The field conversionId
      */
-    public org.ccsds.moims.mo.com.structures.ObjectKey getConversionId() {
+    public ObjectKey getConversionId() {
         return conversionId;
     }
 
@@ -128,23 +136,23 @@ public final class ConditionalConversion implements org.ccsds.moims.mo.mal.struc
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (conversionId == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'conversionId' cannot be null!");
+            throw new MALException("The field 'conversionId' cannot be null!");
         }
         encoder.encodeNullableElement(condition);
         encoder.encodeElement(conversionId);
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
-        condition = (org.ccsds.moims.mo.mc.structures.ParameterExpression) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ParameterExpression());
-        conversionId = (org.ccsds.moims.mo.com.structures.ObjectKey) decoder.decodeElement(new org.ccsds.moims.mo.com.structures.ObjectKey());
+    public Element decode(MALDecoder decoder) throws MALException {
+        condition = (ParameterExpression) decoder.decodeNullableElement(new ParameterExpression());
+        conversionId = (ObjectKey) decoder.decodeElement(new ObjectKey());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

@@ -1,10 +1,18 @@
 package org.ccsds.moims.mo.mc.check.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.LongList;
+
 /**
  * The CheckResultFilter structure holds a filter for the current check result
  * transition information.
  */
-public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class CheckResultFilter implements Composite {
 
     private static final long serialVersionUID = 1125917103489029L;
     /**
@@ -14,7 +22,7 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * If TRUE then the checkFilter field contains GroupIdentity object instance
@@ -28,7 +36,7 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
      * is TRUE otherwise the CheckIdentity object instance identifiers to filter
      * on. A value of &quot;0&quot; means match all.
      */
-    private org.ccsds.moims.mo.mal.structures.LongList checkFilter;
+    private LongList checkFilter;
 
     /**
      * If TRUE then the parameterFilter field contains GroupIdentity object instance
@@ -42,13 +50,13 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
      * is TRUE otherwise the ParameterIdentity object instance identifiers to
      * filter on. A value of &quot;0&quot; means match all.
      */
-    private org.ccsds.moims.mo.mal.structures.LongList parameterFilter;
+    private LongList parameterFilter;
 
     /**
      * The list of required check states to filter on. Empty list means match
      * all.
      */
-    private org.ccsds.moims.mo.mc.check.structures.CheckStateList stateFilter;
+    private CheckStateList stateFilter;
 
     /**
      * Default constructor for CheckResultFilter.
@@ -67,10 +75,10 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
      * @param stateFilter The list of required check states to filter on. Empty list means match all.
      */
     public CheckResultFilter(Boolean checkFilterViaGroups,
-            org.ccsds.moims.mo.mal.structures.LongList checkFilter,
+            LongList checkFilter,
             Boolean parameterFilterViaGroups,
-            org.ccsds.moims.mo.mal.structures.LongList parameterFilter,
-            org.ccsds.moims.mo.mc.check.structures.CheckStateList stateFilter) {
+            LongList parameterFilter,
+            CheckStateList stateFilter) {
         this.checkFilterViaGroups = checkFilterViaGroups;
         this.checkFilter = checkFilter;
         this.parameterFilterViaGroups = parameterFilterViaGroups;
@@ -79,8 +87,8 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.check.structures.CheckResultFilter();
+    public Element createElement() {
+        return new CheckResultFilter();
     }
 
     /**
@@ -97,7 +105,7 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field checkFilter
      */
-    public org.ccsds.moims.mo.mal.structures.LongList getCheckFilter() {
+    public LongList getCheckFilter() {
         return checkFilter;
     }
 
@@ -115,7 +123,7 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field parameterFilter
      */
-    public org.ccsds.moims.mo.mal.structures.LongList getParameterFilter() {
+    public LongList getParameterFilter() {
         return parameterFilter;
     }
 
@@ -124,7 +132,7 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
      * 
      * @return The field stateFilter
      */
-    public org.ccsds.moims.mo.mc.check.structures.CheckStateList getStateFilter() {
+    public CheckStateList getStateFilter() {
         return stateFilter;
     }
 
@@ -207,21 +215,21 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (checkFilterViaGroups == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkFilterViaGroups' cannot be null!");
+            throw new MALException("The field 'checkFilterViaGroups' cannot be null!");
         }
         if (checkFilter == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'checkFilter' cannot be null!");
+            throw new MALException("The field 'checkFilter' cannot be null!");
         }
         if (parameterFilterViaGroups == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterFilterViaGroups' cannot be null!");
+            throw new MALException("The field 'parameterFilterViaGroups' cannot be null!");
         }
         if (parameterFilter == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'parameterFilter' cannot be null!");
+            throw new MALException("The field 'parameterFilter' cannot be null!");
         }
         if (stateFilter == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'stateFilter' cannot be null!");
+            throw new MALException("The field 'stateFilter' cannot be null!");
         }
         encoder.encodeBoolean(checkFilterViaGroups);
         encoder.encodeElement(checkFilter);
@@ -231,17 +239,17 @@ public final class CheckResultFilter implements org.ccsds.moims.mo.mal.structure
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         checkFilterViaGroups = decoder.decodeBoolean();
-        checkFilter = (org.ccsds.moims.mo.mal.structures.LongList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.LongList());
+        checkFilter = (LongList) decoder.decodeElement(new LongList());
         parameterFilterViaGroups = decoder.decodeBoolean();
-        parameterFilter = (org.ccsds.moims.mo.mal.structures.LongList) decoder.decodeElement(new org.ccsds.moims.mo.mal.structures.LongList());
-        stateFilter = (org.ccsds.moims.mo.mc.check.structures.CheckStateList) decoder.decodeElement(new org.ccsds.moims.mo.mc.check.structures.CheckStateList());
+        parameterFilter = (LongList) decoder.decodeElement(new LongList());
+        stateFilter = (CheckStateList) decoder.decodeElement(new CheckStateList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 

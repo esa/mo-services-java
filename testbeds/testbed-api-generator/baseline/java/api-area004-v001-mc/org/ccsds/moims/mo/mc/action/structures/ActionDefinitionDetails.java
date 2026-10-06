@@ -1,10 +1,20 @@
 package org.ccsds.moims.mo.mc.action.structures;
 
+import org.ccsds.moims.mo.mal.MALDecoder;
+import org.ccsds.moims.mo.mal.MALEncoder;
+import org.ccsds.moims.mo.mal.MALException;
+import org.ccsds.moims.mo.mal.TypeId;
+import org.ccsds.moims.mo.mal.structures.Composite;
+import org.ccsds.moims.mo.mal.structures.Element;
+import org.ccsds.moims.mo.mal.structures.UOctet;
+import org.ccsds.moims.mo.mal.structures.UShort;
+import org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetailsList;
+
 /**
  * The ActionDefinitionDetails structure holds the definition information
  * of an action.
  */
-public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.structures.Composite {
+public final class ActionDefinitionDetails implements Composite {
 
     private static final long serialVersionUID = 1125904218587137L;
     /**
@@ -14,7 +24,7 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
     /**
      * The TypeId of this Element.
      */
-    public static final org.ccsds.moims.mo.mal.TypeId TYPE_ID = new org.ccsds.moims.mo.mal.TypeId(SHORT_FORM);
+    public static final TypeId TYPE_ID = new TypeId(SHORT_FORM);
 
     /**
      * The description of the action.
@@ -26,19 +36,19 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
      * the use of a UOctet allows deployment specific extension. Extensions must
      * use values greater than 127.
      */
-    private org.ccsds.moims.mo.mal.structures.UOctet category;
+    private UOctet category;
 
     /**
      * Total number of steps that will be reported if PROGRESS reporting is selected
      * in the sent Action. 0 if PROGRESS reporting is not used.
      */
-    private org.ccsds.moims.mo.mal.structures.UShort progressStepCount;
+    private UShort progressStepCount;
 
     /**
      * The list of argument definitions. If no arguments are defined, then the
      * complete list is replaced with a NULL.
      */
-    private org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetailsList arguments;
+    private ArgumentDefinitionDetailsList arguments;
 
     /**
      * Default constructor for ActionDefinitionDetails.
@@ -56,9 +66,9 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
      * @param arguments The list of argument definitions. If no arguments are defined, then the complete list is replaced with a NULL.
      */
     public ActionDefinitionDetails(String description,
-            org.ccsds.moims.mo.mal.structures.UOctet category,
-            org.ccsds.moims.mo.mal.structures.UShort progressStepCount,
-            org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetailsList arguments) {
+            UOctet category,
+            UShort progressStepCount,
+            ArgumentDefinitionDetailsList arguments) {
         this.description = description;
         this.category = category;
         this.progressStepCount = progressStepCount;
@@ -73,8 +83,8 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
      * @param progressStepCount Total number of steps that will be reported if PROGRESS reporting is selected in the sent Action. 0 if PROGRESS reporting is not used.
      */
     public ActionDefinitionDetails(String description,
-            org.ccsds.moims.mo.mal.structures.UOctet category,
-            org.ccsds.moims.mo.mal.structures.UShort progressStepCount) {
+            UOctet category,
+            UShort progressStepCount) {
         this.description = description;
         this.category = category;
         this.progressStepCount = progressStepCount;
@@ -82,8 +92,8 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element createElement() {
-        return new org.ccsds.moims.mo.mc.action.structures.ActionDefinitionDetails();
+    public Element createElement() {
+        return new ActionDefinitionDetails();
     }
 
     /**
@@ -100,7 +110,7 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field category
      */
-    public org.ccsds.moims.mo.mal.structures.UOctet getCategory() {
+    public UOctet getCategory() {
         return category;
     }
 
@@ -109,7 +119,7 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field progressStepCount
      */
-    public org.ccsds.moims.mo.mal.structures.UShort getProgressStepCount() {
+    public UShort getProgressStepCount() {
         return progressStepCount;
     }
 
@@ -118,7 +128,7 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
      * 
      * @return The field arguments
      */
-    public org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetailsList getArguments() {
+    public ArgumentDefinitionDetailsList getArguments() {
         return arguments;
     }
 
@@ -190,15 +200,15 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public void encode(org.ccsds.moims.mo.mal.MALEncoder encoder) throws org.ccsds.moims.mo.mal.MALException {
+    public void encode(MALEncoder encoder) throws MALException {
         if (description == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'description' cannot be null!");
+            throw new MALException("The field 'description' cannot be null!");
         }
         if (category == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'category' cannot be null!");
+            throw new MALException("The field 'category' cannot be null!");
         }
         if (progressStepCount == null) {
-            throw new org.ccsds.moims.mo.mal.MALException("The field 'progressStepCount' cannot be null!");
+            throw new MALException("The field 'progressStepCount' cannot be null!");
         }
         encoder.encodeString(description);
         encoder.encodeUOctet(category);
@@ -207,16 +217,16 @@ public final class ActionDefinitionDetails implements org.ccsds.moims.mo.mal.str
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.structures.Element decode(org.ccsds.moims.mo.mal.MALDecoder decoder) throws org.ccsds.moims.mo.mal.MALException {
+    public Element decode(MALDecoder decoder) throws MALException {
         description = decoder.decodeString();
         category = decoder.decodeUOctet();
         progressStepCount = decoder.decodeUShort();
-        arguments = (org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetailsList) decoder.decodeNullableElement(new org.ccsds.moims.mo.mc.structures.ArgumentDefinitionDetailsList());
+        arguments = (ArgumentDefinitionDetailsList) decoder.decodeNullableElement(new ArgumentDefinitionDetailsList());
         return this;
     }
 
     @Override
-    public org.ccsds.moims.mo.mal.TypeId getTypeId() {
+    public TypeId getTypeId() {
         return TYPE_ID;
     }
 
