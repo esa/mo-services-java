@@ -52,8 +52,8 @@ public abstract class AlertDataset implements AlertBackend {
 	 * Objects should never be deleted from this list.
 	 */
 	private final AlertDefinitionList definitions = new AlertDefinitionList();
-  /** List of default configurations, matching the definitions in the {@link definitions} list. */
-  private final List<DefaultConfiguration> defaultConfigs = new Vector<>();
+	/** List of default configurations, matching the definitions in the {@link definitions} list. */
+	private final List<DefaultConfiguration> defaultConfigs = new Vector<>();
 	/** list of registered listeners to signal for condition values updates */
 	private final Set<AlertListener> listeners = new HashSet<>();
 
@@ -62,15 +62,15 @@ public abstract class AlertDataset implements AlertBackend {
 		return definitions;
 	}
 
-  @Override
-  public DefaultConfiguration getDefaultConfig(int alertID) {
-    if (alertID >= defaultConfigs.size()) {
-      IllegalArgumentException exc = new IllegalArgumentException("unknown AlertDefinition id");
-      logger.log(Level.SEVERE, null, exc);
-      throw exc;
-    }
-    return defaultConfigs.get(alertID);
-  }
+	@Override
+	public DefaultConfiguration getDefaultConfig(int alertID) {
+		if (alertID >= defaultConfigs.size()) {
+			IllegalArgumentException exc = new IllegalArgumentException("unknown AlertDefinition id");
+			logger.log(Level.SEVERE, null, exc);
+			throw exc;
+		}
+		return defaultConfigs.get(alertID);
+	}
 
 	/**
 	 * Adds an <code>AlertDefinition</code> object to the list handled by the provider.
@@ -80,7 +80,7 @@ public abstract class AlertDataset implements AlertBackend {
 	 * @param description  field of the <code>AlertDefinition</code> to create
 	 * @param severity  field of the <code>AlertDefinition</code> to create
 	 * @param arguments  field of the <code>AlertDefinition</code> to create
-   * @param config  default configuration of the <code>AlertDefinition</code> to create
+	 * @param config  default configuration of the <code>AlertDefinition</code> to create
 	 * @return  identifier of the object
 	 */
 	protected int addAlert(
@@ -88,7 +88,7 @@ public abstract class AlertDataset implements AlertBackend {
 			String description,
 			Severity severity,
 			ArgumentDefinitionList arguments,
-      DefaultConfiguration config) {
+			DefaultConfiguration config) {
 		AlertDefinition definition =
 				new AlertDefinition(identity, description, severity, arguments);
 		if (!definitions.add(definition)) {
@@ -99,12 +99,12 @@ public abstract class AlertDataset implements AlertBackend {
 		}
 		int alertID = definitions.size()-1;
 		logger.info("alert " + alertID + " added: " + definition);
-    if (!defaultConfigs.add(config)) {
-      IllegalArgumentException exc = new IllegalArgumentException(
-          "cannot add the default configuration to the list");
-      logger.log(Level.SEVERE, null, exc);
-      throw exc;
-    }
+		if (!defaultConfigs.add(config)) {
+			IllegalArgumentException exc = new IllegalArgumentException(
+					"cannot add the default configuration to the list");
+			logger.log(Level.SEVERE, null, exc);
+			throw exc;
+		}
 		return alertID;
 	}
 
