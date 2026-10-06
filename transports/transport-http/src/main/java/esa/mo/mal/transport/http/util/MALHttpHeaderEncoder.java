@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.http.util;
 
+import esa.mo.mal.transport.gen.BodyEncoding;
 import esa.mo.mal.transport.http.HTTPTransport;
 import static esa.mo.mal.transport.http.HTTPTransport.RLOGGER;
 import java.io.IOException;
@@ -177,10 +178,10 @@ public abstract class MALHttpHeaderEncoder {
     }
 
     /**
-     * Writes the content type header. If the default xml encoding mechanism is
-     * used the content type is application/mal-xml, otherwise it is
-     * application/mal and the encoder in use is named in the X-MAL-Encoding
-     * header.
+     * Writes the content type header (CCSDS 524.3-B-1, 3.6.3 and 3.6.5). The
+     * XML encoding is application/mal-xml; any other encoding is
+     * application/mal, with its identifier in the X-MAL-Encoding header. An
+     * encoding without an identifier is named by its factory class instead.
      *
      * @param encoderInUse The canonical name of the element stream factory in
      * use.
@@ -189,11 +190,12 @@ public abstract class MALHttpHeaderEncoder {
     public static void encodeContentType(final String encoderInUse, final HttpHeaderSink sink) {
         String contentType = "application/mal-xml";
         RLOGGER.log(Level.FINEST, "Using encoder {0}", encoderInUse);
-        boolean isUsingDefaultEncoder = HTTPTransport.HTTP_DEFAULT_XML_ENCODER.equals(encoderInUse);
+        BodyEncoding encoding = BodyEncoding.ofFactoryClass(encoderInUse);
 
-        if (!isUsingDefaultEncoder) {
+        if (encoding != BodyEncoding.XML) {
             contentType = "application/mal";
-            sink.setHeader("X-MAL-Encoding", encoderInUse);
+            sink.setHeader("X-MAL-Encoding",
+                    encoding == null ? encoderInUse : String.valueOf(encoding.getId()));
         }
 
         sink.setHeader("Content-Type", contentType);

@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -127,6 +128,15 @@ public abstract class Transport<I, O> implements MALTransport {
      * The stream factory used for encoding and decoding messages.
      */
     private final MALElementStreamFactory streamFactory;
+    /**
+     * The encoding of the stream factory, or null if it has no identifier.
+     */
+    private final BodyEncoding bodyEncoding;
+    /**
+     * The stream factories for decoding bodies received in another encoding,
+     * created when first needed.
+     */
+    private final Map<BodyEncoding, MALElementStreamFactory> decoders = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -171,6 +181,7 @@ public abstract class Transport<I, O> implements MALTransport {
         this.errorReplies = new ErrorReplyBuilder(this, endpoints, properties);
 
         streamFactory = MALElementStreamFactory.newFactory(protocol, properties);
+        bodyEncoding = BodyEncoding.of(streamFactory);
         LOGGER.log(Level.FINE, "Created element stream: {0}",
                 streamFactory.getClass().getName());
 
@@ -250,6 +261,65 @@ public abstract class Transport<I, O> implements MALTransport {
      */
     public MALElementStreamFactory getStreamFactory() {
         return streamFactory;
+    }
+
+    /**
+     * Returns the encoding of outgoing message bodies.
+     *
+     * @return the encoding, or null if the stream factory has no identifier.
+     */
+    public BodyEncoding getBodyEncoding() {
+        return bodyEncoding;
+    }
+
+    /**
+     * Returns the stream factory for a body in the given encoding.
+     *
+     * @param encoding The encoding.
+     * @return the stream factory of this transport if it produces that
+     * encoding, otherwise a factory of the encoding's own class.
+     * @throws MALException if the factory cannot be created.
+     */
+    public MALElementStreamFactory getStreamFactory(final BodyEncoding encoding) throws MALException {
+        if (encoding == bodyEncoding) {
+            return streamFactory;
+        }
+        MALElementStreamFactory factory = decoders.get(encoding);
+        if (factory == null) {
+            factory = MALElementStreamFactory.newFactoryForClass(
+                    encoding.getFactoryClassName(), qosProperties);
+            MALElementStreamFactory existing = decoders.putIfAbsent(encoding, factory);
+            if (existing != null) {
+                factory = existing;
+            }
+        }
+        return factory;
+    }
+
+    /**
+     * Returns the stream factory for decoding a received body, selected by the
+     * encoding identifier of its header. A transport whose own encoding has no
+     * identifier cannot be sent an identifier that names it, so it decodes
+     * every body with its own stream factory.
+     *
+     * @param header The header of the received message.
+     * @param encodingId The encoding identifier carried by the header.
+     * @return the stream factory for the body.
+     * @throws MALException if the identifier names no known encoding, after a
+     * BAD_ENCODING error has been returned to the sender.
+     */
+    protected MALElementStreamFactory getStreamFactory(final MALMessageHeader header,
+            final int encodingId) throws MALException {
+        if (bodyEncoding == null) {
+            return streamFactory;
+        }
+        BodyEncoding received = BodyEncoding.ofId(encodingId);
+        if (received == null) {
+            String text = "Unknown body encoding identifier: " + encodingId;
+            returnErrorMessage(header, MALHelper.BAD_ENCODING_ERROR_NUMBER, text);
+            throw new MALException(text);
+        }
+        return getStreamFactory(received);
     }
 
     public abstract GENMessage decodeMessage(I packet) throws MALException;

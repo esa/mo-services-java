@@ -160,4 +160,39 @@ public class ZMTPHeaderDecoderTest {
         assertEquals("IsErrorMessage", header.getIsErrorMessage(), decodedHeader.getIsErrorMessage());
         assertEquals("Supplements", header.getSupplements(), decodedHeader.getSupplements());
     }
+
+    /**
+     * Identifiers 0 to 2 travel in the two-bit field; 3 and above travel as
+     * the field value 3 followed by the extended identifier.
+     */
+    @Test
+    public void testBodyEncodingIdEncodeDecode() throws Exception {
+        for (int id = 0; id <= 3; id++) {
+            ZMTPMessageHeader header = new ZMTPMessageHeader(
+                    new ZMTPConfiguration(new ZMTPConfiguration(), null),
+                    new Identifier("URI From"),
+                    new Blob(new byte[2]),
+                    new Identifier("URI To"),
+                    Time.now(),
+                    InteractionType.SUBMIT,
+                    new UOctet(1),
+                    (long) 2,
+                    new UShort(3),
+                    new UShort(4),
+                    new UShort(5),
+                    new UOctet(6),
+                    false,
+                    new NamedValueList());
+            header.setBodyEncodingId(id);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            header.encode(new ZMTPHeaderEncoder(baos, new ZMTPStringMappingDirectory(), new BinaryTimeHandler()));
+            ZMTPHeaderDecoder decoder = new ZMTPHeaderDecoder(new ByteArrayInputStream(baos.toByteArray()),
+                    new ZMTPStringMappingDirectory(), new BinaryTimeHandler());
+            ZMTPMessageHeader decodedHeader = new ZMTPMessageHeader(new ZMTPConfiguration()).decode(decoder);
+
+            assertEquals("EncodingId", Math.min(id, 3), decodedHeader.getEncodingId());
+            assertEquals("BodyEncodingId", id, decodedHeader.getBodyEncodingId());
+        }
+    }
 }

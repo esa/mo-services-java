@@ -175,11 +175,6 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
      */
     private ZMTPHeaderStreamFactory hdrStreamFactory;
 
-    /**
-     * Selector of encoding for MAL message body transmitted over ZMTP.
-     */
-    private ZMTPEncodingSelector bodyEncodingSelector;
-
     /*
    * Constructor.
    *
@@ -196,8 +191,11 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
         defaultConfiguration = new ZMTPConfiguration();
 
         hdrStreamFactory = new ZMTPHeaderStreamFactory(stringMappingDirectory);
-        bodyEncodingSelector = new ZMTPEncodingSelector();
-        bodyEncodingSelector.init(properties);
+        // The header always names the body encoding, so it needs an identifier
+        if (getBodyEncoding() == null) {
+            throw new MALException("The ZMTP transport requires a body encoding with an identifier, not: "
+                    + getStreamFactory().getClass().getName());
+        }
 
         this.uriMapping = uriMapping;
 
@@ -365,11 +363,11 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
         final ByteArrayInputStream is = new ByteArrayInputStream(packet);
         ZMTPHeaderDecoder headerDecoder = hdrStreamFactory.getHeaderDecoder(is);
         header.decode(headerDecoder);
+        MALElementStreamFactory bodyStreamFactory = getStreamFactory(header, header.getBodyEncodingId());
 
         try {
             // Now get the body part for decoding it later
             byte[] remainingData = headerDecoder.getRemainingEncodedData();
-            MALElementStreamFactory bodyStreamFactory = getBodyEncodingSelector().getDecoderStreamFactory(header);
 
             final MALElementInputStream enc = bodyStreamFactory.createInputStream(new ByteArrayInputStream(remainingData));
             LazyMessageBody body = LazyMessageBody.createMessageBody(header, bodyStreamFactory, enc);
@@ -448,15 +446,6 @@ public class ZMTPTransport extends Transport<byte[], byte[]> {
         } catch (MALException ex) {
             Logger.getLogger(ZMTPTransport.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    /**
-     * Returns the body encoding selector.
-     *
-     * @return the bodyEncodingSelector
-     */
-    public ZMTPEncodingSelector getBodyEncodingSelector() {
-        return bodyEncodingSelector;
     }
 
     /**

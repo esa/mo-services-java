@@ -20,6 +20,7 @@
  */
 package esa.mo.mal.transport.tcpip;
 
+import esa.mo.mal.transport.gen.BodyEncoding;
 import esa.mo.mal.transport.gen.Endpoint;
 import esa.mo.mal.transport.gen.Transport;
 import esa.mo.mal.transport.gen.body.LazyMessageBody;
@@ -83,11 +84,15 @@ public class TCPIPEndpoint extends Endpoint {
         String serviceFrom = transport.getRoutingPart(uriFrom.toString());
         String serviceTo = transport.getRoutingPart(uriTo.toString());
 
-        return new TCPIPMessageHeader(new Identifier(uriFrom.getValue()),
+        TCPIPMessageHeader header = new TCPIPMessageHeader(new Identifier(uriFrom.getValue()),
                 serviceFrom, authenticationId, new Identifier(uriTo.getValue()),
                 serviceTo, timestamp, interactionType, interactionStage,
                 transactionId, serviceArea, service, operation,
                 serviceVersion, isErrorMessage, this.getEndpointSupplements());
+        // An encoding without an identifier keeps the former value, 0.
+        BodyEncoding encoding = transport.getBodyEncoding();
+        header.setEncodingId((short) (encoding == null ? 0 : encoding.getId()));
+        return header;
     }
 
 }

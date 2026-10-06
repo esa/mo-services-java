@@ -122,7 +122,7 @@ public class ZMTPEndpoint extends Endpoint {
                 serviceVersion,
                 isErrorMessage,
                 this.getEndpointSupplements());
-        ((ZMTPTransport) transport).getBodyEncodingSelector().applyEncodingIdToHeader(header);
+        header.setBodyEncodingId(transport.getBodyEncoding().getId());
         return header;
     }
 }

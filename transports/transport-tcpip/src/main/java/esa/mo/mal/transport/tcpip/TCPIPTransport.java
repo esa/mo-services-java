@@ -574,8 +574,8 @@ public class TCPIPTransport extends Transport<TCPIPPacketInfoHolder, byte[]> {
             byte[] bodyPacketData = new byte[bodySize];
             System.arraycopy(packetData, decodedHeaderBytes, bodyPacketData, 0, bodySize);
 
-            // Decode the body
-            MALElementStreamFactory encFactory = getStreamFactory();
+            // Decode the body in the encoding the header names
+            MALElementStreamFactory encFactory = getStreamFactory(header, header.getEncodingId());
             final ByteArrayInputStream bais = new ByteArrayInputStream(bodyPacketData);
             final MALElementInputStream enc = encFactory.createInputStream(bais);
 

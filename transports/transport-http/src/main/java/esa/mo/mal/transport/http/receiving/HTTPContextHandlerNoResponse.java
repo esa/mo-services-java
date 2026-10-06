@@ -48,6 +48,7 @@ import org.ccsds.moims.mo.mal.transport.MALMessageHeader;
 public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
 
     protected MALMessageHeader malMessageHeader;
+    protected int bodyEncodingId;
 
     /**
      * Constructor.
@@ -80,8 +81,8 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
         Identifier uriFrom = new Identifier(request.getReferer());
         // should be "001" according to 3.4.2 in recommended standard.
         String versionNumber = request.getRequestHeader("X-MAL-Version-Number");
-        // should be "text/xml; charset=utf-8" according to 3.4.3 in recommended standard.
-        String contentType = request.getRequestHeader("Content-Type");
+        bodyEncodingId = transport.bodyEncodingIdOf(request.getRequestHeader("Content-Type"),
+                request.getRequestHeader("X-MAL-Encoding"));
 
         malMessageHeader = createMALHeaderFromHttp(request, uriTo, uriFrom);
 
@@ -153,7 +154,7 @@ public class HTTPContextHandlerNoResponse extends HTTPContextHandlerNoEncoding {
 
     @Override
     public void finishHandling() {
-        HTTPMessageReceiver receiver = new HTTPMessageReceiver(transport, malMessageHeader, 200);
+        HTTPMessageReceiver receiver = new HTTPMessageReceiver(transport, malMessageHeader, 200, bodyEncodingId);
         receiver.receive(data);
     }
 

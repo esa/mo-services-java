@@ -39,6 +39,7 @@ public class HTTPMessageReceiver {
     private final HTTPTransport transport;
     private final MALMessageHeader header;
     private final int statusCode;
+    private final int bodyEncodingId;
 
     /**
      * Creates a new instance of HTTPMessageReceiver
@@ -46,11 +47,15 @@ public class HTTPMessageReceiver {
      * @param transport The transport instance to pass received messages to.
      * @param header The message header.
      * @param statusCode The status code.
+     * @param bodyEncodingId The body encoding identifier named by the HTTP
+     * headers.
      */
-    public HTTPMessageReceiver(HTTPTransport transport, MALMessageHeader header, int statusCode) {
+    public HTTPMessageReceiver(HTTPTransport transport, MALMessageHeader header, int statusCode,
+            int bodyEncodingId) {
         this.transport = transport;
         this.header = header;
         this.statusCode = statusCode;
+        this.bodyEncodingId = bodyEncodingId;
     }
 
     /**
@@ -61,7 +66,7 @@ public class HTTPMessageReceiver {
     public void receive(final byte[] packet) {
         try {
             PacketToString smsg = new PacketToString(packet);
-            GENMessage malMsg = transport.decodeMessage(new HTTPHeaderAndBody(header, packet, statusCode));
+            GENMessage malMsg = transport.decodeMessage(new HTTPHeaderAndBody(header, packet, statusCode, bodyEncodingId));
             transport.receive(null, new IncomingMessageHolder(malMsg, smsg));
         } catch (MALException ex) {
             Logger.getLogger(HTTPMessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
