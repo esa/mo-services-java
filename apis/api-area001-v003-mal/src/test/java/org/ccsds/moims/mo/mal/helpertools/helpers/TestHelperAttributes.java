@@ -662,13 +662,6 @@ public class TestHelperAttributes {
     }
 
     @Test
-    public void testAttributeName2Object20() {
-        Object o = HelperAttributes.attributeName2object("SerializedObject");
-        assertNotEquals(null, o);
-        assertTrue(o instanceof Blob);
-    }
-
-    @Test
     public void testAttributeName2Object21() {
         Object o = HelperAttributes.attributeName2object("FooBar");
         assertEquals(null, o);
@@ -1131,11 +1124,6 @@ public class TestHelperAttributes {
         assertEquals("URI", HelperAttributes.typeShortForm2attributeName(18));
     }
 
-    @Test
-    public void testTypeShortForm2attributeName20() {
-        assertEquals("SerializedObject", HelperAttributes.typeShortForm2attributeName(127));
-    }
-
     /* Tests for attributeName2typeShortForm */
     @Test(expected = IllegalArgumentException.class)
     public void testAttributeName2TypeShortForm1() {
@@ -1242,55 +1230,4 @@ public class TestHelperAttributes {
         assertEquals(18, (int) HelperAttributes.attributeName2typeShortForm("URI"));
     }
 
-    /* Tests for serialObject2blobAttribute */
-    @Test
-    public void testSerialObject2BlobAttribute1() {
-        try {
-            Blob b = HelperAttributes.serialObject2blobAttribute(null);
-            byte[] bs = b.getValue();
-            assertEquals(112, bs[4]);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("IOException!");
-        }
-    }
-
-    @Test
-    public void testSerialObject2BlobAttribute2() {
-        try {
-            String ref = "Serializable String";
-            byte[] refArr = ref.getBytes();
-            Blob b = HelperAttributes.serialObject2blobAttribute("Serializable String");
-            byte[] bs = b.getValue();
-            for (int i = 0; i < refArr.length; i++) {
-                assertEquals(refArr[i], bs[i + 7]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("IOException!");
-        }
-    }
-
-    /* Tests for blobAttribute2serialObject */
-    @Test(expected = IllegalArgumentException.class)
-    public void testBlobAttribute2SerialObject1() {
-        try {
-            HelperAttributes.blobAttribute2serialObject(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("IOException!");
-        }
-    }
-
-    @Test
-    public void testBlobAttribute2serialObject2() {
-        // serialization and deserialization should be inverse of each other
-        String ref = "I am the string of the legends.";
-        try {
-            assertEquals(ref, HelperAttributes.blobAttribute2serialObject(HelperAttributes.serialObject2blobAttribute(ref)));
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("IOException!");
-        }
-    }
 }

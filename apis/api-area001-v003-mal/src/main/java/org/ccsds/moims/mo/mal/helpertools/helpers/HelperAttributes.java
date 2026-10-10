@@ -20,7 +20,6 @@
  */
 package org.ccsds.moims.mo.mal.helpertools.helpers;
 
-import java.io.*;
 import java.math.BigInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,16 +30,6 @@ import org.ccsds.moims.mo.mal.structures.*;
  * Attributes.
  */
 public class HelperAttributes {
-
-    /**
-     * Selected value to represent a serialized object
-     */
-    public static Byte SERIAL_OBJECT_RAW_TYPE = (byte) 127;
-
-    /**
-     * Selected the String to represent a Serialized object
-     */
-    public static String SERIAL_OBJECT_STRING = "SerializedObject";
 
     /**
      * Creates an instance of a MAL attribute from attribute name
@@ -106,9 +95,6 @@ public class HelperAttributes {
         }
         if (attributeName.equals("URI")) {
             return new URI();
-        }
-        if (attributeName.equals(SERIAL_OBJECT_STRING)) {
-            return new Blob();
         }
 
         return null;
@@ -347,9 +333,6 @@ public class HelperAttributes {
         if (typeShortForm == 18) {
             return "URI";
         }
-        if (typeShortForm == SERIAL_OBJECT_RAW_TYPE.intValue()) {
-            return SERIAL_OBJECT_STRING;
-        }
 
         return "";
     }
@@ -420,95 +403,8 @@ public class HelperAttributes {
         if (attributeName.equals("URI")) {
             return 18;
         }
-        if (attributeName.equals(SERIAL_OBJECT_STRING)) {
-            return SERIAL_OBJECT_RAW_TYPE.intValue();
-        }
 
         return null;
     }
 
-    /**
-     * Serializes an object and fits it into a Blob attribute
-     *
-     * @param obj The object to be serialized
-     * @return The Blob with the serialized object inside
-     * @throws java.io.IOException When the serialization of the object fails
-     */
-    public static Blob serialObject2blobAttribute(Serializable obj) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        byte[] serialBytesOut = null;
-
-        try {
-            out = new ObjectOutputStream(baos);
-            out.writeObject(obj);
-            serialBytesOut = baos.toByteArray();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-            try {
-                baos.close();
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }
-
-        return new Blob(serialBytesOut);
-    }
-
-    /**
-     * Tries to deserialize an object inside a Blob
-     *
-     * @param obj The object to be serialized
-     * @return The deserialized object
-     * @throws java.io.IOException When the deserialization of the object fails
-     * @throws java.lang.IllegalArgumentException If obj == null
-     */
-    public static Serializable blobAttribute2serialObject(Blob obj)
-            throws IOException, IllegalArgumentException {
-
-        if (obj == null) {
-            throw new IllegalArgumentException("The Blob must not be null.");
-        }
-        ByteArrayInputStream bis = null;
-        Object o = null;
-
-        try {
-            bis = new ByteArrayInputStream(obj.getValue());
-            ObjectInput in = null;
-            try {
-                in = new ObjectInputStream(bis);
-                o = in.readObject();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(HelperAttributes.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    bis.close();
-                } catch (IOException ex) {
-                    // ignore close exception
-                }
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    // ignore close exception
-                }
-            }
-        } finally {
-            try {
-                bis.close();
-            } catch (IOException ex) {
-                Logger.getLogger(HelperAttributes.class.getName()).log(Level.SEVERE, null, ex);
-                // ignore close exception
-            }
-        }
-
-        return (Serializable) o;
-    }
 }

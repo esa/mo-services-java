@@ -4,6 +4,9 @@ ESA CCSDS MO services - Release Notes
 These Release Notes include a short summary of the updates done for each version.
 The different versions and respective updates are the following:
 
+### Version 15.1 (in development)
+* Removes the unsafe object serialization helpers from HelperAttributes (serialObject2blobAttribute and blobAttribute2serialObject) and the SerializedObject pseudo-type they used, which passed untrusted bytes to Java deserialization
+
 ### Version 15.0 (27 September 2026)
 * Replaces the three old API generators (generator-interfaces, generator-java and generator-docs) with the api-generator-lib, which the Maven plugin now calls directly
 * Removes the api-generator-maven-plugin options packageBindings, generateStructures, generateCOM, extraProperties and xsdRefDirectory
