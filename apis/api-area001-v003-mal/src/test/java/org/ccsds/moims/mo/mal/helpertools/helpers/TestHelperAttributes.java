@@ -1230,4 +1230,46 @@ public class TestHelperAttributes {
         assertEquals(18, (int) HelperAttributes.attributeName2typeShortForm("URI"));
     }
 
+    /* Tests for getTypeShortForm */
+    @Test
+    public void testGetTypeShortFormOfPrimitives() {
+        assertEquals(Integer.valueOf(2), HelperAttributes.getTypeShortForm(boolean.class));
+        assertEquals(Integer.valueOf(4), HelperAttributes.getTypeShortForm(float.class));
+        assertEquals(Integer.valueOf(5), HelperAttributes.getTypeShortForm(double.class));
+        assertEquals(Integer.valueOf(11), HelperAttributes.getTypeShortForm(int.class));
+        assertEquals(Integer.valueOf(13), HelperAttributes.getTypeShortForm(long.class));
+    }
+
+    @Test
+    public void testGetTypeShortFormOfByteIsOctet() {
+        assertEquals("A Java byte is a MAL Octet",
+                Integer.valueOf(7), HelperAttributes.getTypeShortForm(byte.class));
+    }
+
+    @Test
+    public void testGetTypeShortFormOfBoxedByteIsOctet() {
+        assertEquals("A Java Byte is a MAL Octet",
+                Integer.valueOf(7), HelperAttributes.getTypeShortForm(Byte.class));
+    }
+
+    @Test
+    public void testGetTypeShortFormOfShortIsShort() {
+        assertEquals("A Java short is a MAL Short",
+                Integer.valueOf(9), HelperAttributes.getTypeShortForm(short.class));
+    }
+
+    @Test
+    public void testGetTypeShortFormOfBoxedTypes() {
+        assertEquals(Integer.valueOf(2), HelperAttributes.getTypeShortForm(Boolean.class));
+        assertEquals(Integer.valueOf(9), HelperAttributes.getTypeShortForm(Short.class));
+        assertEquals(Integer.valueOf(11), HelperAttributes.getTypeShortForm(Integer.class));
+        assertEquals(Integer.valueOf(15), HelperAttributes.getTypeShortForm(String.class));
+    }
+
+    @Test
+    public void testGetTypeShortFormOfANonAttributeType() {
+        assertEquals(null, HelperAttributes.getTypeShortForm(char.class));
+        assertEquals(null, HelperAttributes.getTypeShortForm(Object.class));
+    }
+
 }

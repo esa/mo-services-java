@@ -122,6 +122,11 @@ public class HelperAttributes {
             return HelperAttributes.attributeName2typeShortForm("Integer");
         } else if (type.equals(long.class)) {
             return HelperAttributes.attributeName2typeShortForm("Long");
+        } else if (type.equals(short.class)) {
+            return HelperAttributes.attributeName2typeShortForm("Short");
+        } else if (type.equals(byte.class) || type.equals(Byte.class)) {
+            // A Java byte is a MAL Octet, so its name is not that of the attribute
+            return HelperAttributes.attributeName2typeShortForm("Octet");
         }
         return null;
     }
